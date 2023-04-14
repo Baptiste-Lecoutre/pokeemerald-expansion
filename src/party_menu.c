@@ -2142,14 +2142,14 @@ static u8 CanTeachMove(struct Pokemon *mon, u16 move)
 
 static u16 GetTutorMove(u8 tutor)
 {
-    return gTutorMoves[tutor];
+    return FALSE;//gTutorMoves[tutor];
 }
 
 bool8 CanLearnTutorMove(u16 species, u8 tutor)
 {
-    if (sTutorLearnsets[species] & (1 << tutor))
+    /*if (sTutorLearnsets[species] & (1 << tutor))
         return TRUE;
-    else
+    else*/
         return FALSE;
 }
 

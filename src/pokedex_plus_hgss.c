@@ -6256,11 +6256,11 @@ static void Task_LoadEvolutionScreen(u8 taskId)
         //Print evo info and icons
         gTasks[taskId].data[3] = 0;
         PrintEvolutionTargetSpeciesAndMethod(taskId, NationalPokedexNumToSpeciesHGSS(sPokedexListItem->dexNum), 0, sPokedexView->numPreEvolutions);
-        LoadSpritePalette(&sSpritePalette_Arrow);
+        LoadSpritePalette(&gSpritePalette_Arrow);
         GetSeenFlagTargetSpecies();
         if (sPokedexView->sEvoScreenData.numAllEvolutions != 0 && sPokedexView->sEvoScreenData.numSeen != 0)
         {
-            sPokedexView->sEvoScreenData.arrowSpriteId = CreateSprite(&sSpriteTemplate_Arrow, 7, 58, 0);
+            sPokedexView->sEvoScreenData.arrowSpriteId = CreateSprite(&gSpriteTemplate_Arrow, 7, 58, 0);
             gSprites[sPokedexView->sEvoScreenData.arrowSpriteId].animNum = 2;
         }
         gMain.state++;
@@ -6947,7 +6947,7 @@ static void Task_LoadFormsScreen(u8 taskId)
         //Print form icons
         gTasks[taskId].data[3] = 0;
         PrintForms(taskId, NationalPokedexNumToSpeciesHGSS(sPokedexListItem->dexNum));
-        LoadSpritePalette(&sSpritePalette_Arrow);
+        LoadSpritePalette(&gSpritePalette_Arrow);
         gMain.state++;
         break;
     case 5:
