@@ -56,7 +56,7 @@ static void PlayerHandlePrintString(void);
 static void PlayerHandlePrintSelectionString(void);
 static void PlayerHandleChooseAction(void);
 static void PlayerHandleYesNoBox(void);
-static void PlayerHandleChooseMove(void);
+//static void PlayerHandleChooseMove(void);
 static void PlayerHandleChooseItem(void);
 static void PlayerHandleChoosePokemon(void);
 static void PlayerHandleCmd23(void);
@@ -96,13 +96,13 @@ static void PlayerHandleBattleDebug(void);
 static void PlayerCmdEnd(void);
 
 static void PlayerBufferRunCommand(void);
-static void HandleInputChooseTarget(void);
-static void HandleInputChooseMove(void);
+//static void HandleInputChooseTarget(void);
+//static void HandleInputChooseMove(void);
 static void MoveSelectionDisplayPpNumber(void);
 static void MoveSelectionDisplayPpString(void);
 static void MoveSelectionDisplayMoveType(void);
 static void MoveSelectionDisplayMoveNames(void);
-static void HandleMoveSwitching(void);
+//static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
 static void CompleteWhenChoseItem(void);
@@ -324,6 +324,16 @@ static void HandleInputChooseAction(void)
             BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_CANCEL_PARTNER, 0);
             PlayerBufferExecCompleted();
         }
+        else
+        {
+            if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER))//if wild, pressing B moves cursor to run
+            {
+                PlaySE(SE_SELECT);
+                ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
+                gActionSelectionCursor[gActiveBattler] = B_ACTION_RUN;
+                ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
+            }
+        }
     }
     else if (JOY_NEW(START_BUTTON))
     {
@@ -354,7 +364,7 @@ static void UnusedEndBounceEffect(void)
     gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseTarget;
 }
 
-static void HandleInputChooseTarget(void)
+void HandleInputChooseTarget(void)
 {
     s32 i;
     static const u8 identities[MAX_BATTLERS_COUNT] = {B_POSITION_PLAYER_LEFT, B_POSITION_PLAYER_RIGHT, B_POSITION_OPPONENT_RIGHT, B_POSITION_OPPONENT_LEFT};
@@ -590,7 +600,7 @@ static void TryShowAsTarget(u32 battlerId)
     }
 }
 
-static void HandleInputChooseMove(void)
+void HandleInputChooseMove(void)
 {
     u16 moveTarget;
     u32 canSelectTarget = 0;
@@ -874,7 +884,7 @@ static u32 HandleMoveInputUnused(void)
     return var;
 }
 
-static void HandleMoveSwitching(void)
+void HandleMoveSwitching(void)
 {
     u8 perMovePPBonuses[MAX_MON_MOVES];
     struct ChooseMoveStruct moveStruct;
@@ -2829,7 +2839,7 @@ static void PlayerHandleYesNoBox(void)
     }
 }
 
-static void HandleChooseMoveAfterDma3(void)
+void HandleChooseMoveAfterDma3(void)
 {
     if (!IsDma3ManagerBusyWithBgCopy())
     {
@@ -2851,7 +2861,7 @@ static void PlayerChooseMoveInBattlePalace(void)
     }
 }
 
-static void PlayerHandleChooseMove(void)
+void PlayerHandleChooseMove(void)
 {
     if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
     {
@@ -2880,6 +2890,8 @@ static void PlayerHandleChooseMove(void)
 
 void InitMoveSelectionsVarsAndStrings(void)
 {
+    TryLoadTypeIcons();
+
     MoveSelectionDisplayMoveNames();
     gMultiUsePlayerCursor = 0xFF;
     MoveSelectionCreateCursorAt(gMoveSelectionCursor[gActiveBattler], 0);

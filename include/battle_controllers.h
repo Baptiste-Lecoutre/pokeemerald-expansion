@@ -265,6 +265,11 @@ void ActionSelectionDestroyCursorAt(u8 cursorPos);
 void InitMoveSelectionsVarsAndStrings(void);
 void MoveSelectionCreateCursorAt(u8 cursorPos, u8 arg1);
 void MoveSelectionDestroyCursorAt(u8 cursorPosition);
+void PlayerHandleChooseMove(void);
+void HandleChooseMoveAfterDma3(void);
+void HandleMoveSwitching(void);
+void HandleInputChooseTarget(void);
+void HandleInputChooseMove(void);
 
 // recorded player controller
 void SetControllerToRecordedPlayer(void);

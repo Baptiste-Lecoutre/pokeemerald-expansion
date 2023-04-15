@@ -200,6 +200,8 @@ static void Task_FreeAbilityPopUpGfx(u8);
 static void SpriteCB_LastUsedBall(struct Sprite *);
 static void SpriteCB_LastUsedBallWin(struct Sprite *);
 
+static void SpriteCB_TypeIcon(struct Sprite* sprite);
+
 static const struct OamData sOamData_64x32 =
 {
     .y = 0,
@@ -3383,4 +3385,196 @@ void TryRestoreLastUsedBall(void)
     else
         TryAddLastUsedBallItemSprites();
 #endif
+}
+
+// type icons during move selection
+#define TYPE_ICON_TAG 0x2720
+
+#define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (1 * 2 * frame * 32), .size = 1 * 2 * 32}
+static const struct SpriteFrameImage sTypeIconPicTable[] = 
+{
+    [TYPE_NORMAL] =		type_icon_frame(TypeIconsTiles, TYPE_NORMAL),
+	[TYPE_FIGHTING] =	type_icon_frame(TypeIconsTiles, TYPE_FIGHTING),
+	[TYPE_FLYING] =		type_icon_frame(TypeIconsTiles, TYPE_FLYING),
+	[TYPE_POISON] =		type_icon_frame(TypeIconsTiles, TYPE_POISON),
+	[TYPE_GROUND] =		type_icon_frame(TypeIconsTiles, TYPE_GROUND),
+	[TYPE_ROCK] =		type_icon_frame(TypeIconsTiles, TYPE_ROCK),
+	[TYPE_BUG] =		type_icon_frame(TypeIconsTiles, TYPE_BUG),
+	[TYPE_GHOST] =		type_icon_frame(TypeIconsTiles, TYPE_GHOST),
+	[TYPE_STEEL] =		type_icon_frame(TypeIconsTiles, TYPE_STEEL),
+	[TYPE_MYSTERY] =	type_icon_frame(TypeIconsTiles, TYPE_MYSTERY),
+	[TYPE_FIRE] =		type_icon_frame(TypeIconsTiles, TYPE_FIRE),
+	[TYPE_WATER] =		type_icon_frame(TypeIconsTiles, TYPE_WATER),
+	[TYPE_GRASS] =		type_icon_frame(TypeIconsTiles, TYPE_GRASS),
+	[TYPE_ELECTRIC] =	type_icon_frame(TypeIconsTiles, TYPE_ELECTRIC),
+	[TYPE_PSYCHIC] =	type_icon_frame(TypeIconsTiles, TYPE_PSYCHIC),
+	[TYPE_ICE] =		type_icon_frame(TypeIconsTiles, TYPE_ICE),
+	[TYPE_DRAGON] =		type_icon_frame(TypeIconsTiles, TYPE_DRAGON),
+	[TYPE_DARK] =		type_icon_frame(TypeIconsTiles, TYPE_DARK),
+    [TYPE_FAIRY] =      type_icon_frame(TypeIconsTiles, TYPE_FAIRY),
+};
+
+static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] = 
+{
+    { // Single Battles
+        [B_POSITION_PLAYER_LEFT] = { 220, 86},
+        [B_POSITION_OPPONENT_LEFT] = {20, 26},
+        [B_POSITION_PLAYER_RIGHT] = {270, 200}, // out of screen
+        [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
+    },
+    { // Double Battles
+        [B_POSITION_PLAYER_LEFT] = { 225, 71},
+        [B_POSITION_OPPONENT_LEFT] = {20, 15},
+        [B_POSITION_PLAYER_RIGHT] = {220, 96},
+        [B_POSITION_OPPONENT_RIGHT] = {15, 40}, 
+    },
+};
+
+static const struct OamData sTypeIconOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x16),
+	.size = SPRITE_SIZE(8x16),
+	.priority = 2, // put to 2 so that the zmove trigger appears above the type icons // 1,//Same level as health bar 
+};
+
+static const struct SpritePalette sTypeIconPalTemplate = 
+{
+    .data = TypeIconsPal,
+    .tag = TYPE_ICON_TAG,
+};
+
+static const struct SpriteTemplate sTypeIconSpriteTemplate = 
+{
+    .tileTag = 0xFFFF,
+    .paletteTag = TYPE_ICON_TAG,
+    .oam = &sTypeIconOAM,
+    .anims = gDummySpriteAnimTable,
+    .images = sTypeIconPicTable,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCB_TypeIcon,
+};
+
+void TryLoadTypeIcons(void)
+{
+	if (!(gBattleTypeFlags & BATTLE_TYPE_LINK) && TRUE && IndexOfSpritePaletteTag(TYPE_ICON_TAG) == 0xFF)
+	{
+        u8 position, battleType;
+        
+        battleType = IsDoubleBattle();
+
+        LoadSpritePalette(&sTypeIconPalTemplate);
+        
+		
+		for (position = 0; position < gBattlersCount; ++position)
+		{
+            u8 typeNum;
+			if (!IsBattlerAlive(GetBattlerAtPosition(position)))
+				continue;
+
+			for (typeNum = 0; typeNum < 2; ++typeNum) //Load each type
+			{
+				u8 spriteId;
+                u8* type1Ptr = &gBattleMons[GetBattlerAtPosition(position)].type1;
+                u8 type = *(type1Ptr + typeNum);
+				s16 x,y;
+
+                if (battleType)
+                    y -= (3 * typeNum);
+
+                x = sTypeIconPositions[battleType][position].x;
+				y = sTypeIconPositions[battleType][position].y + (11 * typeNum); //2nd type is 11px below
+
+                spriteId = CreateSpriteAtEnd(&sTypeIconSpriteTemplate, x, y, 0xFF);
+                
+				if (spriteId != MAX_SPRITES)
+				{
+					struct Sprite* sprite = &gSprites[spriteId];
+					sprite->data[0] = position;
+					sprite->data[1] = gActiveBattler;
+					sprite->data[3] = y; //Save original y-value for bouncing
+                    sprite->data[4] = typeNum; // save if type1 or type2 in sprite data
+
+					if (GetBattlerSide(GetBattlerAtPosition(position)) == B_SIDE_PLAYER)
+                    {
+						SetSpriteOamFlipBits(sprite, TRUE, FALSE); //Flip horizontally
+                        sprite->x -= 2 - typeNum * 2; // shift the type2 sprite by 2 pixels to delay its appearance 
+                    }
+                    else
+                        sprite->x += 2 - typeNum * 2; 
+					
+                    RequestSpriteFrameImageCopy(type, sprite->oam.tileNum, sprite->images);
+				}
+			}
+		}
+	}
+}
+
+static void SpriteCB_TypeIcon(struct Sprite* sprite)
+{
+	u8 position = sprite->data[0];
+	u8 bank = sprite->data[1];
+    u8 battleType;
+    s16 originalY;
+	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
+
+    battleType = IsDoubleBattle();
+
+	if (sprite->data[2] == 12 - 2 * sprite->data[4])
+	{
+		FreeSpritePaletteByTag(TYPE_ICON_TAG);
+		DestroySprite(sprite);
+		return;
+	}
+
+	//Type icons should prepare to destroy themselves if the Player is not choosing an action
+	if (gBattlerControllerFuncs[bank] != PlayerHandleChooseMove
+	&&  gBattlerControllerFuncs[bank] != HandleChooseMoveAfterDma3
+	&&  gBattlerControllerFuncs[bank] != HandleInputChooseTarget
+	&&  gBattlerControllerFuncs[bank] != HandleMoveSwitching
+	&&  gBattlerControllerFuncs[bank] != HandleInputChooseMove)
+	{
+        switch (position) {
+			case B_POSITION_PLAYER_LEFT:
+			case B_POSITION_PLAYER_RIGHT:
+                if (!sprite->data[4] || sprite->data[2] > 1) // delay the hiding movement of type1 by 2 frames (2 pixels) compared to type2 (upper sprite appears 2 frames after & disappears 2 frames before)
+			        sprite->x -= 1;
+				break;
+			case B_POSITION_OPPONENT_LEFT:
+			case B_POSITION_OPPONENT_RIGHT:
+                if (!sprite->data[4] || sprite->data[2] > 1)
+    			    sprite->x += 1;
+				break;
+		}
+        sprite->oam.priority = 1;
+
+		++sprite->data[2];
+		return;
+	}
+
+    switch (position) {
+		case B_POSITION_OPPONENT_LEFT:
+		case B_POSITION_OPPONENT_RIGHT:
+		    if (sprite->x > sTypeIconPositions[battleType][position].x - 10)
+    		    sprite->x -= 1;
+            if (sprite->x <= sTypeIconPositions[battleType][position].x - 10)
+                sprite->oam.priority = 0;
+            else
+                sprite->oam.priority = 1;
+			break;
+		case B_POSITION_PLAYER_LEFT:
+		case B_POSITION_PLAYER_RIGHT:
+			if (sprite->x < sTypeIconPositions[battleType][position].x + 10)
+			    sprite->x += 1;
+            if (sprite->x >= sTypeIconPositions[battleType][position].x + 10)
+                sprite->oam.priority = 0;
+            else
+                sprite->oam.priority = 1;
+			break;
+	}
+
+	//Deal with bouncing player healthbox
+	originalY = sprite->data[3];
+	sprite->y = originalY + healthbox->y2;
 }

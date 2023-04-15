@@ -47,7 +47,10 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added TheXaman's HGSS syled Pokedex
 - Added TheXaman's DS style Party screen
 - Added Lunos' wonder trade
+- Added Lunos' quick swap in party menu
 - Added Ghoulslash's item description header
 - Added Ghoulslash's dexnav
 - Changed text boxes graphics 
 - Added "Sound OFF" and "Instant text speed" options
+- Pressing B in wild battle puts the cursor onto the run option
+- Added type icons during battle move selection
