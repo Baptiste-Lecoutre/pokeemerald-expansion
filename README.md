@@ -49,9 +49,12 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added Lunos' wonder trade
 - Added Lunos' quick swap in party menu
 - Added Lunos' 999 items stack
+- Added Lunos' bike gears switch
 - Added Ghoulslash's item description header
 - Added Ghoulslash's dexnav
+- Added Ghoulslash's autorun
 - Changed text boxes graphics 
 - Added "Sound OFF" and "Instant text speed" options
 - Pressing B in wild battle puts the cursor onto the run option
 - Added type icons during battle move selection
+- HMs can be forgotten
