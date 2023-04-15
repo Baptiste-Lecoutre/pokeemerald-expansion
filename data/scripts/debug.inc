@@ -68,6 +68,7 @@ Debug_FlagsNotSetBattleConfigMessage_Text:
 	.string "'include/config/battle.h'!$"
 
 Debug_Script_1::
+	goto EventScript_DoWonderTrade
 	end
 
 Debug_Script_2::

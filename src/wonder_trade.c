@@ -968,8 +968,8 @@ u16 determineEvolution(struct Pokemon *mon)
                 for (j = 0; j < PARTY_SIZE; j++)
                 {
                     u16 currSpecies = GetMonData(&gPlayerParty[j], MON_DATA_SPECIES, NULL);
-                    if (gSpeciesInfo[currSpecies].type1 == TYPE_DARK
-                     || gSpeciesInfo[currSpecies].type2 == TYPE_DARK)
+                    if (gSpeciesInfo[currSpecies].types[0] == TYPE_DARK
+                     || gSpeciesInfo[currSpecies].types[1] == TYPE_DARK)
                     {
                         targetSpecies = gEvolutionTable[species][i].targetSpecies;
                         break;
@@ -1235,8 +1235,8 @@ u16 GetValidWonderTradeItem(u16 item)
            || ItemId_GetHoldEffect(item) == HOLD_EFFECT_DRIVE
            || ItemId_GetHoldEffect(item) == HOLD_EFFECT_PLATE
            || ItemId_GetHoldEffect(item) == HOLD_EFFECT_GEMS)
-           && (gSpeciesInfo[species].type1 != ItemId_GetHoldEffectParam(item)
-            || gSpeciesInfo[species].type2 != ItemId_GetHoldEffectParam(item)))
+           && (gSpeciesInfo[species].types[0] != ItemId_GetHoldEffectParam(item)
+            || gSpeciesInfo[species].types[1] != ItemId_GetHoldEffectParam(item)))
         goto ROLL;
     else if (item >= ITEM_NORMALIUM_Z && item <= ITEM_ULTRANECROZIUM_Z)
         goto ROLL;
