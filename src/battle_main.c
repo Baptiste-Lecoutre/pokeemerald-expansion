@@ -5427,8 +5427,8 @@ static void FreeResetData_ReturnToOvOrDoEvolutions(void)
         gIsSurfingEncounter = FALSE;
         if (gDexnavBattle && (gBattleOutcome == B_OUTCOME_WON || gBattleOutcome == B_OUTCOME_CAUGHT))
             IncrementDexNavChain();
-        else
-            gSaveBlock1Ptr->dexNavChain = 0;
+        /*else
+            gSaveBlock1Ptr->dexNavChain = 0;*/
         
         ResetSpriteData();
         if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK

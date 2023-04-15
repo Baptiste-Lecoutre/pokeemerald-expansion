@@ -449,7 +449,7 @@ static void DrawDexNavSearchMonIcon(u16 species, u8 *dst, bool8 owned)
     u8 spriteId;
 
     LoadMonIconPalette(species);
-    spriteId = CreateMonIcon(species, SpriteCB_MonIcon, SPECIES_ICON_X - 6, GetSearchWindowY() + 8, 0, 0xFFFFFFFF, 0);
+    spriteId = CreateMonIcon(species, SpriteCB_MonIcon, SPECIES_ICON_X - 6, GetSearchWindowY() + 8, 0, 0xFFFFFFFF);
     gSprites[spriteId].oam.priority = 0;
     *dst = spriteId;
     
@@ -532,10 +532,10 @@ static void AddSearchWindowText(u16 species, u8 proximity, u8 searchLevel, bool8
     }
     
     //chain level - always present
-    ConvertIntToDecimalStringN(gStringVar1, gSaveBlock1Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
-    if (gSaveBlock1Ptr->dexNavChain > 99)
+    ConvertIntToDecimalStringN(gStringVar1, 0/*gSaveBlock1Ptr->dexNavChain*/, STR_CONV_MODE_LEFT_ALIGN, 3);
+    /*if (gSaveBlock1Ptr->dexNavChain > 99)
         StringExpandPlaceholders(gStringVar4, sText_DexNavChainLong);
-    else
+    else*/
         StringExpandPlaceholders(gStringVar4, sText_DexNavChain);
     AddTextPrinterParameterized3(windowId, 0, SEARCH_ARROW_X - 16, 12, sSearchFontColor, TEXT_SKIP_DRAW, gStringVar4);    
     
@@ -805,7 +805,7 @@ static void Task_SetUpDexNavSearch(u8 taskId)
     
     u16 species = sDexNavSearchDataPtr->species;
     u8 environment = sDexNavSearchDataPtr->environment;
-    u8 searchLevel = gSaveBlock1Ptr->dexNavSearchLevels[SpeciesToNationalPokedexNum(species)];
+    u8 searchLevel = 0;//gSaveBlock1Ptr->dexNavSearchLevels[SpeciesToNationalPokedexNum(species)];
     
     // init sprites
     sDexNavSearchDataPtr->iconSpriteId = MAX_SPRITES;
@@ -991,7 +991,7 @@ void EndDexNavSearch(u8 taskId)
 
 static void EndDexNavSearchSetupScript(const u8 *script, u8 taskId)
 {
-    gSaveBlock1Ptr->dexNavChain = 0;   //reset chain
+    //gSaveBlock1Ptr->dexNavChain = 0;   //reset chain
     EndDexNavSearch(taskId);
     ScriptContext_SetupScript(script);
 }
@@ -1256,7 +1256,7 @@ static void CreateDexNavWildMon(u16 species, u8 potential, u8 level, u8 abilityN
 static u8 DexNavTryGenerateMonLevel(u16 species, u8 environment)
 {
     u8 levelBase = GetEncounterLevelFromMapData(species, environment);
-    u8 levelBonus = gSaveBlock1Ptr->dexNavChain / 5;
+    u8 levelBonus = 0;//gSaveBlock1Ptr->dexNavChain / 5;
 
     if (levelBase == MON_LEVEL_NONEXISTENT)
         return MON_LEVEL_NONEXISTENT;   //species not found in the area
@@ -2000,9 +2000,9 @@ static void TryDrawIconInSlot(u16 species, s16 x, s16 y)
     if (species == SPECIES_NONE || species > NUM_SPECIES)
         CreateNoDataIcon(x, y);   //'X' in slot
     else if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
-        CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF, 0); //question mark
+        CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF); //question mark
     else
-        CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF, 0);
+        CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF);
 }
 
 static void DrawSpeciesIcons(void)
@@ -2038,7 +2038,7 @@ static void DrawSpeciesIcons(void)
        else if (species == SPECIES_NONE || species > NUM_SPECIES)
             CreateNoDataIcon(x, y);
         else
-            CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF, 0); //question mark if detector mode inactive
+            CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF); //question mark if detector mode inactive
     }
 }
 
@@ -2162,7 +2162,7 @@ static void PrintCurrentSpeciesInfo(void)
     }
     else
     {
-        ConvertIntToDecimalStringN(gStringVar4, gSaveBlock1Ptr->dexNavSearchLevels[dexNum], 0, 4);
+        ConvertIntToDecimalStringN(gStringVar4, 0/*gSaveBlock1Ptr->dexNavSearchLevels[dexNum]*/, 0, 4);
         AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, SEARCH_LEVEL_Y, sFontColor_Black, 0, gStringVar4);
     }
     
@@ -2189,7 +2189,7 @@ static void PrintCurrentSpeciesInfo(void)
     }
     
     //current chain
-    ConvertIntToDecimalStringN(gStringVar1, gSaveBlock1Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
+    ConvertIntToDecimalStringN(gStringVar1, 0/*gSaveBlock1Ptr->dexNavChain*/, STR_CONV_MODE_LEFT_ALIGN, 3);
     AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, CHAIN_BONUS_Y, sFontColor_Black, 0, gStringVar1);
     
     CopyWindowToVram(WINDOW_INFO, 3);
@@ -2226,12 +2226,12 @@ static void CreateTypeIconSprites(void)
 {
     u8 i;
 
-    LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
+    LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
     LoadCompressedPalette(gMoveTypes_Pal, 0x1D0, 0x60);
     for (i = 0; i < 2; i++)
     {
         if (sDexNavUiDataPtr->typeIconSpriteIds[i] == 0xFF)
-            sDexNavUiDataPtr->typeIconSpriteIds[i] = CreateSprite(&gSpriteTemplate_MoveTypes, 10, 10, 2);    
+            sDexNavUiDataPtr->typeIconSpriteIds[i] = CreateSprite(&sSpriteTemplate_MoveTypes, 10, 10, 2);    
     
         SetSpriteInvisibility(i, TRUE);
     }
@@ -2682,7 +2682,7 @@ bool8 DexNavTryMakeShinyMon(void)
     u32 shinyRate = 0;
     u32 charmBonus = 0;
     u8 searchLevel = sDexNavSearchDataPtr->searchLevel;
-    u8 chain = gSaveBlock1Ptr->dexNavChain;
+    u8 chain = 0;//gSaveBlock1Ptr->dexNavChain;
     
     #ifdef ITEM_SHINY_CHARM
     charmBonus = (CheckBagHasItem(ITEM_SHINY_CHARM, 1) > 0) ? 2 : 0;
@@ -2719,13 +2719,13 @@ bool8 DexNavTryMakeShinyMon(void)
 
 void TryIncrementSpeciesSearchLevel(u16 dexNum)
 {
-    if (gMapHeader.regionMapSectionId != MAPSEC_BATTLE_FRONTIER && gSaveBlock1Ptr->dexNavSearchLevels[dexNum] < 255)
-        gSaveBlock1Ptr->dexNavSearchLevels[dexNum]++;
+    /*if (gMapHeader.regionMapSectionId != MAPSEC_BATTLE_FRONTIER && gSaveBlock1Ptr->dexNavSearchLevels[dexNum] < 255)
+        gSaveBlock1Ptr->dexNavSearchLevels[dexNum]++;*/
 }
 
 void ResetDexNavSearch(void)
 {
-    gSaveBlock1Ptr->dexNavChain = 0;    //reset dex nav chaining on new map
+    //gSaveBlock1Ptr->dexNavChain = 0;    //reset dex nav chaining on new map
     VarSet(VAR_DEXNAV_STEP_COUNTER, 0); //reset hidden pokemon step counter
     if (FlagGet(FLAG_SYS_DEXNAV_SEARCH))
         EndDexNavSearch(FindTaskIdByFunc(Task_DexNavSearch));   //moving to new map ends dexnav search
@@ -2733,6 +2733,6 @@ void ResetDexNavSearch(void)
 
 void IncrementDexNavChain(void)
 {
-    if (gSaveBlock1Ptr->dexNavChain < DEXNAV_CHAIN_MAX)
-        gSaveBlock1Ptr->dexNavChain++;
+    /*if (gSaveBlock1Ptr->dexNavChain < DEXNAV_CHAIN_MAX)
+        gSaveBlock1Ptr->dexNavChain++;*/
 }
