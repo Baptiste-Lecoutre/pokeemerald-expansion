@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "palette.h"
 #include "scanline_effect.h"
+#include "sound.h"
 #include "sprite.h"
 #include "strings.h"
 #include "task.h"
@@ -399,19 +400,19 @@ static u8 TextSpeed_ProcessInput(u8 selection)
 {
     if (JOY_NEW(DPAD_RIGHT))
     {
-        if (selection <= 1)
+        if (selection < 3)
             selection++;
         else
-            selection = 0;
+            selection = 1;
 
         sArrowPressed = TRUE;
     }
     if (JOY_NEW(DPAD_LEFT))
     {
-        if (selection != 0)
+        if (selection != 1)
             selection--;
         else
-            selection = 2;
+            selection = 3;
 
         sArrowPressed = TRUE;
     }
@@ -420,25 +421,29 @@ static u8 TextSpeed_ProcessInput(u8 selection)
 
 static void TextSpeed_DrawChoices(u8 selection)
 {
-    u8 styles[3];
-    s32 widthSlow, widthMid, widthFast, xMid;
+    u8 styles[4];
+    s32 widthSlow, widthMid, widthFast, widthInstant, xMidLeft, xMidRight;
 
     styles[0] = 0;
     styles[1] = 0;
     styles[2] = 0;
+    styles[3] = 0;
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_TextSpeedSlow, 104, YPOS_TEXTSPEED, styles[0]);
+    //DrawOptionMenuChoice(gText_TextSpeedSlow, 104, YPOS_TEXTSPEED, styles[0]);
 
     widthSlow = GetStringWidth(FONT_NORMAL, gText_TextSpeedSlow, 0);
     widthMid = GetStringWidth(FONT_NORMAL, gText_TextSpeedMid, 0);
     widthFast = GetStringWidth(FONT_NORMAL, gText_TextSpeedFast, 0);
+    widthInstant = GetStringWidth(FONT_NORMAL, gText_TextSpeedInstant, 0);
 
-    widthMid -= 94;
-    xMid = (widthSlow - widthMid - widthFast) / 2 + 104;
-    DrawOptionMenuChoice(gText_TextSpeedMid, xMid, YPOS_TEXTSPEED, styles[1]);
-
-    DrawOptionMenuChoice(gText_TextSpeedFast, GetStringRightAlignXOffset(FONT_NORMAL, gText_TextSpeedFast, 198), YPOS_TEXTSPEED, styles[2]);
+    //widthMid -= 94;
+    widthFast -= 94;
+    xMidLeft = 104;//(widthSlow - widthMid - widthFast - widthInstant) / 2 + 60;
+    DrawOptionMenuChoice(gText_TextSpeedMid, xMidLeft, YPOS_TEXTSPEED, styles[1]);
+    xMidRight = (/*widthSlow - */widthMid - widthFast - widthInstant) / 2 + 104;
+    DrawOptionMenuChoice(gText_TextSpeedFast, xMidRight, YPOS_TEXTSPEED, styles[2]);
+    DrawOptionMenuChoice(gText_TextSpeedInstant, GetStringRightAlignXOffset(FONT_NORMAL, gText_TextSpeedInstant, 198), YPOS_TEXTSPEED, styles[3]);
 }
 
 static u8 BattleScene_ProcessInput(u8 selection)
@@ -489,11 +494,37 @@ static void BattleStyle_DrawChoices(u8 selection)
 
 static u8 Sound_ProcessInput(u8 selection)
 {
-    if (JOY_NEW(DPAD_LEFT | DPAD_RIGHT))
+    int previous = selection;
+
+    if (JOY_NEW(DPAD_RIGHT))
     {
-        selection ^= 1;
-        SetPokemonCryStereo(selection);
+        if (selection == 2)
+            selection = 0;
+        else
+            selection++;
         sArrowPressed = TRUE;
+    }
+        
+    if (JOY_NEW(DPAD_LEFT))
+    {
+        if (selection == 0)
+            selection = 2;
+        else
+            selection--;
+        sArrowPressed = TRUE;
+    }
+
+    if (selection != 2)
+    {
+        gDisableMusic = FALSE;
+        SetPokemonCryStereo(selection);
+        if (previous == 2)
+            PlayNewMapMusic(GetCurrentMapMusic());
+    }
+    else
+    {
+        PlayBGM(0);
+        gDisableMusic = TRUE;
     }
 
     return selection;
@@ -501,14 +532,30 @@ static u8 Sound_ProcessInput(u8 selection)
 
 static void Sound_DrawChoices(u8 selection)
 {
-    u8 styles[2];
+    u8 styles[3];
+    u8 sText_Off[]= _("OFF");
+    s32 widthMono, widthStereo, widthOff, xMid;
 
     styles[0] = 0;
     styles[1] = 0;
+    styles[2] = 0;
     styles[selection] = 1;
 
     DrawOptionMenuChoice(gText_SoundMono, 104, YPOS_SOUND, styles[0]);
-    DrawOptionMenuChoice(gText_SoundStereo, GetStringRightAlignXOffset(FONT_NORMAL, gText_SoundStereo, 198), YPOS_SOUND, styles[1]);
+
+
+
+    widthMono = GetStringWidth(FONT_NORMAL, gText_SoundMono, 0);
+    widthStereo = GetStringWidth(FONT_NORMAL, gText_SoundStereo, 0);
+    widthOff = GetStringWidth(FONT_NORMAL, gText_BattleSceneOff, 0);
+
+    widthStereo -= 94;
+    xMid = (widthMono - widthStereo - widthOff) / 2 + 104;
+    DrawOptionMenuChoice(gText_SoundStereo, xMid, YPOS_SOUND, styles[1]);
+
+    //DrawOptionMenuChoice(gText_SoundStereo, GetStringRightAlignXOffset(FONT_NORMAL, gText_SoundStereo, 198), YPOS_SOUND, styles[2]);
+
+    DrawOptionMenuChoice(gText_BattleSceneOff, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOff, 198), YPOS_SOUND, styles[2]);
 }
 
 static u8 FrameType_ProcessInput(u8 selection)

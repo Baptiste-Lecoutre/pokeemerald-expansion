@@ -56,7 +56,7 @@ static const struct Fanfare sFanfares[] = {
 
 void InitMapMusic(void)
 {
-    gDisableMusic = FALSE;
+    gDisableMusic = (gSaveBlock2Ptr->optionsSound == 2);
     ResetMapMusic();
 }
 
@@ -258,7 +258,7 @@ static void CreateFanfareTask(void)
 void FadeInNewBGM(u16 songNum, u8 speed)
 {
     if (gDisableMusic)
-        songNum = 0;
+        return;
     if (songNum == MUS_NONE)
         songNum = 0;
     m4aSongNumStart(songNum);
@@ -301,6 +301,8 @@ bool8 IsBGMStopped(void)
 
 void PlayCry_Normal(u16 species, s8 pan)
 {
+    if (gDisableMusic)
+        return;
     m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 85);
     PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, CRY_MODE_NORMAL);
     gPokemonCryBGMDuckingCounter = 2;
@@ -309,12 +311,16 @@ void PlayCry_Normal(u16 species, s8 pan)
 
 void PlayCry_NormalNoDucking(u16 species, s8 pan, s8 volume, u8 priority)
 {
+    if (gDisableMusic)
+        return;
     PlayCryInternal(species, pan, volume, priority, CRY_MODE_NORMAL);
 }
 
 // Assuming it's not CRY_MODE_DOUBLES, this is equivalent to PlayCry_Normal except it allows other modes.
 void PlayCry_ByMode(u16 species, s8 pan, u8 mode)
 {
+    if (gDisableMusic)
+        return;
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -331,6 +337,8 @@ void PlayCry_ByMode(u16 species, s8 pan, u8 mode)
 // Used when releasing multiple Pokémon at once in battle.
 void PlayCry_ReleaseDouble(u16 species, s8 pan, u8 mode)
 {
+    if (gDisableMusic)
+        return;
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -346,6 +354,8 @@ void PlayCry_ReleaseDouble(u16 species, s8 pan, u8 mode)
 // Duck the BGM but don't restore it. Not present in R/S
 void PlayCry_DuckNoRestore(u16 species, s8 pan, u8 mode)
 {
+    if (gDisableMusic)
+        return;
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -360,6 +370,8 @@ void PlayCry_DuckNoRestore(u16 species, s8 pan, u8 mode)
 
 void PlayCry_Script(u16 species, u8 mode)
 {
+    if (gDisableMusic)
+        return;
     m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 85);
     PlayCryInternal(species, 0, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
     gPokemonCryBGMDuckingCounter = 2;
@@ -532,20 +544,22 @@ static void RestoreBGMVolumeAfterPokemonCry(void)
 
 void PlayBGM(u16 songNum)
 {
-    if (gDisableMusic)
-        songNum = 0;
-    if (songNum == MUS_NONE)
-        songNum = 0;
+    if (gDisableMusic || songNum == MUS_NONE)
+        return;
     m4aSongNumStart(songNum);
 }
 
 void PlaySE(u16 songNum)
 {
+    if (gDisableMusic)
+        return;
     m4aSongNumStart(songNum);
 }
 
 void PlaySE12WithPanning(u16 songNum, s8 pan)
 {
+    if (gDisableMusic)
+        return;
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE1);
     m4aMPlayImmInit(&gMPlayInfo_SE2);
@@ -555,6 +569,8 @@ void PlaySE12WithPanning(u16 songNum, s8 pan)
 
 void PlaySE1WithPanning(u16 songNum, s8 pan)
 {
+    if (gDisableMusic)
+        return;
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE1);
     m4aMPlayPanpotControl(&gMPlayInfo_SE1, TRACKS_ALL, pan);
@@ -562,6 +578,8 @@ void PlaySE1WithPanning(u16 songNum, s8 pan)
 
 void PlaySE2WithPanning(u16 songNum, s8 pan)
 {
+    if (gDisableMusic)
+        return;
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE2);
     m4aMPlayPanpotControl(&gMPlayInfo_SE2, TRACKS_ALL, pan);

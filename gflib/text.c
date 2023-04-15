@@ -77,6 +77,7 @@ static const u8 sWindowVerticalScrollSpeeds[] = {
     [OPTIONS_TEXT_SPEED_SLOW] = 1,
     [OPTIONS_TEXT_SPEED_MID] = 2,
     [OPTIONS_TEXT_SPEED_FAST] = 4,
+    [OPTIONS_TEXT_SPEED_INSTANT] = 4,
 };
 
 static const struct GlyphWidthFunc sGlyphWidthFuncs[] =
@@ -268,6 +269,21 @@ u16 AddTextPrinterParameterized(u8 windowId, u8 fontId, const u8 *str, u8 x, u8 
     return AddTextPrinter(&printerTemplate, speed, callback);
 }
 
+static bool32 HasScrollChars(const u8 *text)
+{
+    u32 i;
+    for (i = 0; text[i] != EOS; i++)
+    {
+        switch (text[i])
+        {
+        case CHAR_NEWLINE:
+        case EXT_CTRL_CODE_BEGIN:
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 bool16 AddTextPrinter(struct TextPrinterTemplate *printerTemplate, u8 speed, void (*callback)(struct TextPrinterTemplate *, u16))
 {
     int i;
@@ -278,6 +294,13 @@ bool16 AddTextPrinter(struct TextPrinterTemplate *printerTemplate, u8 speed, voi
 
     sTempTextPrinter.active = TRUE;
     sTempTextPrinter.state = RENDER_STATE_HANDLE_CHAR;
+    if (speed & 0x40 && speed != 0xFF)
+    {
+        sTempTextPrinter.instant = 1;
+        speed &= (~0x40);
+    }
+    else
+        sTempTextPrinter.instant = 0;
     sTempTextPrinter.textSpeed = speed;
     sTempTextPrinter.delayCounter = 0;
     sTempTextPrinter.scrollDistance = 0;
@@ -291,7 +314,9 @@ bool16 AddTextPrinter(struct TextPrinterTemplate *printerTemplate, u8 speed, voi
     sTempTextPrinter.japanese = 0;
 
     GenerateFontHalfRowLookupTable(printerTemplate->fgColor, printerTemplate->bgColor, printerTemplate->shadowColor);
-    if (speed != TEXT_SKIP_DRAW && speed != 0)
+    if (sTempTextPrinter.instant)
+        sTextPrinters[printerTemplate->windowId] = sTempTextPrinter;
+    else if (speed != TEXT_SKIP_DRAW && speed != 0)
     {
         --sTempTextPrinter.textSpeed;
         sTextPrinters[printerTemplate->windowId] = sTempTextPrinter;
@@ -318,7 +343,7 @@ bool16 AddTextPrinter(struct TextPrinterTemplate *printerTemplate, u8 speed, voi
 
 void RunTextPrinters(void)
 {
-    int i;
+    int i, renderCmd;
 
     if (!gDisableTextPrinters)
     {
@@ -326,18 +351,40 @@ void RunTextPrinters(void)
         {
             if (sTextPrinters[i].active)
             {
-                u16 renderCmd = RenderFont(&sTextPrinters[i]);
-                switch (renderCmd)
+                if (sTextPrinters[i].instant)
                 {
-                case RENDER_PRINT:
-                    CopyWindowToVram(sTextPrinters[i].printerTemplate.windowId, COPYWIN_GFX);
-                case RENDER_UPDATE:
-                    if (sTextPrinters[i].callback != NULL)
-                        sTextPrinters[i].callback(&sTextPrinters[i].printerTemplate, renderCmd);
-                    break;
-                case RENDER_FINISH:
-                    sTextPrinters[i].active = FALSE;
-                    break;
+                    do
+                    {
+                        renderCmd = RenderFont(&sTextPrinters[i]);
+                        switch (renderCmd)
+                        {
+                            case RENDER_UPDATE:
+                                CopyWindowToVram(sTextPrinters[i].printerTemplate.windowId, COPYWIN_GFX);
+                                if (sTextPrinters[i].callback != NULL)
+                                    sTextPrinters[i].callback(&sTextPrinters[i].printerTemplate, renderCmd);
+                                break;
+                            case RENDER_FINISH:
+                                CopyWindowToVram(sTextPrinters[i].printerTemplate.windowId, COPYWIN_GFX);
+                                sTextPrinters[i].active = FALSE;
+                                break;
+                        }
+                    } while (renderCmd != RENDER_FINISH && renderCmd != RENDER_UPDATE);
+                }
+                else
+                {
+                    renderCmd = RenderFont(&sTextPrinters[i]);
+                    switch (renderCmd)
+                    {
+                    case RENDER_PRINT:
+                        CopyWindowToVram(sTextPrinters[i].printerTemplate.windowId, COPYWIN_GFX);
+                    case RENDER_UPDATE:
+                        if (sTextPrinters[i].callback != NULL)
+                            sTextPrinters[i].callback(&sTextPrinters[i].printerTemplate, renderCmd);
+                        break;
+                    case RENDER_FINISH:
+                        sTextPrinters[i].active = FALSE;
+                        break;
+                    }
                 }
             }
         }
@@ -873,7 +920,7 @@ bool16 TextPrinterWaitWithDownArrow(struct TextPrinter *textPrinter)
     else
     {
         TextPrinterDrawDownArrow(textPrinter);
-        if (JOY_NEW(A_BUTTON | B_BUTTON))
+        if (JOY_HELD(A_BUTTON | B_BUTTON) || JOY_NEW(A_BUTTON | B_BUTTON))
         {
             result = TRUE;
             PlaySE(SE_SELECT);
@@ -891,7 +938,7 @@ bool16 TextPrinterWait(struct TextPrinter *textPrinter)
     }
     else
     {
-        if (JOY_NEW(A_BUTTON | B_BUTTON))
+        if (JOY_HELD(A_BUTTON | B_BUTTON) || JOY_NEW(A_BUTTON | B_BUTTON))
         {
             result = TRUE;
             PlaySE(SE_SELECT);
@@ -942,13 +989,13 @@ static u16 RenderText(struct TextPrinter *textPrinter)
     switch (textPrinter->state)
     {
     case RENDER_STATE_HANDLE_CHAR:
-        if (JOY_HELD(A_BUTTON | B_BUTTON) && subStruct->hasPrintBeenSpedUp)
+        if (/*JOY_HELD(A_BUTTON | B_BUTTON) &&*/ subStruct->hasPrintBeenSpedUp)
             textPrinter->delayCounter = 0;
 
         if (textPrinter->delayCounter && textPrinter->textSpeed)
         {
             textPrinter->delayCounter--;
-            if (gTextFlags.canABSpeedUpPrint && (JOY_NEW(A_BUTTON | B_BUTTON)))
+            if (gTextFlags.canABSpeedUpPrint/* && (JOY_NEW(A_BUTTON | B_BUTTON))*/)
             {
                 subStruct->hasPrintBeenSpedUp = TRUE;
                 textPrinter->delayCounter = 0;
