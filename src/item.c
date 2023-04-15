@@ -1008,6 +1008,8 @@ u32 GetItemStatus2Mask(u16 itemId)
         return STATUS2_CONFUSION;
     else
         return 0;
+}
+
 // Item Description Header
 bool8 GetSetItemObtained(u16 item, u8 caseId)
 {
@@ -1021,7 +1023,7 @@ bool8 GetSetItemObtained(u16 item, u8 caseId)
     switch (caseId)
     {
     case FLAG_GET_OBTAINED:
-        return TRUE; //gSaveBlock2Ptr->itemFlags[index] & mask;
+        return FALSE; //gSaveBlock2Ptr->itemFlags[index] & mask;
     case FLAG_SET_OBTAINED:
         //gSaveBlock2Ptr->itemFlags[index] |= mask;
         return TRUE;
