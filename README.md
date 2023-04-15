@@ -48,6 +48,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added TheXaman's DS style Party screen
 - Added Lunos' wonder trade
 - Added Lunos' quick swap in party menu
+- Added Lunos' 999 items stack
 - Added Ghoulslash's item description header
 - Added Ghoulslash's dexnav
 - Changed text boxes graphics 
