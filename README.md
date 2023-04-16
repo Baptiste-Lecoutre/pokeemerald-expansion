@@ -63,3 +63,4 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Bag & Summary screen warp around
 - Switch keyboard to lower case after first letter
 - Display IVs & EVs in summary screen (press A in skill page) & nature colored stats
+- Reusable, unsellable & unholdable TMs
