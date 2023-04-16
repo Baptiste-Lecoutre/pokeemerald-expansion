@@ -60,5 +60,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added type icons during battle move selection
 - HMs can be forgotten
 - Added cdt's better direction handling
-- Bag warp around
+- Bag & Summary screen warp around
 - Switch keyboard to lower case after first letter
+- Display IVs & EVs in summary screen (press A in skill page) & nature colored stats
