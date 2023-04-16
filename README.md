@@ -53,6 +53,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added Ghoulslash's item description header
 - Added Ghoulslash's dexnav
 - Added Ghoulslash's autorun
+- Added Devolov's PC access in the Pokenav
 - Changed text boxes graphics 
 - Added "Sound OFF" and "Instant text speed" options
 - Pressing B in wild battle puts the cursor onto the run option
@@ -60,3 +61,4 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - HMs can be forgotten
 - Added cdt's better direction handling
 - Bag warp around
+- Switch keyboard to lower case after first letter
