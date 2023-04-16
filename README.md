@@ -59,3 +59,4 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added type icons during battle move selection
 - HMs can be forgotten
 - Added cdt's better direction handling
+- Bag warp around
