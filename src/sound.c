@@ -394,6 +394,9 @@ void PlayCryInternal(u16 species, s8 pan, s8 volume, u8 priority, u8 mode)
     pitch = 15360;
     chorus = 0;
 
+    if (gDisableMusic)
+        return;
+
     switch (mode)
     {
     case CRY_MODE_NORMAL:

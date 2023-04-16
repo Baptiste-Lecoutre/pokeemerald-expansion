@@ -241,6 +241,7 @@ void Task_HandleExpansionIntro(u8 taskId)
         SetVBlankCallback(VBlankCB_ExpansionIntro);
         ExpansionIntro_InitBgs();
         ExpansionIntro_LoadGraphics();
+        InitMapMusic();
         CpuFastFill16(RGB_BLACK, gPlttBufferFaded, 32);
         ShowBg(3);
         BeginNormalPaletteFade(1, 0, 16, 0, RGB_BLACK);
