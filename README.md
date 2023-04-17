@@ -46,6 +46,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 
 - Added TheXaman's HGSS syled Pokedex
 - Added TheXaman's DS style Party screen
+- Added TheXaman's registeresd items wheel icons
 - Added Lunos' wonder trade
 - Added Lunos' quick swap in party menu
 - Added Lunos' 999 items stack

@@ -859,7 +859,7 @@ gText_SandstormIsVicious::
 
 gText_SelectWithoutRegisteredItem::
 	.string "An item in the BAG can be\n"
-	.string "registered to SELECT for easy use.$"
+	.string "registered for easy use.$"
 
 gText_PokemonTrainerSchoolEmail::
 	.string "There's an e-mail from POKéMON TRAINER\n"

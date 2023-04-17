@@ -539,6 +539,7 @@ struct SaveBlock2
     /*0x64C*/ struct BattleFrontier frontier;
     /*0xF2C*/ //u8 itemFlags[ITEM_FLAGS_COUNT];
     /*0xF2C*/ bool8 autoRun;
+              u16 showItemIconsWheel:1;
 }; // sizeof=0xF2C
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;
@@ -1075,6 +1076,7 @@ struct SaveBlock1
     /*0x3???*/ struct TrainerHillSave trainerHill;
     /*0x3???*/ struct WaldaPhrase waldaPhrase;
     // sizeof: 0x3???
+                u16 registeredItemList[4];
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;
