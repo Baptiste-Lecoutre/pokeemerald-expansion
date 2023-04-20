@@ -990,4 +990,6 @@ extern u8 gLastUsedBall;
 extern u16 gLastThrownBall;
 extern u8 gPartyCriticalHits[PARTY_SIZE];
 
+extern bool8 gDescriptionSubmenu;
+
 #endif // GUARD_BATTLE_H

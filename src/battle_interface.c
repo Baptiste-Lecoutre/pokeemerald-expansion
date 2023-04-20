@@ -199,6 +199,7 @@ static void Task_FreeAbilityPopUpGfx(u8);
 
 static void SpriteCB_LastUsedBall(struct Sprite *);
 static void SpriteCB_LastUsedBallWin(struct Sprite *);
+static void SpriteCB_MoveInfoWindow(struct Sprite* sprite);
 
 static void SpriteCB_TypeIcon(struct Sprite* sprite);
 
@@ -3577,4 +3578,74 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
 	//Deal with bouncing player healthbox
 	originalY = sprite->data[3];
 	sprite->y = originalY + healthbox->y2;
+}
+
+/////////////////////////////////// MOVE INFO
+
+#define MOVE_INFO_WIN_TAG 0x2722
+
+static const struct SpriteTemplate sSpriteTemplate_MoveInfoWindow =
+{
+    .tileTag = MOVE_INFO_WIN_TAG,
+    .paletteTag = ABILITY_POP_UP_TAG,
+    .oam = &sOamData_LastUsedBall,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCB_MoveInfoWindow
+};
+
+static const u8 sMoveInfoWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l.4bpp");
+
+static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
+{
+    sMoveInfoWindowGfx, sizeof(sMoveInfoWindowGfx), MOVE_INFO_WIN_TAG
+};
+
+#define MOVE_INFO_WIN_X 20
+#define MOVE_INFO_WIN_Y_0 127
+#define MOVE_INFO_WIN_Y_F (MOVE_INFO_WIN_Y_0 - 10)
+
+void TryLoadMoveInfoWindow(void)
+{
+    u8 spriteId;
+
+    LoadSpritePalette(&sSpritePalette_AbilityPopUp);
+    if (GetSpriteTileStartByTag(MOVE_INFO_WIN_TAG) == 0xFFFF)
+        LoadSpriteSheet(&sSpriteSheet_MoveInfoWindow);
+
+    spriteId = CreateSpriteAtEnd(&sSpriteTemplate_MoveInfoWindow, MOVE_INFO_WIN_X, MOVE_INFO_WIN_Y_0, 0xFF);
+
+    if (spriteId != MAX_SPRITES)
+	{
+		struct Sprite* sprite = &gSprites[spriteId];
+		sprite->data[1] = gActiveBattler;
+    }
+}
+
+static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
+{
+    u8 bank = sprite->data[1];
+
+    // destroy window if condition
+    if (sprite->y > MOVE_INFO_WIN_Y_0)
+    {
+        FreeSpriteTilesByTag(MOVE_INFO_WIN_TAG);
+        FreeSpritePaletteByTag(ABILITY_POP_UP_TAG);
+		DestroySprite(sprite);
+		return;
+    }
+
+    if ((gBattlerControllerFuncs[bank] != PlayerHandleChooseMove
+	&&  gBattlerControllerFuncs[bank] != HandleChooseMoveAfterDma3 
+	&&  gBattlerControllerFuncs[bank] != HandleMoveSwitching
+	&&  gBattlerControllerFuncs[bank] != HandleInputChooseMove)
+    || gDescriptionSubmenu)
+    {
+        sprite->y += 1;
+        return;
+    }
+
+    if (sprite->y > MOVE_INFO_WIN_Y_F) 
+        sprite->y -= 1;
 }

@@ -107,5 +107,6 @@ void TryRestoreLastUsedBall(void);
 void TryAddLastUsedBallItemSprites(void);
 void UpdateAbilityPopup(u8 battlerId);
 void TryLoadTypeIcons(void);
+void TryLoadMoveInfoWindow(void);
 
 #endif // GUARD_BATTLE_INTERFACE_H
