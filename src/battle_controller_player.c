@@ -1765,12 +1765,12 @@ static void MoveSelectionDisplayMoveType(void)
     StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 
-    //MoveSelectionDisplaySplitIcon();
+    MoveSelectionDisplaySplitIcon();
 }
 
 static void MoveSelectionDisplaySplitIcon(void){
-	static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/interface/split_icons.gbapal");
-	static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/interface/split_icons.4bpp");
+	static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/interface/split_icons_battle.gbapal");
+	static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/interface/split_icons_battle.4bpp");
 	struct ChooseMoveStruct *moveInfo;
 	int icon;
 
