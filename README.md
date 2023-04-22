@@ -65,3 +65,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Switch keyboard to lower case after first letter
 - Display IVs & EVs in summary screen (press A in skill page) & nature colored stats
 - Reusable, unsellable & unholdable TMs
+- Repeated use of candies & medicine in party menu
+- Display move split icons during battle
+- Display move info when pressing L during move selection
