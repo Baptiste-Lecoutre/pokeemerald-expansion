@@ -749,7 +749,7 @@ static void Task_EvolutionScene(u8 taskId)
         }
         break;
     case EVOSTATE_RESTORE_SCREEN: // stop music, return screen to pre-fade state
-        if (IsSEPlaying())
+        if (IsSEPlaying() || gSaveBlock2Ptr->optionsSound == 2)
         {
             m4aMPlayAllStop();
             memcpy(&gPlttBufferUnfaded[0x20], sEvoStructPtr->savedPalette, sizeof(sEvoStructPtr->savedPalette));

@@ -213,6 +213,10 @@ void StopFanfareByFanfareNum(u8 fanfareNum)
 void PlayFanfare(u16 songNum)
 {
     s32 i;
+
+    if (gDisableMusic)
+        return;
+    
     for (i = 0; (u32)i < ARRAY_COUNT(sFanfares); i++)
     {
         if (sFanfares[i].songNum == songNum)
@@ -548,7 +552,7 @@ static void RestoreBGMVolumeAfterPokemonCry(void)
 void PlayBGM(u16 songNum)
 {
     if (gDisableMusic || songNum == MUS_NONE)
-        return;
+        songNum = 0;
     m4aSongNumStart(songNum);
 }
 

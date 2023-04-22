@@ -1212,7 +1212,7 @@ static void Task_Scene1_FadeIn(u8 taskId)
     SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_BG_ALL_ON | DISPCNT_OBJ_ON);
     gTasks[taskId].func = Task_Scene1_WaterDrops;
     gIntroFrameCounter = 0;
-    if (!gDisableMusic)
+    if (gSaveBlock2Ptr->optionsSound != 2)
         m4aSongNumStart(MUS_INTRO);
     ResetSerial();
 }
@@ -1736,7 +1736,7 @@ static void Task_Scene3_Load(u8 taskId)
     SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_MODE_1 | DISPCNT_OBJ_1D_MAP | DISPCNT_BG2_ON | DISPCNT_OBJ_ON);
     gTasks[taskId].func = Task_Scene3_SpinPokeball;
     gIntroFrameCounter = 0;
-    if (!gDisableMusic)
+    if (gSaveBlock2Ptr->optionsSound != 2)
         m4aSongNumStart(MUS_INTRO_BATTLE);
 }
 static void Task_Scene3_SpinPokeball(u8 taskId)

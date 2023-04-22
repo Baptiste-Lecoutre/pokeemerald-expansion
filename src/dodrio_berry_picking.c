@@ -1716,7 +1716,8 @@ static void HandleSound_Leader(void)
     else if (sGame->endSoundState == 1)
     {
         // Play game over sound
-        PlayFanfareByFanfareNum(FANFARE_TOO_BAD);
+        if (gSaveBlock2Ptr->optionsSound != 2)
+            PlayFanfareByFanfareNum(FANFARE_TOO_BAD);
         sGame->endSoundState = 2;
     }
 }
@@ -1775,7 +1776,8 @@ static void HandleSound_Member(void)
     else if (sGame->endSoundState == 1)
     {
         // Play game over sound
-        PlayFanfareByFanfareNum(FANFARE_TOO_BAD);
+        if (gSaveBlock2Ptr->optionsSound != 2)
+            PlayFanfareByFanfareNum(FANFARE_TOO_BAD);
         sGame->endSoundState = 2;
     }
 }
