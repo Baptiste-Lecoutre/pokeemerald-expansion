@@ -5108,7 +5108,7 @@ static void TryUseItemOnMove(u8 taskId)
             DisplayPartyMenuMessage(gStringVar4, TRUE);
             ScheduleBgCopyTilemapToVram(2);
             gTasks[taskId].func = Task_ClosePartyMenuAfterText;
-        }        
+        }
     }
     // Outside of battle, only PP items are used on moves.
     else
@@ -5250,8 +5250,8 @@ static void Task_LearnedMove(u8 taskId)
     if (move[1] == 0)
     {
         AdjustFriendship(mon, FRIENDSHIP_EVENT_LEARN_TMHM);
-        //if (item < ITEM_HM01_CUT)
-        //    RemoveBagItem(item, 1);
+        if (!ItemId_GetImportance(item))
+            RemoveBagItem(item, 1);
     }
     GetMonNickname(mon, gStringVar1);
     StringCopy(gStringVar2, gMoveNames[move[0]]);
@@ -5450,7 +5450,7 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     if (sInitialLevel != MAX_LEVEL)
     {
         BufferMonStatsToTaskData(mon, arrayPtr);
-        cannotUseEffect = ExecuteTableBasedItemEffect(mon, gPartyMenu.slotId, *itemPtr, 0);
+        cannotUseEffect = ExecuteTableBasedItemEffect(mon, *itemPtr, gPartyMenu.slotId, 0);
         BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
     }
     else
