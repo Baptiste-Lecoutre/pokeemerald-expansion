@@ -642,6 +642,13 @@ static bool8 HandleStartMenuInput(void)
         return TRUE;
     }
 
+    if (JOY_NEW(R_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        gMenuCallback = StartMenuSaveCallback;
+        return FALSE;
+    }
+
     return FALSE;
 }
 
