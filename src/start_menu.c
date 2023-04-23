@@ -30,6 +30,7 @@
 #include "party_menu.h"
 #include "pokedex.h"
 #include "pokenav.h"
+#include "region_map.h"
 #include "safari_zone.h"
 #include "save.h"
 #include "scanline_effect.h"
@@ -47,6 +48,7 @@
 #include "dexnav.h"
 #include "wild_encounter.h"
 #include "constants/battle_frontier.h"
+#include "constants/moves.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
 
@@ -253,6 +255,7 @@ static void ShowSaveInfoWindow(void);
 static void RemoveSaveInfoWindow(void);
 static void HideStartMenuWindow(void);
 static void HideStartMenuDebug(void);
+static bool8 CanLearnFlyInParty(void);
 
 void SetDexPokemonPokenavFlags(void) // unused
 {
@@ -647,6 +650,28 @@ static bool8 HandleStartMenuInput(void)
         PlaySE(SE_SELECT);
         gMenuCallback = StartMenuSaveCallback;
         return FALSE;
+    }
+
+    if (JOY_NEW(L_BUTTON))
+    {
+        if (!gPaletteFade.active && FlagGet(FLAG_SYS_POKENAV_GET))
+        {
+            PlaySE(SE_SELECT);
+            PlayRainStoppingSoundEffect();
+            RemoveExtraStartMenuWindows();
+            CleanupOverworldWindowsAndTilemaps();
+
+            //gMenuCallback = PokenavCallback_Init_RegionMap;
+            //gMenuCallback = PokenavMenuCallbacks[6/*POKENAV_REGION_MAP - POKENAV_MENU_IDS_START*/];
+            if(FlagGet(FLAG_BADGE05_GET) && CanLearnFlyInParty() && IsMapTypeOutdoors(GetCurrentMapType()))
+            {
+                gPartyMenu.slotId = gSpecialVar_Result;
+                SetMainCallback2(CB2_OpenFlyMap);
+            }
+            else
+                FieldInitRegionMap(CB2_ReturnToFieldContinueScriptPlayMapMusic);
+            return FALSE;
+        }
     }
 
     return FALSE;
@@ -1478,4 +1503,22 @@ static bool8 StartMenuDexNavCallback(void)
 {
     CreateTask(Task_OpenDexNavFromStartMenu, 0);
     return TRUE;
+}
+
+static bool8 CanLearnFlyInParty(void)
+{
+    u8 i;
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
+        if (!species)
+            break;
+        if (CanLearnTeachableMove(species, MOVE_FLY))
+        {
+            gSpecialVar_Result = i;
+            gSpecialVar_0x8004 = species;
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
