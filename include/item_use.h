@@ -49,5 +49,6 @@ bool32 CanThrowBall(void);
 
 void ItemUseOutOfBattle_SootSack(u8);
 u16 GetAshCount(void);
+void ItemUseOutOfBattle_PokeBall(u8);
 
 #endif // GUARD_ITEM_USE_H

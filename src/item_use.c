@@ -1345,3 +1345,9 @@ u16 GetAshCount(void)
 }
 
 #undef tUsingRegisteredKeyItem
+
+void ItemUseOutOfBattle_PokeBall(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_PokeBall;
+    SetUpItemUseCallback(taskId);
+}

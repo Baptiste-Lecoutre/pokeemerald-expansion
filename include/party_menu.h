@@ -109,4 +109,6 @@ bool8 CanLearnTutorMove(u16, u8);
 u16 GetTMHMMoves(u16 position);
 #endif
 
+void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
+
 #endif // GUARD_PARTY_MENU_H
