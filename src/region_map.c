@@ -1966,13 +1966,15 @@ static void CB_HandleFlyMapInput(void)
         case MAP_INPUT_A_BUTTON:
             if (sFlyMap->regionMap.mapSecType == MAPSECTYPE_CITY_CANFLY || sFlyMap->regionMap.mapSecType == MAPSECTYPE_BATTLE_FRONTIER)
             {
-                m4aSongNumStart(SE_SELECT);
+                if (gSaveBlock2Ptr->optionsSound != 2)
+                    m4aSongNumStart(SE_SELECT);
                 sFlyMap->choseFlyLocation = TRUE;
                 SetFlyMapCallback(CB_ExitFlyMap);
             }
             break;
         case MAP_INPUT_B_BUTTON:
-            m4aSongNumStart(SE_SELECT);
+            if (gSaveBlock2Ptr->optionsSound != 2)
+                m4aSongNumStart(SE_SELECT);
             sFlyMap->choseFlyLocation = FALSE;
             SetFlyMapCallback(CB_ExitFlyMap);
             break;
