@@ -47,4 +47,7 @@ enum {
 
 bool32 CanThrowBall(void);
 
+void ItemUseOutOfBattle_SootSack(u8);
+u16 GetAshCount(void);
+
 #endif // GUARD_ITEM_USE_H
