@@ -23,6 +23,7 @@
 #include "pokeball.h"
 #include "pokedex.h"
 #include "pokemon.h"
+#include "pokemon_icon.h"
 #include "random.h"
 #include "rtc.h"
 #include "save.h"
@@ -172,6 +173,7 @@ static EWRAM_DATA bool8 sStartedPokeBallTask = 0;
 static EWRAM_DATA u16 sCurrItemAndOptionMenuCheck = 0;
 
 static u8 sBirchSpeechMainTaskId;
+static u8 iconsIDs[PARTY_SIZE];
 
 // Static ROM declarations
 
@@ -243,6 +245,7 @@ static void MainMenu_FormatSavegamePokedex(void);
 static void MainMenu_FormatSavegameTime(void);
 static void MainMenu_FormatSavegameBadges(void);
 static void NewGameBirchSpeech_CreateDialogueWindowBorder(u8, u8, u8, u8, u8, u8);
+static void RenderPlayerParty(void);
 
 // .rodata
 
@@ -799,6 +802,7 @@ static void Task_DisplayMainMenu(u8 taskId)
                 AddTextPrinterParameterized3(3, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuNewGame);
                 AddTextPrinterParameterized3(4, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuOption);
                 MainMenu_FormatSavegameText();
+                RenderPlayerParty();
                 PutWindowTilemap(2);
                 PutWindowTilemap(3);
                 PutWindowTilemap(4);
@@ -1168,6 +1172,10 @@ static void Task_DisplayMainMenuInvalidActionError(u8 taskId)
 
 static void HighlightSelectedMainMenuItem(u8 menuType, u8 selectedMenuItem, s16 isScrolled)
 {
+    u8 i;
+    u16 monIconPal[16 * PARTY_SIZE];
+
+    CpuSet(gMonIconPalettes, monIconPal, 0x60);
     SetGpuReg(REG_OFFSET_WIN0H, MENU_WIN_HCOORDS);
 
     switch (menuType)
@@ -1191,9 +1199,16 @@ static void HighlightSelectedMainMenuItem(u8 menuType, u8 selectedMenuItem, s16 
                 case 0:
                 default:
                     SetGpuReg(REG_OFFSET_WIN0V, MENU_WIN_VCOORDS(2));
+                    LoadPalette(monIconPal, 256, sizeof(monIconPal));
+                    for (i = 0; i < gPlayerPartyCount; i++)
+                        gSprites[iconsIDs[i]].callback = SpriteCB_MonIcon;
                     break;
                 case 1:
                     SetGpuReg(REG_OFFSET_WIN0V, MENU_WIN_VCOORDS(3));
+                    TintPalette_GrayScale(monIconPal, 96);
+                    LoadPalette(monIconPal, 256, sizeof(monIconPal));
+                    for (i = 0; i < gPlayerPartyCount; i++)
+                        gSprites[iconsIDs[i]].callback = SpriteCallbackDummy;
                     break;
                 case 2:
                     SetGpuReg(REG_OFFSET_WIN0V, MENU_WIN_VCOORDS(4));
@@ -2303,3 +2318,19 @@ static void Task_NewGameBirchSpeech_ReturnFromNamingScreenShowTextbox(u8 taskId)
 }
 
 #undef tTimer
+
+static void RenderPlayerParty(void)
+{
+    u8 i, id;
+    u16 species;
+
+    LoadMonIconPalettes();
+    for (i = 0; i < gPlayerPartyCount; i++)
+    {
+        species = GetMonData(gPlayerParty + i, MON_DATA_SPECIES_OR_EGG);
+
+        id = CreateMonIconNoPersonality(species, SpriteCallbackDummy, 26 * i + 80, 10, 0);
+        iconsIDs[i] = id;
+        gSprites[id].oam.priority = 0;
+    }
+}
