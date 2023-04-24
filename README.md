@@ -74,9 +74,11 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added Lunos' 999 items stack
 - Added Lunos' bike gears switch
 - Added Ghoulslash's item description header
-- Added Ghoulslash's dexnav
+- Added Ghoulslash's dexnav + access in pokenav
 - Added Ghoulslash's autorun
 - Added Devolov's PC access in the Pokenav
+- Added AsparagusEduardo's better bag
+- Added Buffelsalts' PokeVial
 - Changed text boxes graphics 
 - Added "Sound OFF" and "Instant text speed" options
 - Pressing B in wild battle puts the cursor onto the run option
@@ -90,3 +92,21 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Repeated use of candies & medicine in party menu
 - Display move split icons during battle
 - Display move info when pressing L during move selection
+- Fixed "Last used ball" sprite going 1px too far
+- Pressing R with start menu opened saves the game as in later gens
+- Pressing L with start menu opened opens the map if the player has the pokenav, and the fly map is the player can use fly
+- No need to learn move to use the HM
+- Decapitalization of the game
+- Party icons are shown in the "Continue" window in main menu
+- Move held items in party
+- Fast surf
+- Check ash amout using SootSack
+- Surf blob dismounting ground effects
+- No need to water berries in rainy routes
+- Free premier balls every 10 balls bougth
+- Use balls outside of battle to change a mon ball
+- Repeated medicine use
+- Change clock time by pressing start when looking at the clock
+- Show enemy mon you're switching into
+- Better reflection system
+- More to be added
