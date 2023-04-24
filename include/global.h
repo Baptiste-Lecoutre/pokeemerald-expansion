@@ -540,6 +540,9 @@ struct SaveBlock2
     /*0xF2C*/ //u8 itemFlags[ITEM_FLAGS_COUNT];
     /*0xF2C*/ bool8 autoRun;
               u16 showItemIconsWheel:1;
+              u16 optionsFastFieldMove:1;
+              u16 optionsLevelCap:2;
+              u16 optionsTypeChart:1;
 }; // sizeof=0xF2C
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;
