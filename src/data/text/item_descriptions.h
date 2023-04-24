@@ -3907,3 +3907,8 @@ static const u8 sLustrousGlobeDesc[] = _(
     "A large, glowing gem\n"
     "that lets Palkia\n"
     "change form.");
+
+static const u8 sPokeVialDesc[] = _(
+    "Potent medicine\n"
+    "that fully restores\n"
+    "all Pokémon.");

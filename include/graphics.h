@@ -10518,4 +10518,8 @@ extern const u16 gMonMarkingsMenu_Pal[];
 extern const u8 TypeIconsTiles[];
 extern const u16 TypeIconsPal[];
 
+// poke vial
+extern const u32 gItemIcon_PokeVial[];
+extern const u32 gItemIconPalette_PokeVial[];
+
 #endif //GUARD_GRAPHICS_H
