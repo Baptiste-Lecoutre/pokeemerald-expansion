@@ -335,6 +335,16 @@ static const u16 sWhiteOutBadgeMoney[9] = { 8, 16, 24, 36, 48, 64, 80, 100, 120 
 
 #define TAG_LVLUP_BANNER_MON_ICON 55130
 
+#define NUM_SOFT_CAPS 9
+const u16 sLevelCapFlags[NUM_SOFT_CAPS] =
+{
+    FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET,
+    FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET,
+    FLAG_SYS_GAME_CLEAR,
+};
+const u16 sLevelCaps[NUM_SOFT_CAPS] = { 14, 21, 24, 29, 43, 43, 47, 50, 63};
+const double sLevelCapReduction[7] = { .5, .33, .25, .20, .15, .10, .05 };
+
 static bool8 IsTwoTurnsMove(u16 move);
 static void TrySetDestinyBondToHappen(void);
 static u8 AttacksThisTurn(u8 battlerId, u16 move); // Note: returns 1 if it's a charging turn, otherwise 2.
@@ -4166,6 +4176,34 @@ static void Cmd_jumpbasedontype(void)
     }
 }
 
+double GetPkmnExpMultiplier(u8 level)
+{
+    u32 i;
+    double lvlCapMultiplier = 1.0;
+    double relativePartyMultiplier = 1.0;
+    u8 levelDiff;
+
+    // multiply the usual exp yield by the soft cap multiplier
+    for (i = 0; i < NUM_SOFT_CAPS; i++)
+    {
+        if (!FlagGet(sLevelCapFlags[i]) && level >= sLevelCaps[i])
+        {
+            levelDiff = level - sLevelCaps[i];
+            if (levelDiff > 6)
+                levelDiff = 6;
+            lvlCapMultiplier = sLevelCapReduction[levelDiff];
+            break;
+        }
+    }
+
+    if (gSaveBlock2Ptr->optionsLevelCap == 0) // no lvl cap
+        lvlCapMultiplier = 1;
+    else if (gSaveBlock2Ptr->optionsLevelCap == 2 && (lvlCapMultiplier < 1.0)) // strict lvl cap
+        lvlCapMultiplier = 0;
+
+    return lvlCapMultiplier;
+}
+
 static void Cmd_getexp(void)
 {
     CMD_ARGS(u8 battler);
@@ -4303,18 +4341,19 @@ static void Cmd_getexp(void)
                 if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP)
                     && !GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_IS_EGG))
                 {
+                    double expMultiplier = GetPkmnExpMultiplier(gPlayerParty[gBattleStruct->expGetterMonId].level);
                     if (gBattleStruct->sentInPokes & 1)
-                        gBattleMoveDamage = *exp;
+                        gBattleMoveDamage = *exp * expMultiplier;
                     else
                         gBattleMoveDamage = 0;
 
                     // only give exp share bonus in later gens if the mon wasn't sent out
                 #if B_SPLIT_EXP < GEN_6
                     if (holdEffect == HOLD_EFFECT_EXP_SHARE)
-                        gBattleMoveDamage += gExpShareExp;
+                        gBattleMoveDamage += gExpShareExp * expMultiplier;
                 #else
                     if (holdEffect == HOLD_EFFECT_EXP_SHARE && gBattleMoveDamage == 0)
-                        gBattleMoveDamage += gExpShareExp;
+                        gBattleMoveDamage += gExpShareExp * expMultiplier;
                 #endif
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
