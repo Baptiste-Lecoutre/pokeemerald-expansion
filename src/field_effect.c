@@ -1854,8 +1854,11 @@ static bool8 WaterfallFieldEffect_ShowMon(struct Task *task, struct ObjectEvent 
     if (!ObjectEventIsMovementOverridden(objectEvent))
     {
         ObjectEventClearHeldMovementIfFinished(objectEvent);
-        gFieldEffectArguments[0] = task->tMonId;
-        FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
+        if (!gSaveBlock2Ptr->optionsFastFieldMove)
+        {
+            gFieldEffectArguments[0] = task->tMonId;
+            FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
+        }
         task->tState++;
     }
     return FALSE;
@@ -1924,9 +1927,12 @@ static bool8 DiveFieldEffect_Init(struct Task *task)
 
 static bool8 DiveFieldEffect_ShowMon(struct Task *task)
 {
-    LockPlayerFieldControls();
-    gFieldEffectArguments[0] = task->data[15];
-    FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
+    if (!gSaveBlock2Ptr->optionsFastFieldMove)
+    {
+        LockPlayerFieldControls();
+        gFieldEffectArguments[0] = task->data[15];
+        FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
+    }
     task->data[0]++;
     return FALSE;
 }
@@ -3016,7 +3022,13 @@ static void SurfFieldEffect_FieldMovePose(struct Task *task)
 {
     struct ObjectEvent *objectEvent;
     objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
-    if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
+    
+    if (gSaveBlock2Ptr->optionsFastFieldMove)
+    {
+        ObjectEventClearHeldMovementIfActive(objectEvent);
+        task->tState = task->tState + 2;
+    }
+    else if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         SetPlayerAvatarFieldMove();
         ObjectEventSetHeldMovement(objectEvent, MOVEMENT_ACTION_START_ANIM_IN_DIRECTION);
@@ -3184,7 +3196,13 @@ static void Task_FlyOut(u8 taskId)
 static void FlyOutFieldEffect_FieldMovePose(struct Task *task)
 {
     struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
-    if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
+    
+    if (gSaveBlock2Ptr->optionsFastFieldMove)
+    {
+        ObjectEventClearHeldMovementIfActive(objectEvent);
+        task->tState = task->tState + 2;
+    }
+    else if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         task->tAvatarFlags = gPlayerAvatar.flags;
         gPlayerAvatar.preventStep = TRUE;

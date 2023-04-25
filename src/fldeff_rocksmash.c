@@ -58,7 +58,13 @@ static void Task_DoFieldMove_Init(u8 taskId)
     LockPlayerFieldControls();
     gPlayerAvatar.preventStep = TRUE;
     objEventId = gPlayerAvatar.objectEventId;
-    if (!ObjectEventIsMovementOverridden(&gObjectEvents[objEventId])
+    
+    if (gSaveBlock2Ptr->optionsFastFieldMove)
+    {
+        ObjectEventClearHeldMovementIfActive(&gObjectEvents[objEventId]);
+        gTasks[taskId].func = Task_DoFieldMove_RunFunc;
+    }
+    else if (!ObjectEventIsMovementOverridden(&gObjectEvents[objEventId])
      || ObjectEventClearHeldMovementIfFinished(&gObjectEvents[objEventId]))
     {
         if (gMapHeader.mapType == MAP_TYPE_UNDERWATER)

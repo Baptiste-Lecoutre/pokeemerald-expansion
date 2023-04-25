@@ -468,3 +468,11 @@ void InitRamScript_NoObjectEvent(u8 *script, u16 scriptSize)
         scriptSize = sizeof(gSaveBlock1Ptr->ramScript.data.script);
     InitRamScript(script, scriptSize, MAP_GROUP(UNDEFINED), MAP_NUM(UNDEFINED), NO_OBJECT);
 }
+
+void IsFieldMoveFastToVarResult(void)
+{
+    if (gSaveBlock2Ptr->optionsFastFieldMove)
+        gSpecialVar_Result = TRUE;
+    else
+        gSpecialVar_Result = FALSE;
+}

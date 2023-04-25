@@ -4,6 +4,8 @@ EventScript_CutTree::
 	goto_if_unset FLAG_BADGE01_GET, EventScript_CheckTreeCantCut
 	checkpartymove MOVE_CUT
 	goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_CheckTreeCantCut
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_CutTreeDown
 	setfieldeffectargument 0, VAR_RESULT
 	bufferpartymonnick STR_VAR_1, VAR_RESULT
 	buffermovename STR_VAR_2, MOVE_CUT
@@ -63,6 +65,8 @@ EventScript_RockSmash::
 	goto_if_unset FLAG_BADGE03_GET, EventScript_CantSmashRock
 	checkpartymove MOVE_ROCK_SMASH
 	goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_CantSmashRock
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_UseRockSmash
 	setfieldeffectargument 0, VAR_RESULT
 	bufferpartymonnick STR_VAR_1, VAR_RESULT
 	buffermovename STR_VAR_2, MOVE_ROCK_SMASH
@@ -127,6 +131,8 @@ EventScript_StrengthBoulder::
 	goto_if_set FLAG_SYS_USE_STRENGTH, EventScript_CheckActivatedBoulder
 	checkpartymove MOVE_STRENGTH
 	goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_CantStrength
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_ActivateStrengthFast
 	setfieldeffectargument 0, VAR_RESULT
 	msgbox Text_WantToStrength, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, EventScript_CancelStrength
@@ -147,6 +153,10 @@ EventScript_ActivateStrength::
 	setflag FLAG_SYS_USE_STRENGTH
 	msgbox Text_MonUsedStrength, MSGBOX_DEFAULT
 	releaseall
+	end
+
+EventScript_ActivateStrengthFast::
+	setflag FLAG_SYS_USE_STRENGTH
 	end
 
 EventScript_CantStrength::
@@ -186,11 +196,14 @@ EventScript_UseWaterfall::
 	lockall
 	checkpartymove MOVE_WATERFALL
 	goto_if_eq VAR_RESULT, PARTY_SIZE, EventScript_CantWaterfall
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_UseWaterfallFast
 	bufferpartymonnick STR_VAR_1, VAR_RESULT
 	setfieldeffectargument 0, VAR_RESULT
 	msgbox Text_WantToWaterfall, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, EventScript_EndWaterfall
 	msgbox Text_MonUsedWaterfall, MSGBOX_DEFAULT
+EventScript_UseWaterfallFast:
 	dofieldeffect FLDEFF_USE_WATERFALL
 	goto EventScript_EndWaterfall
 
@@ -224,7 +237,10 @@ EventScript_UseDive::
 	setfieldeffectargument 1, 1
 	msgbox Text_WantToDive, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, EventScript_EndDive
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_UseDiveFast
 	msgbox Text_MonUsedDive, MSGBOX_DEFAULT
+EventScript_UseDiveFast:
 	dofieldeffect FLDEFF_USE_DIVE
 	goto EventScript_EndDive
 	end
@@ -247,7 +263,10 @@ EventScript_UseDiveUnderwater::
 	setfieldeffectargument 1, 1
 	msgbox Text_WantToSurface, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, EventScript_EndSurface
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_UseDiveUnderwaterFast
 	msgbox Text_MonUsedDive, MSGBOX_DEFAULT
+EventScript_UseDiveUnderwaterFast:
 	dofieldeffect FLDEFF_USE_DIVE
 	goto EventScript_EndSurface
 	end
