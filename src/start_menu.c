@@ -31,6 +31,7 @@
 #include "pokedex.h"
 #include "pokenav.h"
 #include "region_map.h"
+#include "rtc.h"
 #include "safari_zone.h"
 #include "save.h"
 #include "scanline_effect.h"
@@ -413,6 +414,16 @@ static void BuildMultiPartnerRoomStartMenu(void)
     AddStartMenuAction(MENU_ACTION_EXIT);
 }
 
+static void Task_PutTimeInTimeBox(u8 taskId)
+{
+    ConvertIntToDecimalStringN(gStringVar1, gLocalTime.hours, STR_CONV_MODE_LEADING_ZEROS, 2);
+    ConvertIntToDecimalStringN(gStringVar2, gLocalTime.minutes, STR_CONV_MODE_LEADING_ZEROS, 2);
+    ConvertIntToDecimalStringN(gStringVar3, gLocalTime.seconds, STR_CONV_MODE_LEADING_ZEROS, 2);
+    StringExpandPlaceholders(gStringVar4, gStartMenu_TimeBoxClock);
+    AddTextPrinterParameterized(sSafariBallsWindowId, 2, gStringVar4, 1, 1, 0xFF, NULL);
+    CopyWindowToVram(sSafariBallsWindowId, COPYWIN_GFX);
+}
+
 static void ShowSafariBallsWindow(void)
 {
     sSafariBallsWindowId = AddWindow(&sSafariBallsWindowTemplate);
@@ -439,6 +450,31 @@ static void ShowPyramidFloorWindow(void)
     CopyWindowToVram(sBattlePyramidFloorWindowId, COPYWIN_GFX);
 }
 
+static void DrawTimeBox(void)
+{
+    struct WindowTemplate TimeBoxWindowTemplate = {0};
+    TimeBoxWindowTemplate.tilemapLeft = 1;
+    TimeBoxWindowTemplate.tilemapTop = 1;
+    TimeBoxWindowTemplate.height = 2;
+    TimeBoxWindowTemplate.width = 6;
+    TimeBoxWindowTemplate.paletteNum = 15;
+    TimeBoxWindowTemplate.baseBlock = 0x008;
+
+    RtcCalcLocalTime();
+    sSafariBallsWindowId = AddWindow(&TimeBoxWindowTemplate);
+    PutWindowTilemap(sSafariBallsWindowId);
+    DrawStdWindowFrame(sSafariBallsWindowId, FALSE);
+    FlagSet(FLAG_TEMP_9);
+    CreateTask(Task_PutTimeInTimeBox, 2);
+}
+
+static void UpdateClockDisplay(void)
+{
+    if (!FlagGet(FLAG_TEMP_9))
+        return;
+    RtcCalcLocalTime();
+}   
+
 static void RemoveExtraStartMenuWindows(void)
 {
     if (GetSafariZoneFlag())
@@ -451,6 +487,14 @@ static void RemoveExtraStartMenuWindows(void)
     {
         ClearStdWindowAndFrameToTransparent(sBattlePyramidFloorWindowId, FALSE);
         RemoveWindow(sBattlePyramidFloorWindowId);
+    }
+    if (FlagGet(FLAG_TEMP_9))
+    {
+        DestroyTask(FindTaskIdByFunc(Task_PutTimeInTimeBox));
+        ClearStdWindowAndFrameToTransparent(sSafariBallsWindowId, FALSE);
+        CopyWindowToVram(sSafariBallsWindowId, COPYWIN_GFX);
+        RemoveWindow(sSafariBallsWindowId);
+        FlagClear(FLAG_TEMP_9);
     }
 }
 
@@ -507,8 +551,10 @@ static bool32 InitStartMenuStep(void)
     case 3:
         if (GetSafariZoneFlag())
             ShowSafariBallsWindow();
-        if (InBattlePyramid())
+        else if (InBattlePyramid())
             ShowPyramidFloorWindow();
+        else
+            DrawTimeBox();
         sInitStartMenuData[0]++;
         break;
     case 4:
@@ -600,6 +646,8 @@ void ShowStartMenu(void)
 
 static bool8 HandleStartMenuInput(void)
 {
+    UpdateClockDisplay();
+
     if (JOY_NEW(DPAD_UP))
     {
         PlaySE(SE_SELECT);
@@ -761,6 +809,7 @@ static bool8 StartMenuPlayerNameCallback(void)
 
 static bool8 StartMenuSaveCallback(void)
 {
+    DestroyTask(FindTaskIdByFunc(Task_PutTimeInTimeBox));
     if (InBattlePyramid())
         RemoveExtraStartMenuWindows();
 

@@ -3172,4 +3172,6 @@ extern const u8 gText_XsYWereSwapped[];
 extern const u8 gText_PokeVialEmpty[];
 extern const u8 gText_UsedPokeVial[];
 
+extern const u8 gStartMenu_TimeBoxClock[];
+
 #endif // GUARD_STRINGS_H
