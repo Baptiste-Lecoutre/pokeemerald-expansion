@@ -9906,10 +9906,15 @@ static u16 GetInverseTypeMultiplier(u16 multiplier)
 u16 GetTypeModifier(u8 atkType, u8 defType)
 {
 #if B_FLAG_INVERSE_BATTLE != 0
-    if (FlagGet(B_FLAG_INVERSE_BATTLE))
+    if (FlagGet(B_FLAG_INVERSE_BATTLE) != (gSaveBlock2Ptr->optionsTypeChart == 1))
         return GetInverseTypeMultiplier(sTypeEffectivenessTable[atkType][defType]);
+    else
+        return sTypeEffectivenessTable[atkType][defType];
 #endif
-    return sTypeEffectivenessTable[atkType][defType];
+    if (gSaveBlock2Ptr->optionsTypeChart == 1)
+        return GetInverseTypeMultiplier(sTypeEffectivenessTable[atkType][defType]);
+    else
+        return sTypeEffectivenessTable[atkType][defType];
 }
 
 s32 GetStealthHazardDamageByTypesAndHP(u8 hazardType, u8 type1, u8 type2, u32 maxHp)
