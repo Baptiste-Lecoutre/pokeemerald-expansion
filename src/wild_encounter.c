@@ -433,6 +433,9 @@ void CreateWildMon(u16 species, u8 level)
     ZeroEnemyPartyMons();
     checkCuteCharm = TRUE;
 
+    if (gSaveBlock2Ptr->randomWildEncounters)
+        species = GetSpeciesRandomSeeded(species, RANDOM_WILD_ENCOUNTER, 0);
+    
     switch (gSpeciesInfo[species].genderRatio)
     {
     case MON_MALE:

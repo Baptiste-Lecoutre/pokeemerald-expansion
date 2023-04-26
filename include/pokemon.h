@@ -392,6 +392,16 @@ struct FormChange
 
 #define GET_SHINY_VALUE(otId, personality) (HIHALF(otId) ^ LOHALF(otId) ^ HIHALF(personality) ^ LOHALF(personality))
 
+// randomizer
+#define RANDOM_WILD_ENCOUNTER       0
+#define RANDOM_STATIC_ENCOUNTER     1
+#define RANDOM_TRAINER_PARTY        2
+#define RANDOM_ABILITY              3
+#define RANDOM_MOVES                4
+#define RANDOM_EVOLUTION            5
+#define RANDOM_ENEMY_LEVEL          6
+#define EVO_EVERY_LEVEL             7
+
 extern u8 gPlayerPartyCount;
 extern struct Pokemon gPlayerParty[PARTY_SIZE];
 extern u8 gEnemyPartyCount;
@@ -571,5 +581,6 @@ bool32 ShouldShowFemaleDifferences(u16 species, u32 personality);
 void TryToSetBattleFormChangeMoves(struct Pokemon *mon);
 u32 GetMonFriendshipScore(struct Pokemon *pokemon);
 void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
+u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset);
 
 #endif // GUARD_POKEMON_H

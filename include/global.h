@@ -568,7 +568,7 @@ struct SaveBlock2
                 u16 randomLevels:1;
                 u16 randomStarters:1;
                 
-    u16 baseStatEqualizer:1;
+    u16 optionsBaseStatsEqual:1;
     u16 evolveOpponentsMons:1;
     u16 trainerLvlScale:1;
 }; // sizeof=0xF2C

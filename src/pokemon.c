@@ -4091,6 +4091,14 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
     SetMonData(mon, field, &n);                                 \
 }
 
+#define CALC_STAT_EQUALIZED(baseStat, iv, ev, statIndex, field) \
+{                                                               \
+    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5; \
+    u8 nature = GetNature(mon);                                 \
+    n = ModifyStatByNature(nature, n, statIndex);               \
+    SetMonData(mon, field, &n);                                 \
+}
+
 void CalculateMonStats(struct Pokemon *mon)
 {
     s32 oldMaxHP = GetMonData(mon, MON_DATA_MAX_HP, NULL);
@@ -4120,6 +4128,8 @@ void CalculateMonStats(struct Pokemon *mon)
     else
     {
         s32 n = 2 * gSpeciesInfo[species].baseHP + hpIV;
+        if(gSaveBlock2Ptr->optionsBaseStatsEqual)
+            n = 2 * 100 + hpIV;
         newMaxHP = (((n + hpEV / 4) * level) / 100) + level + 10;
     }
 
@@ -4129,11 +4139,22 @@ void CalculateMonStats(struct Pokemon *mon)
 
     SetMonData(mon, MON_DATA_MAX_HP, &newMaxHP);
 
-    CALC_STAT(baseAttack, attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
-    CALC_STAT(baseDefense, defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
-    CALC_STAT(baseSpeed, speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED)
-    CALC_STAT(baseSpAttack, spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK)
-    CALC_STAT(baseSpDefense, spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF)
+    if (gSaveBlock2Ptr->optionsBaseStatsEqual)
+    {
+        CALC_STAT_EQUALIZED(100, attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
+        CALC_STAT_EQUALIZED(100, defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
+        CALC_STAT_EQUALIZED(100, speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED)
+        CALC_STAT_EQUALIZED(100, spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK)
+        CALC_STAT_EQUALIZED(100, spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF)
+    }
+    else
+    {
+        CALC_STAT(baseAttack, attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
+        CALC_STAT(baseDefense, defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
+        CALC_STAT(baseSpeed, speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED)
+        CALC_STAT(baseSpAttack, spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK)
+        CALC_STAT(baseSpDefense, spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF)
+    }
 
     if (species == SPECIES_SHEDINJA)
     {
@@ -8540,4 +8561,76 @@ void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality)
     *new3 = *old3;
     boxMon->checksum = CalculateBoxMonChecksum(boxMon);
     EncryptBoxMon(boxMon);
+}
+
+static u16 GetPartyLvlSum(void)
+{
+    u8 i;
+    u16 totalLvl = 0;
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        totalLvl += GetMonData(&gPlayerParty[i], MON_DATA_LEVEL, NULL);
+    }
+    return totalLvl;
+}
+
+u16 GetRandomSpecies(u16 species, u8 mapBased, u8 type, u16 additionalOffset) // INTERNAL USE ONLY
+{
+    u8 slot, slot_new;
+    u16 offset = 0;
+    u16 multiplier = 1;
+
+    if (mapBased)
+        offset = GetCurrentRegionMapSectionId();
+
+    switch (type)
+    {
+        case RANDOM_WILD_ENCOUNTER:
+            multiplier = 12289;
+            break;
+        case RANDOM_STATIC_ENCOUNTER:
+            multiplier = 48257;
+            break;
+        case RANDOM_TRAINER_PARTY:
+            multiplier = 49157;
+            break;
+        case RANDOM_ABILITY:
+            multiplier = 12289;
+            break;
+        case RANDOM_MOVES:
+            multiplier = 37549;
+            break;
+        case RANDOM_EVOLUTION:
+            multiplier = 12289;
+            break;
+        case EVO_EVERY_LEVEL:
+            multiplier = 42069;
+            offset += GetPartyLvlSum();
+            break;
+    }
+
+    return RandomSeededModulo(species+offset*multiplier+additionalOffset, FORMS_START) + 1;
+}
+
+u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset)
+{
+    u16 result_species = species;
+    u8 mapBased = FALSE;
+
+    switch (type)
+    {
+        case RANDOM_STATIC_ENCOUNTER:
+        case RANDOM_WILD_ENCOUNTER:
+            result_species = GetRandomSpecies(species, TRUE, type, additionalOffset);
+            break;
+        case RANDOM_TRAINER_PARTY:
+        case RANDOM_ABILITY:
+        case RANDOM_MOVES:
+        case RANDOM_EVOLUTION:
+        case EVO_EVERY_LEVEL:
+        default:
+            result_species = GetRandomSpecies(species, mapBased, type, additionalOffset);
+            break;
+    }
+    return result_species;
 }
