@@ -1,5 +1,6 @@
 #include "global.h"
 #include "random.h"
+#include "new_game.h"
 
 EWRAM_DATA static u8 sUnknown = 0;
 EWRAM_DATA static u32 sRandCount = 0;
@@ -73,3 +74,41 @@ u16 RandRange(u16 min, u16 max)
     return (Random() % (max - min)) + min;
 }
 
+u16 RandomSeeded(u16 value, u8 seeded)
+{
+    u16 otId, result;
+
+    if (gSaveBlock2Ptr->optionsRandomnessType || !seeded)
+    {
+        result = Random();
+    }
+    else
+    {
+        otId = GetTrainerId(gSaveBlock2Ptr->playerTrainerId);
+        result = ISO_RANDOMIZE1(otId + value) >> 16;
+    }
+    return result;
+}
+
+#define I_MAX 5
+u16 RandomSeededModulo(u32 value, u16 modulo)
+{
+    u32 otId;
+    u32 RAND_MAX;
+    u32 result = 0;
+    u8 i = 0;
+
+    if (gSaveBlock2Ptr->optionsRandomnessType)
+        value = Random();
+
+    otId = GetTrainerId(gSaveBlock2Ptr->playerTrainerId);
+    RAND_MAX = 0xFFFFFFFF - (0xFFFFFFFF % modulo);
+
+    do
+    {
+        result = ISO_RANDOMIZE1(otId * value + result);
+    }
+    while ((result >= RAND_MAX) && (++i != I_MAX));
+
+    return (result % modulo);
+}

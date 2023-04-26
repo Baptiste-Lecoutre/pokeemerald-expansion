@@ -446,7 +446,7 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsLevelCap = sOptions->sel[MENUITEM_LEVELCAP];
     gSaveBlock2Ptr->optionsTypeChart = sOptions->sel[MENUITEM_TYPECHART];
     gSaveBlock2Ptr->optionsSound = sOptions->sel[MENUITEM_SOUND];
-    gSaveBlock2Ptr->optionsButtonMode = sOptions->sel[MENUITEM_BUTTONMODE];
+    gSaveBlock2Ptr->optionsButtonMode = OPTIONS_BUTTON_MODE_NORMAL; //sOptions->sel[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptions->sel[MENUITEM_FRAMETYPE];
 
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);

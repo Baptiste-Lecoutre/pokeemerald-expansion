@@ -20,6 +20,8 @@ u16 Random2(void);
 void SeedRng(u16 seed);
 void SeedRng2(u16 seed);
 u16 RandRange(u16 min, u16 max);
+u16 RandomSeeded(u16 value, u8 seeded);
+u16 RandomSeededModulo(u32 value, u16 modulo);
 
 /* Structured random number generator.
  * Instead of the caller converting bits from Random() to a meaningful

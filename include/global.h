@@ -517,6 +517,7 @@ struct SaveBlock2
              u16 optionsWindowFrameType:5; // Specifies one of the 20 decorative borders for text boxes
              u16 optionsSound:2; // OPTIONS_SOUND_[MONO/STEREO/OFF]
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
+             u16 optionsBattleStyleUsed:1;
              u16 optionsBattleSceneOff:1; // whether battle animations are disabled
              u16 regionMapZoom:1; // whether the map is zoomed in
              //u16 padding1:4;
@@ -538,11 +539,38 @@ struct SaveBlock2
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
     /*0xF2C*/ //u8 itemFlags[ITEM_FLAGS_COUNT];
-    /*0xF2C*/ bool8 autoRun;
+    /*0xF2C*/ u16 autoRun:1;
               u16 showItemIconsWheel:1;
               u16 optionsFastFieldMove:1;
               u16 optionsLevelCap:2;
               u16 optionsTypeChart:1;
+              u16 optionsFastEvolution:1;
+              u16 optionsFastEggHatch:1;
+              u16 optionsFishReeling:1;
+              u16 optionsLowHealthMusic:1;
+              u16 optionsShowTypeEffectiveness:1;
+              u16 optionsRandomnessType:1;
+              u16 randomWildEncounters:1;
+                u16 randomStaticEncounters:1;
+                u16 randomTrainer:1;
+                u16 randomAbilities:1;
+                u16 randomMoves:1;
+                u16 randomTutorMoves:1;
+                u16 randomTmMoves:1;
+                u16 randomRelearnerMoves:1;
+                u16 randomEvolutions:1;
+                u16 randomPlayerParty:1;
+                u16 evoEveryLevel:1;
+                u16 randomItems:1;
+                u16 randomHeldItems:1;
+                u16 randomMartItems:1;
+                u16 randomMusic:1;
+                u16 randomLevels:1;
+                u16 randomStarters:1;
+                
+    u16 baseStatEqualizer:1;
+    u16 evolveOpponentsMons:1;
+    u16 trainerLvlScale:1;
 }; // sizeof=0xF2C
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;
