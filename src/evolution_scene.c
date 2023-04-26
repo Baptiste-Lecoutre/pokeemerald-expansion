@@ -671,9 +671,14 @@ static void Task_EvolutionScene(u8 taskId)
     case EVOSTATE_INTRO_MSG:
         if (!gPaletteFade.active)
         {
-            StringExpandPlaceholders(gStringVar4, gText_PkmnIsEvolving);
-            BattlePutTextOnWindow(gStringVar4, B_WIN_MSG);
-            gTasks[taskId].tState++;
+            if (gSaveBlock2Ptr->optionsFastEvolution)
+                gTasks[taskId].tState=EVOSTATE_SET_MON_EVOLVED;
+            else
+            {
+                StringExpandPlaceholders(gStringVar4, gText_PkmnIsEvolving);
+                BattlePutTextOnWindow(gStringVar4, B_WIN_MSG);
+                gTasks[taskId].tState++;
+            }
         }
         break;
     case EVOSTATE_INTRO_MON_ANIM:
@@ -766,7 +771,22 @@ static void Task_EvolutionScene(u8 taskId)
         }
         break;
     case EVOSTATE_SET_MON_EVOLVED:
-        if (IsCryFinished())
+        if(gSaveBlock2Ptr->optionsFastEvolution)
+        {
+            gSprites[sEvoStructPtr->preEvoSpriteId].invisible = TRUE;
+            gSprites[sEvoStructPtr->postEvoSpriteId].invisible = FALSE;
+            StringExpandPlaceholders(gStringVar4, gText_CongratsPkmnEvolved);
+            BattlePutTextOnWindow(gStringVar4, B_WIN_MSG);
+            PlayBGM(MUS_EVOLVED);
+            gTasks[taskId].tState++;
+            SetMonData(mon, MON_DATA_SPECIES, (void *)(&gTasks[taskId].tPostEvoSpecies));
+            CalculateMonStats(mon);
+            EvolutionRenameMon(mon, gTasks[taskId].tPreEvoSpecies, gTasks[taskId].tPostEvoSpecies);
+            GetSetPokedexFlag(SpeciesToNationalPokedexNum(gTasks[taskId].tPostEvoSpecies), FLAG_SET_SEEN);
+            GetSetPokedexFlag(SpeciesToNationalPokedexNum(gTasks[taskId].tPostEvoSpecies), FLAG_SET_CAUGHT);
+            IncrementGameStat(GAME_STAT_EVOLVED_POKEMON);
+        }
+        else if (IsCryFinished())
         {
             StringExpandPlaceholders(gStringVar4, gText_CongratsPkmnEvolved);
             BattlePutTextOnWindow(gStringVar4, B_WIN_MSG);
@@ -1097,9 +1117,15 @@ static void Task_TradeEvolutionScene(u8 taskId)
     switch (gTasks[taskId].tState)
     {
     case T_EVOSTATE_INTRO_MSG:
-        StringExpandPlaceholders(gStringVar4, gText_PkmnIsEvolving);
-        DrawTextOnTradeWindow(0, gStringVar4, 1);
-        gTasks[taskId].tState++;
+        if(gSaveBlock2Ptr->optionsFastEvolution)
+            gTasks[taskId].tState = T_EVOSTATE_SET_MON_EVOLVED;
+        else
+        {
+            StringExpandPlaceholders(gStringVar4, gText_PkmnIsEvolving);
+            DrawTextOnTradeWindow(0, gStringVar4, 1);
+            gTasks[taskId].tState++;
+        }
+        
         break;
     case T_EVOSTATE_INTRO_CRY:
         if (!IsTextPrinterActive(0))
@@ -1186,7 +1212,22 @@ static void Task_TradeEvolutionScene(u8 taskId)
         }
         break;
     case T_EVOSTATE_SET_MON_EVOLVED:
-        if (IsCryFinished())
+        if(gSaveBlock2Ptr->optionsFastEvolution)
+        {
+            gSprites[sEvoStructPtr->preEvoSpriteId].invisible = TRUE;
+            gSprites[sEvoStructPtr->postEvoSpriteId].invisible = FALSE;
+            StringExpandPlaceholders(gStringVar4, gText_CongratsPkmnEvolved);
+            DrawTextOnTradeWindow(0, gStringVar4, 1);
+            PlayFanfare(MUS_EVOLVED);
+            gTasks[taskId].tState++;
+            SetMonData(mon, MON_DATA_SPECIES, (&gTasks[taskId].tPostEvoSpecies));
+            CalculateMonStats(mon);
+            EvolutionRenameMon(mon, gTasks[taskId].tPreEvoSpecies, gTasks[taskId].tPostEvoSpecies);
+            GetSetPokedexFlag(SpeciesToNationalPokedexNum(gTasks[taskId].tPostEvoSpecies), FLAG_SET_SEEN);
+            GetSetPokedexFlag(SpeciesToNationalPokedexNum(gTasks[taskId].tPostEvoSpecies), FLAG_SET_CAUGHT);
+            IncrementGameStat(GAME_STAT_EVOLVED_POKEMON);
+        }
+        else if (IsCryFinished())
         {
             StringExpandPlaceholders(gStringVar4, gText_CongratsPkmnEvolved);
             DrawTextOnTradeWindow(0, gStringVar4, 1);

@@ -1048,6 +1048,9 @@ static bool8 TryProduceOrHatchEgg(struct DayCare *daycare)
         u32 eggCycles;
         u8 toSub = GetEggCyclesToSubtract();
 
+        if (gSaveBlock2Ptr->optionsFastEggHatch)
+            toSub = 10 * toSub;
+
         for (i = 0; i < gPlayerPartyCount; i++)
         {
             if (!GetMonData(&gPlayerParty[i], MON_DATA_IS_EGG))

@@ -1020,7 +1020,7 @@ void HandleLowHpMusicChange(struct Pokemon *mon, u8 battlerId)
     u16 hp = GetMonData(mon, MON_DATA_HP);
     u16 maxHP = GetMonData(mon, MON_DATA_MAX_HP);
 
-    if (TRUE)
+    if (!gSaveBlock2Ptr->optionsLowHealthMusic)
         return;
 
     if (GetHPBarLevel(hp, maxHP) == HP_BAR_RED)
