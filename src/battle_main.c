@@ -3080,6 +3080,22 @@ static void BattleMainCB1(void)
         gBattlerControllerFuncs[gActiveBattler]();
 }
 
+static bool8 IsMajorBattle(void)
+{
+    if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_LEADER
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_LEADER
+        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_ELITE_FOUR
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_ELITE_FOUR
+        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_CHAMPION
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_CHAMPION
+        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_MAGMA_LEADER
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_MAGMA_LEADER
+        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_AQUA_LEADER
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_AQUA_LEADER)
+        return TRUE;
+    return FALSE;
+}
+
 static void BattleStartClearSetData(void)
 {
     s32 i;
@@ -3141,7 +3157,10 @@ static void BattleStartClearSetData(void)
         gHitMarker |= HITMARKER_NO_ANIMATIONS;
     }
 
-    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
+    if(IsMajorBattle())
+        gBattleScripting.battleStyle = OPTIONS_BATTLE_STYLE_SET;
+    else
+        gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
 	gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
 	gBattleScripting.monCaught = FALSE;
 
