@@ -517,7 +517,6 @@ struct SaveBlock2
              u16 optionsWindowFrameType:5; // Specifies one of the 20 decorative borders for text boxes
              u16 optionsSound:2; // OPTIONS_SOUND_[MONO/STEREO/OFF]
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
-             u16 optionsBattleStyleUsed:1;
              u16 optionsBattleSceneOff:1; // whether battle animations are disabled
              u16 regionMapZoom:1; // whether the map is zoomed in
              //u16 padding1:4;
@@ -549,8 +548,13 @@ struct SaveBlock2
               u16 optionsFishReeling:1;
               u16 optionsLowHealthMusic:1;
               u16 optionsShowTypeEffectiveness:1;
-              u16 optionsRandomnessType:1;
-              u16 randomWildEncounters:1;
+              u16 evolveOpponentsMons:1;
+              u16 xpMulti:3;
+              u16 xpTeamMod:2;
+              u16 optionsBaseStatsEqual:1;
+              u16 trainerLvlScale:1;
+                u16 optionsRandomnessType:1;
+                u16 randomWildEncounters:1;
                 u16 randomStaticEncounters:1;
                 u16 randomTrainer:1;
                 u16 randomAbilities:1;
@@ -568,9 +572,7 @@ struct SaveBlock2
                 u16 randomLevels:1;
                 u16 randomStarters:1;
                 
-    u16 optionsBaseStatsEqual:1;
-    u16 evolveOpponentsMons:1;
-    u16 trainerLvlScale:1;
+    
 }; // sizeof=0xF2C
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;

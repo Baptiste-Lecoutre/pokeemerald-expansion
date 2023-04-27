@@ -1968,8 +1968,10 @@ static void DexNavLoadEncounterData(void)
         for (i = 0; i < LAND_WILD_COUNT; i++)
         {
             species = landMonsInfo->wildPokemon[i].species;
+            if (gSaveBlock2Ptr->randomWildEncounters)
+                species = GetSpeciesRandomSeeded(species, RANDOM_WILD_ENCOUNTER, 0);
             if (species != SPECIES_NONE && !SpeciesInArray(species, 0))
-                sDexNavUiDataPtr->landSpecies[grassIndex++] = landMonsInfo->wildPokemon[i].species;
+                sDexNavUiDataPtr->landSpecies[grassIndex++] = species;
         }
     }
 
@@ -1979,8 +1981,10 @@ static void DexNavLoadEncounterData(void)
         for (i = 0; i < WATER_WILD_COUNT; i++)
         {
             species = waterMonsInfo->wildPokemon[i].species;
+            if (gSaveBlock2Ptr->randomWildEncounters)
+                species = GetSpeciesRandomSeeded(species, RANDOM_WILD_ENCOUNTER, 0);
             if (species != SPECIES_NONE && !SpeciesInArray(species, 1))
-                sDexNavUiDataPtr->waterSpecies[waterIndex++] = waterMonsInfo->wildPokemon[i].species;
+                sDexNavUiDataPtr->waterSpecies[waterIndex++] = species;
         }
     }
     
@@ -1990,8 +1994,10 @@ static void DexNavLoadEncounterData(void)
         for (i = 0; i < HIDDEN_WILD_COUNT; i++)
         {
             species = hiddenMonsInfo->wildPokemon[i].species;
+            if (gSaveBlock2Ptr->randomWildEncounters)
+                species = GetSpeciesRandomSeeded(species, RANDOM_WILD_ENCOUNTER, 0);
             if (species != SPECIES_NONE && !SpeciesInArray(species, 2))
-                sDexNavUiDataPtr->hiddenSpecies[hiddenIndex++] = hiddenMonsInfo->wildPokemon[i].species;
+                sDexNavUiDataPtr->hiddenSpecies[hiddenIndex++] = species;
         }
     }
 }
