@@ -88,15 +88,48 @@ static void InitPlayerTrainerId(void)
     SetTrainerId(trainerId, gSaveBlock2Ptr->playerTrainerId);
 }
 
-// L=A isnt set here for some reason.
 static void SetDefaultOptions(void)
 {
+    gSaveBlock2Ptr->optionsButtonMode = OPTIONS_BUTTON_MODE_NORMAL;
     gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_FAST;
     gSaveBlock2Ptr->optionsWindowFrameType = 0;
     gSaveBlock2Ptr->optionsSound = OPTIONS_SOUND_MONO;
     gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SET;
     gSaveBlock2Ptr->optionsBattleSceneOff = FALSE;
     gSaveBlock2Ptr->regionMapZoom = FALSE;
+
+    gSaveBlock2Ptr->optionsFastFieldMove = FALSE;
+    gSaveBlock2Ptr->optionsLevelCap = 1;
+    gSaveBlock2Ptr->optionsTypeChart = FALSE;
+    gSaveBlock2Ptr->optionsFastEvolution = FALSE;
+    gSaveBlock2Ptr->optionsFastEggHatch = FALSE;
+    gSaveBlock2Ptr->optionsFishReeling = FALSE;
+    gSaveBlock2Ptr->optionsLowHealthMusic = FALSE;
+    gSaveBlock2Ptr->optionsShowTypeEffectiveness = FALSE;
+    gSaveBlock2Ptr->evolveOpponentsMons = FALSE;
+    gSaveBlock2Ptr->xpMulti = 0;
+    gSaveBlock2Ptr->xpTeamMod = 0;
+    gSaveBlock2Ptr->optionsBaseStatsEqual = FALSE;
+    gSaveBlock2Ptr->trainerLvlScale = FALSE;
+
+    gSaveBlock2Ptr->optionsRandomnessType = FALSE;
+    gSaveBlock2Ptr->randomWildEncounters = FALSE;
+    gSaveBlock2Ptr->randomStaticEncounters = FALSE;
+    gSaveBlock2Ptr->randomTrainer = FALSE;
+    gSaveBlock2Ptr->randomAbilities = FALSE;
+    gSaveBlock2Ptr->randomMoves = FALSE;
+    gSaveBlock2Ptr->randomTutorMoves = FALSE;
+    gSaveBlock2Ptr->randomTmMoves = FALSE;
+    gSaveBlock2Ptr->randomRelearnerMoves = FALSE;
+    gSaveBlock2Ptr->randomEvolutions = FALSE;
+    gSaveBlock2Ptr->randomPlayerParty = FALSE;
+    gSaveBlock2Ptr->evoEveryLevel = FALSE;
+    gSaveBlock2Ptr->randomItems = FALSE;
+    gSaveBlock2Ptr->randomHeldItems = FALSE;
+    gSaveBlock2Ptr->randomMartItems = FALSE;
+    gSaveBlock2Ptr->randomMusic = FALSE;
+    gSaveBlock2Ptr->randomLevels = FALSE;
+    gSaveBlock2Ptr->randomStarters = FALSE;
 }
 
 static void ClearPokedexFlags(void)
