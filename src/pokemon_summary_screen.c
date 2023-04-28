@@ -1808,6 +1808,10 @@ static s8 AdvanceMonIndex(s8 delta)
 
     index = (index + delta) % numMons;
 
+    // Skip over any invalid pokémon
+    while (GetMonData(&mon[index], MON_DATA_SPECIES) == SPECIES_NONE)
+        index = (index + delta) % numMons;
+
     // skip over any Eggs unless on the Info Page
     if (sMonSummaryScreen->currPageIndex != PSS_PAGE_INFO)
         while (GetMonData(&mon[index], MON_DATA_IS_EGG))

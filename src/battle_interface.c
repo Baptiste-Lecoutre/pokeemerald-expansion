@@ -3274,13 +3274,13 @@ void TryAddLastUsedBallItemSprites(void)
         gLastThrownBall = gBagPockets[BALLS_POCKET].itemSlots[0].itemId;
     }
 
-    if (!CanThrowLastUsedBall())
+    if (!CanThrowLastUsedBall() && !(gBattleTypeFlags & BATTLE_TYPE_TRAINER))
         return;
 
     // ball
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {
-        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, gLastThrownBall);
+        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, (CanThrowLastUsedBall() ? gLastThrownBall : ITEM_SCANNER));
         gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_0;
         gSprites[gBattleStruct->ballSpriteIds[0]].y = LAST_USED_BALL_Y;
         gSprites[gBattleStruct->ballSpriteIds[0]].sHide = FALSE;   // restore

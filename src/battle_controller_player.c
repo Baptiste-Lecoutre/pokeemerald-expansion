@@ -32,6 +32,7 @@
 #include "text.h"
 #include "util.h"
 #include "window.h"
+#include "constants/battle.h"
 #include "constants/battle_anim.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -239,6 +240,23 @@ static void CompleteOnBankSpritePosX_0(void)
         PlayerBufferExecCompleted();
 }
 
+static void CompleteShowEnemyParty() 
+{
+    if (gMain.callback2 == BattleMainCB2)
+        PlayerHandleChooseAction();
+}
+
+static void OpenEnemyParty(void)
+{
+    gBattlerControllerFuncs[gActiveBattler] = CompleteShowEnemyParty;
+    FreeAllWindowBuffers();
+    ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES,
+        gEnemyParty,
+        gBattlerPartyIndexes[1],
+        PARTY_SIZE - 1,
+        CB2_SetUpReshowBattleScreenAfterMenu);
+}
+
 static void HandleInputChooseAction(void)
 {
     u16 itemId = gBattleResources->bufferA[gActiveBattler][2] | (gBattleResources->bufferA[gActiveBattler][3] << 8);
@@ -355,12 +373,21 @@ static void HandleInputChooseAction(void)
     }
 #endif
 #if B_LAST_USED_BALL == TRUE
-    else if (JOY_NEW(B_LAST_USED_BALL_BUTTON) && CanThrowLastUsedBall())
+    else if (JOY_NEW(B_LAST_USED_BALL_BUTTON))
     {
-        PlaySE(SE_SELECT);
-        TryHideLastUsedBall();
-        BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_THROW_BALL, 0);
-        PlayerBufferExecCompleted();
+        if (CanThrowLastUsedBall())
+        {
+            PlaySE(SE_SELECT);
+            TryHideLastUsedBall();
+            BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_THROW_BALL, 0);
+            PlayerBufferExecCompleted();
+        }
+        else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && FALSE) // option to open the enemy party in summary screen
+        {
+            PlaySE(SE_SELECT);
+            TryHideLastUsedBall();
+            OpenEnemyParty();
+        }
     }
 #endif
 }
