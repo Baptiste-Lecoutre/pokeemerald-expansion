@@ -37,8 +37,11 @@ typedef void (*TilesetCB)(void);
 
 struct Tileset
 {
-    /*0x00*/ bool8 isCompressed;
+    /*0x00*/ u8 isCompressed:1;
+    /*0x00*/ u8 swapPalettes:7; // bitmask determining whether palette has an alternate, night-time palette
     /*0x01*/ bool8 isSecondary;
+    /*0x02*/ u8 lightPalettes; // Bitmask determining whether a palette should be time-blended as a light
+    /*0x03*/ u8 customLightColor; // Bitmask determining which light palettes have custom light colors (color 15)
     /*0x04*/ const u32 *tiles;
     /*0x08*/ const u16 (*palettes)[16];
     /*0x0C*/ const u16 *metatiles;
@@ -52,8 +55,8 @@ struct MapLayout
     /*0x04*/ s32 height;
     /*0x08*/ const u16 *border;
     /*0x0C*/ const u16 *map;
-    /*0x10*/ const struct Tileset *primaryTileset;
-    /*0x14*/ const struct Tileset *secondaryTileset;
+    /*0x10*/ struct Tileset *primaryTileset;
+    /*0x14*/ struct Tileset *secondaryTileset;
 };
 
 struct BackupMapLayout
@@ -63,7 +66,7 @@ struct BackupMapLayout
     u16 *map;
 };
 
-struct ObjectEventTemplate
+struct __attribute__((packed)) ObjectEventTemplate
 {
     /*0x00*/ u8 localId;
     /*0x02*/ u8 kind; // Always OBJ_KIND_NORMAL in Emerald.
@@ -75,13 +78,13 @@ struct ObjectEventTemplate
     /*0x09*/ u8 movementType;
     /*0x0A*/ u16 movementRangeX:4;
              u16 movementRangeY:4;
-             //u16 padding2:8;
+             u16 unused:8;
     /*0x0C*/ u16 trainerType;
     /*0x0E*/ u16 trainerRange_berryTreeId;
     /*0x10*/ const u8 *script;
     /*0x14*/ u16 flagId;
-    /*0x16*/ //u8 padding3[2];
-};
+    /*0x16*/ u16 filler;
+}; // size = 0x18
 
 struct WarpEvent
 {
@@ -122,10 +125,10 @@ struct MapEvents
     u8 warpCount;
     u8 coordEventCount;
     u8 bgEventCount;
-    const struct ObjectEventTemplate *objectEvents;
-    const struct WarpEvent *warps;
-    const struct CoordEvent *coordEvents;
-    const struct BgEvent *bgEvents;
+    struct ObjectEventTemplate *objectEvents;
+    struct WarpEvent *warps;
+    struct CoordEvent *coordEvents;
+    struct BgEvent *bgEvents;
 };
 
 struct MapConnection
@@ -189,13 +192,14 @@ struct ObjectEvent
              u32 inShallowFlowingWater:1;
              u32 inSandPile:1;
              u32 inHotSprings:1;
-             u32 hasShadow:1;
+             u32 noShadow:1;
              u32 spriteAnimPausedBackup:1;
     /*0x03*/ u32 spriteAffineAnimPausedBackup:1;
              u32 disableJumpLandingGroundEffect:1;
              u32 fixedPriority:1;
              u32 hideReflection:1;
-    /*0x04*/ u16 graphicsId;
+             u32 shiny:1; // OW mon shininess
+    /*0x04*/ u16 graphicsId; // 11 bits for species; high 5 bits for form
     /*0x06*/ u8 movementType;
     /*0x07*/ u8 trainerType;
     /*0x08*/ u8 localId;

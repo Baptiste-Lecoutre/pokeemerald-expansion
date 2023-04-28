@@ -1301,7 +1301,7 @@ u8 unref_GetRivalAvatarGenderByGraphicsId(u16 gfxId)
     }
 }
 
-u8 GetPlayerAvatarGenderByGraphicsId(u16 gfxId)
+u16 GetPlayerAvatarGenderByGraphicsId(u16 gfxId)
 {
     switch (gfxId)
     {
