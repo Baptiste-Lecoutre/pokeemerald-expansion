@@ -3466,31 +3466,28 @@ void TryLoadTypeIcons(void)
 {
 	if (!(gBattleTypeFlags & BATTLE_TYPE_LINK) && TRUE && IndexOfSpritePaletteTag(TYPE_ICON_TAG) == 0xFF)
 	{
-        u8 position, battleType;
-        
-        battleType = IsDoubleBattle();
-
+        u8 position, battleType= IsDoubleBattle();
         LoadSpritePalette(&sTypeIconPalTemplate);
         
-		
 		for (position = 0; position < gBattlersCount; ++position)
 		{
-            u8 typeNum;
+            u8 typeNum, monNumTypes = 2;//(gBattleMons[GetBattlerAtPosition(position)].type1 == gBattleMons[GetBattlerAtPosition(position)].type2) ? 1 : 2;
 			if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
 
-			for (typeNum = 0; typeNum < 2; ++typeNum) //Load each type
+			for (typeNum = 0; typeNum < monNumTypes; ++typeNum) //Load each type
 			{
 				u8 spriteId;
                 u8* type1Ptr = &gBattleMons[GetBattlerAtPosition(position)].type1;
                 u8 type = *(type1Ptr + typeNum);
-				s16 x,y;
 
-                if (battleType)
-                    y -= (3 * typeNum);
+                s16 x = sTypeIconPositions[battleType][position].x;
+				s16 y = sTypeIconPositions[battleType][position].y + (11 * typeNum); //2nd type is 11px below
 
-                x = sTypeIconPositions[battleType][position].x;
-				y = sTypeIconPositions[battleType][position].y + (11 * typeNum); //2nd type is 11px below
+                //if (battleType)
+                //    y -= (3 * typeNum);
+                //if (monNumTypes == 1)
+                //    y += 6;
 
                 spriteId = CreateSpriteAtEnd(&sTypeIconSpriteTemplate, x, y, 0xFF);
                 
@@ -3520,12 +3517,10 @@ void TryLoadTypeIcons(void)
 static void SpriteCB_TypeIcon(struct Sprite* sprite)
 {
 	u8 position = sprite->data[0];
-	u8 bank = sprite->data[1];
-    u8 battleType;
+	u8 activeBattler = sprite->data[1];
+    u8 battleType = IsDoubleBattle();
     s16 originalY;
 	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
-
-    battleType = IsDoubleBattle();
 
 	if (sprite->data[2] == 12 - 2 * sprite->data[4])
 	{
@@ -3535,11 +3530,11 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
 	}
 
 	//Type icons should prepare to destroy themselves if the Player is not choosing an action
-	if (gBattlerControllerFuncs[bank] != PlayerHandleChooseMove
-	&&  gBattlerControllerFuncs[bank] != HandleChooseMoveAfterDma3
-	&&  gBattlerControllerFuncs[bank] != HandleInputChooseTarget
-	&&  gBattlerControllerFuncs[bank] != HandleMoveSwitching
-	&&  gBattlerControllerFuncs[bank] != HandleInputChooseMove)
+	if (gBattlerControllerFuncs[activeBattler] != PlayerHandleChooseMove
+	&&  gBattlerControllerFuncs[activeBattler] != HandleChooseMoveAfterDma3
+	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseTarget
+	&&  gBattlerControllerFuncs[activeBattler] != HandleMoveSwitching
+	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove)
 	{
         switch (position) {
 			case B_POSITION_PLAYER_LEFT:
@@ -3630,7 +3625,7 @@ void TryLoadMoveInfoWindow(void)
 
 static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 {
-    u8 bank = sprite->data[1];
+    u8 activeBattler = sprite->data[1];
 
     // destroy window if condition
     if (sprite->y > MOVE_INFO_WIN_Y_0)
@@ -3641,10 +3636,10 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 		return;
     }
 
-    if ((gBattlerControllerFuncs[bank] != PlayerHandleChooseMove
-	&&  gBattlerControllerFuncs[bank] != HandleChooseMoveAfterDma3 
-	&&  gBattlerControllerFuncs[bank] != HandleMoveSwitching
-	&&  gBattlerControllerFuncs[bank] != HandleInputChooseMove)
+    if ((gBattlerControllerFuncs[activeBattler] != PlayerHandleChooseMove
+	&&  gBattlerControllerFuncs[activeBattler] != HandleChooseMoveAfterDma3 
+	&&  gBattlerControllerFuncs[activeBattler] != HandleMoveSwitching
+	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove)
     || gDescriptionSubmenu)
     {
         sprite->y += 1;
