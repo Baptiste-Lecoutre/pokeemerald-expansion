@@ -3274,7 +3274,7 @@ void TryAddLastUsedBallItemSprites(void)
         gLastThrownBall = gBagPockets[BALLS_POCKET].itemSlots[0].itemId;
     }
 
-    if (!CanThrowLastUsedBall() && !(gBattleTypeFlags & BATTLE_TYPE_TRAINER))
+    if (!CanThrowLastUsedBall() && !((gBattleTypeFlags & BATTLE_TYPE_TRAINER) && FALSE)) // option to open the enemy party in summary screen
         return;
 
     // ball

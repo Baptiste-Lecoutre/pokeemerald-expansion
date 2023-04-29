@@ -99,7 +99,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Decapitalization of the game
 - Party icons are shown in the "Continue" window in main menu
 - Move held items in party
-- Fast surf
+- Fast surf by pressing B
 - Check ash amout using SootSack
 - Surf blob dismounting ground effects
 - No need to water berries in rainy routes
@@ -108,5 +108,45 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Repeated medicine use
 - Change clock time by pressing start when looking at the clock
 - Show enemy mon you're switching into
-- Better reflection system
+- Ghoul's Better reflection system
+- Added Merrp's lighting: DNS, OW-expansion (ghoul), followers (disabled for palette issues), dynamic OW palettes and more
+- Check enemy trainer's party in pokemon summary screen by using the "last used ball" asset (dummied for now, I'll have to find a proper implementation or battle mode)
+- major battle are forced in SET mode
+- option to do fast field move, skipping most text and mon showcase
+- restored the shred battle transition
+- added a base stat equalizer to 100 so that some mons become more usable
+- option to remove low health beeps
+- option to hatch egg faster (need less steps)
+- option to fasten the evolution scene
+- option to remove the need to reel while fishing
+- shop items by badge count
+- clock in start menu
+- level cap option
+- inverse type chart option
+- Berry trees no longer die and EV-reducing berries grow faster with more yields
 - More to be added
+
+## TODO
+- Add team rocket story
+- Add Kanto and Johto gym leaders with Kanto E4
+- Add Red rivalry
+- Add mega stones & Z crystals
+- Add legendary events
+    - More roamers: Lati@s?, gen2 dogs, galarian kanto birds, thundurus&co, 
+    - Celebi in Petalburg woods
+    - Heatran in Groudon's lava under mount chimney
+    - Regigigas in a cave after catching the first 3 regis
+    - same with Cresselia
+    - Mewtwo in a room of new mauville
+- Add new locations
+- Buy starters in mauville game corner
+- Change wild encounters & trainer parties
+- Change pc access in pokenav to first menu, and move ribbons to condition submenu
+- Add a means to make trade evos (see Bill's teleporter in hackrom)
+- ReUse of origin cave post-game
+- Buff the encounters at Sky Pillar after the conflict in Sootopolis is solved.
+- When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
+- Add a NPC that changes IVs, another one that changes EVs, and a last one that changes nature. See Evie&Ivy in IE.
+- Free up some space for flags and vars by checking trainer flags or if player has items. 
+- Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
+- Try to recover the item desc header native behavior by checking if the player has the item. destroying window could be checked by its window id
