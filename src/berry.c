@@ -527,11 +527,11 @@ const struct Berry gBerries[] =
         .name = _("Pomeg"),
         .firmness = BERRY_FIRMNESS_VERY_HARD,
         .size = 135,
-        .maxYield = 6,
-        .minYield = 2,
+        .maxYield = 18,
+        .minYield = 8,
         .description1 = sBerryDescriptionPart1_Pomeg,
         .description2 = sBerryDescriptionPart2_Pomeg,
-        .stageDuration = 3,
+        .stageDuration = 1,
         .spicy = 10,
         .dry = 0,
         .sweet = 10,
@@ -545,11 +545,11 @@ const struct Berry gBerries[] =
         .name = _("Kelpsy"),
         .firmness = BERRY_FIRMNESS_HARD,
         .size = 150,
-        .maxYield = 6,
-        .minYield = 2,
+        .maxYield = 18,
+        .minYield = 8,
         .description1 = sBerryDescriptionPart1_Kelpsy,
         .description2 = sBerryDescriptionPart2_Kelpsy,
-        .stageDuration = 3,
+        .stageDuration = 1,
         .spicy = 0,
         .dry = 10,
         .sweet = 0,
@@ -563,11 +563,11 @@ const struct Berry gBerries[] =
         .name = _("Qualot"),
         .firmness = BERRY_FIRMNESS_HARD,
         .size = 110,
-        .maxYield = 6,
-        .minYield = 2,
+        .maxYield = 18,
+        .minYield = 8,
         .description1 = sBerryDescriptionPart1_Qualot,
         .description2 = sBerryDescriptionPart2_Qualot,
-        .stageDuration = 3,
+        .stageDuration = 1,
         .spicy = 10,
         .dry = 0,
         .sweet = 10,
@@ -581,11 +581,11 @@ const struct Berry gBerries[] =
         .name = _("Hondew"),
         .firmness = BERRY_FIRMNESS_HARD,
         .size = 162,
-        .maxYield = 6,
-        .minYield = 2,
+        .maxYield = 18,
+        .minYield = 8,
         .description1 = sBerryDescriptionPart1_Hondew,
         .description2 = sBerryDescriptionPart2_Hondew,
-        .stageDuration = 3,
+        .stageDuration = 1,
         .spicy = 10,
         .dry = 10,
         .sweet = 0,
@@ -599,11 +599,11 @@ const struct Berry gBerries[] =
         .name = _("Grepa"),
         .firmness = BERRY_FIRMNESS_SOFT,
         .size = 149,
-        .maxYield = 6,
-        .minYield = 2,
+        .maxYield = 18,
+        .minYield = 8,
         .description1 = sBerryDescriptionPart1_Grepa,
         .description2 = sBerryDescriptionPart2_Grepa,
-        .stageDuration = 3,
+        .stageDuration = 1,
         .spicy = 0,
         .dry = 10,
         .sweet = 10,
@@ -617,11 +617,11 @@ const struct Berry gBerries[] =
         .name = _("Tamato"),
         .firmness = BERRY_FIRMNESS_SOFT,
         .size = 200,
-        .maxYield = 4,
-        .minYield = 2,
+        .maxYield = 18,
+        .minYield = 8,
         .description1 = sBerryDescriptionPart1_Tamato,
         .description2 = sBerryDescriptionPart2_Tamato,
-        .stageDuration = 6,
+        .stageDuration = 1,
         .spicy = 20,
         .dry = 10,
         .sweet = 0,
@@ -1017,7 +1017,7 @@ const struct Berry gBerries[] =
         .minYield = 2,
         .description1 = sBerryDescriptionPart1_Charti,
         .description2 = sBerryDescriptionPart2_Charti,
-        .stageDuration = 18,
+        .stageDuration = 2,
         .spicy = 10,
         .dry = 20,
         .sweet = 0,
@@ -1557,7 +1557,7 @@ static bool32 BerryTreeGrow(struct BerryTree *tree)
     case BERRY_STAGE_TALLER:
         tree->stage++;
         break;
-    case BERRY_STAGE_BERRIES:
+/*    case BERRY_STAGE_BERRIES:
         tree->watered1 = 0;
         tree->watered2 = 0;
         tree->watered3 = 0;
@@ -1566,7 +1566,7 @@ static bool32 BerryTreeGrow(struct BerryTree *tree)
         tree->stage = BERRY_STAGE_SPROUTED;
         if (++tree->regrowthCount == 10)
             *tree = gBlankBerryTree;
-        break;
+        break;*/
     }
     return TRUE;
 }
@@ -1580,13 +1580,13 @@ void BerryTreeTimeUpdate(s32 minutes)
     {
         tree = &gSaveBlock1Ptr->berryTrees[i];
 
-        if (tree->berry && tree->stage && !tree->stopGrowth)
+        if (tree->berry && tree->stage && !tree->stopGrowth && (tree->stage != BERRY_STAGE_BERRIES))
         {
-            if (minutes >= GetStageDurationByBerryType(tree->berry) * 71)
+            /*if (minutes >= GetStageDurationByBerryType(tree->berry) * 71)
             {
                 *tree = gBlankBerryTree;
             }
-            else
+            else*/
             {
                 s32 time = minutes;
 
