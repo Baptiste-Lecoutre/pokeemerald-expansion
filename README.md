@@ -129,15 +129,63 @@ A Discord-based ROM hacking community that has many members who hack using the d
 ## TODO
 - Add team rocket story
 - Add Kanto and Johto gym leaders with Kanto E4
+    - Brock in granite cave
+    - Misty on the beach
+    - Surge in new mauville trying to catch zapdos. Can't catch zapdos until he is defeated.
+    - Erika in verdantuff
+    - Koga in the rainy route with ninjas. "See these ninjas? I'm training them."
+    - Sabrina talks to a rock which has psychic powers. Talking to the rocks says "just an ordinary rock".
+    - Blaine in start of magma hideout (Hohoho I dug too far!)
+    - Giovanni (rocket event)
+    - Falkner in petalburg school?
+    - Bugsy in petalburg woods, eastern part in a new location?
+    - Whitney in a contest hall, corresponding gym is not opened because you have not proven your worth until you have defeated the strong trainer lurking around the contest hall
+    - Morty in mt pyre
+    - Chuck in desert
+    - Jasmine 
+    - Pryce & Lorelei in Ice cave double battle
+    - Clair & Lance in Meteor Falls double battle
+    - Bruno in the route with the currents, "training by swimming against the currents"
+    - Agatha in mt pyre post-game
 - Add Red rivalry
 - Add mega stones & Z crystals
 - Add legendary events
-    - More roamers: Lati@s?, gen2 dogs, galarian kanto birds, thundurus&co, 
-    - Celebi in Petalburg woods
-    - Heatran in Groudon's lava under mount chimney
-    - Regigigas in a cave after catching the first 3 regis
-    - same with Cresselia
-    - Mewtwo in a room of new mauville
+    - Gen1:
+        - Articuno in Shoal Cave
+        - Moltres in Fiery path
+        - Zapdos in New Mauville
+        - Mewtwo in a room of new mauville or in a lab, postgame
+        - Mew in birth island
+    - Gen2:
+        - Dogs: roamers
+        - Celebi: petalburg woods using unowns?
+        - Hooh & Lugia: Navel rock if available or ported?
+    - Gen3:
+        - Lati@s roamers?
+        - Deoxys?
+        - Jirachi?
+    - Gen4:
+        - Dialga & Palkia: event related to space center
+        - Giratina afterwards, using a wormhole portal (summit of mt pyre?)
+        - Arceus afterwards, player resting in his room?
+        - Darkrai, player resting in his room, at night?
+        - Heatran in groudon's lava under mt chimney
+        - Regigigas in a cave after catching the 3 hoenn regis
+        - Cresselia, lake trio, shaymin, phione, manaphy
+    - Gen5:
+        - cobalion, terrakion, virizion
+        - tornadus, thundurus, landorus are roamers
+        - reshiram, zekrom, kuyrem
+        - victini, keldeo, meloetta, genesect
+    - Gen6:
+        - xerneas, yveltal, zygarde
+        - dianci, hoopa, volcanion
+    - Gen7:
+    - Gen8: 
+        - Galarian kanto birds roamers ?
+
+    
+
 - Add new locations
 - Buy starters in mauville game corner
 - Change wild encounters & trainer parties
@@ -147,6 +195,8 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Buff the encounters at Sky Pillar after the conflict in Sootopolis is solved.
 - When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
 - Add a NPC that changes IVs, another one that changes EVs, and a last one that changes nature. See Evie&Ivy in IE.
-- Free up some space for flags and vars by checking trainer flags or if player has items. 
+- Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Try to recover the item desc header native behavior by checking if the player has the item. destroying window could be checked by its window id
+- Add a teleporter to be able to change between regionals forms of pokemons? (galarian birds, alola, galar...)
+- Add soaring & Eon flute?
