@@ -4311,7 +4311,7 @@ static void Cmd_getexp(void)
         {
         #if I_EXP_SHARE_FLAG != 0
             if (!PartyIsMaxLevel() && FlagGet(I_EXP_SHARE_FLAG))
-                PrepareStringBattle(STRINGID_PKMNGAINEDEXP, gBattleStruct->expGetterBattlerId);
+                PrepareStringBattle(STRINGID_PKMNGAINEDEXPSHARE, gBattleStruct->expGetterBattlerId);
         #endif
             gBattleScripting.getexpState++;
             gBattleStruct->givenExpMons |= gBitTable[gBattlerPartyIndexes[gBattlerFainted]];
