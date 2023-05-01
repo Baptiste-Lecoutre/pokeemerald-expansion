@@ -3174,4 +3174,8 @@ extern const u8 gText_UsedPokeVial[];
 
 extern const u8 gStartMenu_TimeBoxClock[];
 
+// Exp. Share
+extern const u8 gText_ExpShareOn[];
+extern const u8 gText_ExpShareOff[];
+
 #endif // GUARD_STRINGS_H

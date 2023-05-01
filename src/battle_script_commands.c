@@ -4223,6 +4223,19 @@ static void Cmd_jumpbasedontype(void)
     }
 }
 
+bool8 PartyIsMaxLevel(void)
+{
+    int i;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_LEVEL) != MAX_LEVEL
+            && GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_EGG)
+            return FALSE;
+    }
+    return TRUE;
+}
+
 double GetPkmnExpMultiplier(u8 level)
 {
     u32 i;
@@ -4250,6 +4263,8 @@ double GetPkmnExpMultiplier(u8 level)
 
     return lvlCapMultiplier;
 }
+
+FEATURE_FLAG_ASSERT(I_EXP_SHARE_FLAG, YouNeedToSetTheExpShareFlagToAnUnusedFlag);
 
 static void Cmd_getexp(void)
 {
@@ -4281,6 +4296,10 @@ static void Cmd_getexp(void)
         }
         else
         {
+        #if I_EXP_SHARE_FLAG != 0
+            if (!PartyIsMaxLevel() && FlagGet(I_EXP_SHARE_FLAG))
+                PrepareStringBattle(STRINGID_PKMNGAINEDEXP, gBattleStruct->expGetterBattlerId);
+        #endif
             gBattleScripting.getexpState++;
             gBattleStruct->givenExpMons |= gBitTable[gBattlerPartyIndexes[gBattlerFainted]];
         }
@@ -4306,7 +4325,11 @@ static void Cmd_getexp(void)
                 else
                     holdEffect = ItemId_GetHoldEffect(item);
 
+            #if I_EXP_SHARE_FLAG != 0
+                if (holdEffect == HOLD_EFFECT_EXP_SHARE || FlagGet(I_EXP_SHARE_FLAG))
+            #else
                 if (holdEffect == HOLD_EFFECT_EXP_SHARE)
+            #endif
                     viaExpShare++;
             }
             #if (B_SCALED_EXP >= GEN_5) && (B_SCALED_EXP != GEN_6)
@@ -4355,7 +4378,12 @@ static void Cmd_getexp(void)
             else
                 holdEffect = ItemId_GetHoldEffect(item);
 
-            if (holdEffect != HOLD_EFFECT_EXP_SHARE && !(gBattleStruct->sentInPokes & 1))
+        #if I_EXP_SHARE_FLAG != 0
+            if ((holdEffect != HOLD_EFFECT_EXP_SHARE && !(gBattleStruct->sentInPokes & 1) && !FlagGet(I_EXP_SHARE_FLAG))
+        #else
+            if ((holdEffect != HOLD_EFFECT_EXP_SHARE && !(gBattleStruct->sentInPokes & 1))
+        #endif
+             || GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
             {
                 *(&gBattleStruct->sentInPokes) >>= 1;
                 gBattleScripting.getexpState = 5;
@@ -4394,14 +4422,17 @@ static void Cmd_getexp(void)
                     else
                         gBattleMoveDamage = 0;
 
-                    // only give exp share bonus in later gens if the mon wasn't sent out
-                #if B_SPLIT_EXP < GEN_6
-                    if (holdEffect == HOLD_EFFECT_EXP_SHARE)
-                        gBattleMoveDamage += gExpShareExp * expMultiplier;
-                #else
-                    if (holdEffect == HOLD_EFFECT_EXP_SHARE && gBattleMoveDamage == 0)
-                        gBattleMoveDamage += gExpShareExp * expMultiplier;
+                    if ((holdEffect == HOLD_EFFECT_EXP_SHARE
+                #if I_EXP_SHARE_FLAG != 0
+                        || FlagGet(I_EXP_SHARE_FLAG)
                 #endif
+                    )
+                #if B_SPLIT_EXP >= GEN_6
+                    // only give exp share bonus in later gens if the mon wasn't sent out
+                    && gBattleMoveDamage == 0
+                #endif
+                    )
+                        gBattleMoveDamage += gExpShareExp * expMultiplier;
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                 #if B_TRAINER_EXP_MULTIPLIER <= GEN_7
@@ -4458,13 +4489,17 @@ static void Cmd_getexp(void)
                     {
                         gBattleStruct->expGetterBattlerId = 0;
                     }
+                #if I_EXP_SHARE_FLAG != 0
+                    if (!FlagGet(I_EXP_SHARE_FLAG))
+                #endif
+                    {
+                        PREPARE_MON_NICK_WITH_PREFIX_BUFFER(gBattleTextBuff1, gBattleStruct->expGetterBattlerId, gBattleStruct->expGetterMonId);
+                        // buffer 'gained' or 'gained a boosted'
+                        PREPARE_STRING_BUFFER(gBattleTextBuff2, i);
+                        PREPARE_WORD_NUMBER_BUFFER(gBattleTextBuff3, 6, gBattleMoveDamage);
 
-                    PREPARE_MON_NICK_WITH_PREFIX_BUFFER(gBattleTextBuff1, gBattleStruct->expGetterBattlerId, gBattleStruct->expGetterMonId);
-                    // buffer 'gained' or 'gained a boosted'
-                    PREPARE_STRING_BUFFER(gBattleTextBuff2, i);
-                    PREPARE_WORD_NUMBER_BUFFER(gBattleTextBuff3, 6, gBattleMoveDamage);
-
-                    PrepareStringBattle(STRINGID_PKMNGAINEDEXP, gBattleStruct->expGetterBattlerId);
+                        PrepareStringBattle(STRINGID_PKMNGAINEDEXP, gBattleStruct->expGetterBattlerId);
+                    }
                     MonGainEVs(&gPlayerParty[gBattleStruct->expGetterMonId], gBattleMons[gBattlerFainted].species);
                 }
                 gBattleStruct->sentInPokes >>= 1;

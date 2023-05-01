@@ -6113,9 +6113,13 @@ const struct Item gItems[] =
         .price = 3000,
         .holdEffect = HOLD_EFFECT_EXP_SHARE,
         .description = sExpShareDesc,
+    #if I_EXP_SHARE_ITEM >= GEN_6
+        .pocket = POCKET_KEY_ITEMS,
+    #else
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+    #endif
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_ExpShare,
         .flingPower = 30,
     },
 
@@ -10369,7 +10373,7 @@ const struct Item gItems[] =
         .type = ITEM_USE_FIELD,
         .fieldUseFunc = ItemUseOutOfBattle_PokeVial,
     },
-    
+
     [ITEM_BERSERK_GENE] =
     {
         .name = _("Berserk Gene"),

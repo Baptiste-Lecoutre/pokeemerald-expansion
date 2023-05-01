@@ -11,6 +11,10 @@
 #define I_BERRY_EV_JUMP                 GEN_LATEST  // In Gen4 only, EV-lowering Berries lower a stat's EV to 100 if it is above 100.
 #define I_GRISEOUS_ORB_FORM_CHANGE      GEN_LATEST  // In Gen9+, the Griseous Orb no longer changes Giratina's form when held.
 
+// Exp. Share config
+#define I_EXP_SHARE_FLAG        FLAG_UNUSED_0x8E3           // If this flag is set, every Pokémon in the party will gain experience, regardless if they participated in the battle or not.
+#define I_EXP_SHARE_ITEM        GEN_LATEST       // In Gen6+, the Exp. Share was changed from a held item to a Key item that toggles the effect described above. 
+
 // TM config
 #define I_REUSABLE_TMS              TRUE       // In Gen5-8, TMs are reusable. Setting this to TRUE will make all vanilla TMs reusable, though they can also be cherry-picked by setting their importance to 1.
 
