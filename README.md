@@ -124,6 +124,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - level cap option
 - inverse type chart option
 - Berry trees no longer die and EV-reducing berries grow faster with more yields
+- When lvling up in battle, use vanilla's unused blue gradient anim of healthbox if mon can evolve (credits to Lunos & Flametix for their implementation)
 - More to be added
 
 ## TODO

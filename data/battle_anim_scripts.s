@@ -958,6 +958,7 @@ gBattleAnims_Special::
 	.4byte Special_SubstituteToMon          @ B_ANIM_SUBSTITUTE_TO_MON
 	.4byte Special_MonToSubstitute          @ B_ANIM_MON_TO_SUBSTITUTE
 	.4byte Special_CriticalCaptureBallThrow @ B_ANIM_CRITICAL_CAPTURE_THROW
+	.4byte Special_LevelUpEvolve			@ B_ANIM_LVL_UP_EVOLVE
 
 @@@@@@@@@@@@@@@@@@@@@@@ GEN 4 @@@@@@@@@@@@@@@@@@@@@@@
 Move_ROOST:
@@ -25095,6 +25096,17 @@ SnatchMoveSwapMonForSubstitute:
 @ Healthbox blue flash effect on level up
 Special_LevelUp:
 	playsewithpan SE_EXP_MAX, 0
+	createvisualtask AnimTask_LoadHealthboxPalsForLevelUp, 2
+	delay 0
+	createvisualtask AnimTask_FlashHealthboxOnLevelUp, 5, 0, 0
+	waitforvisualfinish
+	createvisualtask AnimTask_FreeHealthboxPalsForLevelUp, 2
+	end
+
+@ Healthbox blue flash & blue gradient effect on level up when can evolve
+Special_LevelUpEvolve:
+	playsewithpan SE_EXP_MAX, 0
+	createvisualtask AnimTask_LevelUpHealthBox, 2
 	createvisualtask AnimTask_LoadHealthboxPalsForLevelUp, 2
 	delay 0
 	createvisualtask AnimTask_FlashHealthboxOnLevelUp, 5, 0, 0
