@@ -10368,7 +10368,8 @@ const struct Item gItems[] =
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_FIELD,
         .fieldUseFunc = ItemUseOutOfBattle_PokeVial,
-
+    },
+    
     [ITEM_BERSERK_GENE] =
     {
         .name = _("Berserk Gene"),

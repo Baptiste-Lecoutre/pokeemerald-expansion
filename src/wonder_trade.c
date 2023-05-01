@@ -5,6 +5,7 @@
 #include "text.h"
 #include "event_data.h"
 #include "region_map.h"
+#include "battle_util.h"
 #include "constants/species.h"
 #include "constants/items.h"
 #include "constants/abilities.h"
@@ -1198,7 +1199,7 @@ bool32 IsMegaPreEvolution(u16 species, u16 heldStone, bool32 found)
     {
         if (gEvolutionTable[species][i].targetSpecies != SPECIES_NONE)
         {
-            if (gEvolutionTable[species][i].method == EVO_MEGA_EVOLUTION && gEvolutionTable[species][i].param == heldStone)
+            if (DoesSpeciesUseHoldItemToChangeForm(species, heldStone))
                 found = TRUE;
 
             found = IsMegaPreEvolution(gEvolutionTable[species][i].targetSpecies, heldStone, found);

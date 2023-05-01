@@ -49,6 +49,7 @@
 #include "constants/party_menu.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "constants/form_change_types.h"
 #ifdef TX_RANDOMIZER_AND_CHALLENGES
     //#include "tx_randomizer_and_challenges.h"
 #endif
@@ -6504,6 +6505,7 @@ static u8 PrintPreEvolutions(u8 taskId, u16 species)
 {
     u16 i;
     u16 j;
+    u16 k;
 
     u8 base_x = 13+8;
     u8 base_y = 51;
@@ -6533,15 +6535,29 @@ static u8 PrintPreEvolutions(u8 taskId, u16 species)
         {
             if (gEvolutionTable[i][j].targetSpecies == species)
             {
+                const struct FormChange *formChanges = gFormChangeTablePointers[i];
                 preEvolutionOne = i;
                 numPreEvolutions += 1;
-                #ifdef POKEMON_EXPANSION
+                
+                if (formChanges != NULL)
+                {
+                    for (k = 0; formChanges[k].method != FORM_CHANGE_TERMINATOR; k++)
+                    {
+                        if (formChanges[k].method == FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM && species != formChanges[k].targetSpecies)
+                        {
+                            CopyItemName(formChanges[k].param1, gStringVar2); //item
+                            isMega = TRUE;
+                        }
+                    }
+                }
+                
+                /*#ifdef POKEMON_EXPANSION
                     if (gEvolutionTable[i][j].method == EVO_MEGA_EVOLUTION)
                     {
                         CopyItemName(gEvolutionTable[i][j].param, gStringVar2); //item
                         isMega = TRUE;
                     }
-                #endif
+                #endif*/
                 break;
             }
         }
@@ -6649,14 +6665,8 @@ static u8 PrintEvolutionTargetSpeciesAndMethod(u8 taskId, u16 species, u8 depth,
     //Calculate number of possible direct evolutions (e.g. Eevee has 5 but torchic has 1)
     for (i = 0; i < EVOS_PER_MON; i++)
     {
-        #ifndef POKEMON_EXPANSION
-            if (gEvolutionTable[species][i].method != 0)
-                times += 1;
-        #endif
-        #ifdef POKEMON_EXPANSION
-            if (gEvolutionTable[species][i].method != 0 && gEvolutionTable[species][i].method != EVO_MEGA_EVOLUTION)
-                times += 1;
-        #endif
+        if (gEvolutionTable[species][i].method != 0)
+            times += 1;
     }
     gTasks[taskId].data[3] = times;
     sPokedexView->sEvoScreenData.numAllEvolutions += times;

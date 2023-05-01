@@ -236,4 +236,6 @@ bool32 IsMyceliumMightOnField(void);
 bool8 ChangeTypeBasedOnTerrain(u8 battlerId);
 void RemoveConfusionStatus(u8 battlerId);
 
+bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId);
+
 #endif // GUARD_BATTLE_UTIL_H
