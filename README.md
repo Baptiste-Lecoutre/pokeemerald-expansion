@@ -127,6 +127,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - When lvling up in battle, use vanilla's unused blue gradient anim of healthbox if mon can evolve (credits to Lunos & Flametix for their implementation)
 - Set up an advanced version of RHH PR#2909 for GEN6+ XP SHARE
 - Added the mints functionnality based on Ghoulslash's implementation & Merrp's algorithm to change personnality to obtain the correct nature
+- Herb shop in Lavaridge sells every mint
 - More to be added
 
 ## TODO
@@ -197,10 +198,10 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - ReUse of origin cave post-game
 - Buff the encounters at Sky Pillar after the conflict in Sootopolis is solved.
 - When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
-- Add a NPC that changes IVs, another one that changes EVs, and a last one that changes nature. See Evie&Ivy in IE.
+- Add a NPC that changes IVs, another one that changes EVs. See Evie&Ivy in IE.
 - Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Try to recover the item desc header native behavior by checking if the player has the item. destroying window could be checked by its window id
-- Add a teleporter to be able to change between regionals forms of pokemons? (galarian birds, alola, galar...) -> ingame trade with yourself
+- Add a teleporter to be able to change between regionals forms of pokemons? (galarian birds, alola, galar...) -> https://www.pokecommunity.com/showpost.php?p=10215480&postcount=169
 - Add soaring & Eon flute?
 - Change some interfaces to have a visual identity
