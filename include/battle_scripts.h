@@ -149,9 +149,6 @@ extern const u8 BattleScript_TraceActivatesEnd3[];
 extern const u8 BattleScript_RainDishActivates[];
 extern const u8 BattleScript_SandstreamActivates[];
 extern const u8 BattleScript_ShedSkinActivates[];
-extern const u8 BattleScript_WeatherFormChanges[];
-extern const u8 BattleScript_WeatherFormChangesLoop[];
-extern const u8 BattleScript_WeatherFormChange[];
 extern const u8 BattleScript_IntimidateActivates[];
 extern const u8 BattleScript_DroughtActivates[];
 extern const u8 BattleScript_TookAttack[];
@@ -461,6 +458,7 @@ extern const u8 BattleScript_CouldntFullyProtect[];
 extern const u8 BattleScript_MoveEffectStockpileWoreOff[];
 extern const u8 BattleScript_StealthRockActivates[];
 extern const u8 BattleScript_SpikesActivates[];
+extern const u8 BattleScript_BerserkGeneRet[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];

@@ -3,6 +3,7 @@
 
 // should they be included here or included individually by every file?
 #include "constants/battle.h"
+#include "constants/form_change_types.h"
 #include "battle_main.h"
 #include "battle_message.h"
 #include "battle_util.h"
@@ -61,6 +62,7 @@ struct ResourceFlags
 struct DisableStruct
 {
     u32 transformedMonPersonality;
+    u32 transformedMonOtId;
     u16 disabledMove;
     u16 encoredMove;
     u8 protectUses;
@@ -477,13 +479,7 @@ struct LinkBattlerHeader
 struct MegaEvolutionData
 {
     u8 toEvolve; // As flags using gBitTable.
-    u8 evolvedPartyIds[2]; // As flags using gBitTable;
     bool8 alreadyEvolved[4]; // Array id is used for mon position.
-    u16 evolvedSpecies[MAX_BATTLERS_COUNT];
-    u16 playerEvolvedSpecies;
-    u8 primalRevertedPartyIds[2]; // As flags using gBitTable;
-    u16 primalRevertedSpecies[MAX_BATTLERS_COUNT];
-    u16 playerPrimalRevertedSpecies;
     u8 battlerId;
     bool8 playerSelect;
     u8 triggerSpriteId;
@@ -726,6 +722,17 @@ struct BattleStruct
 
 #define SET_STATCHANGER(statId, stage, goesDown)(gBattleScripting.statChanger = (statId) + ((stage) << 3) + (goesDown << 7))
 #define SET_STATCHANGER2(dst, statId, stage, goesDown)(dst = (statId) + ((stage) << 3) + (goesDown << 7))
+
+static inline struct Pokemon *GetSideParty(u32 side)
+{
+    return side == B_SIDE_PLAYER ? gPlayerParty : gEnemyParty;
+}
+
+static inline struct Pokemon *GetBattlerParty(u32 battlerId)
+{
+    extern u8 GetBattlerSide(u8 battler);
+    return GetSideParty(GetBattlerSide(battlerId));
+}
 
 // NOTE: The members of this struct have hard-coded offsets
 //       in include/constants/battle_script_commands.h
@@ -970,6 +977,7 @@ extern u8 gBattlerStatusSummaryTaskId[MAX_BATTLERS_COUNT];
 extern u8 gBattlerInMenuId;
 extern bool8 gDoingBattleAnim;
 extern u32 gTransformedPersonalities[MAX_BATTLERS_COUNT];
+extern u32 gTransformedOtIds[MAX_BATTLERS_COUNT];
 extern u8 gPlayerDpadHoldFrames;
 extern struct BattleSpriteData *gBattleSpritesDataPtr;
 extern struct MonSpritesGfx *gMonSpritesGfxPtr;

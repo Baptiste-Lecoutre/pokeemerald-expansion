@@ -173,12 +173,11 @@ u16 CalcPartyMonTypeEffectivenessMultiplier(u16 move, u16 speciesDef, u16 abilit
 u16 GetTypeModifier(u8 atkType, u8 defType);
 s32 GetStealthHazardDamage(u8 hazardType, u8 battlerId);
 s32 GetStealthHazardDamageByTypesAndHP(u8 hazardType, u8 type1, u8 type2, u32 maxHp);
-u16 GetMegaEvolutionSpecies(u16 preEvoSpecies, u16 heldItemId);
-u16 GetPrimalReversionSpecies(u16 preEvoSpecies, u16 heldItemId);
-u16 GetWishMegaEvolutionSpecies(u16 preEvoSpecies, u16 moveId1, u16 moveId2, u16 moveId3, u16 moveId4);
 bool32 CanMegaEvolve(u8 battlerId);
-void UndoMegaEvolution(u32 monId);
-void UndoFormChange(u32 monId, u32 side, bool32 isSwitchingOut);
+bool32 IsBattlerMegaEvolved(u8 battlerId);
+bool32 IsBattlerPrimalReverted(u8 battlerId);
+u16 GetBattleFormChangeTargetSpecies(u8 battlerId, u16 method);
+bool32 TryBattleFormChange(u8 battlerId, u16 method);
 bool32 DoBattlersShareType(u32 battler1, u32 battler2);
 bool32 CanBattlerGetOrLoseItem(u8 battlerId, u16 itemId);
 u32 GetIllusionMonSpecies(u32 battlerId);
@@ -188,7 +187,6 @@ bool32 SetIllusionMon(struct Pokemon *mon, u32 battlerId);
 bool8 ShouldGetStatBadgeBoost(u16 flagId, u8 battlerId);
 u8 GetBattleMoveSplit(u32 moveId);
 bool32 TestMoveFlags(u16 move, u32 flag);
-struct Pokemon *GetBattlerPartyData(u8 battlerId);
 bool32 CanFling(u8 battlerId);
 bool32 IsTelekinesisBannedSpecies(u16 species);
 bool32 IsHealBlockPreventingMove(u32 battler, u32 move);
@@ -207,13 +205,15 @@ void SortBattlersBySpeed(u8 *battlers, bool8 slowToFast);
 bool32 CompareStat(u8 battlerId, u8 statId, u8 cmpTo, u8 cmpKind);
 bool32 TryRoomService(u8 battlerId);
 void BufferStatChange(u8 battlerId, u8 statId, u8 stringId);
-void DoBurmyFormChange(u32 monId);
 bool32 BlocksPrankster(u16 move, u8 battlerPrankster, u8 battlerDef, bool32 checkTarget);
 u16 GetUsedHeldItem(u8 battler);
 bool32 IsBattlerWeatherAffected(u8 battlerId, u32 weatherFlags);
 u32 GetBattlerMoveTargetType(u8 battlerId, u16 move);
 bool32 CanTargetBattler(u8 battlerAtk, u8 battlerDef, u16 move);
 bool8 IsMoveAffectedByParentalBond(u16 move, u8 battlerId);
+void CopyMonLevelAndBaseStatsToBattleMon(u32 battler, struct Pokemon *mon);
+void CopyMonAbilityAndTypesToBattleMon(u32 battler, struct Pokemon *mon);
+void RecalcBattlerStats(u32 battler, struct Pokemon *mon);
 // Ability checks
 bool32 IsRolePlayBannedAbilityAtk(u16 ability);
 bool32 IsRolePlayBannedAbility(u16 ability);
@@ -234,5 +234,6 @@ u32 GetBattlerFriendshipScore(u8 battlerId);
 u32 CountBattlerStatIncreases(u8 battlerId, bool32 countEvasionAcc);
 bool32 IsMyceliumMightOnField(void);
 bool8 ChangeTypeBasedOnTerrain(u8 battlerId);
+void RemoveConfusionStatus(u8 battlerId);
 
 #endif // GUARD_BATTLE_UTIL_H

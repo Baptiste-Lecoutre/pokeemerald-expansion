@@ -3912,3 +3912,8 @@ static const u8 sPokeVialDesc[] = _(
     "Potent medicine\n"
     "that fully restores\n"
     "all Pokémon.");
+
+static const u8 sBerserkGene[] = _(
+    "Sharply boosts\n"
+    "Attack, but causes\n"
+    "lasting confusion.");

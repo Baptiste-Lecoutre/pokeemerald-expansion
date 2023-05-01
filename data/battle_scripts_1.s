@@ -1444,8 +1444,9 @@ BattleScript_EffectBurnUp:
 	goto BattleScript_ButItFailed
 
 BattleScript_BurnUpWorks:
-	setmoveeffect MOVE_EFFECT_BURN_UP | MOVE_EFFECT_CERTAIN
-	goto BattleScript_EffectHit
+	setmoveeffect MOVE_EFFECT_BURN_UP | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
+	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
+	goto BattleScript_HitFromCritCalc
 
 BattleScript_BurnUpRemoveType::
 	losetype BS_ATTACKER, TYPE_FIRE
@@ -1461,8 +1462,9 @@ BattleScript_EffectDoubleShock:
 	goto BattleScript_ButItFailed
 
 BattleScript_DoubleShockWorks:
-	setmoveeffect MOVE_EFFECT_DOUBLE_SHOCK | MOVE_EFFECT_CERTAIN
-	goto BattleScript_EffectHit
+	setmoveeffect MOVE_EFFECT_DOUBLE_SHOCK | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
+	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
+	goto BattleScript_HitFromCritCalc
 
 BattleScript_DoubleShockRemoveType::
 	losetype BS_ATTACKER, TYPE_ELECTRIC
@@ -5174,7 +5176,7 @@ BattleScript_MoveWeatherChange::
 	waitanimation
 	printfromtable gMoveWeatherChangeStringIds
 	waitmessage B_WAIT_TIME_LONG
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectSunnyDay::
@@ -6878,7 +6880,7 @@ BattleScript_OverworldWeatherStarts::
 	printfromtable gWeatherStartsStringIds
 	waitmessage B_WAIT_TIME_LONG
 	playanimation_var BS_ATTACKER, sB_ANIM_ARG1
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_OverworldTerrain::
@@ -6944,14 +6946,14 @@ BattleScript_MagicRoomEnds::
 	waitmessage B_WAIT_TIME_LONG
 	end2
 
-BattleScript_GrassyTerrainEnds:
-	setbyte cMULTISTRING_CHOOSER, B_MSG_TERRAINENDS_GRASS
 BattleScript_TerrainEnds_Ret::
 	printfromtable gTerrainEndingStringIds
 	waitmessage B_WAIT_TIME_LONG
 	playanimation BS_ATTACKER, B_ANIM_RESTORE_BG
 	return
 
+BattleScript_GrassyTerrainEnds:
+	setbyte cMULTISTRING_CHOOSER, B_MSG_TERRAINENDS_GRASS
 BattleScript_TerrainEnds::
 	call BattleScript_TerrainEnds_Ret
 	end2
@@ -7874,14 +7876,13 @@ BattleScript_MegaEvolution::
 	printstring STRINGID_EMPTYSTRING3
 	trytrainerslidemegaevolutionmsg BS_ATTACKER
 	printstring STRINGID_MEGAEVOREACTING
-BattleScript_MegaEvolutionAfeterString:
+BattleScript_MegaEvolutionAfterString:
 	waitmessage B_WAIT_TIME_LONG
 	setbyte gIsCriticalHit, 0
 	handlemegaevo BS_ATTACKER, 0
-	handlemegaevo BS_ATTACKER, 1
 	playanimation BS_ATTACKER, B_ANIM_MEGA_EVOLUTION
 	waitanimation
-	handlemegaevo BS_ATTACKER, 2
+	handlemegaevo BS_ATTACKER, 1
 	printstring STRINGID_MEGAEVOEVOLVED
 	waitmessage B_WAIT_TIME_LONG
 	switchinabilities BS_ATTACKER
@@ -7891,7 +7892,7 @@ BattleScript_WishMegaEvolution::
 	printstring STRINGID_EMPTYSTRING3
 	trytrainerslidemegaevolutionmsg BS_ATTACKER
 	printstring STRINGID_FERVENTWISHREACHED
-	goto BattleScript_MegaEvolutionAfeterString
+	goto BattleScript_MegaEvolutionAfterString
 
 BattleScript_PrimalReversion::
 	printstring STRINGID_EMPTYSTRING3
@@ -7940,6 +7941,7 @@ BattleScript_AttackerFormChangeEnd3::
 
 BattleScript_AttackerFormChangeEnd3NoPopup::
 	call BattleScript_AttackerFormChangeNoPopup
+	end3
 
 BattleScript_AttackerFormChangeMoveEffect::
 	waitmessage 1
@@ -8434,7 +8436,7 @@ BattleScript_DrizzleActivates::
 	printstring STRINGID_PKMNMADEITRAIN
 	waitstate
 	playanimation BS_BATTLER_0, B_ANIM_RAIN_CONTINUES
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_AbilityRaisesDefenderStat::
@@ -8596,7 +8598,7 @@ BattleScript_SandstreamActivates::
 	printstring STRINGID_PKMNSXWHIPPEDUPSANDSTORM
 	waitstate
 	playanimation BS_BATTLER_0, B_ANIM_SANDSTORM_CONTINUES
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_SandSpitActivates::
@@ -8605,7 +8607,7 @@ BattleScript_SandSpitActivates::
 	printstring STRINGID_ASANDSTORMKICKEDUP
 	waitstate
 	playanimation BS_BATTLER_0, B_ANIM_SANDSTORM_CONTINUES
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	return
 
 BattleScript_ShedSkinActivates::
@@ -8615,37 +8617,15 @@ BattleScript_ShedSkinActivates::
 	updatestatusicon BS_ATTACKER
 	end3
 
-BattleScript_WeatherFormChanges::
-	setbyte sBATTLER, 0
-BattleScript_WeatherFormChangesLoop::
-	tryweatherformdatachange
-	activateweatherchangeabilities BS_SCRIPTING
-	addbyte sBATTLER, 1
-	jumpifbytenotequal sBATTLER, gBattlersCount, BattleScript_WeatherFormChangesLoop
-	return
-
-BattleScript_WeatherFormChange::
-	call BattleScript_DoWeatherFormChange
-	end3
-
-BattleScript_DoWeatherFormChange::
-	copybyte gBattlerAbility, sBATTLER
-.if B_WEATHER_FORMS >= GEN_5
-	jumpifspecies BS_SCRIPTING, SPECIES_CASTFORM, BattleScript_DoWeatherFormChange_ForecastCheck
-BattleScript_DoWeatherFormChange_FlowerGiftCheck:
-	jumpifability BS_SCRIPTING, ABILITY_FLOWER_GIFT, BattleScript_DoWeatherFormChange_PopUp
-	goto BattleScript_DoWeatherFormChange_AfterPopUp
-.endif
-BattleScript_DoWeatherFormChange_ForecastCheck:
-	jumpifability BS_SCRIPTING, ABILITY_FORECAST, BattleScript_DoWeatherFormChange_PopUp
-	goto BattleScript_DoWeatherFormChange_AfterPopUp
-BattleScript_DoWeatherFormChange_PopUp:
-	call BattleScript_AbilityPopUp
-BattleScript_DoWeatherFormChange_AfterPopUp:
-	doweatherformchangeanimation
-	waitstate
-	printstring STRINGID_PKMNTRANSFORMED
-	waitmessage B_WAIT_TIME_LONG
+BattleScript_ActivateWeatherAbilities:
+	copybyte sBATTLER, gBattlerAttacker
+	setbyte gBattlerAttacker, 0
+BattleScript_ActivateWeatherAbilities_Loop:
+	activateweatherchangeabilities BS_ATTACKER
+BattleScript_ActivateWeatherAbilities_Increment:
+	addbyte gBattlerAttacker, 1
+	jumpifbytenotequal gBattlerAttacker, gBattlersCount, BattleScript_ActivateWeatherAbilities_Loop
+	copybyte gBattlerAttacker, sBATTLER
 	return
 
 BattleScript_TryAdrenalineOrb:
@@ -8740,7 +8720,7 @@ BattleScript_DroughtActivates::
 	printstring STRINGID_PKMNSXINTENSIFIEDSUN
 	waitstate
 	playanimation BS_BATTLER_0, B_ANIM_SUN_CONTINUES
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_DesolateLandActivates::
@@ -8749,7 +8729,7 @@ BattleScript_DesolateLandActivates::
 	printstring STRINGID_EXTREMELYHARSHSUNLIGHT
 	waitstate
 	playanimation BS_BATTLER_0, B_ANIM_SUN_CONTINUES
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_DesolateLandEvaporatesWaterTypeMoves::
@@ -8769,7 +8749,7 @@ BattleScript_PrimordialSeaActivates::
 	printstring STRINGID_HEAVYRAIN
 	waitstate
 	playanimation BS_BATTLER_0, B_ANIM_RAIN_CONTINUES
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_PrimordialSeaFizzlesOutFireTypeMoves::
@@ -8846,7 +8826,7 @@ BattleScript_SnowWarningActivates::
 	printstring STRINGID_SNOWWARNINGHAIL
 	waitstate
 	playanimation BS_BATTLER_0, B_ANIM_HAIL_CONTINUES
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_ActivateTerrainEffects:
@@ -10009,7 +9989,7 @@ BattleScript_AnnounceAirLockCloudNine::
 	call BattleScript_AbilityPopUp
 	printstring STRINGID_AIRLOCKACTIVATES
 	waitmessage B_WAIT_TIME_LONG
-	call BattleScript_WeatherFormChanges
+	call BattleScript_ActivateWeatherAbilities
 	end3
 
 BattleScript_QuickClawActivation::
@@ -10395,3 +10375,30 @@ BattleScript_CouldntFullyProtect::
 	printstring STRINGID_COULDNTFULLYPROTECT
 	waitmessage B_WAIT_TIME_LONG
 	return
+
+BattleScript_BerserkGeneRet::
+BattleScript_BerserkGeneRet_Anim:
+	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_BerserkGeneRet_TryConfuse
+	setgraphicalstatchangevalues
+	playanimation BS_SCRIPTING, B_ANIM_HELD_ITEM_EFFECT, sB_ANIM_ARG1
+	setbyte cMULTISTRING_CHOOSER, B_MSG_STAT_ROSE_ITEM
+	call BattleScript_StatUp
+BattleScript_BerserkGeneRet_TryConfuse:
+	jumpifability BS_SCRIPTING, ABILITY_OWN_TEMPO, BattleScript_BerserkGeneRet_OwnTempoPrevents
+	jumpifsafeguard BattleScript_BerserkGeneRet_SafeguardProtected
+	setmoveeffect MOVE_EFFECT_CONFUSION
+	seteffectprimary
+	goto BattleScript_BerserkGeneRet_End
+BattleScript_BerserkGeneRet_SafeguardProtected::
+	pause B_WAIT_TIME_SHORT
+	printstring STRINGID_PKMNUSEDSAFEGUARD
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_BerserkGeneRet_End
+BattleScript_BerserkGeneRet_OwnTempoPrevents:
+	pause B_WAIT_TIME_SHORT
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_PKMNPREVENTSCONFUSIONWITH
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_BerserkGeneRet_End:
+	removeitem BS_SCRIPTING
+	end3
