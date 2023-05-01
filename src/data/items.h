@@ -1068,252 +1068,273 @@ const struct Item gItems[] =
     {
         .name = _("Lonely Mint"),
         .itemId = ITEM_LONELY_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sLonelyMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_LONELY,
     },
 
     [ITEM_ADAMANT_MINT] =
     {
         .name = _("Adamant Mint"),
         .itemId = ITEM_ADAMANT_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sAdamantMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_ADAMANT,
     },
 
     [ITEM_NAUGHTY_MINT] =
     {
         .name = _("Naughty Mint"),
         .itemId = ITEM_NAUGHTY_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sNaughtyMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_NAUGHTY,
     },
 
     [ITEM_BRAVE_MINT] =
     {
         .name = _("Brave Mint"),
         .itemId = ITEM_BRAVE_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sBraveMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_BRAVE,
     },
 
     [ITEM_BOLD_MINT] =
     {
         .name = _("Bold Mint"),
         .itemId = ITEM_BOLD_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sBoldMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_BOLD,
     },
 
     [ITEM_IMPISH_MINT] =
     {
         .name = _("Impish Mint"),
         .itemId = ITEM_IMPISH_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sImpishMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_IMPISH,
     },
 
     [ITEM_LAX_MINT] =
     {
         .name = _("Lax Mint"),
         .itemId = ITEM_LAX_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sLaxMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_LAX,
     },
 
     [ITEM_RELAXED_MINT] =
     {
         .name = _("Relaxed Mint"),
         .itemId = ITEM_RELAXED_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sRelaxedMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_RELAXED,
     },
 
     [ITEM_MODEST_MINT] =
     {
         .name = _("Modest Mint"),
         .itemId = ITEM_MODEST_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sModestMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_MODEST,
     },
 
     [ITEM_MILD_MINT] =
     {
         .name = _("Mild Mint"),
         .itemId = ITEM_MILD_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sMildMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_MILD,
     },
 
     [ITEM_RASH_MINT] =
     {
         .name = _("Rash Mint"),
         .itemId = ITEM_RASH_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sRashMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_RASH,
     },
 
     [ITEM_QUIET_MINT] =
     {
         .name = _("Quiet Mint"),
         .itemId = ITEM_QUIET_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sQuietMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_QUIET,
     },
 
     [ITEM_CALM_MINT] =
     {
         .name = _("Calm Mint"),
         .itemId = ITEM_CALM_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sCalmMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_CALM,
     },
 
     [ITEM_GENTLE_MINT] =
     {
         .name = _("Gentle Mint"),
         .itemId = ITEM_GENTLE_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sGentleMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_GENTLE,
     },
 
     [ITEM_CAREFUL_MINT] =
     {
         .name = _("Careful Mint"),
         .itemId = ITEM_CAREFUL_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sCarefulMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_CAREFUL,
     },
 
     [ITEM_SASSY_MINT] =
     {
         .name = _("Sassy Mint"),
         .itemId = ITEM_SASSY_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sSassyMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_SASSY,
     },
 
     [ITEM_TIMID_MINT] =
     {
         .name = _("Timid Mint"),
         .itemId = ITEM_TIMID_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sTimidMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_TIMID,
     },
 
     [ITEM_HASTY_MINT] =
     {
         .name = _("Hasty Mint"),
         .itemId = ITEM_HASTY_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sHastyMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_HASTY,
     },
 
     [ITEM_JOLLY_MINT] =
     {
         .name = _("Jolly Mint"),
         .itemId = ITEM_JOLLY_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sJollyMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_JOLLY,
     },
 
     [ITEM_NAIVE_MINT] =
     {
         .name = _("Naive Mint"),
         .itemId = ITEM_NAIVE_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sNaiveMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_NAIVE,
     },
 
     [ITEM_SERIOUS_MINT] =
     {
         .name = _("Serious Mint"),
         .itemId = ITEM_SERIOUS_MINT,
-        .price = 20,
+        .price = 20000,
         .description = sSeriousMintDesc,
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Mints,
         .flingPower = 10,
+        .secondaryId = NATURE_SERIOUS,
     },
 
 // Candy

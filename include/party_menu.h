@@ -112,5 +112,6 @@ u16 GetTMHMMoves(u16 position);
 #endif
 
 void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
+void ItemUseCB_Mints(u8 taskId, TaskFunc task);
 
 #endif // GUARD_PARTY_MENU_H

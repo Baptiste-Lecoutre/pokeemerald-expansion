@@ -125,6 +125,8 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - inverse type chart option
 - Berry trees no longer die and EV-reducing berries grow faster with more yields
 - When lvling up in battle, use vanilla's unused blue gradient anim of healthbox if mon can evolve (credits to Lunos & Flametix for their implementation)
+- Set up an advanced version of RHH PR#2909 for GEN6+ XP SHARE
+- Added the mints functionnality based on Ghoulslash's implementation & Merrp's algorithm to change personnality to obtain the correct nature
 - More to be added
 
 ## TODO
@@ -199,5 +201,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Try to recover the item desc header native behavior by checking if the player has the item. destroying window could be checked by its window id
-- Add a teleporter to be able to change between regionals forms of pokemons? (galarian birds, alola, galar...)
+- Add a teleporter to be able to change between regionals forms of pokemons? (galarian birds, alola, galar...) -> ingame trade with yourself
 - Add soaring & Eon flute?
+- Change some interfaces to have a visual identity

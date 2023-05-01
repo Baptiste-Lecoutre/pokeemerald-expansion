@@ -1410,4 +1410,10 @@ static void ItemUseOnFieldCB_PokeVial(u8 taskId)
     DisplayItemMessageOnField(taskId, gText_UsedPokeVial, Task_CloseCantUseKeyItemMessage);
 }
 
+void ItemUseOutOfBattle_Mints(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_Mints;
+    SetUpItemUseCallback(taskId);
+}
+
 #undef tUsingRegisteredKeyItem

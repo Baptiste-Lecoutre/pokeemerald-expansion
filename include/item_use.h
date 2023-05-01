@@ -52,5 +52,6 @@ void ItemUseOutOfBattle_SootSack(u8);
 u16 GetAshCount(void);
 void ItemUseOutOfBattle_PokeBall(u8);
 void ItemUseOutOfBattle_PokeVial(u8);
+void ItemUseOutOfBattle_Mints(u8 taskId);
 
 #endif // GUARD_ITEM_USE_H
