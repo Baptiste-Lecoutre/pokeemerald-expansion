@@ -537,3 +537,13 @@ gSpecials::
 	def_special SetTotemBoost
 	def_special TrySpecialOverworldEvo
 	def_special CreateWonderTradePokemon
+	def_special BufferChosenMonIV
+	def_special BufferChosenMonAllIVs
+	def_special ChangeChosenMonIVs
+	def_special ChangeChosenMonHiddenPower
+	def_special BufferChosenMonEV
+	def_special BufferChosenMonAllEVs
+	def_special IncreaseChosenMonEVs
+	def_special ResetChosenMonEVs
+	def_special CheckChosenMonCanGainEVs
+	def_special AreChosenMonEVsMaxedOut
