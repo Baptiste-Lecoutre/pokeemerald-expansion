@@ -6816,15 +6816,15 @@ BattleScript_TryLearnMoveLoop::
 BattleScript_AskToLearnMove::
 	buffermovetolearn
 	printstring STRINGID_TRYTOLEARNMOVE1
-	printstring STRINGID_TRYTOLEARNMOVE2
+@	printstring STRINGID_TRYTOLEARNMOVE2
 	printstring STRINGID_TRYTOLEARNMOVE3
 	waitstate
 	setbyte sLEARNMOVE_STATE, 0
 	yesnoboxlearnmove BattleScript_ForgotAndLearnedNewMove
-	printstring STRINGID_STOPLEARNINGMOVE
-	waitstate
-	setbyte sLEARNMOVE_STATE, 0
-	yesnoboxstoplearningmove BattleScript_AskToLearnMove
+@	printstring STRINGID_STOPLEARNINGMOVE
+@	waitstate
+@	setbyte sLEARNMOVE_STATE, 0
+@	yesnoboxstoplearningmove BattleScript_AskToLearnMove
 	printstring STRINGID_DIDNOTLEARNMOVE
 	goto BattleScript_TryLearnMoveLoop
 BattleScript_ForgotAndLearnedNewMove::
