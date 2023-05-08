@@ -102,3 +102,26 @@ Route114_LanettesHouse_Text_EmailFromBill:
 	.string "“From Bill\n"
 	.string "… … … … … … … …”$"
 
+Route114_LanettesHouse_EventScript_Teleporter::
+	lock
+	msgbox Route114_LanettesHouse_Text_Teleporter, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, Route114_LanettesHouse_EventScript_TeleporterEnd
+	special ChoosePartyMon
+	waitstate
+	goto_if_eq VAR_RESULT, PARTY_NOTHING_CHOSEN, Route114_LanettesHouse_EventScript_TeleporterEnd
+	call EventScript_TryTradeEvolution
+	releaseall
+	end
+
+EventScript_TryTradeEvolution::
+	special TryTradeEvolution
+	waitstate
+	return
+
+Route114_LanettesHouse_EventScript_TeleporterEnd::
+	releaseall
+	end
+
+Route114_LanettesHouse_Text_Teleporter:
+	.string "This is a teleporter! Do you want\n"
+	.string "a Pokémon to enter?$"

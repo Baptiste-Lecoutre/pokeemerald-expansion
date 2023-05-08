@@ -550,3 +550,4 @@ gSpecials::
 	def_special ScriptMenu_CreatePKMNCenterMoveTutorMultichoice
 	def_special GetPKMNCenterMoveListMultichoice
 	def_special GetBattleFrontierTutorMoveIndex
+	def_special TryTradeEvolution

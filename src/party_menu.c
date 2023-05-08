@@ -7407,6 +7407,29 @@ void ItemUseCB_PokeBall(u8 taskId, TaskFunc task)
     }
 }
 
+static void Task_TryTradeEvolution(u8 taskId)
+{
+    struct Pokemon * curSpecies = &gPlayerParty[gSpecialVar_0x8004];
+    u16 evoItem = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HELD_ITEM);
+    u16 evoTarget = GetEvolutionTargetSpecies(curSpecies, EVO_MODE_TRADE, evoItem, NULL);
+
+    if (evoTarget != SPECIES_NONE)
+    {
+        gCB2_AfterEvolution = gPartyMenu.exitCallback;
+        BeginEvolutionScene(curSpecies, evoTarget, FALSE, gSpecialVar_0x8004);
+        DestroyTask(taskId);
+    }
+    else
+    {
+        DestroyTask(taskId);
+        SetMainCallback2(CB2_ReturnToField);
+    }
+}
+
+void TryTradeEvolution(void)
+{
+    u8 taskId = CreateTask(Task_TryTradeEvolution, 10);
+}
 
 // mints
 #define tState          data[0]

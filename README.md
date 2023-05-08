@@ -131,6 +131,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added Evie&Ivy from inclement emerald
 - TMs in OW are in a yellow ball, megastones glitter
 - Move relearner can teach moves from pre-evos
+- Added a teleporter in Lanette's house, triggers trade evolutions
 - More to be added
 
 ## TODO
@@ -197,11 +198,9 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Buy starters in mauville game corner
 - Change wild encounters & trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
-- Add a means to make trade evos (see Bill's teleporter in hackrom)
 - ReUse of origin cave post-game
 - Buff the encounters at Sky Pillar after the conflict in Sootopolis is solved.
 - When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
-- Add a NPC that changes IVs, another one that changes EVs. See Evie&Ivy in IE.
 - Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Try to recover the item desc header native behavior by checking if the player has the item. destroying window could be checked by its window id
