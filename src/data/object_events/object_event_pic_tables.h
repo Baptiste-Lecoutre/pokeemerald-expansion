@@ -5512,3 +5512,19 @@ static const struct SpriteFrameImage sPicTable_RubySapphireMay[] = {
     overworld_frame(gObjectEventPic_RubySapphireMayNormal, 2, 4, 7),
     overworld_frame(gObjectEventPic_RubySapphireMayNormal, 2, 4, 8),
 };
+
+static const struct SpriteFrameImage sPicTable_GoldItemBall[] = {
+    obj_frame_tiles(gObjectEventPic_GoldItemBall),
+};
+
+static const struct SpriteFrameImage sPicTable_MegaStone[] = {
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 2),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 1),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
+    overworld_frame(gObjectEventPic_MegaStone, 2, 2, 0),
+};

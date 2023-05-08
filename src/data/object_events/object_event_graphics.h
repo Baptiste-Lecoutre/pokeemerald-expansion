@@ -797,6 +797,8 @@ const u32 gObjectEventPic_LugiaOld[] = INCBIN_U32("graphics/object_events/pics/p
 const u32 gObjectEventPic_HoOhOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/ho_oh_old.4bpp");
 const u32 gObjectEventPic_GroudonOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/groudon_old.4bpp");
 const u32 gObjectEventPic_KyogreOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/kyogre_old.4bpp");
+const u32 gObjectEventPic_GoldItemBall[] = INCBIN_U32("graphics/object_events/pics/misc/gold_item_ball.4bpp");
+const u32 gObjectEventPic_MegaStone[] = INCBIN_U32("graphics/object_events/pics/misc/mega_stone.4bpp");
 
 const u32 gObjectEventPic_VigorothMover[] = INCBIN_U32("graphics/object_events/pics/pokemon/vigoroth_mover.4bpp");
 const u32 gObjectEventPic_SudowoodoTree[] = INCBIN_U32("graphics/object_events/pics/pokemon/sudowoodo_tree.4bpp");
