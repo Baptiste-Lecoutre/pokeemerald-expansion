@@ -2393,6 +2393,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_HIDDEN_POWER:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 17;
+        task->tLeft = 20;
+        task->tTop = 1;
+        task->tWidth = 14;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2552,6 +2562,26 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_PokemonMoves,
         gText_Underpowered,
         gText_WhenInDanger,
+        gText_Exit
+    },
+    [SCROLL_MULTI_HIDDEN_POWER] = 
+    {
+        gText_HPFighting,
+        gText_HPFlying,
+        gText_HPPoison,
+        gText_HPGround,
+        gText_HPRock,
+        gText_HPBug,
+        gText_HPGhost,
+        gText_HPSteel,
+        gText_HPFire,
+        gText_HPWater,
+        gText_HPGrass,
+        gText_HPElectric,
+        gText_HPPsychic,
+        gText_HPIce,
+        gText_HPDragon,
+        gText_HPDark,
         gText_Exit
     }
 };
@@ -4219,7 +4249,7 @@ u8 Script_TryGainNewFanFromCounter(void)
 // gSpecialVar_0x8004 must be set to the party slot of the chosen Pokemon
 // gSpecialVar_0x8005 must be set to the index of the IV to be shown (0 for HP, 1 for Attack, etc.)
 // Result is stored in gSpecialVar_0x8006
-void BufferChosenMonIV (void)
+void BufferChosenMonIV(void)
 {
     u8 statToRead = gSpecialVar_0x8005;
 
@@ -4240,7 +4270,7 @@ void BufferChosenMonIV (void)
     }
 }
 
-void BufferChosenMonAllIVs (void)
+void BufferChosenMonAllIVs(void)
 {
     u32 i;
     u8 IV[NUM_STATS] = {0};
@@ -4260,7 +4290,7 @@ void BufferChosenMonAllIVs (void)
 // gSpecialVar_0x8004 must be set to the party slot of the Pokemon whose IVs should be changed
 // gSpecialVar_0x8005 must be set to the index of the IV to be changed (0 for HP, 1 for Attack, etc.)
 // gSpecialVar_0x8006 must be set to the value to change the IV to
-void ChangeChosenMonIVs (void)
+void ChangeChosenMonIVs(void)
 {
     u8 statToChange = gSpecialVar_0x8005;
     u8 newIV = gSpecialVar_0x8006;
@@ -4288,7 +4318,7 @@ void ChangeChosenMonIVs (void)
  * gSpecialVar_0x8007 must be set to the type of Hidden Power to change to (see table below,
  * or search ChangeChosenMonHiddenPower for a usage example)
  */
-void ChangeChosenMonHiddenPower (void) 
+void ChangeChosenMonHiddenPower(void) 
 {
     int i;
     u8 hiddenPowerType = gSpecialVar_0x8007;
@@ -4322,7 +4352,7 @@ void ChangeChosenMonHiddenPower (void)
 // gSpecialVar_0x8004 must be set to the party slot of the chosen Pokemon
 // gSpecialVar_0x8005 must be set to the index of the EV to be shown (0 for HP, 1 for Attack, etc.)
 // Result is stored in gSpecialVar_0x8006
-void BufferChosenMonEV (void)
+void BufferChosenMonEV(void)
 {
     u8 statToRead = gSpecialVar_0x8005;
 
@@ -4343,7 +4373,7 @@ void BufferChosenMonEV (void)
     }
 }
 
-void BufferChosenMonAllEVs (void)
+void BufferChosenMonAllEVs(void)
 {
     u32 i;
     u8 EV[NUM_STATS] = {0};
@@ -4364,7 +4394,7 @@ void BufferChosenMonAllEVs (void)
 // gSpecialVar_0x8005 must be set to the index of the EV to be changed (0 for HP, 1 for Attack, etc.)
 // gSpecialVar_0x8006 must be set to the number of EVs to add to that stat
 // Stores the new sum of the EVs in that stat in gSpecialVar_0x8007
-void IncreaseChosenMonEVs (void)
+void IncreaseChosenMonEVs(void)
 {
     u8 statToChange = gSpecialVar_0x8005;
     u8 increment = gSpecialVar_0x8006;
@@ -4416,7 +4446,7 @@ void IncreaseChosenMonEVs (void)
 }
 
 // Removes all of a chosen Pokemon's EVs
-void ResetChosenMonEVs (void)
+void ResetChosenMonEVs(void)
 {
     u32 i;
     u8 clearEVs = 0;
