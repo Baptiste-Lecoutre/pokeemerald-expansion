@@ -2403,6 +2403,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_POKE_CENTER_TUTOR:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 7;
+        task->tLeft = 20;
+        task->tTop = 1;
+        task->tWidth = 14;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2582,6 +2592,16 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_HPIce,
         gText_HPDragon,
         gText_HPDark,
+        gText_Exit
+    },
+    [SCROLL_MULTI_POKE_CENTER_TUTOR] = 
+    {
+        gText_RememberAMove,
+        gText_ForgetAMove,
+        gText_LearnANewMove,
+        gText_RateANickname,
+        gText_MysteryGift,
+        gText_ResetEvents,
         gText_Exit
     }
 };

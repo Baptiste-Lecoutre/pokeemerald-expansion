@@ -2032,3 +2032,11 @@ const u8 gText_Defense_Placeholder[] =  _("Defense{CLEAR_TO 0x36}{STR_VAR_3}");
 const u8 gText_Speed_Placeholder[] =    _("Speed{CLEAR_TO 0x36}{EXTRA_STR_VAR_1}");
 const u8 gText_SpAtk_Placeholder[] =    _("Sp. Atk{CLEAR_TO 0x36}{EXTRA_STR_VAR_2}");
 const u8 gText_SpDef_Placeholder[] =    _("Sp. Def{CLEAR_TO 0x36}{EXTRA_STR_VAR_3}");
+
+// Pokemon center move tutor/name rater menu
+const u8 gText_RememberAMove[] = _("Remember a move");
+const u8 gText_ForgetAMove[] = _("Forget a move");
+const u8 gText_LearnANewMove[] = _("Learn a new move");
+const u8 gText_RateANickname[] = _("Rate a nickname");
+const u8 gText_TrainEXP[] = _("Train Exp.");
+const u8 gText_ResetEvents[] = _("Reset Events");

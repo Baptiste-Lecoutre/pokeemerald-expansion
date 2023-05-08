@@ -3222,4 +3222,12 @@ extern const u8 gText_Speed_Placeholder[];
 extern const u8 gText_SpAtk_Placeholder[];
 extern const u8 gText_SpDef_Placeholder[];
 
+// Pokemon Center move tutor/name rater
+extern const u8 gText_RememberAMove[];
+extern const u8 gText_ForgetAMove[];
+extern const u8 gText_LearnANewMove[];
+extern const u8 gText_RateANickname[];
+extern const u8 gText_TrainEXP[];
+extern const u8 gText_ResetEvents[];
+
 #endif // GUARD_STRINGS_H
