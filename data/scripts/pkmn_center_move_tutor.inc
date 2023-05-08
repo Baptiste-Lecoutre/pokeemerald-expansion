@@ -8,7 +8,7 @@ PKMN_Center_Move_Tutor::
 	switch VAR_RESULT
 	case 0, PKMN_Center_MoveReminder_EventScript
 	case 1, PKMN_Center_MoveDeleter_EventScript
-	case 2, PKMN_Center_Move_Tutor_General_Exit @PKMN_Center_Move_Tutor_MoveTutorIntro
+	case 2, PKMN_Center_Move_Tutor_MoveTutorMenu
 	case 3, PKMN_Center_NameRater_EventScript
 	case 4, PKMN_Center_Move_Tutor_General_Exit @PKMN_Center_EventScript_Mystery_Gift
 	case 5, PKMN_Center_Move_Tutor_General_Exit @PKMN_Center_EventScript_Event_Reset
@@ -154,7 +154,140 @@ PKMN_Center_Move_Tutor_General_Exit::
 	releaseall
 	end
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Move Tutor @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+PKMN_Center_Move_Tutor_NoBadges::
+	msgbox PKMN_Center_Move_Tutor_Text_NoBadgeNoMoves, MSGBOX_DEFAULT
+	releaseall
+	end
+
+PKMN_Center_Move_Tutor_MoveTutorMenu::
+	setvar VAR_0x8008, 0
+	goto_if_unset FLAG_BADGE01_GET, PKMN_Center_Move_Tutor_NoBadges
+	msgbox PKMN_Center_Move_Tutor_Text_WhichSetofMoves, MSGBOX_DEFAULT
+	special ScriptMenu_CreatePKMNCenterMoveTutorMultichoice
+	waitstate
+	special GetPKMNCenterMoveListMultichoice
+	switch VAR_RESULT
+	case 0, PKMN_Center_Move_Tutor_MoveList1
+	case 1, PKMN_Center_Move_Tutor_MoveList2
+	case 2, PKMN_Center_Move_Tutor_MoveList3
+	case 3, PKMN_Center_Move_Tutor_MoveList4
+	case 4, PKMN_Center_Move_Tutor_MoveList5
+	case 5, PKMN_Center_Move_Tutor_MoveList6
+	case 6, PKMN_Center_Move_Tutor_MoveList7
+	case 7, PKMN_Center_Move_Tutor_ExitReturn
+	case MULTI_B_PRESSED, PKMN_Center_Move_Tutor_ExitReturn
+	releaseall
+	end
+	
+PKMN_Center_Move_Tutor_MoveList1::
+	setvar VAR_TEMP_C, SCROLL_MULTI_PC_TUTOR_SET_1
+	setvar VAR_TEMP_E, 0
+	setvar VAR_TEMP_F, 20
+	setvar VAR_0x8004, SCROLL_MULTI_PC_TUTOR_SET_1
+	setvar VAR_0x8006, 0
+	goto PKMN_Center_Move_Tutor_ChooseMove
+	
+PKMN_Center_Move_Tutor_MoveList2::
+	setvar VAR_TEMP_C, SCROLL_MULTI_PC_TUTOR_SET_2
+	setvar VAR_TEMP_E, 1
+	setvar VAR_TEMP_F, 18
+	setvar VAR_0x8004, SCROLL_MULTI_PC_TUTOR_SET_2
+	setvar VAR_0x8006, 0
+	goto PKMN_Center_Move_Tutor_ChooseMove
+
+PKMN_Center_Move_Tutor_MoveList3::
+	setvar VAR_TEMP_C, SCROLL_MULTI_PC_TUTOR_SET_3
+	setvar VAR_TEMP_E, 2
+	setvar VAR_TEMP_F, 18
+	setvar VAR_0x8004, SCROLL_MULTI_PC_TUTOR_SET_3
+	setvar VAR_0x8006, 0
+	goto PKMN_Center_Move_Tutor_ChooseMove
+
+PKMN_Center_Move_Tutor_MoveList4::
+	setvar VAR_TEMP_C, SCROLL_MULTI_PC_TUTOR_SET_4
+	setvar VAR_TEMP_E, 3
+	setvar VAR_TEMP_F, 18
+	setvar VAR_0x8004, SCROLL_MULTI_PC_TUTOR_SET_4
+	setvar VAR_0x8006, 0
+	goto PKMN_Center_Move_Tutor_ChooseMove
+
+PKMN_Center_Move_Tutor_MoveList5::
+	setvar VAR_TEMP_C, SCROLL_MULTI_PC_TUTOR_SET_5
+	setvar VAR_TEMP_E, 4
+	setvar VAR_TEMP_F, 18
+	setvar VAR_0x8004, SCROLL_MULTI_PC_TUTOR_SET_5
+	setvar VAR_0x8006, 0
+	goto PKMN_Center_Move_Tutor_ChooseMove
+
+PKMN_Center_Move_Tutor_MoveList6::
+	setvar VAR_TEMP_C, SCROLL_MULTI_PC_TUTOR_SET_6
+	setvar VAR_TEMP_E, 5
+	setvar VAR_TEMP_F, 18
+	setvar VAR_0x8004, SCROLL_MULTI_PC_TUTOR_SET_6
+	setvar VAR_0x8006, 0
+	goto PKMN_Center_Move_Tutor_ChooseMove
+
+PKMN_Center_Move_Tutor_MoveList7::
+	setvar VAR_TEMP_C, SCROLL_MULTI_PC_TUTOR_SET_7
+	setvar VAR_TEMP_E, 6
+	setvar VAR_TEMP_F, 15
+	setvar VAR_0x8004, SCROLL_MULTI_PC_TUTOR_SET_7
+	setvar VAR_0x8006, 0
+	goto PKMN_Center_Move_Tutor_ChooseMove
+
+PKMN_Center_Move_Tutor_ChooseMove::
+    msgbox PKMN_Center_Move_Tutor_Text_WhichMove, MSGBOX_DEFAULT
+	special ShowScrollableMultichoice
+	waitstate
+	copyvar VAR_TEMP_D, VAR_RESULT
+	goto_if_eq VAR_RESULT, VAR_TEMP_F, PKMN_Center_Move_Tutor_Exit @ VAR_TEMP_F is set to the ID of the "Exit" option
+	goto_if_eq VAR_RESULT MULTI_B_PRESSED, PKMN_Center_Move_Tutor_CloseDescriptionWindow
+	goto PKMN_Center_Move_Tutor_ConfirmMoveSelection
+	end
+	
+PKMN_Center_Move_Tutor_ConfirmMoveSelection::
+	copyvar VAR_0x8004, VAR_TEMP_D
+	copyvar VAR_0x8005, VAR_TEMP_E
+	special GetBattleFrontierTutorMoveIndex
+	special BufferBattleFrontierTutorMoveName
+	buffernumberstring 1, VAR_0x8008
+	copyvar VAR_0x8004, VAR_TEMP_C
+	msgbox PKMN_Center_Move_Tutor_Text_IsThisRightMove, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, PKMN_Center_Move_Tutor_CloseDescriptionWindow
+	goto PKMN_Center_Move_Tutor_TeachTutorMove
+	end
+
+PKMN_Center_Move_Tutor_TeachTutorMove::
+	msgbox PKMN_Center_Move_Tutor_Text_TeachMoveToWhichMon, MSGBOX_DEFAULT
+	@special GetBattleFrontierTutorMoveIndex
+	fadescreen FADE_TO_BLACK
+	special CloseBattleFrontierTutorWindow
+	special ChooseMonForMoveTutor
+	waitstate
+	goto_if_eq VAR_RESULT, FALSE, PKMN_Center_Move_Tutor_CloseDescriptionWindow
+	msgbox PKMN_Center_Move_Tutor_Text_TeachAnotherMove, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, PKMN_Center_Move_Tutor_Exit
+    goto PKMN_Center_Move_Tutor_CloseDescriptionWindow
+	end
+
+PKMN_Center_Move_Tutor_CloseDescriptionWindow::
+    special CloseBattleFrontierTutorWindow
+    goto PKMN_Center_Move_Tutor_MoveTutorMenu
+
+PKMN_Center_Move_Tutor_CloseDescriptionWindowReturn::
+    special CloseBattleFrontierTutorWindow
+    goto PKMN_Center_Move_Tutor
+
+PKMN_Center_Move_Tutor_ExitReturn::
+    goto PKMN_Center_Move_Tutor
+
+PKMN_Center_Move_Tutor_Exit::
+	special CloseBattleFrontierTutorWindow
+    msgbox PKMN_Center_Move_Tutor_Text_SeeYou, MSGBOX_DEFAULT
+	releaseall
+	end
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Strings @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 

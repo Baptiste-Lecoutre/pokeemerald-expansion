@@ -127,6 +127,7 @@
 #define MULTI_IV_MENU                      116
 #define MULTI_SUPER_TRAINING_MENU          117
 #define MULTI_EV_MENU                      118
+#define MULTI_PKMN_CENTER_TUTOR_SETS       119
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0
@@ -137,6 +138,17 @@
 #define SSTIDAL_SELECTION_FARAWAY_ISLAND   5
 #define SSTIDAL_SELECTION_EXIT             6
 #define SSTIDAL_SELECTION_COUNT            7
+
+// Pokemon Center Move Tutor Multichoice Selections
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_1       0
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_2       1
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_3       2
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_4       3
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_5       4
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_6       5
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_7       6
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_EXIT    7
+#define PKMNCENTER_MOVE_TUTOR_SELECTION_COUNT   8
 
 // Std String Ids
 #define STDSTRING_COOL             0

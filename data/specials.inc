@@ -547,3 +547,6 @@ gSpecials::
 	def_special ResetChosenMonEVs
 	def_special CheckChosenMonCanGainEVs
 	def_special AreChosenMonEVsMaxedOut
+	def_special ScriptMenu_CreatePKMNCenterMoveTutorMultichoice
+	def_special GetPKMNCenterMoveListMultichoice
+	def_special GetBattleFrontierTutorMoveIndex

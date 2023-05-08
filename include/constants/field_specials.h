@@ -42,6 +42,14 @@
 #define SCROLL_MULTI_BATTLE_TENT_RULES                    12
 #define SCROLL_MULTI_HIDDEN_POWER                         13
 #define SCROLL_MULTI_POKE_CENTER_TUTOR                    14
+#define SCROLL_MULTI_PC_TUTOR_SET_1                       15
+#define SCROLL_MULTI_PC_TUTOR_SET_2                       16
+#define SCROLL_MULTI_PC_TUTOR_SET_3                       17
+#define SCROLL_MULTI_PC_TUTOR_SET_4                       18
+#define SCROLL_MULTI_PC_TUTOR_SET_5                       19
+#define SCROLL_MULTI_PC_TUTOR_SET_6                       20
+#define SCROLL_MULTI_PC_TUTOR_SET_7                       21
+#define SCROLL_MULTI_PC_TUTOR_SET_SELECT                  22
 
 #define MAX_SCROLL_MULTI_ON_SCREEN 6
 #define MAX_SCROLL_MULTI_LENGTH 21

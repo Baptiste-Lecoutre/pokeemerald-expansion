@@ -7476,6 +7476,11 @@ u8 CanLearnTeachableMove(u16 species, u16 move)
             if (gTeachableLearnsets[species][i] == move)
                 return TRUE;
         }
+        for (i = 0; gLevelUpLearnsets[species][i].move != LEVEL_UP_END; i++ )
+        {
+            if (gLevelUpLearnsets[species][i].move == move)
+                return TRUE;
+        }
         return FALSE;
     }
 }
@@ -7578,7 +7583,7 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
             level = preEvLvl;
             species = GetPreEvolution(species);
         }
-        
+
         if (species == SPECIES_NONE)
             break;
 
