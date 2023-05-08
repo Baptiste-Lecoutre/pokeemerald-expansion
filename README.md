@@ -128,6 +128,9 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Set up an advanced version of RHH PR#2909 for GEN6+ XP SHARE
 - Added the mints functionnality based on Ghoulslash's implementation & Merrp's algorithm to change personnality to obtain the correct nature
 - Herb shop in Lavaridge sells every mint
+- Added Evie&Ivy from inclement emerald
+- TMs in OW are in a yellow ball, megastones glitter
+- Move relearner can teach moves from pre-evos
 - More to be added
 
 ## TODO
@@ -205,3 +208,4 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Add a teleporter to be able to change between regionals forms of pokemons? (galarian birds, alola, galar...) -> https://www.pokecommunity.com/showpost.php?p=10215480&postcount=169
 - Add soaring & Eon flute?
 - Change some interfaces to have a visual identity
+- Change pkmn center layouts to have the move tutor NPC
