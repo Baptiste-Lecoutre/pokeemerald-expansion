@@ -4420,6 +4420,16 @@
       "secondary_tileset": "gTileset_Rustboro",
       "border_filepath": "data/layouts/PetalburgWoods_2/border.bin",
       "blockdata_filepath": "data/layouts/PetalburgWoods_2/map.bin"
+    },
+    {
+      "id": "LAYOUT_PETALBURG_WOODS_3",
+      "name": "PetalburgWoods_3_Layout",
+      "width": 48,
+      "height": 44,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Rustboro",
+      "border_filepath": "data/layouts/PetalburgWoods_3/border.bin",
+      "blockdata_filepath": "data/layouts/PetalburgWoods_3/map.bin"
     }
   ]
 }
