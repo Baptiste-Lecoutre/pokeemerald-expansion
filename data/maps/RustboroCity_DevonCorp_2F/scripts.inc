@@ -382,3 +382,82 @@ RustboroCity_DevonCorp_2F_Text_WhatToWorkOnNext:
 	.string "One couldn't ask for a better\n"
 	.string "environment as an engineer.$"
 
+RustboroCity_DevonCorp_2F_EventScript_TradeScientist::
+	lock
+	faceplayer
+	call_if_eq VAR_FOSSIL_RESURRECTION_STATE, 1, RustboroCity_DevonCorp_2F_EventScript_SetFossilReady
+	msgbox RustboroCity_DevonCorp_2F_Text_DeviceToSimulateTrades, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, RustboroCity_DevonCorp_2F_EventScript_TradeScientistDoTrade
+	goto RustboroCity_DevonCorp_2F_EventScript_TradeScientistDeclineTrade
+	end
+
+RustboroCity_DevonCorp_2F_EventScript_TradeScientistDeclineTrade::
+	msgbox RustboroCity_DevonCorp_2F_Text_SimulateTradeDecline
+	release
+	end
+
+RustboroCity_DevonCorp_2F_EventScript_TradeScientistDoTrade::
+	msgbox RustboroCity_DevonCorp_2F_Text_WhichMonToTrade
+	special ChoosePartyMon
+	waitstate
+	goto_if_eq VAR_0x8004, 0xFF, RustboroCity_DevonCorp_2F_EventScript_TradeScientistDeclineTrade
+	special CanEvolveThroughTrade
+	goto_if_eq VAR_RESULT, SPECIES_NONE, RustboroCity_DevonCorp_2F_EventScript_TradeScientistNoTrade
+	msgbox RustboroCity_DevonCorp_2F_Text_AlrightLetsSee
+	copyvar VAR_0x8005, VAR_0x8004
+	setvar VAR_0x8004, 0xFFFF
+	special CreateInGameTradePokemon
+	special DoInGameTradeScene
+	waitstate
+	msgbox RustboroCity_DevonCorp_2F_Text_SimulateTradeDone
+	release
+	end
+
+RustboroCity_DevonCorp_2F_EventScript_TradeScientistNoTrade::
+	msgbox RustboroCity_DevonCorp_2F_Text_ThisIsNoTradeEvolution
+	release
+	end
+
+RustboroCity_DevonCorp_2F_Text_ThisIsNoTradeEvolution:
+	.string "My device only works on Pokémon\n"
+	.string "that evolve through trading…\p"
+	.string "In theory…$"
+
+RustboroCity_DevonCorp_2F_Text_SimulateTradeDone:
+	.string "Now, let's see…\p"
+	.string "This parameter looks good…\p"
+	.string "I'm seeing predictable phase arrays…\p"
+	.string "Uh… It's probably not a problem…\p"
+	.string "Probably…\p"
+	.string "Wait, it's done already?\p"
+	.string "Did it work?\p"
+	.string "I was so busy monitoring the device\n"
+	.string "that I missed the action…$"
+
+RustboroCity_DevonCorp_2F_Text_AlrightLetsSee:
+	.string "Alright, hold on…$"
+
+RustboroCity_DevonCorp_2F_Text_WhichMonToTrade:
+	.string "Excellent!\p"
+	.string "Which Pokémon do you want to use\n"
+	.string "for the trade simulation?$"
+
+RustboroCity_DevonCorp_2F_Text_SimulateTradeDecline:
+	.string "Oh…\n"
+	.string "I understand…\p"
+	.string "On second thought, it does\n"
+	.string "seem kind of risky, doesn't it?$"
+
+RustboroCity_DevonCorp_2F_Text_DeviceToSimulateTrades:
+	.string "I'm working on a device that can\n"
+	.string "simulate Pokémon trades.\p"
+	.string "As you might know, normally, certain\n"
+	.string "Pokémon only evolve when they are\l"
+	.string "traded with another person.\p"
+	.string "This device creates a setting\n"
+	.string "similar to the trading environment…\p"
+	.string "I think it is working but it still\n"
+	.string "needs some more testing…\p"
+	.string "Say………\p"
+	.string "Do you want to simulate a trade?$"
+

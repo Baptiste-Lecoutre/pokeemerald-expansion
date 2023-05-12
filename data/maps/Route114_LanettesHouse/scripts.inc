@@ -114,6 +114,8 @@ Route114_LanettesHouse_EventScript_Teleporter::
 	end
 
 EventScript_TryTradeEvolution::
+	special CanEvolveThroughTrade
+	goto_if_eq VAR_RESULT, SPECIES_NONE, Route114_LanettesHouse_EventScript_TeleporterEnd
 	special TryTradeEvolution
 	waitstate
 	return

@@ -1204,8 +1204,9 @@ static void Task_TradeEvolutionScene(u8 taskId)
         }
         break;
     case T_EVOSTATE_EVO_MON_ANIM:
-        if (IsSEPlaying())
+        if (IsSEPlaying() || gSaveBlock2Ptr->optionsSound == 2)
         {
+            m4aMPlayAllStop();
             // Restore bg, do mon anim/cry
             Free(sBgAnimPal);
             EvoScene_DoMonAnimAndCry(sEvoStructPtr->postEvoSpriteId, gTasks[taskId].tPostEvoSpecies);
