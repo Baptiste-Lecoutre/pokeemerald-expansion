@@ -431,7 +431,9 @@
     "AlteringCave",
     "MeteorFalls_StevensCave",
     "PetalburgWoods_2",
-    "PetalburgWoods_3"
+    "PetalburgWoods_3",
+    "EmberPath",
+    "AshenWoods"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",
