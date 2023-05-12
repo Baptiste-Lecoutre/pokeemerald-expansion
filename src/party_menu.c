@@ -7438,6 +7438,13 @@ void CanEvolveThroughTrade(void)
     gSpecialVar_Result = GetEvolutionTargetSpecies(curSpecies, EVO_MODE_TRADE, evoItem, NULL);
 }
 
+void CanRegionFormChange(void)
+{
+    u16 species = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES);
+
+    gSpecialVar_Result = GetNextRegionalForm(species);
+}
+
 // mints
 #define tState          data[0]
 #define tSpecies        data[1]

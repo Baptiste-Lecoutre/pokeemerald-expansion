@@ -552,3 +552,4 @@ gSpecials::
 	def_special GetBattleFrontierTutorMoveIndex
 	def_special TryTradeEvolution
 	def_special CanEvolveThroughTrade
+	def_special CanRegionFormChange

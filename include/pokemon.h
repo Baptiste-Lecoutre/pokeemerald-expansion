@@ -587,5 +587,6 @@ void TryToSetBattleFormChangeMoves(struct Pokemon *mon, u16 method);
 u32 GetMonFriendshipScore(struct Pokemon *pokemon);
 void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
 u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset);
+u16 GetNextRegionalForm(u16 species);
 
 #endif // GUARD_POKEMON_H

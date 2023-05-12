@@ -109,14 +109,17 @@ Route114_LanettesHouse_EventScript_Teleporter::
 	special ChoosePartyMon
 	waitstate
 	goto_if_eq VAR_RESULT, PARTY_NOTHING_CHOSEN, Route114_LanettesHouse_EventScript_TeleporterEnd
-	call EventScript_TryTradeEvolution
+	call EventScript_TryRegionFormChange
 	releaseall
 	end
 
-EventScript_TryTradeEvolution::
-	special CanEvolveThroughTrade
-	goto_if_eq VAR_RESULT, SPECIES_NONE, Route114_LanettesHouse_EventScript_TeleporterEnd
-	special TryTradeEvolution
+EventScript_TryRegionFormChange::
+	special CanRegionFormChange
+	goto_if_eq VAR_RESULT, SPECIES_NONE, Route114_LanettesHouse_EventScript_TeleporterNothingHappened
+	copyvar VAR_0x8005, VAR_0x8004
+	setvar VAR_0x8004, 0xFFFE
+	special CreateInGameTradePokemon
+	special DoInGameTradeScene
 	waitstate
 	return
 
@@ -124,6 +127,14 @@ Route114_LanettesHouse_EventScript_TeleporterEnd::
 	releaseall
 	end
 
+Route114_LanettesHouse_EventScript_TeleporterNothingHappened::
+	msgbox Route114_LanettesHouse_Text_TeleporterNothingHappened
+	releaseall
+	end
+
 Route114_LanettesHouse_Text_Teleporter:
 	.string "This is a teleporter! Do you want\n"
 	.string "a Pokémon to enter?$"
+
+Route114_LanettesHouse_Text_TeleporterNothingHappened:
+	.string "Nothing happened…$"
