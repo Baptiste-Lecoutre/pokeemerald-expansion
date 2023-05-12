@@ -4,7 +4,8 @@ FortreeCity_House2_MapScripts::
 FortreeCity_House2_EventScript_HiddenPowerGiver::
 	lock
 	faceplayer
-	goto_if_set FLAG_RECEIVED_TM10, FortreeCity_House2_EventScript_ExplainHiddenPower
+	checkitem ITEM_TM10
+	goto_if_eq VAR_RESULT, TRUE, FortreeCity_House2_EventScript_ExplainHiddenPower
 	call_if_unset FLAG_MET_HIDDEN_POWER_GIVER, FortreeCity_House2_EventScript_Greeting
 	msgbox FortreeCity_House2_Text_CoinInWhichHand, MSGBOX_DEFAULT
 	multichoice 21, 8, MULTI_RIGHTLEFT, TRUE
@@ -21,7 +22,6 @@ FortreeCity_House2_EventScript_HiddenPowerGiver::
 	msgbox FortreeCity_House2_Text_YourHiddenPowerHasAwoken, MSGBOX_DEFAULT
 	giveitem ITEM_TM10
 	goto_if_eq VAR_RESULT, 0, Common_EventScript_ShowBagIsFull
-	setflag FLAG_RECEIVED_TM10
 	msgbox FortreeCity_House2_Text_ExplainHiddenPower, MSGBOX_DEFAULT
 	release
 	end
