@@ -204,7 +204,13 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
 - Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
-- Try to recover the item desc header native behavior. Destroying window can be checked by its window id. Checking if the player has the item does not work as the desc header is created after the AddBagItem func is called
 - Add soaring & Eon flute?
-- Change some interfaces to have a visual identity
 - Change pkmn center layouts to have the move tutor NPC
+- Change some interfaces to have a visual identity
+    - Text boxes
+    - palettes and/or some UI layouts (see Missiri posts in discord)
+    - wait for A-press button, see vanadium
+    - map name popups, see vanadium
+    - healthboxes & mega-zmoves triggers
+    - bag sprites
+    - make magma bright during the night
