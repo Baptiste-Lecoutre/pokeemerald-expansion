@@ -133,6 +133,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Move relearner can teach moves from pre-evos
 - Added a teleporter in Lanette's house, allows to change regional forms of a pokemon by cycling though the gFormSpeciesIdTables
 - Added a scientist in Devon Corp to trigger trade evolutions (ported from Exalted Emerald, credits to segabl)
+- Added soaring (credits to ...)
 - More to be added
 
 ## TODO
@@ -204,8 +205,10 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
 - Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
-- Add soaring & Eon flute?
+- Change soaring palettes with DNS
+- Add fly out field move with Lati@s mon showcase
 - Change pkmn center layouts to have the move tutor NPC
+- change dexnav logic to handle chain and search levels?
 - Change some interfaces to have a visual identity
     - Text boxes
     - palettes and/or some UI layouts (see Missiri posts in discord)
@@ -214,3 +217,5 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - healthboxes & mega-zmoves triggers
     - bag sprites
     - make magma bright during the night
+    - dexnav interface
+    - type icons

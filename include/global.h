@@ -1123,6 +1123,7 @@ struct SaveBlock1
     /*0x3???*/ struct WaldaPhrase waldaPhrase;
     // sizeof: 0x3???
                 u16 registeredItemList[4];
+                u8 dexNavChain;
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;
