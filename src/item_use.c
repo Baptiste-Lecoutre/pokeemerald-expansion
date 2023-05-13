@@ -44,6 +44,8 @@
 #include "constants/item_effects.h"
 #include "constants/items.h"
 #include "constants/songs.h"
+#include "constants/vars.h"
+#include "soar.h"
 
 static void SetUpItemUseCallback(u8);
 static void FieldCB_UseItemOnField(void);
@@ -1414,6 +1416,20 @@ void ItemUseOutOfBattle_Mints(u8 taskId)
 {
     gItemUseCB = ItemUseCB_Mints;
     SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_EonFlute(u8 taskId)
+{
+	s16* data = gTasks[taskId].data;
+
+	if (Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) == TRUE)
+	{
+		sItemUseOnFieldCB = ItemUseOnFieldCB_EonFlute;
+		SetUpItemUseOnFieldCallback(taskId);
+	}
+	else {
+		DisplayDadsAdviceCannotUseItemMessage(taskId, tUsingRegisteredKeyItem);
+	}
 }
 
 #undef tUsingRegisteredKeyItem

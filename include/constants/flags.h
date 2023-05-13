@@ -253,7 +253,7 @@
 #define FLAG_UNUSED_0x0E7                    0xE7 // FLAG_RECEIVED_TM05
 #define FLAG_UNUSED_0x0E8                    0xE8 // FLAG_RECEIVED_TM19
 
-#define FLAG_UNUSED_0x0E9                    0xE9 // Unused Flag
+#define FLAG_EON_LATI                    0xE9 // Unused Flag
 
 #define FLAG_UNUSED_0x0EA                    0xEA // FLAG_RECEIVED_TM44
 #define FLAG_UNUSED_0x0EB                    0xEB // FLAG_RECEIVED_TM45

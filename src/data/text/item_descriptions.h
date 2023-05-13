@@ -3923,3 +3923,8 @@ static const u8 sBerserkGene[] = _(
     "Sharply boosts\n"
     "Attack, but causes\n"
     "lasting confusion.");
+
+static const u8 sEonFluteDesc[] = _(
+	"A flute that can\n"
+	"summon Latias or\n"
+	"Latios.");

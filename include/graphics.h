@@ -10523,5 +10523,8 @@ extern const u16 TypeIconsPal[];
 // poke vial
 extern const u32 gItemIcon_PokeVial[];
 extern const u32 gItemIconPalette_PokeVial[];
+// eon flute
+extern const u32 gItemIcon_EonFlute[];
+extern const u32 gItemIconPalette_EonFlute[];
 
 #endif //GUARD_GRAPHICS_H

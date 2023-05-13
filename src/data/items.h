@@ -10407,4 +10407,17 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .flingPower = 10,
     },
+
+    [ITEM_EON_FLUTE] = 
+    {
+        .name = _("Eon Flute"),
+        .itemId = ITEM_EON_FLUTE,
+        .price = 0,
+        .description = sEonFluteDesc,
+        .importance = 1,
+        .registrability = TRUE,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_FIELD,
+        .fieldUseFunc = ItemUseOutOfBattle_EonFlute,
+    },
 };

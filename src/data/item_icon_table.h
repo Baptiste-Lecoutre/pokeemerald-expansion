@@ -845,6 +845,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_PEAT_BLOCK] = {gItemIcon_PeatBlock, gItemIconPalette_PeatBlock},
     [ITEM_POKE_VIAL] = {gItemIcon_PokeVial, gItemIconPalette_PokeVial},
     [ITEM_BERSERK_GENE] = {gItemIcon_BerserkGene, gItemIconPalette_BerserkGene},
+    [ITEM_EON_FLUTE] = {gItemIcon_EonFlute, gItemIconPalette_EonFlute},
     // Return to field arrow
     [ITEMS_COUNT] = {gItemIcon_ReturnToFieldArrow, gItemIconPalette_ReturnToFieldArrow},
 };
