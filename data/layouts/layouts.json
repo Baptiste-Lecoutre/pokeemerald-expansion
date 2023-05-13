@@ -4450,6 +4450,26 @@
       "secondary_tileset": "gTileset_Lavaridge",
       "border_filepath": "data/layouts/AshenWoods/border.bin",
       "blockdata_filepath": "data/layouts/AshenWoods/map.bin"
+    },
+    {
+      "id": "LAYOUT_SEASPRAY_CAVE",
+      "name": "Seaspray_Cave_Layout",
+      "width": 50,
+      "height": 38,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/Seaspray_Cave/border.bin",
+      "blockdata_filepath": "data/layouts/Seaspray_Cave/map.bin"
+    },
+    {
+      "id": "LAYOUT_SEASPRAY_CAVE_B1F",
+      "name": "Seaspray_Cave_B1F_Layout",
+      "width": 52,
+      "height": 30,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/Seaspray_Cave_B1F/border.bin",
+      "blockdata_filepath": "data/layouts/Seaspray_Cave_B1F/map.bin"
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
-  "id": "MAP_EMBER_PATH",
-  "name": "EmberPath",
-  "layout": "LAYOUT_EMBER_PATH",
-  "music": "MUS_PETALBURG_WOODS",
-  "region_map_section": "MAPSEC_EMBER_PATH",
+  "id": "MAP_SEASPRAY_CAVE_B1F",
+  "name": "Seaspray_Cave_B1F",
+  "layout": "LAYOUT_SEASPRAY_CAVE_B1F",
+  "music": "MUS_MT_PYRE",
+  "region_map_section": "MAPSEC_SEASPRAY_CAVE",
   "requires_flash": false,
   "weather": "WEATHER_NONE",
   "map_type": "MAP_TYPE_UNDERGROUND",
@@ -18,18 +18,18 @@
   ],
   "warp_events": [
     {
-      "x": 33,
-      "y": 38,
+      "x": 11,
+      "y": 3,
       "elevation": 0,
-      "dest_map": "MAP_JAGGED_PASS",
-      "dest_warp_id": "5"
+      "dest_map": "MAP_SEASPRAY_CAVE",
+      "dest_warp_id": "1"
     },
     {
-      "x": 3,
-      "y": 17,
+      "x": 33,
+      "y": 22,
       "elevation": 0,
-      "dest_map": "MAP_ASHEN_WOODS",
-      "dest_warp_id": "0"
+      "dest_map": "MAP_SEASPRAY_CAVE",
+      "dest_warp_id": "2"
     }
   ],
   "coord_events": [
