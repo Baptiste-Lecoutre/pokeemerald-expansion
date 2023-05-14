@@ -11,6 +11,7 @@
 #include "sound.h"
 #include "sprite.h"
 #include "strings.h"
+#include "string_util.h"
 #include "task.h"
 #include "text.h"
 #include "text_window.h"
@@ -18,15 +19,8 @@
 #include "gba/m4a_internal.h"
 #include "constants/rgb.h"
 
-#define tMenuSelection data[0]
-#define tTextSpeed data[1]
-#define tBattleSceneOff data[2]
-#define tBattleStyle data[3]
-#define tSound data[4]
-#define tButtonMode data[5]
-#define tWindowFrameType data[6]
-
 #define Y_DIFF 16 // Difference in pixels between items.
+#define PAGE_COUNT 3
 
 enum
 {
@@ -49,18 +43,12 @@ enum
     WIN_OPTIONS
 };
 
-#define YPOS_TEXTSPEED    (MENUITEM_TEXTSPEED * 16)
-#define YPOS_BATTLESCENE  (MENUITEM_BATTLESCENE * 16)
-#define YPOS_BATTLESTYLE  (MENUITEM_BATTLESTYLE * 16)
-#define YPOS_SOUND        (MENUITEM_SOUND * 16)
-#define YPOS_BUTTONMODE   (MENUITEM_BUTTONMODE * 16)
-#define YPOS_FRAMETYPE    (MENUITEM_FRAMETYPE * 16)
-
 struct OptionMenu
 {
     u8 sel[MENUITEM_COUNT];
     int menuCursor;
     int visibleCursor;
+    u8 page;
 };
 
 static void Task_OptionMenuFadeIn(u8 taskId);
@@ -116,7 +104,7 @@ static const u16 sOptionMenuText_Pal[] = INCBIN_U16("graphics/interface/option_m
 // note: this is only used in the Japanese release
 static const u8 sEqualSignGfx[] = INCBIN_U8("graphics/interface/option_menu_equals_sign.4bpp");
 static const u8 sText_LevelCap[] = _("Level caps");
-static const u8 sText_TypeChart[] = _("Type chart");
+static const u8 sText_TypeChart[] = _("Inverse type chart");
 static const u8 sText_FastFieldMove[] = _("Fast field move");
 static const u8 sText_Off[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Off");
 static const u8 sText_Soft[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Soft");
@@ -260,6 +248,8 @@ void CB2_InitOptionMenu(void)
         gMain.state++;
         break;
     case 6:
+        sOptions = AllocZeroed(sizeof(*sOptions));
+        sOptions->page = 1;
         PutWindowTilemap(WIN_HEADER);
         DrawHeaderText();
         gMain.state++;
@@ -278,7 +268,8 @@ void CB2_InitOptionMenu(void)
     case 10:
         taskId = CreateTask(Task_OptionMenuFadeIn, 0);
 
-        sOptions = AllocZeroed(sizeof(*sOptions));
+        //sOptions = AllocZeroed(sizeof(*sOptions));
+        //sOptions->page = 1;
         sOptions->sel[MENUITEM_TEXTSPEED] = gSaveBlock2Ptr->optionsTextSpeed;
         sOptions->sel[MENUITEM_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleSceneOff;
         sOptions->sel[MENUITEM_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
@@ -362,11 +353,38 @@ static void ScrollAll(int direction) // to bottom or top
     CopyWindowToVram(WIN_OPTIONS, 2);
 }
 
+static u8 Process_ChangePage(u8 CurrentPage)
+{
+    if (JOY_NEW(R_BUTTON))
+    {
+        if (CurrentPage < PAGE_COUNT - 1)
+            CurrentPage++;
+        else
+            CurrentPage = 0;
+    }
+    if (JOY_NEW(L_BUTTON))
+    {
+        if (CurrentPage != 0)
+            CurrentPage--;
+        else
+            CurrentPage = PAGE_COUNT - 1;
+    }
+    return CurrentPage;
+}
+
 static void Task_OptionMenuProcessInput(u8 taskId)
 {
     int i, scrollCount = 0, itemsToRedraw;
 
-    if (JOY_NEW(A_BUTTON))
+    if (JOY_NEW(L_BUTTON) || JOY_NEW(R_BUTTON))
+    {
+//        FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
+//        ClearStdWindowAndFrame(WIN_OPTIONS, FALSE);
+        sOptions->page = Process_ChangePage(sOptions->page);
+        DrawHeaderText();
+//        gTasks[taskId].func = Task_ChangePage;
+    }
+    else if (JOY_NEW(A_BUTTON))
     {
         if (sOptions->menuCursor == MENUITEM_CANCEL)
             gTasks[taskId].func = Task_OptionMenuSave;
@@ -768,8 +786,25 @@ void ButtonMode_DrawChoices(int selection, int y , u8 textSpeed)
 
 static void DrawHeaderText(void)
 {
+    u32 i, widthOptions, xMid;
+    u8 pageDots[9] = _("");  // Array size should be at least (2 * PAGE_COUNT) -1
+    widthOptions = GetStringWidth(FONT_NORMAL, gText_Option, 0);
+
+    for (i = 0; i < PAGE_COUNT; i++)
+    {
+        if (i == sOptions->page)
+            StringAppend(pageDots, gText_LargeDot);
+        else
+            StringAppend(pageDots, gText_SmallDot);
+        if (i < PAGE_COUNT - 1)
+            StringAppend(pageDots, gText_Space);            
+    }
+    xMid = (8 + widthOptions + 5);
+
     FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
     AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_Option, 8, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, xMid, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_PageNav, GetStringRightAlignXOffset(FONT_NORMAL, gText_PageNav, 198), 1, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(WIN_HEADER, COPYWIN_FULL);
 }
 
