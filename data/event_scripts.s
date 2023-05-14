@@ -1101,3 +1101,14 @@ EventScript_DoWonderTrade_Text_Done:
 	.include "data/maps/Seaspray_Cave/scripts.inc"
 
 	.include "data/maps/Seaspray_Cave_B1F/scripts.inc"
+
+Common_EventScript_TrainerNotReadyYet::
+	lock
+	faceplayer
+	message gText_OneDayImGoingToFightYou
+	waitmessage
+	release
+	end
+
+gText_OneDayImGoingToFightYou:
+	.string "One day I will fight you!$"

@@ -138,16 +138,17 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added a teleporter in Lanette's house, allows to change regional forms of a pokemon by cycling though the gFormSpeciesIdTables
 - Added a scientist in Devon Corp to trigger trade evolutions (ported from Exalted Emerald, credits to segabl)
 - Added soaring (credits to ...)
+- Starters are available in Mauville game corner
 - More to be added
 
 ## TODO
 - Add team rocket story
 - Add Kanto and Johto gym leaders with Kanto E4
-    - Brock in granite cave
-    - Misty on the beach
+    - Brock in granite cave x
+    - Misty on the beach x
     - Surge in new mauville trying to catch zapdos. Can't catch zapdos until he is defeated.
-    - Erika in verdantuff
-    - Koga in the rainy route with ninjas. "See these ninjas? I'm training them."
+    - Erika in verdantuff: blocks the path to the contest hall until defeated, looking up "should I go in?"
+    - Koga in the rainy route with ninjas. "See these ninjas? I'm training them." x
     - Sabrina talks to a rock which has psychic powers. Talking to the rocks says "just an ordinary rock".
     - Blaine in start of magma hideout (Hohoho I dug too far!)
     - Giovanni (rocket event)
@@ -162,6 +163,10 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - Bruno in the route with the currents, "training by swimming against the currents"
     - Agatha in mt pyre post-game
 - Add Red rivalry
+    - PetalburgWoods after defeating Roxanne
+    - Fallarbor town, after getting out of the pkmncenter, he gets out of the contest hall
+    - Route 121, same trigger as aqua grunts, he cuts the tree and comes to fight
+    - Victory Road, double battle with Wally
 - Add mega stones & Z crystals
 - Add legendary events
     - Gen1:
@@ -201,7 +206,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
     
 
 - Add new locations
-- Buy starters in mauville game corner
 - Change wild encounters & trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
 - ReUse of origin cave post-game
@@ -216,7 +220,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Change some interfaces to have a visual identity
     - Text boxes
     - palettes and/or some UI layouts (see Missiri posts in discord)
-    - wait for A-press button, see vanadium
+    - wait for A-press button, see vanadium (search "down_arrow")
     - map name popups, see vanadium
     - healthboxes & mega-zmoves triggers
     - bag sprites
