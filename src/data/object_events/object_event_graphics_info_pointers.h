@@ -239,6 +239,16 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lugia;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_HoOh;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_GoldItemBall;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MegaStone;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Brock;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Misty;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_LtSurge;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Erika;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Koga;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Sabrina;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Blaine;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_RocketGruntF;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_RocketGruntM;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Giovanni;
 // Begin pokemon event objects
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_AnimatedBall;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Follower;
@@ -495,6 +505,16 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_HOOH] =                     &gObjectEventGraphicsInfo_HoOh,
     [OBJ_EVENT_GFX_GOLD_ITEM_BALL] =           &gObjectEventGraphicsInfo_GoldItemBall,
     [OBJ_EVENT_GFX_MEGA_STONE] =               &gObjectEventGraphicsInfo_MegaStone,
+    [OBJ_EVENT_GFX_BROCK] =                    &gObjectEventGraphicsInfo_Brock,
+    [OBJ_EVENT_GFX_MISTY] =                    &gObjectEventGraphicsInfo_Misty,
+    [OBJ_EVENT_GFX_LT_SURGE] =                 &gObjectEventGraphicsInfo_LtSurge,
+    [OBJ_EVENT_GFX_ERIKA] =                    &gObjectEventGraphicsInfo_Erika,
+    [OBJ_EVENT_GFX_KOGA] =                     &gObjectEventGraphicsInfo_Koga,
+    [OBJ_EVENT_GFX_SABRINA] =                  &gObjectEventGraphicsInfo_Sabrina,
+    [OBJ_EVENT_GFX_BLAINE] =                   &gObjectEventGraphicsInfo_Blaine,
+    [OBJ_EVENT_GFX_ROCKET_M] =                 &gObjectEventGraphicsInfo_RocketGruntM,
+    [OBJ_EVENT_GFX_ROCKET_F] =                 &gObjectEventGraphicsInfo_RocketGruntF,
+    [OBJ_EVENT_GFX_GIOVANNI] =                 &gObjectEventGraphicsInfo_Giovanni,
     [OBJ_EVENT_GFX_ANIMATED_BALL] =            &gObjectEventGraphicsInfo_AnimatedBall,
     [OBJ_EVENT_GFX_OW_MON] =                   &gObjectEventGraphicsInfo_Follower,
     [OBJ_EVENT_GFX_LIGHT_SPRITE] =             &gObjectEventGraphicsInfo_BallLight,

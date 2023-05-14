@@ -7289,6 +7289,27 @@ extern const u8 gTrainerBackPic_Steven[];
 extern const u32 gTrainerBackPicPalette_Red[];
 extern const u32 gTrainerBackPicPalette_Leaf[];
 
+extern const u32 gTrainerFrontPic_LeaderBrock[];
+extern const u32 gTrainerPalette_LeaderBrock[];
+extern const u32 gTrainerFrontPic_LeaderMisty[];
+extern const u32 gTrainerPalette_LeaderMisty[];
+extern const u32 gTrainerFrontPic_LeaderLtSurge[];
+extern const u32 gTrainerPalette_LeaderLtSurge[];
+extern const u32 gTrainerFrontPic_LeaderErika[];
+extern const u32 gTrainerPalette_LeaderErika[];
+extern const u32 gTrainerFrontPic_LeaderKoga[];
+extern const u32 gTrainerPalette_LeaderKoga[];
+extern const u32 gTrainerFrontPic_LeaderSabrina[];
+extern const u32 gTrainerPalette_LeaderSabrina[];
+extern const u32 gTrainerFrontPic_LeaderBlaine[];
+extern const u32 gTrainerPalette_LeaderBlaine[];
+extern const u32 gTrainerFrontPic_RocketGruntM[];
+extern const u32 gTrainerPalette_RocketGruntM[];
+extern const u32 gTrainerFrontPic_RocketGruntF[];
+extern const u32 gTrainerPalette_RocketGruntF[];
+extern const u32 gTrainerFrontPic_Giovanni[];
+extern const u32 gTrainerPalette_Giovanni[];
+
 // pokeblock
 extern const u32 gMenuPokeblock_Gfx[];
 extern const u32 gMenuPokeblock_Pal[];
