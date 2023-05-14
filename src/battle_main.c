@@ -1962,7 +1962,13 @@ static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct Trai
     }
 }
 
-u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags)
+struct Trainer TryOverrideParty(struct Trainer *trainer)
+{
+    //*trainer = gTrainers[TRAINER_WALLACE];
+    return *trainer;
+}
+
+u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags)
 {
     u32 personalityValue;
     u8 fixedIV;
@@ -1975,6 +1981,8 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
     {
         if (firstTrainer == TRUE)
             ZeroEnemyPartyMons();
+
+        *trainer = TryOverrideParty(trainer);
 
         if (battleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
         {
@@ -2117,9 +2125,12 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
 static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 firstTrainer)
 {
     u8 retVal;
+    struct Trainer trainer;
     if (trainerNum == TRAINER_SECRET_BASE)
         return 0;
-    retVal = CreateNPCTrainerPartyFromTrainer(party, &gTrainers[trainerNum], firstTrainer, gBattleTypeFlags);
+
+    trainer = gTrainers[trainerNum];
+    retVal = CreateNPCTrainerPartyFromTrainer(party, &trainer, firstTrainer, gBattleTypeFlags);
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && !(gBattleTypeFlags & (BATTLE_TYPE_FRONTIER
                                                                         | BATTLE_TYPE_EREADER_TRAINER
