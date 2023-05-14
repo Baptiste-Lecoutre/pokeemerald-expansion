@@ -8808,3 +8808,32 @@ u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset)
     }
     return result_species;
 }
+
+u16 GetNextRegionalForm(u16 species)
+{
+    u8 targetFormId = 0;
+    u16 targetSpecies = SPECIES_NONE;
+    bool8 isNextForm = FALSE;
+
+    if (gFormSpeciesIdTables[species] != NULL)
+    {
+        for (targetFormId = 0; gFormSpeciesIdTables[species][targetFormId] != FORM_SPECIES_END; targetFormId++)
+        {
+            targetSpecies = gFormSpeciesIdTables[species][targetFormId];
+
+            if (targetSpecies == species)
+            {
+                isNextForm = TRUE;
+                continue;
+            }
+            else if (gSpeciesInfo[targetSpecies].flags & (SPECIES_FLAG_ALOLAN_FORM | SPECIES_FLAG_GALARIAN_FORM | SPECIES_FLAG_HISUIAN_FORM)
+                && isNextForm)
+                break;
+        }
+        if (targetSpecies == species
+            && gSpeciesInfo[targetSpecies].flags & (SPECIES_FLAG_ALOLAN_FORM | SPECIES_FLAG_GALARIAN_FORM | SPECIES_FLAG_HISUIAN_FORM))
+            targetSpecies = gFormSpeciesIdTables[species][0];
+
+    }
+    return targetSpecies;
+}

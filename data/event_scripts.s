@@ -1091,3 +1091,13 @@ EventScript_DoWonderTrade_Text_Done:
     
 
 	.include "data/maps/PetalburgWoods_2/scripts.inc"
+
+	.include "data/maps/PetalburgWoods_3/scripts.inc"
+
+	.include "data/maps/EmberPath/scripts.inc"
+
+	.include "data/maps/AshenWoods/scripts.inc"
+
+	.include "data/maps/Seaspray_Cave/scripts.inc"
+
+	.include "data/maps/Seaspray_Cave_B1F/scripts.inc"

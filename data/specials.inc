@@ -551,3 +551,5 @@ gSpecials::
 	def_special GetPKMNCenterMoveListMultichoice
 	def_special GetBattleFrontierTutorMoveIndex
 	def_special TryTradeEvolution
+	def_special CanEvolveThroughTrade
+	def_special CanRegionFormChange

@@ -248,15 +248,15 @@
 #define FLAG_RECEIVED_STARTER_DOLL           0xE2
 #define FLAG_RECEIVED_GOOD_ROD               0xE3
 #define FLAG_REGI_DOORS_OPENED               0xE4
-#define FLAG_RECEIVED_TM27                   0xE5
-#define FLAG_RECEIVED_TM36                   0xE6
-#define FLAG_RECEIVED_TM05                   0xE7
-#define FLAG_RECEIVED_TM19                   0xE8
+#define FLAG_UNUSED_0x0E5                    0xE5 // FLAG_RECEIVED_TM27
+#define FLAG_UNUSED_0x0E6                    0xE6 // FLAG_RECEIVED_TM36
+#define FLAG_UNUSED_0x0E7                    0xE7 // FLAG_RECEIVED_TM05
+#define FLAG_UNUSED_0x0E8                    0xE8 // FLAG_RECEIVED_TM19
 
 #define FLAG_UNUSED_0x0E9                    0xE9 // Unused Flag
 
-#define FLAG_RECEIVED_TM44                   0xEA
-#define FLAG_RECEIVED_TM45                   0xEB
+#define FLAG_UNUSED_0x0EA                    0xEA // FLAG_RECEIVED_TM44
+#define FLAG_UNUSED_0x0EB                    0xEB // FLAG_RECEIVED_TM45
 #define FLAG_RECEIVED_GLASS_ORNAMENT         0xEC
 #define FLAG_RECEIVED_SILVER_SHIELD          0xED
 #define FLAG_RECEIVED_GOLD_SHIELD            0xEE
@@ -282,15 +282,15 @@
 #define FLAG_RECEIVED_COIN_CASE              0x102
 #define FLAG_RETURNED_RED_OR_BLUE_ORB        0x103
 #define FLAG_RECEIVED_TM49                   0x104
-#define FLAG_RECEIVED_TM28                   0x105
-#define FLAG_RECEIVED_TM09                   0x106
+#define FLAG_UNUSED_0x105                    0x105 // FLAG_RECEIVED_TM28
+#define FLAG_UNUSED_0x106                    0x106 // FLAG_RECEIVED_TM09
 #define FLAG_ENTERED_ELITE_FOUR              0x107
-#define FLAG_RECEIVED_TM10                   0x108
-#define FLAG_RECEIVED_TM41                   0x109
+#define FLAG_UNUSED_0x108                    0x108 // FLAG_RECEIVED_TM10
+#define FLAG_UNUSED_0x109                    0x109 // FLAG_RECEIVED_TM41
 #define FLAG_RECEIVED_LAVARIDGE_EGG          0x10A
 #define FLAG_RECEIVED_REVIVED_FOSSIL_MON     0x10B
 #define FLAG_SECRET_BASE_REGISTRY_ENABLED    0x10C
-#define FLAG_RECEIVED_TM46                   0x10D
+#define FLAG_UNUSED_0x10D                    0x10D // FLAG_RECEIVED_TM46
 #define FLAG_CONTEST_SKETCH_CREATED          0x10E  // Set but never read
 #define FLAG_EVIL_TEAM_ESCAPED_STERN_SPOKE   0x10F
 #define FLAG_RECEIVED_EXP_SHARE              0x110
@@ -333,7 +333,7 @@
 #define FLAG_MET_MAXIE_SOOTOPOLIS            0x135
 #define FLAG_MET_SCOTT_RUSTBORO              0x136
 #define FLAG_WALLACE_GOES_TO_SKY_PILLAR      0x137 // Set after speaking to Wallace within the Cave of Origin.
-#define FLAG_RECEIVED_HM07                   0x138
+#define FLAG_UNUSED_0x138                    0x138 // FLAG_RECEIVED_HM07
 #define FLAG_BEAT_MAGMA_GRUNT_JAGGED_PASS    0x139
 #define FLAG_RECEIVED_AURORA_TICKET          0x13A
 #define FLAG_RECEIVED_MYSTIC_TICKET          0x13B
@@ -463,16 +463,16 @@
 #define FLAG_SHOWN_EON_TICKET                0x1AE
 #define FLAG_SHOWN_AURORA_TICKET             0x1AF
 #define FLAG_SHOWN_OLD_SEA_MAP               0x1B0
-#define FLAG_MOVE_TUTOR_TAUGHT_SWAGGER       0x1B1
-#define FLAG_MOVE_TUTOR_TAUGHT_ROLLOUT       0x1B2
-#define FLAG_MOVE_TUTOR_TAUGHT_FURY_CUTTER   0x1B3
-#define FLAG_MOVE_TUTOR_TAUGHT_MIMIC         0x1B4
-#define FLAG_MOVE_TUTOR_TAUGHT_METRONOME     0x1B5
-#define FLAG_MOVE_TUTOR_TAUGHT_SLEEP_TALK    0x1B6
-#define FLAG_MOVE_TUTOR_TAUGHT_SUBSTITUTE    0x1B7
-#define FLAG_MOVE_TUTOR_TAUGHT_DYNAMICPUNCH  0x1B8
-#define FLAG_MOVE_TUTOR_TAUGHT_DOUBLE_EDGE   0x1B9
-#define FLAG_MOVE_TUTOR_TAUGHT_EXPLOSION     0x1BA
+#define FLAG_UNUSED_0x1B1                    0x1B1 // previously move tutor flags
+#define FLAG_UNUSED_0x1B2                    0x1B2
+#define FLAG_UNUSED_0x1B3                    0x1B3
+#define FLAG_UNUSED_0x1B4                    0x1B4
+#define FLAG_UNUSED_0x1B5                    0x1B5
+#define FLAG_UNUSED_0x1B6                    0x1B6
+#define FLAG_UNUSED_0x1B7                    0x1B7
+#define FLAG_UNUSED_0x1B8                    0x1B8
+#define FLAG_UNUSED_0x1B9                    0x1B9
+#define FLAG_UNUSED_0x1BA                    0x1BA
 #define FLAG_DEFEATED_REGIROCK               0x1BB
 #define FLAG_DEFEATED_REGICE                 0x1BC
 #define FLAG_DEFEATED_REGISTEEL              0x1BD

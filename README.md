@@ -135,6 +135,8 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added Rocket & Boss trainer classes, with the rocket battle transition from crytaldust
 - Can choose any starter from the 8 first generation by pressing L or R to change pocket during starter selection
 - Brendan/May gives 30 cherrish balls after obtaining the pokedex instead of 5 pokeballs
+- Added a teleporter in Lanette's house, allows to change regional forms of a pokemon by cycling though the gFormSpeciesIdTables
+- Added a scientist in Devon Corp to trigger trade evolutions (ported from Exalted Emerald, credits to segabl)
 - More to be added
 
 ## TODO
@@ -206,8 +208,13 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
 - Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
-- Try to recover the item desc header native behavior by checking if the player has the item. destroying window could be checked by its window id
-- Add a teleporter to be able to change between regionals forms of pokemons? (galarian birds, alola, galar...) -> https://www.pokecommunity.com/showpost.php?p=10215480&postcount=169
 - Add soaring & Eon flute?
-- Change some interfaces to have a visual identity
 - Change pkmn center layouts to have the move tutor NPC
+- Change some interfaces to have a visual identity
+    - Text boxes
+    - palettes and/or some UI layouts (see Missiri posts in discord)
+    - wait for A-press button, see vanadium
+    - map name popups, see vanadium
+    - healthboxes & mega-zmoves triggers
+    - bag sprites
+    - make magma bright during the night

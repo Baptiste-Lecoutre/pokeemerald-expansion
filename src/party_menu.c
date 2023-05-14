@@ -7431,6 +7431,20 @@ void TryTradeEvolution(void)
     u8 taskId = CreateTask(Task_TryTradeEvolution, 10);
 }
 
+void CanEvolveThroughTrade(void)
+{
+    struct Pokemon * curSpecies = &gPlayerParty[gSpecialVar_0x8004];
+    u16 evoItem = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HELD_ITEM);
+    gSpecialVar_Result = GetEvolutionTargetSpecies(curSpecies, EVO_MODE_TRADE, evoItem, NULL);
+}
+
+void CanRegionFormChange(void)
+{
+    u16 species = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES);
+
+    gSpecialVar_Result = GetNextRegionalForm(species);
+}
+
 // mints
 #define tState          data[0]
 #define tSpecies        data[1]

@@ -329,11 +329,11 @@ Route104_EventScript_Woman::
 Route104_EventScript_Boy2::
 	lock
 	faceplayer
-	goto_if_set FLAG_RECEIVED_TM09, Route104_EventScript_ReceivedBulletSeed
+	checkitem ITEM_TM09
+	goto_if_eq VAR_RESULT, TRUE, Route104_EventScript_ReceivedBulletSeed
 	msgbox Route104_Text_LikeFillingMouthWithSeedsTakeThis, MSGBOX_DEFAULT
 	giveitem ITEM_TM09
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	setflag FLAG_RECEIVED_TM09
 	release
 	end
 
@@ -1037,10 +1037,11 @@ Route104_Text_LikeFillingMouthWithSeedsTakeThis:
 
 Route104_Text_TMsAreOneTimeUse:
 	.string "A word of advice!\p"
-	.string "A TM, Technical Machine, is good only\n"
-	.string "for one-time use.\p"
-	.string "Once you use it, it's gone.\n"
-	.string "Think twice before using it!$"
+	.string "A TM, Technical Machine, was good only\n"
+	.string "for one-time use in ancient times.\p"
+	.string "Once you used it, it was gone.\n"
+	.string "TMs can now be used indefinitely!\p"
+	.string "Use them as much as possible!$"
 
 Route104_Text_DontNeedThisTakeIt:
 	.string "This Flower Shop started selling\n"

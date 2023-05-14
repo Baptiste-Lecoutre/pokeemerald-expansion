@@ -401,6 +401,11 @@
 #define MAP_ALTERING_CAVE                            (106 | (24 << 8))
 #define MAP_METEOR_FALLS_STEVENS_CAVE                (107 | (24 << 8))
 #define MAP_PETALBURG_WOODS_2                        (108 | (24 << 8))
+#define MAP_PETALBURG_WOODS_3                        (109 | (24 << 8))
+#define MAP_EMBER_PATH                               (110 | (24 << 8))
+#define MAP_ASHEN_WOODS                              (111 | (24 << 8))
+#define MAP_SEASPRAY_CAVE                            (112 | (24 << 8))
+#define MAP_SEASPRAY_CAVE_B1F                        (113 | (24 << 8))
 
 // gMapGroup_IndoorDynamic
 #define MAP_SECRET_BASE_RED_CAVE1    (0 | (25 << 8))

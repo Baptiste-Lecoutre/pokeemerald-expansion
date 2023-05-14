@@ -430,7 +430,12 @@
     "TerraCave_End",
     "AlteringCave",
     "MeteorFalls_StevensCave",
-    "PetalburgWoods_2"
+    "PetalburgWoods_2",
+    "PetalburgWoods_3",
+    "EmberPath",
+    "AshenWoods",
+    "Seaspray_Cave",
+    "Seaspray_Cave_B1F"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",

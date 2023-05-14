@@ -4630,7 +4630,17 @@ u16 GetTradeSpecies(void)
 
 void CreateInGameTradePokemon(void)
 {
-    CreateInGameTradePokemonInternal(gSpecialVar_0x8005, gSpecialVar_0x8004);
+    if (gSpecialVar_0x8004 == 0xFFFF)
+        gEnemyParty[0] = gPlayerParty[gSpecialVar_0x8005];
+    else if (gSpecialVar_0x8004 == 0xFFFE)
+    {
+        u16 targetSpecies = GetNextRegionalForm(GetMonData(&gPlayerParty[gSpecialVar_0x8005],MON_DATA_SPECIES));
+        gEnemyParty[0] = gPlayerParty[gSpecialVar_0x8005];
+        SetMonData(&gEnemyParty[0], MON_DATA_SPECIES, &targetSpecies);
+        CalculateMonStats(&gEnemyParty[0]);
+    }
+    else
+        CreateInGameTradePokemonInternal(gSpecialVar_0x8005, gSpecialVar_0x8004);
 }
 
 static void CB2_UpdateLinkTrade(void)

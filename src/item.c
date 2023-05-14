@@ -1115,7 +1115,7 @@ void DrawHeaderBox(void)
     else
         dst = gStringVar1;
 
-    if (GetSetItemObtained(item, FLAG_GET_OBTAINED))
+    if (CountTotalItemQuantityInBag(item) != gSpecialVar_0x8001)//GetSetItemObtained(item, FLAG_GET_OBTAINED))
     {
         ShowItemIconSprite(item, FALSE, handleFlash);
         return; //no box if item obtained previously
