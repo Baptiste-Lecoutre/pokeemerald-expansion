@@ -313,8 +313,8 @@ static void BuildNormalStartMenu(void)
     if (FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE)
         AddStartMenuAction(MENU_ACTION_POKEDEX);
     
-    if (FlagGet(FLAG_SYS_DEXNAV_GET))
-        AddStartMenuAction(MENU_ACTION_DEXNAV);
+//    if (FlagGet(FLAG_SYS_DEXNAV_GET))
+//        AddStartMenuAction(MENU_ACTION_DEXNAV);
     
     if (FlagGet(FLAG_SYS_POKEMON_GET) == TRUE)
         AddStartMenuAction(MENU_ACTION_POKEMON);
@@ -711,7 +711,7 @@ static bool8 HandleStartMenuInput(void)
 
             //gMenuCallback = PokenavCallback_Init_RegionMap;
             //gMenuCallback = PokenavMenuCallbacks[6/*POKENAV_REGION_MAP - POKENAV_MENU_IDS_START*/];
-            if(FlagGet(FLAG_BADGE05_GET) && CanLearnFlyInParty() && IsMapTypeOutdoors(GetCurrentMapType()))
+            if(FlagGet(FLAG_BADGE06_GET) && CanLearnFlyInParty() && Overworld_MapTypeAllowsTeleportAndFly(GetCurrentMapType()))
             {
                 gPartyMenu.slotId = gSpecialVar_Result;
                 SetMainCallback2(CB2_OpenFlyMap);
