@@ -104,7 +104,7 @@ static const u16 sOptionMenuText_Pal[] = INCBIN_U16("graphics/interface/option_m
 // note: this is only used in the Japanese release
 static const u8 sEqualSignGfx[] = INCBIN_U8("graphics/interface/option_menu_equals_sign.4bpp");
 static const u8 sText_LevelCap[] = _("Level caps");
-static const u8 sText_TypeChart[] = _("Inverse type chart");
+static const u8 sText_TypeChart[] = _("Type chart");
 static const u8 sText_FastFieldMove[] = _("Fast field move");
 static const u8 sText_Off[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Off");
 static const u8 sText_Soft[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Soft");
@@ -641,8 +641,8 @@ void TypeChart_DrawChoices(int selection, int y, u8 textSpeed)
 
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOff, 104, y, styles[0], textSpeed);
-    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleStyleSet, 198), y, styles[1], textSpeed);
+    DrawOptionMenuChoice(gText_TypeChartNormal, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(gText_TypeChartInverse, GetStringRightAlignXOffset(FONT_NORMAL, gText_TypeChartInverse, 198), y, styles[1], textSpeed);
 }
 
 void LevelCap_DrawChoices(int selection, int y, u8 textSpeed)
