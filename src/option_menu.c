@@ -126,6 +126,59 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_FRAMETYPE]   = gText_Frame,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
 };
+/*autorun
+textspeed
+battlestyle
+battlescene
+battlebars
+show type effectiveness
+type icons in battle
+sound
+low health beeps
+surf/bike music
+fishing style
+fast egg hatch
+fast evo scene
+fast field move
+frlg item anim
+font 
+unit system
+frame
+cancel*/
+
+/*version
+diff
+nuzlocke
+no free heals
+exp team mod
+exp multiplier
+level cap
+party size limit
+type chart
+eq base stats
+mirror parties
+evolve trainer mon
+scale trainer level
+prevent evolution*/
+
+/*randomness type
+wild encounters
+static encounters
+trainer parties
+starters
+abilities
+lvl up moves
+tm moves
+tutor moves
+relearner moves
+post evo species
+pokemon levels
+player party
+evo every level
+items
+held items
+marts
+music*/
 
 static const struct WindowTemplate sOptionMenuWinTemplates[] =
 {
