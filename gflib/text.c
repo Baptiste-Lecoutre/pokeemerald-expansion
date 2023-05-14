@@ -848,7 +848,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
             FillWindowPixelRect(
                 textPrinter->printerTemplate.windowId,
                 textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-                textPrinter->printerTemplate.currentX,
+                textPrinter->printerTemplate.currentX + 2,
                 textPrinter->printerTemplate.currentY,
                 8,
                 16);
@@ -860,7 +860,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
                 arrowTiles = sDownArrowTiles;
                 break;
             case TRUE:
-                arrowTiles = sDarkDownArrowTiles;
+                arrowTiles = sDownArrowTiles; //sDarkDownArrowTiles;
                 break;
             }
 
@@ -871,7 +871,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
                 sDownArrowYCoords[subStruct->downArrowYPosIdx],
                 8,
                 16,
-                textPrinter->printerTemplate.currentX,
+                textPrinter->printerTemplate.currentX + 2,
                 textPrinter->printerTemplate.currentY,
                 8,
                 16);
@@ -888,7 +888,7 @@ void TextPrinterClearDownArrow(struct TextPrinter *textPrinter)
     FillWindowPixelRect(
         textPrinter->printerTemplate.windowId,
         textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-        textPrinter->printerTemplate.currentX,
+        textPrinter->printerTemplate.currentX + 2,
         textPrinter->printerTemplate.currentY,
         8,
         16);
@@ -967,7 +967,7 @@ void DrawDownArrow(u8 windowId, u16 x, u16 y, u8 bgColor, bool8 drawArrow, u8 *c
                 arrowTiles = sDownArrowTiles;
                 break;
             case TRUE:
-                arrowTiles = sDarkDownArrowTiles;
+                arrowTiles = sDownArrowTiles; //sDarkDownArrowTiles;
                 break;
             }
 

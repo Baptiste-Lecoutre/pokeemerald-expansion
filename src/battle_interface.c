@@ -3416,7 +3416,7 @@ void TryRestoreLastUsedBall(void)
 // type icons during move selection
 #define TYPE_ICON_TAG 0x2720
 
-#define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (1 * 2 * frame * 32), .size = 1 * 2 * 32}
+#define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (2 * 2 * frame * 32), .size = 2 * 2 * 32}
 static const struct SpriteFrameImage sTypeIconPicTable[] = 
 {
     [TYPE_NORMAL] =		type_icon_frame(TypeIconsTiles, TYPE_NORMAL),
@@ -3440,11 +3440,12 @@ static const struct SpriteFrameImage sTypeIconPicTable[] =
     [TYPE_FAIRY] =      type_icon_frame(TypeIconsTiles, TYPE_FAIRY),
 };
 
+#define ICON_MOVE_X 10
 static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] = 
 {
     { // Single Battles
-        [B_POSITION_PLAYER_LEFT] = { 220, 86},
-        [B_POSITION_OPPONENT_LEFT] = {20, 26},
+        [B_POSITION_PLAYER_LEFT] = { 216, 86}, // 220 86
+        [B_POSITION_OPPONENT_LEFT] = {24, 25}, // 20 26
         [B_POSITION_PLAYER_RIGHT] = {270, 200}, // out of screen
         [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
     },
@@ -3460,8 +3461,8 @@ static const struct OamData sTypeIconOAM =
 {
 	.affineMode = ST_OAM_AFFINE_OFF,
 	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(8x16),
-	.size = SPRITE_SIZE(8x16),
+	.shape = SPRITE_SHAPE(16x16),
+	.size = SPRITE_SIZE(16x16),
 	.priority = 2, // put to 2 so that the zmove trigger appears above the type icons // 1,//Same level as health bar 
 };
 
@@ -3542,7 +3543,7 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
     s16 originalY;
 	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
 
-	if (sprite->data[2] == 12 - 2 * sprite->data[4])
+	if (sprite->data[2] == ICON_MOVE_X + 2 - 2 * sprite->data[4])
 	{
 		FreeSpritePaletteByTag(TYPE_ICON_TAG);
 		DestroySprite(sprite);
@@ -3577,21 +3578,21 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
     switch (position) {
 		case B_POSITION_OPPONENT_LEFT:
 		case B_POSITION_OPPONENT_RIGHT:
-		    if (sprite->x > sTypeIconPositions[battleType][position].x - 10)
+		    if (sprite->x > sTypeIconPositions[battleType][position].x - ICON_MOVE_X)
     		    sprite->x -= 1;
-            if (sprite->x <= sTypeIconPositions[battleType][position].x - 10)
+            /*if (sprite->x <= sTypeIconPositions[battleType][position].x - ICON_MOVE_X)
                 sprite->oam.priority = 0;
             else
-                sprite->oam.priority = 1;
+                sprite->oam.priority = 1;*/
 			break;
 		case B_POSITION_PLAYER_LEFT:
 		case B_POSITION_PLAYER_RIGHT:
-			if (sprite->x < sTypeIconPositions[battleType][position].x + 10)
+			if (sprite->x < sTypeIconPositions[battleType][position].x + ICON_MOVE_X)
 			    sprite->x += 1;
-            if (sprite->x >= sTypeIconPositions[battleType][position].x + 10)
+            /*if (sprite->x >= sTypeIconPositions[battleType][position].x + ICON_MOVE_X)
                 sprite->oam.priority = 0;
             else
-                sprite->oam.priority = 1;
+                sprite->oam.priority = 1;*/
 			break;
 	}
 
