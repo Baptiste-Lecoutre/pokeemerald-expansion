@@ -7,6 +7,7 @@ MauvilleCity_GameCorner_MapScripts::
 	.set TM35_COINS,  4000
 	.set TM24_COINS,  4000
 	.set TM13_COINS,  4000
+	.set STARTER_COINS, 	2500
 	.set DOLL_COINS,  1000
 
 	.set COINS_PRICE_50,  1000
@@ -775,4 +776,256 @@ MauvilleCity_GameCorner_Text_HeresSomeSlotsInfo:
 MauvilleCity_GameCorner_Text_CantPlayWithNoCoinCase:
 	.string "You can't play if you don't have\n"
 	.string "a Coin Case.$"
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Starter Pokemon Prizes @@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+MauvilleCity_GameCorner_EventScript_PrizeCornerStarter::
+	lock
+	faceplayer
+	msgbox MauvilleCity_GameCorner_Text_ExchangeCoinsForPokemon, MSGBOX_DEFAULT
+	checkitem ITEM_COIN_CASE, 1
+	compare VAR_RESULT, TRUE
+	goto_if_eq MauvilleCity_GameCorner_EventScript_ChooseStarterPrizeMessage
+	release
+	end
+
+MauvilleCity_GameCorner_EventScript_ChooseStarterPrizeMessage::
+	message MauvilleCity_GameCorner_Text_WhichStarterType
+	waitmessage
+	setvar VAR_0x8004, 0
+	showcoinsbox 1, 1
+	multichoice 0, 0, MULTI_GRASS_FIRE_WATER, 0
+	switch VAR_RESULT
+	case 0, MauvilleCity_GameCorner_EventScript_ChooseGrassStarter
+	case 1, MauvilleCity_GameCorner_EventScript_ChooseFireStarter
+	case 2, MauvilleCity_GameCorner_EventScript_ChooseWaterStarter
+	case 3, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	case MULTI_B_PRESSED, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	goto MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	end
+	
+MauvilleCity_GameCorner_EventScript_ChooseGrassStarter::
+	setvar VAR_0x8004, SCROLL_MULTI_GAMECORNER_GRASS_STARTERS
+	setvar VAR_0x8006, STARTER_COINS
+	special ShowScrollableMultichoice
+	waitstate
+	switch VAR_RESULT
+	case 0, MauvilleCity_GameCorner_EventScript_Bulbasaur
+	case 1, MauvilleCity_GameCorner_EventScript_Chikorita
+	case 2, MauvilleCity_GameCorner_EventScript_Treecko
+	case 3, MauvilleCity_GameCorner_EventScript_Turtwig
+	case 4, MauvilleCity_GameCorner_EventScript_Snivy
+	case 5, MauvilleCity_GameCorner_EventScript_Chespin
+	case 6, MauvilleCity_GameCorner_EventScript_Rowlet
+	case 7, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	goto MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	end
+	
+MauvilleCity_GameCorner_EventScript_ChooseFireStarter::
+	setvar VAR_0x8004, SCROLL_MULTI_GAMECORNER_FIRE_STARTERS
+	setvar VAR_0x8006, STARTER_COINS
+	special ShowScrollableMultichoice
+	waitstate
+	switch VAR_RESULT
+	case 0, MauvilleCity_GameCorner_EventScript_Charmander
+	case 1, MauvilleCity_GameCorner_EventScript_Cyndaquil
+	case 2, MauvilleCity_GameCorner_EventScript_Torchic
+	case 3, MauvilleCity_GameCorner_EventScript_Chimchar
+	case 4, MauvilleCity_GameCorner_EventScript_Tepig
+	case 5, MauvilleCity_GameCorner_EventScript_Fennekin
+	case 6, MauvilleCity_GameCorner_EventScript_Litten
+	case 7, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	goto MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	end
+	
+MauvilleCity_GameCorner_EventScript_ChooseWaterStarter::
+	setvar VAR_0x8004, SCROLL_MULTI_GAMECORNER_WATER_STARTERS
+	setvar VAR_0x8006, STARTER_COINS
+	special ShowScrollableMultichoice
+	waitstate
+	switch VAR_RESULT
+	case 0, MauvilleCity_GameCorner_EventScript_Squirtle
+	case 1, MauvilleCity_GameCorner_EventScript_Totodile
+	case 2, MauvilleCity_GameCorner_EventScript_Mudkip
+	case 3, MauvilleCity_GameCorner_EventScript_Piplup
+	case 4, MauvilleCity_GameCorner_EventScript_Oshawott
+	case 5, MauvilleCity_GameCorner_EventScript_Froakie
+	case 6, MauvilleCity_GameCorner_EventScript_Popplio
+	case 7, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	goto MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	end
+
+MauvilleCity_GameCorner_EventScript_Bulbasaur::
+	setvar VAR_TEMP_1, SPECIES_BULBASAUR
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Chikorita::
+	setvar VAR_TEMP_1, SPECIES_CHIKORITA
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Treecko::
+	setvar VAR_TEMP_1, SPECIES_TREECKO
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Turtwig::
+	setvar VAR_TEMP_1, SPECIES_TURTWIG
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Snivy::
+	setvar VAR_TEMP_1, SPECIES_SNIVY
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Chespin::
+	setvar VAR_TEMP_1, SPECIES_CHESPIN
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Rowlet::
+	setvar VAR_TEMP_1, SPECIES_ROWLET
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+
+MauvilleCity_GameCorner_EventScript_Charmander::
+	setvar VAR_TEMP_1, SPECIES_CHARMANDER
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Cyndaquil::
+	setvar VAR_TEMP_1, SPECIES_CYNDAQUIL
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Torchic::
+	setvar VAR_TEMP_1, SPECIES_TORCHIC
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Chimchar::
+	setvar VAR_TEMP_1, SPECIES_CHIMCHAR
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Tepig::
+	setvar VAR_TEMP_1, SPECIES_TEPIG
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Fennekin::
+	setvar VAR_TEMP_1, SPECIES_FENNEKIN
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Litten::
+	setvar VAR_TEMP_1, SPECIES_LITTEN
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Squirtle::
+	setvar VAR_TEMP_1, SPECIES_SQUIRTLE
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Totodile::
+	setvar VAR_TEMP_1, SPECIES_TOTODILE
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Mudkip::
+	setvar VAR_TEMP_1, SPECIES_MUDKIP
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Piplup::
+	setvar VAR_TEMP_1, SPECIES_PIPLUP
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Oshawott::
+	setvar VAR_TEMP_1, SPECIES_OSHAWOTT
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Froakie::
+	setvar VAR_TEMP_1, SPECIES_FROAKIE
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_Popplio::
+	setvar VAR_TEMP_1, SPECIES_POPPLIO
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+	
+MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize::
+	bufferspeciesname 0, VAR_TEMP_1
+	msgbox MauvilleCity_GameCorner_Text_SoYourChoiceIsThePokemonX, MSGBOX_YESNO
+	compare VAR_RESULT, NO
+	goto_if_eq MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	checkcoins VAR_0x8007
+	compare VAR_0x8007, VAR_0x8006
+	goto_if_lt MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter
+	goto MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	
+MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter::
+	msgbox MauvilleCity_GameCorner_Text_NotEnoughCoins, MSGBOX_DEFAULT
+	goto MauvilleCity_GameCorner_EventScript_ChooseStarterPrizeMessage
+	end
+
+MauvilleCity_GameCorner_EventScript_CancelPokemonSelect::
+	msgbox MauvilleCity_GameCorner_Text_OhIsThatSo, MSGBOX_DEFAULT
+	hidecoinsbox 0, 0
+	release
+	end
+
+MauvilleCity_GameCorner_EventScript_ReceivePokemon::
+	msgbox MauvilleCity_GameCorner_Text_ThanksPleaseTakePokemon, MSGBOX_DEFAULT
+	removecoins VAR_0x8006
+	updatecoinsbox 1, 1
+	givemon VAR_TEMP_1, 5, ITEM_NONE
+	compare VAR_RESULT, 0
+	goto_if_eq MauvilleCity_GameCorner_EventScript_ReceivePokemonParty
+	compare VAR_RESULT, 1
+	goto_if_eq MauvilleCity_GameCorner_EventScript_ReceivePokemonPC
+	goto Common_EventScript_NoMoreRoomForPokemon
+
+MauvilleCity_GameCorner_EventScript_ReceivePokemonParty::
+	call MauvilleCity_GameCorner_EventScript_ReceivedPokemonFanfare
+	msgbox gText_NicknameThisPokemon, MSGBOX_YESNO
+	compare VAR_RESULT, NO
+	goto_if_eq MauvilleCity_GameCorner_EventScript_TakeCareOfPokemon
+	call Common_EventScript_GetGiftMonPartySlot
+	call Common_EventScript_NameReceivedPartyMon
+	goto MauvilleCity_GameCorner_EventScript_TakeCareOfPokemon
+
+MauvilleCity_GameCorner_EventScript_ReceivePokemonPC::
+	call MauvilleCity_GameCorner_EventScript_ReceivedPokemonFanfare
+	msgbox gText_NicknameThisPokemon, MSGBOX_YESNO
+	compare VAR_RESULT, NO
+	goto_if_eq MauvilleCity_GameCorner_EventScript_SendPokemonToPC
+	call Common_EventScript_NameReceivedBoxMon
+	goto MauvilleCity_GameCorner_EventScript_SendPokemonToPC
+
+MauvilleCity_GameCorner_EventScript_SendPokemonToPC::
+	call Common_EventScript_TransferredToPC
+	goto MauvilleCity_GameCorner_EventScript_TakeCareOfPokemon
+
+MauvilleCity_GameCorner_EventScript_ReceivedPokemonFanfare::
+	bufferspeciesname 0, VAR_TEMP_1
+	playfanfare MUS_OBTAIN_ITEM
+	message MauvilleCity_GameCorner_Text_PlayerReceivedPokemon
+	waitmessage
+	waitfanfare
+	@ bufferspeciesname 0, VAR_TEMP_1
+	return
+
+MauvilleCity_GameCorner_EventScript_TakeCareOfPokemon::
+	bufferspeciesname 0, VAR_TEMP_1
+	msgbox MauvilleCity_GameCorner_Text_TakeCareOfPokemon, MSGBOX_DEFAULT
+	hidecoinsbox 0, 0
+	release
+	end
+
+MauvilleCity_GameCorner_Text_ExchangeCoinsForPokemon:
+	.string "Welcome.\p"
+	.string "You can exchange your Coins for\n"
+	.string "rare Pokémon here.$"
+
+MauvilleCity_GameCorner_Text_WhichStarterType:
+	.string "Which Type of Pokémon would you like?$"
+
+MauvilleCity_GameCorner_Text_SoYourChoiceIsThePokemonX:
+	.string "So your choice is {STR_VAR_1}?$"
+
+MauvilleCity_GameCorner_Text_TakeCareOfPokemon:
+	.string "Take good care of {STR_VAR_1}!$"
+
+MauvilleCity_GameCorner_Text_PlayerReceivedPokemon:
+	.string "{PLAYER} received {STR_VAR_1}!$"
+
+MauvilleCity_GameCorner_Text_ThanksPleaseTakePokemon:
+	.string "Thank you!\p"
+	.string "Please take your new Pokémon.$"
 

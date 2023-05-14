@@ -2033,6 +2033,35 @@ const u8 gText_Speed_Placeholder[] =    _("Speed{CLEAR_TO 0x36}{EXTRA_STR_VAR_1}
 const u8 gText_SpAtk_Placeholder[] =    _("Sp. Atk{CLEAR_TO 0x36}{EXTRA_STR_VAR_2}");
 const u8 gText_SpDef_Placeholder[] =    _("Sp. Def{CLEAR_TO 0x36}{EXTRA_STR_VAR_3}");
 
+// Grass Starters
+const u8 gText_GameCornerBulbasaur[] = 	_("Bulbasaur{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerChikorita[] = 	_("Chikorita{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerTreecko[] = 	_("Treecko{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerTurtwig[] = 	_("Turtwig{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerSnivy[] = 		_("Snivy{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerChespin[] = 	_("Chespin{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerRowlet[] = 	_("Rowlet{CLEAR_TO 0x48}2500 Coins");
+// Fire Starters
+const u8 gText_GameCornerCharmander[] = _("Charmander{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerCyndaquil[] = 	_("Cyndaquil{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerTorchic[] = 	_("Torchic{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerChimchar[] = 	_("Chimchar{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerTepig[] = 		_("Tepig{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerFennekin[] = 	_("Fennekin{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerLitten[] = 	_("Litten{CLEAR_TO 0x48}2500 Coins");
+// Water Starters
+const u8 gText_GameCornerSquirtle[] = 	_("Squirtle{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerTotodile[] = 	_("Totodile{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerMudkip[] = 	_("Mudkip{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerPiplup[] = 	_("Piplup{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerOshawott[] = 	_("Oshawott{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerFroakie[] = 	_("Froakie{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerPopplio[] = 	_("Popplio{CLEAR_TO 0x48}2500 Coins");
+// Starter type selection
+const u8 gText_GrassType[] = _("Grass-type");
+const u8 gText_FireType[] = _("Fire-type");
+const u8 gText_WaterType[] = _("Water-type");
+
 // Pokemon center move tutor/name rater menu
 const u8 gText_RememberAMove[] = _("Remember a move");
 const u8 gText_ForgetAMove[] = _("Forget a move");

@@ -817,6 +817,14 @@ const struct MenuAction MultichoiceList_EVMenu[] =
     {gText_Add252toEV},
 };
 
+static const struct MenuAction MultichoiceList_GrassFireWater[] = 
+{
+    {gText_GrassType},
+    {gText_FireType},
+    {gText_WaterType},
+    {gText_Exit},
+};
+
 static const struct MenuAction MultichoiceList_Exit[] =
 {
     {gText_Exit},
@@ -950,6 +958,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_SUPER_TRAINING_MENU]        = MULTICHOICE(MultichoiceList_SuperTrainingMenu),
     [MULTI_EV_MENU]                    = MULTICHOICE(MultichoiceList_EVMenu),
     [MULTI_PKMN_CENTER_TUTOR_SETS]     = MULTICHOICE(MultichoiceList_Exit),
+    [MULTI_GRASS_FIRE_WATER]           = MULTICHOICE(MultichoiceList_GrassFireWater),
 };
 
 const u8 *const gStdStrings[] =
