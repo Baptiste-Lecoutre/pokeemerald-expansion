@@ -192,6 +192,7 @@ static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(void) =
 };
 
 EWRAM_DATA bool8 gDescriptionSubmenu = 0;
+EWRAM_DATA u8 sLastUsedBallHoldFrames = 0;
 
 // unknown unused data
 static const u8 sUnused[] = {0x48, 0x48, 0x20, 0x5a, 0x50, 0x50, 0x50, 0x58};
@@ -291,7 +292,7 @@ static void HandleInputChooseAction(void)
         }
         PlayerBufferExecCompleted();
     }
-    else if (JOY_NEW(DPAD_LEFT))
+    else if (JOY_NEW(DPAD_LEFT) && !JOY_HELD(B_LAST_USED_BALL_BUTTON))
     {
         if (gActionSelectionCursor[gActiveBattler] & 1) // if is B_ACTION_USE_ITEM or B_ACTION_RUN
         {
@@ -301,7 +302,7 @@ static void HandleInputChooseAction(void)
             ActionSelectionCreateCursorAt(gActionSelectionCursor[gActiveBattler], 0);
         }
     }
-    else if (JOY_NEW(DPAD_RIGHT))
+    else if (JOY_NEW(DPAD_RIGHT) && !JOY_HELD(B_LAST_USED_BALL_BUTTON))
     {
         if (!(gActionSelectionCursor[gActiveBattler] & 1)) // if is B_ACTION_USE_MOVE or B_ACTION_SWITCH
         {
@@ -373,7 +374,7 @@ static void HandleInputChooseAction(void)
     }
 #endif
 #if B_LAST_USED_BALL == TRUE
-    else if (JOY_NEW(B_LAST_USED_BALL_BUTTON))
+    /*else if (JOY_NEW(B_LAST_USED_BALL_BUTTON))
     {
         if (CanThrowLastUsedBall())
         {
@@ -388,6 +389,32 @@ static void HandleInputChooseAction(void)
             TryHideLastUsedBall();
             OpenEnemyParty();
         }
+    }*/
+    else if (JOY_HELD(B_LAST_USED_BALL_BUTTON))
+    {
+        sLastUsedBallHoldFrames = sLastUsedBallHoldFrames < 0xFF ? sLastUsedBallHoldFrames+1 : 0xFF;
+
+        if (JOY_NEW(DPAD_RIGHT))
+        {
+            PlaySE(SE_SELECT);
+            TryChangeLastUsedBall(TRUE);
+        }
+        else if (JOY_NEW(DPAD_LEFT))
+        {
+            PlaySE(SE_SELECT);
+            TryChangeLastUsedBall(FALSE);
+        }
+    }
+    else if (sLastUsedBallHoldFrames != 0 && CanThrowLastUsedBall())
+    {
+        if (sLastUsedBallHoldFrames < 60)
+        {
+            PlaySE(SE_SELECT);
+            TryHideLastUsedBall();
+            BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_THROW_BALL, 0);
+            PlayerBufferExecCompleted();
+        }
+        sLastUsedBallHoldFrames = 0;
     }
 #endif
 }
