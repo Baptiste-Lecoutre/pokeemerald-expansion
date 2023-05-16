@@ -374,22 +374,6 @@ static void HandleInputChooseAction(void)
     }
 #endif
 #if B_LAST_USED_BALL == TRUE
-    /*else if (JOY_NEW(B_LAST_USED_BALL_BUTTON))
-    {
-        if (CanThrowLastUsedBall())
-        {
-            PlaySE(SE_SELECT);
-            TryHideLastUsedBall();
-            BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_THROW_BALL, 0);
-            PlayerBufferExecCompleted();
-        }
-        else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && FALSE) // option to open the enemy party in summary screen
-        {
-            PlaySE(SE_SELECT);
-            TryHideLastUsedBall();
-            OpenEnemyParty();
-        }
-    }*/
     else if (JOY_HELD(B_LAST_USED_BALL_BUTTON))
     {
         sLastUsedBallHoldFrames = sLastUsedBallHoldFrames < 0xFF ? sLastUsedBallHoldFrames+1 : 0xFF;
@@ -398,21 +382,32 @@ static void HandleInputChooseAction(void)
         {
             PlaySE(SE_SELECT);
             TryChangeLastUsedBall(TRUE);
+            sLastUsedBallHoldFrames = 0xFF;
         }
         else if (JOY_NEW(DPAD_LEFT))
         {
             PlaySE(SE_SELECT);
             TryChangeLastUsedBall(FALSE);
+            sLastUsedBallHoldFrames = 0xFF;
         }
     }
-    else if (sLastUsedBallHoldFrames != 0 && CanThrowLastUsedBall())
+    else if (sLastUsedBallHoldFrames != 0)
     {
         if (sLastUsedBallHoldFrames < 60)
         {
-            PlaySE(SE_SELECT);
-            TryHideLastUsedBall();
-            BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_THROW_BALL, 0);
-            PlayerBufferExecCompleted();
+            if (CanThrowLastUsedBall())
+            {
+                PlaySE(SE_SELECT);
+                TryHideLastUsedBall();
+                BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_THROW_BALL, 0);
+                PlayerBufferExecCompleted();
+            }
+            else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && FALSE) // option to open the enemy party in summary screen
+            {
+                PlaySE(SE_SELECT);
+                TryHideLastUsedBall();
+                OpenEnemyParty();
+            }
         }
         sLastUsedBallHoldFrames = 0;
     }
