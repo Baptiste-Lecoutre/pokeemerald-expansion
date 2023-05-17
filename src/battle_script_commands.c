@@ -5656,7 +5656,7 @@ static void Cmd_moveend(void)
                 && gBattleMoves[gCurrentMove].power != 0
                 && CompareStat(gBattlerTarget, STAT_ATK, MAX_STAT_STAGE, CMP_LESS_THAN))
             {
-                gBattleMons[gBattlerTarget].statStages[STAT_ATK]++;
+                SET_STATCHANGER(STAT_ATK, 1, FALSE);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_RageIsBuilding;
                 effect = TRUE;
@@ -9568,7 +9568,6 @@ static void Cmd_various(void)
           && !NoAliveMonsForEitherParty()
           && CompareStat(gBattlerAttacker, STAT_ATK, MAX_STAT_STAGE, CMP_LESS_THAN))
         {
-            gBattleMons[gBattlerAttacker].statStages[STAT_ATK]++;
             SET_STATCHANGER(STAT_ATK, 1, FALSE);
             PREPARE_STAT_BUFFER(gBattleTextBuff1, STAT_ATK);
             BattleScriptPush(cmd->nextInstr);
@@ -9592,7 +9591,6 @@ static void Cmd_various(void)
           && !NoAliveMonsForEitherParty()
           && CompareStat(gBattlerAttacker, STAT_SPATK, MAX_STAT_STAGE, CMP_LESS_THAN))
         {
-            gBattleMons[gBattlerAttacker].statStages[STAT_SPATK]++;
             SET_STATCHANGER(STAT_SPATK, 1, FALSE);
             PREPARE_STAT_BUFFER(gBattleTextBuff1, STAT_SPATK);
             BattleScriptPush(cmd->nextInstr);
@@ -9644,7 +9642,6 @@ static void Cmd_various(void)
             && !NoAliveMonsForEitherParty()
             && CompareStat(gBattlerAttacker, i, MAX_STAT_STAGE, CMP_LESS_THAN))
         {
-            gBattleMons[gBattlerAttacker].statStages[i]++;
             SET_STATCHANGER(i, 1, FALSE);
             PREPARE_STAT_BUFFER(gBattleTextBuff1, i);
             BattleScriptPush(cmd->nextInstr);
@@ -9664,7 +9661,6 @@ static void Cmd_various(void)
                 && !NoAliveMonsForEitherParty()
                 && CompareStat(gBattleScripting.battler, STAT_SPATK, MAX_STAT_STAGE, CMP_LESS_THAN))
             {
-                gBattleMons[gBattleScripting.battler].statStages[STAT_SPATK]++;
                 SET_STATCHANGER(STAT_SPATK, 1, FALSE);
                 PREPARE_STAT_BUFFER(gBattleTextBuff1, STAT_SPATK);
                 BattleScriptPushCursor();
