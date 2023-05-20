@@ -2656,8 +2656,9 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_ForgetAMove,
         gText_LearnANewMove,
         gText_RateANickname,
+        gText_DoWonderTrade,
         gText_MysteryGift,
-        gText_ResetEvents,
+//        gText_ResetEvents,
         gText_Exit
     },
     [SCROLL_MULTI_PC_TUTOR_SET_1] = 
