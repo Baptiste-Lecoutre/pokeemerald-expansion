@@ -211,6 +211,7 @@ static void Task_FreeAbilityPopUpGfx(u8);
 
 static void SpriteCB_LastUsedBall(struct Sprite *);
 static void SpriteCB_LastUsedBallWin(struct Sprite *);
+static void SpriteCB_LastUsedBallBounce(struct Sprite *);
 static void SpriteCB_MoveInfoWindow(struct Sprite* sprite);
 
 static void SpriteCB_TypeIcon(struct Sprite* sprite);
@@ -3322,6 +3323,18 @@ void TryAddLastUsedBallItemSprites(void)
 #endif
 }
 
+static void CreateLastUsedBallGfx(void)
+{
+    if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
+    {
+        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, (CanThrowLastUsedBall() ? gLastThrownBall : ITEM_SCANNER));
+        gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_BALL_WIN_X_F;
+        gSprites[gBattleStruct->ballSpriteIds[0]].y = LAST_USED_BALL_Y - 2;
+        gSprites[gBattleStruct->ballSpriteIds[0]].sHide = FALSE;   // restore
+        gSprites[gBattleStruct->ballSpriteIds[0]].callback = SpriteCB_LastUsedBallBounce;
+    }
+}
+
 static void DestroyLastUsedBallWinGfx(struct Sprite *sprite)
 {
     FreeSpriteTilesByTag(LAST_BALL_WINDOW_TAG);
@@ -3372,6 +3385,26 @@ static void SpriteCB_LastUsedBall(struct Sprite *sprite)
     }
 }
 
+static void SpriteCB_LastUsedBallBounce(struct Sprite *sprite)
+{
+    if (sprite->sHide)
+    {
+        sprite->y--;
+        if (sprite->y < LAST_USED_BALL_Y -2)
+        {
+            DestroyLastUsedBallGfx(sprite);
+            CreateLastUsedBallGfx();
+        }
+    }
+    else
+    {
+        if (sprite->y != LAST_USED_BALL_Y)
+            sprite->y++;
+        else
+            sprite->callback = SpriteCB_LastUsedBall;
+    }
+}
+
 static void TryHideOrRestoreLastUsedBall(u8 caseId)
 {
 #if B_LAST_USED_BALL == TRUE
@@ -3411,6 +3444,32 @@ void TryRestoreLastUsedBall(void)
     else
         TryAddLastUsedBallItemSprites();
 #endif
+}
+
+void TryChangeLastUsedBall(bool8 increase)
+{
+    if (increase)
+    {
+        do
+        {
+            gLastThrownBall++;
+            if (gLastThrownBall > LAST_BALL)
+                gLastThrownBall = FIRST_BALL;
+        } while (!CheckBagHasItem(gLastThrownBall, 1));
+        
+    }
+    else
+    {
+        do
+        {
+            if (gLastThrownBall == FIRST_BALL)
+                gLastThrownBall = LAST_BALL;
+            else
+                gLastThrownBall--;
+        } while (!CheckBagHasItem(gLastThrownBall, 1));
+    }
+    gSprites[gBattleStruct->ballSpriteIds[0]].callback = SpriteCB_LastUsedBallBounce;
+    gSprites[gBattleStruct->ballSpriteIds[0]].sHide = TRUE;
 }
 
 // type icons during move selection

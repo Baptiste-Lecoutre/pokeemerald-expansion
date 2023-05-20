@@ -5636,6 +5636,9 @@ static void Cmd_moveend(void)
                 {
                     gProtectStructs[gBattlerAttacker].touchedProtectLike = FALSE;
                     gBattleMons[gBattlerAttacker].status1 = STATUS1_BURN;
+                    gActiveBattler = gBattlerAttacker;
+                    BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+                    MarkBattlerForControllerExec(gActiveBattler);
                     BattleScriptPushCursor();
                     gBattlescriptCurrInstr = BattleScript_BeakBlastBurn;
                     effect = 1;
@@ -5653,7 +5656,7 @@ static void Cmd_moveend(void)
                 && gBattleMoves[gCurrentMove].power != 0
                 && CompareStat(gBattlerTarget, STAT_ATK, MAX_STAT_STAGE, CMP_LESS_THAN))
             {
-                gBattleMons[gBattlerTarget].statStages[STAT_ATK]++;
+                SET_STATCHANGER(STAT_ATK, 1, FALSE);
                 BattleScriptPushCursor();
                 gBattlescriptCurrInstr = BattleScript_RageIsBuilding;
                 effect = TRUE;
@@ -9565,7 +9568,6 @@ static void Cmd_various(void)
           && !NoAliveMonsForEitherParty()
           && CompareStat(gBattlerAttacker, STAT_ATK, MAX_STAT_STAGE, CMP_LESS_THAN))
         {
-            gBattleMons[gBattlerAttacker].statStages[STAT_ATK]++;
             SET_STATCHANGER(STAT_ATK, 1, FALSE);
             PREPARE_STAT_BUFFER(gBattleTextBuff1, STAT_ATK);
             BattleScriptPush(cmd->nextInstr);
@@ -9589,7 +9591,6 @@ static void Cmd_various(void)
           && !NoAliveMonsForEitherParty()
           && CompareStat(gBattlerAttacker, STAT_SPATK, MAX_STAT_STAGE, CMP_LESS_THAN))
         {
-            gBattleMons[gBattlerAttacker].statStages[STAT_SPATK]++;
             SET_STATCHANGER(STAT_SPATK, 1, FALSE);
             PREPARE_STAT_BUFFER(gBattleTextBuff1, STAT_SPATK);
             BattleScriptPush(cmd->nextInstr);
@@ -9641,7 +9642,6 @@ static void Cmd_various(void)
             && !NoAliveMonsForEitherParty()
             && CompareStat(gBattlerAttacker, i, MAX_STAT_STAGE, CMP_LESS_THAN))
         {
-            gBattleMons[gBattlerAttacker].statStages[i]++;
             SET_STATCHANGER(i, 1, FALSE);
             PREPARE_STAT_BUFFER(gBattleTextBuff1, i);
             BattleScriptPush(cmd->nextInstr);
@@ -9661,7 +9661,6 @@ static void Cmd_various(void)
                 && !NoAliveMonsForEitherParty()
                 && CompareStat(gBattleScripting.battler, STAT_SPATK, MAX_STAT_STAGE, CMP_LESS_THAN))
             {
-                gBattleMons[gBattleScripting.battler].statStages[STAT_SPATK]++;
                 SET_STATCHANGER(STAT_SPATK, 1, FALSE);
                 PREPARE_STAT_BUFFER(gBattleTextBuff1, STAT_SPATK);
                 BattleScriptPushCursor();
@@ -10406,12 +10405,6 @@ static void Cmd_various(void)
         }
         return;
     }
-    case VARIOUS_SET_Z_EFFECT:
-    {
-        VARIOUS_ARGS();
-        SetZEffect();   //handles battle script jumping internally
-        return;
-    }
     case VARIOUS_MOVEEND_ITEM_EFFECTS:
     {
         VARIOUS_ARGS();
@@ -11090,48 +11083,6 @@ static void Cmd_various(void)
         CourtChangeSwapSideStatuses();
         break;
     }
-    case VARIOUS_TRY_SYMBIOSIS: //called by Bestow, Fling, and Bug Bite, which don't work with Cmd_removeitem.
-    {
-        VARIOUS_ARGS();
-        if (SYMBIOSIS_CHECK(gActiveBattler, BATTLE_PARTNER(gActiveBattler)))
-        {
-            BestowItem(BATTLE_PARTNER(gActiveBattler), gActiveBattler);
-            gLastUsedAbility = gBattleMons[BATTLE_PARTNER(gActiveBattler)].ability;
-            gBattleScripting.battler = gBattlerAbility = BATTLE_PARTNER(gActiveBattler);
-            gBattlerAttacker = gActiveBattler;
-            BattleScriptPushCursor();
-            gBattlescriptCurrInstr = BattleScript_SymbiosisActivates;
-            return;
-        }
-        break;
-    }
-    case VARIOUS_CAN_TELEPORT:
-    {
-        VARIOUS_ARGS();
-        gBattleCommunication[0] = CanTeleport(gActiveBattler);
-        break;
-    }
-    case VARIOUS_GET_BATTLER_SIDE:
-    {
-        VARIOUS_ARGS();
-        if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-            gBattleCommunication[0] = B_SIDE_PLAYER;
-        else
-            gBattleCommunication[0] = B_SIDE_OPPONENT;
-        break;
-    }
-    case VARIOUS_CHECK_PARENTAL_BOND_COUNTER:
-        {
-            VARIOUS_ARGS(u8 counter, const u8 *jumpInstr);
-            // Some effects should only happen on the first or second strike of Parental Bond,
-            // so a way to check this in battle scripts is useful
-            u8 counter = cmd->counter;
-            if (gSpecialStatuses[gBattlerAttacker].parentalBondState == counter && gBattleMons[gBattlerTarget].hp != 0)
-                gBattlescriptCurrInstr = cmd->jumpInstr;
-            else
-                gBattlescriptCurrInstr = cmd->nextInstr;
-            return;
-        }
     case VARIOUS_SWAP_STATS:
         {
             VARIOUS_ARGS(u8 stat);
@@ -16431,6 +16382,55 @@ static bool8 IsFinalStrikeEffect(u16 move)
             return TRUE;
     }
     return FALSE;
+}
+
+void BS_CheckParentalBondCounter(void)
+{
+    NATIVE_ARGS(u8 counter, const u8 *jumpInstr);
+    // Some effects should only happen on the first or second strike of Parental Bond,
+    // so a way to check this in battle scripts is useful
+    if (gSpecialStatuses[gBattlerAttacker].parentalBondState == cmd->counter && gBattleMons[gBattlerTarget].hp != 0)
+        gBattlescriptCurrInstr = cmd->jumpInstr;
+    else
+        gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_GetBattlerSide(void)
+{
+    NATIVE_ARGS(u8 battler);
+    gBattleCommunication[0] = GetBattlerSide(cmd->battler);   
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_CanTeleport(void)
+{
+    NATIVE_ARGS(u8 battler);
+    gBattleCommunication[0] = CanTeleport(cmd->battler);
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_TrySymbiosis(void)
+{
+    NATIVE_ARGS();
+    //called by Bestow, Fling, and Bug Bite, which don't work with Cmd_removeitem.
+    gActiveBattler = gBattlerAttacker;
+    if (SYMBIOSIS_CHECK(gBattlerAttacker, BATTLE_PARTNER(gActiveBattler)))
+    {
+        BestowItem(BATTLE_PARTNER(gActiveBattler), gActiveBattler);
+        gLastUsedAbility = gBattleMons[BATTLE_PARTNER(gActiveBattler)].ability;
+        gBattleScripting.battler = gBattlerAbility = BATTLE_PARTNER(gActiveBattler);
+        gBattlerAttacker = gActiveBattler;
+        BattleScriptPushCursor();
+        gBattlescriptCurrInstr = BattleScript_SymbiosisActivates;
+        return;
+    }
+    
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_SetZEffect(void)
+{
+    SetZEffect();   // Handles battle script jumping internally
 }
 
 static void TryUpdateRoundTurnOrder(void)

@@ -2394,6 +2394,36 @@ static const struct BattleWindowText sTextOnWindowsInfo_Normal[] =
         .bgColor = TEXT_DYNAMIC_COLOR_5,
         .shadowColor = TEXT_DYNAMIC_COLOR_6,
     },
+    [B_WIN_SUPER_EFFECTIVE] = { // "type" super-effective
+	    .fillValue = PIXEL_FILL(0xE),
+	    .fontId = FONT_NARROW,
+	    .x = 0,
+	    .y = 1,
+	    .speed = 0,
+	    .fgColor = 6,
+	    .bgColor = 14,
+	    .shadowColor = 5,
+    },
+    [B_WIN_NOT_EFFECTIVE] = { // "type" not very effective
+	    .fillValue = PIXEL_FILL(0xE),
+	    .fontId = FONT_NARROW,
+	    .x = 0,
+	    .y = 1,
+	    .speed = 0,
+	    .fgColor = 1,
+	    .bgColor = 14,
+	    .shadowColor = 3,
+    },
+    [B_WIN_NO_EFFECT] = { // "type" no effect
+	    .fillValue = PIXEL_FILL(0xE),
+	    .fontId = FONT_NARROW,
+	    .x = 0,
+	    .y = 1,
+	    .speed = 0,
+	    .fgColor = 11,
+	    .bgColor = 14,
+	    .shadowColor = 11,
+    },
 };
 
 static const struct BattleWindowText sTextOnWindowsInfo_Arena[] =
@@ -3088,7 +3118,11 @@ static const u8 *BattleStringGetPlayerName(u8 *text, u8 battlerId)
             toCpy = gSaveBlock2Ptr->playerName;
         break;
     case B_POSITION_PLAYER_RIGHT:
-        if (gBattleTypeFlags & BATTLE_TYPE_LINK && gBattleTypeFlags & (BATTLE_TYPE_RECORDED | BATTLE_TYPE_MULTI))
+        if ((gBattleTypeFlags & BATTLE_TYPE_RECORDED) && !(gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER)))
+        {
+            toCpy = gLinkPlayers[0].name;
+        }
+        else if ((gBattleTypeFlags & BATTLE_TYPE_LINK) && gBattleTypeFlags & (BATTLE_TYPE_RECORDED | BATTLE_TYPE_MULTI))
         {
             toCpy = gLinkPlayers[2].name;
         }

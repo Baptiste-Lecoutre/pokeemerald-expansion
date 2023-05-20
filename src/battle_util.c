@@ -1598,7 +1598,8 @@ void BattleScriptPushCursor(void)
 
 void BattleScriptPop(void)
 {
-    gBattlescriptCurrInstr = gBattleResources->battleScriptsStack->ptr[--gBattleResources->battleScriptsStack->size];
+    if (gBattleResources->battleScriptsStack->size != 0)
+        gBattlescriptCurrInstr = gBattleResources->battleScriptsStack->ptr[--gBattleResources->battleScriptsStack->size];
 }
 
 static bool32 IsGravityPreventingMove(u32 move)
@@ -4551,7 +4552,6 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u16 ability, u8 special, u16 move
 
                 if (CompareStat(battler, statId, MAX_STAT_STAGE, CMP_LESS_THAN))
                 {
-                    gBattleMons[battler].statStages[statId]++;
                     SET_STATCHANGER(statId, 1, FALSE);
                     gBattlerAttacker = battler;
                     PREPARE_STAT_BUFFER(gBattleTextBuff1, statId);
@@ -4924,9 +4924,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u16 ability, u8 special, u16 move
             case ABILITY_SPEED_BOOST:
                 if (CompareStat(battler, STAT_SPEED, MAX_STAT_STAGE, CMP_LESS_THAN) && gDisableStructs[battler].isFirstTurn != 2)
                 {
-                    gBattleMons[battler].statStages[STAT_SPEED]++;
-                    gBattleScripting.animArg1 = 14 + STAT_SPEED;
-                    gBattleScripting.animArg2 = 0;
+                    SET_STATCHANGER(STAT_SPEED, 1, FALSE);
                     BattleScriptPushCursorAndCallback(BattleScript_SpeedBoostActivates);
                     gBattleScripting.battler = battler;
                     effect++;
@@ -5221,7 +5219,6 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u16 ability, u8 special, u16 move
 
                     SET_STATCHANGER(statId, statAmount, FALSE);
                 #if B_ABSORBING_ABILITY_STRING < GEN_5
-                    gBattleMons[battler].statStages[statId]++;
                     PREPARE_STAT_BUFFER(gBattleTextBuff1, statId);
                 #endif
                 }
@@ -8114,8 +8111,6 @@ u8 IsMonDisobedient(void)
     if (!IsOtherTrainer(gBattleMons[gBattlerAttacker].otId, gBattleMons[gBattlerAttacker].otName))
         levelReferenced = gBattleMons[gBattlerAttacker].metLevel;
     else
-#else
-    if (gBattleMons[gBattlerAttacker].level <= obedienceLevel)
 #endif
         levelReferenced = gBattleMons[gBattlerAttacker].level;
 
@@ -10402,12 +10397,19 @@ bool32 SetIllusionMon(struct Pokemon *mon, u32 battlerId)
 {
     struct Pokemon *party, *partnerMon;
     s32 i, id;
+    u8 side, partyCount;
 
     gBattleStruct->illusion[battlerId].set = 1;
     if (GetMonAbility(mon) != ABILITY_ILLUSION)
         return FALSE;
 
     party = GetBattlerParty(battlerId);
+    side = GetBattlerSide(battlerId);
+    partyCount = side == B_SIDE_PLAYER ? gPlayerPartyCount : gEnemyPartyCount;
+
+    // If this pokemon is last in the party, ignore Illusion.
+    if (&party[partyCount - 1] == mon)
+        return FALSE;
 
     if (IsBattlerAlive(BATTLE_PARTNER(battlerId)))
         partnerMon = &party[gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)]];
@@ -10647,7 +10649,7 @@ bool32 IsEntrainmentTargetOrSimpleBeamBannedAbility(u16 ability)
 void SortBattlersBySpeed(u8 *battlers, bool8 slowToFast)
 {
     int i, j, currSpeed, currBattler;
-    u16 speeds[4] = {0};
+    u16 speeds[MAX_BATTLERS_COUNT] = {0};
 
     for (i = 0; i < gBattlersCount; i++)
         speeds[i] = GetBattlerTotalSpeedStat(battlers[i]);

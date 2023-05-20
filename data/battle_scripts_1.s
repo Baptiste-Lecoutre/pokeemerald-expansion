@@ -435,9 +435,9 @@ BattleScript_EffectRevivalBlessing::
 	attackcanceler
 	attackstring
 	ppreduce
+	tryrevivalblessing BattleScript_ButItFailed
 	attackanimation
 	waitanimation
-	tryrevivalblessing BattleScript_ButItFailed
 	printstring STRINGID_PKMNREVIVEDREADYTOFIGHT
 	waitmessage B_WAIT_TIME_LONG
     jumpifbyte CMP_EQUAL, gBattleCommunication, TRUE, BattleScript_EffectRevivalBlessingSendOut
@@ -615,7 +615,7 @@ BattleScript_ShellTrapSetUp::
 	playanimation BS_ATTACKER, B_ANIM_SHELL_TRAP_SETUP, NULL
 	printstring STRINGID_PREPARESHELLTRAP
 	waitmessage B_WAIT_TIME_LONG
-	end2
+	end3
 
 BattleScript_EffectShellTrap::
 	attackcanceler
@@ -689,7 +689,7 @@ BattleScript_BeakBlastSetUp::
 	playanimation BS_ATTACKER, B_ANIM_BEAK_BLAST_SETUP, NULL
 	printstring STRINGID_HEATUPBEAK
 	waitmessage B_WAIT_TIME_LONG
-	end2
+	end3
 
 BattleScript_BeakBlastBurn::
 	setbyte cMULTISTRING_CHOOSER, 0
@@ -7173,8 +7173,10 @@ BattleScript_MistProtected::
 	return
 
 BattleScript_RageIsBuilding::
+	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_RageIsBuildingEnd
 	printstring STRINGID_PKMNRAGEBUILDING
 	waitmessage B_WAIT_TIME_LONG
+BattleScript_RageIsBuildingEnd:
 	return
 
 BattleScript_MoveUsedIsDisabled::
@@ -7893,7 +7895,7 @@ BattleScript_FocusPunchSetUp::
 	playanimation BS_ATTACKER, B_ANIM_FOCUS_PUNCH_SETUP
 	printstring STRINGID_PKMNTIGHTENINGFOCUS
 	waitmessage B_WAIT_TIME_LONG
-	end2
+	end3
 
 BattleScript_MegaEvolution::
 	printstring STRINGID_EMPTYSTRING3
@@ -7909,7 +7911,7 @@ BattleScript_MegaEvolutionAfterString:
 	printstring STRINGID_MEGAEVOEVOLVED
 	waitmessage B_WAIT_TIME_LONG
 	switchinabilities BS_ATTACKER
-	end2
+	end3
 
 BattleScript_WishMegaEvolution::
 	printstring STRINGID_EMPTYSTRING3
@@ -8507,10 +8509,12 @@ BattleScript_AbilityPopUp:
 	return
 
 BattleScript_SpeedBoostActivates::
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_SpeedBoostActivatesEnd
 	call BattleScript_AbilityPopUp
 	playanimation BS_ATTACKER, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
 	printstring STRINGID_PKMNRAISEDSPEED
 	waitmessage B_WAIT_TIME_LONG
+BattleScript_SpeedBoostActivatesEnd:
 	end3
 
 @ Can't compare directly to a value, have to compare to value at pointer
@@ -9022,8 +9026,8 @@ BattleScript_MoveStatDrain::
 	setgraphicalstatchangevalues
 	playanimation BS_TARGET, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
 	waitanimation
-.if B_ABSORBING_ABILITY_STRING >= GEN_5
 	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_MoveStatDrain_Cont
+.if B_ABSORBING_ABILITY_STRING >= GEN_5
 	printfromtable gStatUpStringIds
 	waitmessage B_WAIT_TIME_LONG
 .else
@@ -9303,6 +9307,7 @@ BattleScript_WeakArmorActivatesEnd:
 	return
 
 BattleScript_RaiseStatOnFaintingTarget::
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_RaiseStatOnFaintingTarget_End
 	copybyte gBattlerAbility, gBattlerAttacker
 	call BattleScript_AbilityPopUp
 	setgraphicalstatchangevalues
@@ -9310,9 +9315,11 @@ BattleScript_RaiseStatOnFaintingTarget::
 	waitanimation
 	printstring STRINGID_LASTABILITYRAISEDSTAT
 	waitmessage B_WAIT_TIME_LONG
+BattleScript_RaiseStatOnFaintingTarget_End:
 	return
 
 BattleScript_AttackerAbilityStatRaise::
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_AttackerAbilityStatRaise_End
 	copybyte gBattlerAbility, gBattlerAttacker
 	call BattleScript_AbilityPopUp
 	setgraphicalstatchangevalues
@@ -9320,6 +9327,7 @@ BattleScript_AttackerAbilityStatRaise::
 	waitanimation
 	printstring STRINGID_ATTACKERABILITYSTATRAISE
 	waitmessage B_WAIT_TIME_LONG
+BattleScript_AttackerAbilityStatRaise_End:
 	return
 
 BattleScript_FellStingerRaisesStat::
@@ -9373,8 +9381,8 @@ BattleScript_FriskActivates::
 	end3
 
 BattleScript_ImposterActivates::
-	transformdataexecution
 	call BattleScript_AbilityPopUp
+	transformdataexecution
 	playmoveanimation BS_ATTACKER, MOVE_TRANSFORM
 	waitanimation
 	printstring STRINGID_IMPOSTERTRANSFORM
