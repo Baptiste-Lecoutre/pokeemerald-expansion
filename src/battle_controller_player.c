@@ -128,6 +128,7 @@ static void EndDrawPartyStatusSummary(void);
 
 static void ReloadMoveNames(void);
 static void MoveSelectionDisplaySplitIcon(void);
+static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(void) =
 {
@@ -506,6 +507,8 @@ void HandleInputChooseTarget(void)
                     break;
                 }
 
+                MoveSelectionDisplayMoveTypeDoubles(GetBattlerPosition(gMultiUsePlayerCursor));
+
                 if (gAbsentBattlerFlags & gBitTable[gMultiUsePlayerCursor]
                  || !CanTargetBattler(gActiveBattler, gMultiUsePlayerCursor, move))
                     i = 0;
@@ -555,6 +558,8 @@ void HandleInputChooseTarget(void)
                     i++;
                     break;
                 }
+
+                MoveSelectionDisplayMoveTypeDoubles(GetBattlerPosition(gMultiUsePlayerCursor));
 
                 if (gAbsentBattlerFlags & gBitTable[gMultiUsePlayerCursor]
                  || !CanTargetBattler(gActiveBattler, gMultiUsePlayerCursor, move))
@@ -1806,7 +1811,28 @@ static void MoveSelectionDisplayPpNumber(void)
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING);
 }
 
-static void MoveSelectionDisplayMoveType(void)
+static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u8 targetId)
+{
+    u16 selectedMove = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
+
+    if (gBattleMoves[selectedMove].power == 0 || !gSaveBlock2Ptr->optionsShowTypeEffectiveness)
+        return B_WIN_MOVE_TYPE;
+    else
+    {
+        u16 typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gBattleMoves[selectedMove].type, gActiveBattler, targetId, FALSE);
+
+        if (typeEffectiveness == UQ_4_12(0.0))
+            return B_WIN_NO_EFFECT;
+        else if (typeEffectiveness <= UQ_4_12(0.5))
+            return B_WIN_NOT_EFFECTIVE;
+        else if (typeEffectiveness >= UQ_4_12(2.0))
+            return B_WIN_SUPER_EFFECTIVE;
+        else
+            return B_WIN_MOVE_TYPE;
+    }
+}
+
+static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId)
 {
     u8 *txtPtr;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[gActiveBattler][4]);
@@ -1817,9 +1843,14 @@ static void MoveSelectionDisplayMoveType(void)
     *(txtPtr)++ = FONT_NORMAL;
 
     StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
-    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+    BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, targetId));
 
     MoveSelectionDisplaySplitIcon();
+}
+
+static void MoveSelectionDisplayMoveType(void)
+{
+    MoveSelectionDisplayMoveTypeDoubles(B_POSITION_OPPONENT_LEFT);
 }
 
 static void MoveSelectionDisplaySplitIcon(void){

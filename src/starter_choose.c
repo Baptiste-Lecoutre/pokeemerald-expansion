@@ -349,18 +349,13 @@ static const struct SpriteTemplate sSpriteTemplate_StarterCircle =
 };
 
 // .text
-static u16 GetStarterPokemonInternal(u16 chosenStarterId, u16 chosenRegionId)
+u16 GetStarterPokemon(u16 chosenStarterId, u16 chosenRegionId)
 {
     if (chosenStarterId > STARTER_MON_COUNT)
         chosenStarterId = 0;
     if (chosenRegionId > REGION_COUNT)
         chosenRegionId = 0;
     return sStarterMon[chosenStarterId][chosenRegionId];
-}
-
-u16 GetStarterPokemon(u16 chosenStarterId)
-{
-    return GetStarterPokemonInternal(chosenStarterId, 3);
 }
 
 static void VblankCB_StarterChoose(void)
@@ -506,7 +501,7 @@ static void Task_HandleStarterChooseInput(u8 taskId)
         gTasks[taskId].tCircleSpriteId = spriteId;
 
         // Create Pokemon sprite
-        spriteId = CreatePokemonFrontSprite(GetStarterPokemonInternal(gTasks[taskId].tStarterSelection, gTasks[taskId].tRegionSelection), sPokeballCoords[selection][0], sPokeballCoords[selection][1]);
+        spriteId = CreatePokemonFrontSprite(GetStarterPokemon(gTasks[taskId].tStarterSelection, gTasks[taskId].tRegionSelection), sPokeballCoords[selection][0], sPokeballCoords[selection][1]);
         gSprites[spriteId].affineAnims = &sAffineAnims_StarterPokemon;
         gSprites[spriteId].callback = SpriteCB_StarterPokemon;
 
@@ -552,7 +547,7 @@ static void Task_WaitForStarterSprite(u8 taskId)
 
 static void Task_AskConfirmStarter(u8 taskId)
 {
-    PlayCry_Normal(GetStarterPokemonInternal(gTasks[taskId].tStarterSelection, gTasks[taskId].tRegionSelection), 0);
+    PlayCry_Normal(GetStarterPokemon(gTasks[taskId].tStarterSelection, gTasks[taskId].tRegionSelection), 0);
     FillWindowPixelBuffer(0, PIXEL_FILL(1));
     AddTextPrinterParameterized(0, FONT_NORMAL, gText_ConfirmStarterChoice, 0, 1, 0, NULL);
     ScheduleBgCopyTilemapToVram(0);
@@ -569,6 +564,7 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
     case 0:  // YES
         // Return the starter choice and exit.
         gSpecialVar_Result = gTasks[taskId].tStarterSelection;
+        gSpecialVar_0x8008 = gTasks[taskId].tRegionSelection;
         ResetAllPicSprites();
         SetMainCallback2(gMain.savedCallback);
         break;
@@ -600,7 +596,7 @@ static void CreateStarterPokemonLabel(u8 selection, u8 region)
     s32 width;
     u8 labelLeft, labelRight, labelTop, labelBottom;
 
-    u16 species = GetStarterPokemonInternal(selection, region);
+    u16 species = GetStarterPokemon(selection, region);
     CopyMonCategoryText(SpeciesToNationalPokedexNum(species), categoryText);
     speciesName = gSpeciesNames[species];
 
