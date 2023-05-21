@@ -289,23 +289,6 @@ static const u8 *const sOptionMenuRandomizerItemsNames[MENUITEM_RAND_COUNT] =
     [MENUITEM_RAND_CANCEL] = gText_OptionMenuCancel,
 };
 
-/*autorun
-textspeed
-battlestyle
-battlescene
-battlebars
-show type effectiveness
-type icons in battle
-sound
-low health beeps
-surf/bike music
-fishing style
-fast egg hatch
-fast evo scene
-fast field move
-frame
-cancel*/
-
 /*version
 diff
 nuzlocke
@@ -322,15 +305,11 @@ scale trainer level
 prevent evolution*/
 
 /*randomness type
-wild encounters
-static encounters
+encounters
 trainer parties
 starters
 abilities
-lvl up moves
-tm moves
-tutor moves
-relearner moves
+moves
 post evo species
 pokemon levels
 player party
