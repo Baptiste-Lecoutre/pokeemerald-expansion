@@ -124,7 +124,6 @@ void EndDexNavSearch(u8 taskId);
 void Task_OpenDexNavFromStartMenu(u8 taskId);
 void Task_OpenDexNavFromPokenav(u8 taskId);
 bool8 TryStartDexnavSearch(void);
-void TryIncrementSpeciesSearchLevel(u16 dexNum);
 void ResetDexNavSearch(void);
 bool8 TryFindHiddenPokemon(void);
 bool8 DexNavTryMakeShinyMon(void);

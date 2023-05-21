@@ -201,29 +201,24 @@ A Discord-based ROM hacking community that has many members who hack using the d
         - dianci, hoopa, volcanion
     - Gen7:
     - Gen8: 
-        - Galarian kanto birds roamers ?
+        - ZaZa & Galarian kanto birds roamers ?
 
     
 
 - Add new locations
-- Change wild encounters & trainer parties
+- Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
-- ReUse of origin cave post-game
-- Buff the encounters at Sky Pillar after the conflict in Sootopolis is solved.
-- When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
-- Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
+- Make the sootopolis rayquaza calming groudon and kyogre a double battle (player + rayquaza against groudon and kyogre) mid scene. original idea by devolov
+- Look at Lunos' todo list in his megamoddedexpansion project
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Change soaring palettes with DNS
 - Add fly out field move with Lati@s mon showcase
 - Change pkmn center layouts to have the move tutor NPC
-- change dexnav logic to handle chain and search levels?
 - Change some interfaces to have a visual identity
     - Text boxes
     - palettes and/or some UI layouts (see Missiri posts in discord)
-    - wait for A-press button, see vanadium (search "down_arrow")
     - map name popups, see vanadium
     - healthboxes & mega-zmoves triggers
     - bag sprites
     - make magma bright during the night
     - dexnav interface
-    - type icons

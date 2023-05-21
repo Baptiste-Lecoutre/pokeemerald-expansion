@@ -3523,12 +3523,6 @@ bool8 DexNavTryMakeShinyMon(void)
     return FALSE;
 }
 
-void TryIncrementSpeciesSearchLevel(u16 dexNum)
-{
-    /*if (gMapHeader.regionMapSectionId != MAPSEC_BATTLE_FRONTIER && gSaveBlock1Ptr->dexNavSearchLevels[dexNum] < 255)
-        gSaveBlock1Ptr->dexNavSearchLevels[dexNum]++;*/
-}
-
 void ResetDexNavSearch(void)
 {
     gSaveBlock1Ptr->dexNavChain = 0;    //reset dex nav chaining on new map
