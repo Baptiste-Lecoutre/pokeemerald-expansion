@@ -340,6 +340,11 @@ extern const u8 gText_FishReeling[];
 extern const u8 gText_FastEggHatch[];
 extern const u8 gText_FastEvoScene[];
 extern const u8 gText_PokemonAnim[];
+extern const u8 gText_ExpTeamMod[];
+extern const u8 gText_ExpMultiplier[];
+extern const u8 gText_PreventEvolution[];
+extern const u8 gText_ScaleEnemyLvl[];
+extern const u8 gText_EvolveEnemyMon[];
 
 extern const u8 gText_Seeding[];
 extern const u8 gText_WildEncounters[];

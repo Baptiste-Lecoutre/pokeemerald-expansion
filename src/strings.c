@@ -1543,6 +1543,11 @@ const u8 gText_FishReeling[] = _("Fish reeling");
 const u8 gText_FastEggHatch[] = _("Fast egg hatch");
 const u8 gText_FastEvoScene[] = _("Fast evo scene");
 const u8 gText_PokemonAnim[] = _("Pokemon anim");
+const u8 gText_ExpTeamMod[] = _("Exp. modulation");
+const u8 gText_ExpMultiplier[] = _("Exp. multiplier");
+const u8 gText_PreventEvolution[] = _("Prevent evolution");
+const u8 gText_EvolveEnemyMon[] = _("Evolve opponent");
+const u8 gText_ScaleEnemyLvl[] = _("Scale enemy lvl");
 
 const u8 gText_Seeding[] = _("RNG seeding");
 const u8 gText_WildEncounters[] = _("Wild encounters");

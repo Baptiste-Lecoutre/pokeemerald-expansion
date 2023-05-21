@@ -59,6 +59,7 @@ enum // key options
     MENUITEM_KEY_EVOLVEENEMYMON,
     MENUITEM_KEY_TYPECHART,
     MENUITEM_KEY_EXPTEAMMOD,
+    MENUITEM_KEY_EXPMULTIPLIER,
     MENUITEM_KEY_CANCEL,
     MENUITEM_KEY_COUNT,
 };
@@ -168,11 +169,12 @@ struct
 {
     [MENUITEM_KEY_LVLCAP] = {LevelCap_DrawChoices, ThreeOptions_ProcessInput},
     [MENUITEM_KEY_BASESTATSEQ] = {BaseStatEq_DrawChoices, TwoOptions_ProcessInput},
-    [MENUITEM_KEY_PREVENTEVO] = {NULL, NULL},
-    [MENUITEM_KEY_SCALEENEMYLVL] = {NULL, NULL},
-    [MENUITEM_KEY_EVOLVEENEMYMON] = {NULL, NULL},
+    [MENUITEM_KEY_PREVENTEVO] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_SCALEENEMYLVL] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_EVOLVEENEMYMON] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_KEY_TYPECHART] = {TypeChart_DrawChoices, TwoOptions_ProcessInput},
-    [MENUITEM_KEY_EXPTEAMMOD] = {NULL, NULL},
+    [MENUITEM_KEY_EXPTEAMMOD] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_EXPMULTIPLIER] = {NULL, NULL},
     [MENUITEM_KEY_CANCEL] = {NULL, NULL},
 };
 
@@ -255,11 +257,12 @@ static const u8 *const sOptionMenuKeyItemsNames[MENUITEM_KEY_COUNT] =
 {
     [MENUITEM_KEY_LVLCAP] = gText_LevelCap,
     [MENUITEM_KEY_BASESTATSEQ] = gText_BaseStats,
-    [MENUITEM_KEY_PREVENTEVO] = gText_BaseStats,
-    [MENUITEM_KEY_SCALEENEMYLVL] = gText_BaseStats,
-    [MENUITEM_KEY_EVOLVEENEMYMON] = gText_BaseStats,
+    [MENUITEM_KEY_PREVENTEVO] = gText_PreventEvolution,
+    [MENUITEM_KEY_SCALEENEMYLVL] = gText_ScaleEnemyLvl,
+    [MENUITEM_KEY_EVOLVEENEMYMON] = gText_EvolveEnemyMon,
     [MENUITEM_KEY_TYPECHART] = gText_TypeChart,
-    [MENUITEM_KEY_EXPTEAMMOD] = gText_BaseStats,
+    [MENUITEM_KEY_EXPTEAMMOD] = gText_ExpTeamMod,
+    [MENUITEM_KEY_EXPMULTIPLIER] = gText_ExpMultiplier,
     [MENUITEM_KEY_CANCEL] = gText_OptionMenuCancel,
 };
 
@@ -512,6 +515,8 @@ void CB2_InitOptionMenu(void)
         sOptions->selKey[MENUITEM_KEY_LVLCAP] = gSaveBlock2Ptr->optionsLevelCap;
         sOptions->selKey[MENUITEM_KEY_BASESTATSEQ] = gSaveBlock2Ptr->optionsBaseStatsEqual;
         sOptions->selKey[MENUITEM_KEY_TYPECHART] = gSaveBlock2Ptr->optionsTypeChart;
+        sOptions->selKey[MENUITEM_KEY_EXPTEAMMOD] = gSaveBlock2Ptr->xpTeamMod;
+        sOptions->selKey[MENUITEM_KEY_EXPMULTIPLIER] = gSaveBlock2Ptr->xpMulti;
 
         sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE] = gSaveBlock2Ptr->optionsRandomnessType;
         sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS] = gSaveBlock2Ptr->randomWildEncounters;
@@ -803,6 +808,8 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsLevelCap = sOptions->selKey[MENUITEM_KEY_LVLCAP];
     gSaveBlock2Ptr->optionsBaseStatsEqual = sOptions->selKey[MENUITEM_KEY_BASESTATSEQ];
     gSaveBlock2Ptr->optionsTypeChart = sOptions->selKey[MENUITEM_KEY_TYPECHART];
+    gSaveBlock2Ptr->xpMulti = sOptions->selKey[MENUITEM_KEY_EXPMULTIPLIER];
+    gSaveBlock2Ptr->xpTeamMod = sOptions->selKey[MENUITEM_KEY_EXPTEAMMOD];
 
     gSaveBlock2Ptr->optionsRandomnessType = 0;//sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE];
     gSaveBlock2Ptr->randomWildEncounters = 0;//sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS];

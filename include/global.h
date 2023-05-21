@@ -554,7 +554,7 @@ struct SaveBlock2
               u16 optionsShowTypeEffectiveness:1;
               u16 evolveOpponentsMons:1;
               u16 xpMulti:3;
-              u16 xpTeamMod:2;
+              u16 xpTeamMod:1;
               u16 optionsBaseStatsEqual:1;
               u16 trainerLvlScale:1;
               u16 optionsPokemonAnim:1;

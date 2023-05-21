@@ -345,6 +345,15 @@ const u16 sLevelCapFlags[NUM_SOFT_CAPS] =
 };
 const u16 sLevelCaps[NUM_SOFT_CAPS] = { 14, 21, 24, 29, 43, 43, 47, 50, 63};
 const double sLevelCapReduction[7] = { .5, .33, .25, .20, .15, .10, .05 };
+const double sRelativePartyScaling[27] =
+{
+    3.00, 2.75, 2.50, 2.33, 2.25,
+    2.00, 1.80, 1.70, 1.60, 1.50,
+    1.40, 1.30, 1.20, 1.10, 1.00,
+    0.95, 0.90, 0.85, 0.80, 0.75,
+    0.70, 0.65, 0.60, 0.55, 0.55,
+    0.50, 0.50,
+};
 
 static bool8 IsTwoTurnsMove(u16 move);
 static void TrySetDestinyBondToHappen(void);
@@ -4249,12 +4258,31 @@ bool8 PartyIsMaxLevel(void)
     return TRUE;
 }
 
+u8 GetTeamLevel(void)
+{
+    u8 i;
+    u16 partyLevel = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) != SPECIES_NONE)
+            partyLevel += gPlayerParty[i].level;
+        else
+            break;
+    }
+    partyLevel /= i;
+
+    return partyLevel;
+}
+
 double GetPkmnExpMultiplier(u8 level)
 {
     u32 i;
     double lvlCapMultiplier = 1.0;
     double relativePartyMultiplier = 1.0;
+    double globalMultiplier = 1.0;
     u8 levelDiff;
+    s8 avgDiff;
 
     // multiply the usual exp yield by the soft cap multiplier
     for (i = 0; i < NUM_SOFT_CAPS; i++)
@@ -4274,7 +4302,40 @@ double GetPkmnExpMultiplier(u8 level)
     else if (gSaveBlock2Ptr->optionsLevelCap == 2 && (lvlCapMultiplier < 1.0)) // strict lvl cap
         lvlCapMultiplier = 0;
 
-    return lvlCapMultiplier;
+    // multiply the usual exp yield by the party level multiplier
+    avgDiff = level - GetTeamLevel();
+
+    if (avgDiff >= 12)
+        avgDiff = 12;
+    else if (avgDiff <= -14)
+        avgDiff = -14;
+
+    avgDiff += 14;
+    relativePartyMultiplier = sRelativePartyScaling[avgDiff];
+
+    if (!gSaveBlock2Ptr->xpTeamMod)
+        relativePartyMultiplier = 1.0;
+
+    switch (gSaveBlock2Ptr->xpMulti)
+    {
+        case 0:
+            globalMultiplier = 0;
+            break;
+        case 1:
+            globalMultiplier = 0.5;
+            break;
+        case 2:
+            globalMultiplier = 1.0;
+            break;
+        case 3:
+            globalMultiplier = 2.0;
+            break;
+        case 4:
+            globalMultiplier = 5.0;
+            break;
+    }
+
+    return lvlCapMultiplier * relativePartyMultiplier * globalMultiplier;
 }
 
 FEATURE_FLAG_ASSERT(I_EXP_SHARE_FLAG, YouNeedToSetTheExpShareFlagToAnUnusedFlag);
