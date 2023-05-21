@@ -333,6 +333,12 @@ extern const u8 gText_LevelCap[];
 extern const u8 gText_TypeChart[];
 extern const u8 gText_FastFieldMove[];
 extern const u8 gText_BaseStats[];
+extern const u8 gText_TypeEffectiveness[];
+extern const u8 gText_LowHealthBeep[];
+extern const u8 gText_FishReeling[];
+extern const u8 gText_FastEggHatch[];
+extern const u8 gText_FastEvoScene[];
+extern const u8 gText_PokemonAnim[];
 
 extern const u8 gText_Seeding[];
 extern const u8 gText_WildEncounters[];

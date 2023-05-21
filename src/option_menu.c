@@ -35,10 +35,16 @@ enum // standard options
     MENUITEM_TEXTSPEED,
     MENUITEM_BATTLESCENE,
     MENUITEM_BATTLESTYLE,
+    MENUITEM_TYPEEFFECTIVENESS,
     MENUITEM_FASTFIELDMOVE,
-    MENUITEM_LEVELCAP,
-    MENUITEM_TYPECHART,
+    MENUITEM_LEVELCAP,//
+    MENUITEM_TYPECHART,//
     MENUITEM_SOUND,
+    MENUITEM_LOWHEALTHBEEP,
+    MENUITEM_FISHREELING,
+    MENUITEM_FASTEGGHATCH,
+    MENUITEM_FASTEVOSCENE,
+    MENUITEM_POKEMONANIM,
     MENUITEM_BUTTONMODE,
     MENUITEM_FRAMETYPE,
     MENUITEM_CANCEL,
@@ -126,6 +132,8 @@ void LevelCap_DrawChoices(int selection, int y, u8 textSpeed);
 void TypeChart_DrawChoices(int selection, int y, u8 textSpeed);
 void BaseStatEq_DrawChoices(int selection, int y, u8 textSpeed);
 void Autorun_DrawChoices(int selection, int y, u8 textSpeed);
+void TypeEffectiveness_DrawChoices(int selection, int y, u8 textSpeed);
+void FastScene_DrawChoices(int selection, int y, u8 textSpeed);
 
 struct
 {
@@ -137,10 +145,16 @@ struct
     [MENUITEM_TEXTSPEED] = {TextSpeed_DrawChoices, FourOptions_ProcessInput},
     [MENUITEM_BATTLESCENE] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_BATTLESTYLE] = {BattleStyle_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_TYPEEFFECTIVENESS] = {TypeEffectiveness_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTFIELDMOVE] = {FastFieldMove_DrawChoices,TwoOptions_ProcessInput},
     [MENUITEM_LEVELCAP] = {LevelCap_DrawChoices,ThreeOptions_ProcessInput},
     [MENUITEM_TYPECHART] = {TypeChart_DrawChoices,TwoOptions_ProcessInput},
     [MENUITEM_SOUND] = {Sound_DrawChoices, Sound_ProcessInput},
+    [MENUITEM_LOWHEALTHBEEP] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_FISHREELING] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_FASTEGGHATCH] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_FASTEVOSCENE] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_POKEMONANIM] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_BUTTONMODE] = {ButtonMode_DrawChoices, ThreeOptions_ProcessInput},
     [MENUITEM_FRAMETYPE] = {FrameType_DrawChoices, FrameType_ProcessInput},
     [MENUITEM_CANCEL] = {NULL, NULL},
@@ -223,10 +237,16 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_TEXTSPEED]   = gText_TextSpeed,
     [MENUITEM_BATTLESCENE] = gText_BattleScene,
     [MENUITEM_BATTLESTYLE] = gText_BattleStyle,
+    [MENUITEM_TYPEEFFECTIVENESS] = gText_TypeEffectiveness,
     [MENUITEM_FASTFIELDMOVE] = gText_FastFieldMove,
     [MENUITEM_LEVELCAP]     = gText_LevelCap,
     [MENUITEM_TYPECHART]    = gText_TypeChart,
     [MENUITEM_SOUND]       = gText_Sound,
+    [MENUITEM_LOWHEALTHBEEP] = gText_LowHealthBeep,
+    [MENUITEM_FISHREELING] = gText_FishReeling,
+    [MENUITEM_FASTEGGHATCH] = gText_FastEggHatch,
+    [MENUITEM_FASTEVOSCENE] = gText_FastEvoScene,
+    [MENUITEM_POKEMONANIM] = gText_PokemonAnim,
     [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
@@ -481,10 +501,16 @@ void CB2_InitOptionMenu(void)
         sOptions->sel[MENUITEM_TEXTSPEED] = gSaveBlock2Ptr->optionsTextSpeed;
         sOptions->sel[MENUITEM_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleSceneOff;
         sOptions->sel[MENUITEM_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
+        sOptions->sel[MENUITEM_TYPEEFFECTIVENESS] = gSaveBlock2Ptr->optionsShowTypeEffectiveness;
         sOptions->sel[MENUITEM_FASTFIELDMOVE] = gSaveBlock2Ptr->optionsFastFieldMove;
         sOptions->sel[MENUITEM_LEVELCAP] = gSaveBlock2Ptr->optionsLevelCap;
         sOptions->sel[MENUITEM_TYPECHART] = gSaveBlock2Ptr->optionsTypeChart;
         sOptions->sel[MENUITEM_SOUND] = gSaveBlock2Ptr->optionsSound;
+        sOptions->sel[MENUITEM_LOWHEALTHBEEP] = gSaveBlock2Ptr->optionsLowHealthMusic;
+        sOptions->sel[MENUITEM_FISHREELING] = gSaveBlock2Ptr->optionsFishReeling;
+        sOptions->sel[MENUITEM_FASTEGGHATCH] = gSaveBlock2Ptr->optionsFastEggHatch;
+        sOptions->sel[MENUITEM_FASTEVOSCENE] = gSaveBlock2Ptr->optionsFastEvolution;
+        sOptions->sel[MENUITEM_POKEMONANIM] = gSaveBlock2Ptr->optionsPokemonAnim;
         sOptions->sel[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
         sOptions->sel[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
 
@@ -575,7 +601,7 @@ static void ScrollAll(int direction) // to bottom or top
 
     scrollCount = items-7;
     // Move items up/down
-    ScrollWindow(WIN_OPTIONS, direction, Y_DIFF * scrollCount, PIXEL_FILL(0));
+    ScrollWindow(WIN_OPTIONS, direction, Y_DIFF * scrollCount, PIXEL_FILL(1)); //PIXEL_FILL(0)
 
     // Clear moved items
     if (direction == 0)
@@ -766,10 +792,16 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsTextSpeed = sOptions->sel[MENUITEM_TEXTSPEED];
     gSaveBlock2Ptr->optionsBattleSceneOff = sOptions->sel[MENUITEM_BATTLESCENE];
     gSaveBlock2Ptr->optionsBattleStyle = sOptions->sel[MENUITEM_BATTLESTYLE];
+    gSaveBlock2Ptr->optionsShowTypeEffectiveness = sOptions->sel[MENUITEM_TYPEEFFECTIVENESS];
     gSaveBlock2Ptr->optionsFastFieldMove = sOptions->sel[MENUITEM_FASTFIELDMOVE];
     gSaveBlock2Ptr->optionsLevelCap = sOptions->sel[MENUITEM_LEVELCAP];
     gSaveBlock2Ptr->optionsTypeChart = sOptions->sel[MENUITEM_TYPECHART];
     gSaveBlock2Ptr->optionsSound = sOptions->sel[MENUITEM_SOUND];
+    gSaveBlock2Ptr->optionsLowHealthMusic = sOptions->sel[MENUITEM_LOWHEALTHBEEP];
+    gSaveBlock2Ptr->optionsFishReeling = sOptions->sel[MENUITEM_FISHREELING];
+    gSaveBlock2Ptr->optionsFastEggHatch = sOptions->sel[MENUITEM_FASTEGGHATCH];
+    gSaveBlock2Ptr->optionsFastEvolution = sOptions->sel[MENUITEM_FASTEVOSCENE];
+    gSaveBlock2Ptr->optionsPokemonAnim = sOptions->sel[MENUITEM_POKEMONANIM];
     gSaveBlock2Ptr->optionsButtonMode = OPTIONS_BUTTON_MODE_NORMAL; //sOptions->sel[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptions->sel[MENUITEM_FRAMETYPE];
 
@@ -987,10 +1019,33 @@ void Autorun_DrawChoices(int selection, int y, u8 textSpeed)
 
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(enableStr, 104, y, styles[0], textSpeed);
-    DrawOptionMenuChoice(disableStr, GetStringRightAlignXOffset(FONT_NORMAL, disableStr, 198), y, styles[1], textSpeed);
+    DrawOptionMenuChoice(disableStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(enableStr, GetStringRightAlignXOffset(FONT_NORMAL, enableStr, 198), y, styles[1], textSpeed);
 }
 
+void TypeEffectiveness_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 hideStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Hide");
+    u8 showStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Show");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(hideStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(showStr, GetStringRightAlignXOffset(FONT_NORMAL, showStr, 198), y, styles[1], textSpeed);
+}
+
+void FastScene_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 normalStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Normal");
+    u8 fastStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Fast");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(normalStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(fastStr, GetStringRightAlignXOffset(FONT_NORMAL, fastStr, 198), y, styles[1], textSpeed);
+}
 
 
 static u8 BattleScene_ProcessInput(u8 selection)
