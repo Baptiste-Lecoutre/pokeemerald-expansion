@@ -209,8 +209,11 @@ void CB2_InitSoar(void)
 			sPlayerYaw = 0;
 			sPlayerPitch = 0;
 
-			FadeOutAndFadeInNewMapMusic(MUS_SURF, 2, 2);
-
+			if (gSaveBlock2Ptr->optionsSurfBikeMusic == 1)
+				FadeOutAndFadeInNewMapMusic(MUS_SURF, 2, 2);
+			else if (gSaveBlock2Ptr->optionsSurfBikeMusic == 2)
+				FadeOutAndFadeInNewMapMusic(MUS_RG_SURF, 2, 2);
+			
 			// some of these may not be necessary, but I'm just being safe
 			ScanlineEffect_Stop();
 			ResetTasks();

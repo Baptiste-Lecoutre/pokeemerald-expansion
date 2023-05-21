@@ -335,6 +335,7 @@ extern const u8 gText_FastFieldMove[];
 extern const u8 gText_BaseStats[];
 extern const u8 gText_TypeEffectiveness[];
 extern const u8 gText_LowHealthBeep[];
+extern const u8 gText_SurfBikeMusic[];
 extern const u8 gText_FishReeling[];
 extern const u8 gText_FastEggHatch[];
 extern const u8 gText_FastEvoScene[];

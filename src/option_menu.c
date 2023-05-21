@@ -37,10 +37,9 @@ enum // standard options
     MENUITEM_BATTLESTYLE,
     MENUITEM_TYPEEFFECTIVENESS,
     MENUITEM_FASTFIELDMOVE,
-    MENUITEM_LEVELCAP,//
-    MENUITEM_TYPECHART,//
     MENUITEM_SOUND,
     MENUITEM_LOWHEALTHBEEP,
+    MENUITEM_SURFBIKEMUSIC,
     MENUITEM_FISHREELING,
     MENUITEM_FASTEGGHATCH,
     MENUITEM_FASTEVOSCENE,
@@ -134,6 +133,8 @@ void BaseStatEq_DrawChoices(int selection, int y, u8 textSpeed);
 void Autorun_DrawChoices(int selection, int y, u8 textSpeed);
 void TypeEffectiveness_DrawChoices(int selection, int y, u8 textSpeed);
 void FastScene_DrawChoices(int selection, int y, u8 textSpeed);
+void SeedingType_DrawChoices(int selection, int y, u8 textSpeed);
+void SurfBikeMusic_DrawChoices(int selection, int y, u8 textSpeed);
 
 struct
 {
@@ -147,10 +148,9 @@ struct
     [MENUITEM_BATTLESTYLE] = {BattleStyle_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_TYPEEFFECTIVENESS] = {TypeEffectiveness_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTFIELDMOVE] = {FastFieldMove_DrawChoices,TwoOptions_ProcessInput},
-    [MENUITEM_LEVELCAP] = {LevelCap_DrawChoices,ThreeOptions_ProcessInput},
-    [MENUITEM_TYPECHART] = {TypeChart_DrawChoices,TwoOptions_ProcessInput},
     [MENUITEM_SOUND] = {Sound_DrawChoices, Sound_ProcessInput},
     [MENUITEM_LOWHEALTHBEEP] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_SURFBIKEMUSIC] = {SurfBikeMusic_DrawChoices, ThreeOptions_ProcessInput},
     [MENUITEM_FISHREELING] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTEGGHATCH] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTEVOSCENE] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
@@ -182,24 +182,24 @@ struct
     int (*processInput)(int selection);
 } static const sRandItemFunctions[MENUITEM_RAND_COUNT] =
 {
-    [MENUITEM_RAND_RANDOMNESS_TYPE] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
-    [MENUITEM_RAND_WILDENCOUNTERS] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
-    [MENUITEM_RAND_STATICENCOUNTERS] = {NULL, NULL},
-    [MENUITEM_RAND_TRAINERPARTY] = {NULL, NULL},
-    [MENUITEM_RAND_STARTERS] = {NULL, NULL},
-    [MENUITEM_RAND_ABILITIES] = {NULL, NULL},
-    [MENUITEM_RAND_LVLUPMOVES] = {NULL, NULL},
-    [MENUITEM_RAND_TMMOVES] = {NULL, NULL},
-    [MENUITEM_RAND_TUTORMOVES] = {NULL, NULL},
-    [MENUITEM_RAND_RELEARNERMOVES] = {NULL, NULL},
-    [MENUITEM_RAND_POSTEVOSPECIES] = {NULL, NULL},
-    [MENUITEM_RAND_POKEMONLEVELS] = {NULL, NULL},
-    [MENUITEM_RAND_PLAYER_PARTY] = {NULL, NULL},
-    [MENUITEM_RAND_EVO_EVERY_LVL] = {NULL, NULL},
-    [MENUITEM_RAND_ITEMS] = {NULL, NULL},
-    [MENUITEM_RAND_HELDITEMS] = {NULL, NULL},
-    [MENUITEM_RAND_MART] = {NULL, NULL},
-    [MENUITEM_RAND_MUSIC] = {NULL, NULL},
+    [MENUITEM_RAND_RANDOMNESS_TYPE] = {SeedingType_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_WILDENCOUNTERS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_STATICENCOUNTERS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_TRAINERPARTY] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_STARTERS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_ABILITIES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_LVLUPMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_TMMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_TUTORMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_RELEARNERMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_POSTEVOSPECIES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_POKEMONLEVELS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_PLAYER_PARTY] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_EVO_EVERY_LVL] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_ITEMS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_HELDITEMS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_MART] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_MUSIC] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_RAND_CANCEL] = {NULL, NULL},
 };
 
@@ -239,10 +239,9 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_BATTLESTYLE] = gText_BattleStyle,
     [MENUITEM_TYPEEFFECTIVENESS] = gText_TypeEffectiveness,
     [MENUITEM_FASTFIELDMOVE] = gText_FastFieldMove,
-    [MENUITEM_LEVELCAP]     = gText_LevelCap,
-    [MENUITEM_TYPECHART]    = gText_TypeChart,
     [MENUITEM_SOUND]       = gText_Sound,
     [MENUITEM_LOWHEALTHBEEP] = gText_LowHealthBeep,
+    [MENUITEM_SURFBIKEMUSIC] = gText_SurfBikeMusic,
     [MENUITEM_FISHREELING] = gText_FishReeling,
     [MENUITEM_FASTEGGHATCH] = gText_FastEggHatch,
     [MENUITEM_FASTEVOSCENE] = gText_FastEvoScene,
@@ -301,9 +300,6 @@ fishing style
 fast egg hatch
 fast evo scene
 fast field move
-frlg item anim
-font 
-unit system
 frame
 cancel*/
 
@@ -503,10 +499,9 @@ void CB2_InitOptionMenu(void)
         sOptions->sel[MENUITEM_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
         sOptions->sel[MENUITEM_TYPEEFFECTIVENESS] = gSaveBlock2Ptr->optionsShowTypeEffectiveness;
         sOptions->sel[MENUITEM_FASTFIELDMOVE] = gSaveBlock2Ptr->optionsFastFieldMove;
-        sOptions->sel[MENUITEM_LEVELCAP] = gSaveBlock2Ptr->optionsLevelCap;
-        sOptions->sel[MENUITEM_TYPECHART] = gSaveBlock2Ptr->optionsTypeChart;
         sOptions->sel[MENUITEM_SOUND] = gSaveBlock2Ptr->optionsSound;
         sOptions->sel[MENUITEM_LOWHEALTHBEEP] = gSaveBlock2Ptr->optionsLowHealthMusic;
+        sOptions->sel[MENUITEM_SURFBIKEMUSIC] = gSaveBlock2Ptr->optionsSurfBikeMusic;
         sOptions->sel[MENUITEM_FISHREELING] = gSaveBlock2Ptr->optionsFishReeling;
         sOptions->sel[MENUITEM_FASTEGGHATCH] = gSaveBlock2Ptr->optionsFastEggHatch;
         sOptions->sel[MENUITEM_FASTEVOSCENE] = gSaveBlock2Ptr->optionsFastEvolution;
@@ -516,6 +511,7 @@ void CB2_InitOptionMenu(void)
 
         sOptions->selKey[MENUITEM_KEY_LVLCAP] = gSaveBlock2Ptr->optionsLevelCap;
         sOptions->selKey[MENUITEM_KEY_BASESTATSEQ] = gSaveBlock2Ptr->optionsBaseStatsEqual;
+        sOptions->selKey[MENUITEM_KEY_TYPECHART] = gSaveBlock2Ptr->optionsTypeChart;
 
         sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE] = gSaveBlock2Ptr->optionsRandomnessType;
         sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS] = gSaveBlock2Ptr->randomWildEncounters;
@@ -794,10 +790,9 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsBattleStyle = sOptions->sel[MENUITEM_BATTLESTYLE];
     gSaveBlock2Ptr->optionsShowTypeEffectiveness = sOptions->sel[MENUITEM_TYPEEFFECTIVENESS];
     gSaveBlock2Ptr->optionsFastFieldMove = sOptions->sel[MENUITEM_FASTFIELDMOVE];
-    gSaveBlock2Ptr->optionsLevelCap = sOptions->sel[MENUITEM_LEVELCAP];
-    gSaveBlock2Ptr->optionsTypeChart = sOptions->sel[MENUITEM_TYPECHART];
     gSaveBlock2Ptr->optionsSound = sOptions->sel[MENUITEM_SOUND];
     gSaveBlock2Ptr->optionsLowHealthMusic = sOptions->sel[MENUITEM_LOWHEALTHBEEP];
+    gSaveBlock2Ptr->optionsSurfBikeMusic = sOptions->sel[MENUITEM_SURFBIKEMUSIC];
     gSaveBlock2Ptr->optionsFishReeling = sOptions->sel[MENUITEM_FISHREELING];
     gSaveBlock2Ptr->optionsFastEggHatch = sOptions->sel[MENUITEM_FASTEGGHATCH];
     gSaveBlock2Ptr->optionsFastEvolution = sOptions->sel[MENUITEM_FASTEVOSCENE];
@@ -807,9 +802,10 @@ static void Task_OptionMenuSave(u8 taskId)
 
     gSaveBlock2Ptr->optionsLevelCap = sOptions->selKey[MENUITEM_KEY_LVLCAP];
     gSaveBlock2Ptr->optionsBaseStatsEqual = sOptions->selKey[MENUITEM_KEY_BASESTATSEQ];
+    gSaveBlock2Ptr->optionsTypeChart = sOptions->selKey[MENUITEM_KEY_TYPECHART];
 
-    gSaveBlock2Ptr->optionsRandomnessType = sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE];
-    gSaveBlock2Ptr->randomWildEncounters = sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS];
+    gSaveBlock2Ptr->optionsRandomnessType = 0;//sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE];
+    gSaveBlock2Ptr->randomWildEncounters = 0;//sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS];
 
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
     gTasks[taskId].func = Task_OptionMenuFadeOut;
@@ -1004,11 +1000,13 @@ void LevelCap_DrawChoices(int selection, int y, u8 textSpeed)
 void BaseStatEq_DrawChoices(int selection, int y, u8 textSpeed)
 {
     u8 styles[2] = {0};
+    u8 defaultStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Default");
+    u8 equalStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Equal");
 
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(sText_Default, 104, y, styles[0], textSpeed);
-    DrawOptionMenuChoice(sText_Equal, GetStringRightAlignXOffset(FONT_NORMAL, sText_Equal, 198), y, styles[1], textSpeed);
+    DrawOptionMenuChoice(defaultStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(equalStr, GetStringRightAlignXOffset(FONT_NORMAL, equalStr, 198), y, styles[1], textSpeed);
 }
 
 void Autorun_DrawChoices(int selection, int y, u8 textSpeed)
@@ -1046,6 +1044,34 @@ void FastScene_DrawChoices(int selection, int y, u8 textSpeed)
     DrawOptionMenuChoice(normalStr, 104, y, styles[0], textSpeed);
     DrawOptionMenuChoice(fastStr, GetStringRightAlignXOffset(FONT_NORMAL, fastStr, 198), y, styles[1], textSpeed);
 }
+
+void SeedingType_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 seededStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Seeded");
+    u8 chaoticStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Chaotic");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(seededStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(chaoticStr, GetStringRightAlignXOffset(FONT_NORMAL, chaoticStr, 198), y, styles[1], textSpeed);
+}
+
+void SurfBikeMusic_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[3] ={0};
+    u8 noneStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}None");
+    u8 frlgStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}FRLG");
+    u8 rseStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}RSE");
+    int xMid = GetMiddleX(noneStr, rseStr, frlgStr);
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(noneStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(rseStr, xMid, y, styles[1], textSpeed);
+    DrawOptionMenuChoice(frlgStr, GetStringRightAlignXOffset(FONT_NORMAL, frlgStr, 198), y, styles[2], textSpeed);
+}
+
 
 
 static u8 BattleScene_ProcessInput(u8 selection)

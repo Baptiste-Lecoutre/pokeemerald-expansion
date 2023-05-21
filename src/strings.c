@@ -1538,6 +1538,7 @@ const u8 gText_FastFieldMove[] = _("Fast field move");
 const u8 gText_BaseStats[] = _("Base stats");
 const u8 gText_TypeEffectiveness[] = _("Type effective");
 const u8 gText_LowHealthBeep[] = _("Low health beep");
+const u8 gText_SurfBikeMusic[] = _("Surf/bike music");
 const u8 gText_FishReeling[] = _("Fish reeling");
 const u8 gText_FastEggHatch[] = _("Fast egg hatch");
 const u8 gText_FastEvoScene[] = _("Fast evo scene");

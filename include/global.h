@@ -558,6 +558,7 @@ struct SaveBlock2
               u16 optionsBaseStatsEqual:1;
               u16 trainerLvlScale:1;
               u16 optionsPokemonAnim:1;
+              u16 optionsSurfBikeMusic:2;
                 u16 optionsRandomnessType:1;
                 u16 randomWildEncounters:1;
                 u16 randomStaticEncounters:1;
