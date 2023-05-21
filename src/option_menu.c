@@ -31,6 +31,7 @@ enum // pages
 
 enum // standard options
 {
+    MENUITEM_AUTORUN,
     MENUITEM_TEXTSPEED,
     MENUITEM_BATTLESCENE,
     MENUITEM_BATTLESTYLE,
@@ -65,8 +66,16 @@ enum // randomizer options
     MENUITEM_RAND_TRAINERPARTY,
     MENUITEM_RAND_STARTERS,
     MENUITEM_RAND_ABILITIES,
+    MENUITEM_RAND_LVLUPMOVES,
+    MENUITEM_RAND_TMMOVES,
+    MENUITEM_RAND_TUTORMOVES,
+    MENUITEM_RAND_RELEARNERMOVES,
+    MENUITEM_RAND_POSTEVOSPECIES,
+    MENUITEM_RAND_POKEMONLEVELS,
     MENUITEM_RAND_PLAYER_PARTY,
     MENUITEM_RAND_EVO_EVERY_LVL,
+    MENUITEM_RAND_ITEMS,
+    MENUITEM_RAND_HELDITEMS,
     MENUITEM_RAND_MART,
     MENUITEM_RAND_MUSIC,
     MENUITEM_RAND_CANCEL,
@@ -116,6 +125,7 @@ void FastFieldMove_DrawChoices(int selection, int y, u8 textSpeed);
 void LevelCap_DrawChoices(int selection, int y, u8 textSpeed);
 void TypeChart_DrawChoices(int selection, int y, u8 textSpeed);
 void BaseStatEq_DrawChoices(int selection, int y, u8 textSpeed);
+void Autorun_DrawChoices(int selection, int y, u8 textSpeed);
 
 struct
 {
@@ -123,6 +133,7 @@ struct
     int (*processInput)(int selection);
 } static const sOptionsItemFunctions[MENUITEM_COUNT] =
 {
+    [MENUITEM_AUTORUN] = {Autorun_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_TEXTSPEED] = {TextSpeed_DrawChoices, FourOptions_ProcessInput},
     [MENUITEM_BATTLESCENE] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_BATTLESTYLE] = {BattleStyle_DrawChoices, TwoOptions_ProcessInput},
@@ -146,7 +157,7 @@ struct
     [MENUITEM_KEY_PREVENTEVO] = {NULL, NULL},
     [MENUITEM_KEY_SCALEENEMYLVL] = {NULL, NULL},
     [MENUITEM_KEY_EVOLVEENEMYMON] = {NULL, NULL},
-    [MENUITEM_KEY_TYPECHART] = {NULL, NULL},
+    [MENUITEM_KEY_TYPECHART] = {TypeChart_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_KEY_EXPTEAMMOD] = {NULL, NULL},
     [MENUITEM_KEY_CANCEL] = {NULL, NULL},
 };
@@ -163,8 +174,16 @@ struct
     [MENUITEM_RAND_TRAINERPARTY] = {NULL, NULL},
     [MENUITEM_RAND_STARTERS] = {NULL, NULL},
     [MENUITEM_RAND_ABILITIES] = {NULL, NULL},
+    [MENUITEM_RAND_LVLUPMOVES] = {NULL, NULL},
+    [MENUITEM_RAND_TMMOVES] = {NULL, NULL},
+    [MENUITEM_RAND_TUTORMOVES] = {NULL, NULL},
+    [MENUITEM_RAND_RELEARNERMOVES] = {NULL, NULL},
+    [MENUITEM_RAND_POSTEVOSPECIES] = {NULL, NULL},
+    [MENUITEM_RAND_POKEMONLEVELS] = {NULL, NULL},
     [MENUITEM_RAND_PLAYER_PARTY] = {NULL, NULL},
     [MENUITEM_RAND_EVO_EVERY_LVL] = {NULL, NULL},
+    [MENUITEM_RAND_ITEMS] = {NULL, NULL},
+    [MENUITEM_RAND_HELDITEMS] = {NULL, NULL},
     [MENUITEM_RAND_MART] = {NULL, NULL},
     [MENUITEM_RAND_MUSIC] = {NULL, NULL},
     [MENUITEM_RAND_CANCEL] = {NULL, NULL},
@@ -181,12 +200,6 @@ static const u8 sText_PageKeyOptions[] = _("Key options");
 static const u8 sText_PageStandardOptions[] = _("Standard options");
 static const u8 sText_PageRandomOptions[] = _("Random options");
 
-static const u8 sText_LevelCap[] = _("Level caps");
-static const u8 sText_TypeChart[] = _("Type chart");
-static const u8 sText_FastFieldMove[] = _("Fast field move");
-static const u8 sText_BaseStats[] = _("Base stats");
-static const u8 sText_Seeding[] = _("RNG seeding");
-static const u8 sText_WildEncounters[] = _("Wild encounters");
 static const u8 sText_Off[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Off");
 static const u8 sText_Soft[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Soft");
 static const u8 sText_Strict[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Strict");
@@ -206,12 +219,13 @@ static const u8 *const sOptionMenuPageNames[PAGE_COUNT] =
 
 static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 {
+    [MENUITEM_AUTORUN] = gText_Autorun,
     [MENUITEM_TEXTSPEED]   = gText_TextSpeed,
     [MENUITEM_BATTLESCENE] = gText_BattleScene,
     [MENUITEM_BATTLESTYLE] = gText_BattleStyle,
-    [MENUITEM_FASTFIELDMOVE] = sText_FastFieldMove,
-    [MENUITEM_LEVELCAP]     = sText_LevelCap,
-    [MENUITEM_TYPECHART]    = sText_TypeChart,
+    [MENUITEM_FASTFIELDMOVE] = gText_FastFieldMove,
+    [MENUITEM_LEVELCAP]     = gText_LevelCap,
+    [MENUITEM_TYPECHART]    = gText_TypeChart,
     [MENUITEM_SOUND]       = gText_Sound,
     [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
@@ -220,28 +234,36 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 
 static const u8 *const sOptionMenuKeyItemsNames[MENUITEM_KEY_COUNT] = 
 {
-    [MENUITEM_KEY_LVLCAP] = sText_LevelCap,
-    [MENUITEM_KEY_BASESTATSEQ] = sText_BaseStats,
-    [MENUITEM_KEY_PREVENTEVO] = sText_BaseStats,
-    [MENUITEM_KEY_SCALEENEMYLVL] = sText_BaseStats,
-    [MENUITEM_KEY_EVOLVEENEMYMON] = sText_BaseStats,
-    [MENUITEM_KEY_TYPECHART] = sText_BaseStats,
-    [MENUITEM_KEY_EXPTEAMMOD] = sText_BaseStats,
+    [MENUITEM_KEY_LVLCAP] = gText_LevelCap,
+    [MENUITEM_KEY_BASESTATSEQ] = gText_BaseStats,
+    [MENUITEM_KEY_PREVENTEVO] = gText_BaseStats,
+    [MENUITEM_KEY_SCALEENEMYLVL] = gText_BaseStats,
+    [MENUITEM_KEY_EVOLVEENEMYMON] = gText_BaseStats,
+    [MENUITEM_KEY_TYPECHART] = gText_TypeChart,
+    [MENUITEM_KEY_EXPTEAMMOD] = gText_BaseStats,
     [MENUITEM_KEY_CANCEL] = gText_OptionMenuCancel,
 };
 
 static const u8 *const sOptionMenuRandomizerItemsNames[MENUITEM_RAND_COUNT] = 
 {
-    [MENUITEM_RAND_RANDOMNESS_TYPE] = sText_Seeding,
-    [MENUITEM_RAND_WILDENCOUNTERS] = sText_WildEncounters,
-    [MENUITEM_RAND_STATICENCOUNTERS] = sText_WildEncounters,
-    [MENUITEM_RAND_TRAINERPARTY] = sText_WildEncounters,
-    [MENUITEM_RAND_STARTERS] = sText_WildEncounters,
-    [MENUITEM_RAND_ABILITIES] = sText_WildEncounters,
-    [MENUITEM_RAND_PLAYER_PARTY] = sText_WildEncounters,
-    [MENUITEM_RAND_EVO_EVERY_LVL] = sText_WildEncounters,
-    [MENUITEM_RAND_MART] = sText_WildEncounters,
-    [MENUITEM_RAND_MUSIC] = sText_WildEncounters,
+    [MENUITEM_RAND_RANDOMNESS_TYPE] = gText_Seeding,
+    [MENUITEM_RAND_WILDENCOUNTERS] = gText_WildEncounters,
+    [MENUITEM_RAND_STATICENCOUNTERS] = gText_StaticEncounters,
+    [MENUITEM_RAND_TRAINERPARTY] = gText_TrainerParty,
+    [MENUITEM_RAND_STARTERS] = gText_Starters,
+    [MENUITEM_RAND_ABILITIES] = gText_Abilities,
+    [MENUITEM_RAND_LVLUPMOVES] = gText_LvlUpMoves,
+    [MENUITEM_RAND_TMMOVES] = gText_TmMoves,
+    [MENUITEM_RAND_TUTORMOVES] = gText_TutorMoves,
+    [MENUITEM_RAND_RELEARNERMOVES] = gText_RelearnerMoves,
+    [MENUITEM_RAND_POSTEVOSPECIES] = gText_PostEvoSpecies,
+    [MENUITEM_RAND_POKEMONLEVELS] = gText_PokemonLevel,
+    [MENUITEM_RAND_PLAYER_PARTY] = gText_PlayerParty,
+    [MENUITEM_RAND_EVO_EVERY_LVL] = gText_EvoEveryLevel,
+    [MENUITEM_RAND_ITEMS] = gText_Items,
+    [MENUITEM_RAND_HELDITEMS] = gText_HeldItems,
+    [MENUITEM_RAND_MART] = gText_Marts,
+    [MENUITEM_RAND_MUSIC] = gText_Music,
     [MENUITEM_RAND_CANCEL] = gText_OptionMenuCancel,
 };
 
@@ -369,6 +391,10 @@ static void DrawChoices(u32 id, int y, u8 textSpeed)
         if (sKeyItemFunctions[id].drawChoices != NULL)
             sKeyItemFunctions[id].drawChoices(sOptions->selKey[id], y, textSpeed);
         break;
+    case PAGE_RANDOMIZER:
+        if (sRandItemFunctions[id].drawChoices != NULL)
+            sRandItemFunctions[id].drawChoices(sOptions->selRand[id], y, textSpeed);
+        break;
     default:
         if (sOptionsItemFunctions[id].drawChoices != NULL)
             sOptionsItemFunctions[id].drawChoices(sOptions->sel[id], y, textSpeed);
@@ -451,6 +477,7 @@ void CB2_InitOptionMenu(void)
 
         //sOptions = AllocZeroed(sizeof(*sOptions));
         //sOptions->page = 1;
+        sOptions->sel[MENUITEM_AUTORUN] = gSaveBlock2Ptr->autoRun;
         sOptions->sel[MENUITEM_TEXTSPEED] = gSaveBlock2Ptr->optionsTextSpeed;
         sOptions->sel[MENUITEM_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleSceneOff;
         sOptions->sel[MENUITEM_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
@@ -710,7 +737,15 @@ static void Task_OptionMenuProcessInput(u8 taskId)
             if (sKeyItemFunctions[cursor].processInput != NULL)
                 sOptions->selKey[cursor] = sKeyItemFunctions[cursor].processInput(previousOption);
             
-            if(previousOption != sOptions->selKey[cursor])
+            if (previousOption != sOptions->selKey[cursor])
+                DrawChoices(cursor, sOptions->visibleCursor * Y_DIFF, 0);
+            break;
+        case PAGE_RANDOMIZER:
+            previousOption = sOptions->selRand[cursor];
+            if(sRandItemFunctions[cursor].processInput != NULL)
+                sOptions->selRand[cursor] = sRandItemFunctions[cursor].processInput(previousOption);
+            
+            if (previousOption != sOptions->selRand[cursor])
                 DrawChoices(cursor, sOptions->visibleCursor * Y_DIFF, 0);
             break;
         default:
@@ -722,12 +757,12 @@ static void Task_OptionMenuProcessInput(u8 taskId)
                 DrawChoices(cursor, sOptions->visibleCursor * Y_DIFF, 0);
             break;
         }
-        
     }
 }
 
 static void Task_OptionMenuSave(u8 taskId)
 {
+    gSaveBlock2Ptr->autoRun = sOptions->sel[MENUITEM_AUTORUN];
     gSaveBlock2Ptr->optionsTextSpeed = sOptions->sel[MENUITEM_TEXTSPEED];
     gSaveBlock2Ptr->optionsBattleSceneOff = sOptions->sel[MENUITEM_BATTLESCENE];
     gSaveBlock2Ptr->optionsBattleStyle = sOptions->sel[MENUITEM_BATTLESTYLE];
@@ -944,6 +979,17 @@ void BaseStatEq_DrawChoices(int selection, int y, u8 textSpeed)
     DrawOptionMenuChoice(sText_Equal, GetStringRightAlignXOffset(FONT_NORMAL, sText_Equal, 198), y, styles[1], textSpeed);
 }
 
+void Autorun_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 enableStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Enable");
+    u8 disableStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Disable");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(enableStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(disableStr, GetStringRightAlignXOffset(FONT_NORMAL, disableStr, 198), y, styles[1], textSpeed);
+}
 
 
 

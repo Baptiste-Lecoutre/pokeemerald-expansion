@@ -1531,6 +1531,30 @@ const u8 gText_FrameTypeNumber[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}");
 const u8 gText_ButtonTypeNormal[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Normal");
 const u8 gText_ButtonTypeLR[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}LR");
 const u8 gText_ButtonTypeLEqualsA[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}L=A");
+const u8 gText_Autorun[] = _("Autorun {L_BUTTON}");
+const u8 gText_LevelCap[] = _("Level caps");
+const u8 gText_TypeChart[] = _("Type chart");
+const u8 gText_FastFieldMove[] = _("Fast field move");
+const u8 gText_BaseStats[] = _("Base stats");
+
+const u8 gText_Seeding[] = _("RNG seeding");
+const u8 gText_WildEncounters[] = _("Wild encounters");
+const u8 gText_StaticEncounters[] = _("Static encounters");
+const u8 gText_TrainerParty[] = _("Trainer party");
+const u8 gText_Starters[] = _("Starters");
+const u8 gText_Abilities[] = _("Abilities");
+const u8 gText_LvlUpMoves[] = _("Lvl-up moves");
+const u8 gText_TmMoves[] = _("Tm moves");
+const u8 gText_TutorMoves[] = _("Tutor moves");
+const u8 gText_RelearnerMoves[] = _("Releaner moves");
+const u8 gText_PostEvoSpecies[] = _("Post evo species");
+const u8 gText_PokemonLevel[] = _("Pokemon lvl");
+const u8 gText_PlayerParty[] = _("Player party");
+const u8 gText_EvoEveryLevel[] = _("Evo every lvl");
+const u8 gText_Marts[] = _("Marts");
+const u8 gText_Music[] = _("Music");
+
+
 const u8 gText_NumPlayerLink[] = _("{STR_VAR_1}P Link");
 const u8 gText_BronzeCard[] = _("Bronze");
 const u8 gText_CopperCard[] = _("Copper");

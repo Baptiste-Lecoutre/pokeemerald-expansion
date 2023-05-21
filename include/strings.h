@@ -328,6 +328,28 @@ extern const u8 gText_Sound[];
 extern const u8 gText_Frame[];
 extern const u8 gText_OptionMenuCancel[];
 extern const u8 gText_ButtonMode[];
+extern const u8 gText_Autorun[];
+extern const u8 gText_LevelCap[];
+extern const u8 gText_TypeChart[];
+extern const u8 gText_FastFieldMove[];
+extern const u8 gText_BaseStats[];
+
+extern const u8 gText_Seeding[];
+extern const u8 gText_WildEncounters[];
+extern const u8 gText_StaticEncounters[];
+extern const u8 gText_TrainerParty[];
+extern const u8 gText_Starters[];
+extern const u8 gText_Abilities[];
+extern const u8 gText_LvlUpMoves[];
+extern const u8 gText_TmMoves[];
+extern const u8 gText_TutorMoves[];
+extern const u8 gText_RelearnerMoves[];
+extern const u8 gText_PostEvoSpecies[];
+extern const u8 gText_PokemonLevel[];
+extern const u8 gText_PlayerParty[];
+extern const u8 gText_EvoEveryLevel[];
+extern const u8 gText_Marts[];
+extern const u8 gText_Music[];
 
 extern const u8 gText_MaleSymbol[];
 extern const u8 gText_FemaleSymbol[];
