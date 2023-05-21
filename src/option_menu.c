@@ -48,6 +48,11 @@ enum // key options
 {
     MENUITEM_KEY_LVLCAP,
     MENUITEM_KEY_BASESTATSEQ,
+    MENUITEM_KEY_PREVENTEVO,
+    MENUITEM_KEY_SCALEENEMYLVL,
+    MENUITEM_KEY_EVOLVEENEMYMON,
+    MENUITEM_KEY_TYPECHART,
+    MENUITEM_KEY_EXPTEAMMOD,
     MENUITEM_KEY_CANCEL,
     MENUITEM_KEY_COUNT,
 };
@@ -56,6 +61,14 @@ enum // randomizer options
 {
     MENUITEM_RAND_RANDOMNESS_TYPE,
     MENUITEM_RAND_WILDENCOUNTERS,
+    MENUITEM_RAND_STATICENCOUNTERS,
+    MENUITEM_RAND_TRAINERPARTY,
+    MENUITEM_RAND_STARTERS,
+    MENUITEM_RAND_ABILITIES,
+    MENUITEM_RAND_PLAYER_PARTY,
+    MENUITEM_RAND_EVO_EVERY_LVL,
+    MENUITEM_RAND_MART,
+    MENUITEM_RAND_MUSIC,
     MENUITEM_RAND_CANCEL,
     MENUITEM_RAND_COUNT,
 };
@@ -130,6 +143,11 @@ struct
 {
     [MENUITEM_KEY_LVLCAP] = {LevelCap_DrawChoices, ThreeOptions_ProcessInput},
     [MENUITEM_KEY_BASESTATSEQ] = {BaseStatEq_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_PREVENTEVO] = {NULL, NULL},
+    [MENUITEM_KEY_SCALEENEMYLVL] = {NULL, NULL},
+    [MENUITEM_KEY_EVOLVEENEMYMON] = {NULL, NULL},
+    [MENUITEM_KEY_TYPECHART] = {NULL, NULL},
+    [MENUITEM_KEY_EXPTEAMMOD] = {NULL, NULL},
     [MENUITEM_KEY_CANCEL] = {NULL, NULL},
 };
 
@@ -141,6 +159,14 @@ struct
 {
     [MENUITEM_RAND_RANDOMNESS_TYPE] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_RAND_WILDENCOUNTERS] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_STATICENCOUNTERS] = {NULL, NULL},
+    [MENUITEM_RAND_TRAINERPARTY] = {NULL, NULL},
+    [MENUITEM_RAND_STARTERS] = {NULL, NULL},
+    [MENUITEM_RAND_ABILITIES] = {NULL, NULL},
+    [MENUITEM_RAND_PLAYER_PARTY] = {NULL, NULL},
+    [MENUITEM_RAND_EVO_EVERY_LVL] = {NULL, NULL},
+    [MENUITEM_RAND_MART] = {NULL, NULL},
+    [MENUITEM_RAND_MUSIC] = {NULL, NULL},
     [MENUITEM_RAND_CANCEL] = {NULL, NULL},
 };
 
@@ -196,6 +222,11 @@ static const u8 *const sOptionMenuKeyItemsNames[MENUITEM_KEY_COUNT] =
 {
     [MENUITEM_KEY_LVLCAP] = sText_LevelCap,
     [MENUITEM_KEY_BASESTATSEQ] = sText_BaseStats,
+    [MENUITEM_KEY_PREVENTEVO] = sText_BaseStats,
+    [MENUITEM_KEY_SCALEENEMYLVL] = sText_BaseStats,
+    [MENUITEM_KEY_EVOLVEENEMYMON] = sText_BaseStats,
+    [MENUITEM_KEY_TYPECHART] = sText_BaseStats,
+    [MENUITEM_KEY_EXPTEAMMOD] = sText_BaseStats,
     [MENUITEM_KEY_CANCEL] = gText_OptionMenuCancel,
 };
 
@@ -203,6 +234,14 @@ static const u8 *const sOptionMenuRandomizerItemsNames[MENUITEM_RAND_COUNT] =
 {
     [MENUITEM_RAND_RANDOMNESS_TYPE] = sText_Seeding,
     [MENUITEM_RAND_WILDENCOUNTERS] = sText_WildEncounters,
+    [MENUITEM_RAND_STATICENCOUNTERS] = sText_WildEncounters,
+    [MENUITEM_RAND_TRAINERPARTY] = sText_WildEncounters,
+    [MENUITEM_RAND_STARTERS] = sText_WildEncounters,
+    [MENUITEM_RAND_ABILITIES] = sText_WildEncounters,
+    [MENUITEM_RAND_PLAYER_PARTY] = sText_WildEncounters,
+    [MENUITEM_RAND_EVO_EVERY_LVL] = sText_WildEncounters,
+    [MENUITEM_RAND_MART] = sText_WildEncounters,
+    [MENUITEM_RAND_MUSIC] = sText_WildEncounters,
     [MENUITEM_RAND_CANCEL] = gText_OptionMenuCancel,
 };
 
@@ -326,10 +365,10 @@ static void DrawChoices(u32 id, int y, u8 textSpeed)
 {
     switch (sOptions->page)
     {
-    /*case PAGE_KEY:
+    case PAGE_KEY:
         if (sKeyItemFunctions[id].drawChoices != NULL)
             sKeyItemFunctions[id].drawChoices(sOptions->selKey[id], y, textSpeed);
-        break;*/
+        break;
     default:
         if (sOptionsItemFunctions[id].drawChoices != NULL)
             sOptionsItemFunctions[id].drawChoices(sOptions->sel[id], y, textSpeed);
