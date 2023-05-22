@@ -206,6 +206,10 @@ static const u8 sMapName_TRAINER_HILL[] = _("TRAINER HILL");
 static const u8 sMapName_SEASPRAY_CAVE[] = _("SEASPRAY CAVE");
 static const u8 sMapName_EMBER_PATH[] = _("EMBER PATH");
 static const u8 sMapName_ASHEN_WOODS[] = _("ASHEN WOODS");
+static const u8 sMapName_SANDSTREWN_RUINS[] = _("SANDSTREWN RUINS");
+static const u8 sMapName_DEWFORD_MEADOW[] = _("DEWFORD MEADOW");
+static const u8 sMapName_DEWFORD_MANOR[] = _("DEWFORD MANOR");
+static const u8 sMapName_VERDANT_GLADE[] = _("VERDANT GLADE");
 
 const struct RegionMapLocation gRegionMapEntries[] = {
     [MAPSEC_LITTLEROOT_TOWN] = { 4, 11, 1, 1, sMapName_LITTLEROOT_TOWN},
@@ -424,6 +428,10 @@ const struct RegionMapLocation gRegionMapEntries[] = {
     [MAPSEC_SEASPRAY_CAVE] = { 0, 4, 1, 1, sMapName_SEASPRAY_CAVE},
     [MAPSEC_EMBER_PATH] = { 6, 3, 1, 1, sMapName_EMBER_PATH},
     [MAPSEC_ASHEN_WOODS] = { 6, 3, 1, 1, sMapName_ASHEN_WOODS},
+    [MAPSEC_SANDSTREWN_RUINS] = { 8, 2, 1, 1, sMapName_SANDSTREWN_RUINS},
+    [MAPSEC_DEWFORD_MEADOW] = { 1, 14, 1, 1, sMapName_DEWFORD_MEADOW},
+    [MAPSEC_DEWFORD_MANOR] = { 1, 14, 1, 1, sMapName_DEWFORD_MANOR},
+    [MAPSEC_VERDANTURF_MEADOW] = { 4, 7, 1, 1, sMapName_VERDANT_GLADE},
 };
 
 #endif // GUARD_DATA_REGION_MAP_REGION_MAP_ENTRIES_H
