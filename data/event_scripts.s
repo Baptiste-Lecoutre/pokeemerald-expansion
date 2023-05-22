@@ -1112,3 +1112,5 @@ Common_EventScript_TrainerNotReadyYet::
 
 gText_OneDayImGoingToFightYou:
 	.string "One day I will fight you!$"
+
+	.include "data/maps/VerdanturfMeadow/scripts.inc"

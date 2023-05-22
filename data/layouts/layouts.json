@@ -4470,6 +4470,16 @@
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/Seaspray_Cave_B1F/border.bin",
       "blockdata_filepath": "data/layouts/Seaspray_Cave_B1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_VERDANTURF_MEADOW",
+      "name": "VerdanturfMeadow_Layout",
+      "width": 15,
+      "height": 17,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Mauville",
+      "border_filepath": "data/layouts/VerdanturfMeadow/border.bin",
+      "blockdata_filepath": "data/layouts/VerdanturfMeadow/map.bin"
     }
   ]
 }

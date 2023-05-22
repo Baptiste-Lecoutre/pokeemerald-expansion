@@ -435,7 +435,8 @@
     "EmberPath",
     "AshenWoods",
     "Seaspray_Cave",
-    "Seaspray_Cave_B1F"
+    "Seaspray_Cave_B1F",
+    "VerdanturfMeadow"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",
