@@ -204,7 +204,9 @@ A Discord-based ROM hacking community that has many members who hack using the d
         - ZaZa & Galarian kanto birds roamers ?
 
     
-
+- Give megastones:
+    - gyaradosite
+    - tyranitarite
 - Add new locations
 - Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu

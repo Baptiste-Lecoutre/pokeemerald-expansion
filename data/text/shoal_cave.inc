@@ -26,6 +26,12 @@ ShoalCave_LowTideEntranceRoom_Text_MakeShellBellRightAway:
 	.string "… … … … … … … …\p"
 	.string "There! Done!$"
 
+ShoalCave_LowTideEntranceRoom_Text_Slowbronite:
+	.string "And…\n"
+	.string "I'm not quite sure what this is,\l"
+	.string "but I got this recently.\p"
+	.string "If you like, please take this, too.$"
+
 ShoalCave_LowTideEntranceRoom_Text_ExplainShellBell:
 	.string "Have a Pokémon hold on to that.\n"
 	.string "It'll love it, that's for certain.\p"
