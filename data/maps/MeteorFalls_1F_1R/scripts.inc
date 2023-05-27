@@ -93,8 +93,15 @@ MeteorFalls_1F_1R_EventScript_MagmaStealsMeteoriteScene::
 	addobject LOCALID_STEVEN
 	applymovement LOCALID_STEVEN, MeteorFalls_1F_1R_Movement_StevenArrives
 	waitmovement 0
-	msgbox MeteorFalls_1F_1R_Text_StevenMegaRing, MSGBOX_DEFAULT
+	msgbox MeteorFalls_1F_1R_Text_StevenGiveMegaRing, MSGBOX_DEFAULT
 	giveitem ITEM_MEGA_RING, 1
+	msgbox MeteorFalls_1F_1R_Text_StevenExplainMegaRing, MSGBOX_DEFAULT
+	giveitem ITEM_SCEPTILITE
+	waitmessage
+	giveitem ITEM_BLAZIKENITE
+	waitmessage
+	giveitem ITEM_SWAMPERTITE
+	waitmessage
 	msgbox MeteorFalls_1F_1R_Text_StevenShouldLeave, MSGBOX_DEFAULT
 	closemessage
 	applymovement LOCALID_STEVEN, MeteorFalls_1F_1R_Movement_StevenLeaves
@@ -273,15 +280,30 @@ MeteorFalls_1F_1R_EventScript_MetCozmo::
 	release
 	end
 
-MeteorFalls_1F_1R_Text_StevenMegaRing:
-	.string "Steven: Oh, hello {PLAYER}. I see\n"
-	.string "you have already met grunts from\l"
-	.string "Team Aqua and Team Magma.\p"
-	.string "These people are dangerous, so I need\n"
-	.string "to stop them.\p"
+MeteorFalls_1F_1R_Text_StevenGiveMegaRing:
+	.string "Steven: Hi, {PLAYER}{KUN}!\p"
+	.string "It's me, Steven!\n"
+	.string "We met in the cave near Dewford.\p"
+	.string "I see you have already met some\n"
+	.string "grunts of Team Aqua and Team Magma.\p"
+	.string "These people are dangerous, someone\n"
+	.string "needs to stop them.\p"
 	.string "Since you have made it until here,\n"
-	.string "I should give this Mega Ring,\l"
-	.string "it will you in upcoming battles.$"
+	.string "I should give this Mega Ring, it\l"
+	.string "will help you in upcoming battles.$"
+
+MeteorFalls_1F_1R_Text_StevenExplainMegaRing:
+	.string "This Mega Ring will allow certain\n"
+	.string "Pokémon to Mega Evolve in battle.\p"
+	.string "It's no good on its own, though.\p"
+	.string "To Mega Evolve a Pokémon, you must\n"
+	.string "also let it hold its Mega Stone.\p"
+	.string "Then, press START before choosing a\n"
+	.string "move.\p"
+	.string "Mega Evolution is a very powerful\n"
+	.string "technique, but I think you and your\l"
+	.string "Pokémon are ready for it.\p"
+	.string "Here, take these Mega Stones too.$"
 
 MeteorFalls_1F_1R_Text_StevenShouldLeave:
 	.string "I have to leave now, take care!$"

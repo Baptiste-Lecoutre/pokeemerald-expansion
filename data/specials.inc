@@ -553,3 +553,4 @@ gSpecials::
 	def_special TryTradeEvolution
 	def_special CanEvolveThroughTrade
 	def_special CanRegionFormChange
+	def_special HasMightyMagikarp

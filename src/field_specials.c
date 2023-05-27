@@ -96,6 +96,8 @@ static EWRAM_DATA u32 sBattleTowerMultiBattleTypeFlags = 0;
 
 struct ListMenuTemplate gScrollableMultichoice_ListMenuTemplate;
 
+extern struct Evolution gEvolutionTable[][EVOS_PER_MON];
+
 void TryLoseFansFromPlayTime(void);
 void SetPlayerGotFirstFans(void);
 u16 GetNumFansOfPlayerInTrainerFanClub(void);
@@ -5202,5 +5204,21 @@ bool8 AreChosenMonEVsMaxedOut(void)
 {
     if (GetMonEVCount(&gPlayerParty[gSpecialVar_0x8004]) >= MAX_TOTAL_EVS)
         return TRUE;
+    return FALSE;
+}
+
+// Returns TRUE if the player's party contains a Magikarp above evolution lvl, FALSE otherwise
+bool8 HasMightyMagikarp(void)
+{
+    u32 i = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_MAGIKARP
+            && GetMonData(&gPlayerParty[i], MON_DATA_LEVEL) >= gEvolutionTable[SPECIES_MAGIKARP][0].param)
+        {
+            return TRUE;
+        }
+    }
     return FALSE;
 }

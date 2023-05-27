@@ -167,7 +167,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - Fallarbor town, after getting out of the pkmncenter, he gets out of the contest hall
     - Route 121, same trigger as aqua grunts, he cuts the tree and comes to fight
     - Victory Road, double battle with Wally
-- Add mega stones & Z crystals
+- Add Z crystals
 - Add legendary events
     - Gen1:
         - Articuno in Shoal Cave
@@ -205,12 +205,10 @@ A Discord-based ROM hacking community that has many members who hack using the d
 
     
 - Give megastones:
-    - gyaradosite (script with magikarps)
-    - gen3 starterite (give all 3 when obtaining mega ring)
-    - Altarianite (script)
     - Lati@sites (script in southern island)
     - Diancite (script in Pacifidlog)
 - Add new locations
+- Change running shoes script to old rod, and change old rod script to good rod (good rod script changed to magikarp guy for gyaradosite). check super rod in IE.
 - Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
 - Make the sootopolis rayquaza calming groudon and kyogre a double battle (player + rayquaza against groudon and kyogre) mid scene. original idea by devolov
