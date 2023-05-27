@@ -407,6 +407,12 @@
 #define MAP_SEASPRAY_CAVE                            (112 | (24 << 8))
 #define MAP_SEASPRAY_CAVE_B1F                        (113 | (24 << 8))
 #define MAP_VERDANTURF_MEADOW                        (114 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS                         (115 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS_B1F                     (116 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS_2F                      (117 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS_3F                      (118 | (24 << 8))
+#define MAP_ROUTE111_RUINS_EXTERIOR                  (119 | (24 << 8))
+#define MAP_MIRAGE_TOWER_B1F                         (120 | (24 << 8))
 
 // gMapGroup_IndoorDynamic
 #define MAP_SECRET_BASE_RED_CAVE1    (0 | (25 << 8))

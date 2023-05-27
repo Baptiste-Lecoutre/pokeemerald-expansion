@@ -1114,3 +1114,15 @@ gText_OneDayImGoingToFightYou:
 	.string "One day I will fight you!$"
 
 	.include "data/maps/VerdanturfMeadow/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins_B1F/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins_2F/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins_3F/scripts.inc"
+
+	.include "data/maps/Route111_RuinsExterior/scripts.inc"
+
+	.include "data/maps/MirageTower_B1F/scripts.inc"
