@@ -848,8 +848,10 @@ RustboroCity_EventScript_MayEncounter::
 	setvar VAR_RUSTBORO_CITY_STATE, 8
 	setvar VAR_ROUTE104_STATE, 2
 	setvar VAR_0x8008, 0
-	msgbox RustboroCity_Text_MayPassedBrineyWantToBattle, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, RustboroCity_EventScript_BattleMay
+@	msgbox RustboroCity_Text_MayPassedBrineyWantToBattle, MSGBOX_YESNO
+@	goto_if_eq VAR_RESULT, YES, RustboroCity_EventScript_BattleMay
+	msgbox RustboroCity_Text_MayPassedBrineyWantToBattle, MSGBOX_DEFAULT
+	goto RustboroCity_EventScript_BattleMay
 	msgbox RustboroCity_Text_MayOhHaventRaisedPokemonEnough, MSGBOX_DEFAULT
 	call RustboroCity_EventScript_RestoreBgm
 	releaseall
@@ -885,18 +887,21 @@ RustboroCity_EventScript_RestoreBgm::
 RustboroCity_EventScript_BattleMayTreecko::
 	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_TREECKO, RustboroCity_Text_MayDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
+	call RustboroCity_EventScript_GiveDynamaxBand
 	goto RustboroCity_EventScript_MayBrineyHint
 	end
 
 RustboroCity_EventScript_BattleMayTorchic::
 	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_TORCHIC, RustboroCity_Text_MayDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
+	call RustboroCity_EventScript_GiveDynamaxBand
 	goto RustboroCity_EventScript_MayBrineyHint
 	end
 
 RustboroCity_EventScript_BattleMayMudkip::
 	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_MUDKIP, RustboroCity_Text_MayDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
+	call RustboroCity_EventScript_GiveDynamaxBand
 	goto RustboroCity_EventScript_MayBrineyHint
 	end
 
@@ -915,8 +920,10 @@ RustboroCity_EventScript_BrendanEncounter::
 	setflag FLAG_ENABLE_RIVAL_MATCH_CALL
 	setvar VAR_RUSTBORO_CITY_STATE, 8
 	setvar VAR_ROUTE104_STATE, 2
-	msgbox RustboroCity_Text_BrendanPassedBrineyWantToBattle, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, RustboroCity_EventScript_BattleBrendan
+@	msgbox RustboroCity_Text_BrendanPassedBrineyWantToBattle, MSGBOX_YESNO
+@	goto_if_eq VAR_RESULT, YES, RustboroCity_EventScript_BattleBrendan
+	msgbox RustboroCity_Text_BrendanPassedBrineyWantToBattle, MSGBOX_DEFAULT
+	goto RustboroCity_EventScript_BattleBrendan
 	msgbox RustboroCity_Text_BrendanNoConfidenceInPokemon, MSGBOX_DEFAULT
 	call RustboroCity_EventScript_RestoreBgm
 	releaseall
@@ -946,20 +953,29 @@ RustboroCity_EventScript_BrendanBrineyHint::
 RustboroCity_EventScript_BattleBrendanTreecko::
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TREECKO, RustboroCity_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
+	call RustboroCity_EventScript_GiveDynamaxBand
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
 
 RustboroCity_EventScript_BattleBrendanTorchic::
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TORCHIC, RustboroCity_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
+	call RustboroCity_EventScript_GiveDynamaxBand
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
 
 RustboroCity_EventScript_BattleBrendanMudkip::
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_MUDKIP, RustboroCity_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
+	call RustboroCity_EventScript_GiveDynamaxBand
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
+
+RustboroCity_EventScript_GiveDynamaxBand::
+	msgbox RustboroCity_Text_GiveDynamaxBand, MSGBOX_DEFAULT
+	giveitem ITEM_DYNAMAX_BAND, 1
+	msgbox RustboroCity_Text_WithThisYourPokemonWillGrowLarger, MSGBOX_DEFAULT
+	return
 
 RustboroCity_Movement_RivalApproachPlayer0:
 	walk_down
@@ -1201,7 +1217,7 @@ RustboroCity_Text_BrendanPassedBrineyWantToBattle:
 	.string "{PLAYER}, how's your Pokédex?\n"
 	.string "Have you filled in any pages yet?\p"
 	.string "Mine rules.\p"
-	.string "Want to have a battle to test how\n"
+	.string "What about a battle to test how\n"
 	.string "far you've progressed?$"
 
 RustboroCity_Text_BrendanNoConfidenceInPokemon:
@@ -1297,3 +1313,15 @@ RustboroCity_Text_YouCanHave2On2Battle:
 	.string "they'll both challenge you.\p"
 	.string "Don't you think it'd be cool if you\n"
 	.string "could beat two Trainers by yourself?$"
+
+RustboroCity_Text_GiveDynamaxBand:
+	.string "You've gotten better, no wonder you\n"
+	.string "got Roxanne's badge!\p"
+	.string "Here's a little reward.$"
+
+RustboroCity_Text_WithThisYourPokemonWillGrowLarger:
+	.string "During some heated battles, your\n"
+	.string "Pokémon will grow giant and\l"
+	.string "unleash trendemous energy!\p"
+	.string "This gigantification is called\n"
+	.string "Dynamax. Use it wisely!$"

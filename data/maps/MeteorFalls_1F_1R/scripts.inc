@@ -3,6 +3,7 @@
 .set LOCALID_ARCHIE, 7
 .set LOCALID_AQUA_GRUNT_1, 8
 .set LOCALID_AQUA_GRUNT_2, 9
+.set LOCALID_STEVEN, 11
 
 MeteorFalls_1F_1R_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, MeteorFalls_1F_1R_OnLoad
@@ -89,6 +90,16 @@ MeteorFalls_1F_1R_EventScript_MagmaStealsMeteoriteScene::
 	removeobject LOCALID_ARCHIE
 	removeobject LOCALID_AQUA_GRUNT_1
 	removeobject LOCALID_AQUA_GRUNT_2
+	addobject LOCALID_STEVEN
+	applymovement LOCALID_STEVEN, MeteorFalls_1F_1R_Movement_StevenArrives
+	waitmovement 0
+	msgbox MeteorFalls_1F_1R_Text_StevenMegaRing, MSGBOX_DEFAULT
+	giveitem ITEM_MEGA_RING, 1
+	msgbox MeteorFalls_1F_1R_Text_StevenShouldLeave, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_STEVEN, MeteorFalls_1F_1R_Movement_StevenLeaves
+	waitmovement 0
+	removeobject LOCALID_STEVEN
 	setflag FLAG_HIDE_ROUTE_112_TEAM_MAGMA
 	setflag FLAG_MET_ARCHIE_METEOR_FALLS
 	setflag FLAG_HIDE_FALLARBOR_TOWN_BATTLE_TENT_SCOTT
@@ -223,6 +234,31 @@ MeteorFalls_1F_1R_Movement_PushPlayerOutOfWay:
 	face_right
 	step_end
 
+MeteorFalls_1F_1R_Movement_StevenArrives:
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_up
+	walk_up
+	walk_in_place_faster_left
+	step_end
+
+MeteorFalls_1F_1R_Movement_StevenLeaves:
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	step_end
+
 MeteorFalls_1F_1R_EventScript_ProfCozmo::
 	lock
 	faceplayer
@@ -236,6 +272,19 @@ MeteorFalls_1F_1R_EventScript_MetCozmo::
 	msgbox MeteorFalls_1F_1R_Text_WhatsTeamMagmaDoingAtMtChimney, MSGBOX_DEFAULT
 	release
 	end
+
+MeteorFalls_1F_1R_Text_StevenMegaRing:
+	.string "Steven: Oh, hello {PLAYER}. I see\n"
+	.string "you have already met grunts from\l"
+	.string "Team Aqua and Team Magma.\p"
+	.string "These people are dangerous, so I need\n"
+	.string "to stop them.\p"
+	.string "Since you have made it until here,\n"
+	.string "I should give this Mega Ring,\l"
+	.string "it will you in upcoming battles.$"
+
+MeteorFalls_1F_1R_Text_StevenShouldLeave:
+	.string "I have to leave now, take care!$"
 
 MeteorFalls_1F_1R_Text_WithThisMeteorite:
 	.string "Hehehe!\p"
