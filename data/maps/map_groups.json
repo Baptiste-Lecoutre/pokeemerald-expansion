@@ -445,7 +445,9 @@
     "MirageTower_B1F",
     "CaveOfOrigin_OtherRoom",
     "ScorchedSlab_B1F",
-    "ScorchedSlab_B2F"
+    "ScorchedSlab_B2F",
+    "DewfordMeadow",
+    "DewfordManor_1F"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",

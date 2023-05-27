@@ -1225,7 +1225,7 @@
 #define FLAG_SEASPRAY_CAVE_B1F_ABOMASITE                                           0x498 
 #define FLAG_RECEIVED_GALLADITE                                           0x499 
 #define FLAG_SCORCHED_SLAB_TYRANITARITE                                           0x49A 
-#define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
+#define FLAG_ITEM_DEWFORD_MANOR_BANETTITE                                           0x49B 
 #define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
 #define FLAG_UNUSED_0x49D                                           0x49D // Unused Flag
 #define FLAG_UNUSED_0x49E                                           0x49E // Unused Flag

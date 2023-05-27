@@ -208,7 +208,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - gyaradosite (script with magikarps)
     - gen3 starterite (give all 3 when obtaining mega ring)
     - Altarianite (script)
-    - Banettite (dewford manor)
     - Lati@sites (script in southern island)
     - Diancite (script in Pacifidlog)
 - Add new locations

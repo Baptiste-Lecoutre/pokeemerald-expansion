@@ -1132,3 +1132,7 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/ScorchedSlab_B1F/scripts.inc"
 
 	.include "data/maps/ScorchedSlab_B2F/scripts.inc"
+
+	.include "data/maps/DewfordMeadow/scripts.inc"
+
+	.include "data/maps/DewfordManor_1F/scripts.inc"

@@ -721,3 +721,7 @@ Seaspray_Cave_B1F_ItemAbomasite::
 ScorchedSlab_EventScript_ItemTyranitarite::
 	finditem ITEM_TYRANITARITE
 	end
+
+DewfordManor_EventScript_Banettite::
+	finditem ITEM_BANETTITE
+	end
