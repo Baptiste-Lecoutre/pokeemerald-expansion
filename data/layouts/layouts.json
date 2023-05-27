@@ -4540,6 +4540,16 @@
       "secondary_tileset": "gTileset_MirageTower",
       "border_filepath": "data/layouts/MirageTower_B1F/border.bin",
       "blockdata_filepath": "data/layouts/MirageTower_B1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_OF_ORIGIN_OTHER_ROOM",
+      "name": "CaveOfOrigin_OtherRoom_Layout",
+      "width": 19,
+      "height": 19,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveOfOrigin_OtherRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CaveOfOrigin_OtherRoom/map.bin"
     }
   ]
 }

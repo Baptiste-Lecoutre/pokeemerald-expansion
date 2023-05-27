@@ -442,7 +442,8 @@
     "SandstrewnRuins_2F",
     "SandstrewnRuins_3F",
     "Route111_RuinsExterior",
-    "MirageTower_B1F"
+    "MirageTower_B1F",
+    "CaveOfOrigin_OtherRoom"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",

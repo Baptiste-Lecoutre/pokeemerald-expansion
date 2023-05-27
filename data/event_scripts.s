@@ -1126,3 +1126,5 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/Route111_RuinsExterior/scripts.inc"
 
 	.include "data/maps/MirageTower_B1F/scripts.inc"
+
+	.include "data/maps/CaveOfOrigin_OtherRoom/scripts.inc"
