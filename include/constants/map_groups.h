@@ -414,6 +414,8 @@
 #define MAP_ROUTE111_RUINS_EXTERIOR                  (119 | (24 << 8))
 #define MAP_MIRAGE_TOWER_B1F                         (120 | (24 << 8))
 #define MAP_CAVE_OF_ORIGIN_OTHER_ROOM                (121 | (24 << 8))
+#define MAP_SCORCHED_SLAB_B1F                        (122 | (24 << 8))
+#define MAP_SCORCHED_SLAB_B2F                        (123 | (24 << 8))
 
 // gMapGroup_IndoorDynamic
 #define MAP_SECRET_BASE_RED_CAVE1    (0 | (25 << 8))

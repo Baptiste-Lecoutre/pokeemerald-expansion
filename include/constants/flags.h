@@ -1223,8 +1223,8 @@
 #define FLAG_METEOR_FALLS_SALAMENCITE                                           0x496 
 #define FLAG_SANDSTREWN_RUINS_GARCHOMPITE                                           0x497 
 #define FLAG_SEASPRAY_CAVE_B1F_ABOMASITE                                           0x498 
-#define FLAG_RECEIVED_GALLADITE                                           0x499 // Unused Flag
-#define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag
+#define FLAG_RECEIVED_GALLADITE                                           0x499 
+#define FLAG_SCORCHED_SLAB_TYRANITARITE                                           0x49A 
 #define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
 #define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
 #define FLAG_UNUSED_0x49D                                           0x49D // Unused Flag

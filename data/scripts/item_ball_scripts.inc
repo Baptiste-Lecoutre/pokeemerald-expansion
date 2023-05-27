@@ -717,3 +717,7 @@ Meteor_Falls1F_2R_EventScript_Salamencite::
 Seaspray_Cave_B1F_ItemAbomasite::
 	finditem ITEM_ABOMASITE
 	end
+
+ScorchedSlab_EventScript_ItemTyranitarite::
+	finditem ITEM_TYRANITARITE
+	end
