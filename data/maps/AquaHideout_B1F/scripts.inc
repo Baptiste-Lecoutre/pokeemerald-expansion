@@ -15,15 +15,10 @@ AquaHideout_B1F_EventScript_TryRemoveElectrode::
 
 AquaHideout_B1F_OnTransition:
 	call_if_unset FLAG_DEFEATED_ELECTRODE_1_AQUA_HIDEOUT, AquaHideout_B1F_EventScript_ShowElectrode1
-	call_if_unset FLAG_DEFEATED_ELECTRODE_2_AQUA_HIDEOUT, AquaHideout_B1F_EventScript_ShowElectrode2
 	end
 
 AquaHideout_B1F_EventScript_ShowElectrode1::
 	clearflag FLAG_HIDE_AQUA_HIDEOUT_B1F_ELECTRODE_1
-	return
-
-AquaHideout_B1F_EventScript_ShowElectrode2::
-	clearflag FLAG_HIDE_AQUA_HIDEOUT_B1F_ELECTRODE_2
 	return
 
 AquaHideout_B1F_EventScript_Electrode1::
@@ -48,25 +43,6 @@ AquaHideout_B1F_EventScript_Electrode1::
 AquaHideout_B1F_EventScript_DefeatedElectrode1::
 	setflag FLAG_DEFEATED_ELECTRODE_1_AQUA_HIDEOUT
 	goto Common_EventScript_RemoveStaticPokemon
-	end
-
-AquaHideout_B1F_EventScript_Electrode2::
-	lock
-	faceplayer
-	setwildbattle SPECIES_ELECTRODE, 30
-	waitse
-	playmoncry SPECIES_ELECTRODE, CRY_MODE_ENCOUNTER
-	delay 40
-	waitmoncry
-	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	dowildbattle
-	clearflag FLAG_SYS_CTRL_OBJ_DELETE
-	specialvar VAR_RESULT, GetBattleOutcome
-	goto_if_eq VAR_RESULT, B_OUTCOME_WON, AquaHideout_B1F_EventScript_DefeatedElectrode2
-	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, AquaHideout_B1F_EventScript_DefeatedElectrode2
-	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, AquaHideout_B1F_EventScript_DefeatedElectrode2
-	setflag FLAG_DEFEATED_ELECTRODE_2_AQUA_HIDEOUT
-	release
 	end
 
 AquaHideout_B1F_EventScript_DefeatedElectrode2::

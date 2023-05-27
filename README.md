@@ -205,8 +205,13 @@ A Discord-based ROM hacking community that has many members who hack using the d
 
     
 - Give megastones:
-    - gyaradosite
-    - tyranitarite
+    - gyaradosite (script with magikarps)
+    - tyranitarite (scorched slab)
+    - gen3 starterite (give all 3 when obtaining mega ring)
+    - Altarianite (script)
+    - Banettite (dewford manor)
+    - Lati@sites (script in southern island)
+    - Diancite (script in Pacifidlog)
 - Add new locations
 - Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu

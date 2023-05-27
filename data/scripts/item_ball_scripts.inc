@@ -18,8 +18,8 @@ Route104_EventScript_ItemPokeBall::
 	finditem ITEM_POKE_BALL
 	end
 
-Route104_EventScript_ItemXAccuracy::
-	finditem ITEM_X_ACCURACY
+Route104_EventScript_ItemAudinite::
+	finditem ITEM_AUDINITE
 	end
 
 Route104_EventScript_ItemPotion::
@@ -346,8 +346,8 @@ RusturfTunnel_EventScript_ItemPokeBall::
 	finditem ITEM_POKE_BALL
 	end
 
-RusturfTunnel_EventScript_ItemMaxEther::
-	finditem ITEM_MAX_ETHER
+RusturfTunnel_EventScript_ItemSablenite::
+	finditem ITEM_SABLENITE
 	end
 
 GraniteCave_1F_EventScript_ItemEscapeRope::
@@ -418,8 +418,8 @@ NewMauville_Inside_EventScript_ItemParalyzeHeal::
 	finditem ITEM_PARALYZE_HEAL
 	end
 
-AbandonedShip_Rooms_1F_EventScript_ItemHarborMail::
-	finditem ITEM_HARBOR_MAIL
+AbandonedShip_Rooms_1F_EventScript_ItemLopunnite::
+	finditem ITEM_LOPUNNITE
 	end
 
 AbandonedShip_Rooms_B1F_EventScript_ItemEscapeRope::
@@ -450,8 +450,8 @@ AbandonedShip_HiddenFloorRooms_EventScript_ItemScanner::
 	finditem ITEM_SCANNER
 	end
 
-AbandonedShip_HiddenFloorRooms_EventScript_ItemWaterStone::
-	finditem ITEM_WATER_STONE
+AbandonedShip_HiddenFloorRooms_EventScript_ItemLucarionite::
+	finditem ITEM_LUCARIONITE
 	end
 
 AbandonedShip_HiddenFloorRooms_EventScript_ItemTM18::
@@ -466,8 +466,8 @@ SafariZone_Northwest_EventScript_ItemTM22::
 	finditem ITEM_TM22
 	end
 
-SafariZone_North_EventScript_ItemCalcium::
-	finditem ITEM_CALCIUM
+SafariZone_North_EventScript_ItemAbsolite::
+	finditem ITEM_ABSOLITE
 	end
 
 SafariZone_Southwest_EventScript_ItemMaxRevive::
@@ -606,8 +606,8 @@ VictoryRoad_1F_EventScript_ItemMaxElixir::
 	finditem ITEM_MAX_ELIXIR
 	end
 
-VictoryRoad_1F_EventScript_ItemPPUp::
-	finditem ITEM_PP_UP
+VictoryRoad_1F_EventScript_ItemMetagrossite::
+	finditem ITEM_METAGROSSITE
 	end
 
 VictoryRoad_B1F_EventScript_ItemTM29::
@@ -642,8 +642,8 @@ MagmaHideout_2F_2R_EventScript_ItemFullRestore::
 	finditem ITEM_FULL_RESTORE
 	end
 
-MagmaHideout_3F_1R_EventScript_ItemNugget::
-	finditem ITEM_NUGGET
+MagmaHideout_3F_1R_EventScript_ItemCameruptite::
+	finditem ITEM_CAMERUPTITE
 	end
 
 MagmaHideout_3F_2R_EventScript_ItemPPMax::
@@ -688,4 +688,32 @@ Mirage_Tower_4F_EventScript_Aerodactylite::
 
 EverGrandeCity_EventScript_ItemMewtwoniteY::
 	finditem ITEM_MEWTWONITE_Y
+	end
+
+Route117_EventScript_Mawilite::
+	finditem ITEM_MAWILITE
+	end
+
+Route111_RuinsExterior_EventScript_ItemMedichamite::
+	finditem ITEM_MEDICHAMITE
+	end
+
+Route110_EventScript_ItemManectite:: @ 8290D81
+	finditem ITEM_MANECTITE
+	end
+
+AquaHideout_B1F_EventScript_ItemSharpedonite:: @ 8291365
+	finditem ITEM_SHARPEDONITE
+	end
+
+ShoalCave_LowTideIceRoom_EventScript_ItemGlalitite::
+	finditem ITEM_GLALITITE
+	end
+
+Meteor_Falls1F_2R_EventScript_Salamencite::
+	finditem ITEM_SALAMENCITE
+	end
+
+Seaspray_Cave_B1F_ItemAbomasite::
+	finditem ITEM_ABOMASITE
 	end

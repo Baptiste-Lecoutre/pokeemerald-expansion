@@ -49,11 +49,31 @@ VerdanturfTown_WandasHouse_EventScript_Wanda::
 
 VerdanturfTown_WandasHouse_EventScript_MeetWanda::
 	msgbox VerdanturfTown_WandasHouse_Text_MeetWanda, MSGBOX_DEFAULT
+	goto_if_set FLAG_RECEIVED_HM04, VerdanturfTown_WandasHouse_EventScript_WandaGardevoirite
 	release
 	end
 
 VerdanturfTown_WandasHouse_EventScript_WandaDontWorry::
 	msgbox VerdanturfTown_WandasHouse_Text_DontWorryAboutWally, MSGBOX_DEFAULT
+	goto_if_set FLAG_RECEIVED_HM04, VerdanturfTown_WandasHouse_EventScript_WandaGardevoirite
+	release
+	end
+
+VerdanturfTown_WandasHouse_EventScript_WandaGardevoirite::
+	goto_if_set FLAG_WANDA_GARDEVOIRITE, VerdanturfTown_WandasHouse_EventScript_WandaGaveStone
+	playse SE_PIN
+	applymovement 5, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement 5, Common_Movement_Delay48
+	waitmovement 0
+	msgbox VerdanturfTown_WandasHouse_Text_ReceiveGardevoirite, MSGBOX_DEFAULT
+	giveitem ITEM_GARDEVOIRITE
+	setflag FLAG_WANDA_GARDEVOIRITE
+	msgbox VerdanturfTown_WandasHouse_Text_PrettyStone, MSGBOX_DEFAULT
+	release
+	end
+
+VerdanturfTown_WandasHouse_EventScript_WandaGaveStone::
 	release
 	end
 
@@ -166,3 +186,14 @@ VerdanturfTown_WandasHouse_Text_WallyWasInEverGrande:
 	.string "His parents in Petalburg would be\n"
 	.string "astonished to hear that!$"
 
+VerdanturfTown_WandasHouse_Text_ReceiveGardevoirite:
+	.string "I didn't really thank you properly when\n"
+	.string "you helped smash those rocks in the\l"
+	.string "tunnel.\p"
+	.string "I was thinking that I wanted to give\n"
+	.string "this to you…$"
+
+VerdanturfTown_WandasHouse_Text_PrettyStone:
+	.string "It's a pretty stone, and I'm sure your\n"
+	.string "Pokémon would be delighted if you let\l"
+	.string "one of them hold it!$"
