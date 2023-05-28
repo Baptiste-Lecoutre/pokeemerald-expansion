@@ -204,11 +204,9 @@ A Discord-based ROM hacking community that has many members who hack using the d
         - ZaZa & Galarian kanto birds roamers ?
 
     
-- Give megastones:
-    - Lati@sites (script in southern island)
-    - Diancite (script in Pacifidlog)
 - Add new locations
-- Change running shoes script to old rod, and change old rod script to good rod (good rod script changed to magikarp guy for gyaradosite). check super rod in IE.
+- Change running shoes script to old rod, and change old rod script to good rod (good rod script changed to magikarp guy for gyaradosite). check super rod in IE
+- Look at GetHighestLevelInPlayerParty in IE
 - Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
 - Make the sootopolis rayquaza calming groudon and kyogre a double battle (player + rayquaza against groudon and kyogre) mid scene. original idea by devolov

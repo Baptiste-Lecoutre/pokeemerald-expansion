@@ -5222,3 +5222,19 @@ bool8 HasMightyMagikarp(void)
     }
     return FALSE;
 }
+
+// Returns TRUE if the player has a Diancie with maximum friendship, FALSE otherwise
+bool8 GetDiancieFriendshipScore (void)
+{
+    u8 i = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_DIANCIE)
+        {
+            if (GetMonData(&gPlayerParty[i], MON_DATA_FRIENDSHIP) == MAX_FRIENDSHIP)
+            return TRUE;
+        }
+    }
+    return FALSE;
+}

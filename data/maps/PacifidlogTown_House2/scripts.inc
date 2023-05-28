@@ -5,6 +5,7 @@ PacifidlogTown_House2_EventScript_FanClubYoungerBrother::
 	lock
 	faceplayer
 	dotimebasedevents
+	call_if_unset FLAG_RECEIVED_DIANCITE, PacifidlogTown_House2_EventScript_TryGiveDiancite
 	call PacifidlogTown_House2_EventScript_UpdateFanClubTMFlag
 	goto_if_set FLAG_RECEIVED_FANCLUB_TM_THIS_WEEK, PacifidlogTown_House2_EventScript_ComeBackInXDays
 	call_if_set FLAG_MET_FANCLUB_YOUNGER_BROTHER, PacifidlogTown_House2_EventScript_MonAssessment
@@ -15,6 +16,26 @@ PacifidlogTown_House2_EventScript_FanClubYoungerBrother::
 	specialvar VAR_RESULT, GetLeadMonFriendshipScore
 	goto_if_ge VAR_RESULT, FRIENDSHIP_50_TO_99, PacifidlogTown_House2_EventScript_PutInEffort
 	goto PacifidlogTown_House2_EventScript_GiveFrustration
+	end
+
+PacifidlogTown_House2_EventScript_TryGiveDiancite::
+	specialvar VAR_RESULT, GetDiancieFriendshipScore
+	goto_if_eq VAR_RESULT, TRUE, PacifidlogTown_House2_EventScript_GiveDiancite
+	return
+
+PacifidlogTown_House2_EventScript_GiveDiancite::
+	playse SE_PIN
+	applymovement 1, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement 1, Common_Movement_Delay48
+	waitmovement 0
+	msgbox PacifidlogTown_House2_Text_DiancieLikesYou, MSGBOX_DEFAULT
+	giveitem ITEM_DIANCITE
+	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
+	setflag FLAG_RECEIVED_DIANCITE
+PacifidlogTown_House2_EventScript_HaveDiancite::
+	msgbox PacifidlogTown_House2_Text_ExplainDiancite, MSGBOX_DEFAULT
+	release
 	end
 
 PacifidlogTown_House2_EventScript_UpdateFanClubTMFlag::
@@ -145,3 +166,12 @@ PacifidlogTown_House2_Text_DoesntLikeTrainerVeryMuch:
 	.string "It doesn't appear to like the Trainer\n"
 	.string "very much.$"
 
+PacifidlogTown_House2_Text_DiancieLikesYou:
+	.string "Oho! That's a Diancie you have with you!\p"
+	.string "And it seems to like you very much.\n"
+	.string "You are worthy of this Mega Stone.\n"
+	.string "Please take it!$"
+
+PacifidlogTown_House2_Text_ExplainDiancite:
+	.string "If you let Diancie hold that stone, it\n"
+	.string "will be able to Mega Evolve in battle.$"

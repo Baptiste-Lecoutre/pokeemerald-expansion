@@ -1228,8 +1228,8 @@
 #define FLAG_ITEM_DEWFORD_MANOR_BANETTITE                                           0x49B 
 #define FLAG_ROUTE118_GYARADOSITE                                           0x49C 
 #define FLAG_ITEM_LILYCOVE_CITY_ALTARIANITE                                           0x49D 
-#define FLAG_UNUSED_0x49E                                           0x49E // Unused Flag
-#define FLAG_UNUSED_0x49F                                           0x49F // Unused Flag
+#define FLAG_RECEIVED_DIANCITE                                           0x49E 
+#define FLAG_RECEIVED_LATI_STONES                                           0x49F 
 #define FLAG_UNUSED_0x4A0                                           0x4A0 // Unused Flag
 #define FLAG_UNUSED_0x4A1                                           0x4A1 // Unused Flag
 #define FLAG_UNUSED_0x4A2                                           0x4A2 // Unused Flag

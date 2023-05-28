@@ -554,3 +554,4 @@ gSpecials::
 	def_special CanEvolveThroughTrade
 	def_special CanRegionFormChange
 	def_special HasMightyMagikarp
+	def_special GetDiancieFriendshipScore
