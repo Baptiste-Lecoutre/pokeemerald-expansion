@@ -139,6 +139,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added soaring (credits to ...)
 - Starters are available in Mauville game corner
 - Changed Mosdeep music to Dewford
+- Mom gives old rod instead of running shoes (enabled at newgame). Old rod fisherman in Dewford gives an eviolite instead. Good rod is given by a new fisherman in Route 114. Fisherman on Route 118 gives gyaradosite instead. Super rod is unchanged. (Ported from Inclement Emerald)
 - More to be added
 
 ## TODO
@@ -205,7 +206,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
 
     
 - Add new locations
-- Change running shoes script to old rod, and change old rod script to good rod (good rod script changed to magikarp guy for gyaradosite). check super rod in IE
 - Look at GetHighestLevelInPlayerParty in IE
 - Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
