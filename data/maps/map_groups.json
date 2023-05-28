@@ -447,7 +447,8 @@
     "ScorchedSlab_B1F",
     "ScorchedSlab_B2F",
     "DewfordMeadow",
-    "DewfordManor_1F"
+    "DewfordManor_1F",
+    "ScorchedSlab_RegigigasRoom"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",

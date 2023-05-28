@@ -810,6 +810,8 @@ const u32 gObjectEventPic_Blaine[] = INCBIN_U32("graphics/object_events/pics/peo
 const u32 gObjectEventPic_RocketGruntM[] = INCBIN_U32("graphics/object_events/pics/people/team_rocket/rocket_grunt_m.4bpp");
 const u32 gObjectEventPic_RocketGruntF[] = INCBIN_U32("graphics/object_events/pics/people/team_rocket/rocket_grunt_f.4bpp");
 const u16 gObjectEventPic_Giovanni[] = INCBIN_U16("graphics/object_events/pics/people/team_rocket/giovanni.4bpp");
+const u32 gObjectEventPic_Cynthia[] = INCBIN_U32("graphics/object_events/pics/people/cynthia.4bpp");
+const u16 gObjectEventPaletteCynthia[] = INCBIN_U16("graphics/object_events/palettes/cynthia.gbapal");
 
 const u32 gObjectEventPic_VigorothMover[] = INCBIN_U32("graphics/object_events/pics/pokemon/vigoroth_mover.4bpp");
 const u32 gObjectEventPic_SudowoodoTree[] = INCBIN_U32("graphics/object_events/pics/pokemon/sudowoodo_tree.4bpp");
@@ -820,6 +822,15 @@ const u16 gObjectEventPal_HoOh[] = INCBIN_U16("graphics/object_events/palettes/h
 const u32 gFieldEffectObjectPic_CaveDust[] = INCBIN_U32("graphics/field_effects/pics/cave_dust.4bpp");
 const u16 gFieldEffectObjectPalette_CaveDust[] = INCBIN_U16("graphics/field_effects/palettes/cave_dust.gbapal");
 const u16 gObjectEventPal_Lugia[] = INCBIN_U16("graphics/object_events/palettes/lugia.gbapal");
+
+const u32 gObjectEventPic_RegirockOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/regirock_OW.4bpp");
+const u32 gObjectEventPic_RegiceOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/regice_OW.4bpp");
+const u32 gObjectEventPic_RegisteelOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/registeel_OW.4bpp");
+const u32 gObjectEventPic_RegigigasOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/regigigas_OW.4bpp");
+const u16 gObjectEventPaletteRegigigas[] = INCBIN_U16("graphics/object_events/palettes/regigigas.gbapal");
+const u32 gObjectEventPic_MoltresOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/moltres_OW.4bpp");
+const u32 gObjectEventPic_ZapdosOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/zapdos_OW.4bpp");
+const u32 gObjectEventPic_ArticunoOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/Articuno_OW.4bpp");
 
 const u16 gObjectEventPaletteLight[] = INCBIN_U16("graphics/object_events/palettes/light.gbapal");
 const u16 gObjectEventPaletteLight2[] = INCBIN_U16("graphics/object_events/palettes/light2.gbapal");

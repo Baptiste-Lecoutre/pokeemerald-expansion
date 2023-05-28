@@ -4590,6 +4590,16 @@
       "secondary_tileset": "gTileset_InsideShip",
       "border_filepath": "data/layouts/DewfordManor_1F/border.bin",
       "blockdata_filepath": "data/layouts/DewfordManor_1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_SCORCHED_SLAB_REGIGIGAS_ROOM",
+      "name": "ScorchedSlab_RegigigasRoom_Layout",
+      "width": 17,
+      "height": 15,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/ScorchedSlab_RegigigasRoom/border.bin",
+      "blockdata_filepath": "data/layouts/ScorchedSlab_RegigigasRoom/map.bin"
     }
   ]
 }

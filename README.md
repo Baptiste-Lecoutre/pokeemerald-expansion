@@ -140,11 +140,14 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Starters are available in Mauville game corner
 - Changed Mosdeep music to Dewford
 - Mom gives old rod instead of running shoes (enabled at newgame). Old rod fisherman in Dewford gives an eviolite instead. Good rod is given by a new fisherman in Route 114. Fisherman on Route 118 gives gyaradosite instead. Super rod is unchanged. (Ported from Inclement Emerald)
+- Random item drops when cutting trees or smashing rocks
+- Can select the ball in lastusedball window during battle
+- Can view enemy party summaryscreen if player has scanner (item to be changed, dummied for now)
 - More to be added
 
 ## TODO
 - Add team rocket story
-- Add Kanto and Johto gym leaders with Kanto E4
+- Add Kanto gym leaders
     - Brock in granite cave x
     - Misty on the beach x
     - Surge in new mauville trying to catch zapdos. Can't catch zapdos until he is defeated.
@@ -152,17 +155,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - Koga in the rainy route with ninjas. "See these ninjas? I'm training them." x
     - Sabrina talks to a rock which has psychic powers. Talking to the rocks says "just an ordinary rock".
     - Blaine in start of magma hideout (Hohoho I dug too far!)
-    - Giovanni (rocket event)
-    - Falkner in petalburg school?
-    - Bugsy in petalburg woods, eastern part in a new location?
-    - Whitney in a contest hall, corresponding gym is not opened because you have not proven your worth until you have defeated the strong trainer lurking around the contest hall
-    - Morty in mt pyre
-    - Chuck in desert
-    - Jasmine 
-    - Pryce & Lorelei in Ice cave double battle
-    - Clair & Lance in Meteor Falls double battle
-    - Bruno in the route with the currents, "training by swimming against the currents"
-    - Agatha in mt pyre post-game
+    - Giovanni (rocket event TBD)
 - Add Red rivalry
     - PetalburgWoods after defeating Roxanne
     - Fallarbor town, after getting out of the pkmncenter, he gets out of the contest hall
@@ -172,16 +165,16 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Add legendary events
     - Gen1:
         - Articuno in Shoal Cave
-        - Moltres in Fiery path
+        - Moltres in Ember path
         - Zapdos in New Mauville
         - Mewtwo in a room of new mauville or in a lab, postgame
         - Mew in birth island
     - Gen2:
         - Dogs: roamers
         - Celebi: petalburg woods using unowns?
-        - Hooh & Lugia: Navel rock if available or ported?
+        - Hooh & Lugia: Navel rock
     - Gen3:
-        - Lati@s roamers?
+        - Lati@s both in southern island
         - Deoxys?
         - Jirachi?
     - Gen4:
@@ -190,7 +183,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
         - Arceus afterwards, player resting in his room?
         - Darkrai, player resting in his room, at night?
         - Heatran in groudon's lava under mt chimney
-        - Regigigas in a cave after catching the 3 hoenn regis
+        - Regigigas in a scorchedslab after catching the 3 hoenn regis
         - Cresselia, lake trio, shaymin, phione, manaphy
     - Gen5:
         - cobalion, terrakion, virizion
@@ -199,10 +192,11 @@ A Discord-based ROM hacking community that has many members who hack using the d
         - victini, keldeo, meloetta, genesect
     - Gen6:
         - xerneas, yveltal, zygarde
-        - dianci, hoopa, volcanion
+        - diancie, hoopa, volcanion
     - Gen7:
     - Gen8: 
-        - ZaZa & Galarian kanto birds roamers ?
+        - ZaZa & Galarian kanto birds roamers -> kanto birds? there's the teleporter... 
+        - Eternatus
 
     
 - Add new locations

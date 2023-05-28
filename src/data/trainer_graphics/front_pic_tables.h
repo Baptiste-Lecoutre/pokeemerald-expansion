@@ -103,6 +103,7 @@ const struct MonCoords gTrainerFrontPicCoords[] =
     [TRAINER_PIC_ROCKET_GRUNT_M] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_ROCKET_GRUNT_F] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_GIOVANNI] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_CYNTHIA] = {.size = 8, .y_offset = 1},
 };
 
 #define TRAINER_SPRITE(trainerPic, sprite, size) [TRAINER_PIC_##trainerPic] = {sprite, size, TRAINER_PIC_##trainerPic}
@@ -212,6 +213,7 @@ const struct CompressedSpriteSheet gTrainerFrontPicTable[] =
     TRAINER_SPRITE(ROCKET_GRUNT_M, gTrainerFrontPic_RocketGruntM, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(ROCKET_GRUNT_F, gTrainerFrontPic_RocketGruntF, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(GIOVANNI, gTrainerFrontPic_Giovanni, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(CYNTHIA, gTrainerFrontPic_Cynthia, TRAINER_PIC_SIZE),
 };
 
 #define TRAINER_PAL(trainerPic, pal) [TRAINER_PIC_##trainerPic] = {pal, TRAINER_PIC_##trainerPic}
@@ -321,4 +323,5 @@ const struct CompressedSpritePalette gTrainerFrontPicPaletteTable[] =
     TRAINER_PAL(ROCKET_GRUNT_M, gTrainerPalette_RocketGruntM),
     TRAINER_PAL(ROCKET_GRUNT_F, gTrainerPalette_RocketGruntF),
     TRAINER_PAL(GIOVANNI, gTrainerPalette_Giovanni),
+    TRAINER_PAL(CYNTHIA, gTrainerPalette_Cynthia),
 };
