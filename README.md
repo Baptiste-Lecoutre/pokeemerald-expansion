@@ -131,7 +131,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added Evie&Ivy from inclement emerald
 - TMs in OW are in a yellow ball, megastones glitter
 - Move relearner can teach moves from pre-evos
-- Added a teleporter in Lanette's house, triggers trade evolutions
 - Added Rocket & Boss trainer classes, with the rocket battle transition from crytaldust
 - Can choose any starter from the 8 first generation by pressing L or R to change pocket during starter selection
 - Brendan/May gives 30 cherrish balls after obtaining the pokedex instead of 5 pokeballs
@@ -139,6 +138,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added a scientist in Devon Corp to trigger trade evolutions (ported from Exalted Emerald, credits to segabl)
 - Added soaring (credits to ...)
 - Starters are available in Mauville game corner
+- Changed Mosdeep music to Dewford
 - More to be added
 
 ## TODO
