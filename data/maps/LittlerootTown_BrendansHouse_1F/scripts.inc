@@ -424,7 +424,7 @@ PlayersHouse_1F_Text_LatiEmergencyNewsFlash:
 	.string "news flash!\p"
 	.string "In various Hoenn locales, there have\n"
 	.string "been reports of a BZZT…colored\l"
-	.string "Pokémon in flight.\p"
+	.string "Pokémon zooming around.\p"
 	.string "The identity of this Pokémon is\n"
 	.string "currently unknown.\p"
 	.string "We now return you to the regular\n"
@@ -432,7 +432,7 @@ PlayersHouse_1F_Text_LatiEmergencyNewsFlash:
 
 PlayersHouse_1F_Text_WhatColorDidTheySay:
 	.string "Mom: {PLAYER}, did you catch that?\p"
-	.string "What color did the announcer say\n"
+	.string "What kind did the announcer say\n"
 	.string "that Pokémon was?$"
 
 PlayersHouse_1F_Text_StillUnknownPokemon:

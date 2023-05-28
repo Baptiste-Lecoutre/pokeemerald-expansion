@@ -2082,6 +2082,7 @@ const u8 gText_GameCornerTurtwig[] = 	_("Turtwig{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerSnivy[] = 		_("Snivy{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerChespin[] = 	_("Chespin{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerRowlet[] = 	_("Rowlet{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerGrookey[] = 	_("Grookey{CLEAR_TO 0x48}2500 Coins");
 // Fire Starters
 const u8 gText_GameCornerCharmander[] = _("Charmander{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerCyndaquil[] = 	_("Cyndaquil{CLEAR_TO 0x48}2500 Coins");
@@ -2090,6 +2091,7 @@ const u8 gText_GameCornerChimchar[] = 	_("Chimchar{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerTepig[] = 		_("Tepig{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerFennekin[] = 	_("Fennekin{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerLitten[] = 	_("Litten{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerScorbunny[] = 	_("Scorbunny{CLEAR_TO 0x48}2500 Coins");
 // Water Starters
 const u8 gText_GameCornerSquirtle[] = 	_("Squirtle{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerTotodile[] = 	_("Totodile{CLEAR_TO 0x48}2500 Coins");
@@ -2098,6 +2100,7 @@ const u8 gText_GameCornerPiplup[] = 	_("Piplup{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerOshawott[] = 	_("Oshawott{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerFroakie[] = 	_("Froakie{CLEAR_TO 0x48}2500 Coins");
 const u8 gText_GameCornerPopplio[] = 	_("Popplio{CLEAR_TO 0x48}2500 Coins");
+const u8 gText_GameCornerSobble[] = 	_("Sobble{CLEAR_TO 0x48}2500 Coins");
 // Starter type selection
 const u8 gText_GrassType[] = _("Grass-type");
 const u8 gText_FireType[] = _("Fire-type");
@@ -2260,3 +2263,19 @@ const u8 gText_TutorMoveSet4[] = _("Heat Badge");
 const u8 gText_TutorMoveSet5[] = _("Balance Badge");
 const u8 gText_TutorMoveSet6[] = _("Feather Badge");
 const u8 gText_TutorMoveSet7[] = _("Mind Badge");
+
+const u8 gText_RoamerEntei[] = _("Red dog");
+const u8 gText_RoamerSuicune[] = _("Red dog");
+const u8 gText_RoamerRaikou[] = _("Red dog");
+const u8 gText_RoamerUxie[] = _("Yellow spirit");
+const u8 gText_RoamerMesprit[] = _("Pink spirit");
+const u8 gText_RoamerAzelf[] = _("Blue spirit");
+const u8 gText_RoamerTornadus[] = _("Green cloud");
+const u8 gText_RoamerThundurus[] = _("Blue cloud");
+const u8 gText_RoamerLandorus[] = _("Orange cloud");
+const u8 gText_RoamerEnamorus[] = _("Pink cloud");
+const u8 gText_RoamerGMoltres[] = _("Black bird");
+const u8 gText_RoamerGZapdos[] = _("Orange bird");
+const u8 gText_RoamerGArticuno[] = _("Purple bird");
+const u8 gText_RoamerZacian[] = _("Sword");
+const u8 gText_RoamerZamazenta[] = _("Shield");

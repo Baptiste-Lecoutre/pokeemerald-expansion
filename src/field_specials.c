@@ -2463,10 +2463,20 @@ void ShowScrollableMultichoice(void)
     case SCROLL_MULTI_GAMECORNER_FIRE_STARTERS:
     case SCROLL_MULTI_GAMECORNER_WATER_STARTERS:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 8;
+        task->tNumItems = 9;
         task->tLeft = 19;
         task->tTop = 1;
         task->tWidth = 12;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_ROAMERS:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 15;
+        task->tLeft = 17;
+        task->tTop = 1;
+        task->tWidth = 14;
         task->tHeight = 12;
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
@@ -2836,6 +2846,7 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_GameCornerSnivy,
         gText_GameCornerChespin,
         gText_GameCornerRowlet,
+        gText_GameCornerGrookey,
         gText_Exit
     },
     [SCROLL_MULTI_GAMECORNER_FIRE_STARTERS] =
@@ -2847,6 +2858,7 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_GameCornerTepig,
         gText_GameCornerFennekin,
         gText_GameCornerLitten,
+        gText_GameCornerScorbunny,
         gText_Exit
     },
     [SCROLL_MULTI_GAMECORNER_WATER_STARTERS] =
@@ -2858,7 +2870,26 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_GameCornerOshawott,
         gText_GameCornerFroakie,
         gText_GameCornerPopplio,
+        gText_GameCornerSobble,
         gText_Exit
+    },
+    [SCROLL_MULTI_ROAMERS] =
+    {
+        gText_RoamerEntei,
+        gText_RoamerSuicune,
+        gText_RoamerRaikou,
+        gText_RoamerUxie,
+        gText_RoamerMesprit,
+        gText_RoamerAzelf,
+        gText_RoamerTornadus,
+        gText_RoamerThundurus,
+        gText_RoamerLandorus,
+        gText_RoamerEnamorus,
+        gText_RoamerGMoltres,
+        gText_RoamerGZapdos,
+        gText_RoamerGArticuno,
+        gText_RoamerZacian,
+        gText_RoamerZamazenta
     },
 };
 
