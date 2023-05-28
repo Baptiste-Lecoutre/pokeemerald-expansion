@@ -276,7 +276,7 @@
 #define FLAG_RECEIVED_BELUE_BERRY            0xFC
 #define FLAG_ENABLE_RIVAL_MATCH_CALL         0xFD
 #define FLAG_RECEIVED_CHARCOAL               0xFE
-#define FLAG_LATIOS_OR_LATIAS_ROAMING        0xFF
+#define FLAG_LATIOS_OR_LATIAS_ROAMING        0xFF // set but not checked
 #define FLAG_RECEIVED_AGGRONITE            0x100
 #define FLAG_DEWFORD_EVIOLITE                0x101
 #define FLAG_RECEIVED_COIN_CASE              0x102
