@@ -1581,6 +1581,7 @@ BattleScript_MoveEffectCoreEnforcer::
 	printstring STRINGID_PKMNSABILITYSUPPRESSED
 	waitmessage B_WAIT_TIME_LONG
 	trytoclearprimalweather
+	tryrevertweatherform
 	printstring STRINGID_EMPTYSTRING3
 	waitmessage 1
 BattleScript_CoreEnforcerRet:
@@ -2729,6 +2730,7 @@ BattleScript_EffectSimpleBeam:
 	printstring STRINGID_PKMNACQUIREDSIMPLE
 	waitmessage B_WAIT_TIME_LONG
 	trytoclearprimalweather
+	tryrevertweatherform
 	printstring STRINGID_EMPTYSTRING3
 	waitmessage 1
 	tryendneutralizinggas BS_TARGET
@@ -2828,6 +2830,7 @@ BattleScript_EffectWorrySeed:
 	printstring STRINGID_PKMNACQUIREDABILITY
 	waitmessage B_WAIT_TIME_LONG
 	trytoclearprimalweather
+	tryrevertweatherform
 	printstring STRINGID_EMPTYSTRING3
 	waitmessage 1
 	goto BattleScript_MoveEnd
@@ -2959,6 +2962,7 @@ BattleScript_EffectGastroAcid:
 	printstring STRINGID_PKMNSABILITYSUPPRESSED
 	waitmessage B_WAIT_TIME_LONG
 	trytoclearprimalweather
+	tryrevertweatherform
 	printstring STRINGID_EMPTYSTRING3
 	waitmessage 1
 	tryendneutralizinggas BS_TARGET
@@ -6848,6 +6852,7 @@ BattleScript_RainContinuesOrEnds::
 	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_RAIN_STOPPED, BattleScript_RainContinuesOrEndsEnd
 	playanimation BS_ATTACKER, B_ANIM_RAIN_CONTINUES
 BattleScript_RainContinuesOrEndsEnd::
+	call BattleScript_ActivateWeatherAbilities
 	end2
 
 BattleScript_DamagingWeatherContinues::
@@ -6881,22 +6886,26 @@ BattleScript_DamagingWeatherLoopIncrement::
 	jumpifbytenotequal gBattleCommunication, gBattlersCount, BattleScript_DamagingWeatherLoop
 BattleScript_DamagingWeatherContinuesEnd::
 	bicword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE | HITMARKER_GRUDGE
+	call BattleScript_ActivateWeatherAbilities
 	end2
 
 BattleScript_SandStormHailSnowEnds::
 	printfromtable gSandStormHailSnowEndStringIds
 	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_ActivateWeatherAbilities
 	end2
 
 BattleScript_SunlightContinues::
 	printstring STRINGID_SUNLIGHTSTRONG
 	waitmessage B_WAIT_TIME_LONG
 	playanimation BS_ATTACKER, B_ANIM_SUN_CONTINUES
+	call BattleScript_ActivateWeatherAbilities
 	end2
 
 BattleScript_SunlightFaded::
 	printstring STRINGID_SUNLIGHTFADED
 	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_ActivateWeatherAbilities
 	end2
 
 BattleScript_OverworldWeatherStarts::
@@ -6975,8 +6984,6 @@ BattleScript_TerrainEnds_Ret::
 	playanimation BS_ATTACKER, B_ANIM_RESTORE_BG
 	return
 
-BattleScript_GrassyTerrainEnds:
-	setbyte cMULTISTRING_CHOOSER, B_MSG_TERRAINENDS_GRASS
 BattleScript_TerrainEnds::
 	call BattleScript_TerrainEnds_Ret
 	end2
@@ -7997,9 +8004,7 @@ BattleScript_CudChewActivates::
 	setbyte sBERRY_OVERRIDE, 0
 	end3
 
-BattleScript_TargetFormChange::
-	pause 5
-	call BattleScript_AbilityPopUpTarget
+BattleScript_TargetFormChangeNoPopup:
 	printstring STRINGID_EMPTYSTRING3
 	waitmessage 1
 	handleformchange BS_TARGET, 0
@@ -8009,16 +8014,22 @@ BattleScript_TargetFormChange::
 	handleformchange BS_TARGET, 2
 	return
 
+BattleScript_TargetFormChange::
+	pause 5
+	call BattleScript_AbilityPopUpTarget
+	call BattleScript_TargetFormChangeNoPopup
+	return
+
 BattleScript_TargetFormChangeWithString::
 	pause 5
 	call BattleScript_AbilityPopUpTarget
-	printstring STRINGID_EMPTYSTRING3
-	waitmessage 1
-	handleformchange BS_TARGET, 0
-	handleformchange BS_TARGET, 1
-	playanimation BS_TARGET, B_ANIM_FORM_CHANGE, NULL
-	waitanimation
-	handleformchange BS_TARGET, 2
+	call BattleScript_TargetFormChangeNoPopup
+	printstring STRINGID_PKMNTRANSFORMED
+	waitmessage B_WAIT_TIME_LONG
+	return
+
+BattleScript_TargetFormChangeWithStringNoPopup::
+	call BattleScript_TargetFormChangeNoPopup
 	printstring STRINGID_PKMNTRANSFORMED
 	waitmessage B_WAIT_TIME_LONG
 	return
@@ -8511,6 +8522,7 @@ BattleScript_AbilityPopUp:
 BattleScript_SpeedBoostActivates::
 	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_SpeedBoostActivatesEnd
 	call BattleScript_AbilityPopUp
+	setgraphicalstatchangevalues
 	playanimation BS_ATTACKER, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
 	printstring STRINGID_PKMNRAISEDSPEED
 	waitmessage B_WAIT_TIME_LONG
@@ -8668,14 +8680,15 @@ BattleScript_ShedSkinActivates::
 	end3
 
 BattleScript_ActivateWeatherAbilities:
-	copybyte sBATTLER, gBattlerAttacker
-	setbyte gBattlerAttacker, 0
+	savetarget
+	setbyte gBattlerTarget, 0
 BattleScript_ActivateWeatherAbilities_Loop:
-	activateweatherchangeabilities BS_ATTACKER
+	copybyte sBATTLER, gBattlerTarget
+	activateweatherchangeabilities BS_TARGET
 BattleScript_ActivateWeatherAbilities_Increment:
-	addbyte gBattlerAttacker, 1
-	jumpifbytenotequal gBattlerAttacker, gBattlersCount, BattleScript_ActivateWeatherAbilities_Loop
-	copybyte gBattlerAttacker, sBATTLER
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_ActivateWeatherAbilities_Loop
+	restoretarget
 	return
 
 BattleScript_TryAdrenalineOrb:
@@ -9166,7 +9179,6 @@ BattleScript_GrassyTerrainLoopIncrement::
 BattleScript_GrassyTerrainLoopEnd::
 	bicword gHitMarker, HITMARKER_SKIP_DMG_TRACK | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	jumpifword CMP_COMMON_BITS, gFieldStatuses, STATUS_FIELD_TERRAIN_PERMANENT, BattleScript_GrassyTerrainHealEnd
-	jumpifbyte CMP_EQUAL, gFieldTimers + 5, 0, BattleScript_GrassyTerrainEnds
 BattleScript_GrassyTerrainHealEnd:
 	end2
 
