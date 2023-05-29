@@ -6,6 +6,7 @@
 #include "event_object_movement.h"
 #include "event_data.h"
 #include "field_effect.h"
+#include "field_player_avatar.h"
 #include "item_menu.h"
 #include "load_save.h"
 #include "main.h"
@@ -26,6 +27,8 @@
 #include "text_window.h"
 #include "trig.h"
 #include "window.h"
+#include "constants/field_effects.h"
+#include "constants/species.h"
 
 #define NOCASH_BREAKPOINT asm("mov r11, r11")
 
@@ -188,13 +191,26 @@ void CB2_InitSoar(void)
 		gMain.state++;
 		break;
 	case 1:
-		if (RunTextPrintersAndIsPrinter0Active() != 1)
+		if (!RunTextPrintersAndIsPrinter0Active())
 		{
-			BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
+			//gFieldEffectArguments[0] = 0;
+			//gFieldEffectArguments[1] = 0;
+        	//gFieldEffectArguments[2] = 12;
+			//FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
+			//gFieldEffectArguments[0]=GetPlayerAvatarSpriteId();
+			//FldEff_NPCFlyOut();
+			//FieldEffectStart(FLDEFF_NPCFLY_OUT);
 			gMain.state++;
 		}
 		break;
 	case 2:
+		//if (!FieldEffectActiveListContains(FLDEFF_NPCFLY_OUT))
+		//{
+			BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
+			gMain.state++;
+		//}
+		break;
+	case 3:
 		if (!UpdatePaletteFade())
 		{
 			u16 cursorX, cursorY;

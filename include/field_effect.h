@@ -51,5 +51,6 @@ void StartEscapeRopeFieldEffect(void);
 void FieldEffectFreeGraphicsResources(struct Sprite *sprite);
 void FieldEff_CaveDust(void);
 void Fldeff_FlyLand(void);
+u8 FldEff_NPCFlyOut(void);
 
 #endif // GUARD_FIELD_EFFECTS_H

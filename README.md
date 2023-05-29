@@ -208,6 +208,10 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Change soaring palettes with DNS
 - Add fly out field move with Lati@s mon showcase
+    -Look at FldEff_FieldMoveShowMonInit: probly redo the same func using Lati@s and directly calling the new fieldeffect. maybe look at thow its done in IE.
+    - Look at FLDEFF_NPCFLY_OUT. Make a call to FldEff_NPCFlyOut() and set gFieldEffectArguments[0] to the player sprite Id. GetPlayerAvatarSpriteId or something in InitPlayerAvatar.
+    - change things in CB2_InitSoar(), add new cases with waiting steps
+    - add a case for fastfieldmove option to skip the mon showcase. The field move itself is not bypassed in its code, it is its call that is skipped in other fieldmoves.
 - Change pkmn center layouts to have the move tutor NPC
 - Change some interfaces to have a visual identity
     - Text boxes
