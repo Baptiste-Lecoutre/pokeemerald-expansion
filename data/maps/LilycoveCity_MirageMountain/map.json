@@ -1,0 +1,56 @@
+{
+    "allow_cycling": true,
+    "allow_escaping": false,
+    "allow_running": true,
+    "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+    "bg_events": [
+    ],
+    "connections": [
+        {
+            "direction": "down",
+            "map": "MAP_LILYCOVE_CITY",
+            "offset": -29
+        }
+    ],
+    "coord_events": [
+    ],
+    "id": "MAP_LILYCOVE_CITY_MIRAGE_MOUNTAIN",
+    "layout": "LAYOUT_LILYCOVE_CITY_MIRAGE_MOUNTAIN",
+    "map_type": "MAP_TYPE_ROUTE",
+    "music": "MUS_ABANDONED_SHIP",
+    "name": "LilycoveCity_MirageMountain",
+    "object_events": [
+        {
+            "elevation": 3,
+            "flag": "0",
+            "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+            "movement_range_x": 0,
+            "movement_range_y": 0,
+            "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+            "script": "BerryTreeScript",
+            "trainer_sight_or_berry_tree_id": "95",
+            "trainer_type": "0",
+            "x": 24,
+            "y": 3
+        },
+        {
+            "elevation": 3,
+            "flag": "0",
+            "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+            "movement_range_x": 0,
+            "movement_range_y": 0,
+            "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+            "script": "BerryTreeScript",
+            "trainer_sight_or_berry_tree_id": "96",
+            "trainer_type": "0",
+            "x": 25,
+            "y": 3
+        }
+    ],
+    "region_map_section": "MAPSEC_LILYCOVE_CITY",
+    "requires_flash": false,
+    "show_map_name": false,
+    "warp_events": [
+    ],
+    "weather": "WEATHER_NONE"
+}

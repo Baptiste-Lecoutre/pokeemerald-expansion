@@ -16,6 +16,8 @@ LilycoveCity_OnTransition:
 
 LilycoveCity_OnLoad:
 	call_if_unset FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, LilycoveCity_EventScript_SetWailmerMetatiles
+	specialvar VAR_RESULT, GetCurrentMirageLocation
+	call_if_eq VAR_RESULT, MIRAGE_LOCATION_LILYCOVE_CITY, LilycoveCity_EventScript_OpenMirageMountainPath
 	end
 
 LilycoveCity_EventScript_SetWailmerMetatiles::
@@ -31,6 +33,10 @@ LilycoveCity_EventScript_SetWailmerMetatiles::
 	setmetatile 78, 16, METATILE_Lilycove_Wailmer1_Alt, TRUE
 	setmetatile 77, 17, METATILE_Lilycove_Wailmer2, TRUE
 	setmetatile 78, 17, METATILE_Lilycove_Wailmer3, TRUE
+	return
+
+LilycoveCity_EventScript_OpenMirageMountainPath::
+	setmetatile 59, 7, 0x19E, 0
 	return
 
 LilycoveCity_EventScript_BerryGentleman::

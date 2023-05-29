@@ -55,6 +55,7 @@
 #include "constants/union_room.h"
 #include "constants/vars.h"
 #include "constants/weather.h"
+#include "constants/mirage_locations.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -1138,3 +1139,9 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/DewfordManor_1F/scripts.inc"
 
 	.include "data/maps/ScorchedSlab_RegigigasRoom/scripts.inc"
+
+	.include "data/maps/Route114_MirageCave/scripts.inc"
+
+	.include "data/maps/LilycoveCity_MirageMountain/scripts.inc"
+
+	.include "data/maps/Route123_MirageCave/scripts.inc"

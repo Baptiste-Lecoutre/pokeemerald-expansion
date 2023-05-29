@@ -4,8 +4,9 @@ PacifidlogTown_House5_MapScripts::
 PacifidlogTown_House5_EventScript_MirageIslandWatcher::
 	lock
 	faceplayer
-	specialvar VAR_RESULT, IsMirageIslandPresent
-	goto_if_eq VAR_RESULT, TRUE, PacifidlogTown_House5_EventScript_MirageIslandPresent
+	specialvar VAR_RESULT, GetCurrentMirageLocation
+	goto_if_eq VAR_RESULT, MIRAGE_LOCATION_ROUTE_130, PacifidlogTown_House5_EventScript_MirageIslandPresent
+	special BufferCurrentMirageLocationName
 	msgbox PacifidlogTown_House5_Text_CantSeeMirageIslandToday, MSGBOX_DEFAULT
 	release
 	end
@@ -20,7 +21,9 @@ PacifidlogTown_House5_EventScript_Gentleman::
 	end
 
 PacifidlogTown_House5_Text_CantSeeMirageIslandToday:
-	.string "I can't see Mirage Island today…$"
+	.string "I can't see Mirage Island today…\p"
+	.string "But I heard that a different\n"
+	.string "mirage appeared near {STR_VAR_1}!$"
 
 PacifidlogTown_House5_Text_CanSeeMirageIslandToday:
 	.string "Oh! Oh my!\n"

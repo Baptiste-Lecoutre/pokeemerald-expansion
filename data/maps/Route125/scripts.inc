@@ -9,6 +9,28 @@ Route125_OnTransition:
 	call_if_eq VAR_SHOULD_END_ABNORMAL_WEATHER, 1, AbnormalWeather_EventScript_HideMapNamePopup
 	call_if_eq VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_ROUTE_125_WEST, AbnormalWeather_StartKyogreWeather
 	call_if_eq VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_ROUTE_125_EAST, AbnormalWeather_StartKyogreWeather
+	specialvar VAR_RESULT, GetCurrentMirageLocation
+	goto_if_eq VAR_RESULT, MIRAGE_LOCATION_ROUTE_125, Route125_EventScript_SetMirageIslandLayout
+	setflag FLAG_TEMP_11
+	setflag FLAG_TEMP_12
+	setflag FLAG_TEMP_13
+	setflag FLAG_TEMP_14
+	setflag FLAG_TEMP_15
+	setflag FLAG_TEMP_16
+	setflag FLAG_TEMP_17
+	setflag FLAG_TEMP_18
+	setflag FLAG_TEMP_19
+	setflag FLAG_TEMP_1A
+	setflag FLAG_TEMP_1B
+	setflag FLAG_TEMP_1C
+	setflag FLAG_TEMP_1D
+	setflag FLAG_TEMP_1E
+	setflag FLAG_TEMP_1F
+	setmaplayoutindex LAYOUT_ROUTE125
+	end
+
+Route125_EventScript_SetMirageIslandLayout::
+	setmaplayoutindex LAYOUT_ROUTE125_MIRAGE_ISLAND
 	end
 
 Route125_OnLoad:

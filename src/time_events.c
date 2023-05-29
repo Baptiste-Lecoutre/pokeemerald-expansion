@@ -4,10 +4,23 @@
 #include "field_weather.h"
 #include "pokemon.h"
 #include "random.h"
+#include "region_map.h"
 #include "overworld.h"
 #include "rtc.h"
 #include "script.h"
+#include "string_util.h"
 #include "task.h"
+#include "constants/maps.h"
+#include "constants/mirage_locations.h"
+
+static const u16 sMirageLocationMappings[][4] = {
+    {MIRAGE_LOCATION_ROUTE_106,     MAP_GROUP(ROUTE106),      MAP_NUM(ROUTE106), TRUE},
+    {MIRAGE_LOCATION_ROUTE_114,     MAP_GROUP(ROUTE114),      MAP_NUM(ROUTE114), FALSE},
+    {MIRAGE_LOCATION_LILYCOVE_CITY, MAP_GROUP(LILYCOVE_CITY), MAP_NUM(LILYCOVE_CITY), FALSE},
+    {MIRAGE_LOCATION_ROUTE_125,     MAP_GROUP(ROUTE125),      MAP_NUM(ROUTE125), TRUE},
+    {MIRAGE_LOCATION_ROUTE_130,     MAP_GROUP(ROUTE130),      MAP_NUM(ROUTE130), TRUE},
+    {MIRAGE_LOCATION_ROUTE_123,     MAP_GROUP(ROUTE123),      MAP_NUM(ROUTE123), FALSE},
+};
 
 static u32 GetMirageRnd(void)
 {
@@ -48,6 +61,48 @@ bool8 IsMirageIslandPresent(void)
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) && (GetMonData(&gPlayerParty[i], MON_DATA_PERSONALITY) & 0xFFFF) == rnd)
             return TRUE;
 
+    return FALSE;
+}
+
+u8 GetCurrentMirageLocation(void)
+{
+    if (FlagGet(FLAG_VISITED_PACIFIDLOG_TOWN))
+    {
+        return (GetMirageRnd() % NUM_MIRAGE_LOCATIONS) + 1;
+    }
+    return MIRAGE_LOCATION_NONE;
+}
+
+void BufferCurrentMirageLocationName(void)
+{
+    u8 i;
+    u8 location = GetCurrentMirageLocation();
+    for (i = 0; i < ARRAY_COUNT(sMirageLocationMappings); i++)
+    {
+        if (sMirageLocationMappings[i][0] == location)
+        {
+            u8 mapSecId = Overworld_GetMapHeaderByGroupAndId(sMirageLocationMappings[i][1], sMirageLocationMappings[i][2])->regionMapSectionId;
+            StringCopy(gStringVar1, gRegionMapEntries[mapSecId].name);
+            return;
+        }
+    }
+}
+
+bool8 MirageLocationOnlyDoWaterMonCries()
+{
+    u8 i;
+    u8 location = GetCurrentMirageLocation();
+    for (i = 0; i < ARRAY_COUNT(sMirageLocationMappings); i++)
+    {
+        if (gSaveBlock1Ptr->location.mapGroup == sMirageLocationMappings[i][1]
+        && gSaveBlock1Ptr->location.mapNum == sMirageLocationMappings[i][2])
+        {
+            if (location == sMirageLocationMappings[i][0])
+                return FALSE;
+            else
+                return sMirageLocationMappings[i][3];
+        }
+    }
     return FALSE;
 }
 

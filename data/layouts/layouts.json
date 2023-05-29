@@ -4600,6 +4600,56 @@
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/ScorchedSlab_RegigigasRoom/border.bin",
       "blockdata_filepath": "data/layouts/ScorchedSlab_RegigigasRoom/map.bin"
+    },
+    {
+        "blockdata_filepath": "data/layouts/Route123_MirageCave/map.bin",
+        "border_filepath": "data/layouts/Route123_MirageCave/border.bin",
+        "height": 20,
+        "id": "LAYOUT_ROUTE123_MIRAGE_CAVE",
+        "name": "Route123_MirageCave_Layout",
+        "primary_tileset": "gTileset_General",
+        "secondary_tileset": "gTileset_Cave",
+        "width": 25
+    },
+    {
+        "blockdata_filepath": "data/layouts/Route106_MirageIsland/map.bin",
+        "border_filepath": "data/layouts/Route106_MirageIsland/border.bin",
+        "height": 20,
+        "id": "LAYOUT_ROUTE106_MIRAGE_ISLAND",
+        "name": "Route106_MirageIsland_Layout",
+        "primary_tileset": "gTileset_General",
+        "secondary_tileset": "gTileset_Dewford",
+        "width": 80
+    },
+    {
+        "blockdata_filepath": "data/layouts/Route114_MirageCave/map.bin",
+        "border_filepath": "data/layouts/Route114_MirageCave/border.bin",
+        "height": 23,
+        "id": "LAYOUT_ROUTE114_MIRAGE_CAVE",
+        "name": "Route114_MirageCave_Layout",
+        "primary_tileset": "gTileset_General",
+        "secondary_tileset": "gTileset_MeteorFalls",
+        "width": 20
+    },
+    {
+        "blockdata_filepath": "data/layouts/LilycoveCity_MirageMountain/map.bin",
+        "border_filepath": "data/layouts/LilycoveCity_MirageMountain/border.bin",
+        "height": 30,
+        "id": "LAYOUT_LILYCOVE_CITY_MIRAGE_MOUNTAIN",
+        "name": "LilycoveCity_MirageMountain_Layout",
+        "primary_tileset": "gTileset_General",
+        "secondary_tileset": "gTileset_Lilycove",
+        "width": 44
+    },
+    {
+        "blockdata_filepath": "data/layouts/Route125_MirageIsland/map.bin",
+        "border_filepath": "data/layouts/Route125_MirageIsland/border.bin",
+        "height": 40,
+        "id": "LAYOUT_ROUTE125_MIRAGE_ISLAND",
+        "name": "Route125_MirageIsland_Layout",
+        "primary_tileset": "gTileset_General",
+        "secondary_tileset": "gTileset_Mossdeep",
+        "width": 80
     }
   ]
 }
