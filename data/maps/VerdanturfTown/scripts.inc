@@ -1,4 +1,5 @@
 .set LOCALID_TWIN, 2
+.set LOCALID_ERIKA, 7
 
 VerdanturfTown_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, VerdanturfTown_OnTransition
@@ -7,7 +8,60 @@ VerdanturfTown_MapScripts::
 VerdanturfTown_OnTransition:
 	setflag FLAG_VISITED_VERDANTURF_TOWN
 	setvar VAR_CONTEST_HALL_STATE, 0
+	goto_if_defeated TRAINER_ERIKA, VerdanturfTown_EventScript_HideErika
 	end
+
+VerdanturfTown_EventScript_HideErika::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_ERIKA
+	return
+
+VerdanturfTown_EventScript_Erika::
+	lock
+	msgbox VerdanturfTown_Text_ShouldIGoIn, MSGBOX_DEFAULT
+	applymovement LOCALID_ERIKA, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_ERIKA, Common_Movement_Delay48
+	waitmovement 0
+	faceplayer
+	msgbox VerdanturfTown_Text_ImErika, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_ERIKA, VerdanturfTown_Text_IConcedeDefeat
+	msgbox VerdanturfTown_Text_ThatWasDelightful, MSGBOX_DEFAULT
+	giveitem ITEM_TM86 @ grass knot
+	msgbox VerdanturfTown_Text_IShallNowHeadBack, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_ERIKA
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	releaseall
+	end
+
+VerdanturfTown_Text_ShouldIGoIn:
+	.string "Should I go in? Really? Am I\n"
+	.string "ready to be in the spotlight?$"
+
+VerdanturfTown_Text_ImErika:
+	.string "Oh, hi. I'm Erika. I am a gym\n"
+	.string "leader from Kanto.\p"
+	.string "I heard Pokemon contest were\n"
+	.string "similar to regular battles.\p"
+	.string "Let's see if you are worth\n"
+	.string "entering!$"
+
+VerdanturfTown_Text_IConcedeDefeat:
+	.string "Oh! I concede defeat. You are\n"
+	.string "Remarkably strong.$"
+
+VerdanturfTown_Text_ThatWasDelightful:
+	.string "That was a delightful match.\n"
+	.string "I felt inspired.\p"
+	.string "Please, I wish you to have this\n"
+	.string "technical machine.$"
+
+VerdanturfTown_Text_IShallNowHeadBack:
+	.string "I shall now head back to my\n"
+	.string "city. Bye.$"
 
 VerdanturfTown_EventScript_Twin::
 	lock

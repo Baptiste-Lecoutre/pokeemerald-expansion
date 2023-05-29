@@ -197,6 +197,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - Gen8: 
         - ZaZa & Galarian kanto birds roamers -> kanto birds? there's the teleporter... 
         - Eternatus
+        - Regieleki & Regidrago in new caves with puzzles like other Regis
 
     
 - Add new locations
@@ -210,9 +211,9 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Change pkmn center layouts to have the move tutor NPC
 - Change some interfaces to have a visual identity
     - Text boxes
-    - palettes and/or some UI layouts (see Missiri posts in discord)
+    - palettes and/or some UI layouts (see Missiri posts in discord & Reddit post about seasons in gen4)
     - map name popups, see vanadium
     - healthboxes & mega-zmoves triggers
     - bag sprites
-    - make magma bright during the night
+    - make magma bright during the night -> change the DNS from Merpp to Sierra? 
     - dexnav interface

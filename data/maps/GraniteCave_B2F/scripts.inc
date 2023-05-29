@@ -19,7 +19,7 @@ GraniteCave_B2F_EventScript_Brock::
 	msgbox GraniteCave_B2F_Text_ImBrock, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_BROCK, GraniteCave_B2F_Text_YoureStrongerThanIExpected
 	msgbox GraniteCave_B2F_Text_ITookYouForGranted, MSGBOX_DEFAULT
-	giveitem ITEM_TM76
+	giveitem ITEM_TM76 @ stealth rock
 	msgbox GraniteCave_B2F_Text_IShouldReturnToKanto, MSGBOX_DEFAULT
 	closemessage
 	fadescreen 1

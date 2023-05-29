@@ -16,6 +16,48 @@ Route109_EventScript_HideMisty::
 	removeobject LOCALID_MISTY
 	return
 
+Route109_EventScript_Misty::
+	lock
+	faceplayer
+	msgbox Route109_Text_ImMisty, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_MISTY, Route109_Text_ThatsIt
+	msgbox Route109_Text_AlrightNoHesitation, MSGBOX_DEFAULT
+	giveitem ITEM_TM55 @ scald
+	msgbox Route109_Text_MistyHuh, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_MISTY
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	releaseall
+	end
+
+Route109_Text_ImMisty:
+	.string "Hello cutie! I'm Misty, the water\n"
+	.string "goddess and gym leader of Kanto\p"
+	.string "And you, you look like my next\n"
+	.string "boyfriend.\p"
+	.string "But first, I need to test your battle\n"
+	.string "skills. Let's get nice and wet!$"
+
+Route109_Text_ThatsIt:
+	.string "That's it! I'm in love!$"
+
+Route109_Text_AlrightNoHesitation:
+	.string "Alright, no hesitation, I know\n"
+	.string "you are the one! You're the best\l"
+	.string "boyfriend I ever had!\p"
+	.string "Here, take this TM! This will be\n"
+	.string "your wedding gift!$"
+
+Route109_Text_MistyHuh:
+	.string "Huh?\n"
+	.string "What do you mean it sucks?\p"
+	.string "I can't stand you anymore!\n"
+	.string "I'm dumping you right now!\p"
+	.string "I'm going back to Kanto where\n"
+	.string "I'll never see you again! Farewell!$"
+
 Route109_EventScript_StartDepartForDewford::
 	call EventScript_BackupMrBrineyLocation
 	setobjectsubpriority LOCALID_BRINEY_R109, MAP_ROUTE109, 0

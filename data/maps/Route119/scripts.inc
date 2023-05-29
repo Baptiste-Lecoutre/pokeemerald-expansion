@@ -1,6 +1,7 @@
 .set LOCALID_RIVAL, 16
 .set LOCALID_RIVAL_ON_BIKE, 25
 .set LOCALID_SCOTT, 43
+.set LOCALID_KOGA, 44
 
 Route119_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, Route119_OnResume
@@ -21,14 +22,58 @@ Route119_OnTransition:
 	call Common_EventScript_SetupRivalGfxId
 	call Common_EventScript_SetupRivalOnBikeGfxId
 	call_if_eq VAR_WEATHER_INSTITUTE_STATE, 1, Route119_EventScript_MoveInstituteWorkersDownstairs
+	goto_if_defeated TRAINER_KOGA, Route119_EventScript_HideKoga
 	special SetRoute119Weather
 	end
+
+Route119_EventScript_HideKoga::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_KOGA
+	return
 
 Route119_EventScript_MoveInstituteWorkersDownstairs::
 	setflag FLAG_HIDE_WEATHER_INSTITUTE_2F_WORKERS
 	clearflag FLAG_HIDE_WEATHER_INSTITUTE_1F_WORKERS
 	setvar VAR_WEATHER_INSTITUTE_STATE, 2
 	return
+
+Route119_EventScript_Koga::
+	lock
+	faceplayer
+	msgbox Route119_Text_ImKoga, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_KOGA, Route119_Text_Hmph
+	msgbox Route119_Text_IfIAmNotStrongEnough, MSGBOX_DEFAULT
+	giveitem ITEM_TM80 @ venoshock
+	msgbox Route119_Text_IWillNowLeave, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_KOGA
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	releaseall
+	end
+
+Route119_Text_ImKoga:
+	.string "Do you see those ninjas around?\n"
+	.string "Of course you can't, I'm the one\l"
+	.string "training them!\p"
+	.string "I'm Koga, the ninja master from Kanto!\p"
+	.string "Sometimes I'm a gym leader,\n"
+	.string "sometimes I'm part of the Elite Four.\p"
+	.string "Do you think you can match me?\n"
+	.string "Let's see!$"
+
+Route119_Text_Hmph:
+	.string "Hmph! You have proven your worth!$"
+
+Route119_Text_IfIAmNotStrongEnough:
+	.string "…If I am not strong enough to defeat\n"
+	.string "you now, there is but one thing to do.\l"
+	.string "I must hone my skills.\p"
+	.string "Please take this TM.$"
+
+Route119_Text_IWillNowLeave:
+	.string "I will now leave. Bye.$"
 
 Route119_EventScript_RivalTrigger1::
 	setvar VAR_TEMP_1, 1
