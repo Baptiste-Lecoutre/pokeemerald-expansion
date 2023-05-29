@@ -1106,7 +1106,7 @@ EventScript_DoWonderTrade_Text_Done:
 Common_EventScript_TrainerNotReadyYet::
 	lock
 	faceplayer
-	message gText_OneDayImGoingToFightYou
+	msgbox gText_OneDayImGoingToFightYou, MSGBOX_DEFAULT
 	waitmessage
 	release
 	end

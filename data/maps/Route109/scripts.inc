@@ -1,8 +1,20 @@
 @ NOTE: Route 109's sail to Dewford script references local IDs from Dewford's map.
 @  These are labeled in DewfordTown/scripts.inc
 
+.set LOCALID_MISTY, 25
+
 Route109_MapScripts::
+	map_script MAP_SCRIPT_ON_TRANSITION, Route109_OnTransition
 	.byte 0
+
+Route109_OnTransition::
+	goto_if_defeated TRAINER_MISTY, Route109_EventScript_HideMisty
+	end
+
+Route109_EventScript_HideMisty::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_MISTY
+	return
 
 Route109_EventScript_StartDepartForDewford::
 	call EventScript_BackupMrBrineyLocation
