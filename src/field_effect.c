@@ -1,5 +1,6 @@
 #include "global.h"
 #include "decompress.h"
+#include "event_data.h"
 #include "event_object_movement.h"
 #include "field_camera.h"
 #include "field_control_avatar.h"
@@ -20,6 +21,7 @@
 #include "party_menu.h"
 #include "pokemon.h"
 #include "script.h"
+#include "soar.h"
 #include "sound.h"
 #include "sprite.h"
 #include "task.h"
@@ -27,6 +29,7 @@
 #include "trig.h"
 #include "util.h"
 #include "constants/field_effects.h"
+#include "constants/flags.h"
 #include "constants/event_objects.h"
 #include "constants/event_object_movement.h"
 #include "constants/metatile_behaviors.h"
@@ -2629,10 +2632,24 @@ bool8 FldEff_FieldMoveShowMonInit(void)
 {
     struct Pokemon *pokemon;
     bool32 noDucking = gFieldEffectArguments[0] & SHOW_MON_CRY_NO_DUCKING;
-    pokemon = &gPlayerParty[(u8)gFieldEffectArguments[0]];
-    gFieldEffectArguments[0] = GetMonData(pokemon, MON_DATA_SPECIES);
-    gFieldEffectArguments[1] = GetMonData(pokemon, MON_DATA_OT_ID);
-    gFieldEffectArguments[2] = GetMonData(pokemon, MON_DATA_PERSONALITY);
+
+    if (gFieldEffectArguments[0]== (0xFE | SHOW_MON_CRY_NO_DUCKING))
+    {
+        if (FlagGet(FLAG_EON_LATI))
+            gFieldEffectArguments[0] = SPECIES_LATIAS;
+        else
+            gFieldEffectArguments[0] = SPECIES_LATIOS;
+        gFieldEffectArguments[1] = 0;
+        gFieldEffectArguments[2] = 12;
+    }
+    else
+    {
+        pokemon = &gPlayerParty[(u8)gFieldEffectArguments[0]];
+        gFieldEffectArguments[0] = GetMonData(pokemon, MON_DATA_SPECIES);
+        gFieldEffectArguments[1] = GetMonData(pokemon, MON_DATA_OT_ID);
+        gFieldEffectArguments[2] = GetMonData(pokemon, MON_DATA_PERSONALITY);
+    }
+
     gFieldEffectArguments[0] |= noDucking;
     FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON);
     FieldEffectActiveListRemove(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
@@ -3999,3 +4016,54 @@ u8 FldEff_CaveDust(void)
     
     return spriteId;
 }
+
+#define tState data[0]
+#define tTimer data[1]
+void Task_EonFlute(u8 taskId)
+{
+    struct Task *task;
+    struct ObjectEvent *objectEvent;
+    objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
+    task = &gTasks[taskId];
+    switch(task->tState)
+    {
+    case 0:
+        if (!gSaveBlock2Ptr->optionsFastFieldMove)
+        {
+            gFieldEffectArguments[0] = 0xFE | SHOW_MON_CRY_NO_DUCKING;
+            FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
+        }
+        task->tState++;
+        break;
+    case 1:
+        if (!FieldEffectActiveListContains(FLDEFF_FIELD_MOVE_SHOW_MON))
+        {
+            task->tTimer = 0;
+            HideFollowerForFieldEffect();
+            ObjectEventTurn(objectEvent, DIR_WEST);
+            gFieldEffectArguments[0] = GetPlayerAvatarSpriteId();
+            FieldEffectStart(FLDEFF_NPCFLY_OUT);
+            task->tState++;
+        }
+        break;
+    case 2:
+        task->tTimer++;
+        if (task->tTimer > 17){
+            if (gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_SURFING)
+                DestroySprite(&gSprites[objectEvent->fieldEffectSpriteId]);
+            ObjectEventSetGraphicsId(objectEvent, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_SURFING));
+            gObjectEvents[gPlayerAvatar.objectEventId].invisible = TRUE;
+            task->tState++;
+        }
+        break; 
+    case 3:
+        if (!FieldEffectActiveListContains(FLDEFF_NPCFLY_OUT))
+        {
+            SetMainCallback2(CB2_InitSoar);
+            DestroyTask(taskId);
+        } 
+        break;
+    }
+}
+#undef tState
+#undef tTimer

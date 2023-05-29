@@ -182,35 +182,10 @@ void CB2_InitSoar(void)
 	switch (gMain.state)
 	{
 	case 0:
-		StringExpandPlaceholders(gStringVar4, sEonFluteUseMessage);
-
-		DrawDialogueFrame(0, 0);
-		AddTextPrinterParameterized(0, FONT_NORMAL, gStringVar4, 0, 0, GetPlayerTextSpeed(), NULL);
-		CopyWindowToVram(0, 3);
-
+		BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
 		gMain.state++;
 		break;
 	case 1:
-		if (!RunTextPrintersAndIsPrinter0Active())
-		{
-			//gFieldEffectArguments[0] = 0;
-			//gFieldEffectArguments[1] = 0;
-        	//gFieldEffectArguments[2] = 12;
-			//FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
-			//gFieldEffectArguments[0]=GetPlayerAvatarSpriteId();
-			//FldEff_NPCFlyOut();
-			//FieldEffectStart(FLDEFF_NPCFLY_OUT);
-			gMain.state++;
-		}
-		break;
-	case 2:
-		//if (!FieldEffectActiveListContains(FLDEFF_NPCFLY_OUT))
-		//{
-			BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
-			gMain.state++;
-		//}
-		break;
-	case 3:
 		if (!UpdatePaletteFade())
 		{
 			u16 cursorX, cursorY;
@@ -226,9 +201,9 @@ void CB2_InitSoar(void)
 			sPlayerPitch = 0;
 
 			if (gSaveBlock2Ptr->optionsSurfBikeMusic == 1)
-				FadeOutAndFadeInNewMapMusic(MUS_SURF, 2, 2);
+				FadeOutAndFadeInNewMapMusic(MUS_RG_SURF, 2, 2); // invert the frlg/rse song so that it is different from the surfing one
 			else if (gSaveBlock2Ptr->optionsSurfBikeMusic == 2)
-				FadeOutAndFadeInNewMapMusic(MUS_RG_SURF, 2, 2);
+				FadeOutAndFadeInNewMapMusic(MUS_SURF, 2, 2);
 			
 			// some of these may not be necessary, but I'm just being safe
 			ScanlineEffect_Stop();
@@ -245,9 +220,34 @@ void CB2_InitSoar(void)
 
 void ItemUseOnFieldCB_EonFlute(u8 taskId)
 {
-	LockPlayerFieldControls();
-	FreezeObjectEvents();
-	SetMainCallback2(CB2_InitSoar);
+	struct Task *task;
+    task = &gTasks[taskId];
+    switch(task->data[0])
+    {
+    case 0:
+		LockPlayerFieldControls();
+		FreezeObjectEvents();
+        task->data[0]++;
+		if(gSaveBlock2Ptr->optionsFastFieldMove)
+			task->data[0]++;
+        break;
+    case 1:
+		StringExpandPlaceholders(gStringVar4, sEonFluteUseMessage);
+		DrawDialogueFrame(0, 0);
+		AddTextPrinterParameterized(0, 1, gStringVar4, 0, 0, GetPlayerTextSpeed(), NULL);
+		CopyWindowToVram(0, 3);
+		PlaySE(SE_M_GRASSWHISTLE);
+		task->data[0]++;
+		break;
+	case 2:
+		if (!RunTextPrintersAndIsPrinter0Active() && !IsSEPlaying())
+		{
+			task->data[0] = 0;
+			gTasks[taskId].func = Task_EonFlute;
+			break;
+		}
+	}
+
 }
 
 static void LoadEonGraphics(void)
@@ -525,6 +525,7 @@ static const u8 sText_LandHere[] = _("Would you like to land here?");
 static void ExitSoar(void)
 {
 	PlaySE(SE_PC_OFF);
+	gObjectEvents[gPlayerAvatar.objectEventId].invisible = FALSE;
 	BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
 	SetMainCallback2(CB2_FadeOut);
 }
@@ -693,6 +694,6 @@ static void CB2_FadeOut(void)
 		REG_DISPSTAT &= ~(DISPSTAT_HBLANK_INTR);
 
 		SetHBlankCallback(NULL);
-		SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
+		SetMainCallback2(CB2_ReturnToField);
 	}
 }
