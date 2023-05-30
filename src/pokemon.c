@@ -5549,12 +5549,13 @@ u8 CalculatePlayerPartyCount(void)
 
 u8 CalculateEnemyPartyCount(void)
 {
+    u32 i; 
     gEnemyPartyCount = 0;
 
-    while (gEnemyPartyCount < PARTY_SIZE
-        && GetMonData(&gEnemyParty[gEnemyPartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+    for (i = 0; i < PARTY_SIZE; i++)
     {
-        gEnemyPartyCount++;
+        if (GetMonData(&gEnemyParty[i], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+            gEnemyPartyCount++;
     }
 
     return gEnemyPartyCount;

@@ -2417,3 +2417,36 @@ bool8 ScrCmd_hideitemdesc(struct ScriptContext *ctx)
     HideHeaderBox();
     return FALSE;
 }
+
+bool8 ScrCmd_setsootopolisbattle(struct ScriptContext *ctx)
+{
+    u16 species1 = ScriptReadHalfword(ctx);
+    u8 level1 = ScriptReadByte(ctx);
+    u16 item1 = ScriptReadHalfword(ctx);
+    u16 species2 = ScriptReadHalfword(ctx);
+    u8 level2 = ScriptReadByte(ctx);
+    u16 item2 = ScriptReadHalfword(ctx);
+
+    u8 heldItem1[2];
+    u8 heldItem2[2];
+
+    ZeroEnemyPartyMons();
+
+    CreateMon(&gEnemyParty[0], species1, level1, 32, 0, 0, OT_ID_PLAYER_ID, 0);
+    if (item1)
+    {
+        heldItem1[0] = item1;
+        heldItem1[1] = item1 >> 8;
+        SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, heldItem1);
+    }
+
+    CreateMon(&gEnemyParty[3], species2, level2, 32, 0, 0, OT_ID_PLAYER_ID, 0);
+    if (item2)
+    {
+        heldItem2[0] = item2;
+        heldItem2[1] = item2 >> 8;
+        SetMonData(&gEnemyParty[3], MON_DATA_HELD_ITEM, heldItem2);
+    }
+
+    return FALSE;
+}

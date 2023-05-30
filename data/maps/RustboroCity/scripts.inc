@@ -1325,3 +1325,10 @@ RustboroCity_Text_WithThisYourPokemonWillGrowLarger:
 	.string "unleash trendemous energy!\p"
 	.string "This gigantification is called\n"
 	.string "Dynamax. Use it wisely!$"
+
+Test_SootopolisFight::
+	choose_mons
+	setsootopolisbattle SPECIES_KYOGRE, 70, ITEM_NONE, SPECIES_GROUDON, 70, ITEM_NONE
+	multi_wild TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	releaseall
+	end
