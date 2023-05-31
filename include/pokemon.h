@@ -411,7 +411,7 @@ extern u8 gPlayerPartnerPartyCount;
 extern struct Pokemon gPlayerPartnerParty[PARTY_SIZE];
 extern u8 gEnemy2PartyCount;
 extern struct Pokemon gEnemy2Party[PARTY_SIZE];
-//extern struct Pokemon *gTrainerPartyArray[4];
+extern struct Pokemon *gTrainerPartyArray[];
 extern struct SpriteTemplate gMultiuseSpriteTemplate;
 
 extern const struct BattleMove gBattleMoves[];

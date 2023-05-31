@@ -94,7 +94,7 @@ struct CombinedMove
     u16 newMove;
 };
 
-struct Pokemon *gTrainerPartyArray[] = 
+EWRAM_DATA struct Pokemon *gTrainerPartyArray[] = 
 {
     gPlayerParty,
     gEnemyParty,
