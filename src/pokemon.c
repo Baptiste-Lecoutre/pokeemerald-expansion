@@ -73,8 +73,12 @@ static u16 GetPreEvolution(u16 species);
 EWRAM_DATA static u8 sLearningMoveTableID = 0;
 EWRAM_DATA u8 gPlayerPartyCount = 0;
 EWRAM_DATA u8 gEnemyPartyCount = 0;
+EWRAM_DATA u8 gPlayerPartnerPartyCount = 0;
+EWRAM_DATA u8 gEnemy2PartyCount = 0;
 EWRAM_DATA struct Pokemon gPlayerParty[PARTY_SIZE] = {0};
 EWRAM_DATA struct Pokemon gEnemyParty[PARTY_SIZE] = {0};
+EWRAM_DATA struct Pokemon gPlayerPartnerParty[PARTY_SIZE] = {0};
+EWRAM_DATA struct Pokemon gEnemy2Party[PARTY_SIZE] = {0};
 EWRAM_DATA struct SpriteTemplate gMultiuseSpriteTemplate = {0};
 EWRAM_DATA static struct MonSpritesGfxManager *sMonSpritesGfxManagers[MON_SPR_GFX_MANAGERS_COUNT] = {NULL};
 EWRAM_DATA static u8 sTriedEvolving = 0;
@@ -88,6 +92,14 @@ struct CombinedMove
     u16 move1;
     u16 move2;
     u16 newMove;
+};
+
+struct Pokemon *gTrainerPartyArray[] = 
+{
+    gPlayerParty,
+    gEnemyParty,
+    gPlayerPartnerParty,
+    gEnemy2Party
 };
 
 static const struct CombinedMove sCombinedMoves[2] =
@@ -3398,18 +3410,29 @@ void ZeroMonData(struct Pokemon *mon)
     SetMonData(mon, MON_DATA_MAIL, &arg);
 }
 
+struct Pokemon GetBattlerPartyData(u8 position)
+{
+    return *gTrainerPartyArray[position];
+}
+
 void ZeroPlayerPartyMons(void)
 {
     s32 i;
     for (i = 0; i < PARTY_SIZE; i++)
+    {    
         ZeroMonData(&gPlayerParty[i]);
+        ZeroMonData(&gPlayerPartnerParty[i]);
+    }
 }
 
 void ZeroEnemyPartyMons(void)
 {
     s32 i;
     for (i = 0; i < PARTY_SIZE; i++)
+    {
         ZeroMonData(&gEnemyParty[i]);
+        ZeroMonData(&gEnemy2Party[i]);
+    }
 }
 
 void CreateMon(struct Pokemon *mon, u16 species, u8 level, u8 fixedIV, u8 hasFixedPersonality, u32 fixedPersonality, u8 otIdType, u32 fixedOtId)

@@ -407,6 +407,11 @@ extern u8 gPlayerPartyCount;
 extern struct Pokemon gPlayerParty[PARTY_SIZE];
 extern u8 gEnemyPartyCount;
 extern struct Pokemon gEnemyParty[PARTY_SIZE];
+extern u8 gPlayerPartnerPartyCount;
+extern struct Pokemon gPlayerPartnerParty[PARTY_SIZE];
+extern u8 gEnemy2PartyCount;
+extern struct Pokemon gEnemy2Party[PARTY_SIZE];
+//extern struct Pokemon *gTrainerPartyArray[4];
 extern struct SpriteTemplate gMultiuseSpriteTemplate;
 
 extern const struct BattleMove gBattleMoves[];
@@ -588,5 +593,5 @@ u32 GetMonFriendshipScore(struct Pokemon *pokemon);
 void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
 u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset);
 u16 GetNextRegionalForm(u16 species);
-
+struct Pokemon GetBattlerPartyData(u8 position);
 #endif // GUARD_POKEMON_H
