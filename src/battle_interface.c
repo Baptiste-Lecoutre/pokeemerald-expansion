@@ -1624,8 +1624,9 @@ static void SpriteCb_MegaIndicator(struct Sprite *sprite)
 #define tBattler                data[0]
 #define tSummaryBarSpriteId     data[1]
 #define tBallIconSpriteId(n)    data[3 + n]
-#define tIsBattleStart          data[10]
-#define tBlend                  data[15]
+#define tBallIconSpriteId2(n)    data[9 + n]
+#define tIsBattleStart          data[18]
+#define tBlend                  data[19]
 
 u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, bool8 skipPlayer, bool8 isBattleStart)
 {
@@ -1634,6 +1635,7 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
     s32 i, j, var;
     u8 summaryBarSpriteId;
     u8 ballIconSpritesIds[PARTY_SIZE];
+    u8 ballIconSpritesIds2[PARTY_SIZE];
     u8 taskId;
 
     if (!skipPlayer || GetBattlerPosition(battlerId) != B_POSITION_OPPONENT_RIGHT)
@@ -1689,32 +1691,46 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
     for (i = 0; i < PARTY_SIZE; i++)
     {
         ballIconSpritesIds[i] = CreateSpriteAtEnd(&sStatusSummaryBallsSpriteTemplates[isOpponent], bar_X, bar_Y - 4, 9);
+        ballIconSpritesIds2[i] = CreateSpriteAtEnd(&sStatusSummaryBallsSpriteTemplates[isOpponent], bar_X, bar_Y + 10, 9);
 
         if (!isBattleStart)
+        {
             gSprites[ballIconSpritesIds[i]].callback = SpriteCB_StatusSummaryBalls_OnSwitchout;
+            gSprites[ballIconSpritesIds2[i]].callback = SpriteCB_StatusSummaryBalls_OnSwitchout;
+        }
 
         if (!isOpponent)
         {
             gSprites[ballIconSpritesIds[i]].x2 = 0;
             gSprites[ballIconSpritesIds[i]].y2 = 0;
+            gSprites[ballIconSpritesIds2[i]].x2 = 0;
+            gSprites[ballIconSpritesIds2[i]].y2 = 0;
         }
 
         gSprites[ballIconSpritesIds[i]].data[0] = summaryBarSpriteId;
+        gSprites[ballIconSpritesIds2[i]].data[0] = summaryBarSpriteId;
 
         if (!isOpponent)
         {
             gSprites[ballIconSpritesIds[i]].x += 10 * i + 24;
             gSprites[ballIconSpritesIds[i]].data[1] = i * 7 + 10;
             gSprites[ballIconSpritesIds[i]].x2 = 120;
+            gSprites[ballIconSpritesIds2[i]].x += 10 * i + 24;
+            gSprites[ballIconSpritesIds2[i]].data[1] = i * 7 + 10;
+            gSprites[ballIconSpritesIds2[i]].x2 = 120;
         }
         else
         {
             gSprites[ballIconSpritesIds[i]].x -= 10 * (5 - i) + 24;
             gSprites[ballIconSpritesIds[i]].data[1] = (6 - i) * 7 + 10;
             gSprites[ballIconSpritesIds[i]].x2 = -120;
+            gSprites[ballIconSpritesIds2[i]].x -= 10 * (5 - i) + 24;
+            gSprites[ballIconSpritesIds2[i]].data[1] = (6 - i) * 7 + 10;
+            gSprites[ballIconSpritesIds2[i]].x2 = -120;
         }
 
         gSprites[ballIconSpritesIds[i]].data[2] = isOpponent;
+        gSprites[ballIconSpritesIds2[i]].data[2] = isOpponent;
     }
 
     if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
@@ -1738,6 +1754,23 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
                 {
                     // mon with major status
                     gSprites[ballIconSpritesIds[i]].oam.tileNum += 2;
+                }
+
+                if (partyInfo[i+PARTY_SIZE].hp == HP_EMPTY_SLOT)
+                {
+                    // empty slot or an egg
+                    gSprites[ballIconSpritesIds2[i]].oam.tileNum += 1;
+                    gSprites[ballIconSpritesIds2[i]].data[7] = 1;
+                }
+                else if (partyInfo[i+PARTY_SIZE].hp == 0)
+                {
+                    // fainted mon
+                    gSprites[ballIconSpritesIds2[i]].oam.tileNum += 3;
+                }
+                else if (partyInfo[i+PARTY_SIZE].status != 0)
+                {
+                    // mon with major status
+                    gSprites[ballIconSpritesIds2[i]].oam.tileNum += 2;
                 }
             }
         }
@@ -1770,6 +1803,33 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
                 }
                 i++;
             }
+            for (i = 0, var = PARTY_SIZE - 1, j = 0; j < PARTY_SIZE; j++)
+            {
+                if (partyInfo[j+PARTY_SIZE].hp == HP_EMPTY_SLOT)
+                {
+                     // empty slot or an egg
+                    gSprites[ballIconSpritesIds2[var]].oam.tileNum += 1;
+                    gSprites[ballIconSpritesIds2[var]].data[7] = 1;
+                    var--;
+                    continue;
+                }
+                else if (partyInfo[j+PARTY_SIZE].hp == 0)
+                {
+                    // fainted mon
+                    gSprites[ballIconSpritesIds2[i]].oam.tileNum += 3;
+                }
+                else if (gBattleTypeFlags & BATTLE_TYPE_ARENA && gBattleStruct->arenaLostPlayerMons & gBitTable[j])
+                {
+                    // fainted arena mon
+                    gSprites[ballIconSpritesIds2[i]].oam.tileNum += 3;
+                }
+                else if (partyInfo[j+PARTY_SIZE].status != 0)
+                {
+                    // mon with primary status
+                    gSprites[ballIconSpritesIds2[i]].oam.tileNum += 2;
+                }
+                i++;
+            }
         }
     }
     else
@@ -1793,6 +1853,26 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
                 {
                     // mon with primary status
                     gSprites[ballIconSpritesIds[var]].oam.tileNum += 2;
+                }
+                var--;
+            }
+            for (var = PARTY_SIZE - 1, i = 0; i < PARTY_SIZE; i++)
+            {
+                if (partyInfo[i+PARTY_SIZE].hp == HP_EMPTY_SLOT)
+                {
+                    // empty slot or an egg
+                    gSprites[ballIconSpritesIds2[var]].oam.tileNum += 1;
+                    gSprites[ballIconSpritesIds2[var]].data[7] = 1;
+                }
+                else if (partyInfo[i+PARTY_SIZE].hp == 0)
+                {
+                    // fainted mon
+                    gSprites[ballIconSpritesIds2[var]].oam.tileNum += 3;
+                }
+                else if (partyInfo[i+PARTY_SIZE].status != 0)
+                {
+                    // mon with primary status
+                    gSprites[ballIconSpritesIds2[var]].oam.tileNum += 2;
                 }
                 var--;
             }
@@ -1826,6 +1906,33 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
                 }
                 var++;
             }
+            for (var = 0, i = 0, j = 0; j < PARTY_SIZE; j++)
+            {
+                if (partyInfo[j+PARTY_SIZE].hp == HP_EMPTY_SLOT)
+                {
+                    // empty slot or an egg
+                    gSprites[ballIconSpritesIds2[i]].oam.tileNum += 1;
+                    gSprites[ballIconSpritesIds2[i]].data[7] = 1;
+                    i++;
+                    continue;
+                }
+                else if (partyInfo[j+PARTY_SIZE].hp == 0)
+                {
+                     // fainted mon
+                    gSprites[ballIconSpritesIds2[PARTY_SIZE - 1 - var]].oam.tileNum += 3;
+                }
+                else if (gBattleTypeFlags & BATTLE_TYPE_ARENA && gBattleStruct->arenaLostOpponentMons & gBitTable[j])
+                {
+                     // fainted arena mon
+                    gSprites[ballIconSpritesIds2[PARTY_SIZE - 1 - var]].oam.tileNum += 3;
+                }
+                else if (partyInfo[j+PARTY_SIZE].status != 0)
+                {
+                     // mon with primary status
+                    gSprites[ballIconSpritesIds2[PARTY_SIZE - 1 - var]].oam.tileNum += 2;
+                }
+                var++;
+            }
         }
     }
 
@@ -1834,7 +1941,10 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
     gTasks[taskId].tSummaryBarSpriteId = summaryBarSpriteId;
 
     for (i = 0; i < PARTY_SIZE; i++)
+    {
         gTasks[taskId].tBallIconSpriteId(i) = ballIconSpritesIds[i];
+        gTasks[taskId].tBallIconSpriteId2(i) = ballIconSpritesIds2[i];
+    }
 
     gTasks[taskId].tIsBattleStart = isBattleStart;
 
@@ -1851,6 +1961,7 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
 void Task_HidePartyStatusSummary(u8 taskId)
 {
     u8 ballIconSpriteIds[PARTY_SIZE];
+    u8 ballIconSpriteIds2[PARTY_SIZE];
     bool8 isBattleStart;
     u8 summaryBarSpriteId;
     u8 battlerId;
@@ -1861,7 +1972,10 @@ void Task_HidePartyStatusSummary(u8 taskId)
     battlerId = gTasks[taskId].tBattler;
 
     for (i = 0; i < PARTY_SIZE; i++)
+    {
         ballIconSpriteIds[i] = gTasks[taskId].tBallIconSpriteId(i);
+        ballIconSpriteIds2[i] = gTasks[taskId].tBallIconSpriteId2(i);
+    }
 
     SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
     SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(16, 0));
@@ -1869,7 +1983,10 @@ void Task_HidePartyStatusSummary(u8 taskId)
     gTasks[taskId].tBlend = 16;
 
     for (i = 0; i < PARTY_SIZE; i++)
+    {
         gSprites[ballIconSpriteIds[i]].oam.objMode = ST_OAM_OBJ_BLEND;
+        gSprites[ballIconSpriteIds2[i]].oam.objMode = ST_OAM_OBJ_BLEND;
+    }
 
     gSprites[summaryBarSpriteId].oam.objMode = ST_OAM_OBJ_BLEND;
 
@@ -1883,6 +2000,10 @@ void Task_HidePartyStatusSummary(u8 taskId)
                 gSprites[ballIconSpriteIds[PARTY_SIZE - 1 - i]].data[3] = 0;
                 gSprites[ballIconSpriteIds[PARTY_SIZE - 1 - i]].data[4] = 0;
                 gSprites[ballIconSpriteIds[PARTY_SIZE - 1 - i]].callback = SpriteCB_StatusSummaryBalls_Exit;
+                gSprites[ballIconSpriteIds2[PARTY_SIZE - 1 - i]].data[1] = 7 * i;
+                gSprites[ballIconSpriteIds2[PARTY_SIZE - 1 - i]].data[3] = 0;
+                gSprites[ballIconSpriteIds2[PARTY_SIZE - 1 - i]].data[4] = 0;
+                gSprites[ballIconSpriteIds2[PARTY_SIZE - 1 - i]].callback = SpriteCB_StatusSummaryBalls_Exit;
             }
             else
             {
@@ -1890,6 +2011,10 @@ void Task_HidePartyStatusSummary(u8 taskId)
                 gSprites[ballIconSpriteIds[i]].data[3] = 0;
                 gSprites[ballIconSpriteIds[i]].data[4] = 0;
                 gSprites[ballIconSpriteIds[i]].callback = SpriteCB_StatusSummaryBalls_Exit;
+                gSprites[ballIconSpriteIds2[i]].data[1] = 7 * i;
+                gSprites[ballIconSpriteIds2[i]].data[3] = 0;
+                gSprites[ballIconSpriteIds2[i]].data[4] = 0;
+                gSprites[ballIconSpriteIds2[i]].callback = SpriteCB_StatusSummaryBalls_Exit;
             }
         }
         gSprites[summaryBarSpriteId].data[0] /= 2;
@@ -1906,7 +2031,7 @@ void Task_HidePartyStatusSummary(u8 taskId)
 
 static void Task_HidePartyStatusSummary_BattleStart_1(u8 taskId)
 {
-    if ((gTasks[taskId].data[11]++ % 2) == 0)
+    if ((gTasks[taskId].data[17]++ % 2) == 0)
     {
         if (--gTasks[taskId].tBlend < 0)
             return;
@@ -1920,6 +2045,7 @@ static void Task_HidePartyStatusSummary_BattleStart_1(u8 taskId)
 static void Task_HidePartyStatusSummary_BattleStart_2(u8 taskId)
 {
     u8 ballIconSpriteIds[PARTY_SIZE];
+    u8 ballIconSpriteIds2[PARTY_SIZE];
     s32 i;
 
     u8 battlerId = gTasks[taskId].tBattler;
@@ -1928,13 +2054,17 @@ static void Task_HidePartyStatusSummary_BattleStart_2(u8 taskId)
         u8 summaryBarSpriteId = gTasks[taskId].tSummaryBarSpriteId;
 
         for (i = 0; i < PARTY_SIZE; i++)
+        {
             ballIconSpriteIds[i] = gTasks[taskId].tBallIconSpriteId(i);
+            ballIconSpriteIds2[i] = gTasks[taskId].tBallIconSpriteId2(i);
+        }
 
         gBattleSpritesDataPtr->animationData->field_9_x1C--;
         if (gBattleSpritesDataPtr->animationData->field_9_x1C == 0)
         {
             DestroySpriteAndFreeResources(&gSprites[summaryBarSpriteId]);
             DestroySpriteAndFreeResources(&gSprites[ballIconSpriteIds[0]]);
+            DestroySpriteAndFreeResources(&gSprites[ballIconSpriteIds2[0]]);
         }
         else
         {
@@ -1942,10 +2072,15 @@ static void Task_HidePartyStatusSummary_BattleStart_2(u8 taskId)
             DestroySprite(&gSprites[summaryBarSpriteId]);
             FreeSpriteOamMatrix(&gSprites[ballIconSpriteIds[0]]);
             DestroySprite(&gSprites[ballIconSpriteIds[0]]);
+//            FreeSpriteOamMatrix(&gSprites[ballIconSpriteIds2[0]]);
+            DestroySprite(&gSprites[ballIconSpriteIds2[0]]);
         }
 
         for (i = 1; i < PARTY_SIZE; i++)
+        {
             DestroySprite(&gSprites[ballIconSpriteIds[i]]);
+            DestroySprite(&gSprites[ballIconSpriteIds2[i]]);
+        }
     }
     else if (gTasks[taskId].tBlend == -3)
     {
@@ -1959,6 +2094,7 @@ static void Task_HidePartyStatusSummary_BattleStart_2(u8 taskId)
 static void Task_HidePartyStatusSummary_DuringBattle(u8 taskId)
 {
     u8 ballIconSpriteIds[PARTY_SIZE];
+    u8 ballIconSpriteIds2[PARTY_SIZE];
     s32 i;
     u8 battlerId = gTasks[taskId].tBattler;
 
@@ -1971,13 +2107,20 @@ static void Task_HidePartyStatusSummary_DuringBattle(u8 taskId)
         u8 summaryBarSpriteId = gTasks[taskId].tSummaryBarSpriteId;
 
         for (i = 0; i < PARTY_SIZE; i++)
+        {
             ballIconSpriteIds[i] = gTasks[taskId].tBallIconSpriteId(i);
+            ballIconSpriteIds2[i] = gTasks[taskId].tBallIconSpriteId2(i);
+        }
 
         DestroySpriteAndFreeResources(&gSprites[summaryBarSpriteId]);
         DestroySpriteAndFreeResources(&gSprites[ballIconSpriteIds[0]]);
+        DestroySpriteAndFreeResources(&gSprites[ballIconSpriteIds2[0]]);
 
         for (i = 1; i < PARTY_SIZE; i++)
+        {
             DestroySprite(&gSprites[ballIconSpriteIds[i]]);
+            DestroySprite(&gSprites[ballIconSpriteIds2[i]]);
+        }
     }
     else if (gTasks[taskId].tBlend == -3)
     {

@@ -3650,6 +3650,21 @@ static void DoBattleIntro(void)
                 }
             }
 
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                if (GetMonData(&gEnemy2Party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
+                 || GetMonData(&gEnemy2Party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+                {
+                    hpStatus[i+PARTY_SIZE].hp = HP_EMPTY_SLOT;
+                    hpStatus[i+PARTY_SIZE].status = 0;
+                }
+                else
+                {
+                    hpStatus[i+PARTY_SIZE].hp = GetMonData(&gEnemy2Party[i], MON_DATA_HP);
+                    hpStatus[i+PARTY_SIZE].status = GetMonData(&gEnemy2Party[i], MON_DATA_STATUS);
+                }
+            }
+
             gActiveBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             BtlController_EmitDrawPartyStatusSummary(BUFFER_A, hpStatus, PARTY_SUMM_SKIP_DRAW_DELAY);
             MarkBattlerForControllerExec(gActiveBattler);
@@ -3666,6 +3681,21 @@ static void DoBattleIntro(void)
                 {
                     hpStatus[i].hp = GetMonData(&gPlayerParty[i], MON_DATA_HP);
                     hpStatus[i].status = GetMonData(&gPlayerParty[i], MON_DATA_STATUS);
+                }
+            }
+
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                if (GetMonData(&gPlayerPartnerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
+                 || GetMonData(&gPlayerPartnerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+                {
+                    hpStatus[i+PARTY_SIZE].hp = HP_EMPTY_SLOT;
+                    hpStatus[i+PARTY_SIZE].status = 0;
+                }
+                else
+                {
+                    hpStatus[i+PARTY_SIZE].hp = GetMonData(&gPlayerPartnerParty[i], MON_DATA_HP);
+                    hpStatus[i+PARTY_SIZE].status = GetMonData(&gPlayerPartnerParty[i], MON_DATA_STATUS);
                 }
             }
 
