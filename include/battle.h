@@ -733,8 +733,19 @@ static inline struct Pokemon *GetSideParty(u32 side)
 
 static inline struct Pokemon *GetBattlerParty(u32 battlerId)
 {
-    extern u8 GetBattlerSide(u8 battler);
-    return GetSideParty(GetBattlerSide(battlerId));
+    //extern u8 GetBattlerSide(u8 battler);
+    //return GetSideParty(GetBattlerSide(battlerId));
+    switch (battlerId)
+    {
+        case 0:
+            return gPlayerParty;
+        case 1:
+            return gEnemyParty;
+        case 2:
+            return gPlayerPartnerParty;
+        case 3:
+            return gEnemy2Party;
+    }
 }
 
 // NOTE: The members of this struct have hard-coded offsets

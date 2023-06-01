@@ -596,7 +596,7 @@ static void CB2_InitBattleInternal(void)
     {
         CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
         if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS && !BATTLE_TWO_VS_ONE_OPPONENT)
-            CreateNPCTrainerParty(&gEnemyParty[PARTY_SIZE / 2], gTrainerBattleOpponent_B, FALSE);
+            CreateNPCTrainerParty(&gEnemy2Party[0], gTrainerBattleOpponent_B, FALSE);
         SetWildMonHeldItem();
         CalculateEnemyPartyCount();
     }
@@ -611,9 +611,13 @@ static void CB2_InitBattleInternal(void)
     for (i = 0; i < PARTY_SIZE; i++)
     {
         // Player's side
-        TryFormChange(i, B_SIDE_PLAYER, FORM_CHANGE_BEGIN_BATTLE);
+        TryFormChange(i, B_POSITION_PLAYER_LEFT, FORM_CHANGE_BEGIN_BATTLE);
         // Opponent's side
-        TryFormChange(i, B_SIDE_OPPONENT, FORM_CHANGE_BEGIN_BATTLE);
+        TryFormChange(i, B_POSITION_OPPONENT_LEFT, FORM_CHANGE_BEGIN_BATTLE);
+        // Partner's side
+        TryFormChange(i, B_POSITION_PLAYER_RIGHT, FORM_CHANGE_BEGIN_BATTLE);
+        // Opponent2's side
+        TryFormChange(i, B_POSITION_OPPONENT_RIGHT, FORM_CHANGE_BEGIN_BATTLE);
     }
 
     gBattleCommunication[MULTIUSE_STATE] = 0;
@@ -1984,17 +1988,17 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
 
         *trainer = TryOverrideParty(trainer);
 
-        if (battleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+        /*if (battleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
         {
             if (trainer->partySize > PARTY_SIZE / 2)
                 monsCount = PARTY_SIZE / 2;
             else
                 monsCount = trainer->partySize;
         }
-        else
-        {
+        else*/
+        //{
             monsCount = trainer->partySize;
-        }
+        //}
 
         for (i = 0; i < monsCount; i++)
         {
@@ -3629,7 +3633,7 @@ static void DoBattleIntro(void)
     case 5: // draw party summary in trainer battles
         if (!gBattleControllerExecFlags)
         {
-            struct HpAndStatus hpStatus[PARTY_SIZE];
+            struct HpAndStatus hpStatus[2*PARTY_SIZE];
 
             for (i = 0; i < PARTY_SIZE; i++)
             {

@@ -3410,9 +3410,9 @@ void ZeroMonData(struct Pokemon *mon)
     SetMonData(mon, MON_DATA_MAIL, &arg);
 }
 
-struct Pokemon GetBattlerPartyData(u8 position)
+struct Pokemon *GetBattlerPartyData(u8 position)
 {
-    return *gTrainerPartyArray[position];
+    return gTrainerPartyArray[position];
 }
 
 void ZeroPlayerPartyMons(void)
@@ -8671,9 +8671,9 @@ bool32 ShouldShowFemaleDifferences(u16 species, u32 personality)
     return (gSpeciesInfo[species].flags & SPECIES_FLAG_GENDER_DIFFERENCE) && GetGenderFromSpeciesAndPersonality(species, personality) == MON_FEMALE;
 }
 
-bool32 TryFormChange(u32 monId, u32 side, u16 method)
+bool32 TryFormChange(u32 monId, u32 battlerId, u16 method)
 {
-    struct Pokemon *party = (side == B_SIDE_PLAYER) ? gPlayerParty : gEnemyParty;
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u16 targetSpecies;
 
     if (GetMonData(&party[monId], MON_DATA_SPECIES_OR_EGG, 0) == SPECIES_NONE

@@ -7840,7 +7840,7 @@ static void Cmd_drawpartystatussummary(void)
 
     s32 i;
     struct Pokemon *party;
-    struct HpAndStatus hpStatuses[PARTY_SIZE];
+    struct HpAndStatus hpStatuses[2*PARTY_SIZE];
 
     if (gBattleControllerExecFlags)
         return;
