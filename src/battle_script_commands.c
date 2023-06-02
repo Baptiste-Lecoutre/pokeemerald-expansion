@@ -7854,7 +7854,7 @@ static void Cmd_drawpartystatussummary(void)
         if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
             || GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
         {
-            hpStatuses[i].hp = 0xFFFF;
+            hpStatuses[i].hp = HP_EMPTY_SLOT;
             hpStatuses[i].status = 0;
         }
         else
@@ -7864,14 +7864,14 @@ static void Cmd_drawpartystatussummary(void)
         }
     }
 
-    party = GetBattlerParty(BATTLE_PARTNER(gActiveBattler));
+    /*party = GetBattlerParty(BATTLE_PARTNER(gActiveBattler));
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
             || GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
         {
-            hpStatuses[i+PARTY_SIZE].hp = 0xFFFF;
+            hpStatuses[i+PARTY_SIZE].hp = HP_EMPTY_SLOT;
             hpStatuses[i+PARTY_SIZE].status = 0;
         }
         else
@@ -7879,7 +7879,7 @@ static void Cmd_drawpartystatussummary(void)
             hpStatuses[i+PARTY_SIZE].hp = GetMonData(&party[i], MON_DATA_HP);
             hpStatuses[i+PARTY_SIZE].status = GetMonData(&party[i], MON_DATA_STATUS);
         }
-    }
+    }*/
 
     BtlController_EmitDrawPartyStatusSummary(BUFFER_A, hpStatuses, 1);
     MarkBattlerForControllerExec(gActiveBattler);

@@ -3633,75 +3633,33 @@ static void DoBattleIntro(void)
     case 5: // draw party summary in trainer battles
         if (!gBattleControllerExecFlags)
         {
-            struct HpAndStatus hpStatus[2*PARTY_SIZE];
-
-            for (i = 0; i < PARTY_SIZE; i++)
+            struct HpAndStatus hpStatus[PARTY_SIZE];
+            struct Pokemon *party;
+            for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
             {
-                if (GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-                 || GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
-                {
-                    hpStatus[i].hp = HP_EMPTY_SLOT;
-                    hpStatus[i].status = 0;
-                }
-                else
-                {
-                    hpStatus[i].hp = GetMonData(&gEnemyParty[i], MON_DATA_HP);
-                    hpStatus[i].status = GetMonData(&gEnemyParty[i], MON_DATA_STATUS);
-                }
-            }
+                if ((gActiveBattler == GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT) && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+                    || (gActiveBattler == GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT) && !(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)))
+                    continue;
 
-            for (i = 0; i < PARTY_SIZE; i++)
-            {
-                if (GetMonData(&gEnemy2Party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-                 || GetMonData(&gEnemy2Party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+                party = GetBattlerParty(gActiveBattler);
+                for (i = 0; i < PARTY_SIZE; i++)
                 {
-                    hpStatus[i+PARTY_SIZE].hp = HP_EMPTY_SLOT;
-                    hpStatus[i+PARTY_SIZE].status = 0;
+                    if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
+                     || GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+                    {
+                        hpStatus[i].hp = HP_EMPTY_SLOT;
+                        hpStatus[i].status = 0;
+                    }
+                    else
+                    {
+                        hpStatus[i].hp = GetMonData(&party[i], MON_DATA_HP);
+                        hpStatus[i].status = GetMonData(&party[i], MON_DATA_STATUS);
+                    }
                 }
-                else
-                {
-                    hpStatus[i+PARTY_SIZE].hp = GetMonData(&gEnemy2Party[i], MON_DATA_HP);
-                    hpStatus[i+PARTY_SIZE].status = GetMonData(&gEnemy2Party[i], MON_DATA_STATUS);
-                }
-            }
 
-            gActiveBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-            BtlController_EmitDrawPartyStatusSummary(BUFFER_A, hpStatus, PARTY_SUMM_SKIP_DRAW_DELAY);
-            MarkBattlerForControllerExec(gActiveBattler);
-
-            for (i = 0; i < PARTY_SIZE; i++)
-            {
-                if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-                 || GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
-                {
-                    hpStatus[i].hp = HP_EMPTY_SLOT;
-                    hpStatus[i].status = 0;
-                }
-                else
-                {
-                    hpStatus[i].hp = GetMonData(&gPlayerParty[i], MON_DATA_HP);
-                    hpStatus[i].status = GetMonData(&gPlayerParty[i], MON_DATA_STATUS);
-                }
-            }
-
-            for (i = 0; i < PARTY_SIZE; i++)
-            {
-                if (GetMonData(&gPlayerPartnerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-                 || GetMonData(&gPlayerPartnerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
-                {
-                    hpStatus[i+PARTY_SIZE].hp = HP_EMPTY_SLOT;
-                    hpStatus[i+PARTY_SIZE].status = 0;
-                }
-                else
-                {
-                    hpStatus[i+PARTY_SIZE].hp = GetMonData(&gPlayerPartnerParty[i], MON_DATA_HP);
-                    hpStatus[i+PARTY_SIZE].status = GetMonData(&gPlayerPartnerParty[i], MON_DATA_STATUS);
-                }
-            }
-
-            gActiveBattler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-            BtlController_EmitDrawPartyStatusSummary(BUFFER_A, hpStatus, PARTY_SUMM_SKIP_DRAW_DELAY);
-            MarkBattlerForControllerExec(gActiveBattler);
+                BtlController_EmitDrawPartyStatusSummary(BUFFER_A, hpStatus, PARTY_SUMM_SKIP_DRAW_DELAY);
+                MarkBattlerForControllerExec(gActiveBattler);
+            }   
 
             (*state)++;
         }
