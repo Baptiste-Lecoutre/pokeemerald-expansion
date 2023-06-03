@@ -44,7 +44,7 @@ void GetAIPartyIndexes(u32 battlerId, s32 *firstId, s32 *lastId)
     {
         *firstId = 0, *lastId = PARTY_SIZE;
     }
-    else if (gBattleTypeFlags & (BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_TOWER_LINK_MULTI))
+    else if (gBattleTypeFlags & (/*BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_INGAME_PARTNER |*/ BATTLE_TYPE_TOWER_LINK_MULTI))
     {
         if ((battlerId & BIT_FLANK) == B_FLANK_LEFT)
             *firstId = 0, *lastId = PARTY_SIZE / 2;
@@ -104,10 +104,7 @@ static bool8 ShouldSwitchIfWonderGuard(void)
     // Get party information.
     GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
 
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(gActiveBattler);
 
     // Find a Pokemon in the party that has a super effective move.
     for (i = firstId; i < lastId; i++)
@@ -188,10 +185,7 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
 
     GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
 
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(gActiveBattler);
 
     for (i = firstId; i < lastId; i++)
     {
@@ -554,10 +548,7 @@ static bool8 FindMonWithFlagsAndSuperEffective(u16 flags, u8 moduloPercent)
 
     GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
 
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(gActiveBattler);
 
     for (i = firstId; i < lastId; i++)
     {
@@ -643,10 +634,7 @@ bool32 ShouldSwitch(void)
 
     GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
 
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(gActiveBattler);
 
     for (i = firstId; i < lastId; i++)
     {
@@ -722,10 +710,7 @@ void AI_TrySwitchOrUseItem(void)
     s32 lastId; // + 1
     u8 battlerIdentity = GetBattlerPosition(gActiveBattler);
 
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(gActiveBattler);
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
@@ -946,10 +931,7 @@ u8 GetMostSuitableMonToSwitchInto(void)
 
     GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
 
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(gActiveBattler);
 
     // Get invalid slots ids.
     for (i = firstId; i < lastId; i++)
@@ -1034,10 +1016,7 @@ static bool8 ShouldUseItem(void)
     if (AiExpectsToFaintPlayer())
         return FALSE;
 
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(gActiveBattler);
 
     for (i = 0; i < PARTY_SIZE; i++)
     {

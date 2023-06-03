@@ -892,12 +892,11 @@ void AnimTask_SwitchOutBallEffect(u8 taskId)
     u8 x, y;
     u8 priority, subpriority;
     u32 selectedPalettes;
+    struct Pokemon *party;
 
     spriteId = gBattlerSpriteIds[gBattleAnimAttacker];
-    if (GetBattlerSide(gBattleAnimAttacker) == B_SIDE_PLAYER)
-        ball = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_POKEBALL);
-    else
-        ball = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_POKEBALL);
+    party = GetBattlerParty(gBattleAnimAttacker);
+    ball = GetMonData(&party[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_POKEBALL);
 
     ballId = ItemIdToBallId(ball);
     switch (gTasks[taskId].data[0])

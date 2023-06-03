@@ -733,6 +733,7 @@ static inline struct Pokemon *GetSideParty(u32 side)
 
 static inline struct Pokemon *GetBattlerParty(u32 battlerId)
 {
+    extern u32 gBattleTypeFlags;
     //extern u8 GetBattlerSide(u8 battler);
     //return GetSideParty(GetBattlerSide(battlerId));
     switch (battlerId)
@@ -742,9 +743,15 @@ static inline struct Pokemon *GetBattlerParty(u32 battlerId)
         case 1:
             return gEnemyParty;
         case 2:
-            return gPlayerPartnerParty;
+            if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
+                return gPlayerPartnerParty;
+            else
+                return gPlayerParty;
         case 3:
-            return gEnemy2Party;
+            if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+                return gEnemy2Party;
+            else
+                return gEnemyParty;
     }
 }
 

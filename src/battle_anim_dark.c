@@ -901,6 +901,7 @@ void AnimTask_MetallicShine(u8 taskId)
     u16 paletteNum;
     struct BattleAnimBgData animBg;
     bool32 priorityChanged = FALSE;
+    struct Pokemon *party;
 
     gBattle_WIN0H = 0;
     gBattle_WIN0V = 0;
@@ -933,10 +934,8 @@ void AnimTask_MetallicShine(u8 taskId)
     }
     else
     {
-        if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
-            species = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_SPECIES);
-        else
-            species = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_SPECIES);
+        party = GetBattlerParty(gBattleAnimAttacker);
+        species = GetMonData(&party[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_SPECIES);
     }
 
     spriteId = GetAnimBattlerSpriteId(ANIM_ATTACKER);

@@ -2510,11 +2510,8 @@ static bool32 AnyUsefulStatIsRaised(u8 battler)
 
 struct Pokemon *GetPartyBattlerPartyData(u8 battlerId, u8 switchBattler)
 {
-    struct Pokemon *mon;
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        mon = &gPlayerParty[switchBattler];
-    else
-        mon = &gEnemyParty[switchBattler];
+    struct Pokemon *mon, *party = GetBattlerParty(battlerId);
+    mon = &party[switchBattler];
     return mon;
 }
 
@@ -3049,13 +3046,8 @@ bool32 IsWakeupTurn(u8 battler)
 
 bool32 AnyPartyMemberStatused(u8 battlerId, bool32 checkSoundproof)
 {
-    struct Pokemon *party;
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u32 i;
-
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -3321,16 +3313,11 @@ bool32 ShouldUseWishAromatherapy(u8 battlerAtk, u8 battlerDef, u16 move)
 {
     u32 i;
     u32 firstId, lastId;
-    struct Pokemon* party;
+    struct Pokemon* party = GetBattlerParty(gActiveBattler);
     bool32 hasStatus = FALSE;
     bool32 needHealing = FALSE;
 
     GetAIPartyIndexes(battlerAtk, &firstId, &lastId);
-
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
 
     if (CountUsablePartyMons(battlerAtk) == 0
       && (CanTargetFaintAi(battlerDef, battlerAtk) || BattlerWillFaintFromSecondaryDamage(battlerAtk, AI_DATA->abilities[battlerAtk])))
@@ -3410,12 +3397,7 @@ s32 AI_CalcPartyMonDamage(u16 move, u8 battlerAtk, u8 battlerDef, struct Pokemon
 s32 CountUsablePartyMons(u8 battlerId)
 {
     s32 battlerOnField1, battlerOnField2, i, ret;
-    struct Pokemon *party;
-
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    struct Pokemon *party = GetBattlerParty(battlerId);
 
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
     {
@@ -3445,13 +3427,8 @@ s32 CountUsablePartyMons(u8 battlerId)
 
 bool32 IsPartyFullyHealedExceptBattler(u8 battlerId)
 {
-    struct Pokemon *party;
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u32 i;
-
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
 
     for (i = 0; i < PARTY_SIZE; i++)
     {

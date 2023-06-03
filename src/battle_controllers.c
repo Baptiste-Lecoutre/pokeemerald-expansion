@@ -598,49 +598,29 @@ bool32 IsValidForBattle(struct Pokemon *mon)
 static void SetBattlePartyIds(void)
 {
     s32 i, j;
+    struct Pokemon *party;
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_MULTI))
     {
         for (i = 0; i < gBattlersCount; i++)
         {
+            party = GetBattlerParty(i);
             for (j = 0; j < PARTY_SIZE; j++)
             {
                 if (i < 2)
                 {
-                    if (GET_BATTLER_SIDE2(i) == B_SIDE_PLAYER)
+                    if (IsValidForBattle(&party[j]))
                     {
-                        if (IsValidForBattle(&gPlayerParty[j]))
-                        {
-                            gBattlerPartyIndexes[i] = j;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (IsValidForBattle(&gEnemyParty[j]))
-                        {
-                            gBattlerPartyIndexes[i] = j;
-                            break;
-                        }
+                        gBattlerPartyIndexes[i] = j;
+                        break;
                     }
                 }
                 else
                 {
-                    if (GET_BATTLER_SIDE2(i) == B_SIDE_PLAYER)
+                    if (IsValidForBattle(&party[j]) && gBattlerPartyIndexes[i - 2] != j)
                     {
-                        if (IsValidForBattle(&gPlayerParty[j]) && gBattlerPartyIndexes[i - 2] != j)
-                        {
-                            gBattlerPartyIndexes[i] = j;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (IsValidForBattle(&gEnemyParty[j]) && gBattlerPartyIndexes[i - 2] != j)
-                        {
-                            gBattlerPartyIndexes[i] = j;
-                            break;
-                        }
+                        gBattlerPartyIndexes[i] = j;
+                        break;
                     }
 
                     // No valid mons were found. Add the empty slot.
@@ -653,7 +633,7 @@ static void SetBattlePartyIds(void)
         }
 
         if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
-            gBattlerPartyIndexes[1] = 0, gBattlerPartyIndexes[3] = 3;
+            gBattlerPartyIndexes[1] = 0, gBattlerPartyIndexes[3] = 0;
     }
 }
 

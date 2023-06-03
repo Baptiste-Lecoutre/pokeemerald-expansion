@@ -1991,7 +1991,7 @@ u8 GetImprisonedMovesCount(u8 battlerId, u16 move)
 u32 GetBattlerFriendshipScore(u8 battlerId)
 {
     u8 side = GetBattlerSide(battlerId);
-    struct Pokemon *party = GetSideParty(side);
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u16 species = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
 
     if (side != B_SIDE_PLAYER)
@@ -4019,7 +4019,7 @@ static void ShouldChangeFormInWeather(u8 battler)
 {
     int i;
     int side = GetBattlerSide(battler);
-    struct Pokemon *party = GetSideParty(side);
+    struct Pokemon *party = GetBattlerParty(battler);
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -10272,15 +10272,12 @@ bool32 CanBattlerGetOrLoseItem(u8 battlerId, u16 itemId)
 
 struct Pokemon *GetIllusionMonPtr(u32 battlerId)
 {
+    struct Pokemon *party = GetBattlerParty(battlerId);
+
     if (gBattleStruct->illusion[battlerId].broken)
         return NULL;
     if (!gBattleStruct->illusion[battlerId].set)
-    {
-        if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-            SetIllusionMon(&gPlayerParty[gBattlerPartyIndexes[battlerId]], battlerId);
-        else
-            SetIllusionMon(&gEnemyParty[gBattlerPartyIndexes[battlerId]], battlerId);
-    }
+        SetIllusionMon(&party[gBattlerPartyIndexes[battlerId]], battlerId);
     if (!gBattleStruct->illusion[battlerId].on)
         return NULL;
 

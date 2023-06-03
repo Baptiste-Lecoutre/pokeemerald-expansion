@@ -233,6 +233,7 @@ void LaunchBattleAnimation(u32 animType, u32 animId)
 {
     s32 i;
     const u8 *const *animsTable;
+    struct Pokemon *party;
 
     if (gTestRunnerEnabled)
     {
@@ -290,10 +291,8 @@ void LaunchBattleAnimation(u32 animType, u32 animId)
         UpdateOamPriorityInAllHealthboxes(0, sAnimHideHpBoxes);
         for (i = 0; i < MAX_BATTLERS_COUNT; i++)
         {
-            if (GetBattlerSide(i) != B_SIDE_PLAYER)
-                gAnimBattlerSpecies[i] = GetMonData(&gEnemyParty[gBattlerPartyIndexes[i]], MON_DATA_SPECIES);
-            else
-                gAnimBattlerSpecies[i] = GetMonData(&gPlayerParty[gBattlerPartyIndexes[i]], MON_DATA_SPECIES);
+            party = GetBattlerParty(i);
+            gAnimBattlerSpecies[i] = GetMonData(&party[gBattlerPartyIndexes[i]], MON_DATA_SPECIES);
         }
     }
     else

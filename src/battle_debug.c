@@ -2009,13 +2009,10 @@ static void UpdateMonData(struct BattleDebugMenu *data)
     {
         if (data->battlerWasChanged[i])
         {
-            struct Pokemon *mon;
+            struct Pokemon *mon, *party = GetBattlerParty(i);
             struct BattlePokemon *battleMon = &gBattleMons[i];
 
-            if (GetBattlerSide(i) == B_SIDE_PLAYER)
-                mon = &gPlayerParty[gBattlerPartyIndexes[i]];
-            else
-                mon = &gEnemyParty[gBattlerPartyIndexes[i]];
+            mon = &party[gBattlerPartyIndexes[i]];
 
             SetMonData(mon, MON_DATA_HELD_ITEM, &battleMon->item);
             SetMonData(mon, MON_DATA_STATUS, &battleMon->status1);

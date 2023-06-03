@@ -3002,12 +3002,13 @@ static const u8 *TryGetStatusString(u8 *src)
 
 static void GetBattlerNick(u32 battlerId, u8 *dst)
 {
-    struct Pokemon *mon, *illusionMon;
+    struct Pokemon *mon, *illusionMon, *party = GetBattlerParty(battlerId);
 
-    if (GET_BATTLER_SIDE(battlerId) == B_SIDE_PLAYER)
-        mon = &gPlayerParty[gBattlerPartyIndexes[battlerId]];
-    else
-        mon = &gEnemyParty[gBattlerPartyIndexes[battlerId]];
+    if (!(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && GetBattlerPosition(battlerId)==B_POSITION_PLAYER_RIGHT)
+        party = gPlayerParty;
+    else if (!(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && GetBattlerPosition(battlerId)==B_POSITION_OPPONENT_RIGHT)
+        party = gEnemyParty;
+    mon = &party[gBattlerPartyIndexes[battlerId]];
 
     illusionMon = GetIllusionMonPtr(battlerId);
     if (illusionMon != NULL)
@@ -3285,13 +3286,17 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 toCpy = text;
                 break;
             case B_TXT_ACTIVE_NAME2: // active battlerId name with prefix, no illusion
-                if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
-                    GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_NICKNAME, text);
-                else
-                    GetMonData(&gEnemyParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_NICKNAME, text);
-                StringGet_Nickname(text);
-                toCpy = text;
-                break;
+                {
+                    struct Pokemon *party = GetBattlerParty(gActiveBattler);
+                    if (!(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && GetBattlerPosition(gActiveBattler)==B_POSITION_PLAYER_RIGHT)
+                        party = gPlayerParty;
+                    else if (!(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && GetBattlerPosition(gActiveBattler)==B_POSITION_OPPONENT_RIGHT)
+                        party = gEnemyParty;
+                    GetMonData(&party[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_NICKNAME, text);
+                    StringGet_Nickname(text);
+                    toCpy = text;
+                    break;
+                }
             case B_TXT_EFF_NAME_WITH_PREFIX: // effect battlerId name with prefix
                 HANDLE_NICKNAME_STRING_CASE(gEffectBattler)
                 break;
@@ -3428,27 +3433,34 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 }
                 break;
             case B_TXT_26: // ?
-                if (GetBattlerSide(gBattleScripting.battler) != B_SIDE_PLAYER)
                 {
-                    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-                        toCpy = sText_FoePkmnPrefix;
-                    else
-                        toCpy = sText_WildPkmnPrefix;
-                    while (*toCpy != EOS)
+                    struct Pokemon *party = GetBattlerParty(gBattleScripting.battler);
+                    if (!(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && GetBattlerPosition(gBattleScripting.battler)==B_POSITION_PLAYER_RIGHT)
+                        party = gPlayerParty;
+                    else if (!(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && GetBattlerPosition(gBattleScripting.battler)==B_POSITION_OPPONENT_RIGHT)
+                        party = gEnemyParty;
+                    if (GetBattlerSide(gBattleScripting.battler) != B_SIDE_PLAYER)
                     {
-                        dst[dstID] = *toCpy;
-                        dstID++;
-                        toCpy++;
+                        if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+                            toCpy = sText_FoePkmnPrefix;
+                        else
+                            toCpy = sText_WildPkmnPrefix;
+                        while (*toCpy != EOS)
+                        {
+                            dst[dstID] = *toCpy;
+                            dstID++;
+                            toCpy++;
+                        }
+                        GetMonData(&party[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
                     }
-                    GetMonData(&gEnemyParty[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
+                    else
+                    {
+                        GetMonData(&party[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
+                    }
+                    StringGet_Nickname(text);
+                    toCpy = text;
+                    break;
                 }
-                else
-                {
-                    GetMonData(&gPlayerParty[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
-                }
-                StringGet_Nickname(text);
-                toCpy = text;
-                break;
             case B_TXT_PC_CREATOR_NAME: // lanette pc
                 if (FlagGet(FLAG_SYS_PC_LANETTE))
                     toCpy = sText_Lanettes;
@@ -3684,23 +3696,30 @@ void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             srcID += 2;
             break;
         case B_BUFF_MON_NICK_WITH_PREFIX: // poke nick with prefix
-            if (GetBattlerSide(src[srcID + 1]) == B_SIDE_PLAYER)
             {
-                GetMonData(&gPlayerParty[src[srcID + 2]], MON_DATA_NICKNAME, text);
-            }
-            else
-            {
-                if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-                    StringAppend(dst, sText_FoePkmnPrefix);
+                struct Pokemon *party = GetBattlerParty(src[srcID+1]);
+                if (!(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && GetBattlerPosition(src[srcID+1])==B_POSITION_PLAYER_RIGHT)
+                    party = gPlayerParty;
+                else if (!(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && GetBattlerPosition(src[srcID+1])==B_POSITION_OPPONENT_RIGHT)
+                    party = gEnemyParty;
+                if (GetBattlerSide(src[srcID + 1]) == B_SIDE_PLAYER)
+                {
+                    GetMonData(&party[src[srcID + 2]], MON_DATA_NICKNAME, text);
+                }
                 else
-                    StringAppend(dst, sText_WildPkmnPrefix);
+                {
+                    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+                        StringAppend(dst, sText_FoePkmnPrefix);
+                    else
+                        StringAppend(dst, sText_WildPkmnPrefix);
 
-                GetMonData(&gEnemyParty[src[srcID + 2]], MON_DATA_NICKNAME, text);
+                    GetMonData(&party[src[srcID + 2]], MON_DATA_NICKNAME, text);
+                }
+                StringGet_Nickname(text);
+                StringAppend(dst, text);
+                srcID += 3;
+                break;
             }
-            StringGet_Nickname(text);
-            StringAppend(dst, text);
-            srcID += 3;
-            break;
         case B_BUFF_STAT: // stats
             StringAppend(dst, gStatNamesTable[src[srcID + 1]]);
             srcID += 2;
