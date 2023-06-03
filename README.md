@@ -148,13 +148,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
 ## TODO
 - Add team rocket story
 - Add Kanto gym leaders
-    - Brock in granite cave x
-    - Misty on the beach x
-    - Surge in new mauville trying to catch zapdos. Can't catch zapdos until he is defeated.
-    - Erika in verdantuff: blocks the path to the contest hall until defeated, looking up "should I go in?"
-    - Koga in the rainy route with ninjas. "See these ninjas? I'm training them." x
-    - Sabrina talks to a rock which has psychic powers. Talking to the rocks says "just an ordinary rock".
-    - Blaine in start of magma hideout (Hohoho I dug too far!)
     - Giovanni (rocket event TBD)
 - Add Red rivalry
     - PetalburgWoods after defeating Roxanne
@@ -162,6 +155,11 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - Route 121, same trigger as aqua grunts, he cuts the tree and comes to fight
     - Victory Road, double battle with Wally
 - Add Z crystals
+- Give access to islands:
+    - Eon ticket given by rematching the rival in route 103 in IE (southern island, lati@s)
+    - Old sea map is found in abandonned ship (faraway island, mew)
+    - mystic ticket is given by cynthia in mosdeep (navel rock, hooh lugia)
+    - aurora ticket is given by steven in meteorfalls (birth island, deoxys)
 - Add legendary events
     - Gen1:
         - Articuno in Shoal Cave
