@@ -588,7 +588,7 @@
       "graphics_id": "OBJ_EVENT_GFX_KOGA",
       "x": 31,
       "y": 10,
-      "elevation": 0,
+      "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 0,
       "movement_range_y": 0,
