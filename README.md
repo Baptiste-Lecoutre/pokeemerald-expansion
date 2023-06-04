@@ -215,3 +215,13 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - bag sprites
     - make magma bright during the night -> change the DNS from Merpp to Sierra? 
     - dexnav interface
+
+
+
+Regarder les occurences de 
+- Cmd_forcerandomswitch
+- SwitchPartyOrder
+- MULTI_PARTY_SIZE
+
+Terminer des remplacements de 
+- gPlayerParty
