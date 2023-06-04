@@ -4009,9 +4009,10 @@ static void Cmd_tryfaintmon(void)
             }
             else
             {
+                struct Pokemon *partyFainted = GetBattlerParty(gActiveBattler);
                 if (gBattleResults.opponentFaintCounter < 255)
                     gBattleResults.opponentFaintCounter++;
-                gBattleResults.lastOpponentSpecies = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPECIES, NULL);
+                gBattleResults.lastOpponentSpecies = GetMonData(&partyFainted[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPECIES, NULL);
                 gSideTimers[B_SIDE_OPPONENT].retaliateTimer = 2;
             }
             if ((gHitMarker & HITMARKER_DESTINYBOND) && gBattleMons[gBattlerAttacker].hp != 0)
@@ -4464,7 +4465,7 @@ static void Cmd_getexp(void)
                 gBattleScripting.getexpState = 5;
                 gBattleMoveDamage = 0; // used for exp
             }
-            else if ((gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && gBattleStruct->expGetterMonId >= 3)
+            else if ((gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && gBattleStruct->expGetterMonId >= PARTY_SIZE) //3
                   || GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) == MAX_LEVEL)
             {
                 *(&gBattleStruct->sentInPokes) >>= 1;
@@ -4684,6 +4685,12 @@ static bool32 NoAliveMonsForPlayerAndPartner(void)
             {
                 HP_count += GetMonData(&gPlayerParty[i], MON_DATA_HP);
             }
+
+            if (GetMonData(&gPlayerPartnerParty[i], MON_DATA_SPECIES) && !GetMonData(&gPlayerPartnerParty[i], MON_DATA_IS_EGG)
+             && (!(gBattleTypeFlags & BATTLE_TYPE_ARENA) || !(gBattleStruct->arenaLostPlayerMons & gBitTable[i])))
+            {
+                HP_count += GetMonData(&gPlayerPartnerParty[i], MON_DATA_HP);
+            }
         }
     }
 
@@ -4697,7 +4704,7 @@ static bool32 NoAliveMonsForPlayer(void)
     u32 HP_count = 0;
 
     // Get total HP for the player's party to determine if the player has lost
-    if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && (gPartnerTrainerId == TRAINER_STEVEN_PARTNER || gPartnerTrainerId >= TRAINER_CUSTOM_PARTNER))
+    /*if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && (gPartnerTrainerId == TRAINER_STEVEN_PARTNER || gPartnerTrainerId >= TRAINER_CUSTOM_PARTNER))
     {
         // In multi battle with Steven, skip his Pokémon
         for (i = 0; i < MULTI_PARTY_SIZE; i++)
@@ -4707,7 +4714,7 @@ static bool32 NoAliveMonsForPlayer(void)
         }
     }
     else
-    {
+    {*/
         for (i = 0; i < PARTY_SIZE; i++)
         {
             if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) && !GetMonData(&gPlayerParty[i], MON_DATA_IS_EGG)
@@ -4716,7 +4723,7 @@ static bool32 NoAliveMonsForPlayer(void)
                 HP_count += GetMonData(&gPlayerParty[i], MON_DATA_HP);
             }
         }
-    }
+    //}
 
     return (HP_count == 0);
 }
@@ -6660,11 +6667,11 @@ bool32 CanBattlerSwitch(u32 battlerId)
     {
         party = GetBattlerParty(battlerId);
 
-        lastMonId = 0;
-        if (battlerId & 2)
-            lastMonId = MULTI_PARTY_SIZE;
+        //lastMonId = 0;
+        //if (battlerId & 2)
+        //    lastMonId = MULTI_PARTY_SIZE;
 
-        for (i = lastMonId; i < lastMonId + MULTI_PARTY_SIZE; i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
             if (GetMonData(&party[i], MON_DATA_SPECIES) != SPECIES_NONE
              && !GetMonData(&party[i], MON_DATA_IS_EGG)
@@ -6673,7 +6680,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
                 break;
         }
 
-        ret = (i != lastMonId + MULTI_PARTY_SIZE);
+        ret = (i != PARTY_SIZE);
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
     {
@@ -6719,13 +6726,13 @@ bool32 CanBattlerSwitch(u32 battlerId)
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS && GetBattlerSide(battlerId) == B_SIDE_OPPONENT)
     {
-        party = gEnemyParty;
+        party = GetBattlerParty(battlerId);
 
-        lastMonId = 0;
-        if (battlerId == B_POSITION_OPPONENT_RIGHT)
-            lastMonId = PARTY_SIZE / 2;
+        //lastMonId = 0;
+        //if (battlerId == B_POSITION_OPPONENT_RIGHT)
+        //    lastMonId = PARTY_SIZE / 2;
 
-        for (i = lastMonId; i < lastMonId + (PARTY_SIZE / 2); i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
             if (GetMonData(&party[i], MON_DATA_SPECIES) != SPECIES_NONE
              && !GetMonData(&party[i], MON_DATA_IS_EGG)
@@ -6734,7 +6741,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
                 break;
         }
 
-        ret = (i != lastMonId + (PARTY_SIZE / 2));
+        ret = (i != PARTY_SIZE);
     }
     else
     {
@@ -6747,7 +6754,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
             else
                 battlerIn2 = battlerIn1;
 
-            party = gEnemyParty;
+            party = GetBattlerParty(battlerId);
         }
         else
         {
@@ -6759,7 +6766,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
             else
                 battlerIn2 = battlerIn1;
 
-            party = gPlayerParty;
+            party = GetBattlerParty(battlerId);
         }
 
         for (i = 0; i < PARTY_SIZE; i++)

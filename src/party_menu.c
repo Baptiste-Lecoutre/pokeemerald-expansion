@@ -6786,6 +6786,32 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, u8 ba
         }
         return;
     }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_RIGHT && (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[rightBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
+    }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_RIGHT && (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[rightBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
+    }
     else if (IsDoubleBattle() == FALSE)
     {
         j = 1;

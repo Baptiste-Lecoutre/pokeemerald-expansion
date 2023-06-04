@@ -867,6 +867,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
     u32 personalityValue, otId, position, paletteOffset, targetSpecies;
     const void *lzPaletteData, *src;
     void *dst;
+    struct Pokemon *partyDef, *partyAtk;
 
     if (IsContest())
     {
@@ -883,11 +884,10 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
     else
     {
         position = GetBattlerPosition(battlerAtk);
+        partyDef = GetBattlerParty(battlerDef);
+        partyAtk = GetBattlerParty(battlerAtk);
 
-        if (GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
-            targetSpecies = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
-        else
-            targetSpecies = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
+        targetSpecies = GetMonData(&partyDef[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
 
         if (GetBattlerSide(battlerAtk) == B_SIDE_PLAYER)
         {
@@ -900,10 +900,10 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
             else
         #endif
             {
-                personalityValue = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
-                otId = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
+                personalityValue = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
+                otId = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
             }
-            otId = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
+            otId = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
 
             HandleLoadSpecialPokePic(FALSE,
                                      gMonSpritesGfxPtr->sprites.ptr[position],
@@ -922,8 +922,8 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
             else
         #endif
             {
-                personalityValue = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
-                otId = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
+                personalityValue = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
+                otId = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
             }
 
             HandleLoadSpecialPokePic(TRUE,
