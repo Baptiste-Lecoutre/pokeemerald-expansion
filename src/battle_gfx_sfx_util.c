@@ -759,6 +759,7 @@ void LoadBattleBarGfx(u8 unused)
 bool8 BattleInitAllSprites(u8 *state1, u8 *battlerId)
 {
     bool8 retVal = FALSE;
+    struct Pokemon *party;
 
     switch (*state1)
     {
@@ -808,14 +809,15 @@ bool8 BattleInitAllSprites(u8 *state1, u8 *battlerId)
         }
         break;
     case 5:
+        party = GetBattlerParty(*battlerId);
         if (GetBattlerSide(*battlerId) == B_SIDE_PLAYER)
         {
             if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
-                UpdateHealthboxAttribute(gHealthboxSpriteIds[*battlerId], &gPlayerParty[gBattlerPartyIndexes[*battlerId]], HEALTHBOX_ALL);
+                UpdateHealthboxAttribute(gHealthboxSpriteIds[*battlerId], &party[gBattlerPartyIndexes[*battlerId]], HEALTHBOX_ALL);
         }
         else
         {
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[*battlerId], &gEnemyParty[gBattlerPartyIndexes[*battlerId]], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[*battlerId], &party[gBattlerPartyIndexes[*battlerId]], HEALTHBOX_ALL);
         }
         SetHealthboxSpriteInvisible(gHealthboxSpriteIds[*battlerId]);
         (*battlerId)++;
@@ -983,6 +985,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
 void BattleLoadSubstituteOrMonSpriteGfx(u8 battlerId, bool8 loadMonSprite)
 {
     s32 i, position, palOffset;
+    struct Pokemon *party;
 
     if (!loadMonSprite)
     {
@@ -1010,10 +1013,11 @@ void BattleLoadSubstituteOrMonSpriteGfx(u8 battlerId, bool8 loadMonSprite)
     {
         if (!IsContest())
         {
+            party = GetBattlerParty(battlerId);
             if (GetBattlerSide(battlerId) != B_SIDE_PLAYER)
-                BattleLoadOpponentMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battlerId]], battlerId);
+                BattleLoadOpponentMonSpriteGfx(&party[gBattlerPartyIndexes[battlerId]], battlerId);
             else
-                BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battlerId]], battlerId);
+                BattleLoadPlayerMonSpriteGfx(&party[gBattlerPartyIndexes[battlerId]], battlerId);
         }
     }
 }

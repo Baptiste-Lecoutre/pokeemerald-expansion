@@ -4734,6 +4734,12 @@ static bool32 NoAliveMonsForOpponent(void)
         {
             HP_count += GetMonData(&gEnemyParty[i], MON_DATA_HP);
         }
+
+        if (GetMonData(&gEnemy2Party[i], MON_DATA_SPECIES) && !GetMonData(&gEnemy2Party[i], MON_DATA_IS_EGG)
+         && (!(gBattleTypeFlags & BATTLE_TYPE_ARENA) || !(gBattleStruct->arenaLostOpponentMons & gBitTable[i])))
+        {
+            HP_count += GetMonData(&gEnemy2Party[i], MON_DATA_HP);
+        }
     }
 
     return (HP_count == 0);

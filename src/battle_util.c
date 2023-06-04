@@ -3907,15 +3907,17 @@ bool8 HasNoMonsToSwitch(u8 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2)
     {
         party = GetBattlerParty(battler);
 
-        playerId = ((battler & BIT_FLANK) / 2);
-        for (i = playerId * MULTI_PARTY_SIZE; i < playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE; i++)
+        //playerId = ((battler & BIT_FLANK) / 2);
+        //for (i = playerId * MULTI_PARTY_SIZE; i < playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE; i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
             if (GetMonData(&party[i], MON_DATA_HP) != 0
              && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_NONE
              && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_EGG)
                 break;
         }
-        return (i == playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE);
+        //return (i == playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE);
+        return (i == PARTY_SIZE);
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
     {
@@ -3954,21 +3956,23 @@ bool8 HasNoMonsToSwitch(u8 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2)
     }
     else if ((gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && GetBattlerSide(battler) == B_SIDE_OPPONENT)
     {
-        party = gEnemyParty;
+        party = GetBattlerParty(battler);
 
         if (battler == 1)
             playerId = 0;
         else
             playerId = MULTI_PARTY_SIZE;
 
-        for (i = playerId; i < playerId + MULTI_PARTY_SIZE; i++)
+        //for (i = playerId; i < playerId + MULTI_PARTY_SIZE; i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
             if (GetMonData(&party[i], MON_DATA_HP) != 0
              && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_NONE
              && GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_EGG)
                 break;
         }
-        return (i == playerId + 3);
+        //return (i == playerId + 3);
+        return (i == PARTY_SIZE);
     }
     else
     {
@@ -3976,13 +3980,13 @@ bool8 HasNoMonsToSwitch(u8 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2)
         {
             flankId = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             playerId = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
-            party = gEnemyParty;
+            party = GetBattlerParty(battler);
         }
         else
         {
             flankId = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
             playerId = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
-            party = gPlayerParty;
+            party = GetBattlerParty(battler);
         }
 
         if (partyIdBattlerOn1 == PARTY_SIZE)
@@ -10005,7 +10009,7 @@ bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId)
 bool32 CanMegaEvolve(u8 battlerId)
 {
     u32 itemId, holdEffect, species;
-    struct Pokemon *mon;
+    struct Pokemon *mon, *party;
     u8 battlerPosition = GetBattlerPosition(battlerId);
     u8 partnerPosition = GetBattlerPosition(BATTLE_PARTNER(battlerId));
     struct MegaEvolutionData *mega = &(((struct ChooseMoveStruct *)(&gBattleResources->bufferA[gActiveBattler][4]))->mega);
@@ -10033,10 +10037,8 @@ bool32 CanMegaEvolve(u8 battlerId)
         return FALSE;
 
     // Gets mon data.
-    if (GetBattlerSide(battlerId) == B_SIDE_OPPONENT)
-        mon = &gEnemyParty[gBattlerPartyIndexes[battlerId]];
-    else
-        mon = &gPlayerParty[gBattlerPartyIndexes[battlerId]];
+    party = GetBattlerParty(battlerId);
+    mon = &party[gBattlerPartyIndexes[battlerId]];
 
     species = GetMonData(mon, MON_DATA_SPECIES);
     itemId = GetMonData(mon, MON_DATA_HELD_ITEM);

@@ -169,6 +169,7 @@ u8 GetBattlerYDelta(u8 battlerId, u16 species)
 {
     u32 personality;
     struct BattleSpriteInfo *spriteInfo;
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u8 ret;
     u16 coordSpecies;
 
@@ -187,7 +188,7 @@ u8 GetBattlerYDelta(u8 battlerId, u16 species)
             {
                 spriteInfo = gBattleSpritesDataPtr->battlerData;
                 if (!spriteInfo[battlerId].transformSpecies)
-                    personality = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
+                    personality = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
                 else
                     personality = gTransformedPersonalities[battlerId];
             }
@@ -213,7 +214,7 @@ u8 GetBattlerYDelta(u8 battlerId, u16 species)
         {
             spriteInfo = gBattleSpritesDataPtr->battlerData;
             if (!spriteInfo[battlerId].transformSpecies)
-                personality = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
+                personality = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
             else
                 personality = gTransformedPersonalities[battlerId];
 
@@ -332,26 +333,17 @@ u8 GetBattlerYCoordWithElevation(u8 battlerId)
     u16 species;
     u8 y;
     struct BattleSpriteInfo *spriteInfo;
+    struct Pokemon *party = GetBattlerParty(battlerId);
 
     y = GetBattlerSpriteCoord(battlerId, BATTLER_COORD_Y);
     if (!IsContest())
     {
-        if (GetBattlerSide(battlerId) != B_SIDE_PLAYER)
-        {
-            spriteInfo = gBattleSpritesDataPtr->battlerData;
-            if (!spriteInfo[battlerId].transformSpecies)
-                species = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
-            else
-                species = spriteInfo[battlerId].transformSpecies;
-        }
+        spriteInfo = gBattleSpritesDataPtr->battlerData;
+        if (!spriteInfo[battlerId].transformSpecies)
+            species = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
         else
-        {
-            spriteInfo = gBattleSpritesDataPtr->battlerData;
-            if (!spriteInfo[battlerId].transformSpecies)
-                species = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
-            else
-                species = spriteInfo[battlerId].transformSpecies;
-        }
+            species = spriteInfo[battlerId].transformSpecies;
+
         if (GetBattlerSide(battlerId) != B_SIDE_PLAYER)
             y -= GetBattlerElevation(battlerId, species);
     }
@@ -918,14 +910,15 @@ bool8 IsBattlerSpritePresent(u8 battlerId)
 
         if (!gBattleStruct->spriteIgnore0Hp)
         {
+            struct Pokemon *party = GetBattlerParty(battlerId);
             if (GetBattlerSide(battlerId) == B_SIDE_OPPONENT)
             {
-                if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerId]], MON_DATA_HP) == 0)
+                if (GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_HP) == 0)
                     return FALSE;
             }
             else
             {
-                if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_HP) == 0)
+                if (GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_HP) == 0)
                     return FALSE;
             }
         }
@@ -1937,6 +1930,7 @@ void SetBattlerSpriteYOffsetFromOtherYScale(u8 spriteId, u8 otherSpriteId)
 static u16 GetBattlerYDeltaFromSpriteId(u8 spriteId)
 {
     struct BattleSpriteInfo *spriteInfo;
+    struct Pokemon *party;
     u8 battlerId = gSprites[spriteId].data[0];
     u16 species;
     u16 i;
@@ -1952,11 +1946,12 @@ static u16 GetBattlerYDeltaFromSpriteId(u8 spriteId)
             }
             else
             {
+                party = GetBattlerParty(i);
                 if (GetBattlerSide(i) == B_SIDE_PLAYER)
                 {
                     spriteInfo = gBattleSpritesDataPtr->battlerData;
                     if (!spriteInfo[battlerId].transformSpecies)
-                        species = GetMonData(&gPlayerParty[gBattlerPartyIndexes[i]], MON_DATA_SPECIES);
+                        species = GetMonData(&party[gBattlerPartyIndexes[i]], MON_DATA_SPECIES);
                     else
                         species = spriteInfo[battlerId].transformSpecies;
 
@@ -1969,7 +1964,7 @@ static u16 GetBattlerYDeltaFromSpriteId(u8 spriteId)
                 {
                     spriteInfo = gBattleSpritesDataPtr->battlerData;
                     if (!spriteInfo[battlerId].transformSpecies)
-                        species = GetMonData(&gEnemyParty[gBattlerPartyIndexes[i]], MON_DATA_SPECIES);
+                        species = GetMonData(&party[gBattlerPartyIndexes[i]], MON_DATA_SPECIES);
                     else
                         species = spriteInfo[battlerId].transformSpecies;
 
@@ -2180,6 +2175,7 @@ s16 GetBattlerSpriteCoordAttr(u8 battlerId, u8 attr)
     int ret;
     const struct MonCoords *coords;
     struct BattleSpriteInfo *spriteInfo;
+    struct Pokemon *party = GetBattlerParty(battlerId);
 
     if (IsContest())
     {
@@ -2218,8 +2214,8 @@ s16 GetBattlerSpriteCoordAttr(u8 battlerId, u8 attr)
             spriteInfo = gBattleSpritesDataPtr->battlerData;
             if (!spriteInfo[battlerId].transformSpecies)
             {
-                species = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
-                personality = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
+                species = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
+                personality = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
             }
             else
             {
@@ -2246,8 +2242,8 @@ s16 GetBattlerSpriteCoordAttr(u8 battlerId, u8 attr)
             spriteInfo = gBattleSpritesDataPtr->battlerData;
             if (!spriteInfo[battlerId].transformSpecies)
             {
-                species = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
-                personality = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
+                species = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES);
+                personality = GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_PERSONALITY);
             }
             else
             {

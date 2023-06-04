@@ -2807,7 +2807,8 @@ extern const struct MonCoords gCastformFrontSpriteCoords[];
 void SpriteCB_FaintOpponentMon(struct Sprite *sprite)
 {
     u8 battler = sprite->sBattler;
-    u32 personality = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_PERSONALITY);
+    struct Pokemon *party = GetBattlerParty(battler);
+    u32 personality = GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_PERSONALITY);
     u16 species;
     u8 yOffset;
 
@@ -2816,7 +2817,7 @@ void SpriteCB_FaintOpponentMon(struct Sprite *sprite)
     else
         species = sprite->sSpeciesId;
 
-    GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_PERSONALITY);  // Unused return value.
+    GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_PERSONALITY);  // Unused return value.
 
     if (species == SPECIES_UNOWN)
     {
