@@ -275,8 +275,8 @@ struct AiPartyMon
 
 struct AIPartyData // Opposing battlers - party mons.
 {
-    struct AiPartyMon mons[NUM_BATTLE_SIDES][PARTY_SIZE]; // 2 parties(player, opponent). Used to save information on opposing party.
-    u8 count[NUM_BATTLE_SIDES];
+    struct AiPartyMon mons[MAX_BATTLERS_COUNT][PARTY_SIZE]; // 2 parties(player, opponent). Used to save information on opposing party.
+    u8 count[MAX_BATTLERS_COUNT];
 };
 
 struct AiLogicData

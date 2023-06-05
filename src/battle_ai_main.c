@@ -242,7 +242,7 @@ u8 ComputeBattleAiScores(u8 battler)
 static void CopyBattlerDataToAIParty(u32 bPosition, u32 side)
 {
     u32 battler = GetBattlerAtPosition(bPosition);
-    struct AiPartyMon *aiMon = &AI_PARTY->mons[side][gBattlerPartyIndexes[battler]];
+    struct AiPartyMon *aiMon = &AI_PARTY->mons[battler][gBattlerPartyIndexes[battler]];
     struct BattlePokemon *bMon = &gBattleMons[battler];
 
     aiMon->species = bMon->species;
@@ -260,8 +260,10 @@ void Ai_InitPartyStruct(void)
     bool32 isOmniscient = (AI_THINKING_STRUCT->aiFlags & AI_FLAG_OMNISCIENT);
     struct Pokemon *mon;
 
-    AI_PARTY->count[B_SIDE_PLAYER] = gPlayerPartyCount;
-    AI_PARTY->count[B_SIDE_OPPONENT] = gEnemyPartyCount;
+    AI_PARTY->count[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)] = gPlayerPartyCount;
+    AI_PARTY->count[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)] = gEnemyPartyCount;
+    AI_PARTY->count[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)] = gPlayerPartnerPartyCount; //
+    AI_PARTY->count[GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)] = gEnemy2PartyCount; //
 
     // Save first 2 or 4(in doubles) mons
     CopyBattlerDataToAIParty(B_POSITION_PLAYER_LEFT, B_SIDE_PLAYER);

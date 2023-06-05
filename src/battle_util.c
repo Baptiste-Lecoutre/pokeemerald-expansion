@@ -3958,10 +3958,10 @@ bool8 HasNoMonsToSwitch(u8 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2)
     {
         party = GetBattlerParty(battler);
 
-        if (battler == 1)
-            playerId = 0;
-        else
-            playerId = MULTI_PARTY_SIZE;
+        //if (battler == 1)
+        //    playerId = 0;
+        //else
+        //    playerId = MULTI_PARTY_SIZE;
 
         //for (i = playerId; i < playerId + MULTI_PARTY_SIZE; i++)
         for (i = 0; i < PARTY_SIZE; i++)

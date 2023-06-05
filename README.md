@@ -221,7 +221,12 @@ A Discord-based ROM hacking community that has many members who hack using the d
 Regarder les occurences de 
 - Cmd_forcerandomswitch
 - SwitchPartyOrder
-- MULTI_PARTY_SIZE
+x MULTI_PARTY_SIZE
+- Task_LaunchLvlUpAnim -> des partner trainent dedans, voir si c'est pas ça qui bousille l'xp
+- GetPartyIdFromBattlePartyId
+- SetMultiPartnerMenuParty
+- NUM_BATTLE_SIDES
+- Ai_InitPartyStruct
 
 Terminer des remplacements de 
 - gPlayerParty

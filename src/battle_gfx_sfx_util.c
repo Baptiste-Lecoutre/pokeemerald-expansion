@@ -1104,11 +1104,13 @@ void HandleBattleLowHpMusicChange(void)
         u8 playerBattler2 = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
         u8 battler1PartyId = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[playerBattler1]);
         u8 battler2PartyId = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[playerBattler2]);
+        struct Pokemon *party1 = GetBattlerParty(playerBattler1);
+        struct Pokemon *party2 = GetBattlerParty(playerBattler2);
 
-        if (GetMonData(&gPlayerParty[battler1PartyId], MON_DATA_HP) != 0)
-            HandleLowHpMusicChange(&gPlayerParty[battler1PartyId], playerBattler1);
-        if (IsDoubleBattle() && GetMonData(&gPlayerParty[battler2PartyId], MON_DATA_HP) != 0)
-            HandleLowHpMusicChange(&gPlayerParty[battler2PartyId], playerBattler2);
+        if (GetMonData(&party1[battler1PartyId], MON_DATA_HP) != 0)
+            HandleLowHpMusicChange(&party1[battler1PartyId], playerBattler1);
+        if (IsDoubleBattle() && GetMonData(&party2[battler2PartyId], MON_DATA_HP) != 0)
+            HandleLowHpMusicChange(&party2[battler2PartyId], playerBattler2);
     }
 }
 
