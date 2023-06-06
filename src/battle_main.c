@@ -599,6 +599,7 @@ static void CB2_InitBattleInternal(void)
             CreateNPCTrainerParty(&gEnemy2Party[0], gTrainerBattleOpponent_B, FALSE);
         SetWildMonHeldItem();
         CalculateEnemyPartyCount();
+        CalculateEnemy2PartyCount();
     }
 
     gMain.inBattle = TRUE;
@@ -3241,12 +3242,16 @@ static void BattleStartClearSetData(void)
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        gBattleStruct->usedHeldItems[i][B_SIDE_PLAYER] = 0;
-        gBattleStruct->usedHeldItems[i][B_SIDE_OPPONENT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_PLAYER_LEFT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_OPPONENT_LEFT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_PLAYER_RIGHT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_OPPONENT_RIGHT] = 0;
         gBattleStruct->itemLost[i].originalItem = GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM);
         gPartyCriticalHits[i] = 0;
-        gBattleStruct->allowedToChangeFormInWeather[i][B_SIDE_PLAYER] = FALSE;
-        gBattleStruct->allowedToChangeFormInWeather[i][B_SIDE_OPPONENT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_PLAYER_LEFT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_OPPONENT_LEFT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_PLAYER_RIGHT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_OPPONENT_RIGHT] = FALSE;
     }
 
     gBattleStruct->swapDamageCategory = FALSE; // Photon Geyser, Shell Side Arm, Light That Burns the Sky
@@ -3564,7 +3569,7 @@ static void DoBattleIntro(void)
                 gBattleMons[gActiveBattler].type2 = gSpeciesInfo[gBattleMons[gActiveBattler].species].types[1];
                 gBattleMons[gActiveBattler].type3 = TYPE_MYSTERY;
                 gBattleMons[gActiveBattler].ability = GetAbilityBySpecies(gBattleMons[gActiveBattler].species, gBattleMons[gActiveBattler].abilityNum);
-                gBattleStruct->hpOnSwitchout[GetBattlerSide(gActiveBattler)] = gBattleMons[gActiveBattler].hp;
+                gBattleStruct->hpOnSwitchout[GetBattlerPosition(gActiveBattler)] = gBattleMons[gActiveBattler].hp;
                 gBattleMons[gActiveBattler].status2 = 0;
                 for (i = 0; i < NUM_BATTLE_STATS; i++)
                     gBattleMons[gActiveBattler].statStages[i] = DEFAULT_STAT_STAGE;

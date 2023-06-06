@@ -246,7 +246,7 @@ struct WishFutureKnock
     u8 wishCounter[MAX_BATTLERS_COUNT];
     u8 wishPartyId[MAX_BATTLERS_COUNT];
     u8 weatherDuration;
-    u8 knockedOffMons[NUM_BATTLE_SIDES]; // Each battler is represented by a bit.
+    u8 knockedOffMons[MAX_BATTLERS_COUNT]; // Each battler is represented by a bit.
 };
 
 struct AI_SavedBattleMon
@@ -569,14 +569,14 @@ struct BattleStruct
     u8 wallyWaitFrames;
     u8 wallyMoveFrames;
     u16 lastTakenMove[MAX_BATTLERS_COUNT]; // Last move that a battler was hit with.
-    u16 hpOnSwitchout[NUM_BATTLE_SIDES];
+    u16 hpOnSwitchout[MAX_BATTLERS_COUNT];
     u32 savedBattleTypeFlags;
     u16 abilityPreventingSwitchout;
     u8 hpScale;
     u16 synchronizeMoveEffect;
     bool8 anyMonHasTransformed;
     void (*savedCallback)(void);
-    u16 usedHeldItems[PARTY_SIZE][NUM_BATTLE_SIDES]; // For each party member and side. For harvest, recycle
+    u16 usedHeldItems[PARTY_SIZE][MAX_BATTLERS_COUNT]; // For each party member and side. For harvest, recycle
     u16 chosenItem[MAX_BATTLERS_COUNT];
     u16 choicedMove[MAX_BATTLERS_COUNT];
     u16 changedItems[MAX_BATTLERS_COUNT];
@@ -653,8 +653,8 @@ struct BattleStruct
     bool8 effectsBeforeUsingMoveDone:1; // Mega Evo and Focus Punch/Shell Trap effects.
     u8 targetsDone[MAX_BATTLERS_COUNT]; // Each battler as a bit.
     u16 overwrittenAbilities[MAX_BATTLERS_COUNT];    // abilities overwritten during battle (keep separate from battle history in case of switching)
-    bool8 allowedToChangeFormInWeather[PARTY_SIZE][2]; // For each party member and side, used by Ice Face.
-    u8 battleBondTransformed[NUM_BATTLE_SIDES]; // Bitfield for each party.
+    bool8 allowedToChangeFormInWeather[PARTY_SIZE][MAX_BATTLERS_COUNT]; // For each party member and side, used by Ice Face.
+    u8 battleBondTransformed[MAX_BATTLERS_COUNT]; // Bitfield for each party.
     u8 storedHealingWish:4; // Each battler as a bit.
     u8 storedLunarDance:4; // Each battler as a bit.
     u16 supremeOverlordModifier[MAX_BATTLERS_COUNT];

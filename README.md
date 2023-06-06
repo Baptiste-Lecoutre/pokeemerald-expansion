@@ -228,7 +228,12 @@ x MULTI_PARTY_SIZE
 - NUM_BATTLE_SIDES
 - Ai_InitPartyStruct
 - gPlayerPartyCount et assimilés
-- HandleFaintedMonActions, il reste une merde probablement dedans , quand roselia 3ème mon
+
+x battleBondTransformed
+x allowedToChangeFormInWeather
+x knockedOffMons
+x usedHeldItems
+x hpOnSwitchout
 
 Terminer des remplacements de 
 - gPlayerParty

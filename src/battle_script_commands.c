@@ -3572,7 +3572,7 @@ void SetMoveEffect(bool32 primary, u32 certain)
                             | BATTLE_TYPE_LINK
                             | BATTLE_TYPE_RECORDED_LINK
                             | BATTLE_TYPE_SECRET_BASE))
-                        && (gWishFutureKnock.knockedOffMons[side] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
+                        && (gWishFutureKnock.knockedOffMons[GetBattlerPosition(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
                     {
                         gBattlescriptCurrInstr++;
                     }
@@ -5572,13 +5572,13 @@ static bool32 TryKnockOffBattleScript(u32 battlerDef)
         }
         else
         {
-            u32 side = GetBattlerSide(battlerDef);
+            u32 position = GetBattlerPosition(battlerDef);
 
             gLastUsedItem = gBattleMons[battlerDef].item;
             gBattleMons[battlerDef].item = 0;
             if (gBattleMons[battlerDef].ability != ABILITY_GORILLA_TACTICS)
                 gBattleStruct->choicedMove[battlerDef] = 0;
-            gWishFutureKnock.knockedOffMons[side] |= gBitTable[gBattlerPartyIndexes[battlerDef]];
+            gWishFutureKnock.knockedOffMons[position] |= gBitTable[gBattlerPartyIndexes[battlerDef]];
             CheckSetUnburden(battlerDef);
 
             BattleScriptPushCursor();
@@ -6120,7 +6120,7 @@ static void Cmd_moveend(void)
               && TARGET_TURN_DAMAGED
               && CanStealItem(gBattlerAttacker, gBattlerTarget, gBattleMons[gBattlerTarget].item)
               && !gSpecialStatuses[gBattlerAttacker].gemBoost   // In base game, gems are consumed after magician would activate.
-              && !(gWishFutureKnock.knockedOffMons[GetBattlerSide(gBattlerTarget)] & gBitTable[gBattlerPartyIndexes[gBattlerTarget]])
+              && !(gWishFutureKnock.knockedOffMons[GetBattlerPosition(gBattlerTarget)] & gBitTable[gBattlerPartyIndexes[gBattlerTarget]])
               && !DoesSubstituteBlockMove(gBattlerAttacker, gBattlerTarget, gCurrentMove)
               && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
               && (GetBattlerAbility(gBattlerTarget) != ABILITY_STICKY_HOLD || !IsBattlerAlive(gBattlerTarget)))
@@ -6351,7 +6351,7 @@ static void Cmd_moveend(void)
         case MOVEEND_PICKPOCKET:
             if (IsBattlerAlive(gBattlerAttacker)
               && gBattleMons[gBattlerAttacker].item != ITEM_NONE        // Attacker must be holding an item
-              && !(gWishFutureKnock.knockedOffMons[GetBattlerSide(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]])   // But not knocked off
+              && !(gWishFutureKnock.knockedOffMons[GetBattlerPosition(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]])   // But not knocked off
               && !(TestSheerForceFlag(gBattlerAttacker, gCurrentMove))  // Pickpocket doesn't activate for sheer force
               && IsMoveMakingContact(gCurrentMove, gBattlerAttacker)    // Pickpocket requires contact
               && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))           // Obviously attack needs to have worked
@@ -6580,7 +6580,7 @@ static void Cmd_switchindataupdate(void)
     gBattleMons[gActiveBattler].ability = GetAbilityBySpecies(gBattleMons[gActiveBattler].species, gBattleMons[gActiveBattler].abilityNum);
 
     // check knocked off item
-    i = GetBattlerSide(gActiveBattler);
+    i = GetBattlerPosition(gActiveBattler);
     if (gWishFutureKnock.knockedOffMons[i] & gBitTable[gBattlerPartyIndexes[gActiveBattler]])
     {
         gBattleMons[gActiveBattler].item = ITEM_NONE;
@@ -7370,7 +7370,7 @@ static void Cmd_switchineffects(void)
             if (gBattlerByTurnOrder[i] == gActiveBattler)
                 gActionsByTurnOrder[i] = B_ACTION_CANCEL_PARTNER;
 
-            gBattleStruct->hpOnSwitchout[GetBattlerSide(i)] = gBattleMons[i].hp;
+            gBattleStruct->hpOnSwitchout[GetBattlerPosition(i)] = gBattleMons[i].hp;
         }
 
         if (cmd->battler == BS_FAINTED_LINK_MULTIPLE_1)
@@ -8137,7 +8137,7 @@ static void Cmd_removeitem(void)
 
     // Popped Air Balloon cannot be restored by any means.
     if (GetBattlerHoldEffect(gActiveBattler, TRUE) != HOLD_EFFECT_AIR_BALLOON)
-        gBattleStruct->usedHeldItems[gBattlerPartyIndexes[gActiveBattler]][GetBattlerSide(gActiveBattler)] = itemId; // Remember if switched out
+        gBattleStruct->usedHeldItems[gBattlerPartyIndexes[gActiveBattler]][GetBattlerPosition(gActiveBattler)] = itemId; // Remember if switched out
 
     gBattleMons[gActiveBattler].item = ITEM_NONE;
     CheckSetUnburden(gActiveBattler);
@@ -8545,7 +8545,7 @@ static void Cmd_hpthresholds2(void)
     {
         gActiveBattler = GetBattlerForBattleScript(cmd->battler);
         opposingBattler = BATTLE_OPPOSITE(gActiveBattler);
-        hpSwitchout = *(gBattleStruct->hpOnSwitchout + GetBattlerSide(opposingBattler));
+        hpSwitchout = *(gBattleStruct->hpOnSwitchout + GetBattlerPosition(opposingBattler));
         result = (hpSwitchout - gBattleMons[opposingBattler].hp) * 100 / hpSwitchout;
 
         if (gBattleMons[opposingBattler].hp >= hpSwitchout)
@@ -10827,10 +10827,10 @@ static void Cmd_various(void)
         VARIOUS_ARGS();
         if (gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA_BATTLE_BOND
             && HasAttackerFaintedTarget()
-            && CalculateEnemyPartyCount() > 1
-            && !(gBattleStruct->battleBondTransformed[GET_BATTLER_SIDE2(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
+            && (CalculateEnemyPartyCount() > 1 || CalculateEnemy2PartyCount() > 1)
+            && !(gBattleStruct->battleBondTransformed[gBattlerAttacker] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
         {
-            gBattleStruct->battleBondTransformed[GET_BATTLER_SIDE2(gBattlerAttacker)] |= gBitTable[gBattlerPartyIndexes[gBattlerAttacker]];
+            gBattleStruct->battleBondTransformed[gBattlerAttacker] |= gBitTable[gBattlerPartyIndexes[gBattlerAttacker]];
             PREPARE_SPECIES_BUFFER(gBattleTextBuff1, gBattleMons[gBattlerAttacker].species);
             gBattleStruct->changedSpecies[gBattlerPartyIndexes[gBattlerAttacker]] = gBattleMons[gBattlerAttacker].species;
             gBattleMons[gBattlerAttacker].species = SPECIES_GRENINJA_ASH;
@@ -14593,8 +14593,8 @@ static void Cmd_tryswapitems(void)
                              | BATTLE_TYPE_FRONTIER
                              | BATTLE_TYPE_SECRET_BASE
                              | BATTLE_TYPE_RECORDED_LINK))
-            && (gWishFutureKnock.knockedOffMons[sideAttacker] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]
-                || gWishFutureKnock.knockedOffMons[sideTarget] & gBitTable[gBattlerPartyIndexes[gBattlerTarget]]))
+            && (gWishFutureKnock.knockedOffMons[GetBattlerPosition(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]
+                || gWishFutureKnock.knockedOffMons[GetBattlerPosition(gBattlerTarget)] & gBitTable[gBattlerPartyIndexes[gBattlerTarget]]))
         {
             gBattlescriptCurrInstr = cmd->failInstr;
         }
@@ -15405,7 +15405,7 @@ static void Cmd_tryrecycleitem(void)
     u16 *usedHeldItem;
 
     gActiveBattler = gBattlerAttacker;
-    usedHeldItem = &gBattleStruct->usedHeldItems[gBattlerPartyIndexes[gActiveBattler]][GetBattlerSide(gActiveBattler)];
+    usedHeldItem = &gBattleStruct->usedHeldItems[gBattlerPartyIndexes[gActiveBattler]][GetBattlerPosition(gActiveBattler)];
     if (*usedHeldItem != ITEM_NONE && gBattleMons[gActiveBattler].item == ITEM_NONE)
     {
         gLastUsedItem = *usedHeldItem;

@@ -4022,15 +4022,15 @@ static const u16 sWeatherFlagsInfo[][3] =
 static void ShouldChangeFormInWeather(u8 battler)
 {
     int i;
-    int side = GetBattlerSide(battler);
+    int position = GetBattlerPosition(battler);
     struct Pokemon *party = GetBattlerParty(battler);
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_EISCUE_NOICE_FACE)
-            gBattleStruct->allowedToChangeFormInWeather[i][side] = TRUE;
+            gBattleStruct->allowedToChangeFormInWeather[i][position] = TRUE;
         else
-            gBattleStruct->allowedToChangeFormInWeather[i][side] = FALSE;
+            gBattleStruct->allowedToChangeFormInWeather[i][position] = FALSE;
     }
 }
 
@@ -4939,8 +4939,8 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u16 ability, u8 special, u16 move
             case ABILITY_CUD_CHEW:
                 if (ItemId_GetPocket(GetUsedHeldItem(battler)) == POCKET_BERRIES && gDisableStructs[gActiveBattler].cudChew == TRUE)
                 {
-                    gLastUsedItem = gBattleStruct->usedHeldItems[battler][GetBattlerSide(battler)];
-                    gBattleStruct->usedHeldItems[battler][GetBattlerSide(battler)] = ITEM_NONE;
+                    gLastUsedItem = gBattleStruct->usedHeldItems[battler][GetBattlerPosition(battler)];
+                    gBattleStruct->usedHeldItems[battler][GetBattlerPosition(battler)] = ITEM_NONE;
                     BattleScriptPushCursorAndCallback(BattleScript_CudChewActivates);
                     effect++;
                 }
@@ -6036,9 +6036,9 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u16 ability, u8 special, u16 move
             if (IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW)
              && gBattleMons[battler].species == SPECIES_EISCUE_NOICE_FACE
              && !(gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
-             && gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)])
+             && gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerPosition(battler)])
             {
-                gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)] = FALSE;
+                gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerPosition(battler)] = FALSE;
                 gBattleMons[battler].species = SPECIES_EISCUE;
                 BattleScriptPushCursorAndCallback(BattleScript_BattlerFormChangeWithStringEnd3);
                 effect++;
@@ -10611,6 +10611,7 @@ void TryRestoreHeldItems(void)
 bool32 CanStealItem(u8 battlerStealing, u8 battlerItem, u16 item)
 {
     u8 stealerSide = GetBattlerSide(battlerStealing);
+    u8 stealerPosition = GetBattlerPosition(battlerStealing);
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER_HILL)
         return FALSE;
@@ -10636,7 +10637,7 @@ bool32 CanStealItem(u8 battlerStealing, u8 battlerItem, u16 item)
            | BATTLE_TYPE_LINK
            | BATTLE_TYPE_RECORDED_LINK
            | BATTLE_TYPE_SECRET_BASE))
-        && (gWishFutureKnock.knockedOffMons[stealerSide] & gBitTable[gBattlerPartyIndexes[battlerStealing]]))
+        && (gWishFutureKnock.knockedOffMons[stealerPosition] & gBitTable[gBattlerPartyIndexes[battlerStealing]]))
     {
         return FALSE;
     }
@@ -10803,7 +10804,7 @@ bool32 BlocksPrankster(u16 move, u8 battlerPrankster, u8 battlerDef, bool32 chec
 
 u16 GetUsedHeldItem(u8 battler)
 {
-    return gBattleStruct->usedHeldItems[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)];
+    return gBattleStruct->usedHeldItems[gBattlerPartyIndexes[battler]][GetBattlerPosition(battler)];
 }
 
 bool32 IsBattlerWeatherAffected(u8 battlerId, u32 weatherFlags)

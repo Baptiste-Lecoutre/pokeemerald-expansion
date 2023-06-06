@@ -5570,6 +5570,19 @@ u8 CalculatePlayerPartyCount(void)
     return gPlayerPartyCount;
 }
 
+u8 CalculatePlayerPartnerPartyCount(void)
+{
+    gPlayerPartnerPartyCount = 0;
+
+    while (gPlayerPartnerPartyCount < PARTY_SIZE
+        && GetMonData(&gPlayerPartnerParty[gPlayerPartnerPartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+    {
+        gPlayerPartnerPartyCount++;
+    }
+
+    return gPlayerPartnerPartyCount;
+}
+
 u8 CalculateEnemyPartyCount(void)
 {
     gEnemyPartyCount = 0;
@@ -5581,6 +5594,19 @@ u8 CalculateEnemyPartyCount(void)
     }
 
     return gEnemyPartyCount;
+}
+
+u8 CalculateEnemy2PartyCount(void)
+{
+    gEnemy2PartyCount = 0;
+
+    while (gEnemy2PartyCount < PARTY_SIZE
+        && GetMonData(&gEnemy2Party[gEnemy2PartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+    {
+        gEnemy2PartyCount++;
+    }
+
+    return gEnemy2PartyCount;
 }
 
 u8 GetMonsStateToDoubles(void)
@@ -5810,7 +5836,7 @@ void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst)
 void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex)
 {
     PokemonToBattleMon(&gPlayerParty[partyIndex], &gBattleMons[battlerId]);
-    gBattleStruct->hpOnSwitchout[GetBattlerSide(battlerId)] = gBattleMons[battlerId].hp;
+    gBattleStruct->hpOnSwitchout[GetBattlerPosition(battlerId)] = gBattleMons[battlerId].hp;
     UpdateSentPokesToOpponentValue(battlerId);
     ClearTemporarySpeciesSpriteData(battlerId, FALSE);
 }
