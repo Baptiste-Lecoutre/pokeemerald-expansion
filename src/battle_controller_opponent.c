@@ -1714,6 +1714,10 @@ static void OpponentHandleChoosePokemon(void)
             {
                 battler2 = battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             }
+            else if (gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS)) // & opponent side?
+            {
+                battler2 = battler1 = gActiveBattler;
+            }
             else
             {
                 battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
