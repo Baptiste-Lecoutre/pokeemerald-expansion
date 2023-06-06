@@ -4377,7 +4377,7 @@ static void Cmd_getexp(void)
                 PrepareStringBattle(STRINGID_PKMNGAINEDEXPSHARE, gBattleStruct->expGetterBattlerId);
         #endif
             gBattleScripting.getexpState++;
-            gBattleStruct->givenExpMons |= gBitTable[gBattlerPartyIndexes[gBattlerFainted]];
+            gBattleStruct->givenExpMons[(gBattlerFainted & 2) >> 1] |= gBitTable[gBattlerPartyIndexes[gBattlerFainted]];
         }
         break;
     case 1: // calculate experience points to redistribute
