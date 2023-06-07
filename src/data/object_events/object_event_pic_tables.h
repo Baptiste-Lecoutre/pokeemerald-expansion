@@ -5661,6 +5661,18 @@ static const struct SpriteFrameImage sPicTable_Blaine[] = {
     overworld_frame(gObjectEventPic_Blaine, 2, 4, 8),
 };
 
+static const struct SpriteFrameImage sPicTable_Blue[] = {
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 1),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 2),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 3),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 4),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 5),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 6),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 7),
+    overworld_frame(gObjectEventPic_Blue, 2, 4, 8),
+};
+
 const struct SpriteFrameImage sPicTable_RocketGruntM[] = {
     overworld_frame(gObjectEventPic_RocketGruntM, 2, 4, 0),
     overworld_frame(gObjectEventPic_RocketGruntM, 2, 4, 1),
@@ -5743,4 +5755,8 @@ static const struct SpriteFrameImage sPicTable_ArticunoOW[] = {
     obj_frame_tiles(gObjectEventPic_ArticunoOW),
     obj_frame_tiles(gObjectEventPic_ArticunoOW),
     obj_frame_tiles(gObjectEventPic_ArticunoOW),
+};
+
+static const struct SpriteFrameImage sPicTable_SnorlaxSleeping[] = {
+    obj_frame_tiles(gObjectEventPic_SnorlaxSleeping),
 };

@@ -815,6 +815,7 @@ const u32 gObjectEventPic_Erika[] = INCBIN_U32("graphics/object_events/pics/peop
 const u32 gObjectEventPic_Koga[] = INCBIN_U32("graphics/object_events/pics/people/gym_leaders/koga.4bpp");
 const u32 gObjectEventPic_Sabrina[] = INCBIN_U32("graphics/object_events/pics/people/gym_leaders/sabrina.4bpp");
 const u32 gObjectEventPic_Blaine[] = INCBIN_U32("graphics/object_events/pics/people/gym_leaders/blaine.4bpp");
+const u32 gObjectEventPic_Blue[] = INCBIN_U32("graphics/object_events/pics/people/gym_leaders/blue.4bpp");
 const u32 gObjectEventPic_RocketGruntM[] = INCBIN_U32("graphics/object_events/pics/people/team_rocket/rocket_grunt_m.4bpp");
 const u32 gObjectEventPic_RocketGruntF[] = INCBIN_U32("graphics/object_events/pics/people/team_rocket/rocket_grunt_f.4bpp");
 const u16 gObjectEventPic_Giovanni[] = INCBIN_U16("graphics/object_events/pics/people/team_rocket/giovanni.4bpp");
@@ -839,6 +840,8 @@ const u16 gObjectEventPaletteRegigigas[] = INCBIN_U16("graphics/object_events/pa
 const u32 gObjectEventPic_MoltresOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/moltres_OW.4bpp");
 const u32 gObjectEventPic_ZapdosOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/zapdos_OW.4bpp");
 const u32 gObjectEventPic_ArticunoOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/Articuno_OW.4bpp");
+const u32 gObjectEventPic_SnorlaxSleeping[] = INCBIN_U32("graphics/object_events/pics/pokemon/snorlax_sleep.4bpp");
+const u16 gObjectEventPal_Snorlax[] = INCBIN_U16("graphics/object_events/palettes/snorlax.gbapal");
 
 const u16 gObjectEventPaletteLight[] = INCBIN_U16("graphics/object_events/palettes/light.gbapal");
 const u16 gObjectEventPaletteLight2[] = INCBIN_U16("graphics/object_events/palettes/light2.gbapal");
