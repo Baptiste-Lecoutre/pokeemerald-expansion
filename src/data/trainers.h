@@ -9613,16 +9613,16 @@ const struct Trainer gTrainers[] = {
         .party = ITEM_CUSTOM_MOVES(sParty_Juan4),
     },
 
-    [TRAINER_JUAN_5] =
+    [TRAINER_BLUE] =
     {
         .trainerClass = TRAINER_CLASS_LEADER,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
-        .trainerPic = TRAINER_PIC_LEADER_JUAN,
-        .trainerName = _("Juan"),
+        .trainerPic = TRAINER_PIC_BLUE,
+        .trainerName = _("Blue"),
         .items = {ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE},
         .doubleBattle = TRUE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = ITEM_CUSTOM_MOVES(sParty_Juan5),
+        .party = ITEM_CUSTOM_MOVES(sParty_Blue),
     },
 
     [TRAINER_ANGELO] =
