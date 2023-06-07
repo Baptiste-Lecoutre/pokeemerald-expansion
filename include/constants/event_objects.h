@@ -257,9 +257,11 @@
 #define OBJ_EVENT_GFX_ARTICUNO                   253
 #define OBJ_EVENT_GFX_MOLTRES                    254
 #define OBJ_EVENT_GFX_REGIGIGAS                  255
+#define OBJ_EVENT_GFX_BLUE                       256
+#define OBJ_EVENT_GFX_SNORLAX_SLEEPING           257
 
 #define OBJ_EVENT_GFX_ANIMATED_BALL              OBJ_EVENT_GFX_ITEM_BALL // replaces ITEM_BALL
-#define OBJ_EVENT_GFX_OW_MON                     256
+#define OBJ_EVENT_GFX_OW_MON                     258
 #define OBJ_EVENT_GFX_LIGHT_SPRITE               OBJ_EVENT_GFX_QUINTY_PLUMP
 
 // NOTE: By default, the max value for NUM_OBJ_EVENT_GFX is 239.
@@ -271,7 +273,7 @@
 // object graphics that can be removed. If more graphics are needed, anything that
 // stores graphics ids will need to be increased in size. See wiki entry below:
 // https://github.com/pret/pokeemerald/wiki/Feature-Branches#overworld-expansion
-#define NUM_OBJ_EVENT_GFX                        257
+#define NUM_OBJ_EVENT_GFX                        259
 
 
 // These are dynamic object gfx ids.

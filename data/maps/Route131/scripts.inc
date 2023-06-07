@@ -1,3 +1,5 @@
+.set LOCALID_BLUE, 9
+
 Route131_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route131_OnTransition
 	.byte 0

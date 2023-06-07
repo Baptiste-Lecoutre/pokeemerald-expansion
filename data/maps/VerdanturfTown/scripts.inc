@@ -44,7 +44,7 @@ VerdanturfTown_Text_ShouldIGoIn:
 VerdanturfTown_Text_ImErika:
 	.string "Oh, hi. I'm Erika. I am a gym\n"
 	.string "leader from Kanto.\p"
-	.string "I heard Pokemon contest were\n"
+	.string "I heard Pokémon contest were\n"
 	.string "similar to regular battles.\p"
 	.string "Let's see if you are worth\n"
 	.string "entering!$"

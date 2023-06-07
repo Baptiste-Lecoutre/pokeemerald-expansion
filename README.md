@@ -148,13 +148,6 @@ A Discord-based ROM hacking community that has many members who hack using the d
 ## TODO
 - Add team rocket story
 - Add Kanto gym leaders
-    - Brock in granite cave x
-    - Misty on the beach x
-    - Surge in new mauville trying to catch zapdos. Can't catch zapdos until he is defeated.
-    - Erika in verdantuff: blocks the path to the contest hall until defeated, looking up "should I go in?"
-    - Koga in the rainy route with ninjas. "See these ninjas? I'm training them." x
-    - Sabrina talks to a rock which has psychic powers. Talking to the rocks says "just an ordinary rock".
-    - Blaine in start of magma hideout (Hohoho I dug too far!)
     - Giovanni (rocket event TBD)
 - Add Red rivalry
     - PetalburgWoods after defeating Roxanne
@@ -162,6 +155,11 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - Route 121, same trigger as aqua grunts, he cuts the tree and comes to fight
     - Victory Road, double battle with Wally
 - Add Z crystals
+- Give access to islands:
+    - Eon ticket given by rematching the rival in route 103 in IE (southern island, lati@s)
+    - Old sea map is found in abandonned ship (faraway island, mew)
+    - mystic ticket is given by cynthia in mosdeep (navel rock, hooh lugia)
+    - aurora ticket is given by steven in meteorfalls (birth island, deoxys)
 - Add legendary events
     - Gen1:
         - Articuno in Shoal Cave
@@ -205,6 +203,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
 - Make the sootopolis rayquaza calming groudon and kyogre a double battle (player + rayquaza against groudon and kyogre) mid scene. original idea by devolov
+- Change HoF to megas & primals if correct held items & rayquaza
 - Look at Lunos' todo list in his megamoddedexpansion project
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Change soaring palettes with DNS
