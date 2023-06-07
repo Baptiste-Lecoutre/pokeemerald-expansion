@@ -161,6 +161,8 @@ static const u16 sRegionMap_SpecialPlaceLocations[][2] =
     {MAPSEC_SEASPRAY_CAVE,              MAPSEC_ROUTE_115},
     {MAPSEC_EMBER_PATH,                 MAPSEC_JAGGED_PASS},
     {MAPSEC_ASHEN_WOODS,                MAPSEC_MT_CHIMNEY},
+    {MAPSEC_SANDSTREWN_RUINS,           MAPSEC_ROUTE_111},
+    {MAPSEC_DEWFORD_MANOR,              MAPSEC_DEWFORD_MEADOW},
     {MAPSEC_NONE,                       MAPSEC_NONE}
 };
 
@@ -623,7 +625,7 @@ bool8 LoadRegionMapGfx(void)
 void BlendRegionMap(u16 color, u32 coeff)
 {
     BlendPalettes(0x380, coeff, color);
-    CpuCopy16(gPlttBufferFaded + 0x70, gPlttBufferUnfaded + 0x70, 0x60);
+    CpuCopy16(&gPlttBufferFaded[BG_PLTT_ID(7)], &gPlttBufferUnfaded[BG_PLTT_ID(7)], 3 * PLTT_SIZE_4BPP);
 }
 
 void FreeRegionMapIconResources(void)

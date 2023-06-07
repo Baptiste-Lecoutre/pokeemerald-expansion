@@ -544,7 +544,7 @@
     {
       "id": "LAYOUT_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F",
       "name": "LittlerootTown_BrendansHouse_2F_Layout",
-      "width": 9,
+      "width": 10,
       "height": 8,
       "primary_tileset": "gTileset_Building",
       "secondary_tileset": "gTileset_BrendansMaysHouse",
@@ -564,7 +564,7 @@
     {
       "id": "LAYOUT_LITTLEROOT_TOWN_MAYS_HOUSE_2F",
       "name": "LittlerootTown_MaysHouse_2F_Layout",
-      "width": 9,
+      "width": 10,
       "height": 8,
       "primary_tileset": "gTileset_Building",
       "secondary_tileset": "gTileset_BrendansMaysHouse",
@@ -4470,6 +4470,186 @@
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/Seaspray_Cave_B1F/border.bin",
       "blockdata_filepath": "data/layouts/Seaspray_Cave_B1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_VERDANTURF_MEADOW",
+      "name": "VerdanturfMeadow_Layout",
+      "width": 15,
+      "height": 17,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Mauville",
+      "border_filepath": "data/layouts/VerdanturfMeadow/border.bin",
+      "blockdata_filepath": "data/layouts/VerdanturfMeadow/map.bin"
+    },
+    {
+      "id": "LAYOUT_SANDSTREWN_RUINS",
+      "name": "SandstrewnRuins_Layout",
+      "width": 17,
+      "height": 135,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MirageTower",
+      "border_filepath": "data/layouts/SandstrewnRuins/border.bin",
+      "blockdata_filepath": "data/layouts/SandstrewnRuins/map.bin"
+    },
+    {
+      "id": "LAYOUT_SANDSTREWN_RUINS_B1F",
+      "name": "SandstrewnRuins_B1F_Layout",
+      "width": 40,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MirageTower",
+      "border_filepath": "data/layouts/SandstrewnRuins_B1F/border.bin",
+      "blockdata_filepath": "data/layouts/SandstrewnRuins_B1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_SANDSTREWN_RUINS_2F",
+      "name": "SandstrewnRuins_2F_Layout",
+      "width": 21,
+      "height": 17,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MirageTower",
+      "border_filepath": "data/layouts/SandstrewnRuins_2F/border.bin",
+      "blockdata_filepath": "data/layouts/SandstrewnRuins_2F/map.bin"
+    },
+    {
+      "id": "LAYOUT_SANDSTREWN_RUINS_3F",
+      "name": "SandstrewnRuins_3F_Layout",
+      "width": 21,
+      "height": 17,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MirageTower",
+      "border_filepath": "data/layouts/SandstrewnRuins_3F/border.bin",
+      "blockdata_filepath": "data/layouts/SandstrewnRuins_3F/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE111_RUINS_EXTERIOR",
+      "name": "Route111_RuinsExterior_Layout",
+      "width": 26,
+      "height": 28,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Mauville",
+      "border_filepath": "data/layouts/Route111_RuinsExterior/border.bin",
+      "blockdata_filepath": "data/layouts/Route111_RuinsExterior/map.bin"
+    },
+    {
+      "id": "LAYOUT_MIRAGE_TOWER_B1F",
+      "name": "MirageTower_B1F_Layout",
+      "width": 21,
+      "height": 17,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MirageTower",
+      "border_filepath": "data/layouts/MirageTower_B1F/border.bin",
+      "blockdata_filepath": "data/layouts/MirageTower_B1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_OF_ORIGIN_OTHER_ROOM",
+      "name": "CaveOfOrigin_OtherRoom_Layout",
+      "width": 19,
+      "height": 19,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveOfOrigin_OtherRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CaveOfOrigin_OtherRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_SCORCHED_SLAB_B1F",
+      "name": "ScorchedSlab_B1F_Layout",
+      "width": 27,
+      "height": 30,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/ScorchedSlab_B1F/border.bin",
+      "blockdata_filepath": "data/layouts/ScorchedSlab_B1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_SCORCHED_SLAB_B2F",
+      "name": "ScorchedSlab_B2F_Layout",
+      "width": 36,
+      "height": 32,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/ScorchedSlab_B2F/border.bin",
+      "blockdata_filepath": "data/layouts/ScorchedSlab_B2F/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEWFORD_MEADOW",
+      "name": "DewfordMeadow_Layout",
+      "width": 40,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Dewford",
+      "border_filepath": "data/layouts/DewfordMeadow/border.bin",
+      "blockdata_filepath": "data/layouts/DewfordMeadow/map.bin"
+    },
+    {
+      "id": "LAYOUT_DEWFORD_MANOR_1F",
+      "name": "DewfordManor_1F_Layout",
+      "width": 24,
+      "height": 12,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_InsideShip",
+      "border_filepath": "data/layouts/DewfordManor_1F/border.bin",
+      "blockdata_filepath": "data/layouts/DewfordManor_1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_SCORCHED_SLAB_REGIGIGAS_ROOM",
+      "name": "ScorchedSlab_RegigigasRoom_Layout",
+      "width": 17,
+      "height": 15,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/ScorchedSlab_RegigigasRoom/border.bin",
+      "blockdata_filepath": "data/layouts/ScorchedSlab_RegigigasRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE123_MIRAGE_CAVE",
+      "name": "Route123_MirageCave_Layout",
+      "width": 25,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/Route123_MirageCave/border.bin",
+      "blockdata_filepath": "data/layouts/Route123_MirageCave/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE106_MIRAGE_ISLAND",
+      "name": "Route106_MirageIsland_Layout",
+      "width": 80,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Dewford",
+      "border_filepath": "data/layouts/Route106_MirageIsland/border.bin",
+      "blockdata_filepath": "data/layouts/Route106_MirageIsland/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE114_MIRAGE_CAVE",
+      "name": "Route114_MirageCave_Layout",
+      "width": 20,
+      "height": 23,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MeteorFalls",
+      "border_filepath": "data/layouts/Route114_MirageCave/border.bin",
+      "blockdata_filepath": "data/layouts/Route114_MirageCave/map.bin"
+    },
+    {
+      "id": "LAYOUT_LILYCOVE_CITY_MIRAGE_MOUNTAIN",
+      "name": "LilycoveCity_MirageMountain_Layout",
+      "width": 44,
+      "height": 30,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Lilycove",
+      "border_filepath": "data/layouts/LilycoveCity_MirageMountain/border.bin",
+      "blockdata_filepath": "data/layouts/LilycoveCity_MirageMountain/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE125_MIRAGE_ISLAND",
+      "name": "Route125_MirageIsland_Layout",
+      "width": 80,
+      "height": 40,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Mossdeep",
+      "border_filepath": "data/layouts/Route125_MirageIsland/border.bin",
+      "blockdata_filepath": "data/layouts/Route125_MirageIsland/map.bin"
     }
   ]
 }

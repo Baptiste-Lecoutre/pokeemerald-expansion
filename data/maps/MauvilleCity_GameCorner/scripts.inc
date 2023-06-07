@@ -817,7 +817,8 @@ MauvilleCity_GameCorner_EventScript_ChooseGrassStarter::
 	case 4, MauvilleCity_GameCorner_EventScript_Snivy
 	case 5, MauvilleCity_GameCorner_EventScript_Chespin
 	case 6, MauvilleCity_GameCorner_EventScript_Rowlet
-	case 7, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	case 7, MauvilleCity_GameCorner_EventScript_Grookey
+	case 8, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	goto MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	end
 	
@@ -834,7 +835,8 @@ MauvilleCity_GameCorner_EventScript_ChooseFireStarter::
 	case 4, MauvilleCity_GameCorner_EventScript_Tepig
 	case 5, MauvilleCity_GameCorner_EventScript_Fennekin
 	case 6, MauvilleCity_GameCorner_EventScript_Litten
-	case 7, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	case 7, MauvilleCity_GameCorner_EventScript_Scorbunny
+	case 8, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	goto MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	end
 	
@@ -851,7 +853,8 @@ MauvilleCity_GameCorner_EventScript_ChooseWaterStarter::
 	case 4, MauvilleCity_GameCorner_EventScript_Oshawott
 	case 5, MauvilleCity_GameCorner_EventScript_Froakie
 	case 6, MauvilleCity_GameCorner_EventScript_Popplio
-	case 7, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	case 7, MauvilleCity_GameCorner_EventScript_Sobble
+	case 8, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	goto MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	end
 
@@ -883,6 +886,10 @@ MauvilleCity_GameCorner_EventScript_Rowlet::
 	setvar VAR_TEMP_1, SPECIES_ROWLET
 	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
 
+MauvilleCity_GameCorner_EventScript_Grookey::
+	setvar VAR_TEMP_1, SPECIES_GROOKEY
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+
 MauvilleCity_GameCorner_EventScript_Charmander::
 	setvar VAR_TEMP_1, SPECIES_CHARMANDER
 	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
@@ -909,6 +916,10 @@ MauvilleCity_GameCorner_EventScript_Fennekin::
 	
 MauvilleCity_GameCorner_EventScript_Litten::
 	setvar VAR_TEMP_1, SPECIES_LITTEN
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+
+MauvilleCity_GameCorner_EventScript_Scorbunny::
+	setvar VAR_TEMP_1, SPECIES_SCORBUNNY
 	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
 	
 MauvilleCity_GameCorner_EventScript_Squirtle::
@@ -937,6 +948,10 @@ MauvilleCity_GameCorner_EventScript_Froakie::
 	
 MauvilleCity_GameCorner_EventScript_Popplio::
 	setvar VAR_TEMP_1, SPECIES_POPPLIO
+	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
+
+MauvilleCity_GameCorner_EventScript_Sobble::
+	setvar VAR_TEMP_1, SPECIES_SOBBLE
 	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
 	
 MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize::

@@ -81,12 +81,56 @@ void ClearRoamerLocationData(void)
     sRoamerLocation[MAP_NUM] = 0;
 }
 
-static void CreateInitialRoamerMon(bool16 createLatios)
+static void CreateInitialRoamerMon(bool16 roamerEntry)
 {
-    if (!createLatios)
-        ROAMER->species = SPECIES_LATIAS;
-    else
-        ROAMER->species = SPECIES_LATIOS;
+    switch(roamerEntry)
+    {
+        case 0:
+           ROAMER->species = SPECIES_ENTEI;
+           break;
+        case 1:
+           ROAMER->species = SPECIES_SUICUNE;
+           break;
+        case 2:
+           ROAMER->species = SPECIES_RAIKOU;
+           break;
+        case 3:
+           ROAMER->species = SPECIES_UXIE;
+           break;
+        case 4:
+           ROAMER->species = SPECIES_MESPRIT;
+           break;
+        case 5:
+           ROAMER->species = SPECIES_AZELF;
+           break;
+        case 6:
+           ROAMER->species = SPECIES_TORNADUS;
+           break;
+        case 7:
+           ROAMER->species = SPECIES_THUNDURUS;
+           break;
+        case 8:
+           ROAMER->species = SPECIES_LANDORUS;
+           break;
+        case 9:
+           ROAMER->species = SPECIES_ENAMORUS;
+           break;
+        case 10:
+           ROAMER->species = SPECIES_MOLTRES_GALARIAN;
+           break;
+        case 11:
+           ROAMER->species = SPECIES_ZAPDOS_GALARIAN;
+           break;
+        case 12:
+           ROAMER->species = SPECIES_ARTICUNO_GALARIAN;
+           break;
+        case 13:
+           ROAMER->species = SPECIES_ZACIAN;
+           break;
+        case 14:
+           ROAMER->species = SPECIES_ZAMAZENTA;
+           break;
+    }
 
     CreateMon(&gEnemyParty[0], ROAMER->species, 40, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
     ROAMER->level = 40;

@@ -1,5 +1,31 @@
 Route106_MapScripts::
+	map_script MAP_SCRIPT_ON_TRANSITION, Route106_OnTransition
 	.byte 0
+
+Route106_OnTransition:
+	specialvar VAR_RESULT, GetCurrentMirageLocation
+	goto_if_eq VAR_RESULT, MIRAGE_LOCATION_ROUTE_106, Route106_EventScript_SetMirageIslandLayout
+	setflag FLAG_TEMP_11
+	setflag FLAG_TEMP_12
+	setflag FLAG_TEMP_13
+	setflag FLAG_TEMP_14
+	setflag FLAG_TEMP_15
+	setflag FLAG_TEMP_16
+	setflag FLAG_TEMP_17
+	setflag FLAG_TEMP_18
+	setflag FLAG_TEMP_19
+	setflag FLAG_TEMP_1A
+	setflag FLAG_TEMP_1B
+	setflag FLAG_TEMP_1C
+	setflag FLAG_TEMP_1D
+	setflag FLAG_TEMP_1E
+	setflag FLAG_TEMP_1F
+	setmaplayoutindex LAYOUT_ROUTE106
+	end
+
+Route106_EventScript_SetMirageIslandLayout::
+	setmaplayoutindex LAYOUT_ROUTE106_MIRAGE_ISLAND
+	end
 
 Route106_EventScript_TrainerTipsSign::
 	msgbox Route106_Text_TrainerTips, MSGBOX_SIGN

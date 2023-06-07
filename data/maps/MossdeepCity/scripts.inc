@@ -4,6 +4,7 @@
 .set LOCALID_GRUNT_4, 13
 .set LOCALID_MAXIE, 14
 .set LOCALID_SCOTT, 16
+.set LOCALID_SABRINA, 8
 
 MossdeepCity_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, MossdeepCity_OnTransition
@@ -14,8 +15,61 @@ MossdeepCity_OnTransition:
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_2
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_3
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_4
+	goto_if_defeated TRAINER_SABRINA, MossDeepCity_EventScript_HideSabrina
 	call_if_set FLAG_SYS_WEATHER_CTRL, Common_EventScript_SetAbnormalWeather
 	end
+
+MossDeepCity_EventScript_HideSabrina::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_SABRINA
+	return
+
+MossDeepCity_EventScript_Sabrina::
+	lock
+	msgbox MossDeepCity_Text_ThisRock, MSGBOX_DEFAULT
+	applymovement LOCALID_SABRINA, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_SABRINA, Common_Movement_Delay48
+	waitmovement 0
+	faceplayer
+	msgbox MossDeepCity_Text_ImSabrina, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_SABRINA, MossDeepCity_Text_WasTheFuture
+	msgbox MossDeepCity_Text_YourPower, MSGBOX_DEFAULT
+	giveitem ITEM_TM54 @ psyshock
+	msgbox MossDeepCity_Text_IKnowYouKnow, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_SABRINA
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	releaseall
+	end
+
+MossDeepCity_Text_ThisRock:
+	.string "Hum… This rock…\n"
+	.string "Such powers…\p"
+	.string "……\p"
+	.string "…………\p"
+	.string "……$"
+
+MossDeepCity_Text_ImSabrina:
+	.string "You dare disturb me during my\n"
+	.string "bonding with this powerful rock?\p"
+	.string "I, Sabrina, have already seen\n"
+	.string "your defeat!$"
+
+MossDeepCity_Text_WasTheFuture:
+	.string "Was the future I saw… wrong?$"
+
+MossDeepCity_Text_YourPower:
+	.string "Your power… It far exceeds what\n"
+	.string "I foresaw. I failed to accurately\l"
+	.string "predict you power. You deserve this.$"
+
+MossDeepCity_Text_IKnowYouKnow:
+	.string "I know you know I will now leave.\n"
+	.string "These things were meant to be. Bye.$"
+
 
 MossdeepCity_EventScript_PokefanF::
 	lock
@@ -395,7 +449,7 @@ MossdeepCity_Text_SpecialSpaceCenterRock:
 	.string "That's what I do.$"
 
 MossdeepCity_Text_ItsAWhiteRock:
-	.string "It's a white rock.$"
+	.string "It's just a rock.$"
 
 MossdeepCity_Text_GymSign:
 	.string "Mossdeep City Pokémon Gym\n"

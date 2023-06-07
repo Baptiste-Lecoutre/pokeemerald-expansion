@@ -18,8 +18,8 @@ Route104_EventScript_ItemPokeBall::
 	finditem ITEM_POKE_BALL
 	end
 
-Route104_EventScript_ItemXAccuracy::
-	finditem ITEM_X_ACCURACY
+Route104_EventScript_ItemAudinite::
+	finditem ITEM_AUDINITE
 	end
 
 Route104_EventScript_ItemPotion::
@@ -74,8 +74,8 @@ Route111_EventScript_ItemElixir::
 	finditem ITEM_ELIXIR
 	end
 
-Route112_EventScript_ItemNugget::
-	finditem ITEM_NUGGET
+Route112_EventScript_ItemHoundoominite::
+	finditem ITEM_HOUNDOOMINITE
 	end
 
 Route113_EventScript_ItemMaxEther::
@@ -110,8 +110,8 @@ Route115_EventScript_ItemTM01::
 	finditem ITEM_TM01
 	end
 
-Route115_EventScript_ItemIron::
-	finditem ITEM_IRON
+Route115_EventScript_ItemHeracronite::
+	finditem ITEM_HERACRONITE
 	end
 
 Route115_EventScript_ItemGreatBall::
@@ -162,8 +162,8 @@ Route119_EventScript_ItemSuperRepel::
 	finditem ITEM_SUPER_REPEL
 	end
 
-Route119_EventScript_ItemZinc::
-	finditem ITEM_ZINC
+Route119_EventScript_ItemScizorite::
+	finditem ITEM_SCIZORITE
 	end
 
 Route119_EventScript_ItemElixir::
@@ -194,8 +194,8 @@ Route120_EventScript_ItemNugget::
 	finditem ITEM_NUGGET
 	end
 
-Route120_EventScript_ItemFullHeal::
-	finditem ITEM_FULL_HEAL
+Route120_EventScript_ItemPidgeotite::
+	finditem ITEM_PIDGEOTITE
 	end
 
 Route120_EventScript_ItemHyperPotion::
@@ -306,8 +306,8 @@ PetalburgCity_EventScript_ItemMaxRevive::
 	finditem ITEM_MAX_REVIVE
 	end
 
-PetalburgCity_EventScript_ItemEther::
-	finditem ITEM_ETHER
+PetalburgCity_EventScript_ItemVenusaurite::
+	finditem ITEM_VENUSAURITE
 	end
 
 MauvilleCity_EventScript_ItemXSpeed::
@@ -346,8 +346,8 @@ RusturfTunnel_EventScript_ItemPokeBall::
 	finditem ITEM_POKE_BALL
 	end
 
-RusturfTunnel_EventScript_ItemMaxEther::
-	finditem ITEM_MAX_ETHER
+RusturfTunnel_EventScript_ItemSablenite::
+	finditem ITEM_SABLENITE
 	end
 
 GraniteCave_1F_EventScript_ItemEscapeRope::
@@ -358,8 +358,8 @@ GraniteCave_B1F_EventScript_ItemPokeBall::
 	finditem ITEM_POKE_BALL
 	end
 
-GraniteCave_B2F_EventScript_ItemRepel::
-	finditem ITEM_REPEL
+GraniteCave_B2F_EventScript_ItemSteelixite::
+	finditem ITEM_STEELIXITE
 	end
 
 GraniteCave_B2F_EventScript_ItemRareCandy::
@@ -370,8 +370,8 @@ JaggedPass_EventScript_ItemBurnHeal::
 	finditem ITEM_BURN_HEAL
 	end
 
-FieryPath_EventScript_ItemFireStone::
-	finditem ITEM_FIRE_STONE
+FieryPath_EventScript_ItemCharizarditeX::
+	finditem ITEM_CHARIZARDITE_X
 	end
 
 FieryPath_EventScript_ItemTM06::
@@ -406,8 +406,8 @@ NewMauville_Inside_EventScript_ItemEscapeRope::
 	finditem ITEM_ESCAPE_ROPE
 	end
 
-NewMauville_Inside_EventScript_ItemThunderStone::
-	finditem ITEM_THUNDER_STONE
+NewMauville_Inside_EventScript_ItemAmpharosite::
+	finditem ITEM_AMPHAROSITE
 	end
 
 NewMauville_Inside_EventScript_ItemFullHeal::
@@ -418,8 +418,8 @@ NewMauville_Inside_EventScript_ItemParalyzeHeal::
 	finditem ITEM_PARALYZE_HEAL
 	end
 
-AbandonedShip_Rooms_1F_EventScript_ItemHarborMail::
-	finditem ITEM_HARBOR_MAIL
+AbandonedShip_Rooms_1F_EventScript_ItemLopunnite::
+	finditem ITEM_LOPUNNITE
 	end
 
 AbandonedShip_Rooms_B1F_EventScript_ItemEscapeRope::
@@ -450,8 +450,8 @@ AbandonedShip_HiddenFloorRooms_EventScript_ItemScanner::
 	finditem ITEM_SCANNER
 	end
 
-AbandonedShip_HiddenFloorRooms_EventScript_ItemWaterStone::
-	finditem ITEM_WATER_STONE
+AbandonedShip_HiddenFloorRooms_EventScript_ItemLucarionite::
+	finditem ITEM_LUCARIONITE
 	end
 
 AbandonedShip_HiddenFloorRooms_EventScript_ItemTM18::
@@ -466,16 +466,16 @@ SafariZone_Northwest_EventScript_ItemTM22::
 	finditem ITEM_TM22
 	end
 
-SafariZone_North_EventScript_ItemCalcium::
-	finditem ITEM_CALCIUM
+SafariZone_North_EventScript_ItemAbsolite::
+	finditem ITEM_ABSOLITE
 	end
 
 SafariZone_Southwest_EventScript_ItemMaxRevive::
 	finditem ITEM_MAX_REVIVE
 	end
 
-SafariZone_Northeast_EventScript_ItemNugget::
-	finditem ITEM_NUGGET
+SafariZone_Northeast_EventScript_ItemKangaskhanite::
+	finditem ITEM_KANGASKHANITE
 	end
 
 SafariZone_Southeast_EventScript_ItemBigPearl::
@@ -502,8 +502,8 @@ MtPyre_6F_EventScript_ItemTM30::
 	finditem ITEM_TM30
 	end
 
-MtPyre_Exterior_EventScript_ItemMaxPotion::
-	finditem ITEM_MAX_POTION
+MtPyre_Exterior_EventScript_ItemGengarite::
+	finditem ITEM_GENGARITE
 	end
 
 MtPyre_Exterior_EventScript_ItemTM48::
@@ -590,8 +590,8 @@ Route110_TrickHousePuzzle4_EventScript_ItemMechMail::
 	finditem ITEM_MECH_MAIL
 	end
 
-Route110_TrickHousePuzzle6_EventScript_ItemGlitterMail::
-	finditem ITEM_GLITTER_MAIL
+Route110_TrickHousePuzzle6_EventScript_MewtwoniteX::
+	finditem ITEM_MEWTWONITE_X
 	end
 
 Route110_TrickHousePuzzle7_EventScript_ItemTropicMail::
@@ -606,8 +606,8 @@ VictoryRoad_1F_EventScript_ItemMaxElixir::
 	finditem ITEM_MAX_ELIXIR
 	end
 
-VictoryRoad_1F_EventScript_ItemPPUp::
-	finditem ITEM_PP_UP
+VictoryRoad_1F_EventScript_ItemMetagrossite::
+	finditem ITEM_METAGROSSITE
 	end
 
 VictoryRoad_B1F_EventScript_ItemTM29::
@@ -642,8 +642,8 @@ MagmaHideout_2F_2R_EventScript_ItemFullRestore::
 	finditem ITEM_FULL_RESTORE
 	end
 
-MagmaHideout_3F_1R_EventScript_ItemNugget::
-	finditem ITEM_NUGGET
+MagmaHideout_3F_1R_EventScript_ItemCameruptite::
+	finditem ITEM_CAMERUPTITE
 	end
 
 MagmaHideout_3F_2R_EventScript_ItemPPMax::
@@ -656,4 +656,72 @@ MagmaHideout_4F_EventScript_ItemMaxRevive::
 
 MagmaHideout_3F_3R_EventScript_ItemEscapeRope::
 	finditem ITEM_ESCAPE_ROPE
+	end
+
+Ember_Path_ItemCharizarditeY::
+	finditem ITEM_CHARIZARDITE_Y
+	end
+
+Seaspray_Cave_Blastoisinite::
+	finditem ITEM_BLASTOISINITE
+	end
+
+PetalburgWoods_3_Beedrillite::
+	finditem ITEM_BEEDRILLITE
+	end
+
+Slateport_City_ItemAlakazite::
+	finditem ITEM_ALAKAZITE
+	end
+
+Ashen_Woods_ItemPinsirite::
+	finditem ITEM_PINSIRITE
+	end
+
+Sandstrewn_Ruins_ItemGarchompite::
+	finditem ITEM_GARCHOMPITE
+	end
+
+Mirage_Tower_4F_EventScript_Aerodactylite::
+	finditem ITEM_AERODACTYLITE
+	end
+
+EverGrandeCity_EventScript_ItemMewtwoniteY::
+	finditem ITEM_MEWTWONITE_Y
+	end
+
+Route117_EventScript_Mawilite::
+	finditem ITEM_MAWILITE
+	end
+
+Route111_RuinsExterior_EventScript_ItemMedichamite::
+	finditem ITEM_MEDICHAMITE
+	end
+
+Route110_EventScript_ItemManectite:: @ 8290D81
+	finditem ITEM_MANECTITE
+	end
+
+AquaHideout_B1F_EventScript_ItemSharpedonite:: @ 8291365
+	finditem ITEM_SHARPEDONITE
+	end
+
+ShoalCave_LowTideIceRoom_EventScript_ItemGlalitite::
+	finditem ITEM_GLALITITE
+	end
+
+Meteor_Falls1F_2R_EventScript_Salamencite::
+	finditem ITEM_SALAMENCITE
+	end
+
+Seaspray_Cave_B1F_ItemAbomasite::
+	finditem ITEM_ABOMASITE
+	end
+
+ScorchedSlab_EventScript_ItemTyranitarite::
+	finditem ITEM_TYRANITARITE
+	end
+
+DewfordManor_EventScript_Banettite::
+	finditem ITEM_BANETTITE
 	end

@@ -55,6 +55,7 @@
 #include "constants/union_room.h"
 #include "constants/vars.h"
 #include "constants/weather.h"
+#include "constants/mirage_locations.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -1105,10 +1106,42 @@ EventScript_DoWonderTrade_Text_Done:
 Common_EventScript_TrainerNotReadyYet::
 	lock
 	faceplayer
-	message gText_OneDayImGoingToFightYou
+	msgbox gText_OneDayImGoingToFightYou, MSGBOX_DEFAULT
 	waitmessage
 	release
 	end
 
 gText_OneDayImGoingToFightYou:
 	.string "One day I will fight you!$"
+
+	.include "data/maps/VerdanturfMeadow/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins_B1F/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins_2F/scripts.inc"
+
+	.include "data/maps/SandstrewnRuins_3F/scripts.inc"
+
+	.include "data/maps/Route111_RuinsExterior/scripts.inc"
+
+	.include "data/maps/MirageTower_B1F/scripts.inc"
+
+	.include "data/maps/CaveOfOrigin_OtherRoom/scripts.inc"
+
+	.include "data/maps/ScorchedSlab_B1F/scripts.inc"
+
+	.include "data/maps/ScorchedSlab_B2F/scripts.inc"
+
+	.include "data/maps/DewfordMeadow/scripts.inc"
+
+	.include "data/maps/DewfordManor_1F/scripts.inc"
+
+	.include "data/maps/ScorchedSlab_RegigigasRoom/scripts.inc"
+
+	.include "data/maps/Route114_MirageCave/scripts.inc"
+
+	.include "data/maps/LilycoveCity_MirageMountain/scripts.inc"
+
+	.include "data/maps/Route123_MirageCave/scripts.inc"

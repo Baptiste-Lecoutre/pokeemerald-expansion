@@ -107,7 +107,7 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->optionsLowHealthMusic = FALSE;
     gSaveBlock2Ptr->optionsShowTypeEffectiveness = FALSE;
     gSaveBlock2Ptr->evolveOpponentsMons = FALSE;
-    gSaveBlock2Ptr->xpMulti = 0;
+    gSaveBlock2Ptr->xpMulti = 2;
     gSaveBlock2Ptr->xpTeamMod = 0;
     gSaveBlock2Ptr->optionsBaseStatsEqual = FALSE;
     gSaveBlock2Ptr->trainerLvlScale = FALSE;
@@ -238,9 +238,7 @@ void NewGameInitData(void)
     WipeTrainerNameRecords();
     ResetTrainerHillResults();
     ResetContestLinkResults();
-/*    memset(gSaveBlock1Ptr->dexNavSearchLevels, 0, sizeof(gSaveBlock1Ptr->dexNavSearchLevels));
     gSaveBlock1Ptr->dexNavChain = 0;
-    memset(&gSaveBlock2Ptr->itemFlags, 0, sizeof(gSaveBlock2Ptr->itemFlags));*/
     gSaveBlock2Ptr->autoRun = TRUE;
 }
 

@@ -16,6 +16,8 @@ LilycoveCity_OnTransition:
 
 LilycoveCity_OnLoad:
 	call_if_unset FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE, LilycoveCity_EventScript_SetWailmerMetatiles
+	specialvar VAR_RESULT, GetCurrentMirageLocation
+	call_if_eq VAR_RESULT, MIRAGE_LOCATION_LILYCOVE_CITY, LilycoveCity_EventScript_OpenMirageMountainPath
 	end
 
 LilycoveCity_EventScript_SetWailmerMetatiles::
@@ -31,6 +33,10 @@ LilycoveCity_EventScript_SetWailmerMetatiles::
 	setmetatile 78, 16, METATILE_Lilycove_Wailmer1_Alt, TRUE
 	setmetatile 77, 17, METATILE_Lilycove_Wailmer2, TRUE
 	setmetatile 78, 17, METATILE_Lilycove_Wailmer3, TRUE
+	return
+
+LilycoveCity_EventScript_OpenMirageMountainPath::
+	setmetatile 59, 7, 0x19E, 0
 	return
 
 LilycoveCity_EventScript_BerryGentleman::
@@ -412,6 +418,38 @@ LilycoveCity_EventScript_DontKnowAboutBerryBlender::
 	msgbox LilycoveCity_Text_ExplainBerryBlender, MSGBOX_DEFAULT
 	return
 
+LilycoveCity_EventScript_GiveAltarianite::
+	lockall
+	faceplayer
+	goto_if_set FLAG_ITEM_LILYCOVE_CITY_ALTARIANITE, LilycoveCity_EventScript_ExplainAltarianite
+	msgbox LilycoveCity_Text_CloudDragon, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, LilycoveCity_EventScript_AltariaRefuse
+	special ChoosePartyMon
+	waitstate
+	lock
+	faceplayer
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, LilycoveCity_EventScript_AltariaRefuse
+	specialvar VAR_RESULT, ScriptGetPartyMonSpecies
+	goto_if_eq VAR_RESULT, SPECIES_ALTARIA, LilycoveCity_EventScript_YesAltaria
+LilycoveCity_EventScript_NotAltaria::
+	msgbox LilycoveCity_Text_NotAltaria, MSGBOX_DEFAULT
+	releaseall
+	end
+
+LilycoveCity_EventScript_YesAltaria::
+	msgbox LilycoveCity_Text_YesAltaria, MSGBOX_DEFAULT
+	giveitem ITEM_ALTARIANITE
+	setflag FLAG_ITEM_LILYCOVE_CITY_ALTARIANITE
+LilycoveCity_EventScript_ExplainAltarianite::
+	msgbox LilycoveCity_Text_ExplainAltarianite, MSGBOX_DEFAULT
+	releaseall
+	end
+
+LilycoveCity_EventScript_AltariaRefuse::
+	msgbox LilycoveCity_Text_AltariaRefuse, MSGBOX_DEFAULT
+	releaseall
+	end
+
 LilycoveCity_Text_MayShoppingLetsBattle:
 	.string "May: Oh, hey?\n"
 	.string "{PLAYER}{KUN}, are you shopping, too?\p"
@@ -759,3 +797,25 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 	.string "Pokémon as soon as we arrived.\p"
 	.string "I mean, we are totally happy!$"
 
+LilycoveCity_Text_CloudDragon:
+	.string "Can you show me a Dragon Pokémon\n"
+	.string "that looks like a cloud?$"
+
+LilycoveCity_Text_YesAltaria:
+	.string "Yes! That's it! An Altaria,\n"
+	.string "just like Winona's!\p"
+	.string "You can have this, so your Altaria\n"
+	.string "can be as strong as hers!$"
+
+LilycoveCity_Text_AltariaRefuse:
+	.string "That's a shame. I'll give you something\n"
+	.string "nice if you change your mind.$"
+
+LilycoveCity_Text_NotAltaria:
+	.string "Hmmm, no. Try again!$"
+
+LilycoveCity_Text_ExplainAltarianite:
+	.string "If you don't already know what that\n"
+	.string "stone does, Winona can show you.\p"
+	.string "Just challenge her to a battle\n"
+	.string "and see for yourself!$"

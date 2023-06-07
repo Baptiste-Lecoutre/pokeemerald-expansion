@@ -328,6 +328,40 @@ extern const u8 gText_Sound[];
 extern const u8 gText_Frame[];
 extern const u8 gText_OptionMenuCancel[];
 extern const u8 gText_ButtonMode[];
+extern const u8 gText_Autorun[];
+extern const u8 gText_LevelCap[];
+extern const u8 gText_TypeChart[];
+extern const u8 gText_FastFieldMove[];
+extern const u8 gText_BaseStats[];
+extern const u8 gText_TypeEffectiveness[];
+extern const u8 gText_LowHealthBeep[];
+extern const u8 gText_SurfBikeMusic[];
+extern const u8 gText_FishReeling[];
+extern const u8 gText_FastEggHatch[];
+extern const u8 gText_FastEvoScene[];
+extern const u8 gText_PokemonAnim[];
+extern const u8 gText_ExpTeamMod[];
+extern const u8 gText_ExpMultiplier[];
+extern const u8 gText_PreventEvolution[];
+extern const u8 gText_ScaleEnemyLvl[];
+extern const u8 gText_EvolveEnemyMon[];
+
+extern const u8 gText_Seeding[];
+extern const u8 gText_WildEncounters[];
+extern const u8 gText_StaticEncounters[];
+extern const u8 gText_TrainerParty[];
+extern const u8 gText_Starters[];
+extern const u8 gText_Abilities[];
+extern const u8 gText_LvlUpMoves[];
+extern const u8 gText_TmMoves[];
+extern const u8 gText_TutorMoves[];
+extern const u8 gText_RelearnerMoves[];
+extern const u8 gText_PostEvoSpecies[];
+extern const u8 gText_PokemonLevel[];
+extern const u8 gText_PlayerParty[];
+extern const u8 gText_EvoEveryLevel[];
+extern const u8 gText_Marts[];
+extern const u8 gText_Music[];
 
 extern const u8 gText_MaleSymbol[];
 extern const u8 gText_FemaleSymbol[];
@@ -3234,6 +3268,7 @@ extern const u8 gText_GameCornerTurtwig[];
 extern const u8 gText_GameCornerSnivy[];
 extern const u8 gText_GameCornerChespin[];
 extern const u8 gText_GameCornerRowlet[];
+extern const u8 gText_GameCornerGrookey[];
 
 extern const u8 gText_GameCornerCharmander[];
 extern const u8 gText_GameCornerCyndaquil[];
@@ -3242,6 +3277,7 @@ extern const u8 gText_GameCornerChimchar[];
 extern const u8 gText_GameCornerTepig[];
 extern const u8 gText_GameCornerFennekin[];
 extern const u8 gText_GameCornerLitten[];
+extern const u8 gText_GameCornerScorbunny[];
 
 extern const u8 gText_GameCornerSquirtle[];
 extern const u8 gText_GameCornerTotodile[];
@@ -3250,6 +3286,7 @@ extern const u8 gText_GameCornerPiplup[];
 extern const u8 gText_GameCornerOshawott[];
 extern const u8 gText_GameCornerFroakie[];
 extern const u8 gText_GameCornerPopplio[];
+extern const u8 gText_GameCornerSobble[];
 
 extern const u8 gText_GrassType[];
 extern const u8 gText_FireType[];
@@ -3260,6 +3297,7 @@ extern const u8 gText_RememberAMove[];
 extern const u8 gText_ForgetAMove[];
 extern const u8 gText_LearnANewMove[];
 extern const u8 gText_RateANickname[];
+extern const u8 gText_DoWonderTrade[];
 extern const u8 gText_TrainEXP[];
 extern const u8 gText_ResetEvents[];
 
@@ -3538,5 +3576,21 @@ extern const u8 gText_TutorMoveSet4[];
 extern const u8 gText_TutorMoveSet5[];
 extern const u8 gText_TutorMoveSet6[];
 extern const u8 gText_TutorMoveSet7[];
+
+extern const u8 gText_RoamerEntei[];
+extern const u8 gText_RoamerSuicune[];
+extern const u8 gText_RoamerRaikou[];
+extern const u8 gText_RoamerUxie[];
+extern const u8 gText_RoamerMesprit[];
+extern const u8 gText_RoamerAzelf[];
+extern const u8 gText_RoamerTornadus[];
+extern const u8 gText_RoamerThundurus[];
+extern const u8 gText_RoamerLandorus[];
+extern const u8 gText_RoamerEnamorus[];
+extern const u8 gText_RoamerGMoltres[];
+extern const u8 gText_RoamerGZapdos[];
+extern const u8 gText_RoamerGArticuno[];
+extern const u8 gText_RoamerZacian[];
+extern const u8 gText_RoamerZamazenta[];
 
 #endif // GUARD_STRINGS_H

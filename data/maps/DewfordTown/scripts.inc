@@ -84,16 +84,24 @@ DewfordTown_EventScript_HallSign::
 DewfordTown_EventScript_OldRodFisherman::
 	lock
 	faceplayer
-	goto_if_set FLAG_RECEIVED_OLD_ROD, DewfordTown_EventScript_HowsFishing
-	msgbox DewfordTown_Text_GettingItchToFish, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, DewfordTown_EventScript_GiveOldRod
-	goto_if_eq VAR_RESULT, NO, DewfordTown_EventScript_NotGettingItchToFish
+	goto_if_set FLAG_DEWFORD_EVIOLITE, DewfordTown_EventScript_ReceivedEviolite
+	msgbox DewfordTown_Text_FishedUpEviolite
+	giveitem ITEM_EVIOLITE
+	goto_if_eq VAR_RESULT, 0, Common_EventScript_BagIsFull
+	msgbox DewfordTown_Text_ReceivedEviolite, MSGBOX_DEFAULT
+	setflag FLAG_DEWFORD_EVIOLITE
+	release
+	end
+
+DewfordTown_EventScript_ReceivedEviolite::
+	msgbox DewfordTown_Text_ReceivedEviolite, MSGBOX_DEFAULT
+	release
 	end
 
 DewfordTown_EventScript_GiveOldRod::
 	msgbox DewfordTown_Text_GiveYouOneOfMyRods, MSGBOX_DEFAULT
 	giveitem ITEM_OLD_ROD
-	setflag FLAG_RECEIVED_OLD_ROD
+	setflag FLAG_DEWFORD_EVIOLITE
 	msgbox DewfordTown_Text_ThrowInFishingAdvice, MSGBOX_DEFAULT
 	release
 	end
@@ -800,3 +808,14 @@ DewfordTown_Text_YeahDefinitionOfInRightNow:
 	.string "Yeah, absolutely right!\p"
 	.string "“{STR_VAR_1}” is the\n"
 	.string "definition of “in” right now.$"
+
+DewfordTown_Text_ReceivedEviolite:
+	.string "Maybe it'll be more useful in the hands\n"
+	.string "of a Pokémon Trainer?\p"
+	.string "It's no good as bait, that's for sure!$"
+
+DewfordTown_Text_FishedUpEviolite:
+	.string "I fished up this strange rock the other\n"
+	.string "day.\p"
+	.string "It's of no use to me, so here,\n"
+	.string "you take it!$"

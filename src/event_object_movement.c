@@ -485,6 +485,17 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_CASTFORM_SUNNY          0x1125
 #define OBJ_EVENT_PAL_TAG_CASTFORM_RAINY          0x1126
 #define OBJ_EVENT_PAL_TAG_CASTFORM_SNOWY          0x1127
+#define OBJ_EVENT_PAL_TAG_REGIGIGAS               0x1128
+#define OBJ_EVENT_PAL_TAG_CYNTHIA                 0x1129
+#define OBJ_EVENT_PAL_TAG_NPC_5                   0x112A
+#define OBJ_EVENT_PAL_TAG_NPC_6                   0x112B
+#define OBJ_EVENT_PAL_TAG_NPC_7                   0x112C
+#define OBJ_EVENT_PAL_TAG_NPC_8                   0x112D
+#define OBJ_EVENT_PAL_TAG_NPC_5_REFLECTION        0x112E
+#define OBJ_EVENT_PAL_TAG_NPC_6_REFLECTION        0x112F
+#define OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION        0x1130
+#define OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION        0x1131
+#define OBJ_EVENT_PAL_TAG_SNORLAX                 0x1132
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
 #define OBJ_EVENT_PAL_TAG_EMOTES                  0x8003
@@ -536,9 +547,20 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Lugia,                 OBJ_EVENT_PAL_TAG_LUGIA},
     {gObjectEventPal_RubySapphireBrendan,   OBJ_EVENT_PAL_TAG_RS_BRENDAN},
     {gObjectEventPal_RubySapphireMay,       OBJ_EVENT_PAL_TAG_RS_MAY},
-    {gObjectEventPal_CastformSunny, OBJ_EVENT_PAL_TAG_CASTFORM_SUNNY},
-    {gObjectEventPal_CastformRainy, OBJ_EVENT_PAL_TAG_CASTFORM_RAINY},
-    {gObjectEventPal_CastformSnowy, OBJ_EVENT_PAL_TAG_CASTFORM_SNOWY},
+    {gObjectEventPal_CastformSunny,         OBJ_EVENT_PAL_TAG_CASTFORM_SUNNY},
+    {gObjectEventPal_CastformRainy,         OBJ_EVENT_PAL_TAG_CASTFORM_RAINY},
+    {gObjectEventPal_CastformSnowy,         OBJ_EVENT_PAL_TAG_CASTFORM_SNOWY},
+    {gObjectEventPaletteRegigigas,          OBJ_EVENT_PAL_TAG_REGIGIGAS},
+    {gObjectEventPaletteCynthia,            OBJ_EVENT_PAL_TAG_CYNTHIA},
+    {gObjectEventPal_Snorlax,               OBJ_EVENT_PAL_TAG_SNORLAX},
+    {gObjectEventPal_Npc5,                  OBJ_EVENT_PAL_TAG_NPC_5},
+    {gObjectEventPal_Npc6,                  OBJ_EVENT_PAL_TAG_NPC_6},
+    {gObjectEventPal_Npc7,                  OBJ_EVENT_PAL_TAG_NPC_7},
+    {gObjectEventPal_Npc8,                  OBJ_EVENT_PAL_TAG_NPC_8},
+    {gObjectEventPal_Npc5Reflection,        OBJ_EVENT_PAL_TAG_NPC_5_REFLECTION},
+    {gObjectEventPal_Npc6Reflection,        OBJ_EVENT_PAL_TAG_NPC_6_REFLECTION},
+    {gObjectEventPal_Npc7Reflection,        OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION},
+    {gObjectEventPal_Npc8Reflection,        OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION},
     {gObjectEventPaletteLight, OBJ_EVENT_PAL_TAG_LIGHT},
     {gObjectEventPaletteLight2, OBJ_EVENT_PAL_TAG_LIGHT_2},
     {gObjectEventPaletteEmotes, OBJ_EVENT_PAL_TAG_EMOTES},

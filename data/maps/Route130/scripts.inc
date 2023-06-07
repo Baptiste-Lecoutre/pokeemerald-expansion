@@ -4,8 +4,8 @@ Route130_MapScripts::
 
 Route130_OnTransition:
 	call_if_ge VAR_SOOTOPOLIS_CITY_STATE, 4, Route130_EventScript_CheckSetAbnormalWeather
-	specialvar VAR_RESULT, IsMirageIslandPresent
-	goto_if_eq VAR_RESULT, TRUE, Route130_EventScript_SetMirageIslandLayout
+	specialvar VAR_RESULT, GetCurrentMirageLocation
+	goto_if_eq VAR_RESULT, MIRAGE_LOCATION_ROUTE_130, Route130_EventScript_SetMirageIslandLayout
 	setflag FLAG_TEMP_11
 	setflag FLAG_TEMP_12
 	setflag FLAG_TEMP_13

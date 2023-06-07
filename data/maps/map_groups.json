@@ -244,7 +244,8 @@
     "LilycoveCity_DepartmentStore_4F",
     "LilycoveCity_DepartmentStore_5F",
     "LilycoveCity_DepartmentStoreRooftop",
-    "LilycoveCity_DepartmentStoreElevator"
+    "LilycoveCity_DepartmentStoreElevator",
+    "LilycoveCity_MirageMountain"
   ],
   "gMapGroup_IndoorMossdeep": [
     "MossdeepCity_Gym",
@@ -310,7 +311,8 @@
   "gMapGroup_IndoorRoute114": [
     "Route114_FossilManiacsHouse",
     "Route114_FossilManiacsTunnel",
-    "Route114_LanettesHouse"
+    "Route114_LanettesHouse",
+    "Route114_MirageCave"
   ],
   "gMapGroup_IndoorRoute116": [
     "Route116_TunnelersRestHouse"
@@ -435,7 +437,20 @@
     "EmberPath",
     "AshenWoods",
     "Seaspray_Cave",
-    "Seaspray_Cave_B1F"
+    "Seaspray_Cave_B1F",
+    "VerdanturfMeadow",
+    "SandstrewnRuins",
+    "SandstrewnRuins_B1F",
+    "SandstrewnRuins_2F",
+    "SandstrewnRuins_3F",
+    "Route111_RuinsExterior",
+    "MirageTower_B1F",
+    "CaveOfOrigin_OtherRoom",
+    "ScorchedSlab_B1F",
+    "ScorchedSlab_B2F",
+    "DewfordMeadow",
+    "DewfordManor_1F",
+    "ScorchedSlab_RegigigasRoom"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",
@@ -617,7 +632,8 @@
     "Route113_GlassWorkshop"
   ],
   "gMapGroup_IndoorRoute123": [
-    "Route123_BerryMastersHouse"
+    "Route123_BerryMastersHouse",
+    "Route123_MirageCave"
   ],
   "gMapGroup_IndoorRoute119": [
     "Route119_WeatherInstitute_1F",

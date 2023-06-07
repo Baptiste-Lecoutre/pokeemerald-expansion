@@ -20,21 +20,72 @@
 #include "constants/rgb.h"
 
 #define Y_DIFF 16 // Difference in pixels between items.
-#define PAGE_COUNT 3
 
-enum
+enum // pages
 {
+    PAGE_KEY,
+    PAGE_OPTIONS,
+    PAGE_RANDOMIZER,
+    PAGE_COUNT,
+};
+
+enum // standard options
+{
+    MENUITEM_AUTORUN,
     MENUITEM_TEXTSPEED,
     MENUITEM_BATTLESCENE,
     MENUITEM_BATTLESTYLE,
+    MENUITEM_TYPEEFFECTIVENESS,
     MENUITEM_FASTFIELDMOVE,
-    MENUITEM_LEVELCAP,
-    MENUITEM_TYPECHART,
     MENUITEM_SOUND,
+    MENUITEM_LOWHEALTHBEEP,
+    MENUITEM_SURFBIKEMUSIC,
+    MENUITEM_FISHREELING,
+    MENUITEM_FASTEGGHATCH,
+    MENUITEM_FASTEVOSCENE,
+    MENUITEM_POKEMONANIM,
     MENUITEM_BUTTONMODE,
     MENUITEM_FRAMETYPE,
     MENUITEM_CANCEL,
     MENUITEM_COUNT,
+};
+
+enum // key options
+{
+    MENUITEM_KEY_LVLCAP,
+    MENUITEM_KEY_BASESTATSEQ,
+    MENUITEM_KEY_PREVENTEVO,
+    MENUITEM_KEY_SCALEENEMYLVL,
+    MENUITEM_KEY_EVOLVEENEMYMON,
+    MENUITEM_KEY_TYPECHART,
+    MENUITEM_KEY_EXPTEAMMOD,
+    MENUITEM_KEY_EXPMULTIPLIER,
+    MENUITEM_KEY_CANCEL,
+    MENUITEM_KEY_COUNT,
+};
+
+enum // randomizer options
+{
+    MENUITEM_RAND_RANDOMNESS_TYPE,
+    MENUITEM_RAND_WILDENCOUNTERS,
+    MENUITEM_RAND_STATICENCOUNTERS,
+    MENUITEM_RAND_TRAINERPARTY,
+    MENUITEM_RAND_STARTERS,
+    MENUITEM_RAND_ABILITIES,
+    MENUITEM_RAND_LVLUPMOVES,
+    MENUITEM_RAND_TMMOVES,
+    MENUITEM_RAND_TUTORMOVES,
+    MENUITEM_RAND_RELEARNERMOVES,
+    MENUITEM_RAND_POSTEVOSPECIES,
+    MENUITEM_RAND_POKEMONLEVELS,
+    MENUITEM_RAND_PLAYER_PARTY,
+    MENUITEM_RAND_EVO_EVERY_LVL,
+    MENUITEM_RAND_ITEMS,
+    MENUITEM_RAND_HELDITEMS,
+    MENUITEM_RAND_MART,
+    MENUITEM_RAND_MUSIC,
+    MENUITEM_RAND_CANCEL,
+    MENUITEM_RAND_COUNT,
 };
 
 enum
@@ -46,6 +97,8 @@ enum
 struct OptionMenu
 {
     u8 sel[MENUITEM_COUNT];
+    u8 selKey[MENUITEM_KEY_COUNT];
+    u8 selRand[MENUITEM_RAND_COUNT];
     int menuCursor;
     int visibleCursor;
     u8 page;
@@ -77,23 +130,79 @@ static int TwoOptions_ProcessInput(int selection);
 void FastFieldMove_DrawChoices(int selection, int y, u8 textSpeed);
 void LevelCap_DrawChoices(int selection, int y, u8 textSpeed);
 void TypeChart_DrawChoices(int selection, int y, u8 textSpeed);
+void BaseStatEq_DrawChoices(int selection, int y, u8 textSpeed);
+void Autorun_DrawChoices(int selection, int y, u8 textSpeed);
+void TypeEffectiveness_DrawChoices(int selection, int y, u8 textSpeed);
+void FastScene_DrawChoices(int selection, int y, u8 textSpeed);
+void SeedingType_DrawChoices(int selection, int y, u8 textSpeed);
+void SurfBikeMusic_DrawChoices(int selection, int y, u8 textSpeed);
 
 struct
 {
     void (*drawChoices)(int selection, int y, u8 textSpeed);
     int (*processInput)(int selection);
-} static const sItemFunctions[MENUITEM_COUNT] =
+} static const sOptionsItemFunctions[MENUITEM_COUNT] =
 {
+    [MENUITEM_AUTORUN] = {Autorun_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_TEXTSPEED] = {TextSpeed_DrawChoices, FourOptions_ProcessInput},
     [MENUITEM_BATTLESCENE] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_BATTLESTYLE] = {BattleStyle_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_TYPEEFFECTIVENESS] = {TypeEffectiveness_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTFIELDMOVE] = {FastFieldMove_DrawChoices,TwoOptions_ProcessInput},
-    [MENUITEM_LEVELCAP] = {LevelCap_DrawChoices,ThreeOptions_ProcessInput},
-    [MENUITEM_TYPECHART] = {TypeChart_DrawChoices,TwoOptions_ProcessInput},
     [MENUITEM_SOUND] = {Sound_DrawChoices, Sound_ProcessInput},
+    [MENUITEM_LOWHEALTHBEEP] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_SURFBIKEMUSIC] = {SurfBikeMusic_DrawChoices, ThreeOptions_ProcessInput},
+    [MENUITEM_FISHREELING] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_FASTEGGHATCH] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_FASTEVOSCENE] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_POKEMONANIM] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_BUTTONMODE] = {ButtonMode_DrawChoices, ThreeOptions_ProcessInput},
     [MENUITEM_FRAMETYPE] = {FrameType_DrawChoices, FrameType_ProcessInput},
     [MENUITEM_CANCEL] = {NULL, NULL},
+};
+
+struct
+{
+    void (*drawChoices)(int selection, int y, u8 textSpeed);
+    int (*processInput)(int selection);
+} static const sKeyItemFunctions[MENUITEM_KEY_COUNT] =
+{
+    [MENUITEM_KEY_LVLCAP] = {LevelCap_DrawChoices, ThreeOptions_ProcessInput},
+    [MENUITEM_KEY_BASESTATSEQ] = {BaseStatEq_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_PREVENTEVO] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_SCALEENEMYLVL] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_EVOLVEENEMYMON] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_TYPECHART] = {TypeChart_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_EXPTEAMMOD] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_KEY_EXPMULTIPLIER] = {NULL, NULL},
+    [MENUITEM_KEY_CANCEL] = {NULL, NULL},
+};
+
+struct
+{
+    void (*drawChoices)(int selection, int y, u8 textSpeed);
+    int (*processInput)(int selection);
+} static const sRandItemFunctions[MENUITEM_RAND_COUNT] =
+{
+    [MENUITEM_RAND_RANDOMNESS_TYPE] = {SeedingType_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_WILDENCOUNTERS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_STATICENCOUNTERS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_TRAINERPARTY] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_STARTERS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_ABILITIES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_LVLUPMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_TMMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_TUTORMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_RELEARNERMOVES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_POSTEVOSPECIES] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_POKEMONLEVELS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_PLAYER_PARTY] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_EVO_EVERY_LVL] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_ITEMS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_HELDITEMS] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_MART] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_MUSIC] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_RAND_CANCEL] = {NULL, NULL},
 };
 
 // EWRAM vars
@@ -103,48 +212,82 @@ EWRAM_DATA static bool8 sArrowPressed = FALSE;
 static const u16 sOptionMenuText_Pal[] = INCBIN_U16("graphics/interface/option_menu_text.gbapal");
 // note: this is only used in the Japanese release
 static const u8 sEqualSignGfx[] = INCBIN_U8("graphics/interface/option_menu_equals_sign.4bpp");
-static const u8 sText_LevelCap[] = _("Level caps");
-static const u8 sText_TypeChart[] = _("Type chart");
-static const u8 sText_FastFieldMove[] = _("Fast field move");
+static const u8 sText_PageKeyOptions[] = _("Key options");
+static const u8 sText_PageStandardOptions[] = _("Standard options");
+static const u8 sText_PageRandomOptions[] = _("Random options");
+
 static const u8 sText_Off[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Off");
 static const u8 sText_Soft[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Soft");
 static const u8 sText_Strict[]= _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Strict");
+static const u8 sText_Default[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Default");
+static const u8 sText_Equal[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Equal");
 
 static const u8 *const sTextSpeedStrings[] = {gText_TextSpeedSlow, gText_TextSpeedMid, gText_TextSpeedFast, gText_TextSpeedInstant};
 static const u8 *const sLevelCapStrings[] = {sText_Off, sText_Soft, sText_Strict};
+static const u8 *const sBaseStatEqStrings[] = {sText_Default, sText_Equal};
+
+static const u8 *const sOptionMenuPageNames[PAGE_COUNT] = 
+{
+    [PAGE_KEY] = sText_PageKeyOptions,
+    [PAGE_OPTIONS] = sText_PageStandardOptions,
+    [PAGE_RANDOMIZER] = sText_PageRandomOptions,
+};
 
 static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 {
+    [MENUITEM_AUTORUN] = gText_Autorun,
     [MENUITEM_TEXTSPEED]   = gText_TextSpeed,
     [MENUITEM_BATTLESCENE] = gText_BattleScene,
     [MENUITEM_BATTLESTYLE] = gText_BattleStyle,
-    [MENUITEM_FASTFIELDMOVE] = sText_FastFieldMove,
-    [MENUITEM_LEVELCAP]     = sText_LevelCap,
-    [MENUITEM_TYPECHART]    = sText_TypeChart,
+    [MENUITEM_TYPEEFFECTIVENESS] = gText_TypeEffectiveness,
+    [MENUITEM_FASTFIELDMOVE] = gText_FastFieldMove,
     [MENUITEM_SOUND]       = gText_Sound,
+    [MENUITEM_LOWHEALTHBEEP] = gText_LowHealthBeep,
+    [MENUITEM_SURFBIKEMUSIC] = gText_SurfBikeMusic,
+    [MENUITEM_FISHREELING] = gText_FishReeling,
+    [MENUITEM_FASTEGGHATCH] = gText_FastEggHatch,
+    [MENUITEM_FASTEVOSCENE] = gText_FastEvoScene,
+    [MENUITEM_POKEMONANIM] = gText_PokemonAnim,
     [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
 };
-/*autorun
-textspeed
-battlestyle
-battlescene
-battlebars
-show type effectiveness
-type icons in battle
-sound
-low health beeps
-surf/bike music
-fishing style
-fast egg hatch
-fast evo scene
-fast field move
-frlg item anim
-font 
-unit system
-frame
-cancel*/
+
+static const u8 *const sOptionMenuKeyItemsNames[MENUITEM_KEY_COUNT] = 
+{
+    [MENUITEM_KEY_LVLCAP] = gText_LevelCap,
+    [MENUITEM_KEY_BASESTATSEQ] = gText_BaseStats,
+    [MENUITEM_KEY_PREVENTEVO] = gText_PreventEvolution,
+    [MENUITEM_KEY_SCALEENEMYLVL] = gText_ScaleEnemyLvl,
+    [MENUITEM_KEY_EVOLVEENEMYMON] = gText_EvolveEnemyMon,
+    [MENUITEM_KEY_TYPECHART] = gText_TypeChart,
+    [MENUITEM_KEY_EXPTEAMMOD] = gText_ExpTeamMod,
+    [MENUITEM_KEY_EXPMULTIPLIER] = gText_ExpMultiplier,
+    [MENUITEM_KEY_CANCEL] = gText_OptionMenuCancel,
+};
+
+static const u8 *const sOptionMenuRandomizerItemsNames[MENUITEM_RAND_COUNT] = 
+{
+    [MENUITEM_RAND_RANDOMNESS_TYPE] = gText_Seeding,
+    [MENUITEM_RAND_WILDENCOUNTERS] = gText_WildEncounters,
+    [MENUITEM_RAND_STATICENCOUNTERS] = gText_StaticEncounters,
+    [MENUITEM_RAND_TRAINERPARTY] = gText_TrainerParty,
+    [MENUITEM_RAND_STARTERS] = gText_Starters,
+    [MENUITEM_RAND_ABILITIES] = gText_Abilities,
+    [MENUITEM_RAND_LVLUPMOVES] = gText_LvlUpMoves,
+    [MENUITEM_RAND_TMMOVES] = gText_TmMoves,
+    [MENUITEM_RAND_TUTORMOVES] = gText_TutorMoves,
+    [MENUITEM_RAND_RELEARNERMOVES] = gText_RelearnerMoves,
+    [MENUITEM_RAND_POSTEVOSPECIES] = gText_PostEvoSpecies,
+    [MENUITEM_RAND_POKEMONLEVELS] = gText_PokemonLevel,
+    [MENUITEM_RAND_PLAYER_PARTY] = gText_PlayerParty,
+    [MENUITEM_RAND_EVO_EVERY_LVL] = gText_EvoEveryLevel,
+    [MENUITEM_RAND_ITEMS] = gText_Items,
+    [MENUITEM_RAND_HELDITEMS] = gText_HeldItems,
+    [MENUITEM_RAND_MART] = gText_Marts,
+    [MENUITEM_RAND_MUSIC] = gText_Music,
+    [MENUITEM_RAND_CANCEL] = gText_OptionMenuCancel,
+};
 
 /*version
 diff
@@ -162,15 +305,11 @@ scale trainer level
 prevent evolution*/
 
 /*randomness type
-wild encounters
-static encounters
+encounters
 trainer parties
 starters
 abilities
-lvl up moves
-tm moves
-tutor moves
-relearner moves
+moves
 post evo species
 pokemon levels
 player party
@@ -244,8 +383,21 @@ static void VBlankCB(void)
 
 static void DrawChoices(u32 id, int y, u8 textSpeed)
 {
-    if (sItemFunctions[id].drawChoices != NULL)
-        sItemFunctions[id].drawChoices(sOptions->sel[id], y, textSpeed);
+    switch (sOptions->page)
+    {
+    case PAGE_KEY:
+        if (sKeyItemFunctions[id].drawChoices != NULL)
+            sKeyItemFunctions[id].drawChoices(sOptions->selKey[id], y, textSpeed);
+        break;
+    case PAGE_RANDOMIZER:
+        if (sRandItemFunctions[id].drawChoices != NULL)
+            sRandItemFunctions[id].drawChoices(sOptions->selRand[id], y, textSpeed);
+        break;
+    default:
+        if (sOptionsItemFunctions[id].drawChoices != NULL)
+            sOptionsItemFunctions[id].drawChoices(sOptions->sel[id], y, textSpeed);
+        break;
+    }
 }
 
 void CB2_InitOptionMenu(void)
@@ -323,15 +475,30 @@ void CB2_InitOptionMenu(void)
 
         //sOptions = AllocZeroed(sizeof(*sOptions));
         //sOptions->page = 1;
+        sOptions->sel[MENUITEM_AUTORUN] = gSaveBlock2Ptr->autoRun;
         sOptions->sel[MENUITEM_TEXTSPEED] = gSaveBlock2Ptr->optionsTextSpeed;
         sOptions->sel[MENUITEM_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleSceneOff;
         sOptions->sel[MENUITEM_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
+        sOptions->sel[MENUITEM_TYPEEFFECTIVENESS] = gSaveBlock2Ptr->optionsShowTypeEffectiveness;
         sOptions->sel[MENUITEM_FASTFIELDMOVE] = gSaveBlock2Ptr->optionsFastFieldMove;
-        sOptions->sel[MENUITEM_LEVELCAP] = gSaveBlock2Ptr->optionsLevelCap;
-        sOptions->sel[MENUITEM_TYPECHART] = gSaveBlock2Ptr->optionsTypeChart;
         sOptions->sel[MENUITEM_SOUND] = gSaveBlock2Ptr->optionsSound;
+        sOptions->sel[MENUITEM_LOWHEALTHBEEP] = gSaveBlock2Ptr->optionsLowHealthMusic;
+        sOptions->sel[MENUITEM_SURFBIKEMUSIC] = gSaveBlock2Ptr->optionsSurfBikeMusic;
+        sOptions->sel[MENUITEM_FISHREELING] = gSaveBlock2Ptr->optionsFishReeling;
+        sOptions->sel[MENUITEM_FASTEGGHATCH] = gSaveBlock2Ptr->optionsFastEggHatch;
+        sOptions->sel[MENUITEM_FASTEVOSCENE] = gSaveBlock2Ptr->optionsFastEvolution;
+        sOptions->sel[MENUITEM_POKEMONANIM] = gSaveBlock2Ptr->optionsPokemonAnim;
         sOptions->sel[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
         sOptions->sel[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
+
+        sOptions->selKey[MENUITEM_KEY_LVLCAP] = gSaveBlock2Ptr->optionsLevelCap;
+        sOptions->selKey[MENUITEM_KEY_BASESTATSEQ] = gSaveBlock2Ptr->optionsBaseStatsEqual;
+        sOptions->selKey[MENUITEM_KEY_TYPECHART] = gSaveBlock2Ptr->optionsTypeChart;
+        sOptions->selKey[MENUITEM_KEY_EXPTEAMMOD] = gSaveBlock2Ptr->xpTeamMod;
+        sOptions->selKey[MENUITEM_KEY_EXPMULTIPLIER] = gSaveBlock2Ptr->xpMulti;
+
+        sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE] = gSaveBlock2Ptr->optionsRandomnessType;
+        sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS] = gSaveBlock2Ptr->randomWildEncounters;
 
         for (i = 0; i < 7; i++)
             DrawChoices(i, i * Y_DIFF, 0xFF);
@@ -357,6 +524,22 @@ static void Task_OptionMenuFadeIn(u8 taskId)
 static void ScrollMenu(int direction)
 {
     int menuItem, pos;
+    const u8* const* menu = NULL;
+
+    
+    switch (sOptions->page)
+    {
+    case PAGE_OPTIONS:
+        menu = sOptionMenuItemsNames;
+        break;
+    case PAGE_KEY:
+        menu = sOptionMenuKeyItemsNames;
+        break;
+    case PAGE_RANDOMIZER:
+        menu = sOptionMenuRandomizerItemsNames;
+        break;
+    }
+
     if (direction == 0) // scroll down
         menuItem = sOptions->menuCursor + 3, pos = 6;
     else
@@ -368,16 +551,37 @@ static void ScrollMenu(int direction)
     FillWindowPixelRect(WIN_OPTIONS, PIXEL_FILL(1), 0, Y_DIFF * pos, 26 * 8, Y_DIFF);
     // Print
     DrawChoices(menuItem, pos * Y_DIFF, 0xFF);
-    AddTextPrinterParameterized(WIN_OPTIONS, 1, sOptionMenuItemsNames[menuItem], 8, (pos * Y_DIFF) + 1, 0xFF, NULL);
+    AddTextPrinterParameterized(WIN_OPTIONS, 1, menu[menuItem], 8, (pos * Y_DIFF) + 1, 0xFF, NULL);
     CopyWindowToVram(WIN_OPTIONS, 2);
 }
 
 static void ScrollAll(int direction) // to bottom or top
 {
     int i, y, menuItem, pos;
-    int scrollCount = MENUITEM_COUNT - 7;
+    int scrollCount;
+    u8 items;
+    const u8* const* menu = NULL;
+
+    
+    switch (sOptions->page)
+    {
+    case PAGE_OPTIONS:
+        items = MENUITEM_COUNT;
+        menu = sOptionMenuItemsNames;
+        break;
+    case PAGE_KEY:
+        items = MENUITEM_KEY_COUNT;
+        menu = sOptionMenuKeyItemsNames;
+        break;
+    case PAGE_RANDOMIZER:
+        items = MENUITEM_RAND_COUNT;
+        menu = sOptionMenuRandomizerItemsNames;
+        break;
+    }
+
+    scrollCount = items-7;
     // Move items up/down
-    ScrollWindow(WIN_OPTIONS, direction, Y_DIFF * scrollCount, PIXEL_FILL(0));
+    ScrollWindow(WIN_OPTIONS, direction, Y_DIFF * scrollCount, PIXEL_FILL(1)); //PIXEL_FILL(0)
 
     // Clear moved items
     if (direction == 0)
@@ -397,11 +601,11 @@ static void ScrollAll(int direction) // to bottom or top
     for (i = 0; i < scrollCount; i++)
     {
         if (direction == 0) // From top to bottom
-            menuItem = MENUITEM_COUNT - 1 - i, pos = 6 - i;
+            menuItem = items - 1 - i, pos = 6 - i;
         else // From bottom to top
             menuItem = i, pos = i;
         DrawChoices(menuItem, pos * Y_DIFF, 0xFF);
-        AddTextPrinterParameterized(WIN_OPTIONS, 1, sOptionMenuItemsNames[menuItem], 8, (pos * Y_DIFF) + 1, 0xFF, NULL);
+        AddTextPrinterParameterized(WIN_OPTIONS, 1, menu[menuItem], 8, (pos * Y_DIFF) + 1, 0xFF, NULL);
     }
     CopyWindowToVram(WIN_OPTIONS, 2);
 }
@@ -425,21 +629,52 @@ static u8 Process_ChangePage(u8 CurrentPage)
     return CurrentPage;
 }
 
+static void Task_ChangePage(u8 taskId)
+{
+    u32 i;
+
+    DrawHeaderText();
+    PutWindowTilemap(WIN_OPTIONS);
+    DrawOptionMenuTexts();
+
+    sOptions->visibleCursor = sOptions->menuCursor = 0;
+    for (i = 0; i < 7; i++)
+        DrawChoices(i, i * Y_DIFF, 0xFF);
+    HighlightOptionMenuItem(sOptions->menuCursor);
+
+    CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
+    gTasks[taskId].func = Task_OptionMenuFadeIn;
+}
+
 static void Task_OptionMenuProcessInput(u8 taskId)
 {
     int i, scrollCount = 0, itemsToRedraw;
+    u8 maxItems;
+
+    switch (sOptions->page)
+    {
+    case PAGE_KEY:
+        maxItems = MENUITEM_KEY_COUNT;
+        break;
+    case PAGE_OPTIONS:
+        maxItems = MENUITEM_COUNT;
+        break;
+    case PAGE_RANDOMIZER:
+        maxItems = MENUITEM_RAND_COUNT;
+        break;
+    }
 
     if (JOY_NEW(L_BUTTON) || JOY_NEW(R_BUTTON))
     {
-//        FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
-//        ClearStdWindowAndFrame(WIN_OPTIONS, FALSE);
+        FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
+        ClearStdWindowAndFrame(WIN_OPTIONS, FALSE);
         sOptions->page = Process_ChangePage(sOptions->page);
-        DrawHeaderText();
-//        gTasks[taskId].func = Task_ChangePage;
+//        DrawHeaderText();
+        gTasks[taskId].func = Task_ChangePage;
     }
     else if (JOY_NEW(A_BUTTON))
     {
-        if (sOptions->menuCursor == MENUITEM_CANCEL)
+        if (sOptions->menuCursor == maxItems-1)
             gTasks[taskId].func = Task_OptionMenuSave;
     }
     else if (JOY_NEW(B_BUTTON))
@@ -462,7 +697,7 @@ static void Task_OptionMenuProcessInput(u8 taskId)
                 sOptions->visibleCursor = sOptions->menuCursor = 3;
                 ScrollAll(0);
                 sOptions->visibleCursor = 6;
-                sOptions->menuCursor = MENUITEM_COUNT - 1;
+                sOptions->menuCursor = maxItems - 1;
             }
             else
             {
@@ -475,17 +710,17 @@ static void Task_OptionMenuProcessInput(u8 taskId)
     {
         if (sOptions->visibleCursor == 3) // don't advance visible cursor until scrolled to the bottom
         {
-            if (++sOptions->menuCursor == MENUITEM_COUNT - 3)
+            if (++sOptions->menuCursor == maxItems - 3)
                 sOptions->visibleCursor++;
             else
                 ScrollMenu(0);
         }
         else
         {
-            if (++sOptions->menuCursor >= MENUITEM_COUNT) // Scroll all the way to the tom.
+            if (++sOptions->menuCursor >= maxItems) // Scroll all the way to the tom.
             {
                 sOptions->visibleCursor = 3;
-                sOptions->menuCursor = MENUITEM_COUNT - 4;
+                sOptions->menuCursor = maxItems - 4;
                 ScrollAll(1);
                 sOptions->visibleCursor = sOptions->menuCursor = 0;
             }
@@ -499,26 +734,64 @@ static void Task_OptionMenuProcessInput(u8 taskId)
     else if (JOY_NEW(DPAD_LEFT | DPAD_RIGHT))
     {
         int cursor = sOptions->menuCursor;
-        u8 previousOption = sOptions->sel[cursor];
-        if (sItemFunctions[cursor].processInput != NULL)
-            sOptions->sel[cursor] = sItemFunctions[cursor].processInput(previousOption);
+        u8 previousOption;
 
-        if (previousOption != sOptions->sel[cursor])
-            DrawChoices(cursor, sOptions->visibleCursor * Y_DIFF, 0);
+        switch(sOptions->page)
+        {
+        case PAGE_KEY:
+            previousOption = sOptions->selKey[cursor];
+            if (sKeyItemFunctions[cursor].processInput != NULL)
+                sOptions->selKey[cursor] = sKeyItemFunctions[cursor].processInput(previousOption);
+            
+            if (previousOption != sOptions->selKey[cursor])
+                DrawChoices(cursor, sOptions->visibleCursor * Y_DIFF, 0);
+            break;
+        case PAGE_RANDOMIZER:
+            previousOption = sOptions->selRand[cursor];
+            if(sRandItemFunctions[cursor].processInput != NULL)
+                sOptions->selRand[cursor] = sRandItemFunctions[cursor].processInput(previousOption);
+            
+            if (previousOption != sOptions->selRand[cursor])
+                DrawChoices(cursor, sOptions->visibleCursor * Y_DIFF, 0);
+            break;
+        default:
+            previousOption = sOptions->sel[cursor];
+            if (sOptionsItemFunctions[cursor].processInput != NULL)
+                sOptions->sel[cursor] = sOptionsItemFunctions[cursor].processInput(previousOption);
+
+            if (previousOption != sOptions->sel[cursor])
+                DrawChoices(cursor, sOptions->visibleCursor * Y_DIFF, 0);
+            break;
+        }
     }
 }
 
 static void Task_OptionMenuSave(u8 taskId)
 {
+    gSaveBlock2Ptr->autoRun = sOptions->sel[MENUITEM_AUTORUN];
     gSaveBlock2Ptr->optionsTextSpeed = sOptions->sel[MENUITEM_TEXTSPEED];
     gSaveBlock2Ptr->optionsBattleSceneOff = sOptions->sel[MENUITEM_BATTLESCENE];
     gSaveBlock2Ptr->optionsBattleStyle = sOptions->sel[MENUITEM_BATTLESTYLE];
+    gSaveBlock2Ptr->optionsShowTypeEffectiveness = sOptions->sel[MENUITEM_TYPEEFFECTIVENESS];
     gSaveBlock2Ptr->optionsFastFieldMove = sOptions->sel[MENUITEM_FASTFIELDMOVE];
-    gSaveBlock2Ptr->optionsLevelCap = sOptions->sel[MENUITEM_LEVELCAP];
-    gSaveBlock2Ptr->optionsTypeChart = sOptions->sel[MENUITEM_TYPECHART];
     gSaveBlock2Ptr->optionsSound = sOptions->sel[MENUITEM_SOUND];
+    gSaveBlock2Ptr->optionsLowHealthMusic = sOptions->sel[MENUITEM_LOWHEALTHBEEP];
+    gSaveBlock2Ptr->optionsSurfBikeMusic = sOptions->sel[MENUITEM_SURFBIKEMUSIC];
+    gSaveBlock2Ptr->optionsFishReeling = sOptions->sel[MENUITEM_FISHREELING];
+    gSaveBlock2Ptr->optionsFastEggHatch = sOptions->sel[MENUITEM_FASTEGGHATCH];
+    gSaveBlock2Ptr->optionsFastEvolution = sOptions->sel[MENUITEM_FASTEVOSCENE];
+    gSaveBlock2Ptr->optionsPokemonAnim = sOptions->sel[MENUITEM_POKEMONANIM];
     gSaveBlock2Ptr->optionsButtonMode = OPTIONS_BUTTON_MODE_NORMAL; //sOptions->sel[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptions->sel[MENUITEM_FRAMETYPE];
+
+    gSaveBlock2Ptr->optionsLevelCap = sOptions->selKey[MENUITEM_KEY_LVLCAP];
+    gSaveBlock2Ptr->optionsBaseStatsEqual = sOptions->selKey[MENUITEM_KEY_BASESTATSEQ];
+    gSaveBlock2Ptr->optionsTypeChart = sOptions->selKey[MENUITEM_KEY_TYPECHART];
+    gSaveBlock2Ptr->xpMulti = sOptions->selKey[MENUITEM_KEY_EXPMULTIPLIER];
+    gSaveBlock2Ptr->xpTeamMod = sOptions->selKey[MENUITEM_KEY_EXPTEAMMOD];
+
+    gSaveBlock2Ptr->optionsRandomnessType = 0;//sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE];
+    gSaveBlock2Ptr->randomWildEncounters = 0;//sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS];
 
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
     gTasks[taskId].func = Task_OptionMenuFadeOut;
@@ -710,8 +983,80 @@ void LevelCap_DrawChoices(int selection, int y, u8 textSpeed)
     DrawOptionMenuChoice(sText_Strict, GetStringRightAlignXOffset(FONT_NORMAL, sText_Strict, 198), y, styles[2], textSpeed);
 }
 
+void BaseStatEq_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 defaultStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Default");
+    u8 equalStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Equal");
 
+    styles[selection] = 1;
 
+    DrawOptionMenuChoice(defaultStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(equalStr, GetStringRightAlignXOffset(FONT_NORMAL, equalStr, 198), y, styles[1], textSpeed);
+}
+
+void Autorun_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 enableStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Enable");
+    u8 disableStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Disable");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(disableStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(enableStr, GetStringRightAlignXOffset(FONT_NORMAL, enableStr, 198), y, styles[1], textSpeed);
+}
+
+void TypeEffectiveness_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 hideStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Hide");
+    u8 showStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Show");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(hideStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(showStr, GetStringRightAlignXOffset(FONT_NORMAL, showStr, 198), y, styles[1], textSpeed);
+}
+
+void FastScene_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 normalStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Normal");
+    u8 fastStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Fast");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(normalStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(fastStr, GetStringRightAlignXOffset(FONT_NORMAL, fastStr, 198), y, styles[1], textSpeed);
+}
+
+void SeedingType_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[2] = {0};
+    u8 seededStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Seeded");
+    u8 chaoticStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Chaotic");
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(seededStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(chaoticStr, GetStringRightAlignXOffset(FONT_NORMAL, chaoticStr, 198), y, styles[1], textSpeed);
+}
+
+void SurfBikeMusic_DrawChoices(int selection, int y, u8 textSpeed)
+{
+    u8 styles[3] ={0};
+    u8 noneStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}None");
+    u8 frlgStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}FRLG");
+    u8 rseStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}RSE");
+    int xMid = GetMiddleX(noneStr, rseStr, frlgStr);
+
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(noneStr, 104, y, styles[0], textSpeed);
+    DrawOptionMenuChoice(rseStr, xMid, y, styles[1], textSpeed);
+    DrawOptionMenuChoice(frlgStr, GetStringRightAlignXOffset(FONT_NORMAL, frlgStr, 198), y, styles[2], textSpeed);
+}
 
 
 
@@ -841,7 +1186,6 @@ static void DrawHeaderText(void)
 {
     u32 i, widthOptions, xMid;
     u8 pageDots[9] = _("");  // Array size should be at least (2 * PAGE_COUNT) -1
-    widthOptions = GetStringWidth(FONT_NORMAL, gText_Option, 0);
 
     for (i = 0; i < PAGE_COUNT; i++)
     {
@@ -852,22 +1196,41 @@ static void DrawHeaderText(void)
         if (i < PAGE_COUNT - 1)
             StringAppend(pageDots, gText_Space);            
     }
+    widthOptions = GetStringWidth(FONT_NORMAL, pageDots, 0);
     xMid = (8 + widthOptions + 5);
 
     FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_Option, 8, 1, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, xMid, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, 8, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, sOptionMenuPageNames[sOptions->page], xMid, 1, TEXT_SKIP_DRAW, NULL);
     AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_PageNav, GetStringRightAlignXOffset(FONT_NORMAL, gText_PageNav, 198), 1, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(WIN_HEADER, COPYWIN_FULL);
 }
 
 static void DrawOptionMenuTexts(void)
 {
-    u32 i;
+    u8 i, items;
+    const u8* const* menu = NULL;
+
+    
+    switch (sOptions->page)
+    {
+    case PAGE_OPTIONS:
+        items = MENUITEM_COUNT;
+        menu = sOptionMenuItemsNames;
+        break;
+    case PAGE_KEY:
+        items = MENUITEM_KEY_COUNT;
+        menu = sOptionMenuKeyItemsNames;
+        break;
+    case PAGE_RANDOMIZER:
+        items = MENUITEM_RAND_COUNT;
+        menu = sOptionMenuRandomizerItemsNames;
+        break;
+    }
 
     FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
-    for (i = 0; i < MENUITEM_COUNT; i++)
-        AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, sOptionMenuItemsNames[i], 8, (i * Y_DIFF) + 1, TEXT_SKIP_DRAW, NULL);
+    for (i = 0; i < items; i++)
+        AddTextPrinterParameterized(WIN_OPTIONS, FONT_NORMAL, menu[i], 8, (i * Y_DIFF) + 1, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
 }
 

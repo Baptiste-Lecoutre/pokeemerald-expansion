@@ -2888,7 +2888,9 @@ void SpriteCB_HideAsMoveTarget(struct Sprite *sprite)
 
 void SpriteCB_OpponentMonFromBall(struct Sprite *sprite)
 {
-    if (sprite->affineAnimEnded)
+    if (!gSaveBlock2Ptr->optionsPokemonAnim)
+        sprite->callback = SpriteCallbackDummy;
+    else if (sprite->affineAnimEnded)
     {
         if (!(gHitMarker & HITMARKER_NO_ANIMATIONS) || gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
         {
@@ -5462,7 +5464,6 @@ static void HandleEndTurn_FinishBattle(void)
         BeginFastPaletteFade(3);
         FadeOutMapMusic(5);
     #if B_TRAINERS_KNOCK_OFF_ITEMS == TRUE || B_RESTORE_HELD_BATTLE_ITEMS == TRUE
-        if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
             TryRestoreHeldItems();
     #endif
         for (i = 0; i < PARTY_SIZE; i++)

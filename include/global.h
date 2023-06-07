@@ -542,7 +542,6 @@ struct SaveBlock2
     /*0x57C*/ struct RankingHall2P hallRecords2P[FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
-    /*0xF2C*/ //u8 itemFlags[ITEM_FLAGS_COUNT];
     /*0xF2C*/ u16 autoRun:1;
               u16 showItemIconsWheel:1;
               u16 optionsFastFieldMove:1;
@@ -555,9 +554,11 @@ struct SaveBlock2
               u16 optionsShowTypeEffectiveness:1;
               u16 evolveOpponentsMons:1;
               u16 xpMulti:3;
-              u16 xpTeamMod:2;
+              u16 xpTeamMod:1;
               u16 optionsBaseStatsEqual:1;
               u16 trainerLvlScale:1;
+              u16 optionsPokemonAnim:1;
+              u16 optionsSurfBikeMusic:2;
                 u16 optionsRandomnessType:1;
                 u16 randomWildEncounters:1;
                 u16 randomStaticEncounters:1;

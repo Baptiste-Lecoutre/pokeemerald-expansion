@@ -96,6 +96,8 @@ static EWRAM_DATA u32 sBattleTowerMultiBattleTypeFlags = 0;
 
 struct ListMenuTemplate gScrollableMultichoice_ListMenuTemplate;
 
+extern struct Evolution gEvolutionTable[][EVOS_PER_MON];
+
 void TryLoseFansFromPlayTime(void);
 void SetPlayerGotFirstFans(void);
 u16 GetNumFansOfPlayerInTrainerFanClub(void);
@@ -2461,10 +2463,20 @@ void ShowScrollableMultichoice(void)
     case SCROLL_MULTI_GAMECORNER_FIRE_STARTERS:
     case SCROLL_MULTI_GAMECORNER_WATER_STARTERS:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 8;
+        task->tNumItems = 9;
         task->tLeft = 19;
         task->tTop = 1;
         task->tWidth = 12;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_ROAMERS:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 15;
+        task->tLeft = 17;
+        task->tTop = 1;
+        task->tWidth = 14;
         task->tHeight = 12;
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
@@ -2656,8 +2668,9 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_ForgetAMove,
         gText_LearnANewMove,
         gText_RateANickname,
+        gText_DoWonderTrade,
         gText_MysteryGift,
-        gText_ResetEvents,
+//        gText_ResetEvents,
         gText_Exit
     },
     [SCROLL_MULTI_PC_TUTOR_SET_1] = 
@@ -2833,6 +2846,7 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_GameCornerSnivy,
         gText_GameCornerChespin,
         gText_GameCornerRowlet,
+        gText_GameCornerGrookey,
         gText_Exit
     },
     [SCROLL_MULTI_GAMECORNER_FIRE_STARTERS] =
@@ -2844,6 +2858,7 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_GameCornerTepig,
         gText_GameCornerFennekin,
         gText_GameCornerLitten,
+        gText_GameCornerScorbunny,
         gText_Exit
     },
     [SCROLL_MULTI_GAMECORNER_WATER_STARTERS] =
@@ -2855,7 +2870,26 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_GameCornerOshawott,
         gText_GameCornerFroakie,
         gText_GameCornerPopplio,
+        gText_GameCornerSobble,
         gText_Exit
+    },
+    [SCROLL_MULTI_ROAMERS] =
+    {
+        gText_RoamerEntei,
+        gText_RoamerSuicune,
+        gText_RoamerRaikou,
+        gText_RoamerUxie,
+        gText_RoamerMesprit,
+        gText_RoamerAzelf,
+        gText_RoamerTornadus,
+        gText_RoamerThundurus,
+        gText_RoamerLandorus,
+        gText_RoamerEnamorus,
+        gText_RoamerGMoltres,
+        gText_RoamerGZapdos,
+        gText_RoamerGArticuno,
+        gText_RoamerZacian,
+        gText_RoamerZamazenta
     },
 };
 
@@ -5201,5 +5235,37 @@ bool8 AreChosenMonEVsMaxedOut(void)
 {
     if (GetMonEVCount(&gPlayerParty[gSpecialVar_0x8004]) >= MAX_TOTAL_EVS)
         return TRUE;
+    return FALSE;
+}
+
+// Returns TRUE if the player's party contains a Magikarp above evolution lvl, FALSE otherwise
+bool8 HasMightyMagikarp(void)
+{
+    u32 i = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_MAGIKARP
+            && GetMonData(&gPlayerParty[i], MON_DATA_LEVEL) >= gEvolutionTable[SPECIES_MAGIKARP][0].param)
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+// Returns TRUE if the player has a Diancie with maximum friendship, FALSE otherwise
+bool8 GetDiancieFriendshipScore (void)
+{
+    u8 i = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_DIANCIE)
+        {
+            if (GetMonData(&gPlayerParty[i], MON_DATA_FRIENDSHIP) == MAX_FRIENDSHIP)
+            return TRUE;
+        }
+    }
     return FALSE;
 }

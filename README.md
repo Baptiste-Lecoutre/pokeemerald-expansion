@@ -131,56 +131,48 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Added Evie&Ivy from inclement emerald
 - TMs in OW are in a yellow ball, megastones glitter
 - Move relearner can teach moves from pre-evos
-- Added a teleporter in Lanette's house, triggers trade evolutions
 - Added Rocket & Boss trainer classes, with the rocket battle transition from crytaldust
 - Can choose any starter from the 8 first generation by pressing L or R to change pocket during starter selection
 - Brendan/May gives 30 cherrish balls after obtaining the pokedex instead of 5 pokeballs
 - Added a teleporter in Lanette's house, allows to change regional forms of a pokemon by cycling though the gFormSpeciesIdTables
 - Added a scientist in Devon Corp to trigger trade evolutions (ported from Exalted Emerald, credits to segabl)
-- Added soaring (credits to ...)
+- Added soaring with mon showcase & flyout effect (credits to camthesaxman, paccy, and devolov)
 - Starters are available in Mauville game corner
+- Changed Mosdeep music to Dewford
+- Mom gives old rod instead of running shoes (enabled at newgame). Old rod fisherman in Dewford gives an eviolite instead. Good rod is given by a new fisherman in Route 114. Fisherman on Route 118 gives gyaradosite instead. Super rod is unchanged. (Ported from Inclement Emerald)
+- Random item drops when cutting trees or smashing rocks
+- Can select the ball in lastusedball window during battle
+- Can view enemy party summaryscreen if player has scanner (item to be changed, dummied for now)
 - More to be added
 
 ## TODO
 - Add team rocket story
-- Add Kanto and Johto gym leaders with Kanto E4
-    - Brock in granite cave x
-    - Misty on the beach x
-    - Surge in new mauville trying to catch zapdos. Can't catch zapdos until he is defeated.
-    - Erika in verdantuff: blocks the path to the contest hall until defeated, looking up "should I go in?"
-    - Koga in the rainy route with ninjas. "See these ninjas? I'm training them." x
-    - Sabrina talks to a rock which has psychic powers. Talking to the rocks says "just an ordinary rock".
-    - Blaine in start of magma hideout (Hohoho I dug too far!)
-    - Giovanni (rocket event)
-    - Falkner in petalburg school?
-    - Bugsy in petalburg woods, eastern part in a new location?
-    - Whitney in a contest hall, corresponding gym is not opened because you have not proven your worth until you have defeated the strong trainer lurking around the contest hall
-    - Morty in mt pyre
-    - Chuck in desert
-    - Jasmine 
-    - Pryce & Lorelei in Ice cave double battle
-    - Clair & Lance in Meteor Falls double battle
-    - Bruno in the route with the currents, "training by swimming against the currents"
-    - Agatha in mt pyre post-game
+- Add Kanto gym leaders
+    - Giovanni (rocket event TBD)
 - Add Red rivalry
     - PetalburgWoods after defeating Roxanne
     - Fallarbor town, after getting out of the pkmncenter, he gets out of the contest hall
     - Route 121, same trigger as aqua grunts, he cuts the tree and comes to fight
     - Victory Road, double battle with Wally
-- Add mega stones & Z crystals
+- Add Z crystals
+- Give access to islands:
+    - Eon ticket given by rematching the rival in route 103 in IE (southern island, lati@s)
+    - Old sea map is found in abandonned ship (faraway island, mew)
+    - mystic ticket is given by cynthia in mosdeep (navel rock, hooh lugia)
+    - aurora ticket is given by steven in meteorfalls (birth island, deoxys)
 - Add legendary events
     - Gen1:
         - Articuno in Shoal Cave
-        - Moltres in Fiery path
+        - Moltres in Ember path
         - Zapdos in New Mauville
         - Mewtwo in a room of new mauville or in a lab, postgame
         - Mew in birth island
     - Gen2:
         - Dogs: roamers
         - Celebi: petalburg woods using unowns?
-        - Hooh & Lugia: Navel rock if available or ported?
+        - Hooh & Lugia: Navel rock
     - Gen3:
-        - Lati@s roamers?
+        - Lati@s both in southern island
         - Deoxys?
         - Jirachi?
     - Gen4:
@@ -189,7 +181,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
         - Arceus afterwards, player resting in his room?
         - Darkrai, player resting in his room, at night?
         - Heatran in groudon's lava under mt chimney
-        - Regigigas in a cave after catching the 3 hoenn regis
+        - Regigigas in a scorchedslab after catching the 3 hoenn regis
         - Cresselia, lake trio, shaymin, phione, manaphy
     - Gen5:
         - cobalion, terrakion, virizion
@@ -198,32 +190,29 @@ A Discord-based ROM hacking community that has many members who hack using the d
         - victini, keldeo, meloetta, genesect
     - Gen6:
         - xerneas, yveltal, zygarde
-        - dianci, hoopa, volcanion
+        - diancie, hoopa, volcanion
     - Gen7:
     - Gen8: 
-        - Galarian kanto birds roamers ?
+        - ZaZa & Galarian kanto birds roamers -> kanto birds? there's the teleporter... 
+        - Eternatus
+        - Regieleki & Regidrago in new caves with puzzles like other Regis
 
     
-
 - Add new locations
-- Change wild encounters & trainer parties
+- Look at GetHighestLevelInPlayerParty in IE
+- Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
-- ReUse of origin cave post-game
-- Buff the encounters at Sky Pillar after the conflict in Sootopolis is solved.
-- When a Gym Leader rematch is ready to happen, make said gym's trainers battle the Player again.
-- Free up some space for flags and vars by checking trainer flags or if player has items + useless flags like FLAG_SYS_B_DASH
+- Make the sootopolis rayquaza calming groudon and kyogre a double battle (player + rayquaza against groudon and kyogre) mid scene. original idea by devolov
+- Change HoF to megas & primals if correct held items & rayquaza
+- Look at Lunos' todo list in his megamoddedexpansion project
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
 - Change soaring palettes with DNS
-- Add fly out field move with Lati@s mon showcase
 - Change pkmn center layouts to have the move tutor NPC
-- change dexnav logic to handle chain and search levels?
 - Change some interfaces to have a visual identity
     - Text boxes
-    - palettes and/or some UI layouts (see Missiri posts in discord)
-    - wait for A-press button, see vanadium (search "down_arrow")
+    - palettes and/or some UI layouts (see Missiri posts in discord & Reddit post about seasons in gen4)
     - map name popups, see vanadium
     - healthboxes & mega-zmoves triggers
     - bag sprites
-    - make magma bright during the night
+    - make magma bright during the night -> change the DNS from Merpp to Sierra? 
     - dexnav interface
-    - type icons

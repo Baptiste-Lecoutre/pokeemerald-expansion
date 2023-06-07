@@ -10,7 +10,7 @@ PKMN_Center_Move_Tutor::
 	case 1, PKMN_Center_MoveDeleter_EventScript
 	case 2, PKMN_Center_Move_Tutor_MoveTutorMenu
 	case 3, PKMN_Center_NameRater_EventScript
-	case 4, PKMN_Center_Move_Tutor_General_Exit @PKMN_Center_EventScript_Mystery_Gift
+	case 4, EventScript_DoWonderTrade @PKMN_Center_EventScript_Mystery_Gift
 	case 5, PKMN_Center_Move_Tutor_General_Exit @PKMN_Center_EventScript_Event_Reset
 	case 6, PKMN_Center_Move_Tutor_General_Exit
 	case MULTI_B_PRESSED, PKMN_Center_Move_Tutor_General_Exit

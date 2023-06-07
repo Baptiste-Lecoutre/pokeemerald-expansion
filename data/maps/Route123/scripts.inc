@@ -1,9 +1,22 @@
 Route123_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route123_OnTransition
+	map_script MAP_SCRIPT_ON_TRANSITION, Route123_OnTransition
 	.byte 0
 
 Route123_OnTransition:
 	special SetRoute123Weather
+	end
+
+Route123_OnLoad:
+	goto_if_set FLAG_SYS_IN_MIRAGE_LOCATION, Route123_EventScript_ShowMirageCaveEntrance
+	specialvar VAR_RESULT, GetCurrentMirageLocation
+	goto_if_eq VAR_RESULT, MIRAGE_LOCATION_ROUTE_123, Route123_EventScript_ShowMirageCaveEntrance
+	end
+
+Route123_EventScript_ShowMirageCaveEntrance::
+	setmetatile 98, 8, METATILE_General_CaveEntrance_Top, TRUE
+	setmetatile 98, 9, METATILE_General_CaveEntrance_Bottom, FALSE
+	clearflag FLAG_SYS_IN_MIRAGE_LOCATION
 	end
 
 Route123_EventScript_GigaDrainGirl::

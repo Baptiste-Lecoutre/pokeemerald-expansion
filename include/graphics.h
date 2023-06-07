@@ -7309,6 +7309,10 @@ extern const u32 gTrainerFrontPic_RocketGruntF[];
 extern const u32 gTrainerPalette_RocketGruntF[];
 extern const u32 gTrainerFrontPic_Giovanni[];
 extern const u32 gTrainerPalette_Giovanni[];
+extern const u32 gTrainerFrontPic_Cynthia[];
+extern const u32 gTrainerPalette_Cynthia[];
+extern const u32 gTrainerFrontPic_Blue[];
+extern const u32 gTrainerPalette_Blue[];
 
 // pokeblock
 extern const u32 gMenuPokeblock_Gfx[];

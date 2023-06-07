@@ -25,6 +25,47 @@ EventScript_CutTreeDown:: @ fallthrough
 	applymovement VAR_LAST_TALKED, Movement_CutTreeDown
 	waitmovement 0
 	removeobject VAR_LAST_TALKED
+	random 4
+	switch VAR_RESULT
+	case 0, EventScript_CutTreeItem
+	releaseall
+	end
+
+EventScript_CutTreeItem::
+	random 4
+	switch VAR_RESULT
+	case 0, EventScript_CutTreeBerry
+	case 1, EventScript_CutTreeMint
+	case 2, EventScript_CutTreeHerb
+	case 3, EventScript_CutTreeMushroom
+	releaseall
+	end
+
+EventScript_CutTreeBerry::
+	random NUM_BERRIES
+	addvar VAR_RESULT, FIRST_BERRY_INDEX 
+	finditem VAR_RESULT
+	releaseall
+	end
+
+EventScript_CutTreeMint::
+	random 21
+	addvar VAR_RESULT, ITEM_LONELY_MINT
+	finditem VAR_RESULT
+	releaseall
+	end
+
+EventScript_CutTreeHerb::
+	random 4
+	addvar VAR_RESULT, ITEM_ENERGY_POWDER
+	finditem VAR_RESULT
+	releaseall
+	end
+
+EventScript_CutTreeMushroom::
+	random 3
+	addvar VAR_RESULT, ITEM_TINY_MUSHROOM
+	finditem VAR_RESULT
 	releaseall
 	end
 
@@ -94,9 +135,42 @@ EventScript_SmashRock:: @ fallthrough
 	removeobject VAR_LAST_TALKED
 	specialvar VAR_RESULT, TryUpdateRusturfTunnelState
 	goto_if_eq VAR_RESULT, TRUE, EventScript_EndSmash
+	random 4
+	switch VAR_RESULT
+	case 0, EventScript_RockSmashItem
 	special RockSmashWildEncounter
 	goto_if_eq VAR_RESULT, FALSE, EventScript_EndSmash
 	waitstate
+	releaseall
+	end
+
+EventScript_RockSmashItem::
+	random 3
+	switch VAR_RESULT
+	case 0, EventScript_RockSmashEvoStone
+	case 1, EventScript_RockSmashTreasure
+	case 2, EventScript_RockSmashMaxiTreasure
+	releaseall
+	end
+
+EventScript_RockSmashEvoStone::
+	random 10
+	addvar VAR_RESULT, ITEM_FIRE_STONE 
+	finditem VAR_RESULT
+	releaseall
+	end
+
+EventScript_RockSmashTreasure::
+	random 13
+	addvar VAR_RESULT, ITEM_PEARL 
+	finditem VAR_RESULT
+	releaseall
+	end
+
+EventScript_RockSmashMaxiTreasure::
+	random 4
+	addvar VAR_RESULT, ITEM_BOTTLE_CAP 
+	finditem VAR_RESULT
 	releaseall
 	end
 

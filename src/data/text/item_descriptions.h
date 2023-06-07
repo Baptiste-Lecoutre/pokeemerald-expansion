@@ -2655,8 +2655,8 @@ static const u8 sProtectivePadsDesc[] = _(
 
 static const u8 sThroatSprayDesc[] = _(
     "Raises Sp. Atk. if\n"
-    "a Pokémon is hit by\n"
-    "a sound-based move.");
+    "the holder uses a\n"
+    "sound-based move.");
 
 static const u8 sEjectPackDesc[] = _(
     "Forces the user to\n"

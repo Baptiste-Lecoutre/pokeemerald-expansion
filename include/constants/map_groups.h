@@ -215,6 +215,7 @@
 #define MAP_LILYCOVE_CITY_DEPARTMENT_STORE_5F       (20 | (13 << 8))
 #define MAP_LILYCOVE_CITY_DEPARTMENT_STORE_ROOFTOP  (21 | (13 << 8))
 #define MAP_LILYCOVE_CITY_DEPARTMENT_STORE_ELEVATOR (22 | (13 << 8))
+#define MAP_LILYCOVE_CITY_MIRAGE_MOUNTAIN           (23 | (13 << 8))
 
 // gMapGroup_IndoorMossdeep
 #define MAP_MOSSDEEP_CITY_GYM               (0 | (14 << 8))
@@ -281,6 +282,7 @@
 #define MAP_ROUTE114_FOSSIL_MANIACS_HOUSE  (0 | (20 << 8))
 #define MAP_ROUTE114_FOSSIL_MANIACS_TUNNEL (1 | (20 << 8))
 #define MAP_ROUTE114_LANETTES_HOUSE        (2 | (20 << 8))
+#define MAP_ROUTE114_MIRAGE_CAVE           (3 | (20 << 8))
 
 // gMapGroup_IndoorRoute116
 #define MAP_ROUTE116_TUNNELERS_REST_HOUSE (0 | (21 << 8))
@@ -406,6 +408,19 @@
 #define MAP_ASHEN_WOODS                              (111 | (24 << 8))
 #define MAP_SEASPRAY_CAVE                            (112 | (24 << 8))
 #define MAP_SEASPRAY_CAVE_B1F                        (113 | (24 << 8))
+#define MAP_VERDANTURF_MEADOW                        (114 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS                         (115 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS_B1F                     (116 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS_2F                      (117 | (24 << 8))
+#define MAP_SANDSTREWN_RUINS_3F                      (118 | (24 << 8))
+#define MAP_ROUTE111_RUINS_EXTERIOR                  (119 | (24 << 8))
+#define MAP_MIRAGE_TOWER_B1F                         (120 | (24 << 8))
+#define MAP_CAVE_OF_ORIGIN_OTHER_ROOM                (121 | (24 << 8))
+#define MAP_SCORCHED_SLAB_B1F                        (122 | (24 << 8))
+#define MAP_SCORCHED_SLAB_B2F                        (123 | (24 << 8))
+#define MAP_DEWFORD_MEADOW                           (124 | (24 << 8))
+#define MAP_DEWFORD_MANOR_1F                         (125 | (24 << 8))
+#define MAP_SCORCHED_SLAB_REGIGIGAS_ROOM             (126 | (24 << 8))
 
 // gMapGroup_IndoorDynamic
 #define MAP_SECRET_BASE_RED_CAVE1    (0 | (25 << 8))
@@ -588,6 +603,7 @@
 
 // gMapGroup_IndoorRoute123
 #define MAP_ROUTE123_BERRY_MASTERS_HOUSE (0 | (31 << 8))
+#define MAP_ROUTE123_MIRAGE_CAVE         (1 | (31 << 8))
 
 // gMapGroup_IndoorRoute119
 #define MAP_ROUTE119_WEATHER_INSTITUTE_1F (0 | (32 << 8))

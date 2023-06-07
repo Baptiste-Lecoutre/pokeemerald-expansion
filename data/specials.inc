@@ -553,3 +553,7 @@ gSpecials::
 	def_special TryTradeEvolution
 	def_special CanEvolveThroughTrade
 	def_special CanRegionFormChange
+	def_special HasMightyMagikarp
+	def_special GetDiancieFriendshipScore
+	def_special GetCurrentMirageLocation
+	def_special BufferCurrentMirageLocationName

@@ -22,6 +22,11 @@
       "map": "MAP_ROUTE107",
       "offset": 0,
       "direction": "right"
+    },
+    {
+      "map": "MAP_DEWFORD_MEADOW",
+      "offset": 9,
+      "direction": "left"
     }
   ],
   "object_events": [

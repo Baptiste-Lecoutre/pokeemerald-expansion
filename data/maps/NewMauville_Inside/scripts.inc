@@ -1,3 +1,6 @@
+.set LOCALID_SURGE, 9
+.set LOCALID_ZAPDOS, 10
+
 NewMauville_Inside_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, NewMauville_Inside_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, NewMauville_Inside_OnTransition
@@ -22,7 +25,13 @@ NewMauville_Inside_OnTransition:
 	call_if_unset FLAG_DEFEATED_VOLTORB_1_NEW_MAUVILLE, NewMauville_Inside_EventScript_ShowVoltorb1
 	call_if_unset FLAG_DEFEATED_VOLTORB_2_NEW_MAUVILLE, NewMauville_Inside_EventScript_ShowVoltorb2
 	call_if_unset FLAG_DEFEATED_VOLTORB_3_NEW_MAUVILLE, NewMauville_Inside_EventScript_ShowVoltorb3
+	goto_if_defeated TRAINER_LT_SURGE NewMauville_Inside_EventScript_HideSurge
 	end
+
+NewMauville_Inside_EventScript_HideSurge::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_SURGE
+	return
 
 NewMauville_Inside_EventScript_ShowVoltorb1::
 	clearflag FLAG_HIDE_NEW_MAUVILLE_VOLTORB_1
@@ -39,6 +48,45 @@ NewMauville_Inside_EventScript_ShowVoltorb3::
 NewMauville_Inside_OnLoad:
 	call_if_eq VAR_NEW_MAUVILLE_STATE, 2, NewMauville_Inside_EventScript_SetGeneratorOffMetatiles
 	end
+
+NewMauville_Inside_EventScript_Surge::
+	lock
+	faceplayer
+	msgbox NewMauville_Inside_Text_ImSurge, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_LT_SURGE, NewMauville_Inside_Text_NowThatsAShowker
+	msgbox NewMauville_Inside_Text_YoureSpecialKid, MSGBOX_DEFAULT
+	giveitem ITEM_TM72 @ volt switch
+	msgbox NewMauville_Inside_Text_MaybeThatBird, MSGBOX_DEFAULT
+	closemessage
+	fadescreen FADE_TO_BLACK
+	removeobject LOCALID_SURGE
+	setflag FLAG_TEMP_7
+	fadescreen FADE_FROM_BLACK
+	releaseall
+	end
+
+NewMauville_Inside_Text_ImSurge:
+	.string "Hey, kid! What do you think you're\n"
+    .string "doing here? This bird is mine!\p"
+    .string "You won't live long in combat!\n"
+    .string "Not with your puny power!\p"
+    .string "I tell you, kid, electric Pokémon\n"
+    .string "saved me during the war!\p"
+    .string "They zapped my enemies into\n"
+    .string "paralysis!\p"
+    .string "The same as I, Kanto's great Lt. Surge\n"
+	.string "will do to you!$"
+
+NewMauville_Inside_Text_YoureSpecialKid:
+	.string "Now that's a shocker!\n"
+	.string "You're the real deal, kid!$"
+
+NewMauville_Inside_Text_NowThatsAShowker:
+	.string "You're special, kid! Take this!$"
+
+NewMauville_Inside_Text_MaybeThatBird:
+	.string "Maybe that bird's a better fit for you.\n"
+	.string "Time for me to retreat.$"
 
 NewMauville_Inside_EventScript_BlueButton::
 	lockall
