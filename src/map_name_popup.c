@@ -9,6 +9,7 @@
 #include "international_string_util.h"
 #include "menu.h"
 #include "map_name_popup.h"
+#include "overworld.h"
 #include "palette.h"
 #include "region_map.h"
 #include "rtc.h"
@@ -317,6 +318,10 @@ void HideMapNamePopUpWindow(void)
         SetGpuReg_ForcedBlank(REG_OFFSET_BG0VOFS, 0);
         SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN1_BG_ALL | WININ_WIN1_OBJ);
         SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_EFFECT_BLEND);
+        //if (gTimeOfDay != TIME_OF_DAY_NIGHT) 
+        //    Weather_SetBlendCoeffs(8, 10);
+        //else
+        //    Weather_SetBlendCoeffs(7, 12);
         SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 10));
         DisableInterrupts(INTR_FLAG_HBLANK);
         SetHBlankCallback(NULL);
