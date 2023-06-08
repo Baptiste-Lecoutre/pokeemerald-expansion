@@ -11,12 +11,12 @@
 #include "map_name_popup.h"
 #include "palette.h"
 #include "region_map.h"
+#include "rtc.h"
 #include "scanline_effect.h"
 #include "start_menu.h"
 #include "string_util.h"
 #include "task.h"
 #include "text.h"
-//#include "time.h"
 #include "constants/battle_frontier.h"
 #include "constants/layouts.h"
 #include "constants/region_map_sections.h"
@@ -38,6 +38,7 @@ static void Task_MapNamePopUpWindow(u8 taskId);
 static void ShowMapNamePopUpWindow(void);
 static void LoadMapNamePopUpWindowBg(void);
 static void LoadMapNamePopUpWindowBgs(void);
+static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute);
 
 // EWRAM
 //EWRAM_DATA u8 gPopupTaskId = 0;
@@ -342,9 +343,10 @@ static void ShowMapNamePopUpWindow(void)
     AddTextPrinterParameterized(GetPrimaryPopUpWindowId(), FONT_SHORT, mapDisplayHeader, 8, 4, TEXT_SKIP_DRAW, NULL);
 
     withoutPrefixPtr = &(mapDisplayHeader[3]);
-    //FormatDecimalTimeWithoutSeconds(withoutPrefixPtr, gSaveBlock2Ptr->inGameClock.hours, gSaveBlock2Ptr->inGameClock.minutes, gSaveBlock2Ptr->is24HClockMode);
+    RtcCalcLocalTime();
+    FormatDecimalTimeWithoutSeconds(withoutPrefixPtr, gLocalTime.hours, gLocalTime.minutes);
 
-    //AddTextPrinterParameterized(GetSecondaryPopUpWindowId(), FONT_SMALL, mapDisplayHeader, 200, 6, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(GetSecondaryPopUpWindowId(), FONT_SMALL, mapDisplayHeader, 200, 6, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(GetPrimaryPopUpWindowId(), COPYWIN_FULL);
     CopyWindowToVram(GetSecondaryPopUpWindowId(), COPYWIN_FULL);
 }
@@ -424,4 +426,12 @@ static void LoadMapNamePopUpWindowBgs(void)
     PutWindowTilemap(weatherPopUpWindowId);
     BlitBitmapRectToWindow(mapNamePopUpWindowId, gPopUpWindowBorder_Tiles, 0, 0, DISPLAY_WIDTH, 24, 0, 0, DISPLAY_WIDTH, 24);
     BlitBitmapRectToWindow(weatherPopUpWindowId, gPopUpWindowBorder_Tiles, 0, 24, DISPLAY_WIDTH, 24, 0, 0, DISPLAY_WIDTH, 24);
+}
+
+static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute)
+{
+    dest = ConvertIntToDecimalStringN(dest, hour, STR_CONV_MODE_LEADING_ZEROS, 2);
+    *dest++ = CHAR_COLON;
+    dest = ConvertIntToDecimalStringN(dest, minute, STR_CONV_MODE_LEADING_ZEROS, 2);
+    *dest = EOS;
 }
