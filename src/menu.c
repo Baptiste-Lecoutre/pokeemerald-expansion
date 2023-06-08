@@ -12,6 +12,7 @@
 #include "pokedex.h"
 #include "pokemon_icon.h"
 #include "region_map.h"
+#include "scanline_effect.h"
 #include "sound.h"
 #include "string_util.h"
 #include "strings.h"
@@ -60,8 +61,11 @@ static void WindowFunc_DrawStdFrameWithCustomTileAndPalette(u8, u8, u8, u8, u8, 
 static void WindowFunc_ClearStdWindowAndFrameToTransparent(u8, u8, u8, u8, u8, u8);
 static void task_free_buf_after_copying_tile_data_to_vram(u8 taskId);
 
+EWRAM_DATA u8 gPopupTaskId = 0;
+
 static EWRAM_DATA u8 sStartMenuWindowId = 0;
-static EWRAM_DATA u8 sMapNamePopupWindowId = 0;
+static EWRAM_DATA u8 sPrimaryPopupWindowId = 0;
+static EWRAM_DATA u8 sSecondaryPopupWindowId = 0;
 static EWRAM_DATA struct Menu sMenu = {0};
 static EWRAM_DATA u16 sTileNum = 0;
 static EWRAM_DATA u8 sPaletteNum = 0;
@@ -73,6 +77,11 @@ static EWRAM_DATA u16 sTempTileDataBufferIdx = 0;
 static EWRAM_DATA void *sTempTileDataBuffer[0x20] = {NULL};
 
 const u16 gStandardMenuPalette[] = INCBIN_U16("graphics/interface/std_menu.gbapal");
+
+const struct ScanlineEffectParams gPopUpScanlineEffectParams =
+{
+    (void *)REG_ADDR_BG0VOFS, SCANLINE_EFFECT_DMACNT_16BIT, 1
+};
 
 static const u8 sTextSpeedFrameDelays[] =
 {
@@ -146,7 +155,8 @@ void InitStandardTextBoxWindows(void)
 {
     InitWindows(sStandardTextBox_WindowTemplates);
     sStartMenuWindowId = WINDOW_NONE;
-    sMapNamePopupWindowId = WINDOW_NONE;
+    sPrimaryPopupWindowId = WINDOW_NONE;
+    sSecondaryPopupWindowId = WINDOW_NONE;
 }
 
 void FreeAllOverworldWindowBuffers(void)
@@ -526,22 +536,22 @@ static u16 GetStandardFrameBaseTileNum(void)
 
 u8 AddMapNamePopUpWindow(void)
 {
-    if (sMapNamePopupWindowId == WINDOW_NONE)
-        sMapNamePopupWindowId = AddWindowParameterized(0, 1, 1, 10, 3, 14, 0x107);
-    return sMapNamePopupWindowId;
+    if (sPrimaryPopupWindowId == WINDOW_NONE)
+        sPrimaryPopupWindowId = AddWindowParameterized(0, 0, 0, 30, 3, 14, 0x107);
+    return sPrimaryPopupWindowId;
 }
 
-u8 GetMapNamePopUpWindowId(void)
+u8 GetPrimaryPopUpWindowId(void)
 {
-    return sMapNamePopupWindowId;
+    return sPrimaryPopupWindowId;
 }
 
-void RemoveMapNamePopUpWindow(void)
+void RemovePrimaryPopUpWindow(void)
 {
-    if (sMapNamePopupWindowId != WINDOW_NONE)
+    if (sPrimaryPopupWindowId != WINDOW_NONE)
     {
-        RemoveWindow(sMapNamePopupWindowId);
-        sMapNamePopupWindowId = WINDOW_NONE;
+        RemoveWindow(sPrimaryPopupWindowId);
+        sPrimaryPopupWindowId = WINDOW_NONE;
     }
 }
 
@@ -2166,4 +2176,61 @@ void BufferSaveMenuText(u8 textId, u8 *dest, u8 color)
             *endOfString = EOS;
             break;
     }
+}
+
+u8 AddFieldEffectPopUpWindow(void)
+{
+    if (sSecondaryPopupWindowId == WINDOW_NONE)
+        sSecondaryPopupWindowId = AddWindowParameterized(0, 0, 20, 30, 3, 14, 0x107);
+    return sSecondaryPopupWindowId;
+}
+
+u8 AddWeatherPopUpWindow(void)
+{
+    if (sSecondaryPopupWindowId == WINDOW_NONE)
+        sSecondaryPopupWindowId = AddWindowParameterized(0, 0, 17, 30, 3, 14, 0x161);
+    return sSecondaryPopupWindowId;
+}
+
+u8 GetSecondaryPopUpWindowId(void)
+{
+    return sSecondaryPopupWindowId;
+}
+
+void RemoveSecondaryPopUpWindow(void)
+{
+    if (sSecondaryPopupWindowId != WINDOW_NONE)
+    {
+        RemoveWindow(sSecondaryPopupWindowId);
+        sSecondaryPopupWindowId = WINDOW_NONE;
+    }
+}
+
+void SetDoublePopUpWindowScanlineBuffers(u8 offset)
+{
+    u32 i; 
+    for (i = 0; i < DISPLAY_HEIGHT; i++)
+    {
+        if (i < 80)
+        {
+            gScanlineEffectRegBuffers[0][i] = offset;
+            gScanlineEffectRegBuffers[1][i] = offset;
+        }
+        else
+        {
+            gScanlineEffectRegBuffers[0][i] = -offset;
+            gScanlineEffectRegBuffers[1][i] = -offset;
+        }
+    }
+}
+
+void HBlankCB_DoublePopupWindow(void)
+{
+    u16 offset = 24 - gTasks[gPopupTaskId].data[2];
+    u16 scanline = REG_VCOUNT;
+
+    if (scanline < offset || scanline > 156 - offset)
+        REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
+    else
+        REG_BLDALPHA = BLDALPHA_BLEND(8, 10);
 }
