@@ -3509,10 +3509,10 @@ static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] =
         [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
     },
     { // Double Battles
-        [B_POSITION_PLAYER_LEFT] = { 225, 71},
-        [B_POSITION_OPPONENT_LEFT] = {20, 15},
-        [B_POSITION_PLAYER_RIGHT] = {220, 96},
-        [B_POSITION_OPPONENT_RIGHT] = {15, 40}, 
+        [B_POSITION_PLAYER_LEFT] = { 221, 71},
+        [B_POSITION_OPPONENT_LEFT] = {24, 14},
+        [B_POSITION_PLAYER_RIGHT] = {216, 96},
+        [B_POSITION_OPPONENT_RIGHT] = {19, 39}, 
     },
 };
 
