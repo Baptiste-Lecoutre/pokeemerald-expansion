@@ -10117,16 +10117,16 @@ const struct Trainer gTrainers[] = {
         .party = NO_ITEM_DEFAULT_MOVES(sParty_Gabrielle4),
     },
 
-    [TRAINER_GABRIELLE_5] =
+    [TRAINER_RED_FALLARBOR] =
     {
-        .trainerClass = TRAINER_CLASS_PKMN_BREEDER,
-        .encounterMusic_gender = F_TRAINER_FEMALE | TRAINER_ENCOUNTER_MUSIC_FEMALE,
-        .trainerPic = TRAINER_PIC_POKEMON_BREEDER_F,
-        .trainerName = _("Gabrielle"),
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_PIC_RED,
+        .trainerName = _("Red"),
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_Gabrielle5),
+        .party = NO_ITEM_DEFAULT_MOVES(sParty_RedFallarbor),
     },
 
     [TRAINER_THALIA_2] =

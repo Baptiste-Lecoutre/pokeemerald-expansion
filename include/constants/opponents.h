@@ -844,7 +844,7 @@
 #define TRAINER_GABRIELLE_2                 840
 #define TRAINER_GABRIELLE_3                 841
 #define TRAINER_GABRIELLE_4                 842
-#define TRAINER_GABRIELLE_5                 843
+#define TRAINER_RED_FALLARBOR                 843
 #define TRAINER_THALIA_2                    844
 #define TRAINER_THALIA_3                    845
 #define TRAINER_THALIA_4                    846

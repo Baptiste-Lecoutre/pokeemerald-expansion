@@ -153,7 +153,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - PetalburgWoods after defeating Roxanne
     - Fallarbor town, after getting out of the pkmncenter, he gets out of the contest hall
     - Route 121, same trigger as aqua grunts, he cuts the tree and comes to fight
-    - Victory Road, double battle with Wally
+    - Victory Road, double battle with Wally & ingame partner. partner: may or leaf?
 - Add Z crystals
 - Give access to islands:
     - Eon ticket given by rematching the rival in route 103 in IE (southern island, lati@s)
