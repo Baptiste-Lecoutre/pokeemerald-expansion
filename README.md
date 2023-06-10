@@ -206,13 +206,13 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Change HoF to megas & primals if correct held items & rayquaza
 - Look at Lunos' todo list in his megamoddedexpansion project
 - Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
-- Change soaring palettes with DNS
+x Change soaring palettes with DNS
 - Change pkmn center layouts to have the move tutor NPC
 - Change some interfaces to have a visual identity
     - Text boxes
     - palettes and/or some UI layouts (see Missiri posts in discord & Reddit post about seasons in gen4)
-    - map name popups, see vanadium
+    x map name popups, see vanadium
     - healthboxes & mega-zmoves triggers
     - bag sprites
     - make magma bright during the night -> change the DNS from Merpp to Sierra? 
-    - dexnav interface
+    x dexnav interface

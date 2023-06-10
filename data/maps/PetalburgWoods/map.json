@@ -187,14 +187,14 @@
       "graphics_id": "OBJ_EVENT_GFX_RED",
       "x": 14,
       "y": 9,
-      "elevation": 0,
-      "movement_type": "MOVEMENT_TYPE_NONE",
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "Common_EventScript_TrainerNotReadyYet",
-      "flag": "0"
+      "script": "PetalburgWoods_EventScript_Red",
+      "flag": "FLAG_TEMP_7"
     }
   ],
   "warp_events": [
@@ -273,6 +273,24 @@
       "var": "VAR_PETALBURG_WOODS_STATE",
       "var_value": "0",
       "script": "PetalburgWoods_EventScript_DevonResearcherRight"
+    },
+    {
+      "type": "trigger",
+      "x": 14,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_TEMP_E",
+      "var_value": "0",
+      "script": "PetalburgWoods_EventScript_TriggerLeftRed"
+    },
+    {
+      "type": "trigger",
+      "x": 15,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_TEMP_E",
+      "var_value": "0",
+      "script": "PetalburgWoods_EventScript_TriggerRightRed"
     }
   ],
   "bg_events": [

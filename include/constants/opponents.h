@@ -848,7 +848,7 @@
 #define TRAINER_THALIA_2                    844
 #define TRAINER_THALIA_3                    845
 #define TRAINER_THALIA_4                    846
-#define TRAINER_THALIA_5                    847
+#define TRAINER_RED_PETALBURG_WOODS                    847
 #define TRAINER_MARIELA                     848
 #define TRAINER_ALVARO                      849
 #define TRAINER_EVERETT                     850
