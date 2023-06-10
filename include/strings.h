@@ -3577,6 +3577,24 @@ extern const u8 gText_TutorMoveSet5[];
 extern const u8 gText_TutorMoveSet6[];
 extern const u8 gText_TutorMoveSet7[];
 
+//Costumes
+extern const u8 gText_RedCostume[];
+extern const u8 gText_LeafCostume[];
+extern const u8 gText_BrendanCostume[];
+extern const u8 gText_MayCostume[];
+extern const u8 gText_EthanCostume[];
+extern const u8 gText_LyraCostume[];
+extern const u8 gText_KrisCostume[];
+extern const u8 gText_LucasCostume[];
+extern const u8 gText_DawnCostume[];
+extern const u8 gText_LucasPlatinumCostume[];
+extern const u8 gText_DawnPlatinumCostume[];
+
+extern const u8 gText_FirstDrawer[];
+extern const u8 gText_SecondDrawer[];
+extern const u8 gText_ThirdDrawer[];
+extern const u8 gText_FourthDrawer[];
+
 extern const u8 gText_RoamerEntei[];
 extern const u8 gText_RoamerSuicune[];
 extern const u8 gText_RoamerRaikou[];

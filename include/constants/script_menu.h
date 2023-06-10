@@ -129,6 +129,11 @@
 #define MULTI_EV_MENU                      118
 #define MULTI_PKMN_CENTER_TUTOR_SETS       119
 #define MULTI_GRASS_FIRE_WATER             120
+#define MULTI_DRESSER_DRAWERS              121
+#define MULTI_KANTO_COSTUMES               122
+#define MULTI_JOHTO_COSTUMES               123
+#define MULTI_HOENN_COSTUMES               124
+#define MULTI_SINNOH_COSTUMES              125
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

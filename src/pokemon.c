@@ -3271,6 +3271,69 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_BattleSpriteStartSlideLeft,
     },
+    [TRAINER_BACK_PIC_ETHAN] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Ethan,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_LYRA] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Lyra,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_KRIS] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Kris,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_LUCAS] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Lucas,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_DAWN] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Dawn,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_LUCAS_PLATINUM] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_LucasPlatinum,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_DAWN_PLATINUM] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_DawnPlatinum,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
 };
 
 #define NUM_SECRET_BASE_CLASSES 5
@@ -8852,4 +8915,48 @@ u16 GetNextRegionalForm(u16 species)
 
     }
     return targetSpecies;
+}
+
+u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGender)
+{
+    u16 trainerPic;
+
+    switch (costumeId)
+    {
+        case BRENDAN_COSTUME:
+            trainerPic = TRAINER_PIC_BRENDAN;
+            break;
+        case MAY_COSTUME:
+            trainerPic = TRAINER_PIC_MAY;
+            break;
+        case RED_COSTUME:
+            trainerPic = TRAINER_PIC_RED;
+            break;
+        case LEAF_COSTUME:
+            trainerPic = TRAINER_PIC_LEAF;
+            break;
+        case ETHAN_COSTUME:
+            trainerPic = TRAINER_PIC_ETHAN;
+            break;
+        case LYRA_COSTUME:
+            trainerPic = TRAINER_PIC_LYRA;
+            break;
+        case KRIS_COSTUME:
+            trainerPic = TRAINER_PIC_KRIS;
+            break;
+        case LUCAS_COSTUME:
+            trainerPic = TRAINER_PIC_LUCAS;
+            break;
+        case DAWN_COSTUME:
+            trainerPic = TRAINER_PIC_DAWN;
+            break;
+        case LUCAS_PLATINUM_COSTUME:
+            trainerPic = TRAINER_PIC_LUCAS_PLATINUM;
+            break;
+        case DAWN_PLATINUM_COSTUME:
+            trainerPic = TRAINER_PIC_DAWN_PLATINUM;
+            break;
+    }
+
+    return trainerPic;
 }
