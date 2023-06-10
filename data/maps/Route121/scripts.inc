@@ -1,9 +1,21 @@
 .set LOCALID_GRUNT_1, 12
 .set LOCALID_GRUNT_2, 13
 .set LOCALID_GRUNT_3, 14
+.set LOCALID_RED, 30
+.set LOCALID_RED_TREE, 15
 
 Route121_MapScripts::
+	map_script MAP_SCRIPT_ON_TRANSITION, Route121_OnTransition
 	.byte 0
+
+Route121_OnTransition:
+	goto_if_defeated TRAINER_RED_ROUTE121, Route121_EventScript_HideRed
+	end
+
+Route121_EventScript_HideRed::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_RED
+	return
 
 Route121_EventScript_Woman::
 	msgbox Route121_Text_AheadLoomsMtPyre, MSGBOX_NPC
@@ -32,9 +44,120 @@ Route121_EventScript_AquaGruntsMoveOut::
 	removeobject LOCALID_GRUNT_1
 	removeobject LOCALID_GRUNT_2
 	removeobject LOCALID_GRUNT_3
+	goto Route121_EventScript_RedScene
 	setvar VAR_ROUTE121_STATE, 1
 	releaseall
 	end
+
+Route121_EventScript_RedScene::
+	applymovement LOCALID_RED_TREE, Movement_CutTreeDown
+	waitmovement 0
+	removeobject LOCALID_RED_TREE
+	getplayerxy VAR_0x8004, VAR_0x8005
+	switch VAR_0x8005
+	case 5, Route121_EventScript_MoveRed0
+	case 6, Route121_EventScript_MoveRed1
+	case 7, Route121_EventScript_MoveRed2
+	case 8, Route121_EventScript_MoveRed3
+	goto Route121_EventScript_Red
+	return
+
+Route121_EventScript_Red::
+	msgbox Route121_Text_OhHeyPlayer, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_RED_ROUTE121, Route121_Text_DidntTrainEnough
+	msgbox Route121_Text_ImImpressed, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_RED
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	return
+
+Route121_Text_OhHeyPlayer:
+	.string "Oh, hey {PLAYER}!\p"
+	.string "I was looking for great Pokémons in\n"
+	.string "the Safari zone, but then I heard those\l"
+	.string "weird people scaring the Pokémons…\p"
+	.string "By the way, have you gotten any better?\n"
+	.string "Let's test your training!$"
+
+Route121_Text_DidntTrainEnough:
+	.string "I didn't train enough…$"
+
+Route121_Text_ImImpressed:
+	.string "I'm impressed by how strong you've become!\n"
+	.string "Will you try to challenge the Pokémon\l"
+	.string "League?\p"
+	.string "The path is still long, but I'm sure you\n"
+	.string "can get there!\p"
+	.string "I'll train a lot, even more than you, and\n"
+	.string "I'll challenge you there! See you!$"
+
+Route121_EventScript_MoveRed0::
+	applymovement LOCALID_RED, Route121_Movement_RedApproach0
+	waitmovement 0
+	return
+
+Route121_EventScript_MoveRed1::
+	applymovement LOCALID_RED, Route121_Movement_RedApproach1
+	waitmovement 0
+	return
+
+Route121_EventScript_MoveRed2::
+	applymovement LOCALID_RED, Route121_Movement_RedApproach2
+	waitmovement 0
+	return
+
+Route121_EventScript_MoveRed3::
+	applymovement LOCALID_RED, Route121_Movement_RedApproach3
+	waitmovement 0
+	return
+
+Route121_Movement_RedApproach0:
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	step_end
+
+Route121_Movement_RedApproach1:
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_down
+	walk_left
+	walk_left
+	walk_left
+	step_end
+
+Route121_Movement_RedApproach2:
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_down
+	walk_down
+	walk_left
+	walk_left
+	walk_left
+	step_end
+
+Route121_Movement_RedApproach3:
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_down
+	walk_down
+	walk_down
+	walk_left
+	walk_left
+	walk_left
+	step_end
 
 Route121_Movement_Grunt1Exit:
 	walk_down

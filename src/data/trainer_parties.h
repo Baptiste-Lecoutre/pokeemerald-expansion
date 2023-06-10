@@ -12157,7 +12157,7 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Sawyer4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_Sawyer5[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_RedRoute121[] = {
     {
     .iv = 40,
     .lvl = 33,

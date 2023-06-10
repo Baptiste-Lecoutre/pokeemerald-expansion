@@ -840,7 +840,7 @@
 #define TRAINER_SAWYER_2                    836
 #define TRAINER_SAWYER_3                    837
 #define TRAINER_SAWYER_4                    838
-#define TRAINER_SAWYER_5                    839
+#define TRAINER_RED_ROUTE121                    839
 #define TRAINER_GABRIELLE_2                 840
 #define TRAINER_GABRIELLE_3                 841
 #define TRAINER_GABRIELLE_4                 842
