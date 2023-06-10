@@ -480,4 +480,6 @@ extern const u8 BattleScript_StatUpZMove[];
 extern const u8 BattleScript_HealReplacementZMove[];
 extern const u8 BattleScript_EffectExtremeEvoboost[];
 
+extern const u8 BattleScript_ItemDropped[];
+
 #endif // GUARD_BATTLE_SCRIPTS_H
