@@ -50,6 +50,8 @@ Route121_EventScript_AquaGruntsMoveOut::
 	end
 
 Route121_EventScript_RedScene::
+	applymovement LOCALID_RED, Route121_Movement_RedMoveLeft
+	waitmovement 0
 	applymovement LOCALID_RED_TREE, Movement_CutTreeDown
 	waitmovement 0
 	removeobject LOCALID_RED_TREE
@@ -71,7 +73,9 @@ Route121_EventScript_Red::
 	removeobject LOCALID_RED
 	setflag FLAG_TEMP_7
 	fadescreenswapbuffers FADE_FROM_BLACK
-	return
+	setvar VAR_ROUTE121_STATE, 1
+	releaseall
+	end
 
 Route121_Text_OhHeyPlayer:
 	.string "Oh, hey {PLAYER}!\p"
@@ -96,25 +100,32 @@ Route121_Text_ImImpressed:
 Route121_EventScript_MoveRed0::
 	applymovement LOCALID_RED, Route121_Movement_RedApproach0
 	waitmovement 0
-	return
+	goto Route121_EventScript_Red
+	end
 
 Route121_EventScript_MoveRed1::
 	applymovement LOCALID_RED, Route121_Movement_RedApproach1
 	waitmovement 0
-	return
+	goto Route121_EventScript_Red
+	end
 
 Route121_EventScript_MoveRed2::
 	applymovement LOCALID_RED, Route121_Movement_RedApproach2
 	waitmovement 0
-	return
+	goto Route121_EventScript_Red
+	end
 
 Route121_EventScript_MoveRed3::
 	applymovement LOCALID_RED, Route121_Movement_RedApproach3
 	waitmovement 0
-	return
+	goto Route121_EventScript_Red
+	end
+
+Route121_Movement_RedMoveLeft:
+	walk_left
+	step_end
 
 Route121_Movement_RedApproach0:
-	walk_left
 	walk_left
 	walk_left
 	walk_left
@@ -131,7 +142,6 @@ Route121_Movement_RedApproach1:
 	walk_down
 	walk_left
 	walk_left
-	walk_left
 	step_end
 
 Route121_Movement_RedApproach2:
@@ -141,7 +151,6 @@ Route121_Movement_RedApproach2:
 	walk_left
 	walk_down
 	walk_down
-	walk_left
 	walk_left
 	walk_left
 	step_end
@@ -154,7 +163,6 @@ Route121_Movement_RedApproach3:
 	walk_down
 	walk_down
 	walk_down
-	walk_left
 	walk_left
 	walk_left
 	step_end

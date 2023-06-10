@@ -409,7 +409,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_RED",
-      "x": 33,
+      "x": 34,
       "y": 5,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
@@ -433,7 +433,7 @@
   "coord_events": [
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 5,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",
@@ -442,7 +442,7 @@
     },
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 6,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",
@@ -451,7 +451,7 @@
     },
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 7,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",
@@ -460,7 +460,7 @@
     },
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 8,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",
