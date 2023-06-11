@@ -3013,13 +3013,13 @@ static void FillPartnerParty(u16 trainerId)
 
     if (trainerId == TRAINER_STEVEN_PARTNER)
     {
-        for (i = 0; i < MULTI_PARTY_SIZE; i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
             do
             {
                 j = Random32();
             } while (IsShinyOtIdPersonality(STEVEN_OTID, j) || sStevenMons[i].nature != GetNatureFromPersonality(j));
-            CreateMon(&gPlayerParty[MULTI_PARTY_SIZE + i],
+            CreateMon(&gPlayerPartnerParty[i],
                       sStevenMons[i].species,
                       sStevenMons[i].level,
                       sStevenMons[i].fixedIV,
@@ -3031,23 +3031,23 @@ static void FillPartnerParty(u16 trainerId)
                       #endif
                       OT_ID_PRESET, STEVEN_OTID);
             for (j = 0; j < PARTY_SIZE; j++)
-                SetMonData(&gPlayerParty[MULTI_PARTY_SIZE + i], MON_DATA_HP_EV + j, &sStevenMons[i].evs[j]);
+                SetMonData(&gPlayerPartnerParty[i], MON_DATA_HP_EV + j, &sStevenMons[i].evs[j]);
             for (j = 0; j < MAX_MON_MOVES; j++)
-                SetMonMoveSlot(&gPlayerParty[MULTI_PARTY_SIZE + i], sStevenMons[i].moves[j], j);
-            SetMonData(&gPlayerParty[MULTI_PARTY_SIZE + i], MON_DATA_OT_NAME, gTrainers[TRAINER_STEVEN].trainerName);
+                SetMonMoveSlot(&gPlayerPartnerParty[i], sStevenMons[i].moves[j], j);
+            SetMonData(&gPlayerPartnerParty[i], MON_DATA_OT_NAME, gTrainers[TRAINER_STEVEN].trainerName);
             j = MALE;
-            SetMonData(&gPlayerParty[MULTI_PARTY_SIZE + i], MON_DATA_OT_GENDER, &j);
-            CalculateMonStats(&gPlayerParty[MULTI_PARTY_SIZE + i]);
+            SetMonData(&gPlayerPartnerParty[i], MON_DATA_OT_GENDER, &j);
+            CalculateMonStats(&gPlayerPartnerParty[i]);
         }
     }
     else if (trainerId >= TRAINER_CUSTOM_PARTNER)
     {
         otID = Random32();
 
-        for (i = 0; i < 3; i++)
-            ZeroMonData(&gPlayerParty[i + 3]);
+        for (i = 0; i < PARTY_SIZE; i++)
+            ZeroMonData(&gPlayerPartnerParty[i]);
 
-        for (i = 0; i < 3 && i < gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].partySize; i++)
+        for (i = 0; i < PARTY_SIZE && i < gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].partySize; i++)
         {
             do
             {
@@ -3060,19 +3060,19 @@ static void FillPartnerParty(u16 trainerId)
             {
                 const struct TrainerMonNoItemDefaultMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.NoItemDefaultMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerPartnerParty[i], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
                 break;
             }
             case F_TRAINER_PARTY_CUSTOM_MOVESET:
             {
                 const struct TrainerMonNoItemCustomMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.NoItemCustomMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerPartnerParty[i], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
 
                 for (j = 0; j < 4; j++)
                 {
-                    SetMonData(&gPlayerParty[i + 3], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
-                    SetMonData(&gPlayerParty[i + 3], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
                 }
                 break;
             }
@@ -3080,23 +3080,23 @@ static void FillPartnerParty(u16 trainerId)
             {
                 const struct TrainerMonItemDefaultMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.ItemDefaultMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerPartnerParty[i], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
 
-                SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
+                SetMonData(&gPlayerPartnerParty[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
                 break;
             }
             case F_TRAINER_PARTY_CUSTOM_MOVESET | F_TRAINER_PARTY_HELD_ITEM:
             {
                 const struct TrainerMonItemCustomMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.ItemCustomMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerPartnerParty[i], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
 
-                SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
+                SetMonData(&gPlayerPartnerParty[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
 
                 for (j = 0; j < 4; j++)
                 {
-                    SetMonData(&gPlayerParty[i + 3], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
-                    SetMonData(&gPlayerParty[i + 3], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
                 }
                 break;
             }
@@ -3117,24 +3117,24 @@ static void FillPartnerParty(u16 trainerId)
                     otID = HIHALF(j) ^ LOHALF(j);
                 }
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, 0, TRUE, j, otIdType, otID);
-                SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
+                CreateMon(&gPlayerPartnerParty[i], partyData[i].species, partyData[i].lvl, 0, TRUE, j, otIdType, otID);
+                SetMonData(&gPlayerPartnerParty[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
 
                 // TODO: Figure out a default strategy when moves are not set, to generate a good moveset
                 for (j = 0; j < MAX_MON_MOVES; ++j)
                 {
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
                 }
-                SetMonData(&gPlayerParty[i+3], MON_DATA_IVS, &(partyData[i].iv));
+                SetMonData(&gPlayerPartnerParty[i], MON_DATA_IVS, &(partyData[i].iv));
                 if (partyData[i].ev != NULL)
                 {
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_HP_EV, &(partyData[i].ev[0]));
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_ATK_EV, &(partyData[i].ev[1]));
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_DEF_EV, &(partyData[i].ev[2]));
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_SPATK_EV, &(partyData[i].ev[3]));
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_SPDEF_EV, &(partyData[i].ev[4]));
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_SPEED_EV, &(partyData[i].ev[5]));
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_HP_EV, &(partyData[i].ev[0]));
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_ATK_EV, &(partyData[i].ev[1]));
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_DEF_EV, &(partyData[i].ev[2]));
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_SPATK_EV, &(partyData[i].ev[3]));
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_SPDEF_EV, &(partyData[i].ev[4]));
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_SPEED_EV, &(partyData[i].ev[5]));
                 }
                 if (partyData[i].ability != ABILITY_NONE)
                 {
@@ -3146,24 +3146,24 @@ static void FillPartnerParty(u16 trainerId)
                             break;
                     }
                     if (j < maxAbilities)
-                        SetMonData(&gPlayerParty[i+3], MON_DATA_ABILITY_NUM, &j);
+                        SetMonData(&gPlayerPartnerParty[i], MON_DATA_ABILITY_NUM, &j);
                 }
-                SetMonData(&gPlayerParty[i+3], MON_DATA_FRIENDSHIP, &(partyData[i].friendship));
+                SetMonData(&gPlayerPartnerParty[i], MON_DATA_FRIENDSHIP, &(partyData[i].friendship));
                 if (partyData[i].ball != ITEM_NONE)
                 {
                     ball = partyData[i].ball;
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_POKEBALL, &ball);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_POKEBALL, &ball);
                 }
                 if (partyData[i].nickname != NULL)
                 {
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_NICKNAME, partyData[i].nickname);
+                    SetMonData(&gPlayerPartnerParty[i], MON_DATA_NICKNAME, partyData[i].nickname);
                 }
-                CalculateMonStats(&gPlayerParty[i+3]);
+                CalculateMonStats(&gPlayerPartnerParty[i]);
             }
             }
 
             StringCopy(trainerName, gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].trainerName);
-            SetMonData(&gPlayerParty[i + 3], MON_DATA_OT_NAME, trainerName);
+            SetMonData(&gPlayerPartnerParty[i], MON_DATA_OT_NAME, trainerName);
         }
     }
     else if (trainerId == TRAINER_EREADER)
