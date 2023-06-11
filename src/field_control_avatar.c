@@ -42,6 +42,7 @@ static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
 static EWRAM_DATA u8 sCurrentDirection = 0;
 static EWRAM_DATA u8 sPreviousDirection = 0;
+static EWRAM_DATA u8 sRegisteredKeyItem = 4;
 
 u8 gSelectedObjectEvent;
 
@@ -190,14 +191,16 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
     }
     else
     {
-        if (newKeys & DPAD_UP)
-            input->dpadDirectionRegister = 0;
-        else if (newKeys & DPAD_RIGHT)
-            input->dpadDirectionRegister = 1;
-        else if (newKeys & DPAD_DOWN)
-            input->dpadDirectionRegister = 2;
-        else if (newKeys & DPAD_LEFT)
-            input->dpadDirectionRegister = 3;
+        //sRegisteredKeyItem = 4;
+        if (newKeys & DPAD_UP || heldKeys & DPAD_UP)
+            input->dpadDirectionRegister = sRegisteredKeyItem = 0;
+        else if (newKeys & DPAD_RIGHT || heldKeys & DPAD_RIGHT)
+            input->dpadDirectionRegister = sRegisteredKeyItem = 1;
+        else if (newKeys & DPAD_DOWN || heldKeys & DPAD_DOWN)
+            input->dpadDirectionRegister = sRegisteredKeyItem = 2;
+        else if (newKeys & DPAD_LEFT || heldKeys & DPAD_LEFT)
+            input->dpadDirectionRegister = sRegisteredKeyItem = 3;
+            
     }
 
 #if DEBUG_OVERWORLD_MENU == TRUE && DEBUG_OVERWORLD_IN_MENU == FALSE
@@ -261,8 +264,8 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     if (gSaveBlock2Ptr->showItemIconsWheel && (input->pressedAButton || input->pressedBButton))
     {
         gSaveBlock2Ptr->showItemIconsWheel = FALSE;
+        sRegisteredKeyItem = 4;
         DestroyItemIconSprites();
-        return TRUE;
     }
 
     if (input->pressedStartButton)
@@ -277,18 +280,23 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     if (input->pressedSelectButton && PlayerHasOneRegisteredItem())
     {
         gSaveBlock2Ptr->showItemIconsWheel = !gSaveBlock2Ptr->showItemIconsWheel;
+        sRegisteredKeyItem = 4;
         if (gSaveBlock2Ptr->showItemIconsWheel)
             DrawRegisteredQuickAccess();
         else 
             DestroyItemIconSprites();
     }
 
-    if (gSaveBlock2Ptr->showItemIconsWheel && input->dpadDirectionRegister != 4)// (gSaveBlock1Ptr->registeredItem != ITEM_NONE))
+    if (gSaveBlock2Ptr->showItemIconsWheel && sRegisteredKeyItem != 4)
     {
-        if (UseRegisteredKeyItemOnField(input->dpadDirectionRegister) == TRUE)
+        if (input->dpadDirectionRegister == 4)
         {
-            gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-            return TRUE;
+            if (UseRegisteredKeyItemOnField(sRegisteredKeyItem) == TRUE)
+            {
+                sRegisteredKeyItem = 4;
+                gSaveBlock2Ptr->showItemIconsWheel = FALSE;
+                return TRUE;
+            }
         }
     }
     
