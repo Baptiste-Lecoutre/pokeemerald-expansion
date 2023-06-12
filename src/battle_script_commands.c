@@ -12467,8 +12467,8 @@ static void Cmd_forcerandomswitch(void)
         if (BATTLE_TWO_VS_ONE_OPPONENT && GetBattlerSide(gBattlerTarget) == B_SIDE_OPPONENT)
         {
             firstMonId = 0;
-            lastMonId = 6;
-            monsCount = 6;
+            lastMonId = PARTY_SIZE;
+            monsCount = PARTY_SIZE;
             battler2PartyId = gBattlerPartyIndexes[gBattlerTarget];
             battler1PartyId = gBattlerPartyIndexes[BATTLE_PARTNER(gBattlerTarget)];
         }
@@ -16551,8 +16551,9 @@ u8 GetFirstFaintedPartyIndex(u8 battlerId)
     struct Pokemon *party = GetBattlerParty(battlerId);
 
     // Check whether partner is separate trainer.
-    if ((GetBattlerSide(battlerId) == B_SIDE_PLAYER && gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
-        || (GetBattlerSide(battlerId) == B_SIDE_OPPONENT && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+        && ((GetBattlerSide(battlerId) == B_SIDE_PLAYER && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+        || (GetBattlerSide(battlerId) == B_SIDE_OPPONENT && !(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))))
     {
         if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
             || GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT)

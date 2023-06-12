@@ -48,6 +48,6 @@ RustboroCity_PokemonCenter_1F_Text_HMCutNextDoor:
 	.string "Cut down skinny trees.$"
 
 RustboroCity_PokemonCenter_1F_EventScript_Test_ingame_partner::
-	multi_2_vs_1 TRAINER_BLAINE, MagmaHideout_1F_Text_IveBeenBurntOut, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	multi_fixed_2_vs_1 TRAINER_BLAINE, MagmaHideout_1F_Text_IveBeenBurntOut, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
 	releaseall
 	end
