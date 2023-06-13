@@ -617,7 +617,7 @@ static void SetBattlePartyIds(void)
                 }
                 else
                 {
-                    if (IsValidForBattle(&party[j]) /*&& gBattlerPartyIndexes[i - 2] != j*/)
+                    if (IsValidForBattle(&party[j]) && gBattlerPartyIndexes[i - 2] != j)
                     {
                         gBattlerPartyIndexes[i] = j;
                         break;

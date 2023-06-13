@@ -2667,11 +2667,11 @@ void DisplayPartyMenuStdMessage(u32 stringId)
             else if (gMain.inBattle)
             {
                 // Checks if the opponent is sending out a new pokemon.
-                if (species >= NUM_SPECIES ||  species == SPECIES_NONE)
+                if (species >= NUM_SPECIES ||  species == SPECIES_NONE || enemyNextMonID >= PARTY_SIZE)
                 {
                     species = gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species;
                     // Now tries to check if there's any opposing pokemon on the field
-                    if (species >= NUM_SPECIES ||  species == SPECIES_NONE || gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_MULTI))
+                    if (species >= NUM_SPECIES ||  species == SPECIES_NONE || gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_MULTI)) // remove last condition to have the message in double battles
                         stringId = PARTY_MSG_CHOOSE_MON_2;  // No species on the other side, show the default text.
                 }
                 if (stringId == PARTY_MSG_CHOOSE_MON)
