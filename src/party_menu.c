@@ -2658,7 +2658,7 @@ void DisplayPartyMenuStdMessage(u32 stringId)
 
         if (stringId == PARTY_MSG_CHOOSE_MON)
         {
-            u8 enemyNextMonID = *(gBattleStruct->monToSwitchIntoId + B_SIDE_OPPONENT);
+            u8 enemyNextMonID = *(gBattleStruct->monToSwitchIntoId + B_POSITION_OPPONENT_LEFT);
             u16 species = GetMonData(&gEnemyParty[enemyNextMonID], MON_DATA_SPECIES);
             if (sPartyMenuInternal->chooseHalf)
                 stringId = PARTY_MSG_CHOOSE_MON_AND_CONFIRM;
@@ -2669,9 +2669,9 @@ void DisplayPartyMenuStdMessage(u32 stringId)
                 // Checks if the opponent is sending out a new pokemon.
                 if (species >= NUM_SPECIES ||  species == SPECIES_NONE)
                 {
-                    species = gBattleMons[B_SIDE_OPPONENT].species;
+                    species = gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species;
                     // Now tries to check if there's any opposing pokemon on the field
-                    if (species >= NUM_SPECIES ||  species == SPECIES_NONE || gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+                    if (species >= NUM_SPECIES ||  species == SPECIES_NONE || gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_MULTI))
                         stringId = PARTY_MSG_CHOOSE_MON_2;  // No species on the other side, show the default text.
                 }
                 if (stringId == PARTY_MSG_CHOOSE_MON)
@@ -6772,19 +6772,35 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, u8 ba
 
     if (IsMultiBattle() == TRUE) //
     {
-        if (flankId != 0)
+        if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT && (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
         {
-            partyBattleOrder[0] = 0 | (3 << 4);
-            partyBattleOrder[1] = 5 | (4 << 4);
-            partyBattleOrder[2] = 2 | (1 << 4);
+            j = 1;
+            partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                if (i != partyIndexes[0])
+                {
+                    partyIndexes[j] = i;
+                    j++;
+                }
+            }
         }
         else
         {
-            partyBattleOrder[0] = 3 | (0 << 4);
-            partyBattleOrder[1] = 2 | (1 << 4);
-            partyBattleOrder[2] = 5 | (4 << 4);
+            if (flankId != 0)
+            {
+                partyBattleOrder[0] = 0 | (3 << 4);
+                partyBattleOrder[1] = 5 | (4 << 4);
+                partyBattleOrder[2] = 2 | (1 << 4);
+            }
+            else
+            {
+                partyBattleOrder[0] = 3 | (0 << 4);
+                partyBattleOrder[1] = 2 | (1 << 4);
+                partyBattleOrder[2] = 5 | (4 << 4);
+            }
+            return;
         }
-        return;
     }
     else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_RIGHT && (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
     {
