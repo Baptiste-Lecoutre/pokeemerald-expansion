@@ -2019,7 +2019,7 @@ static u32 CopyPlayerMonData(u8 monId, u8 *dst)
 {
     struct BattlePokemon battleMon;
     struct MovePpInfo moveData;
-    struct Pokemon *party = gPlayerParty;//GetBattlerParty(gActiveBattler);
+    struct Pokemon *party = GetBattlerParty(gActiveBattler);
     u8 nickname[20];
     u8 *src;
     s16 data16;

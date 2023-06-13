@@ -12553,7 +12553,9 @@ static void Cmd_forcerandomswitch(void)
             if (GetMonData(&party[i], MON_DATA_SPECIES) != SPECIES_NONE
              && !GetMonData(&party[i], MON_DATA_IS_EGG)
              && GetMonData(&party[i], MON_DATA_HP) != 0
-             && i != battler1PartyId
+             && (i != battler1PartyId 
+                || ((gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && GetBattlerSide(gBattlerTarget) == B_SIDE_PLAYER) 
+                || ((gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && GetBattlerSide(gBattlerTarget) == B_SIDE_OPPONENT))
              && i != battler2PartyId)
              {
                  validMons[validMonsCount++] = i;

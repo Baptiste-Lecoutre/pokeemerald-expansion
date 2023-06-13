@@ -1377,7 +1377,7 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
             u8 partyId = GetPartyIdFromBattleSlot((u8)*slotPtr);
             if (GetMonData(&gPlayerParty[*slotPtr], MON_DATA_HP) > 0
                 || GetMonData(&gPlayerParty[*slotPtr], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG
-                || ((gBattleTypeFlags & BATTLE_TYPE_MULTI) && partyId >= (PARTY_SIZE / 2)))
+                || ((gBattleTypeFlags & BATTLE_TYPE_MULTI) && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && partyId >= (PARTY_SIZE / 2)))
             {
                 // Can't select if egg, alive, or doesn't belong to you
                 PlaySE(SE_FAILURE);
@@ -6595,9 +6595,9 @@ void ChooseMonForWirelessMinigame(void)
 
 static u8 GetPartyLayoutFromBattleType(void)
 {
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
         return PARTY_LAYOUT_MULTI;
-    if (!IsDoubleBattle() || gPlayerPartyCount == 1) // Draw the single layout in a double battle where the player has only one pokemon.
+    if (!IsDoubleBattle() || gPlayerPartyCount == 1 || (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)) // Draw the single layout in a double battle where the player has only one pokemon.
         return PARTY_LAYOUT_SINGLE;
     return PARTY_LAYOUT_DOUBLE;
 }
@@ -6635,7 +6635,7 @@ static bool8 TrySwitchInPokemon(void)
     u8 i;
 
     // In a multi battle, slots 1, 4, and 5 are the partner's pokemon
-    if (IsMultiBattle() == TRUE && (slot == 1 || slot == 4 || slot == 5))
+    if (IsMultiBattle() == TRUE && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && (slot == 1 || slot == 4 || slot == 5))
     {
         StringCopy(gStringVar1, GetTrainerPartnerName());
         StringExpandPlaceholders(gStringVar4, gText_CantSwitchWithAlly);
@@ -6697,7 +6697,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
     u8 partyIds[PARTY_SIZE];
     int i, j;
 
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE  && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
     {
         // Party ids are packed in 4 bits at a time
         // i.e. the party id order below would be 0, 3, 5, 4, 2, 1, and the two parties would be 0,5,4 and 3,2,1
@@ -6770,7 +6770,7 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, u8 ba
         rightBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
     }
 
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE) //
     {
         if (flankId != 0)
         {

@@ -1597,7 +1597,7 @@ static void PlayerPartnerHandleChoosePokemon(void)
             for (chosenMonId = 0; chosenMonId < PARTY_SIZE; chosenMonId++)
             {
                 if (GetMonData(&party[chosenMonId], MON_DATA_HP) != 0
-                    && chosenMonId != gBattlerPartyIndexes[playerMonIdentity]
+                    /*&& chosenMonId != gBattlerPartyIndexes[playerMonIdentity]*/
                     && chosenMonId != gBattlerPartyIndexes[selfIdentity])
                 {
                     break;
