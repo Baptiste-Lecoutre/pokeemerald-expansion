@@ -193,7 +193,8 @@ Route120_EventScript_StevenBattleKecleon::
 	playmoncry SPECIES_KECLEON, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_KECLEON, 30
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_KECLEON, VAR_RESULT
 	setvar VAR_0x8009, 0
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	dowildbattle

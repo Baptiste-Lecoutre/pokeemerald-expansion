@@ -559,3 +559,5 @@ gSpecials::
 	def_special BufferCurrentMirageLocationName
 	def_special SwapPlayersCostume
 	def_special GetPlayerCostumeId
+	def_special GetStaticEncounterLevel
+ 	def_special GetHighestLevelInPlayerParty

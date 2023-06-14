@@ -5623,6 +5623,26 @@ u8 CalculateEnemyPartyCount(void)
     return gEnemyPartyCount;
 }
 
+// Basically GetMonsStateToDoubles, but includes fainted Pokemon
+u8 CalculatePlayerBattlerPartyCount(void)
+{
+    s32 battlerCount = 0;
+    s32 i;
+    CalculatePlayerPartyCount();
+
+    if (gPlayerPartyCount == 1)
+        return gPlayerPartyCount; // PLAYER_HAS_ONE_MON
+
+    for (i = 0; i < gPlayerPartyCount; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL) != SPECIES_EGG
+         && GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL) != SPECIES_NONE)
+            battlerCount++;
+    }
+
+    return battlerCount;
+}
+
 u8 GetMonsStateToDoubles(void)
 {
     s32 aliveCount = 0;
