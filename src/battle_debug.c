@@ -877,10 +877,10 @@ static void PutAiPartyText(struct BattleDebugMenu *data)
 {
     u32 i, j, count;
     u8 *text = Alloc(0x50), *txtPtr;
-    struct AiPartyMon *aiMons = AI_PARTY->mons[GET_BATTLER_SIDE(data->aiBattlerId)];
+    struct AiPartyMon *aiMons = AI_PARTY->mons[data->aiBattlerId];
 
     FillWindowPixelBuffer(data->aiMovesWindowId, 0x11);
-    count = AI_PARTY->count[GET_BATTLER_SIDE(data->aiBattlerId)];
+    count = AI_PARTY->count[data->aiBattlerId];
     for (i = 0; i < count; i++)
     {
         if (aiMons[i].wasSentInBattle)
@@ -1002,8 +1002,8 @@ static void Task_ShowAiParty(u8 taskId)
         LoadMonIconPalettes();
         LoadPartyMenuAilmentGfx();
         data->aiBattlerId = data->battlerId;
-        aiMons = AI_PARTY->mons[GET_BATTLER_SIDE(data->aiBattlerId)];
-        for (i = 0; i < AI_PARTY->count[GET_BATTLER_SIDE(data->aiBattlerId)]; i++)
+        aiMons = AI_PARTY->mons[data->aiBattlerId];
+        for (i = 0; i < AI_PARTY->count[data->aiBattlerId]; i++)
         {
             u16 species = SPECIES_NONE; // Question mark
             if (aiMons[i].wasSentInBattle && aiMons[i].species)

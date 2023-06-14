@@ -508,7 +508,7 @@ void RecordKnownMove(u8 battlerId, u32 move)
         if (BATTLE_HISTORY->usedMoves[battlerId][i] == MOVE_NONE)
         {
             BATTLE_HISTORY->usedMoves[battlerId][i] = move;
-            AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].moves[i] = move;
+            AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].moves[i] = move;
             break;
         }
     }
@@ -517,7 +517,7 @@ void RecordKnownMove(u8 battlerId, u32 move)
 void RecordAbilityBattle(u8 battlerId, u16 abilityId)
 {
     BATTLE_HISTORY->abilities[battlerId] = abilityId;
-    AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].ability = abilityId;
+    AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability = abilityId;
 }
 
 void ClearBattlerAbilityHistory(u8 battlerId)
@@ -528,7 +528,7 @@ void ClearBattlerAbilityHistory(u8 battlerId)
 void RecordItemEffectBattle(u8 battlerId, u8 itemEffect)
 {
     BATTLE_HISTORY->itemEffects[battlerId] = itemEffect;
-    AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].heldEffect = itemEffect;
+    AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].heldEffect = itemEffect;
 }
 
 void ClearBattlerItemEffectHistory(u8 battlerId)
@@ -610,8 +610,8 @@ void SetBattlerData(u8 battlerId)
         }
 
         // Use the known battler's ability.
-        if (AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
-            gBattleMons[battlerId].ability = AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].ability;
+        if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
+            gBattleMons[battlerId].ability = AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability;
         // Check if mon can only have one ability.
         else if (gSpeciesInfo[species].abilities[1] == ABILITY_NONE
                 || gSpeciesInfo[species].abilities[1] == gSpeciesInfo[species].abilities[0])
@@ -620,12 +620,12 @@ void SetBattlerData(u8 battlerId)
         else
             gBattleMons[battlerId].ability = ABILITY_NONE;
 
-        if (AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].heldEffect == 0)
+        if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].heldEffect == 0)
             gBattleMons[battlerId].item = 0;
 
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
-            if (AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].moves[i] == 0)
+            if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].moves[i] == 0)
                 gBattleMons[battlerId].moves[i] = 0;
         }
     }
@@ -1240,8 +1240,8 @@ s32 AI_GetAbility(u32 battlerId)
     if (knownAbility == ABILITY_NONE)
         return knownAbility;
 
-    if (AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
-        return AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].ability;
+    if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
+        return AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability;
 
     // Abilities that prevent fleeing - treat as always known
     if (knownAbility == ABILITY_SHADOW_TAG || knownAbility == ABILITY_MAGNET_PULL || knownAbility == ABILITY_ARENA_TRAP)
@@ -1267,7 +1267,7 @@ u16 AI_GetHoldEffect(u32 battlerId)
     u32 holdEffect;
 
     if (!IsAiBattlerAware(battlerId))
-        holdEffect = AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].heldEffect;
+        holdEffect = AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].heldEffect;
     else
         holdEffect = GetBattlerHoldEffect(battlerId, FALSE);
 

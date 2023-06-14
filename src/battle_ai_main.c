@@ -278,20 +278,37 @@ void Ai_InitPartyStruct(void)
     }
 
     // Find fainted mons
-    for (i = 0; i < AI_PARTY->count[B_SIDE_PLAYER]; i++)
+    for (i = 0; i < AI_PARTY->count[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)]; i++)
     {
         if (GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0)
-            AI_PARTY->mons[B_SIDE_PLAYER][i].isFainted = TRUE;
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)][i].isFainted = TRUE;
 
         if (isOmniscient)
         {
             u32 j;
             mon = &gPlayerParty[i];
-            AI_PARTY->mons[B_SIDE_PLAYER][i].item = GetMonData(mon, MON_DATA_HELD_ITEM);
-            AI_PARTY->mons[B_SIDE_PLAYER][i].heldEffect = ItemId_GetHoldEffect(AI_PARTY->mons[B_SIDE_PLAYER][i].item);
-            AI_PARTY->mons[B_SIDE_PLAYER][i].ability = GetMonAbility(mon);
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)][i].item = GetMonData(mon, MON_DATA_HELD_ITEM);
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)][i].heldEffect = ItemId_GetHoldEffect(AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)][i].item);
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)][i].ability = GetMonAbility(mon);
             for (j = 0; j < MAX_MON_MOVES; j++)
-                AI_PARTY->mons[B_SIDE_PLAYER][i].moves[j] = GetMonData(mon, MON_DATA_MOVE1 + j);
+                AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)][i].moves[j] = GetMonData(mon, MON_DATA_MOVE1 + j);
+        }
+    }
+
+    for (i = 0; i < AI_PARTY->count[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)]; i++)
+    {
+        if (GetMonData(&gPlayerPartnerParty[i], MON_DATA_HP) == 0)
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)][i].isFainted = TRUE;
+
+        if (isOmniscient)
+        {
+            u32 j;
+            mon = &gPlayerPartnerParty[i];
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)][i].item = GetMonData(mon, MON_DATA_HELD_ITEM);
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)][i].heldEffect = ItemId_GetHoldEffect(AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)][i].item);
+            AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)][i].ability = GetMonAbility(mon);
+            for (j = 0; j < MAX_MON_MOVES; j++)
+                AI_PARTY->mons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)][i].moves[j] = GetMonData(mon, MON_DATA_MOVE1 + j);
         }
     }
 }
@@ -300,7 +317,7 @@ void Ai_UpdateSwitchInData(u32 battler)
 {
     u32 i;
     u32 side = GetBattlerSide(battler);
-    struct AiPartyMon *aiMon = &AI_PARTY->mons[side][gBattlerPartyIndexes[battler]];
+    struct AiPartyMon *aiMon = &AI_PARTY->mons[battler][gBattlerPartyIndexes[battler]];
 
     // See if the switched-in mon has been already in battle
     if (aiMon->wasSentInBattle)
@@ -328,7 +345,7 @@ void Ai_UpdateSwitchInData(u32 battler)
 
 void Ai_UpdateFaintData(u32 battler)
 {
-    struct AiPartyMon *aiMon = &AI_PARTY->mons[GET_BATTLER_SIDE(battler)][gBattlerPartyIndexes[battler]];
+    struct AiPartyMon *aiMon = &AI_PARTY->mons[battler][gBattlerPartyIndexes[battler]];
     ClearBattlerMoveHistory(battler);
     ClearBattlerAbilityHistory(battler);
     ClearBattlerItemEffectHistory(battler);
