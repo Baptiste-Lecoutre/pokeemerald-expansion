@@ -74,12 +74,16 @@ Debug_Script_1::
 	end
 
 Debug_Script_2::
+	special GameClear
+	waitstate
 	end
 
 Debug_Script_3::
+	PKMN_Center_Move_Tutor
 	end
 
 Debug_Script_4::
+	multi_fixed_2_vs_2 TRAINER_ROSE_1, Route118_Text_RoseDefeat, TRAINER_DEANDRE, Route118_Text_DeandreDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
 	end
 
 Debug_Script_5::

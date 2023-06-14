@@ -33,6 +33,7 @@
 #include "trainer_pokemon_sprites.h"
 #include "data.h"
 #include "confetti_util.h"
+#include "constants/form_change_types.h"
 #include "constants/rgb.h"
 
 #define HALL_OF_FAME_MAX_TEAMS 30
@@ -437,7 +438,7 @@ void CB2_DoHallOfFameScreenDontSaveData(void)
 static void Task_Hof_InitMonData(u8 taskId)
 {
     u16 i, j;
-
+    const struct FormChange *formChanges;
     gTasks[taskId].tMonNumber = 0; // valid pokes
 
     for (i = 0; i < PARTY_SIZE; i++)
@@ -454,6 +455,34 @@ static void Task_Hof_InitMonData(u8 taskId)
             {
                 sHofMonPtr->mon[i].nick[j] = nick[j];
             }
+            
+            formChanges = gFormChangeTablePointers[sHofMonPtr->mon[i].species];
+            if (formChanges != NULL)
+            {
+                for (j = 0; formChanges[j].method != FORM_CHANGE_TERMINATOR; j++)
+                {
+                    if ((formChanges[j].method == FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM
+                        || formChanges[j].method == FORM_CHANGE_BATTLE_MEGA_EVOLUTION_MOVE))
+                    {
+                        switch (formChanges[j].method)
+                        {
+                            case FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM:
+                            case FORM_CHANGE_BATTLE_PRIMAL_REVERSION:
+                                if (GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM) == formChanges[j].param1)
+                                    sHofMonPtr->mon[i].species = formChanges[j].targetSpecies;
+                                break;
+                            case FORM_CHANGE_BATTLE_MEGA_EVOLUTION_MOVE:
+                                if (GetMonData(&gPlayerParty[i], MON_DATA_MOVE1) == formChanges[i].param1
+                                 || GetMonData(&gPlayerParty[i], MON_DATA_MOVE2) == formChanges[i].param1
+                                 || GetMonData(&gPlayerParty[i], MON_DATA_MOVE3) == formChanges[i].param1
+                                 || GetMonData(&gPlayerParty[i], MON_DATA_MOVE4) == formChanges[i].param1)
+                                    sHofMonPtr->mon[i].species = formChanges[j].targetSpecies;
+                                break;
+                        }
+                    }
+                }
+            }
+
             gTasks[taskId].tMonNumber++;
         }
         else
