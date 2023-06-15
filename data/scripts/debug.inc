@@ -79,7 +79,7 @@ Debug_Script_2::
 	end
 
 Debug_Script_3::
-	PKMN_Center_Move_Tutor
+	goto PKMN_Center_Move_Tutor
 	end
 
 Debug_Script_4::
