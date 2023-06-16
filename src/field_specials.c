@@ -4512,16 +4512,18 @@ static void Task_LinkRetireStatusWithBattleTowerPartner(u8 taskId)
 
 void Script_DoRayquazaScene(void)
 {
-    if (!gSpecialVar_0x8004)
+    if (gSpecialVar_0x8004 == 0)
     {
         // Groudon/Kyogre fight scene
-        DoRayquazaScene(0, TRUE, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        DoRayquazaScene(0, 1, CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
-    else
+    else if (gSpecialVar_0x8004 == 1)
     {
         // Rayquaza arrives scene
-        DoRayquazaScene(1, FALSE, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        DoRayquazaScene(1, 0, CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
+    else 
+        DoRayquazaScene(5, 2, CB2_ReturnToFieldContinueScriptPlayMapMusic);
 }
 
 #define playCount data[0]
