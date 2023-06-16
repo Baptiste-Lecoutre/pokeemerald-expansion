@@ -577,6 +577,7 @@ struct SaveBlock2
                 u16 randomMusic:1;
                 u16 randomLevels:1;
                 u16 randomStarters:1;
+            u8 costumeId;
                 
     
 }; // sizeof=0xF2C

@@ -1,3 +1,5 @@
+.set LOCALID_RED, 7
+
 FallarborTown_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, FallarborTown_OnTransition
 	.byte 0
@@ -6,7 +8,112 @@ FallarborTown_OnTransition:
 	setflag FLAG_VISITED_FALLARBOR_TOWN
 	setvar VAR_CONTEST_HALL_STATE, 0
 	clearflag FLAG_CONTEST_SKETCH_CREATED
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_RED
+	goto_if_defeated TRAINER_RED_FALLARBOR, FallarborTown_EventScript_PreventDoingRedScene
 	end
+
+FallarborTown_EventScript_PreventDoingRedScene::
+	setvar VAR_TEMP_E, 1
+	return
+
+FallarborTown_EventScript_RedSceneSouth::
+	lockall
+	clearflag FLAG_TEMP_7
+	opendoor 8, 7
+	waitdooranim
+	addobject LOCALID_RED
+	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
+	waitmovement 0
+	closedoor 8, 7
+	waitdooranim
+	delay 10
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	waitmovement 0
+	goto FallarborTown_EventScriptRed
+	end
+
+FallarborTown_EventScript_RedSceneWest::
+	lockall
+	clearflag FLAG_TEMP_7
+	opendoor 8, 7
+	waitdooranim
+	addobject LOCALID_RED
+	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
+	waitmovement 0
+	closedoor 8, 7
+	waitdooranim
+	delay 10
+	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	waitmovement 0
+	goto FallarborTown_EventScriptRed
+	end
+
+FallarborTown_EventScript_RedSceneEast::
+	lockall
+	clearflag FLAG_TEMP_7
+	opendoor 8, 7
+	waitdooranim
+	addobject LOCALID_RED
+	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
+	waitmovement 0
+	closedoor 8, 7
+	waitdooranim
+	delay 10
+	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	waitmovement 0
+	goto FallarborTown_EventScriptRed
+	end
+
+FallarborTown_EventScriptRed::
+	msgbox FallarborTown_Text_OhHeyPlayer, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_RED_FALLARBOR, FallarborTown_Text_Again
+	msgbox FallarborTown_Text_MyPokemonsAndI, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_RED
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	setvar VAR_TEMP_E, 1
+	releaseall
+	end
+
+FallarborTown_Text_OhHeyPlayer:
+	.string "Oh, hey {PLAYER}!\n"
+	.string "Have you tried these Pokemon contests?\p"
+	.string "We don't have these in Kanto, maybe\n"
+	.string "I'll open a contest hall on my way back.\p"
+	.string "Did you get any better since last time?\n"
+	.string "My Pokémons and I have grown stronger!$"
+
+FallarborTown_Text_Again:
+	.string "I lost?! Again?!$"
+
+FallarborTown_Text_MyPokemonsAndI:
+	.string "My Pokémons and I trained a lot, but\n"
+	.string "it is still not enough.\p"
+	.string "I'll continue training even more, and\n"
+	.string "next I'll beat you!$"
+
+FallarborTown_Movement_RedStepDown:
+	walk_down
+	step_end
 
 FallarborTown_EventScript_ExpertM::
 	lock

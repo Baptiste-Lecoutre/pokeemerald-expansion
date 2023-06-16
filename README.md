@@ -143,23 +143,26 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Random item drops when cutting trees or smashing rocks
 - Can select the ball in lastusedball window during battle
 - Can view enemy party summaryscreen if player has scanner (item to be changed, dummied for now)
+- Added Agustin's wild item drops
+- Added costumes based on PokeClassic's code. Dresser added to the player's room
+- Updates Mirage-Island mechanics (credits to segabl)
+- All Pokemon Centers now have a NPC for movetutor/relearner/deleter & more
+- Mon that can mega evolve are displayed as such in HoF
 - More to be added
 
 ## TODO
 - Add team rocket story
-- Add Kanto gym leaders
-    - Giovanni (rocket event TBD)
+    - Possibly a small event before new mauville in the game corner
 - Add Red rivalry
-    - PetalburgWoods after defeating Roxanne
-    - Fallarbor town, after getting out of the pkmncenter, he gets out of the contest hall
-    - Route 121, same trigger as aqua grunts, he cuts the tree and comes to fight
-    - Victory Road, double battle with Wally
+    - Victory Road, double battle with Wally & ingame partner. 12v12? partner: may/brendan or leaf?
 - Add Z crystals
 - Give access to islands:
     - Eon ticket given by rematching the rival in route 103 in IE (southern island, lati@s)
     - Old sea map is found in abandonned ship (faraway island, mew)
     - mystic ticket is given by cynthia in mosdeep (navel rock, hooh lugia)
     - aurora ticket is given by steven in meteorfalls (birth island, deoxys)
+
+
 - Add legendary events
     - Gen1:
         - Articuno in Shoal Cave
@@ -203,16 +206,12 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Change trainer parties
 - Change pc access in pokenav to first menu, and move ribbons to condition submenu
 - Make the sootopolis rayquaza calming groudon and kyogre a double battle (player + rayquaza against groudon and kyogre) mid scene. original idea by devolov
-- Change HoF to megas & primals if correct held items & rayquaza
 - Look at Lunos' todo list in his megamoddedexpansion project
-- Free up some trainers (Rival, Aqua/Magma leaders) by checking MAPSECs and other story-related flags. Could use a generic TrainerPartyOverride func 
-- Change soaring palettes with DNS
-- Change pkmn center layouts to have the move tutor NPC
+- Free up some trainers (Rival) by checking starter VAR. Could use a generic TrainerPartyOverride func 
+- do some pokemon swarms + held items: https://github.com/i0brendan0/pokeemerald-expanded/commit/692223d5c9a2f4517097a052e6e6e15bbb001530
 - Change some interfaces to have a visual identity
     - Text boxes
     - palettes and/or some UI layouts (see Missiri posts in discord & Reddit post about seasons in gen4)
-    - map name popups, see vanadium
     - healthboxes & mega-zmoves triggers
     - bag sprites
     - make magma bright during the night -> change the DNS from Merpp to Sierra? 
-    - dexnav interface

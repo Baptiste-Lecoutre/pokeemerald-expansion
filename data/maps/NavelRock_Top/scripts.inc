@@ -57,7 +57,8 @@ NavelRock_Top_EventScript_HoOh::
 	applymovement LOCALID_HO_OH, NavelRock_Top_Movement_HoOhApproach
 	waitmovement 0
 	special RemoveCameraObject
-	seteventmon SPECIES_HO_OH, 70
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	seteventmon SPECIES_HO_OH, VAR_RESULT
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	waitstate

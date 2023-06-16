@@ -35,7 +35,8 @@ TerraCave_End_EventScript_Groudon::
 	delay 40
 	waitmoncry
 	setvar VAR_LAST_TALKED, LOCALID_GROUDON
-	setwildbattle SPECIES_GROUDON, 70
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_GROUDON, VAR_RESULT
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	waitstate

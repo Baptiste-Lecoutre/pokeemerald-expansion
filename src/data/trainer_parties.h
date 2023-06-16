@@ -12157,7 +12157,7 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Sawyer4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_Sawyer5[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_RedRoute121[] = {
     {
     .iv = 40,
     .lvl = 33,
@@ -12274,7 +12274,7 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Gabrielle4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_Gabrielle5[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_RedFallarbor[] = {
     {
     .iv = 40,
     .lvl = 37,
@@ -12356,7 +12356,7 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Thalia4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_Thalia5[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_RedPetalburgWoods[] = {
     {
     .iv = 40,
     .lvl = 40,

@@ -122,6 +122,13 @@
 #define TRAINER_PIC_GIOVANNI              102
 #define TRAINER_PIC_CYNTHIA               103
 #define TRAINER_PIC_BLUE                  104
+#define TRAINER_PIC_ETHAN                 105
+#define TRAINER_PIC_LYRA                  106
+#define TRAINER_PIC_KRIS                  107
+#define TRAINER_PIC_LUCAS                 108
+#define TRAINER_PIC_DAWN                  109
+#define TRAINER_PIC_LUCAS_PLATINUM        110
+#define TRAINER_PIC_DAWN_PLATINUM         111
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0
@@ -132,6 +139,13 @@
 #define TRAINER_BACK_PIC_RUBY_SAPPHIRE_MAY      5
 #define TRAINER_BACK_PIC_WALLY                  6
 #define TRAINER_BACK_PIC_STEVEN                 7
+#define TRAINER_BACK_PIC_ETHAN                  8
+#define TRAINER_BACK_PIC_LYRA                   9
+#define TRAINER_BACK_PIC_KRIS                   10
+#define TRAINER_BACK_PIC_LUCAS                  11
+#define TRAINER_BACK_PIC_DAWN                   12
+#define TRAINER_BACK_PIC_LUCAS_PLATINUM         13
+#define TRAINER_BACK_PIC_DAWN_PLATINUM          14
 
 #define FACILITY_CLASS_HIKER                 0x0
 #define FACILITY_CLASS_AQUA_GRUNT_M          0x1
@@ -215,8 +229,16 @@
 #define FACILITY_CLASS_LEAF                  0x4f
 #define FACILITY_CLASS_RS_BRENDAN            0x50
 #define FACILITY_CLASS_RS_MAY                0x51
+#define	FACILITY_CLASS_BLUE					 0x52
+#define FACILITY_CLASS_ETHAN              	 0x53
+#define FACILITY_CLASS_LYRA                  0x54
+#define FACILITY_CLASS_KRIS                  0x55
+#define FACILITY_CLASS_LUCAS                 0x56
+#define FACILITY_CLASS_DAWN                  0x57
+#define FACILITY_CLASS_LUCAS_PLATINUM        0x58
+#define FACILITY_CLASS_DAWN_PLATINUM         0x59
 
-#define FACILITY_CLASSES_COUNT               0x52
+#define FACILITY_CLASSES_COUNT               0x5a
 
 #define RS_FACILITY_CLASS_AQUA_LEADER_ARCHIE    0x0
 #define RS_FACILITY_CLASS_AQUA_GRUNT_M          0x1

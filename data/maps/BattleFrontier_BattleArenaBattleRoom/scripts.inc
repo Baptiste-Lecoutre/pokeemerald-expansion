@@ -23,7 +23,7 @@ BattleFrontier_BattleArenaBattleRoom_OnResume:
 
 BattleFrontier_BattleArenaBattleRoom_OnTransition:
 	frontier_settrainers
-	call BattleFrontier_BattleArenaBattleRoom_EventScript_SetPlayerGfx
+	specialvar VAR_OBJ_GFX_ID_1, GetPlayerCostumeId
 	end
 
 BattleFrontier_BattleArenaBattleRoom_EventScript_SetPlayerGfx::
