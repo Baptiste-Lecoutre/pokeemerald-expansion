@@ -4520,7 +4520,7 @@ void Script_DoRayquazaScene(void)
     else if (gSpecialVar_0x8004 == 1)
     {
         // Rayquaza arrives scene
-        DoRayquazaScene(1, 0, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        DoRayquazaScene(1, 0, CB2_ReturnToFieldContinueScript);
     }
     else 
         DoRayquazaScene(5, 2, CB2_ReturnToFieldContinueScriptPlayMapMusic);

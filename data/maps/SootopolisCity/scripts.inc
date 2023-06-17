@@ -510,6 +510,9 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	end
 
 SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2::
+	choose_mons
+	setsootopolisbattle SPECIES_KYOGRE, 70, ITEM_NONE, SPECIES_GROUDON, 70, ITEM_NONE
+	multi_wild TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
 	removeobject LOCALID_GROUDON
@@ -570,6 +573,17 @@ SootopolisCity_EventScript_RayquazaSceneFromDive::
 	setvar VAR_0x8004, 1
 	special Script_DoRayquazaScene
 	waitstate
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_RAYQUAZA
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	setvar VAR_SKY_PILLAR_STATE, 4
+	delay 120
+	clearflag FLAG_HIDE_MAP_NAME_POPUP
+	warpwhitefade MAP_SOOTOPOLIS_CITY, 29, 53
+	waitstate
+	end
+
+Toto::
 	special SpawnCameraObject
 	applymovement OBJ_EVENT_ID_CAMERA, SootopolisCity_Movement_PanUp
 	applymovement OBJ_EVENT_ID_PLAYER, SootopolisCity_Movement_PlayerApproachLegendaries
