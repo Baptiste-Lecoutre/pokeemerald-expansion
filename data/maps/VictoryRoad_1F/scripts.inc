@@ -1,13 +1,28 @@
 .set LOCALID_WALLY_ENTRANCE, 4
+.set LOCALID_RED, 10
+.set LOCALID_RIVAL, 11
 
 VictoryRoad_1F_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, VictoryRoad_1F_OnTransition
 	.byte 0
 
 VictoryRoad_1F_OnTransition:
+	call Common_EventScript_SetupRivalGfxId
+	call VictoryRoad_1F_EventScript_HideRival
+	call_if_defeated TRAINER_WALLY_VR_1, VictoryRoad_1F_EventScript_HideRed
 	call_if_eq VAR_VICTORY_ROAD_1F_STATE, 1, VictoryRoad_1F_EventScript_SetEntranceWallyPos1
 	call_if_eq VAR_VICTORY_ROAD_1F_STATE, 2, VictoryRoad_1F_EventScript_SetEntranceWallyPos2
 	end
+
+VictoryRoad_1F_EventScript_HideRival::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_RIVAL
+	return
+
+VictoryRoad_1F_EventScript_HideRed::
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_RED
+	return
 
 VictoryRoad_1F_EventScript_SetEntranceWallyPos1::
 	setobjectxyperm LOCALID_WALLY_ENTRANCE, 2, 24
@@ -25,7 +40,40 @@ VictoryRoad_1F_EventScript_WallyBattleTrigger1::
 	addobject LOCALID_WALLY_ENTRANCE
 	applymovement LOCALID_WALLY_ENTRANCE, VictoryRoad_1F_Movement_WallyApproachPlayer1
 	waitmovement 0
-	goto VictoryRoad_1F_EventScript_WallyEntranceBattle
+	addobject LOCALID_RIVAL
+	call_if_set FLAG_TEMP_8, VictoryRoad_1F_EventScript_ShowRed
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_WallyNotGoingToLoseAnymore, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RED, VictoryRoad_1F_Movement_RedApproachPlayer1
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_RedVictoryRoad, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalApproachPlayer1
+	waitmovement 0
+	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_MayWasWorking, MSGBOX_DEFAULT
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	releaseall
 	end
 
 VictoryRoad_1F_EventScript_WallyBattleTrigger2::
@@ -34,6 +82,7 @@ VictoryRoad_1F_EventScript_WallyBattleTrigger2::
 	addobject LOCALID_WALLY_ENTRANCE
 	applymovement LOCALID_WALLY_ENTRANCE, VictoryRoad_1F_Movement_WallyApproachPlayer2
 	waitmovement 0
+	addobject LOCALID_RIVAL
 	goto VictoryRoad_1F_EventScript_WallyEntranceBattle
 	end
 
@@ -49,6 +98,10 @@ VictoryRoad_1F_EventScript_WallyEntranceBattle::
 	copyvar VAR_VICTORY_ROAD_1F_STATE, VAR_0x8008
 	releaseall
 	end
+
+VictoryRoad_1F_EventScript_ShowRed::
+	addobject LOCALID_RED
+	return
 
 VictoryRoad_1F_Movement_WallyApproachPlayer1:
 	walk_left
@@ -74,6 +127,52 @@ VictoryRoad_1F_Movement_WallyApproachPlayer2:
 	walk_left
 	walk_left
 	walk_left
+	walk_up
+	step_end
+
+VictoryRoad_1F_Movement_RedApproachPlayer1:
+	walk_down
+	walk_down
+	walk_down
+	walk_down
+	walk_down
+	step_end
+
+VictoryRoad_1F_Movement_RedApproachPlayer2:
+	walk_right
+	walk_down
+	walk_down
+	walk_down
+	walk_down
+	walk_down
+	step_end
+
+VictoryRoad_1F_Movement_RivalApproachPlayer1:
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_up
+	walk_up
+	step_end
+
+VictoryRoad_1F_Movement_RivalApproachPlayer2:
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_up
 	walk_up
 	step_end
 
@@ -119,6 +218,24 @@ VictoryRoad_1F_EventScript_Katelynn::
 	trainerbattle_single TRAINER_KATELYNN, VictoryRoad_1F_Text_KatelynnIntro, VictoryRoad_1F_Text_KatelynnDefeat
 	msgbox VictoryRoad_1F_Text_KatelynnPostBattle, MSGBOX_AUTOCLOSE
 	end
+
+VictoryRoad_1F_Text_MayWasWorking:
+	.string "May: Hi {PLAYER}!\p"
+	.string "I was working on the Pokédex with\n"
+	.string "my dad, but I missed the action\l"
+	.string "and the battles.\p"
+	.string "So I figured I should aim for the\n"
+	.string "Pokémon League and challenge you!\p"
+	.string "Are they teaming up against you?\n"
+	.string "I'll lend you a hand!$"
+
+VictoryRoad_1F_Text_RedVictoryRoad:
+	.string "Red: Victory Road, the last challenge\n"
+	.string "before the Pokémon League…\p"
+	.string "No wonder I meet you in this place,\n"
+	.string "{PLAYER}!\p"
+	.string "Let me see if you are ready for\n"
+	.string "the Elite Four!$"
 
 VictoryRoad_1F_Text_WallyNotGoingToLoseAnymore:
 	.string "Wally: Hi! {PLAYER}!\p"

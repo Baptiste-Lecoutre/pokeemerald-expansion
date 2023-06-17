@@ -836,7 +836,7 @@
 #define TRAINER_FERNANDO_2                  832
 #define TRAINER_FERNANDO_3                  833
 #define TRAINER_FERNANDO_4                  834
-#define TRAINER_FERNANDO_5                  835
+#define TRAINER_RED_VICTORY_ROAD                  835
 #define TRAINER_SAWYER_2                    836
 #define TRAINER_SAWYER_3                    837
 #define TRAINER_SAWYER_4                    838
