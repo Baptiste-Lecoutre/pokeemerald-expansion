@@ -7955,12 +7955,18 @@ u32 GetMoveTarget(u16 move, u8 setTarget)
 
 static bool32 IsBattlerModernFatefulEncounter(u8 battlerId)
 {
+    struct Pokemon *party = GetBattlerParty(battlerId);
     if (GetBattlerSide(battlerId) == B_SIDE_OPPONENT)
         return TRUE;
-    if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES, NULL) != SPECIES_DEOXYS
-        && GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES, NULL) != SPECIES_MEW)
+    if (GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES, NULL) != SPECIES_DEOXYS
+        && GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES, NULL) != SPECIES_MEW)
             return TRUE;
-    return GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_MODERN_FATEFUL_ENCOUNTER, NULL);
+    if (!GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_MODERN_FATEFUL_ENCOUNTER, NULL))
+    {
+        bool32 isModernFatefulEncounter = TRUE;
+        SetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_MODERN_FATEFUL_ENCOUNTER, &isModernFatefulEncounter);
+    }
+    return GetMonData(&party[gBattlerPartyIndexes[battlerId]], MON_DATA_MODERN_FATEFUL_ENCOUNTER, NULL);
 }
 
 u8 IsMonDisobedient(void)
