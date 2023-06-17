@@ -499,6 +499,21 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	setvar VAR_0x8004, 1
 	special Script_DoRayquazaScene
 	waitstate
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_RAYQUAZA
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	setvar VAR_SKY_PILLAR_STATE, 5
+	delay 120
+	clearflag FLAG_HIDE_MAP_NAME_POPUP
+	warpwhitefade MAP_SOOTOPOLIS_CITY, 43, 32
+	waitstate
+	end
+
+SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2::
+	setflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	setflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	removeobject LOCALID_GROUDON
+	removeobject LOCALID_KYOGRE
 	setvar VAR_0x8004, 2
 	special Script_DoRayquazaScene
 	waitstate
@@ -536,7 +551,7 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	fadenewbgm MUS_SOOTOPOLIS
 	delay 120
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
-	warpwhitefade MAP_SOOTOPOLIS_CITY, 43, 32
+	warpwhitefade MAP_SOOTOPOLIS_CITY, 31, 36
 	waitstate
 	end
 
