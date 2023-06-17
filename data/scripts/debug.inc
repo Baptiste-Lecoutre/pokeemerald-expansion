@@ -83,6 +83,7 @@ Debug_Script_3::
 	end
 
 Debug_Script_4::
+	choose_mons
 	multi_fixed_2_vs_2 TRAINER_ROSE_1, Route118_Text_RoseDefeat, TRAINER_DEANDRE, Route118_Text_DeandreDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
 	end
 
