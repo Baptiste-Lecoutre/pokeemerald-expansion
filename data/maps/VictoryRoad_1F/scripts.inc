@@ -70,9 +70,68 @@ VictoryRoad_1F_EventScript_WallyBattleTrigger1::
 	waitmovement 0
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
 	waitmovement 0
+	checkplayergender
+	goto_if_eq VAR_RESULT, MALE, VictoryRoad_1F_EventScript_MayLaunchBattle1
+	goto_if_eq VAR_RESULT, FEMALE, VictoryRoad_1F_EventScript_BrendanLaunchBattle1
+	end
+
+VictoryRoad_1F_EventScript_MayLaunchBattle1::
 	msgbox VictoryRoad_1F_Text_MayWasWorking, MSGBOX_DEFAULT
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
+	closemessage
+	fadescreen FADE_TO_BLACK
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_RED
+	fadescreen FADE_FROM_BLACK
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_MayGladItWentWell, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
+	waitmovement 0
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_RIVAL
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_WallyPostEntranceBattle, MSGBOX_DEFAULT
+	clearflag FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY
+	copyobjectxytoperm LOCALID_WALLY_ENTRANCE
+	setflag FLAG_DEFEATED_WALLY_VICTORY_ROAD
+	copyvar VAR_VICTORY_ROAD_1F_STATE, VAR_0x8008
+	releaseall
+	end
+
+VictoryRoad_1F_EventScript_BrendanLaunchBattle1::
+	msgbox VictoryRoad_1F_Text_BrendanWasWorking, MSGBOX_DEFAULT
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_BRENDAN
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
+	closemessage
+	fadescreen FADE_TO_BLACK
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_RED
+	fadescreen FADE_FROM_BLACK
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_BrendanGladItWentWell, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
+	waitmovement 0
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_RIVAL
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_WallyPostEntranceBattle, MSGBOX_DEFAULT
+	clearflag FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY
+	copyobjectxytoperm LOCALID_WALLY_ENTRANCE
+	setflag FLAG_DEFEATED_WALLY_VICTORY_ROAD
+	copyvar VAR_VICTORY_ROAD_1F_STATE, VAR_0x8008
 	releaseall
 	end
 
@@ -83,7 +142,98 @@ VictoryRoad_1F_EventScript_WallyBattleTrigger2::
 	applymovement LOCALID_WALLY_ENTRANCE, VictoryRoad_1F_Movement_WallyApproachPlayer2
 	waitmovement 0
 	addobject LOCALID_RIVAL
-	goto VictoryRoad_1F_EventScript_WallyEntranceBattle
+	call_if_set FLAG_TEMP_8, VictoryRoad_1F_EventScript_ShowRed
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_WallyNotGoingToLoseAnymore, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RED, VictoryRoad_1F_Movement_RedApproachPlayer2
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_RedVictoryRoad, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalApproachPlayer2
+	waitmovement 0
+	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	checkplayergender
+	goto_if_eq VAR_RESULT, MALE, VictoryRoad_1F_EventScript_MayLaunchBattle2
+	goto_if_eq VAR_RESULT, FEMALE, VictoryRoad_1F_EventScript_BrendanLaunchBattle2
+	end
+
+VictoryRoad_1F_EventScript_MayLaunchBattle2::
+	msgbox VictoryRoad_1F_Text_MayWasWorking, MSGBOX_DEFAULT
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
+	closemessage
+	fadescreen FADE_TO_BLACK
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_RED
+	fadescreen FADE_FROM_BLACK
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_MayGladItWentWell, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
+	waitmovement 0
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_RIVAL
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_WallyPostEntranceBattle, MSGBOX_DEFAULT
+	clearflag FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY
+	copyobjectxytoperm LOCALID_WALLY_ENTRANCE
+	setflag FLAG_DEFEATED_WALLY_VICTORY_ROAD
+	copyvar VAR_VICTORY_ROAD_1F_STATE, VAR_0x8008
+	releaseall
+	end
+
+VictoryRoad_1F_EventScript_BrendanLaunchBattle2::
+	msgbox VictoryRoad_1F_Text_BrendanWasWorking, MSGBOX_DEFAULT
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_BRENDAN
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
+	closemessage
+	fadescreen FADE_TO_BLACK
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_RED
+	fadescreen FADE_FROM_BLACK
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_BrendanGladItWentWell, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
+	waitmovement 0
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_RIVAL
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	msgbox VictoryRoad_1F_Text_WallyPostEntranceBattle, MSGBOX_DEFAULT
+	clearflag FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY
+	copyobjectxytoperm LOCALID_WALLY_ENTRANCE
+	setflag FLAG_DEFEATED_WALLY_VICTORY_ROAD
+	copyvar VAR_VICTORY_ROAD_1F_STATE, VAR_0x8008
+	releaseall
 	end
 
 VictoryRoad_1F_EventScript_WallyEntranceBattle::
@@ -176,6 +326,20 @@ VictoryRoad_1F_Movement_RivalApproachPlayer2:
 	walk_up
 	step_end
 
+VictoryRoad_1F_Movement_RivalExit:
+	walk_down
+	walk_down
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	step_end
+
 @ This Wally appears near the entrance once his battle is triggered and remains there until the Hall of Fame is entered
 VictoryRoad_1F_EventScript_EntranceWally::
 	msgbox VictoryRoad_1F_Text_WallyPostEntranceBattle, MSGBOX_NPC
@@ -229,6 +393,16 @@ VictoryRoad_1F_Text_MayWasWorking:
 	.string "Are they teaming up against you?\n"
 	.string "I'll lend you a hand!$"
 
+VictoryRoad_1F_Text_BrendanWasWorking:
+	.string "Brendan: Hi {PLAYER}!\p"
+	.string "I was working on the Pokédex with\n"
+	.string "my dad, but I missed the action\l"
+	.string "and the battles.\p"
+	.string "So I figured I should aim for the\n"
+	.string "Pokémon League and challenge you!\p"
+	.string "Are they teaming up against you?\n"
+	.string "I Guess I'll lend you a hand!$"
+
 VictoryRoad_1F_Text_RedVictoryRoad:
 	.string "Red: Victory Road, the last challenge\n"
 	.string "before the Pokémon League…\p"
@@ -253,6 +427,9 @@ VictoryRoad_1F_Text_WallyEntranceDefeat:
 	.string "Wow!\n"
 	.string "{PLAYER}, you are strong, after all!$"
 
+VictoryRoad_1F_Text_RedDefeat:
+	.string "I lost again…$"
+
 VictoryRoad_1F_Text_WallyPostEntranceBattle:
 	.string "Wally: I couldn't beat you today,\n"
 	.string "{PLAYER}, but one of these days, I'll\l"
@@ -273,6 +450,26 @@ VictoryRoad_1F_Text_WallyPostBattle:
 	.string "too… But one of these days, {PLAYER},\l"
 	.string "I'm going to catch up to you…\p"
 	.string "And challenge the Pokémon League!$"
+
+VictoryRoad_1F_Text_RedIllTrainAndBecome:
+	.string "Red: Once again I lost to you…\n"
+	.string "I'm far from becoming Kanto's best\l"
+	.string "trainer.\p"
+	.string "I'll train even more and become one of\n"
+	.string "the most powerful trainers ever.\p"
+	.string "Bye.$"
+
+VictoryRoad_1F_Text_MayGladItWentWell:
+	.string "May: I'm glad everything went well!\p"
+	.string "I'll head back to the Pokémon center\n"
+	.string "and train more before challenging the\l"
+	.string "the Pokémon League. See you!$"
+
+VictoryRoad_1F_Text_BrendanGladItWentWell:
+	.string "Brendan: I'm glad everything went well!\p"
+	.string "I'll head back to the Pokémon center\n"
+	.string "and train more before challenging the\l"
+	.string "the Pokémon League. See you!$"
 
 VictoryRoad_1F_Text_EdgarIntro:
 	.string "I've made it this far a couple times,\n"
