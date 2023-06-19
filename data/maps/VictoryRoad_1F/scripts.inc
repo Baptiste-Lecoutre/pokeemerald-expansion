@@ -77,8 +77,31 @@ VictoryRoad_1F_EventScript_WallyBattleTrigger1::
 
 VictoryRoad_1F_EventScript_MayLaunchBattle1::
 	msgbox VictoryRoad_1F_Text_MayWasWorking, MSGBOX_DEFAULT
+	switch VAR_STARTER_MON
+	case 0, VictoryRoad_1F_EventScript_BattleMayTreecko1
+	case 1, VictoryRoad_1F_EventScript_BattleMayTorchic1
+	case 2, VictoryRoad_1F_EventScript_BattleMayMudkip1
+	end
+
+VictoryRoad_1F_EventScript_BattleMayTorchic1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TORCHIC, TRAINER_BACK_PIC_MAY
+	goto VictoryRoad_1F_EventScript_EndMayBattle1
+	end
+
+VictoryRoad_1F_EventScript_BattleMayTreecko1::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TREECKO, TRAINER_BACK_PIC_MAY
+	goto VictoryRoad_1F_EventScript_EndMayBattle1
+	end
+
+VictoryRoad_1F_EventScript_BattleMayMudkip1::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_MUDKIP, TRAINER_BACK_PIC_MAY
+	goto VictoryRoad_1F_EventScript_EndMayBattle1
+	end
+
+VictoryRoad_1F_EventScript_EndMayBattle1::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
@@ -107,8 +130,31 @@ VictoryRoad_1F_EventScript_MayLaunchBattle1::
 
 VictoryRoad_1F_EventScript_BrendanLaunchBattle1::
 	msgbox VictoryRoad_1F_Text_BrendanWasWorking, MSGBOX_DEFAULT
+	switch VAR_STARTER_MON
+	case 0, VictoryRoad_1F_EventScript_BattleBrendanTreecko1
+	case 1, VictoryRoad_1F_EventScript_BattleBrendanTorchic1
+	case 2, VictoryRoad_1F_EventScript_BattleBrendanMudkip1
+	end
+
+VictoryRoad_1F_EventScript_BattleBrendanTreecko1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_BRENDAN
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TREECKO, TRAINER_BACK_PIC_BRENDAN
+	goto VictoryRoad_1F_EventScript_EndBrendanBattle1
+	end
+
+VictoryRoad_1F_EventScript_BattleBrendanTorchic1::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC, TRAINER_BACK_PIC_BRENDAN
+	goto VictoryRoad_1F_EventScript_EndBrendanBattle1
+	end
+
+VictoryRoad_1F_EventScript_BattleBrendanMudkip1::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP, TRAINER_BACK_PIC_BRENDAN
+	goto VictoryRoad_1F_EventScript_EndBrendanBattle1
+	end
+
+VictoryRoad_1F_EventScript_EndBrendanBattle1::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
@@ -178,8 +224,31 @@ VictoryRoad_1F_EventScript_WallyBattleTrigger2::
 
 VictoryRoad_1F_EventScript_MayLaunchBattle2::
 	msgbox VictoryRoad_1F_Text_MayWasWorking, MSGBOX_DEFAULT
+	switch VAR_STARTER_MON
+	case 0, VictoryRoad_1F_EventScript_BattleMayTreecko2
+	case 1, VictoryRoad_1F_EventScript_BattleMayTorchic2
+	case 2, VictoryRoad_1F_EventScript_BattleMayMudkip2
+	end
+
+VictoryRoad_1F_EventScript_BattleMayTorchic2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TORCHIC, TRAINER_BACK_PIC_MAY
+	goto VictoryRoad_1F_EventScript_EndMayBattle2
+	end
+
+VictoryRoad_1F_EventScript_BattleMayTreecko2::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TREECKO, TRAINER_BACK_PIC_MAY
+	goto VictoryRoad_1F_EventScript_EndMayBattle2
+	end
+
+VictoryRoad_1F_EventScript_BattleMayMudkip2::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_MUDKIP, TRAINER_BACK_PIC_MAY
+	goto VictoryRoad_1F_EventScript_EndMayBattle2
+	end
+
+VictoryRoad_1F_EventScript_EndMayBattle2::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
@@ -208,8 +277,31 @@ VictoryRoad_1F_EventScript_MayLaunchBattle2::
 
 VictoryRoad_1F_EventScript_BrendanLaunchBattle2::
 	msgbox VictoryRoad_1F_Text_BrendanWasWorking, MSGBOX_DEFAULT
+	switch VAR_STARTER_MON
+	case 0, VictoryRoad_1F_EventScript_BattleBrendanTreecko2
+	case 1, VictoryRoad_1F_EventScript_BattleBrendanTorchic2
+	case 2, VictoryRoad_1F_EventScript_BattleBrendanMudkip2
+	end
+
+VictoryRoad_1F_EventScript_BattleBrendanTreecko2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_BRENDAN
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TREECKO, TRAINER_BACK_PIC_BRENDAN
+	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
+	end
+
+VictoryRoad_1F_EventScript_BattleBrendanTorchic2::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC, TRAINER_BACK_PIC_BRENDAN
+	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
+	end
+
+VictoryRoad_1F_EventScript_BattleBrendanMudkip2::
+	choose_mons
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP, TRAINER_BACK_PIC_BRENDAN
+	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
+	end
+
+VictoryRoad_1F_EventScript_EndBrendanBattle2::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_RedIllTrainAndBecome, MSGBOX_DEFAULT
