@@ -77,7 +77,7 @@ MauvilleCity_Gym_EventScript_Wattson::
 	trainerbattle_single TRAINER_WATTSON_1, MauvilleCity_Gym_Text_WattsonIntro, MauvilleCity_Gym_Text_WattsonDefeat, MauvilleCity_Gym_EventScript_WattsonDefeated, NO_MUSIC
 	specialvar VAR_RESULT, ShouldTryRematchBattle
 	goto_if_eq VAR_RESULT, TRUE, MauvilleCity_Gym_EventScript_WattsonRematch
-	goto_if_unset FLAG_RECEIVED_TM34, MauvilleCity_Gym_EventScript_GiveShockWave2
+	goto_if_unset FLAG_RECEIVED_TM72, MauvilleCity_Gym_EventScript_GiveVoltSwitch2
 	goto_if_eq VAR_NEW_MAUVILLE_STATE, 2, MauvilleCity_Gym_EventScript_CompletedNewMauville
 	msgbox MauvilleCity_Gym_Text_WattsonPostBattle, MSGBOX_DEFAULT
 	release
@@ -99,7 +99,7 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	special MauvilleGymDeactivatePuzzle
 	special DrawWholeMapView
 	playse SE_UNLOCK
-	call MauvilleCity_Gym_EventScript_GiveShockWave
+	call MauvilleCity_Gym_EventScript_GiveVoltSwitch
 	closemessage
 	delay 30
 	playfanfare MUS_REGISTER_MATCH_CALL
@@ -111,19 +111,19 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	release
 	end
 
-MauvilleCity_Gym_EventScript_GiveShockWave2::
-	giveitem ITEM_TM34
+MauvilleCity_Gym_EventScript_GiveVoltSwitch2::
+	giveitem ITEM_TM72_VOLT_SWITCH
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT
-	setflag FLAG_RECEIVED_TM34
+	msgbox MauvilleCity_Gym_Text_ExplainVoltSwitch, MSGBOX_DEFAULT
+	setflag FLAG_RECEIVED_TM72
 	release
 	end
 
-MauvilleCity_Gym_EventScript_GiveShockWave::
-	giveitem ITEM_TM34
+MauvilleCity_Gym_EventScript_GiveVoltSwitch::
+	giveitem ITEM_TM72_VOLT_SWITCH
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
-	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT
-	setflag FLAG_RECEIVED_TM34
+	msgbox MauvilleCity_Gym_Text_ExplainVoltSwitch, MSGBOX_DEFAULT
+	setflag FLAG_RECEIVED_TM72
 	return
 
 MauvilleCity_Gym_EventScript_CompletedNewMauville::
@@ -363,10 +363,11 @@ MauvilleCity_Gym_Text_ExplainDynamoBadgeTakeThis:
 	.string "Hmm…\n"
 	.string "You should take this, too!$"
 
-MauvilleCity_Gym_Text_ExplainShockWave:
-	.string "That TM34 there contains Shock Wave.\p"
-	.string "It's a trustworthy move that never\n"
-	.string "misses! You can count on it!\p"
+MauvilleCity_Gym_Text_ExplainVoltSwitch:
+	.string "That TM72 there contains Volt Switch.\p"
+	.string "It's a move where your Pokémon attacks\n"
+	.string "the opponent and then rushes back to\l"
+	.string "switch places with a party Pokémon.\p"
 	.string "… … … … … …$"
 
 MauvilleCity_Gym_Text_RegisteredWattson:
