@@ -836,7 +836,7 @@
 #define TRAINER_FERNANDO_2                  832
 #define TRAINER_FERNANDO_3                  833
 #define TRAINER_FERNANDO_4                  834
-#define TRAINER_FERNANDO_5                  835
+#define TRAINER_RED_VICTORY_ROAD                  835
 #define TRAINER_SAWYER_2                    836
 #define TRAINER_SAWYER_3                    837
 #define TRAINER_SAWYER_4                    838
@@ -863,5 +863,12 @@
 
 #define TRAINERS_COUNT                      855
 #define MAX_TRAINERS_COUNT                  864
+
+#define TRAINER_MAY_VICTORY_ROAD_TORCHIC 900
+#define TRAINER_MAY_VICTORY_ROAD_MUDKIP 901
+#define TRAINER_MAY_VICTORY_ROAD_TREECKO 902
+#define TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC 903
+#define TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP 904
+#define TRAINER_BRENDAN_VICTORY_ROAD_TREECKO 905
 
 #endif  // GUARD_CONSTANTS_OPPONENTS_H
