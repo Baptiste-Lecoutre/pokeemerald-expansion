@@ -979,7 +979,8 @@ MauvilleCity_GameCorner_EventScript_ReceivePokemon::
 	msgbox MauvilleCity_GameCorner_Text_ThanksPleaseTakePokemon, MSGBOX_DEFAULT
 	removecoins VAR_0x8006
 	updatecoinsbox 1, 1
-	givemon VAR_TEMP_1, 5, ITEM_NONE
+	special GetStaticEncounterLevel
+	givemon VAR_TEMP_1, VAR_0x800A, ITEM_NONE
 	compare VAR_RESULT, 0
 	goto_if_eq MauvilleCity_GameCorner_EventScript_ReceivePokemonParty
 	compare VAR_RESULT, 1

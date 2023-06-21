@@ -496,6 +496,17 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION        0x1130
 #define OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION        0x1131
 #define OBJ_EVENT_PAL_TAG_SNORLAX                 0x1132
+
+#define OBJ_EVENT_PAL_TAG_RED                     0x1133
+#define OBJ_EVENT_PAL_TAG_LEAF                    0x1134
+#define OBJ_EVENT_PAL_TAG_ETHAN                   0x1135
+#define OBJ_EVENT_PAL_TAG_LYRA                    0x1136
+#define OBJ_EVENT_PAL_TAG_KRIS                    0x1137
+#define OBJ_EVENT_PAL_TAG_LUCAS                   0x1138
+#define OBJ_EVENT_PAL_TAG_DAWN                    0x1139
+#define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113A
+#define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
+
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
 #define OBJ_EVENT_PAL_TAG_EMOTES                  0x8003
@@ -561,11 +572,20 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Npc6Reflection,        OBJ_EVENT_PAL_TAG_NPC_6_REFLECTION},
     {gObjectEventPal_Npc7Reflection,        OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION},
     {gObjectEventPal_Npc8Reflection,        OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION},
-    {gObjectEventPaletteLight, OBJ_EVENT_PAL_TAG_LIGHT},
-    {gObjectEventPaletteLight2, OBJ_EVENT_PAL_TAG_LIGHT_2},
-    {gObjectEventPaletteEmotes, OBJ_EVENT_PAL_TAG_EMOTES},
-    {gObjectEventPaletteNeonLight, OBJ_EVENT_PAL_TAG_NEON_LIGHT},
-    {NULL,                  OBJ_EVENT_PAL_TAG_NONE},
+    {gObjectEventPal_Red,                   OBJ_EVENT_PAL_TAG_RED},
+    {gObjectEventPal_Leaf,                  OBJ_EVENT_PAL_TAG_LEAF},
+    {gObjectEventPal_Ethan,                 OBJ_EVENT_PAL_TAG_ETHAN},
+    {gObjectEventPal_Lyra,                  OBJ_EVENT_PAL_TAG_LYRA},
+    {gObjectEventPal_Kris,                  OBJ_EVENT_PAL_TAG_KRIS},
+    {gObjectEventPal_Lucas,                 OBJ_EVENT_PAL_TAG_LUCAS},
+    {gObjectEventPal_Dawn,                  OBJ_EVENT_PAL_TAG_DAWN},
+    {gObjectEventPal_LucasPlatinum,         OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM},
+    {gObjectEventPal_DawnPlatinum,          OBJ_EVENT_PAL_TAG_DAWN_PLATINUM},
+    {gObjectEventPaletteLight,              OBJ_EVENT_PAL_TAG_LIGHT},
+    {gObjectEventPaletteLight2,             OBJ_EVENT_PAL_TAG_LIGHT_2},
+    {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
+    {gObjectEventPaletteNeonLight,          OBJ_EVENT_PAL_TAG_NEON_LIGHT},
+    {NULL,                                  OBJ_EVENT_PAL_TAG_NONE},
 };
 
 static const u16 sReflectionPaletteTags_Brendan[] = {

@@ -62,7 +62,8 @@ AncientTomb_EventScript_Registeel::
 	playmoncry SPECIES_REGISTEEL, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_REGISTEEL, 40
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_REGISTEEL, VAR_RESULT
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special StartRegiBattle
 	waitstate

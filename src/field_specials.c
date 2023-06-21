@@ -5269,3 +5269,33 @@ bool8 GetDiancieFriendshipScore (void)
     }
     return FALSE;
 }
+
+void SwapPlayersCostume(void)
+{
+    struct ObjectEvent *objEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
+    gSaveBlock2Ptr->costumeId = VarGet(VAR_TEMP_1);
+    ObjectEventSetGraphicsId(objEvent, GetPlayerAvatarGraphicsIdByCurrentState());
+    ObjectEventTurn(objEvent, objEvent->movementDirection);
+    BlendPalettes(0xFFFFFFFF, 16, 0);
+}
+
+u8 GetPlayerCostumeId(void)
+{
+    return GetPlayerAvatarGraphicsIdByStateIdAndGender(PLAYER_AVATAR_STATE_NORMAL, gSaveBlock2Ptr->playerGender);
+}
+
+// Calculates level for gift mons and static encounters that can still evolve.
+// Sets that level to highest level - 3 and stores it in gSpecialVar_0x800A.
+void GetStaticEncounterLevel (void)
+{
+    gSpecialVar_0x800A = GetHighestLevelInPlayerParty();
+
+    if (gSpecialVar_0x800A - 3 < 1)
+    {
+        gSpecialVar_0x800A = 1;
+    }
+    else
+    {
+        gSpecialVar_0x800A -= 3;
+    }
+}

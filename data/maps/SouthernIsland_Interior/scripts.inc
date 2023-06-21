@@ -127,11 +127,13 @@ SouthernIsland_Interior_EventScript_GiveLatiStones::
 	end
 
 SouthernIsland_Interior_EventScript_SetLatiosBattleVars::
-	seteventmon SPECIES_LATIOS, 50, ITEM_SOUL_DEW
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	seteventmon SPECIES_LATIOS, VAR_RESULT, ITEM_SOUL_DEW
 	return
 
 SouthernIsland_Interior_EventScript_SetLatiasBattleVars::
-	seteventmon SPECIES_LATIAS, 50, ITEM_SOUL_DEW
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	seteventmon SPECIES_LATIAS, VAR_RESULT, ITEM_SOUL_DEW
 	return
 
 SouthernIsland_Interior_Movement_CameraPanUp:

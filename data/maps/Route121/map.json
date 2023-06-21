@@ -410,15 +410,15 @@
     {
       "graphics_id": "OBJ_EVENT_GFX_RED",
       "x": 34,
-      "y": 7,
+      "y": 5,
       "elevation": 0,
-      "movement_type": "MOVEMENT_TYPE_NONE",
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "Common_EventScript_TrainerNotReadyYet",
-      "flag": "0"
+      "flag": "FLAG_TEMP_7"
     }
   ],
   "warp_events": [
@@ -433,7 +433,7 @@
   "coord_events": [
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 5,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",
@@ -442,7 +442,7 @@
     },
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 6,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",
@@ -451,7 +451,7 @@
     },
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 7,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",
@@ -460,7 +460,7 @@
     },
     {
       "type": "trigger",
-      "x": 25,
+      "x": 26,
       "y": 8,
       "elevation": 3,
       "var": "VAR_ROUTE121_STATE",

@@ -3271,6 +3271,69 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_BattleSpriteStartSlideLeft,
     },
+    [TRAINER_BACK_PIC_ETHAN] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Ethan,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_LYRA] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Lyra,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_KRIS] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Kris,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_LUCAS] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Lucas,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_DAWN] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Dawn,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_LUCAS_PLATINUM] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_LucasPlatinum,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_DAWN_PLATINUM] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_DawnPlatinum,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
 };
 
 #define NUM_SECRET_BASE_CLASSES 5
@@ -5560,6 +5623,26 @@ u8 CalculateEnemyPartyCount(void)
     return gEnemyPartyCount;
 }
 
+// Basically GetMonsStateToDoubles, but includes fainted Pokemon
+u8 CalculatePlayerBattlerPartyCount(void)
+{
+    s32 battlerCount = 0;
+    s32 i;
+    CalculatePlayerPartyCount();
+
+    if (gPlayerPartyCount == 1)
+        return gPlayerPartyCount; // PLAYER_HAS_ONE_MON
+
+    for (i = 0; i < gPlayerPartyCount; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL) != SPECIES_EGG
+         && GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL) != SPECIES_NONE)
+            battlerCount++;
+    }
+
+    return battlerCount;
+}
+
 u8 GetMonsStateToDoubles(void)
 {
     s32 aliveCount = 0;
@@ -6614,13 +6697,16 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 if (MonKnowsMove(mon, gEvolutionTable[species][i].param))
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
-            case EVO_MOVE_TYPE:
-                for (j = 0; j < 4; j++)
+            case EVO_FRIENDSHIP_MOVE_TYPE:
+                if (friendship >= 220)
                 {
-                    if (gBattleMoves[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == gEvolutionTable[species][i].param)
+                    for (j = 0; j < MAX_MON_MOVES; j++)
                     {
-                        targetSpecies = gEvolutionTable[species][i].targetSpecies;
-                        break;
+                        if (gBattleMoves[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == gEvolutionTable[species][i].param)
+                        {
+                            targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                            break;
+                        }
                     }
                 }
                 break;
@@ -8852,4 +8938,48 @@ u16 GetNextRegionalForm(u16 species)
 
     }
     return targetSpecies;
+}
+
+u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGender)
+{
+    u16 trainerPic;
+
+    switch (costumeId)
+    {
+        case BRENDAN_COSTUME:
+            trainerPic = TRAINER_PIC_BRENDAN;
+            break;
+        case MAY_COSTUME:
+            trainerPic = TRAINER_PIC_MAY;
+            break;
+        case RED_COSTUME:
+            trainerPic = TRAINER_PIC_RED;
+            break;
+        case LEAF_COSTUME:
+            trainerPic = TRAINER_PIC_LEAF;
+            break;
+        case ETHAN_COSTUME:
+            trainerPic = TRAINER_PIC_ETHAN;
+            break;
+        case LYRA_COSTUME:
+            trainerPic = TRAINER_PIC_LYRA;
+            break;
+        case KRIS_COSTUME:
+            trainerPic = TRAINER_PIC_KRIS;
+            break;
+        case LUCAS_COSTUME:
+            trainerPic = TRAINER_PIC_LUCAS;
+            break;
+        case DAWN_COSTUME:
+            trainerPic = TRAINER_PIC_DAWN;
+            break;
+        case LUCAS_PLATINUM_COSTUME:
+            trainerPic = TRAINER_PIC_LUCAS_PLATINUM;
+            break;
+        case DAWN_PLATINUM_COSTUME:
+            trainerPic = TRAINER_PIC_DAWN_PLATINUM;
+            break;
+    }
+
+    return trainerPic;
 }

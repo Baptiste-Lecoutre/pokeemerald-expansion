@@ -55,7 +55,7 @@ NewMauville_Inside_EventScript_Surge::
 	msgbox NewMauville_Inside_Text_ImSurge, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_LT_SURGE, NewMauville_Inside_Text_NowThatsAShowker
 	msgbox NewMauville_Inside_Text_YoureSpecialKid, MSGBOX_DEFAULT
-	giveitem ITEM_TM72 @ volt switch
+	giveitem ITEM_TM93 @ wild charge
 	msgbox NewMauville_Inside_Text_MaybeThatBird, MSGBOX_DEFAULT
 	closemessage
 	fadescreen FADE_TO_BLACK
