@@ -484,21 +484,21 @@ static void StartPokemonLogoShine(u8 flashBg)
     {
     case 0:
     case 2:
-        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, 0, 68, 0);
+        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, 0, 130, 0); // 0,68
         gSprites[spriteId].oam.objMode = ST_OAM_OBJ_WINDOW;
         gSprites[spriteId].data[0] = flashBg;
         break;
     case 1:
-        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, 0, 68, 0);
+        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, 0, 130, 0); // 0,68
         gSprites[spriteId].oam.objMode = ST_OAM_OBJ_WINDOW;
         gSprites[spriteId].data[0] = flashBg;
         gSprites[spriteId].invisible = TRUE;
 
-        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, 0, 68, 0);
+        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, 0, 130, 0); // 0,68
         gSprites[spriteId].callback = SpriteCB_PokemonLogoShine2;
         gSprites[spriteId].oam.objMode = ST_OAM_OBJ_WINDOW;
 
-        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, -80, 68, 0);
+        spriteId = CreateSprite(&sPokemonLogoShineSpriteTemplate, -80, 130, 0); // -80,68
         gSprites[spriteId].callback = SpriteCB_PokemonLogoShine2;
         gSprites[spriteId].oam.objMode = ST_OAM_OBJ_WINDOW;
         break;
