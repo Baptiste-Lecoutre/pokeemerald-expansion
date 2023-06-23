@@ -33115,12 +33115,13 @@ General_RaidShockwave::
 	loadspritegfx ANIM_TAG_RED_ORB
 	createvisualtask AnimTask_BlendParticle, 5, ANIM_TAG_ELECTRIC_ORBS, 0, 0xC, 0xC, 0x301F
 	createvisualtask AnimTask_BlendParticle, 5, ANIM_TAG_RED_ORB, 0, 0xC, 0xC, 0x301F
-	launchtask AnimTask_ElectricChargingParticles 0x2 0x4 0x0 0x14 0x0 0x2
+@	launchtask AnimTask_ElectricChargingParticles 0x2 0x4 0x0 0x14 0x0 0x2
+	createvisualtask AnimTask_ElectricChargingParticles, 0x2, 0x0, 0x14, 0x0, 0x2
 	createvisualtask SoundTask_PlayDoubleCry, 2, ANIM_ATTACKER, 0xff
 	waitforvisualfinish
 	setarg 0x7 0xffff
 	playsewithpan SE_M_PSYBEAM, SOUND_PAN_ATTACKER
-	launchtask AnimTask_ScaleMonAndRestore 0x5 0x5 0xfff9 0xfff9 0xb 0x0 0x0
+	createvisualtask AnimTask_ScaleMonAndRestore, 0x5, 0xfff9, 0xfff9, 0xb, 0x0, 0x0
 	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 0
 	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 32
 	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 64
@@ -33135,7 +33136,7 @@ General_RaidShockwave::
 General_RaidBossExplosion::
 	createvisualtask AnimTask_SetAnimTargetToBattlerTarget, 2
 	loadspritegfx ANIM_TAG_EXPLOSION
-	launchtask AnimTask_ShakeMon 0x2 0x5 ANIM_TARGET 0x0 0x5 0x30 0x1
+	createvisualtask AnimTask_ShakeMon, 0x2, ANIM_TARGET, 0x0, 0x5, 0x30, 0x1
 	call Explosion2
 	call Explosion2
 	waitforvisualfinish
