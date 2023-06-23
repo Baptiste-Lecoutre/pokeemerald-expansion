@@ -14,6 +14,7 @@
 #include "constants/game_stat.h"
 #include "constants/trainers.h"
 #include "constants/species.h"
+#include "constants/battle_raid.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/battle_script.inc"
 	.include "constants/constants.inc"
@@ -10880,3 +10881,131 @@ BattleScript_ItemDropped::
 	playse SE_BALL_BOUNCE_1
 	printfromtable gItemDroppedStringIds
 	return
+
+@@@ RAID SCRIPTS @@@
+BattleScript_RaidIntro::
+	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_MEGA, BattleScript_MegaRaidIntro
+	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_DYNAMAX, BattleScript_MaxRaidIntro
+	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_TERA, BattleScript_RaidIntroEnd
+BattleScript_RaidIntroEnd:
+	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_GEN_8, BattleScript_MaxRaidStormBrews
+	end2
+
+BattleScript_MaxRaidIntro:
+	playanimation BS_ATTACKER, B_ANIM_DYNAMAX_GROWTH
+	printstring STRINGID_PKMNAPPEARSMASSIVE
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_RaidIntroEnd
+
+BattleScript_MegaRaidIntro:
+	setbyte gIsCriticalHit, 0
+	handlemegaevo BS_ATTACKER, 0
+	handlemegaevo BS_ATTACKER, 1
+	playanimation BS_ATTACKER, B_ANIM_MEGA_EVOLUTION
+	waitanimation
+	handlemegaevo BS_ATTACKER, 2
+	printstring STRINGID_MEGAEVOEVOLVED
+	waitmessage B_WAIT_TIME_LONG
+	switchinabilities BS_ATTACKER
+	goto BattleScript_RaidIntroEnd
+
+BattleScript_RaidShieldAppeared::
+	playanimation BS_TARGET, B_ANIM_RAID_SHIELD_APPEARED
+	waitanimation
+	printstring STRINGID_RAIDSHIELDAPPEARED
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
+BattleScript_RaidShieldDisappeared::
+	playanimation BS_TARGET, B_ANIM_RAID_SHIELD_DISAPPEARED
+	waitanimation
+	printstring STRINGID_RAIDSHIELDDISAPPEARED
+	waitmessage B_WAIT_TIME_LONG
+	jumpifstat BS_TARGET, CMP_GREATER_THAN, STAT_DEF, MIN_STAT_STAGE, BattleScript_RaidDefenseDrop
+	jumpifstat BS_TARGET, CMP_EQUAL, STAT_SPDEF, MIN_STAT_STAGE, BattleScript_RaidShieldDisappearedEnd
+BattleScript_RaidDefenseDrop:
+	setbyte sSTAT_ANIM_PLAYED, FALSE
+	playstatchangeanimation BS_TARGET, BIT_DEF | BIT_SPDEF, STAT_CHANGE_BY_TWO | STAT_CHANGE_NEGATIVE
+	setstatchanger STAT_DEF, 2, TRUE
+	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_RaidSpDefenseDrop
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_DECREASE, BattleScript_RaidSpDefenseDrop
+	printfromtable gStatDownStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_RaidSpDefenseDrop:
+	setstatchanger STAT_SPDEF, 2, TRUE
+	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_RaidShieldDisappearedEnd
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_DECREASE, BattleScript_RaidShieldDisappearedEnd
+	printfromtable gStatDownStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_RaidShieldDisappearedEnd:
+	end2
+
+BattleScript_RaidBarrierBroken::
+	playanimation BS_TARGET, B_ANIM_RAID_BARRIER_BROKEN
+	waitanimation
+	return
+
+BattleScript_RaidShockwave::
+	printstring STRINGID_PKMNNULLIFIEDOTHERS
+	waitmessage B_WAIT_TIME_LONG
+	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE
+	waitanimation
+	@doraidshockwave
+	clearstatus BS_ATTACKER
+	updatestatusicon BS_ATTACKER
+	return
+
+BattleScript_RaidVictory::
+	hidehealthboxes
+	playanimation BS_TARGET, B_ANIM_RAID_BOSS_EXPLOSION
+	waitanimation
+	setbyte sGIVEEXP_STATE, 0
+	getexp BS_TARGET
+	jumpifnoballs BattleScript_FaintRaidBoss
+	printstring STRINGID_CATCHRAIDMON
+	setbyte gBattleCommunication, 0
+	yesnobox
+	jumpifbyte CMP_NOT_EQUAL, gBattleCommunication + 1, 0, BattleScript_FaintRaidBoss
+	catchraidboss
+	end2
+
+BattleScript_FaintRaidBoss::
+	pause B_WAIT_TIME_LONG
+	dofaintanimation BS_TARGET
+	printstring STRINGID_RAIDPKMNDISAPPEARED
+	setbyte gBattleOutcome, B_OUTCOME_WON
+	finishturn
+
+BattleScript_MaxRaidStormBrews::
+	playanimation BS_BATTLER_0, B_ANIM_RAID_STORM_BREWS
+	waitanimation
+	printfromtable gRaidStateStringIds
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
+BattleScript_TeraRaidTimerLow::
+	printstring STRINGID_RAIDNOTMUCHTIMELEFT
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
+BattleScript_RaidDefeat::
+	printfromtable gRaidStateStringIds
+	waitmessage B_WAIT_TIME_LONG
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_GEN_8, BattleScript_MaxRaidDefeatAnim
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_GEN_9, BattleScript_TeraRaidDefeatAnim
+BattleScript_BlownOutMsg:
+	printstring STRINGID_BLOWNOUTOFDEN
+	waitmessage B_WAIT_TIME_LONG
+	playse SE_FLEE
+	pause 8
+	end2
+
+BattleScript_MaxRaidDefeatAnim:
+	playanimation BS_BATTLER_0, B_ANIM_RAID_STORM_BREWS
+	waitanimation
+	goto BattleScript_BlownOutMsg
+
+BattleScript_TeraRaidDefeatAnim:
+	playanimation BS_OPPONENT1, B_ANIM_RAID_SHOCKWAVE @placeholder
+	waitanimation
+	goto BattleScript_BlownOutMsg

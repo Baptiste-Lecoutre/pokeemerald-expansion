@@ -1,6 +1,7 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
+#include "battle_setup.h"
 #include "pokemon.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
@@ -713,12 +714,14 @@ u32 WhichBattleCoords(u32 battlerId) // 0 - singles, 1 - doubles
         && gPlayerPartyCount == 1
         && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
         return 0;
-    else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
-             && gEnemyPartyCount == 1
-             && !(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+
+    // gEnemyParty count is calculated at the start of battle.
+    if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
+        && ((!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && gEnemyPartyCount == 1)
+        || (BATTLE_TWO_VS_ONE_OPPONENT) || IsRaidBoss(battlerId)))
         return 0;
-    else
-        return IsDoubleBattle();
+    
+    return IsDoubleBattle();
 }
 
 u8 CreateBattlerHealthboxSprites(u8 battlerId)
@@ -928,6 +931,7 @@ static void TryToggleHealboxVisibility(u32 priority, u32 healthboxLeftSpriteId, 
     gSprites[healthbarSpriteId].invisible = invisible;
     MegaIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
     DynamaxIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
+    RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
 }
 
 void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
@@ -3284,7 +3288,7 @@ bool32 CanThrowLastUsedBall(void)
 #else
     if (!CanThrowBall())
         return FALSE;
-    if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER))
+    if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RAID))
         return FALSE;
     if (!CheckBagHasItem(gLastThrownBall, 1))
         return FALSE;

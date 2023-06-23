@@ -9,6 +9,7 @@
 #include "constants/moves.h"
 #include "constants/abilities.h"
 #include "item.h"
+#include "item_menu.h"
 #include "util.h"
 #include "pokemon.h"
 #include "random.h"
@@ -2344,6 +2345,20 @@ END:
             gBattlescriptCurrInstr = BattleScript_AttackWeakenedByStrongWinds;
         }
     }
+
+    // Raid shields apply a damage reduction that can fully negate damage.
+    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
+        gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+    }
+    // If an attack will trigger a Raid Boss's shield, it will not go past that threshold.
+    else if (IsRaidBoss(gBattlerTarget)
+        && gBattleMoveDamage > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
+    {
+        gBattleMoveDamage = GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP);
+        gBattleStruct->raid.state |= RAID_CREATE_SHIELD;
+    }
 }
 
 static void Cmd_multihitresultmessage(void)
@@ -4014,6 +4029,15 @@ static void Cmd_tryfaintmon(void)
         if (!(gAbsentBattlerFlags & gBitTable[gActiveBattler])
          && gBattleMons[gActiveBattler].hp == 0)
         {
+            // Check to start Raid end sequence.
+            if (IsRaidBoss(gActiveBattler))
+            {
+                u8 hp = 1;
+                SetMonData(&gEnemyParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_HP, &hp);
+                gBattlescriptCurrInstr = BattleScript_RaidVictory;
+                return;
+            }
+            // Otherwise proceed as usual.
             gHitMarker |= HITMARKER_FAINTED(gActiveBattler);
             BattleScriptPush(cmd->nextInstr);
             gBattlescriptCurrInstr = instr;
@@ -6471,6 +6495,11 @@ static void Cmd_moveend(void)
                     effect = TRUE;
                 }
             }
+            gBattleScripting.moveendState++;
+            break;
+        case MOVEEND_RAID:
+            if (gBattleTypeFlags & BATTLE_TYPE_RAID && UpdateRaidShield())
+                return;
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_CLEAR_BITS: // Clear/Set bits for things like using a move for all targets and all hits.
@@ -11428,6 +11457,64 @@ static void Cmd_various(void)
                 return;
             }
         }
+    }
+    case VARIOUS_JUMP_IF_NO_BALLS:
+    {
+        VARIOUS_ARGS(const u8 *jumpInstr);
+        if (IsBagPocketNonEmpty(POCKET_POKE_BALLS))
+            gBattlescriptCurrInstr = cmd->nextInstr;
+        else
+            gBattlescriptCurrInstr = cmd->jumpInstr;
+        return;
+    }
+    case VARIOUS_CATCH_RAID_BOSS:
+    {
+        VARIOUS_ARGS();
+        if (!(gBattleStruct->raid.state & RAID_CATCHING_BOSS)) // open bag if end sequence just began
+        {
+            gBattleStruct->raid.state |= RAID_CATCHING_BOSS;
+            gSpecialVar_ItemId = ITEM_NONE;
+            gActiveBattler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
+            RecalcBattlerStats(gActiveBattler, &gEnemyParty[0]);
+            BtlController_EmitChooseItem(BUFFER_A, gBattleStruct->battlerPartyOrders[gActiveBattler]);
+            MarkBattlerForControllerExec(gActiveBattler);
+        }
+        else if (gSpecialVar_ItemId != ITEM_NONE) // do catch sequence if ball selected
+        {
+            gBattleStruct->throwingPokeBall = TRUE;
+            gLastUsedItem = gSpecialVar_ItemId; // selected ball
+            gBattleSpritesDataPtr->animationData->isCriticalCapture = 0;
+            gBattleSpritesDataPtr->animationData->criticalCaptureSuccess = 0;
+            gActiveBattler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
+            gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+
+            BtlController_EmitBallThrowAnim(BUFFER_A, BALL_3_SHAKES_SUCCESS);
+            MarkBattlerForControllerExec(gActiveBattler);
+            // UndoFormChange(gBattlerPartyIndexes[gBattlerTarget], GET_BATTLER_SIDE(gBattlerTarget), FALSE);
+            gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
+            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
+
+            if (CalculatePlayerPartyCount() == PARTY_SIZE)
+                gBattleCommunication[MULTISTRING_CHOOSER] = 0;
+            else
+                gBattleCommunication[MULTISTRING_CHOOSER] = 1;
+
+            MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
+            HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gBattlerPartyIndexes[gBattlerTarget], STATUS1_ANY, gBattlerTarget);
+            RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
+            gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
+            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp);
+        }
+        else // no item selected
+        {
+            gBattlescriptCurrInstr = BattleScript_FaintRaidBoss;
+        }
+        return;
+    }
+    case VARIOUS_HIDE_HEALTHBOXES:
+    {
+        VARIOUS_ARGS();
+        UpdateOamPriorityInAllHealthboxes(1, TRUE);
         break;
     }
     } // End of switch (cmd->id)

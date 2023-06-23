@@ -100,7 +100,7 @@ bool32 IsDynamaxed(u16 battlerId)
 {
     u8 side = GetBattlerSide(battlerId);
     if (gBattleStruct->dynamax.dynamaxed[battlerId]
-        /*|| IsRaidBoss(battlerId)*/)
+        || (IsRaidBoss(battlerId) && gRaidTypes[gRaidData->raidType].gimmick == GIMMICK_DYNAMAX))
         return TRUE;
     return FALSE;
 }
@@ -174,6 +174,7 @@ void ApplyDynamaxHPMultiplier(u16 battlerId, struct Pokemon* mon)
 // Returns the non-Dynamax HP of a Pokemon.
 u16 GetNonDynamaxHP(u16 battlerId)
 {
+    // TODO: Get non-boosted Raid Boss HP
     if (!IsDynamaxed(battlerId) || gBattleMons[battlerId].species == SPECIES_SHEDINJA)
         return gBattleMons[battlerId].hp;
     else
@@ -187,6 +188,7 @@ u16 GetNonDynamaxHP(u16 battlerId)
 // Returns the non-Dynamax Max HP of a Pokemon.
 u16 GetNonDynamaxMaxHP(u16 battlerId)
 {
+    // TODO: Get non-boosted Raid Boss HP
     if (!IsDynamaxed(battlerId) || gBattleMons[battlerId].species == SPECIES_SHEDINJA)
         return gBattleMons[battlerId].maxHP;
     else

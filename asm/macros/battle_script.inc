@@ -2303,6 +2303,19 @@
 	various BS_FAINTED, VARIOUS_GIVE_DROPPED_ITEMS
 	.endm
 
+	.macro jumpifnoballs, ptr:req
+	various 0, VARIOUS_JUMP_IF_NO_BALLS
+	.4byte \ptr
+	.endm
+
+	.macro catchraidboss
+	various 0, VARIOUS_CATCH_RAID_BOSS
+	.endm
+
+	.macro hidehealthboxes
+	various 0, VARIOUS_HIDE_HEALTHBOXES
+	.endm
+
 	@ Tries to increase or decrease a battler's stat's stat stage by a specified amount. If impossible, jumps to \script.
 	.macro modifybattlerstatstage battler:req, stat:req, mode:req, amount:req, script:req, animation:req, customString
 

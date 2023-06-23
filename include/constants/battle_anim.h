@@ -550,6 +550,12 @@
 #define B_ANIM_SNOW_CONTINUES           37
 #define B_ANIM_DYNAMAX_GROWTH           38
 #define B_ANIM_MAX_SET_WEATHER          39
+#define B_ANIM_RAID_STORM_BREWS         40
+#define B_ANIM_RAID_SHIELD_APPEARED     41
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  42
+#define B_ANIM_RAID_BARRIER_BROKEN      43
+#define B_ANIM_RAID_SHOCKWAVE           44
+#define B_ANIM_RAID_BOSS_EXPLOSION      45
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

@@ -88,6 +88,16 @@ Debug_Script_4::
 	end
 
 Debug_Script_5::
+	lockall
+	preparefixedraid 0, 5, SPECIES_SALAMENCE
+	special InitRaidIntro
+	waitstate
+	goto_if_eq VAR_RESULT, TRUE, Debug_DoFixedRaid
+	releaseall
+	end
+
+Debug_DoFixedRaid:
+	doraidbattle
 	end
 
 Debug_Script_6::

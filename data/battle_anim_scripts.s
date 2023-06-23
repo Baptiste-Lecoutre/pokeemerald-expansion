@@ -1004,6 +1004,12 @@ gBattleAnims_General::
 	.4byte General_Snow                     @ B_ANIM_SNOW_CONTINUES
 	.4byte General_DynamaxGrowth			@ B_ANIM_DYNAMAX_GROWTH
 	.4byte General_SetWeather 				@ B_ANIM_MAX_SET_WEATHER
+	.4byte General_RaidStormBrews			@ B_ANIM_RAID_STORM_BREWS
+	.4byte General_RaidBarrierAppeared		@ B_ANIM_RAID_BARRIER_APPEARED
+	.4byte General_RaidBarrierDisappeared	@ B_ANIM_RAID_SHIELD_DISAPPEARED
+	.4byte General_RaidShieldBroken			@ B_ANIM_RAID_SHIELD_BROKE
+	.4byte General_RaidShockwave			@ B_ANIM_RAID_SHOCKWAVE
+	.4byte General_RaidBossExplosion		@ B_ANIM_RAID_BOSS_EXPLOSION
 
 	.align 2
 gBattleAnims_Special::
@@ -33006,3 +33012,149 @@ General_DynamaxGrowth:: @ PORTED FROM CFRU
 	createvisualtask AnimTask_DynamaxGrowth, 0x5, 0x1, 0x0
 	waitforvisualfinish
 	end
+
+General_RaidStormBrews:: @ PORTED FROM CFRU
+	createvisualtask AnimTask_GetRaidBattleStormLevel, 2
+	jumpreteq 1, RaidStormLevel1
+	jumpreteq 2, RaidStormLevel2
+	jumpreteq 3, RaidStormLevel3
+	jumpreteq 4, RaidStormLevel4
+RaidStormInitial:
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0x0 0x8 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0x0 0xB 0x301F
+	call RaidStormBlows
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0x8 0x0 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0xB 0x0 0x301F
+	end
+
+RaidStormBlows:
+	createvisualtask AnimTask_LoadSandstormBackground, 5, TRUE
+	createvisualtask AnimTask_BlendBackground, 6, 6, 0x301F
+	playsewithpan SE_M_GUST, 0
+	delay 0x44
+	playsewithpan SE_M_GUST, 0
+	delay 0x38
+	return
+
+RaidStormLevel1:
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0x0 0x9 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0x0 0xC 0x301F
+	call RaidStormBlows
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0x9 0x0 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0xC 0x0 0x301F
+	waitforvisualfinish
+	end
+
+RaidStormLevel2:
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0x0 0xA 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0x0 0xD 0x301F
+	call RaidStormBlows
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0xA 0x0 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0xD 0x0 0x301F
+	waitforvisualfinish
+	end
+
+RaidStormLevel3:
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0x0 0xB 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0x0 0xE 0x301F
+	call RaidStormBlows
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0xB 0x0 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0xE 0x0 0x301F
+	waitforvisualfinish
+	end
+
+RaidStormLevel4:
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0x0 0xC 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0x0 0xF 0x301F
+	call RaidStormBlows
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_ALL_BATTLERS 0x2 0xC 0x0 0x301F
+	@launchtask AnimTask_BlendBattleAnimPal 0xa 0x5 ANIM_PAL_BG 0x2 0xF 0x0 0x301F
+	waitforvisualfinish
+	end
+
+General_RaidBarrierAppeared::
+	loadspritegfx ANIM_TAG_SPARKLE_4
+	loadspritegfx ANIM_TAG_BLUE_LIGHT_WALL
+	setalpha 0, 16
+	waitplaysewithpan SE_M_REFLECT, SOUND_PAN_ATTACKER, 15
+	createsprite gReflectWallSpriteTemplate, ANIM_ATTACKER, 1, 40, 0, ANIM_TAG_BLUE_LIGHT_WALL
+	delay 20
+	createsprite gReflectSparkleSpriteTemplate, ANIM_ATTACKER, 2, 30, 0, ANIM_ATTACKER, 1
+	delay 7
+	createsprite gReflectSparkleSpriteTemplate, ANIM_ATTACKER, 2, 19, -12, ANIM_ATTACKER, 1
+	delay 7
+	createsprite gReflectSparkleSpriteTemplate, ANIM_ATTACKER, 2, 10, 20, ANIM_ATTACKER, 1
+	waitforvisualfinish
+	delay 1
+	blendoff
+	end
+
+General_RaidBarrierDisappeared::
+	playsewithpan SE_M_BRICK_BREAK, SOUND_PAN_TARGET
+	delay 6
+	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 0, 2, 7, 0, 9, RGB_RED
+	playsewithpan SE_M_DRAGON_RAGE, SOUND_PAN_ATTACKER
+	createvisualtask AnimTask_SlideMonForFocusBand, 5, 30, 128, 0, 1, 2, 0, 1
+	waitforvisualfinish
+	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 0, 2, 4, 9, 0, RGB_RED
+	waitforvisualfinish
+	delay 6
+	createsprite gSlideMonToOriginalPosSpriteTemplate, ANIM_ATTACKER, 0, 0, 0, 15
+	end
+
+General_RaidShieldBroken::
+	playsewithpan SE_M_BRICK_BREAK, SOUND_PAN_TARGET
+	createvisualtask AnimTask_ShakeMon2, 2, ANIM_ATTACKER, 1, 0, 18, 2
+	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 0, 2, 4, 9, 0, RGB_RED
+	waitforvisualfinish
+	delay 6
+	end
+
+General_RaidShockwave::
+	loadspritegfx ANIM_TAG_ELECTRIC_ORBS
+	loadspritegfx ANIM_TAG_RED_ORB
+	createvisualtask AnimTask_BlendParticle, 5, ANIM_TAG_ELECTRIC_ORBS, 0, 0xC, 0xC, 0x301F
+	createvisualtask AnimTask_BlendParticle, 5, ANIM_TAG_RED_ORB, 0, 0xC, 0xC, 0x301F
+	launchtask AnimTask_ElectricChargingParticles 0x2 0x4 0x0 0x14 0x0 0x2
+	createvisualtask SoundTask_PlayDoubleCry, 2, ANIM_ATTACKER, 0xff
+	waitforvisualfinish
+	setarg 0x7 0xffff
+	playsewithpan SE_M_PSYBEAM, SOUND_PAN_ATTACKER
+	launchtask AnimTask_ScaleMonAndRestore 0x5 0x5 0xfff9 0xfff9 0xb 0x0 0x0
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 0
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 32
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 64
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 96
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 128
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 160
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 192
+	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 224
+	waitforvisualfinish
+	end
+
+General_RaidBossExplosion::
+	createvisualtask AnimTask_SetAnimTargetToBattlerTarget, 2
+	loadspritegfx ANIM_TAG_EXPLOSION
+	launchtask AnimTask_ShakeMon 0x2 0x5 ANIM_TARGET 0x0 0x5 0x30 0x1
+	call Explosion2
+	call Explosion2
+	waitforvisualfinish
+	delay 6
+	end
+Explosion2:
+	playsewithpan SE_M_SELF_DESTRUCT, SOUND_PAN_TARGET
+	createsprite gExplosionSpriteTemplate, ANIM_TARGET, 3, 0, 0, 0, 1
+	delay 6
+	playsewithpan SE_M_SELF_DESTRUCT, SOUND_PAN_TARGET
+	createsprite gExplosionSpriteTemplate, ANIM_TARGET, 3, 24, -24, 0, 1
+	delay 6
+	playsewithpan SE_M_SELF_DESTRUCT, SOUND_PAN_TARGET
+	createsprite gExplosionSpriteTemplate, ANIM_TARGET, 3, -16, 16, 0, 1
+	delay 6
+	playsewithpan SE_M_SELF_DESTRUCT, SOUND_PAN_TARGET
+	createsprite gExplosionSpriteTemplate, ANIM_TARGET, 3, -24, -12, 0, 1
+	delay 6
+	playsewithpan SE_M_SELF_DESTRUCT, SOUND_PAN_TARGET
+	createsprite gExplosionSpriteTemplate, ANIM_TARGET, 3, 16, 16, 0, 1
+	delay 6
+	return

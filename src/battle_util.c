@@ -9729,6 +9729,7 @@ static u32 CalcFinalDmg(u32 dmg, u16 move, u8 battlerAtk, u8 battlerDef, u8 move
         MulModifier(&finalModifier, UQ_4_12(2.0));
 
     dmg = ApplyModifier(finalModifier, dmg);
+
     if (dmg == 0)
         dmg = 1;
 
@@ -11000,7 +11001,9 @@ void CopyMonAbilityAndTypesToBattleMon(u32 battler, struct Pokemon *mon)
 void RecalcBattlerStats(u32 battler, struct Pokemon *mon)
 {
     CalculateMonStats(mon);
-    if (IsDynamaxed(battler) && gChosenActionByBattler[battler] != B_ACTION_SWITCH)
+    if (IsRaidBoss(battler) && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+        ApplyRaidHPMultiplier(battler, mon);
+    else if (IsDynamaxed(battler) && gChosenActionByBattler[battler] != B_ACTION_SWITCH)
         ApplyDynamaxHPMultiplier(battler, mon);
     CopyMonLevelAndBaseStatsToBattleMon(battler, mon);
     CopyMonAbilityAndTypesToBattleMon(battler, mon);

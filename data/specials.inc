@@ -561,3 +561,4 @@ gSpecials::
 	def_special GetPlayerCostumeId
 	def_special GetStaticEncounterLevel
  	def_special GetHighestLevelInPlayerParty
+	def_special InitRaidIntro
