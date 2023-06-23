@@ -3527,6 +3527,12 @@ static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] =
         [B_POSITION_PLAYER_RIGHT] = {220, 96},
         [B_POSITION_OPPONENT_RIGHT] = {15, 40}, 
     },
+    { // Raid Battles
+        [B_POSITION_PLAYER_LEFT] = { 225, 71},
+        [B_POSITION_OPPONENT_LEFT] = {20, 26}, // position of singles
+        [B_POSITION_PLAYER_RIGHT] = {220, 96},
+        [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
+    },
 };
 
 static const struct OamData sTypeIconOAM =
@@ -3561,6 +3567,9 @@ void TryLoadTypeIcons(void)
 	{
         u8 position, battleType= IsDoubleBattle();
         LoadSpritePalette(&sTypeIconPalTemplate);
+
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;
         
 		for (position = 0; position < gBattlersCount; ++position)
 		{
@@ -3614,6 +3623,9 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
     u8 battleType = IsDoubleBattle();
     s16 originalY;
 	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
+
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;
 
 	if (sprite->data[2] == 12 - 2 * sprite->data[4])
 	{
