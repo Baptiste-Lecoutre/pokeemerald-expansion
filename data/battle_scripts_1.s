@@ -10957,6 +10957,7 @@ BattleScript_RaidShockwave::
 
 BattleScript_RaidVictory::
 	hidehealthboxes
+	setbyte gBattlerTarget, 1
 	playanimation BS_TARGET, B_ANIM_RAID_BOSS_EXPLOSION
 	waitanimation
 	setbyte sGIVEEXP_STATE, 0
