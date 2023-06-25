@@ -1930,7 +1930,7 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
   bool8 shiny;
   u8 form;
   // Avoid spawning large (64x64) follower pokemon inside buildings //optionsShowFollowerPokemon
-  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER)) {
+  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER) && FALSE) {
     if (objEvent == NULL) { // Spawn follower
       struct ObjectEventTemplate template = {
         .localId = OBJ_EVENT_ID_FOLLOWER,
