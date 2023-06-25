@@ -1769,7 +1769,7 @@ static void OpenBagAndChooseItem(void)
 
         ReshowBattleScreenDummy();
         FreeAllWindowBuffers();
-        if (gBattleStruct->raid.state & RAID_CATCHING_BOSS)
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
             CB2_ChooseBall();
         else
             CB2_BagMenuFromBattle();
