@@ -1090,6 +1090,7 @@ EventScript_DoWonderTrade_Text_Done:
 	.include "data/text/birch_speech.inc"
     .include "data/scripts/dexnav.inc"
 	.include "data/scripts/costume_swap.inc"
+	.include "data/scripts/raid_battle.inc"
     
 
 	.include "data/maps/PetalburgWoods_2/scripts.inc"

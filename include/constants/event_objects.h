@@ -259,9 +259,10 @@
 #define OBJ_EVENT_GFX_REGIGIGAS                  255
 #define OBJ_EVENT_GFX_BLUE                       256
 #define OBJ_EVENT_GFX_SNORLAX_SLEEPING           257
+#define OBJ_EVENT_GFX_RAID_DEN                   258
 
 #define OBJ_EVENT_GFX_ANIMATED_BALL              OBJ_EVENT_GFX_ITEM_BALL // replaces ITEM_BALL
-#define OBJ_EVENT_GFX_OW_MON                     258
+#define OBJ_EVENT_GFX_OW_MON                     259
 #define OBJ_EVENT_GFX_LIGHT_SPRITE               OBJ_EVENT_GFX_QUINTY_PLUMP
 
 #define	COSTUME_GFX									OBJ_EVENT_GFX_OW_MON 
