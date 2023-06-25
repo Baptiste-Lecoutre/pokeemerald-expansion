@@ -262,6 +262,21 @@ bool32 UpdateRaidShield(void)
             gBattlescriptCurrInstr = BattleScript_RaidBarrierBroken;
         return TRUE;
     }
+    else if (gBattleStruct->raid.state & RAID_RESHOW_SHIELD)
+    {
+        gBattleStruct->raid.state &= ~RAID_RESHOW_SHIELD;
+        if (gRaidTypes[gRaidData->raidType].shield == RAID_GEN_8)
+            CreateAllRaidBarrierSprites();
+        return TRUE;
+    }
+    else if (gBattleStruct->raid.state & RAID_HIDE_SHIELD && gBattleStruct->raid.shield > 0)
+    {
+        u32 i;
+        gBattleStruct->raid.state &= ~RAID_HIDE_SHIELD;
+        for (i = 0; i < gBattleStruct->raid.shield; i++)
+            DestroyRaidBarrierSprite(i);
+        return TRUE;
+    }
     return FALSE;
 }
 

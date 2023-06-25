@@ -521,5 +521,6 @@ extern const u8 BattleScript_RaidVictory[];
 extern const u8 BattleScript_FaintRaidBoss[];
 extern const u8 BattleScript_RaidDefeat[];
 extern const u8 BattleScript_TeraRaidTimerLow[];
+extern const u8 BattleScript_RaidBallBlock[];
 
 #endif // GUARD_BATTLE_SCRIPTS_H

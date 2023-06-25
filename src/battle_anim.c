@@ -911,6 +911,8 @@ bool8 IsBattlerSpriteVisible(u8 battlerId)
         else
             return FALSE;
     }
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_RIGHT)
+        return FALSE;
     if (!IsBattlerSpritePresent(battlerId))
         return FALSE;
     if (IsContest())

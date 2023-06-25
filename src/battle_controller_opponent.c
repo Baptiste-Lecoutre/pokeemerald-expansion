@@ -232,7 +232,8 @@ static bool32 TwoIntroMons(u32 battlerId) // Double battle with both opponent po
 {
     return (IsDoubleBattle()
             && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[battlerId]])
-            && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)]]));
+            && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)]])
+            && !(gBattleTypeFlags & BATTLE_TYPE_RAID));
 }
 
 static void Intro_WaitForShinyAnimAndHealthbox(void)

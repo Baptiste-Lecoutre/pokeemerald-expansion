@@ -4557,6 +4557,10 @@ static void Cmd_getexp(void)
                     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                 #endif
+
+                if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+                    gBattleMoveDamage *= 2;
+
                 #if (B_SCALED_EXP >= GEN_5) && (B_SCALED_EXP != GEN_6)
                     {
                         // Note: There is an edge case where if a pokemon receives a large amount of exp, it wouldn't be properly calculated
@@ -13052,6 +13056,12 @@ static void Cmd_weatherdamage(void)
                 gBattleMoveDamage *= -1;
             }
         }
+
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID 
+            && IsRaidBoss(gBattlerAttacker) 
+            && gBattleStruct->raid.shield > 0 
+            && gBattleMoveDamage >= gBattleMons[gBattlerAttacker].hp)
+            gBattleMoveDamage = gBattleMons[gBattlerAttacker].hp - 1;
     }
 
     gBattlescriptCurrInstr = cmd->nextInstr;
@@ -15754,6 +15764,12 @@ static void Cmd_handleballthrow(void)
         BtlController_EmitBallThrowAnim(BUFFER_A, BALL_TRAINER_BLOCK);
         MarkBattlerForControllerExec(gActiveBattler);
         gBattlescriptCurrInstr = BattleScript_TrainerBallBlock;
+    }
+    else if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+    {
+        BtlController_EmitBallThrowAnim(BUFFER_A, BALL_TRAINER_BLOCK);
+        MarkBattlerForControllerExec(gActiveBattler);
+        gBattlescriptCurrInstr = BattleScript_RaidBallBlock;
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL)
     {

@@ -21,6 +21,8 @@
 #define RAID_CREATE_SHIELD      (1 << 2)
 #define RAID_BREAK_SHIELD       (1 << 3)
 #define RAID_CATCHING_BOSS      (1 << 4)
+#define RAID_RESHOW_SHIELD     (1 << 5)
+#define RAID_HIDE_SHIELD       (1 << 6)
 
 // Raid Storm Turn Thresholds
 #define RAID_STORM_TURNS_LEVEL_1    3    // number of turns

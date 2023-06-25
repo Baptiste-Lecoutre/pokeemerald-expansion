@@ -811,6 +811,12 @@ u8 CreateBattlerHealthboxSprites(u8 battlerId)
     // Create dynamax indicator sprites.
     DynamaxIndicator_CreateSprite(battlerId, healthboxLeftSpriteId);
 
+    if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+        UpdateRaidShield();
+    }
+
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
 
@@ -890,20 +896,39 @@ void SetBattleBarStruct(u8 battlerId, u8 healthboxSpriteId, s32 maxVal, s32 oldV
 
 void SetHealthboxSpriteInvisible(u8 healthboxSpriteId)
 {
+    u8 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
+
     gSprites[healthboxSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = TRUE;
     MegaIndicator_SetVisibilities(healthboxSpriteId, TRUE);
     DynamaxIndicator_SetVisibilities(healthboxSpriteId, TRUE);
+    if (IsRaidBoss(battlerId))
+        RaidBarrier_SetVisibilities(healthboxSpriteId, TRUE);
+    /*if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+        UpdateRaidShield();
+    }*/
 }
 
 void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
 {
+    u8 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
+
     gSprites[healthboxSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = FALSE;
     MegaIndicator_SetVisibilities(healthboxSpriteId, FALSE);
     DynamaxIndicator_SetVisibilities(healthboxSpriteId, FALSE);
+
+    /*if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+        UpdateRaidShield();
+    }*/
+    if (IsRaidBoss(battlerId))
+        RaidBarrier_SetVisibilities(healthboxSpriteId, FALSE);
 }
 
 static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
@@ -919,19 +944,42 @@ void DummyBattleInterfaceFunc(u8 healthboxSpriteId, bool8 isDoubleBattleBattlerO
 
 static void TryToggleHealboxVisibility(u32 priority, u32 healthboxLeftSpriteId, u32 healthboxRightSpriteId, u32 healthbarSpriteId)
 {
+    u8 battlerId = gSprites[healthboxLeftSpriteId].hMain_Battler;
     bool32 invisible = FALSE;
 
     if (priority == 0)  // start of anim -> make invisible
         invisible = TRUE;
     else if (priority == 1) // end of anim -> make visible
         invisible = FALSE;
+    
+    if (gBattleStruct->raid.state & RAID_CATCHING_BOSS && !invisible) // catching pesky bug
+        return;
 
     gSprites[healthboxLeftSpriteId].invisible = invisible;
     gSprites[healthboxRightSpriteId].invisible = invisible;
     gSprites[healthbarSpriteId].invisible = invisible;
     MegaIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
     DynamaxIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
-    RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
+    
+//    if (invisible)
+//    {
+    if (IsRaidBoss(battlerId))
+        RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
+/*        if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+        {
+            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+            UpdateRaidShield();
+        }
+    }
+    else
+    {
+        if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+        {
+            gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+            UpdateRaidShield();
+        }
+        RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
+    }*/
 }
 
 void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
@@ -3455,7 +3503,7 @@ void TryRestoreLastUsedBall(void)
 #if B_LAST_USED_BALL == TRUE
     if (gBattleStruct->ballSpriteIds[0] != MAX_SPRITES)
         TryHideOrRestoreLastUsedBall(1);
-    else
+    else if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
         TryAddLastUsedBallItemSprites();
 #endif
 }

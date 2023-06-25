@@ -2890,6 +2890,12 @@ u8 DoBattlerEndTurnEffects(void)
 
                     if (gBattleMoveDamage == 0)
                         gBattleMoveDamage = 1;
+                    
+                    if (gBattleTypeFlags & BATTLE_TYPE_RAID
+                        && IsRaidBoss(gActiveBattler)
+                        && gBattleStruct->raid.shield > 0
+                        && gBattleMoveDamage >= gBattleMons[gActiveBattler].hp)
+                        gBattleMoveDamage = gBattleMons[gActiveBattler].hp - 1;
                 }
                 else  // broke free
                 {
