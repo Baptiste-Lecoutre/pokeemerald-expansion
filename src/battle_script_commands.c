@@ -11461,6 +11461,7 @@ static void Cmd_various(void)
                 return;
             }
         }
+        break;
     }
     case VARIOUS_JUMP_IF_NO_BALLS:
     {
