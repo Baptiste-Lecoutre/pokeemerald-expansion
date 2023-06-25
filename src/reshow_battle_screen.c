@@ -313,7 +313,7 @@ static void CreateHealthboxSprite(u8 battler)
             healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
 
         gHealthboxSpriteIds[battler] = healthboxSpriteId;
-        if (gBattleTypeFlags & BATTLE_TYPE_RAID && battler == B_POSITION_OPPONENT_RIGHT)
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
             return;
 
         InitBattlerHealthboxCoords(battler);
