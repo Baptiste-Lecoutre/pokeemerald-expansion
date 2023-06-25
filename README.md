@@ -148,6 +148,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Updates Mirage-Island mechanics (credits to segabl)
 - All Pokemon Centers now have a NPC for movetutor/relearner/deleter & more
 - Mon that can mega evolve are displayed as such in HoF
+- Add bobbing effect for follower pokemon
 - More to be added
 
 ## TODO
