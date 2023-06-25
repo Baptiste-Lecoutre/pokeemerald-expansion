@@ -903,13 +903,9 @@ void SetHealthboxSpriteInvisible(u8 healthboxSpriteId)
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = TRUE;
     MegaIndicator_SetVisibilities(healthboxSpriteId, TRUE);
     DynamaxIndicator_SetVisibilities(healthboxSpriteId, TRUE);
+
     if (IsRaidBoss(battlerId))
         RaidBarrier_SetVisibilities(healthboxSpriteId, TRUE);
-    /*if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
-    {
-        gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
-        UpdateRaidShield();
-    }*/
 }
 
 void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
@@ -922,11 +918,6 @@ void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
     MegaIndicator_SetVisibilities(healthboxSpriteId, FALSE);
     DynamaxIndicator_SetVisibilities(healthboxSpriteId, FALSE);
 
-    /*if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
-    {
-        gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
-        UpdateRaidShield();
-    }*/
     if (IsRaidBoss(battlerId))
         RaidBarrier_SetVisibilities(healthboxSpriteId, FALSE);
 }
@@ -961,25 +952,8 @@ static void TryToggleHealboxVisibility(u32 priority, u32 healthboxLeftSpriteId, 
     MegaIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
     DynamaxIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
     
-//    if (invisible)
-//    {
     if (IsRaidBoss(battlerId))
         RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
-/*        if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
-        {
-            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
-            UpdateRaidShield();
-        }
-    }
-    else
-    {
-        if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
-        {
-            gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
-            UpdateRaidShield();
-        }
-        RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
-    }*/
 }
 
 void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
