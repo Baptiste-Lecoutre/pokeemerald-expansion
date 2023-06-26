@@ -80,15 +80,15 @@
 #define FLAG_UNUSED_0x044    0x44 // Unused Flag
 #define FLAG_UNUSED_0x045    0x45 // Unused Flag
 #define FLAG_UNUSED_0x046    0x46 // Unused Flag
-#define FLAG_UNUSED_0x047    0x47 // Unused Flag
-#define FLAG_UNUSED_0x048    0x48 // Unused Flag
-#define FLAG_UNUSED_0x049    0x49 // Unused Flag
-#define FLAG_UNUSED_0x04A    0x4A // Unused Flag
-#define FLAG_UNUSED_0x04B    0x4B // Unused Flag
-#define FLAG_UNUSED_0x04C    0x4C // Unused Flag
-#define FLAG_UNUSED_0x04D    0x4D // Unused Flag
-#define FLAG_UNUSED_0x04E    0x4E // Unused Flag
-#define FLAG_UNUSED_0x04F    0x4F // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_OLD_AMBER    0x47 // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_DOME_FOSSIL    0x48 // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_HELX_FOSSIL    0x49 // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_ARMOR_FOSSIL    0x4A // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_SKULL_FOSSIL    0x4B // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_PLUME_FOSSIL    0x4C // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_COVER_FOSSIL    0x4D // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_SAIL_FOSSIL    0x4E // Unused Flag
+#define FLAG_SANDSTREWN_RUINS_JAW_FOSSIL    0x4F // Unused Flag
 
 // Scripts
 #define FLAG_HIDE_SKY_PILLAR_TOP_RAYQUAZA_STILL  0x50
