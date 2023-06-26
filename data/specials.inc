@@ -561,3 +561,7 @@ gSpecials::
 	def_special GetPlayerCostumeId
 	def_special GetStaticEncounterLevel
  	def_special GetHighestLevelInPlayerParty
+	def_special FossilToSpecies
+	def_special IsItemFossil
+	def_special DoesPlayerHaveFossil
+	def_special Bag_ChooseItem
