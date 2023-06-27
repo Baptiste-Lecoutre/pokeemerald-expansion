@@ -2616,7 +2616,7 @@ static bool8 ShouldDoSlideInAnim(void) {
         BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_RECORDED | BATTLE_TYPE_TRAINER_HILL)
     )
         return FALSE;
-    return TRUE;
+    return FALSE; //TRUE;
 }
 
 static void StartSendOutAnim(u8 battlerId, bool8 dontClearSubstituteBit, bool8 doSlideIn)
