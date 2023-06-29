@@ -252,6 +252,37 @@ SlateportCity_PokemonFanClub_EventScript_Azumarill::
 	release
 	end
 
+SlateportCity_PokemonFanClub_EventScript_EndureTM::
+	lock
+	faceplayer
+	checkitem ITEM_TM58_ENDURE, 1
+	goto_if_eq VAR_RESULT, TRUE,SlateportCity_PokemonFanClub_EventScript_ReceivedTM58
+	msgbox SlateportCity_PokemonFanClub_Text_GiveTM58, MSGBOX_DEFAULT
+	giveitem ITEM_TM58_ENDURE
+	msgbox SlateportCity_PokemonFanClub_Text_HaveTM58, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_PokemonFanClub_EventScript_ReceivedTM58::
+	lock
+	faceplayer
+	msgbox SlateportCity_PokemonFanClub_Text_HaveTM58, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_PokemonFanClub_Text_GiveTM58:
+	.string "Check out my Azumarill! It's pretty\n"
+	.string "sturdy, right? Almost as sturdy as\l"
+	.string "a Roggenrola with Sturdy!\p"
+	.string "Your Pokémon can be sturdy too,\n"
+	.string "if you use this TM!$"
+
+SlateportCity_PokemonFanClub_Text_HaveTM58:
+	.string "Endure allows a Pokémon to withstand\n"
+	.string "any attack with one HP left.\p"
+	.string "It might not work if you use it too\n"
+	.string "many times in a row, though.$"
+
 SlateportCity_PokemonFanClub_Text_MeetChairman:
 	.string "Er-hem! I am the Chairman of the\n"
 	.string "Pokémon Fan Club!\p"
