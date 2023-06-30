@@ -562,3 +562,7 @@ gSpecials::
 	def_special GetStaticEncounterLevel
  	def_special GetHighestLevelInPlayerParty
 	def_special InitRaidIntro
+	def_special FossilToSpecies
+	def_special IsItemFossil
+	def_special DoesPlayerHaveFossil
+	def_special Bag_ChooseItem

@@ -682,6 +682,42 @@ Sandstrewn_Ruins_ItemGarchompite::
 	finditem ITEM_GARCHOMPITE
 	end
 
+Sandstrewn_Ruins_ItemDomeFossil::
+	finditem ITEM_DOME_FOSSIL
+	end
+
+Sandstrewn_Ruins_ItemHelixFossil::
+	finditem ITEM_HELIX_FOSSIL
+	end
+
+Sandstrewn_Ruins_ItemOldAmber::
+	finditem ITEM_OLD_AMBER
+	end
+
+Sandstrewn_Ruins_ItemSkullFossil::
+	finditem ITEM_SKULL_FOSSIL
+	end
+
+Sandstrewn_Ruins_ItemArmorFossil::
+	finditem ITEM_ARMOR_FOSSIL
+	end
+
+Sandstrewn_Ruins_ItemCoverFossil::
+	finditem ITEM_COVER_FOSSIL
+	end
+
+Sandstrewn_Ruins_ItemPlumeFossil::
+	finditem ITEM_PLUME_FOSSIL
+	end
+
+Sandstrewn_Ruins_ItemSailFossil::
+	finditem ITEM_SAIL_FOSSIL
+	end
+
+Sandstrewn_Ruins_ItemJawFossil::
+	finditem ITEM_JAW_FOSSIL
+	end
+
 Mirage_Tower_4F_EventScript_Aerodactylite::
 	finditem ITEM_AERODACTYLITE
 	end
@@ -724,4 +760,108 @@ ScorchedSlab_EventScript_ItemTyranitarite::
 
 DewfordManor_EventScript_Banettite::
 	finditem ITEM_BANETTITE
+	end
+
+NewMauville_Inside_EventScript_ItemTM91FlashCannon::
+	finditem ITEM_TM91_FLASH_CANNON
+	end
+
+Route119_EventScript_ItemTM62_Acrobatics::
+	finditem ITEM_TM62_ACROBATICS
+	end
+
+MtPyre_Summit_EventScript_ItemTM61_WillOWisp::
+	finditem ITEM_TM61_WILL_O_WISP
+	end
+
+Route124_EventScript_TM85DreamEater::
+	finditem ITEM_TM85_DREAM_EATER
+	end
+
+AquaHideout_B1F_EventScript_ItemTM97DarkPulse::
+	finditem ITEM_TM97_DARK_PULSE
+	end
+
+GraniteCave_B1F_EventScript_ItemTM65ShadowClaw::
+	finditem ITEM_TM65_SHADOW_CLAW
+	end
+
+DewfordMeadow_EventScript_TM95Snarl::
+	finditem ITEM_TM95_SNARL
+	end
+
+DewfordManor_EventScript_TM100Curse::
+	finditem ITEM_TM100_CURSE
+	end
+
+VerdanturfMeadow_EventScript_TM21::
+	finditem ITEM_TM21_FRUSTRATION
+	end
+
+Sandstrewn_Ruins_ItemLeechLife::
+	finditem ITEM_TM56_LEECH_LIFE
+	end
+
+Ashen_Woods_ItemU_Turn::
+	finditem ITEM_TM89_U_TURN
+	end
+
+Ember_Path_ItemSmack_Down::
+	finditem ITEM_TM87_SMACK_DOWN
+	end
+
+Granite_Cave_B2F_TM31_Brick_Break::
+	finditem ITEM_TM31_BRICK_BREAK
+	end
+
+Seaspray_Cave_ItemStoneEdge::
+	finditem ITEM_TM71_STONE_EDGE
+	end
+
+Seaspray_Cave_B1F_ItemFreezeDry::
+	finditem ITEM_TM79_FREEZE_DRY
+	end
+
+MagmaHideout_3F_3R_EventScript_ItemTM35Flamethrower:: @ 829152C
+	finditem ITEM_TM35_FLAMETHROWER
+	end
+
+ShoalCave_LowTideStairsRoom_EventScript_ItemTM70AuroraVeil::
+	finditem ITEM_TM70_AURORA_VEIL
+	end
+
+SafariZone_Southeast_EventScript_ItemTM53EnergyBall:: @ 82912F0
+	finditem ITEM_TM53_ENERGY_BALL
+	end
+
+MeteorFalls_1F_1R_EventScript_ItemTM59DragonPulse:: @ 82911C5
+	finditem ITEM_TM59_DRAGON_PULSE
+	end
+
+JaggedPass_EventScript_ItemTM69RockPolish:: @ 8291184
+	finditem ITEM_TM69_ROCK_POLISH
+	end
+
+Route123_EventScript_ItemTM99DazzlingGleam:: @ 8290FE4
+	finditem ITEM_TM99_DAZZLING_GLEAM
+	end
+
+Route119_EventScript_ItemTM84_Poison_Jab:: @ 8290F07
+	finditem ITEM_TM84_POISON_JAB
+	end
+
+Route116_EventScript_TM77StruggleBug:: @ 8290E78
+	finditem ITEM_TM77_STRUGGLE_BUG
+	end
+
+Route111_EventScript_ItemTM63RockSlide:: @ 8290DB5
+	finditem ITEM_TM63_ROCK_SLIDE
+	end
+
+Route103_EventScript_ItemTM40AerialAce:: @ 8290CE5
+	finditem ITEM_TM40_AERIAL_ACE
+	end
+
+PetalburgWoods_3_TM34_SludgeWave::
+	finditem ITEM_TM34_SLUDGE_WAVE
 	end

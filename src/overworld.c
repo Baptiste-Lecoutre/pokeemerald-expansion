@@ -2157,7 +2157,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_Fly || TRUE) //optionsShowFollowerPokemon
+        if (gFieldCallback == FieldCallback_Fly) //optionsShowFollowerPokemon
           RemoveFollowingPokemon();
         else
           UpdateFollowingPokemon();
