@@ -68,6 +68,39 @@ RustboroCity_Mart_EventScript_BugCatcher::
 	msgbox RustboroCity_Mart_Text_GettingEscapeRopeJustInCase, MSGBOX_NPC
 	end
 
+RustboroCity_Mart_EventScript_FalseSwipeTM::
+	lock
+	faceplayer
+	checkitem ITEM_TM98_FALSE_SWIPE, 1
+	goto_if_eq VAR_RESULT, TRUE, RustboroCity_Mart_EventScript_ReceivedTM98
+	msgbox RustboroCity_Mart_Text_ExcuseMeTrainer, MSGBOX_DEFAULT
+	giveitem ITEM_TM98_FALSE_SWIPE
+	msgbox RustboroCity_Mart_Text_HaveTM98, MSGBOX_DEFAULT
+	release
+	end
+
+RustboroCity_Mart_EventScript_ReceivedTM98::
+	msgbox RustboroCity_Mart_Text_HaveTM98, MSGBOX_DEFAULT
+	release
+	end
+
+RustboroCity_Mart_Text_ExcuseMeTrainer:
+	.string "Excuse me, Trainer over there.\n"
+	.string "Do you have a minute?\p"
+	.string "You know, sometimes moves are too\n"
+	.string "strong to catch a Pokémon.\p"
+	.string "You end up making a Pokémon faint even\n"
+	.string "when you don't want to.\p"
+	.string "For such a common problem, use this!$"
+
+RustboroCity_Mart_Text_HaveTM98:
+	.string "False Swipe is a very handy move.\p"
+	.string "No matter how many times it's used on\n"
+	.string "the opposing Pokémon, it won't cause\l"
+	.string "the Pokémon to faint!\p"
+	.string "I'm offering it for free right now.\n"
+	.string "This is a limited-time promotion!$"
+
 RustboroCity_Mart_Text_BuyingHealsInCaseOfShroomish:
 	.string "I'm buying some Parlyz Heals and\n"
 	.string "Antidotes.\p"

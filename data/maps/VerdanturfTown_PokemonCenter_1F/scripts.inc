@@ -26,6 +26,29 @@ VerdanturfTown_PokemonCenter_1F_EventScript_ExpertM::
 	msgbox VerdanturfTown_PokemonCenter_1F_Text_VisitForBattleTent, MSGBOX_NPC
 	end
 
+VerdanturfTown_PokemonCenter_1F_EventScript_XscissorTM::
+	lock
+	faceplayer
+	checkitem ITEM_TM81_X_SCISSOR, 1
+	goto_if_eq VAR_RESULT, TRUE, VerdanturfTown_PokemonCenter_1F_EventScript_ReceivedTM81
+	msgbox VerdanturfTown_PokemonCenter_1F_Text_DoYouLikeBugs, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, VerdanturfTown_PokemonCenter_1F_EventScript_DontLikeBugs
+	msgbox VerdanturfTown_PokemonCenter_1F_Text_GiveTM81, MSGBOX_DEFAULT
+	giveitem ITEM_TM81_X_SCISSOR
+	msgbox VerdanturfTown_PokemonCenter_1F_Text_HaveTM81, MSGBOX_DEFAULT
+	release
+	end
+
+VerdanturfTown_PokemonCenter_1F_EventScript_ReceivedTM81::
+	msgbox VerdanturfTown_PokemonCenter_1F_Text_HaveTM81, MSGBOX_DEFAULT
+	release
+	end
+
+VerdanturfTown_PokemonCenter_1F_EventScript_DontLikeBugs::
+	msgbox VerdanturfTown_PokemonCenter_1F_Text_DontLikeBugs, MSGBOX_DEFAULT
+	release
+	end
+
 VerdanturfTown_PokemonCenter_1F_Text_FaithInYourPokemon:
 	.string "You can't consider yourself a real\n"
 	.string "Trainer if you don't have faith\l"
@@ -42,3 +65,17 @@ VerdanturfTown_PokemonCenter_1F_Text_VisitForBattleTent:
 	.string "Or is there somebody here that you\n"
 	.string "came to see?$"
 
+VerdanturfTown_PokemonCenter_1F_Text_DoYouLikeBugs:
+	.string "Yo! Bug-type Pokémon are wickedly cool!\n"
+	.string "You agree, right?$"
+
+VerdanturfTown_PokemonCenter_1F_Text_GiveTM81:
+	.string "Yeah! I like you. We can be friends.\p"
+	.string "And you can have this TM!$"
+
+VerdanturfTown_PokemonCenter_1F_Text_HaveTM81:
+	.string "TM81 is X-scissor.\n"
+	.string "It's a wickedly cool Bug-type attack!$"
+
+VerdanturfTown_PokemonCenter_1F_Text_DontLikeBugs:
+	.string "No? We're not on the same wavelength.$"
