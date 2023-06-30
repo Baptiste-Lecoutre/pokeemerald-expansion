@@ -41,6 +41,36 @@ VerdanturfTown_Mart_EventScript_Lass::
 	msgbox VerdanturfTown_Mart_Text_NestBallOnWeakenedPokemon, MSGBOX_NPC
 	end
 
+VerdanturfTown_Mart_EventScript_PaybackTM::
+	lock
+	faceplayer
+	checkitem ITEM_TM66_PAYBACK, 1
+	goto_if_eq VAR_RESULT, TRUE, VerdanturfTown_Mart_EventScript_ReceivedTM66
+	msgbox VerdanturfTown_Mart_Text_SlowPokemon, MSGBOX_DEFAULT
+	giveitem ITEM_TM66_PAYBACK
+	msgbox VerdanturfTown_Mart_Text_HaveTM66, MSGBOX_DEFAULT
+	release
+	end
+
+VerdanturfTown_Mart_EventScript_ReceivedTM66::
+	msgbox VerdanturfTown_Mart_Text_HaveTM66, MSGBOX_DEFAULT
+	release
+	end
+
+VerdanturfTown_Mart_Text_SlowPokemon:
+	.string "Do you think slow Pokémon ever get\n"
+	.string "tired of taking the first hit in every\l"
+	.string "battle?\p"
+	.string "I think they'd be itching for a little\n"
+	.string "payback!\p"
+	.string "If you've got any slow Pokémon, give\n"
+	.string "this TM a try.$"
+
+VerdanturfTown_Mart_Text_HaveTM66:
+	.string "TM66 contains Payback!\p"
+	.string "It's an attack that doubles in power\n"
+	.string "if the user moves after its target.$"
+
 VerdanturfTown_Mart_Text_XSpecialIsCrucial:
 	.string "For any Pokémon match, X Special\n"
 	.string "is crucial.\p"

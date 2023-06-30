@@ -22,7 +22,7 @@ Route109_EventScript_Misty::
 	msgbox Route109_Text_ImMisty, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_MISTY, Route109_Text_ThatsIt
 	msgbox Route109_Text_AlrightNoHesitation, MSGBOX_DEFAULT
-	giveitem ITEM_TM55 @ scald
+	giveitem ITEM_TM03 @ water pulse
 	msgbox Route109_Text_MistyHuh, MSGBOX_DEFAULT
 	closemessage
 	fadescreenswapbuffers FADE_TO_BLACK

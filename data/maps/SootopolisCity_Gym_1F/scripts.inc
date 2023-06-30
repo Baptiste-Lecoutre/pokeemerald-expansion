@@ -83,7 +83,7 @@ SootopolisCity_Gym_1F_EventScript_Juan::
 	trainerbattle_single TRAINER_JUAN_1, SootopolisCity_Gym_1F_Text_JuanIntro, SootopolisCity_Gym_1F_Text_JuanDefeat, SootopolisCity_Gym_1F_EventScript_JuanDefeated, NO_MUSIC
 	specialvar VAR_RESULT, ShouldTryRematchBattle
 	goto_if_eq VAR_RESULT, TRUE, SootopolisCity_Gym_1F_EventScript_JuanRematch
-	goto_if_unset FLAG_RECEIVED_TM03, SootopolisCity_Gym_1F_EventScript_GiveWaterPulse2
+	goto_if_unset FLAG_RECEIVED_TM55, SootopolisCity_Gym_1F_EventScript_GiveScald2
 	goto_if_unset FLAG_BADGE06_GET, SootopolisCity_Gym_1F_EventScript_GoGetFortreeBadge
 	msgbox SootopolisCity_Gym_1F_Text_JuanPostBattle, MSGBOX_DEFAULT
 	release
@@ -103,7 +103,7 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_MAN_1
 	setvar VAR_0x8008, 8
 	call Common_EventScript_SetGymTrainers
-	call SootopolisCity_Gym_1F_EventScript_GiveWaterPulse
+	call SootopolisCity_Gym_1F_EventScript_GiveScald
 	closemessage
 	delay 30
 	playfanfare MUS_REGISTER_MATCH_CALL
@@ -115,18 +115,18 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	release
 	end
 
-SootopolisCity_Gym_1F_EventScript_GiveWaterPulse::
-	giveitem ITEM_TM03
+SootopolisCity_Gym_1F_EventScript_GiveScald::
+	giveitem ITEM_TM55_SCALD
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
-	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
-	setflag FLAG_RECEIVED_TM03
+	msgbox SootopolisCity_Gym_1F_Text_ExplainScald, MSGBOX_DEFAULT
+	setflag FLAG_RECEIVED_TM55
 	return
 
-SootopolisCity_Gym_1F_EventScript_GiveWaterPulse2::
-	giveitem ITEM_TM03
+SootopolisCity_Gym_1F_EventScript_GiveScald2::
+	giveitem ITEM_TM55_SCALD
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
-	setflag FLAG_RECEIVED_TM03
+	msgbox SootopolisCity_Gym_1F_Text_ExplainScald, MSGBOX_DEFAULT
+	setflag FLAG_RECEIVED_TM55
 	release
 	end
 
@@ -246,11 +246,11 @@ SootopolisCity_Gym_1F_Text_ExplainRainBadgeTakeThis:
 	.string "And, so that you never forget the\n"
 	.string "battle we shared, take this…$"
 
-SootopolisCity_Gym_1F_Text_ExplainWaterPulse:
+SootopolisCity_Gym_1F_Text_ExplainScald:
 	.string "The Technical Machine I handed you\n"
-	.string "contains Water Pulse.\p"
-	.string "In use, it will occasionally confuse\n"
-	.string "the target with ultrasonic waves.\p"
+	.string "contains Scald.\p"
+	.string "In use, it will occasionally burn\n"
+	.string "the target with boiling hot water.\p"
 	.string "… … … … … …$"
 
 SootopolisCity_Gym_1F_Text_RegisteredJuan:

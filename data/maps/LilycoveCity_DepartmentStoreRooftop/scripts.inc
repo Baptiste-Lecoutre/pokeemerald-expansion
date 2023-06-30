@@ -217,3 +217,35 @@ LilycoveCity_DepartmentStoreRooftop_Text_NotEnoughMoney:
 
 LilycoveCity_DepartmentStoreRooftop_Text_DecidedAgainstBuyingDrink:
 	.string "Decided against buying a drink.$"
+
+LilycoveCity_DepartmentStoreRooftop_EventScript_SubstituteTM::
+	lock
+	faceplayer
+	checkitem ITEM_TM90_SUBSTITUTE, 1
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_DepartmentStoreRooftop_EventScript_ReceivedTM90
+	msgbox LilycoveCity_DepartmentStoreRooftop_Text_GiveSubstitute, MSGBOX_DEFAULT
+	giveitem ITEM_TM90_SUBSTITUTE
+	msgbox LilycoveCity_DepartmentStoreRooftop_Text_HaveTM90, MSGBOX_DEFAULT
+	release
+	end
+
+LilycoveCity_DepartmentStoreRooftop_EventScript_ReceivedTM90::
+	msgbox LilycoveCity_DepartmentStoreRooftop_Text_HaveTM90, MSGBOX_DEFAULT
+	release
+	end
+
+LilycoveCity_DepartmentStoreRooftop_Text_GiveSubstitute:
+	.string "When I see the wide world from up\n"
+	.string "here on the roof…\p"
+	.string "I think about how nice it would be\n"
+	.string "if there were more than just one me\l"
+	.string "so I could enjoy all sorts of lives.\p"
+	.string "Of course it's not possible.\n"
+	.string "Giggle…\p"
+	.string "I know! Take this TM, and you can have\n"
+	.string "your Pokémon learn Substitute!$"
+
+LilycoveCity_DepartmentStoreRooftop_Text_HaveTM90:
+	.string "We human beings should enjoy our\n"
+	.string "own lives to the utmost!\p"
+	.string "I hope you'll get that way, too!$"
