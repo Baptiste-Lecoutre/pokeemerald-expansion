@@ -129,7 +129,8 @@ FarawayIsland_Interior_EventScript_Mew::
 	special DestroyMewEmergingGrassSprite
 	delay 40
 	waitmoncry
-	seteventmon SPECIES_MEW, 30
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	seteventmon SPECIES_MEW, VAR_RESULT
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	waitstate

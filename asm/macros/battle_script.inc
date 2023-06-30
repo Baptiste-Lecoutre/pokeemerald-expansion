@@ -1186,11 +1186,11 @@
 	.byte 0xe5
 	.endm
 
-	.macro doweatherformchangeanimation
+	.macro unused3
 	.byte 0xe6
 	.endm
 
-	.macro tryweatherformdatachange
+	.macro unused4
 	.byte 0xe7
 	.endm
 
@@ -2254,6 +2254,10 @@
 	@ Accounts for if the target of Sky Drop was in confuse_lock when the attacker falls asleep due to Yawn.
 	.macro skydropyawn
 	various 0, VARIOUS_SKY_DROP_YAWN
+	.endm
+
+	.macro givedroppeditems
+	various BS_FAINTED, VARIOUS_GIVE_DROPPED_ITEMS
 	.endm
 
 	@ Tries to increase or decrease a battler's stat's stat stage by a specified amount. If impossible, jumps to \script.

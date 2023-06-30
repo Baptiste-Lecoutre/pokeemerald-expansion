@@ -614,6 +614,11 @@ void CB2_ChooseBerry(void)
     GoToBagMenu(ITEMMENULOCATION_BERRY_TREE, BERRIES_POCKET, CB2_ReturnToFieldContinueScript);
 }
 
+void CB2_ChooseItem(void)
+{
+    GoToBagMenu(ITEMMENULOCATION_BERRY_TREE, ITEMS_POCKET, CB2_ReturnToFieldContinueScript);
+}
+
 // Choosing berry for Berry Blender or Berry Crush
 void ChooseBerryForMachine(void (*exitCallback)(void))
 {
@@ -2151,7 +2156,7 @@ static void Task_ItemContext_Sell(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
-    if (ItemId_GetPrice(gSpecialVar_ItemId) == 0 || gBagPosition.pocket == TMHM_POCKET)
+    if (ItemId_GetPrice(gSpecialVar_ItemId) == 0 || ItemId_GetImportance(gSpecialVar_ItemId))
     {
         CopyItemName(gSpecialVar_ItemId, gStringVar2);
         StringExpandPlaceholders(gStringVar4, gText_CantBuyKeyItem);

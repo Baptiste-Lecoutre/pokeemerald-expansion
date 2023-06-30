@@ -3,6 +3,7 @@
 #include "decompress.h"
 #include "event_data.h"
 #include "event_object_movement.h"
+#include "field_specials.h"
 #include "field_weather.h"
 #include "gpu_regs.h"
 #include "graphics.h"
@@ -790,10 +791,7 @@ static void CreateCableCarSprites(void)
     u8 spriteId;
     u8 i;
 
-    u16 playerGraphicsIds[2] = {
-        [MALE]   = OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL,
-        [FEMALE] = OBJ_EVENT_GFX_RIVAL_MAY_NORMAL
-    };
+    u16 playerGraphicsIds = GetPlayerCostumeId();
     u16 rval = Random();
     u16 hikerGraphicsIds[4] = {
         OBJ_EVENT_GFX_HIKER,
@@ -816,7 +814,7 @@ static void CreateCableCarSprites(void)
         case FALSE:
         default:
             // Create player sprite
-            spriteId = CreateObjectGraphicsSprite(playerGraphicsIds[gSaveBlock2Ptr->playerGender], SpriteCB_Player, 200, 73, 102);
+            spriteId = CreateObjectGraphicsSprite(playerGraphicsIds, SpriteCB_Player, 200, 73, 102);
             if (spriteId != MAX_SPRITES)
             {
                 gSprites[spriteId].oam.priority = 2;
@@ -844,7 +842,7 @@ static void CreateCableCarSprites(void)
         case TRUE:
             CopyToBgTilemapBufferRect_ChangePalette(0, sCableCar->groundTilemap + 0x24, 24, 26, 12, 3, 17);
             // Create player sprite
-            spriteId = CreateObjectGraphicsSprite(playerGraphicsIds[gSaveBlock2Ptr->playerGender], SpriteCB_Player, 128, 39, 102);
+            spriteId = CreateObjectGraphicsSprite(playerGraphicsIds, SpriteCB_Player, 128, 39, 102);
             if (spriteId != MAX_SPRITES)
             {
                 gSprites[spriteId].oam.priority = 2;

@@ -557,3 +557,11 @@ gSpecials::
 	def_special GetDiancieFriendshipScore
 	def_special GetCurrentMirageLocation
 	def_special BufferCurrentMirageLocationName
+	def_special SwapPlayersCostume
+	def_special GetPlayerCostumeId
+	def_special GetStaticEncounterLevel
+ 	def_special GetHighestLevelInPlayerParty
+	def_special FossilToSpecies
+	def_special IsItemFossil
+	def_special DoesPlayerHaveFossil
+	def_special Bag_ChooseItem

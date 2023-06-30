@@ -496,6 +496,17 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION        0x1130
 #define OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION        0x1131
 #define OBJ_EVENT_PAL_TAG_SNORLAX                 0x1132
+
+#define OBJ_EVENT_PAL_TAG_RED                     0x1133
+#define OBJ_EVENT_PAL_TAG_LEAF                    0x1134
+#define OBJ_EVENT_PAL_TAG_ETHAN                   0x1135
+#define OBJ_EVENT_PAL_TAG_LYRA                    0x1136
+#define OBJ_EVENT_PAL_TAG_KRIS                    0x1137
+#define OBJ_EVENT_PAL_TAG_LUCAS                   0x1138
+#define OBJ_EVENT_PAL_TAG_DAWN                    0x1139
+#define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113A
+#define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
+
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
 #define OBJ_EVENT_PAL_TAG_EMOTES                  0x8003
@@ -561,11 +572,20 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Npc6Reflection,        OBJ_EVENT_PAL_TAG_NPC_6_REFLECTION},
     {gObjectEventPal_Npc7Reflection,        OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION},
     {gObjectEventPal_Npc8Reflection,        OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION},
-    {gObjectEventPaletteLight, OBJ_EVENT_PAL_TAG_LIGHT},
-    {gObjectEventPaletteLight2, OBJ_EVENT_PAL_TAG_LIGHT_2},
-    {gObjectEventPaletteEmotes, OBJ_EVENT_PAL_TAG_EMOTES},
-    {gObjectEventPaletteNeonLight, OBJ_EVENT_PAL_TAG_NEON_LIGHT},
-    {NULL,                  OBJ_EVENT_PAL_TAG_NONE},
+    {gObjectEventPal_Red,                   OBJ_EVENT_PAL_TAG_RED},
+    {gObjectEventPal_Leaf,                  OBJ_EVENT_PAL_TAG_LEAF},
+    {gObjectEventPal_Ethan,                 OBJ_EVENT_PAL_TAG_ETHAN},
+    {gObjectEventPal_Lyra,                  OBJ_EVENT_PAL_TAG_LYRA},
+    {gObjectEventPal_Kris,                  OBJ_EVENT_PAL_TAG_KRIS},
+    {gObjectEventPal_Lucas,                 OBJ_EVENT_PAL_TAG_LUCAS},
+    {gObjectEventPal_Dawn,                  OBJ_EVENT_PAL_TAG_DAWN},
+    {gObjectEventPal_LucasPlatinum,         OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM},
+    {gObjectEventPal_DawnPlatinum,          OBJ_EVENT_PAL_TAG_DAWN_PLATINUM},
+    {gObjectEventPaletteLight,              OBJ_EVENT_PAL_TAG_LIGHT},
+    {gObjectEventPaletteLight2,             OBJ_EVENT_PAL_TAG_LIGHT_2},
+    {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
+    {gObjectEventPaletteNeonLight,          OBJ_EVENT_PAL_TAG_NEON_LIGHT},
+    {NULL,                                  OBJ_EVENT_PAL_TAG_NONE},
 };
 
 static const u16 sReflectionPaletteTags_Brendan[] = {
@@ -1910,7 +1930,7 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
   bool8 shiny;
   u8 form;
   // Avoid spawning large (64x64) follower pokemon inside buildings //optionsShowFollowerPokemon
-  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER) && FALSE) {
+  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER)) {
     if (objEvent == NULL) { // Spawn follower
       struct ObjectEventTemplate template = {
         .localId = OBJ_EVENT_ID_FOLLOWER,
@@ -5215,10 +5235,23 @@ bool8 MovementType_FollowPlayer_Moving(struct ObjectEvent *objectEvent, struct S
     return FALSE;
 }
 
+#define sState2 data[7]
 bool8 FollowablePlayerMovement_Idle(struct ObjectEvent *objectEvent, struct Sprite *sprite, u8 playerDirection, bool8 tileCallback(u8))
 {
     u8 direction;
     if (!objectEvent->singleMovementActive) { // walk in place
+      // Bounce up and down
+      switch (sprite->sState2)
+      {
+      case 0:
+          sprite->y2 += 1;
+          sprite->sState2++;
+          break;
+      default:
+          sprite->y2 -= 1;
+          sprite->sState2 = 0;
+          break;
+      }
       ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkInPlaceNormalMovementAction(objectEvent->facingDirection));
       sprite->sTypeFuncId = 1;
       objectEvent->singleMovementActive = 1;
@@ -5252,6 +5285,19 @@ bool8 FollowablePlayerMovement_Step(struct ObjectEvent *objectEvent, struct Spri
     x = objectEvent->currentCoords.x;
     y = objectEvent->currentCoords.y;
     ClearObjectEventMovement(objectEvent, sprite);
+
+    // Bounce up and down
+    switch (sprite->sState2)
+    {
+    case 0:
+        sprite->y2 += 1;
+        sprite->sState2++;
+        break;
+    default:
+        sprite->y2 -= 1;
+        sprite->sState2 = 0;
+        break;
+    }
 
     if (objectEvent->invisible) { // Animate exiting pokeball
       // Player is jumping, but follower is invisible
@@ -5305,6 +5351,7 @@ bool8 FollowablePlayerMovement_Step(struct ObjectEvent *objectEvent, struct Spri
     sprite->sTypeFuncId = 2;
     return TRUE;
 }
+#undef sState2
 
 bool8 FollowablePlayerMovement_GoSpeed1(struct ObjectEvent *objectEvent, struct Sprite *sprite, u8 playerDirection, bool8 tileCallback(u8))
 {

@@ -430,6 +430,32 @@ gBattleScriptsForMoveEffects::
 	.4byte BattleScript_EffectRevivalBlessing         @ EFFECT_REVIVAL_BLESSING
 	.4byte BattleScript_EffectFrostbiteHit            @ EFFECT_FROSTBITE_HIT
 	.4byte BattleScript_EffectSnow                    @ EFFECT_SNOWSCAPE
+	.4byte BattleScript_EffectTripleArrows            @ EFFECT_TRIPLE_ARROWS
+	.4byte BattleScript_EffectInfernalParade          @ EFFECT_INFERNAL_PARADE
+	.4byte BattleScript_EffectTakeHeart               @ EFFECT_TAKE_HEART
+	.4byte BattleScript_EffectAxeKick                 @ EFFECT_AXE_KICK
+
+BattleScript_EffectAxeKick::
+	setmoveeffect MOVE_EFFECT_CONFUSION
+	goto BattleScript_EffectRecoilIfMiss
+
+BattleScript_EffectTakeHeart::
+	attackcanceler
+	attackstring
+	ppreduce
+	cureifburnedparalysedorpoisoned BattleScript_CalmMindTryToRaiseStats
+	attackanimation
+	waitanimation
+	updatestatusicon BS_ATTACKER
+	printstring STRINGID_PKMNSTATUSNORMAL
+	waitmessage B_WAIT_TIME_LONG
+	jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_SPATK, MAX_STAT_STAGE, BattleScript_CalmMindStatRaise
+	jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_SPDEF, MAX_STAT_STAGE, BattleScript_CalmMindStatRaise
+	goto BattleScript_CantRaiseMultipleStats
+
+BattleScript_EffectTripleArrows::
+	setmoveeffect MOVE_EFFECT_TRIPLE_ARROWS
+	goto BattleScript_EffectHit
 
 BattleScript_EffectRevivalBlessing::
 	attackcanceler
@@ -1480,6 +1506,11 @@ BattleScript_DoubleShockRemoveType::
 	losetype BS_ATTACKER, TYPE_ELECTRIC
 	printstring STRINGID_ATTACKERLOSTELECTRICTYPE
 	waitmessage B_WAIT_TIME_LONG
+	return
+
+BattleScript_DefDown::
+	modifybattlerstatstage BS_TARGET, STAT_DEF, DECREASE, 1, BattleScript_DefDown_Ret, ANIM_ON
+BattleScript_DefDown_Ret:
 	return
 
 BattleScript_EffectPurify:
@@ -3476,6 +3507,7 @@ BattleScript_AbsorbHealBlock::
 	tryfaintmon BS_TARGET
 	goto BattleScript_MoveEnd
 
+BattleScript_EffectInfernalParade::
 BattleScript_EffectBurnHit::
 	setmoveeffect MOVE_EFFECT_BURN
 	goto BattleScript_EffectHit
@@ -6344,11 +6376,13 @@ BattleScript_EffectCalmMind::
 	attackcanceler
 	attackstring
 	ppreduce
+BattleScript_CalmMindTryToRaiseStats::
 	jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_SPATK, MAX_STAT_STAGE, BattleScript_CalmMindDoMoveAnim
 	jumpifstat BS_ATTACKER, CMP_EQUAL, STAT_SPDEF, MAX_STAT_STAGE, BattleScript_CantRaiseMultipleStats
 BattleScript_CalmMindDoMoveAnim::
 	attackanimation
 	waitanimation
+BattleScript_CalmMindStatRaise::
 	setbyte sSTAT_ANIM_PLAYED, FALSE
 	playstatchangeanimation BS_ATTACKER, BIT_SPATK | BIT_SPDEF, 0
 	setstatchanger STAT_SPATK, 1, FALSE
@@ -6414,6 +6448,7 @@ BattleScript_FaintAttacker::
 	pause B_WAIT_TIME_LONG
 	dofaintanimation BS_ATTACKER
 	printstring STRINGID_ATTACKERFAINTED
+	savebattleritem BS_ATTACKER
 	cleareffectsonfaint BS_ATTACKER
 	tryactivatesoulheart
 	tryactivatereceiver BS_ATTACKER
@@ -6426,6 +6461,7 @@ BattleScript_FaintTarget::
 	pause B_WAIT_TIME_LONG
 	dofaintanimation BS_TARGET
 	printstring STRINGID_TARGETFAINTED
+	savebattleritem BS_TARGET
 	cleareffectsonfaint BS_TARGET
 	tryactivatefellstinger BS_ATTACKER
 	tryactivatesoulheart
@@ -6573,6 +6609,7 @@ BattleScript_LocalBattleWonReward::
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_PayDayMoneyAndPickUpItems::
 	givepaydaymoney
+	givedroppeditems
 	pickup
 	end2
 
@@ -10518,3 +10555,8 @@ BattleScript_EffectSnow::
 	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_STRONG_WINDS, BattleScript_MysteriousAirCurrentBlowsOn
 	setsnow
 	goto BattleScript_MoveWeatherChange
+
+BattleScript_ItemDropped::
+	playse SE_BALL_BOUNCE_1
+	printfromtable gItemDroppedStringIds
+	return

@@ -58,6 +58,7 @@ static void ApplyCleanseTagEncounterRateMod(u32 *encRate);
 static u8 GetMaxLevelOfSpeciesInWildTable(const struct WildPokemon *wildMon, u16 species, u8 area);
 static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u16 ability, u8 *monIndex);
 static bool8 IsAbilityAllowingEncounter(u8 level);
+static u8 GetMedianLevelOfPlayerParty(void);
 
 EWRAM_DATA static u8 sWildEncountersDisabled = 0;
 EWRAM_DATA static u32 sFeebasRngValue = 0;
@@ -300,17 +301,90 @@ static u8 ChooseWildMonIndex_Fishing(u8 rod)
     return wildMonIndex;
 }
 
+// Used to scale wild Pokemon levels
+static u8 GetMedianLevelOfPlayerParty(void)
+{
+    u8 i, j, temp, medianLevel, medianIndex = 0;
+    u8 playerPartyCount = CalculatePlayerBattlerPartyCount();
+    u8 partyLevels[PARTY_SIZE] = {0};
+
+    // Don't calculate anything if party size is 1
+    if (playerPartyCount == 1)
+    {
+        medianLevel = GetMonData(&gPlayerParty[0], MON_DATA_LEVEL, NULL);
+        return medianLevel;
+    }
+
+    // Store player levels in partyLevels array
+    for (i = 0 ; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_EGG
+        && GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) != SPECIES_NONE)
+        {
+            partyLevels[i] = GetMonData(&gPlayerParty[i], MON_DATA_LEVEL);
+        }
+        else
+        {
+            partyLevels[i] = 1; 
+        }
+    }
+
+    // Sort player levels in ascending order
+    for (i = 0 ; i < PARTY_SIZE ; i++)
+    {
+        for (j = 0 ; j < (PARTY_SIZE - 1) ; j++)
+        {
+            if (partyLevels[j] > partyLevels[j + 1])
+            {
+                temp = partyLevels[j];
+                partyLevels[j] = partyLevels[j + 1];
+                partyLevels[j + 1] = temp;
+            }
+        }
+    }
+/* 
+    Get median level of Pokemon that aren't eggs. Examples:
+
+    partyLevels = [1, 1, 1, 40, 40, 50]
+    playerPartyCount = 3, want index 4
+    playerPartyCount/2 + (PARTY_SIZE - playerPartyCount) = 1 + (6 - 3) = 4
+
+    partyLevels = [1,  1, 40, 40, 42, 50]
+    playerPartyCount = 4, want index 4
+    playerPartyCount/2 + (PARTY_SIZE - playerPartyCount) = 2 + (6 - 4) = 4
+*/
+    medianIndex = (playerPartyCount / 2) + (PARTY_SIZE - playerPartyCount);
+    medianLevel = partyLevels[medianIndex];
+//    medianLevel = (partyLevels[PARTY_SIZE-1] + partyLevels[PARTY_SIZE-playerPartyCount-1]) / 2;
+    
+    return medianLevel;
+}
+
+
 static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon, u8 wildMonIndex, u8 area)
 {
+    u8 playerMedianLevel = GetMedianLevelOfPlayerParty();
     u8 min;
     u8 max;
     u8 range;
     u8 rand;
+    
+    // ensure that min and max are reasonable values
+    if (playerMedianLevel < 8)
+    {
+        min = 2;
+        max = 4;
+    }
+    else
+    {
+        min = playerMedianLevel - 6;
+        max = playerMedianLevel - 3;
+    }
 
     if (LURE_STEP_COUNT == 0)
     {
         // Make sure minimum level is less than maximum level
-        if (wildPokemon[wildMonIndex].maxLevel >= wildPokemon[wildMonIndex].minLevel)
+        /*if (wildPokemon[wildMonIndex].maxLevel >= wildPokemon[wildMonIndex].minLevel)
         {
             min = wildPokemon[wildMonIndex].minLevel;
             max = wildPokemon[wildMonIndex].maxLevel;
@@ -319,7 +393,7 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon, u8 wildMonIn
         {
             min = wildPokemon[wildMonIndex].maxLevel;
             max = wildPokemon[wildMonIndex].minLevel;
-        }
+        }*/
         range = max - min + 1;
         rand = Random() % range;
 
@@ -341,11 +415,11 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon, u8 wildMonIn
     else
     {
         // Looks for the max level of all slots that share the same species as the selected slot.
-        max = GetMaxLevelOfSpeciesInWildTable(wildPokemon, wildPokemon[wildMonIndex].species, area);
-        if (max > 0)
+        //max = GetMaxLevelOfSpeciesInWildTable(wildPokemon, wildPokemon[wildMonIndex].species, area);
+        //if (max > 0)
             return max + 1;
-        else // Failsafe
-            return wildPokemon[wildMonIndex].maxLevel + 1;
+        //else // Failsafe
+        //    return wildPokemon[wildMonIndex].maxLevel + 1;
     }
 }
 

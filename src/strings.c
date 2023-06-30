@@ -1995,7 +1995,7 @@ const u8 gText_EVO_LEVEL_DUSK[]                     = _("LvlUp to {STR_VAR_2}, d
 const u8 gText_EVO_ITEM_HOLD_DAY[]                  = _("LvlUp, holds {STR_VAR_2}, day");
 const u8 gText_EVO_ITEM_HOLD_NIGHT[]                = _("LvlUp, holds {STR_VAR_2}, night");
 const u8 gText_EVO_MOVE[]                           = _("LvlUp, knows {STR_VAR_2}");
-const u8 gText_EVO_MOVE_TYPE[]                      = _("LvlUp, knows {STR_VAR_2} move");
+const u8 gText_EVO_FRIENDSHIP_MOVE_TYPE[]           = _("LvlUp, knows {STR_VAR_2} move");
 const u8 gText_EVO_MAPSEC[]                         = _("LvlUp on {STR_VAR_2}");
 const u8 gText_EVO_ITEM_MALE[]                      = _("{STR_VAR_2} used on male");
 const u8 gText_EVO_ITEM_FEMALE[]                    = _("{STR_VAR_2} used on female");
@@ -2263,6 +2263,24 @@ const u8 gText_TutorMoveSet4[] = _("Heat Badge");
 const u8 gText_TutorMoveSet5[] = _("Balance Badge");
 const u8 gText_TutorMoveSet6[] = _("Feather Badge");
 const u8 gText_TutorMoveSet7[] = _("Mind Badge");
+
+// Costumes
+const u8 gText_FirstDrawer[] = _("First");
+const u8 gText_SecondDrawer[] = _("Second");
+const u8 gText_ThirdDrawer[] = _("Third");
+const u8 gText_FourthDrawer[] = _("Fourth");
+
+const u8 gText_RedCostume[] = _("Red");
+const u8 gText_LeafCostume[] = _("Green");
+const u8 gText_EthanCostume[] = _("Gold");
+const u8 gText_LyraCostume[] = _("Silver");
+const u8 gText_KrisCostume[] = _("Crystal");
+const u8 gText_BrendanCostume[] = _("Ruby");
+const u8 gText_MayCostume[] = _("Sapphire");
+const u8 gText_LucasCostume[] = _("Diamond");
+const u8 gText_DawnCostume[] = _("Pearl");
+const u8 gText_LucasPlatinumCostume[] = _("Platinum 1");
+const u8 gText_DawnPlatinumCostume[] = _("Platinum 2");
 
 const u8 gText_RoamerEntei[] = _("Red dog");
 const u8 gText_RoamerSuicune[] = _("Red dog");

@@ -494,6 +494,7 @@ u8 CalculatePlayerPartyCount(void);
 u8 CalculatePlayerPartnerPartyCount(void);
 u8 CalculateEnemyPartyCount(void);
 u8 CalculateEnemy2PartyCount(void);
+u8 CalculatePlayerBattlerPartyCount(void);
 u8 GetMonsStateToDoubles(void);
 u8 GetMonsStateToDoubles_2(void);
 u16 GetAbilityBySpecies(u16 species, u8 abilityNum);
@@ -545,7 +546,6 @@ u8 GetLevelUpMovesBySpecies(u16 species, u16 *moves);
 u8 GetNumberOfRelearnableMoves(struct Pokemon *mon);
 u16 SpeciesToPokedexNum(u16 species);
 bool32 IsSpeciesInHoennDex(u16 species);
-void ClearBattleMonForms(void);
 u16 GetBattleBGM(void);
 void PlayBattleBGM(void);
 void PlayMapChosenOrBattleBGM(u16 songId);
@@ -596,4 +596,6 @@ void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
 u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset);
 u16 GetNextRegionalForm(u16 species);
 struct Pokemon *GetBattlerPartyData(u8 position);
+u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGender);
+
 #endif // GUARD_POKEMON_H

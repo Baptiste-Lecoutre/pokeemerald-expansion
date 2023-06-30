@@ -235,7 +235,6 @@ EWRAM_DATA struct BattleHealthboxInfo *gBattleControllerOpponentHealthboxData = 
 EWRAM_DATA struct BattleHealthboxInfo *gBattleControllerOpponentFlankHealthboxData = NULL; // Never read
 EWRAM_DATA u16 gBattleMovePower = 0;
 EWRAM_DATA u16 gMoveToLearn = 0;
-EWRAM_DATA u8 gBattleMonForms[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA u32 gFieldStatuses = 0;
 EWRAM_DATA struct FieldTimer gFieldTimers = {0};
 EWRAM_DATA u8 gBattlerAbility = 0;
@@ -2803,7 +2802,6 @@ static void SpriteCB_Flicker(struct Sprite *sprite)
 #undef sDelay
 
 extern const struct MonCoords gMonFrontPicCoords[];
-extern const struct MonCoords gCastformFrontSpriteCoords[];
 
 void SpriteCB_FaintOpponentMon(struct Sprite *sprite)
 {
@@ -2824,10 +2822,6 @@ void SpriteCB_FaintOpponentMon(struct Sprite *sprite)
     {
         species = GetUnownSpeciesId(personality);
         yOffset = gMonFrontPicCoords[species].y_offset;
-    }
-    else if (species == SPECIES_CASTFORM)
-    {
-        yOffset = gCastformFrontSpriteCoords[gBattleMonForms[battler]].y_offset;
     }
     else if (species > NUM_SPECIES)
     {
@@ -2858,12 +2852,12 @@ static void SpriteCB_AnimFaintOpponent(struct Sprite *sprite)
         }
         else // Erase bottom part of the sprite to create a smooth illusion of mon falling down.
         {
-            u8 *dst = gMonSpritesGfxPtr->sprites.byte[GetBattlerPosition(sprite->sBattler)] + (gBattleMonForms[sprite->sBattler] << 11) + (sprite->data[3] << 8);
+            u8 *dst = gMonSpritesGfxPtr->sprites.byte[GetBattlerPosition(sprite->sBattler)] + (sprite->data[3] << 8);
 
             for (i = 0; i < 0x100; i++)
                 *(dst++) = 0;
 
-            StartSpriteAnim(sprite, gBattleMonForms[sprite->sBattler]);
+            StartSpriteAnim(sprite, 0);
         }
     }
 }
@@ -3371,6 +3365,15 @@ void SwitchInClearSetData(void)
     // Clear selected party ID so Revival Blessing doesn't get confused.
     gSelectedMonPartyId = PARTY_SIZE;
 
+    // Allow for illegal abilities within tests.
+    if (gTestRunnerEnabled)
+    {
+        u32 side = GetBattlerSide(gActiveBattler);
+        u32 partyIndex = gBattlerPartyIndexes[gActiveBattler];
+        if (TestRunner_Battle_GetForcedAbility(side, partyIndex))
+            gBattleMons[i].ability = gBattleStruct->overwrittenAbilities[i] = TestRunner_Battle_GetForcedAbility(side, partyIndex);
+    }
+
     Ai_UpdateSwitchInData(gActiveBattler);
 }
 
@@ -3848,6 +3851,18 @@ static void TryDoEventsBeforeFirstTurn(void)
             struct Pokemon *mon = &party[gBattlerPartyIndexes[i]];
             if (gBattleMons[i].hp == 0 || gBattleMons[i].species == SPECIES_NONE || GetMonData(mon, MON_DATA_IS_EGG))
                 gAbsentBattlerFlags |= gBitTable[i];
+        }
+    }
+
+    // Allow for illegal abilities within tests.
+    if (gTestRunnerEnabled && gBattleStruct->switchInAbilitiesCounter == 0)
+    {
+        for (i = 0; i < gBattlersCount; ++i)
+        {
+            u32 side = GetBattlerSide(i);
+            u32 partyIndex = gBattlerPartyIndexes[i];
+            if (TestRunner_Battle_GetForcedAbility(side, partyIndex))
+                gBattleMons[i].ability = gBattleStruct->overwrittenAbilities[i] = TestRunner_Battle_GetForcedAbility(side, partyIndex);
         }
     }
 
@@ -4806,6 +4821,7 @@ s8 GetMovePriority(u32 battlerId, u16 move)
         case EFFECT_SOFTBOILED:
         case EFFECT_ABSORB:
         case EFFECT_ROOST:
+        case EFFECT_JUNGLE_HEALING:
             priority += 3;
             break;
         }

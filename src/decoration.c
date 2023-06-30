@@ -1397,10 +1397,42 @@ static void SetUpPlacingDecorationPlayerAvatar(u8 taskId, struct PlaceDecoration
     if (data->decoration->shape == DECORSHAPE_3x1 || data->decoration->shape == DECORSHAPE_3x3 || data->decoration->shape == DECORSHAPE_3x2)
         x -= 8;
 
-    if (gSaveBlock2Ptr->playerGender == MALE)
+    switch (gSaveBlock2Ptr->costumeId)
+    {
+    case BRENDAN_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_BRENDAN_DECORATING, SpriteCallbackDummy, x, 72, 0);
-    else
+        break;
+    case MAY_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_MAY_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case RED_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_RED_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LEAF_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LEAF_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case ETHAN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_ETHAN_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LYRA_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LYRA_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case KRIS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_KRIS_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LUCAS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case DAWN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case LUCAS_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_PLATINUM_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case DAWN_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_PLATINUM_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    }
 
     gSprites[sDecor_CameraSpriteObjectIdx2].oam.priority = 1;
     DestroySprite(&gSprites[sDecor_CameraSpriteObjectIdx1]);
@@ -2297,10 +2329,43 @@ static void SetUpPuttingAwayDecorationPlayerAvatar(void)
     sDecor_CameraSpriteObjectIdx1 = gSprites[gFieldCamera.spriteId].data[0];
     LoadPlayerSpritePalette();
     gFieldCamera.spriteId = CreateSprite(&sPuttingAwayCursorSpriteTemplate, 120, 80, 0);
-    if (gSaveBlock2Ptr->playerGender == MALE)
+    
+    switch (gSaveBlock2Ptr->costumeId)
+    {
+    case BRENDAN_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_BRENDAN_DECORATING, SpriteCallbackDummy, 136, 72, 0);
-    else
+        break;
+    case MAY_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_MAY_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case RED_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_RED_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LEAF_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LEAF_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case ETHAN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_ETHAN_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LYRA_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LYRA_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case KRIS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_KRIS_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LUCAS_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case DAWN_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case LUCAS_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_LUCAS_PLATINUM_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    case DAWN_PLATINUM_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_PLATINUM_DECORATING, SpriteCallbackDummy, 136, 72, 0);
+        break;
+    }
 
     gSprites[sDecor_CameraSpriteObjectIdx2].oam.priority = 1;
     DestroySprite(&gSprites[sDecor_CameraSpriteObjectIdx1]);

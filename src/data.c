@@ -113,6 +113,62 @@ const struct SpriteFrameImage gTrainerBackPicTable_Steven[] =
     gTrainerBackPic_Steven + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
 };
 
+const struct SpriteFrameImage gTrainerBackPicTable_Ethan[] =
+{
+    gTrainerBackPic_Ethan + TRAINER_PIC_SIZE * 0, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Ethan + TRAINER_PIC_SIZE * 1, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Ethan + TRAINER_PIC_SIZE * 2, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Ethan + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
+};
+
+const struct SpriteFrameImage gTrainerBackPicTable_Lyra[] =
+{
+    gTrainerBackPic_Lyra + TRAINER_PIC_SIZE * 0, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Lyra + TRAINER_PIC_SIZE * 1, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Lyra + TRAINER_PIC_SIZE * 2, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Lyra + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
+};
+
+const struct SpriteFrameImage gTrainerBackPicTable_Kris[] =
+{
+    gTrainerBackPic_Kris + TRAINER_PIC_SIZE * 0, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Kris + TRAINER_PIC_SIZE * 1, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Kris + TRAINER_PIC_SIZE * 2, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Kris + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
+};
+
+const struct SpriteFrameImage gTrainerBackPicTable_Lucas[] =
+{
+    gTrainerBackPic_Lucas + TRAINER_PIC_SIZE * 0, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Lucas + TRAINER_PIC_SIZE * 1, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Lucas + TRAINER_PIC_SIZE * 2, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Lucas + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
+};
+
+const struct SpriteFrameImage gTrainerBackPicTable_Dawn[] =
+{
+    gTrainerBackPic_Dawn + TRAINER_PIC_SIZE * 0, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Dawn + TRAINER_PIC_SIZE * 1, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Dawn + TRAINER_PIC_SIZE * 2, TRAINER_PIC_SIZE,
+    gTrainerBackPic_Dawn + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
+};
+
+const struct SpriteFrameImage gTrainerBackPicTable_LucasPlatinum[] =
+{
+    gTrainerBackPic_LucasPlatinum + TRAINER_PIC_SIZE * 0, TRAINER_PIC_SIZE,
+    gTrainerBackPic_LucasPlatinum + TRAINER_PIC_SIZE * 1, TRAINER_PIC_SIZE,
+    gTrainerBackPic_LucasPlatinum + TRAINER_PIC_SIZE * 2, TRAINER_PIC_SIZE,
+    gTrainerBackPic_LucasPlatinum + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
+};
+
+const struct SpriteFrameImage gTrainerBackPicTable_DawnPlatinum[] =
+{
+    gTrainerBackPic_DawnPlatinum + TRAINER_PIC_SIZE * 0, TRAINER_PIC_SIZE,
+    gTrainerBackPic_DawnPlatinum + TRAINER_PIC_SIZE * 1, TRAINER_PIC_SIZE,
+    gTrainerBackPic_DawnPlatinum + TRAINER_PIC_SIZE * 2, TRAINER_PIC_SIZE,
+    gTrainerBackPic_DawnPlatinum + TRAINER_PIC_SIZE * 3, TRAINER_PIC_SIZE,
+};
+
 static const union AnimCmd sAnim_GeneralFrame0[] =
 {
     ANIMCMD_FRAME(0, 0),
@@ -279,24 +335,10 @@ static const union AnimCmd sAnim_MonPic_1[] =
     ANIMCMD_END,
 };
 
-static const union AnimCmd sAnim_MonPic_2[] =
-{
-    ANIMCMD_FRAME(2, 0),
-    ANIMCMD_END,
-};
-
-static const union AnimCmd sAnim_MonPic_3[] =
-{
-    ANIMCMD_FRAME(3, 0),
-    ANIMCMD_END,
-};
-
 const union AnimCmd *const gAnims_MonPic[MAX_MON_PIC_FRAMES] =
 {
     sAnim_MonPic_0,
     sAnim_MonPic_1,
-    sAnim_MonPic_2,
-    sAnim_MonPic_3,
 };
 
 #define SPECIES_SPRITE(species, sprite) [SPECIES_##species] = {sprite, MON_PIC_SIZE, SPECIES_##species}

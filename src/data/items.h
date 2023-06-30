@@ -8174,10 +8174,10 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_TMHM,
     },
 
-    [ITEM_TM34_SHOCK_WAVE] =
+    [ITEM_TM34_SLUDGE_WAVE] =
     {
         .name = _("TM34"),
-        .itemId = ITEM_TM34_SHOCK_WAVE,
+        .itemId = ITEM_TM34_SLUDGE_WAVE,
         .price = 3000,
         .description = sTM34Desc,
         .importance = I_REUSABLE_TMS,
@@ -8354,10 +8354,10 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_TMHM,
     },
 
-    [ITEM_TM49_SNATCH] =
+    [ITEM_TM49_SLEEP_TALK] =
     {
         .name = _("TM49"),
-        .itemId = ITEM_TM49_SNATCH,
+        .itemId = ITEM_TM49_SLEEP_TALK,
         .price = 3000,
         .description = sTM49Desc,
         .importance = I_REUSABLE_TMS,

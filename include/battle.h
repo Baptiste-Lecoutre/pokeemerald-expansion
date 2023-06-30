@@ -585,7 +585,6 @@ struct BattleStruct
     u8 turnSideTracker;
     u8 givenExpMons[2]; // Bits for enemy parties pokemon that gave exp to player's party.
     u16 lastTakenMoveFrom[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT]; // a 2-D array [target][attacker]
-    u16 castformPalette[NUM_CASTFORM_FORMS][16];
     union {
         struct LinkBattlerHeader linkBattlerHeader;
         u32 battleVideo[2];
@@ -1006,7 +1005,6 @@ extern struct BattleHealthboxInfo *gBattleControllerOpponentHealthboxData;
 extern struct BattleHealthboxInfo *gBattleControllerOpponentFlankHealthboxData;
 extern u16 gBattleMovePower;
 extern u16 gMoveToLearn;
-extern u8 gBattleMonForms[MAX_BATTLERS_COUNT];
 extern u32 gFieldStatuses;
 extern struct FieldTimer gFieldTimers;
 extern u8 gBattlerAbility;

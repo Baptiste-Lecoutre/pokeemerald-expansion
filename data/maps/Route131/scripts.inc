@@ -7,7 +7,13 @@ Route131_MapScripts::
 Route131_OnTransition:
 	call_if_ge VAR_SOOTOPOLIS_CITY_STATE, 4, Route131_EventScript_CheckSetAbnormalWeather
 	call Route131_EventScript_SetLayout
+	goto_if_defeated TRAINER_BLUE, Route131_EventScript_HideBlue
 	end
+
+Route131_EventScript_HideBlue::
+	setflag FLAG_TEMP_7
+	removeobject LOCALID_BLUE
+	return
 
 Route131_EventScript_SetLayout::
 	setmaplayoutindex LAYOUT_ROUTE131_SKY_PILLAR
@@ -16,6 +22,43 @@ Route131_EventScript_SetLayout::
 Route131_EventScript_CheckSetAbnormalWeather::
 	call_if_set FLAG_SYS_WEATHER_CTRL, Common_EventScript_SetAbnormalWeather
 	return
+
+Route131_EventScript_Blue::
+	lock
+	faceplayer
+	msgbox Route131_Text_ImBlue, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_BLUE, Route131_Text_What
+	msgbox Route131_Text_YoureTheRealdeal, MSGBOX_DEFAULT
+	giveitem ITEM_TM92 @ trick room
+	msgbox Route131_Text_ThePokemonHere, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_BLAINE
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	releaseall
+
+Route131_Text_ImBlue:
+	.string "This is the home of a powerful\n"
+	.string "Pokémon…\p"
+	.string "Don't you feel it? This power that\n"
+	.string "can shake heavens?\p"
+	.string "Me being here is no coincidence.\n"
+	.string "I'm Blue! The best trainer in Kanto!$"
+
+Route131_Text_What:
+	.string "What?\n"
+	.string "How the heck did I lose to you?$"
+
+Route131_Text_YoureTheRealdeal:
+	.string "I was wrong. You're the real deal.\n"
+	.string "You are a good trainer.\l"
+	.string "You shoud take this.$"
+
+Route131_Text_ThePokemonHere:
+	.string "The Pokémon here…\n"
+	.string "My Pokémons and I are not in shape\l"
+	.string "to challenge it. Have your way.$"
 
 Route131_EventScript_Richard::
 	trainerbattle_single TRAINER_RICHARD, Route131_Text_RichardIntro, Route131_Text_RichardDefeat

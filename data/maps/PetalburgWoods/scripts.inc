@@ -1,8 +1,84 @@
 .set LOCALID_GRUNT, 3
 .set LOCALID_DEVON_EMPLOYEE, 4
+.set LOCALID_RED, 14
 
 PetalburgWoods_MapScripts::
+	map_script MAP_SCRIPT_ON_TRANSITION, PetalburgWoods_OnTransition
 	.byte 0
+
+PetalburgWoods_OnTransition:
+	goto_if_unset FLAG_BADGE01_GET, PetalburgWoods_EventScript_HideRed
+	goto_if_defeated TRAINER_RED_PETALBURG_WOODS, PetalburgWoods_EventScript_HideRed
+	end
+
+PetalburgWoods_EventScript_HideRed:
+	setflag FLAG_TEMP_7
+	setvar VAR_TEMP_E, 1
+	removeobject LOCALID_RED
+	return
+
+PetalburgWoods_EventScript_TriggerLeftRed::
+	lockall
+	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_RED, PetalburgWoods_Movement_LeftRedGoUp
+	waitmovement 0
+	goto PetalburgWoods_EventScript_Red
+
+PetalburgWoods_EventScript_TriggerRightRed::
+	lockall
+	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_RED, PetalburgWoods_Movement_RightRedGoUp
+	waitmovement 0
+	goto PetalburgWoods_EventScript_Red
+
+PetalburgWoods_EventScript_Red::
+	msgbox PetalburgWoods_Text_OhThatsABadge, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_RED_PETALBURG_WOODS, PetalburgWoods_Text_IfYouDontLoose
+	msgbox PetalburgWoods_Text_YouveShownMe, MSGBOX_DEFAULT
+	closemessage
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_RED
+	setflag FLAG_TEMP_7
+	fadescreenswapbuffers FADE_FROM_BLACK
+	setvar VAR_TEMP_E, 1
+	releaseall
+	end
+
+PetalburgWoods_Text_OhThatsABadge:
+	.string "Oh! That's a gym badge! I'm a trainer\n"
+	.string "as well, from the region of Kanto.\p"
+	.string "One day, I'll be the very best trainer.\n"
+	.string "The training starts now!$"
+
+PetalburgWoods_Text_IfYouDontLoose:
+	.string "If you don't lose, you dont't learn…$"
+
+PetalburgWoods_Text_YouveShownMe:
+	.string "You've shown me I still have a lot to\n"
+	.string "learn. The road towards the summit is\l"
+	.string "very long, and perseverance is the key.\p"
+	.string "I'm sure we'll meet again!$"
+
+PetalburgWoods_Movement_LeftRedGoUp:
+	walk_up
+	walk_up
+	step_end
+
+PetalburgWoods_Movement_RightRedGoUp:
+	walk_right
+	walk_up
+	walk_up
+	step_end
 
 PetalburgWoods_EventScript_DevonResearcherLeft::
 	lockall

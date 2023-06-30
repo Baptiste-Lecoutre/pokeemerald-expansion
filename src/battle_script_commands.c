@@ -604,8 +604,8 @@ static void Cmd_switchoutabilities(void);
 static void Cmd_jumpifhasnohp(void);
 static void Cmd_getsecretpowereffect(void);
 static void Cmd_pickup(void);
-static void Cmd_doweatherformchangeanimation(void);
-static void Cmd_tryweatherformdatachange(void);
+static void Cmd_unused3(void);
+static void Cmd_unused4(void);
 static void Cmd_settypebasedhalvers(void);
 static void Cmd_jumpifsubstituteblocks(void);
 static void Cmd_tryrecycleitem(void);
@@ -863,8 +863,8 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_jumpifhasnohp,                           //0xE3
     Cmd_getsecretpowereffect,                    //0xE4
     Cmd_pickup,                                  //0xE5
-    Cmd_doweatherformchangeanimation,            //0xE6
-    Cmd_tryweatherformdatachange,                //0xE7
+    Cmd_unused3,                                 //0xE6
+    Cmd_unused4,                                 //0xE7
     Cmd_settypebasedhalvers,                     //0xE8
     Cmd_jumpifsubstituteblocks,                  //0xE9
     Cmd_tryrecycleitem,                          //0xEA
@@ -3881,6 +3881,25 @@ void SetMoveEffect(bool32 primary, u32 certain)
                     gBattlescriptCurrInstr = BattleScript_SpikesActivates;
                 }
                 break;
+            case MOVE_EFFECT_TRIPLE_ARROWS:
+                {
+                    u8 randomLowerDefenseChance = RandomPercentage(RNG_TRIPLE_ARROWS_DEFENSE_DOWN, CalcSecondaryEffectChance(gBattlerAttacker, 50));
+                    u8 randomFlinchChance = RandomPercentage(RNG_TRIPLE_ARROWS_FLINCH, CalcSecondaryEffectChance(gBattlerAttacker, 30));
+
+                    if (randomFlinchChance && battlerAbility != ABILITY_INNER_FOCUS && GetBattlerTurnOrderNum(gEffectBattler) > gCurrentTurnActionNumber)
+                        gBattleMons[gEffectBattler].status2 |= sStatusFlagsForMoveEffects[MOVE_EFFECT_FLINCH];
+
+                    if (randomLowerDefenseChance)
+                    {
+                        BattleScriptPush(gBattlescriptCurrInstr + 1);
+                        gBattlescriptCurrInstr = BattleScript_DefDown;
+                    }
+                    else
+                    {
+                        gBattlescriptCurrInstr++;
+                    }
+                }
+                break;
             }
         }
     }
@@ -3892,12 +3911,7 @@ static void Cmd_seteffectwithchance(void)
 {
     CMD_ARGS();
 
-    u32 percentChance;
-
-    if (GetBattlerAbility(gBattlerAttacker) == ABILITY_SERENE_GRACE)
-        percentChance = gBattleMoves[gCurrentMove].secondaryEffectChance * 2;
-    else
-        percentChance = gBattleMoves[gCurrentMove].secondaryEffectChance;
+    u32 percentChance = CalcSecondaryEffectChance(gBattlerAttacker, gBattleMoves[gCurrentMove].secondaryEffectChance);
 
     if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
      && gBattleScripting.moveEffect)
@@ -11392,6 +11406,31 @@ static void Cmd_various(void)
         }
         break;
     }
+    case VARIOUS_GIVE_DROPPED_ITEMS:
+    {
+        VARIOUS_ARGS();
+        u8 battlers[] = {GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), 
+                         GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)};
+        for (i = 0; i < 1 + IsDoubleBattle(); i++)
+        {
+            gLastUsedItem = gBattleResources->battleHistory->heldItems[battlers[i]];
+            gBattleResources->battleHistory->heldItems[battlers[i]] = ITEM_NONE;
+            if (gLastUsedItem && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_WALLY_TUTORIAL)))
+            {
+                if(AddBagItem(gLastUsedItem, 1))
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ITEM_DROPPED;
+                else
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_BAG_IS_FULL;
+                if (IsDoubleBattle())
+                    BattleScriptPushCursor();
+                else
+                    BattleScriptPush(gBattlescriptCurrInstr + 3);
+                gBattlescriptCurrInstr = BattleScript_ItemDropped;
+                return;
+            }
+        }
+        break;
+    }
     } // End of switch (cmd->id)
 
     gBattlescriptCurrInstr = cmd->nextInstr;
@@ -15288,26 +15327,12 @@ static void Cmd_pickup(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-static void Cmd_doweatherformchangeanimation(void)
+static void Cmd_unused3(void)
 {
-    CMD_ARGS();
-
-    gActiveBattler = gBattleScripting.battler;
-
-    if (gBattleMons[gActiveBattler].status2 & STATUS2_SUBSTITUTE)
-        *(&gBattleStruct->formToChangeInto) |= CASTFORM_SUBSTITUTE;
-
-    BtlController_EmitBattleAnimation(BUFFER_A, B_ANIM_CASTFORM_CHANGE, gBattleStruct->formToChangeInto);
-    MarkBattlerForControllerExec(gActiveBattler);
-
-    gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-static void Cmd_tryweatherformdatachange(void)
+static void Cmd_unused4(void)
 {
-    CMD_ARGS();
-
-    // removed in favor of new form system
 }
 
 // Water and Mud Sport

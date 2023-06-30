@@ -18,7 +18,9 @@
 #include "field_weather.h"
 #include "graphics.h"
 #include "international_string_util.h"
+#include "item.h"
 #include "item_icon.h"
+#include "item_menu.h"
 #include "link.h"
 #include "list_menu.h"
 #include "main.h"
@@ -5264,6 +5266,119 @@ bool8 GetDiancieFriendshipScore (void)
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_DIANCIE)
         {
             if (GetMonData(&gPlayerParty[i], MON_DATA_FRIENDSHIP) == MAX_FRIENDSHIP)
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+void SwapPlayersCostume(void)
+{
+    struct ObjectEvent *objEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
+    gSaveBlock2Ptr->costumeId = VarGet(VAR_TEMP_1);
+    ObjectEventSetGraphicsId(objEvent, GetPlayerAvatarGraphicsIdByCurrentState());
+    ObjectEventTurn(objEvent, objEvent->movementDirection);
+    BlendPalettes(0xFFFFFFFF, 16, 0);
+}
+
+u8 GetPlayerCostumeId(void)
+{
+    return GetPlayerAvatarGraphicsIdByStateIdAndGender(PLAYER_AVATAR_STATE_NORMAL, gSaveBlock2Ptr->playerGender);
+}
+
+// Calculates level for gift mons and static encounters that can still evolve.
+// Sets that level to highest level - 3 and stores it in gSpecialVar_0x800A.
+void GetStaticEncounterLevel (void)
+{
+    gSpecialVar_0x800A = GetHighestLevelInPlayerParty();
+
+    if (gSpecialVar_0x800A - 3 < 1)
+    {
+        gSpecialVar_0x800A = 1;
+    }
+    else
+    {
+        gSpecialVar_0x800A -= 3;
+    }
+}
+
+// Lets player select an item from the items pocket
+// Chosen item ID is stored in gSpecialVar_Result
+void Bag_ChooseItem(void)
+{
+    SetMainCallback2(CB2_ChooseItem);
+}
+
+// Gets a fossil item from gSpecialVar_0x8008 and stores the species it becomes in gSpecialVar_0x8006
+void FossilToSpecies(void)
+{
+    u16 species = SPECIES_NONE;
+    u16 item = gSpecialVar_0x8008;
+
+    switch (item)
+    {
+        case ITEM_HELIX_FOSSIL:
+            species = SPECIES_OMANYTE;
+            break;
+        case ITEM_DOME_FOSSIL:
+            species = SPECIES_KABUTO;
+            break;
+        case ITEM_OLD_AMBER:
+            species = SPECIES_AERODACTYL;
+            break;
+        case ITEM_ROOT_FOSSIL:
+            species = SPECIES_LILEEP;
+            break;
+        case ITEM_CLAW_FOSSIL:
+            species = SPECIES_ANORITH;
+            break;
+        case ITEM_ARMOR_FOSSIL:
+            species = SPECIES_SHIELDON;
+            break;
+        case ITEM_SKULL_FOSSIL:
+            species = SPECIES_CRANIDOS;
+            break;
+        case ITEM_COVER_FOSSIL:
+            species = SPECIES_TIRTOUGA;
+            break;
+        case ITEM_PLUME_FOSSIL:
+            species = SPECIES_ARCHEN;
+            break;
+        case ITEM_SAIL_FOSSIL:
+            species = SPECIES_AMAURA;
+            break;
+        case ITEM_JAW_FOSSIL:
+            species = SPECIES_TYRUNT;
+            break;
+    }
+
+    if (species != SPECIES_NONE)
+    {
+        gSpecialVar_0x8006 = species;
+    }
+    return;
+}
+
+// Checks if player chose a Fossil using Bag_ChooseItem
+bool8 IsItemFossil (void)
+{
+    u16 item = gSpecialVar_ItemId;
+    if (item >= ITEM_HELIX_FOSSIL && item <= ITEM_SAIL_FOSSIL)
+    {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+// Checks player's bag for a fossil item. Better than 12 "checkItem" lines in a script!
+bool8 DoesPlayerHaveFossil (void)
+{
+    u16 fossil = ITEM_HELIX_FOSSIL;
+
+    for (fossil = ITEM_HELIX_FOSSIL; fossil < (ITEM_SAIL_FOSSIL + 1); fossil++)
+    {
+        if (CheckBagHasItem(fossil, 1))
+        {
             return TRUE;
         }
     }

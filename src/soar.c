@@ -525,6 +525,7 @@ static const u8 sText_LandHere[] = _("Would you like to land here?");
 static void ExitSoar(void)
 {
 	PlaySE(SE_PC_OFF);
+	ObjectEventTurn(&gObjectEvents[gPlayerAvatar.objectEventId], DIR_SOUTH);
 	gObjectEvents[gPlayerAvatar.objectEventId].invisible = FALSE;
 	BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
 	SetMainCallback2(CB2_FadeOut);

@@ -105,6 +105,13 @@ const struct MonCoords gTrainerFrontPicCoords[] =
     [TRAINER_PIC_GIOVANNI] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_CYNTHIA] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_BLUE] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_ETHAN] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_LYRA] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_KRIS] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_LUCAS] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_DAWN] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_LUCAS_PLATINUM] = {.size = 8, .y_offset = 1},
+    [TRAINER_PIC_DAWN_PLATINUM] = {.size = 8, .y_offset = 1},
 };
 
 #define TRAINER_SPRITE(trainerPic, sprite, size) [TRAINER_PIC_##trainerPic] = {sprite, size, TRAINER_PIC_##trainerPic}
@@ -216,6 +223,13 @@ const struct CompressedSpriteSheet gTrainerFrontPicTable[] =
     TRAINER_SPRITE(GIOVANNI, gTrainerFrontPic_Giovanni, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(CYNTHIA, gTrainerFrontPic_Cynthia, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(BLUE, gTrainerFrontPic_Blue, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(ETHAN, gTrainerFrontPic_Ethan, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(LYRA, gTrainerFrontPic_Lyra, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(KRIS, gTrainerFrontPic_Kris, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(LUCAS, gTrainerFrontPic_Lucas, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(DAWN, gTrainerFrontPic_Dawn, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(LUCAS_PLATINUM, gTrainerFrontPic_LucasPlatinum, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(DAWN_PLATINUM, gTrainerFrontPic_DawnPlatinum, TRAINER_PIC_SIZE),
 };
 
 #define TRAINER_PAL(trainerPic, pal) [TRAINER_PIC_##trainerPic] = {pal, TRAINER_PIC_##trainerPic}
@@ -327,4 +341,11 @@ const struct CompressedSpritePalette gTrainerFrontPicPaletteTable[] =
     TRAINER_PAL(GIOVANNI, gTrainerPalette_Giovanni),
     TRAINER_PAL(CYNTHIA, gTrainerPalette_Cynthia),
     TRAINER_PAL(BLUE, gTrainerPalette_Blue),
+    TRAINER_PAL(ETHAN, gTrainerPalette_Ethan),
+    TRAINER_PAL(LYRA, gTrainerPalette_Lyra),
+    TRAINER_PAL(KRIS, gTrainerPalette_Kris),
+    TRAINER_PAL(LUCAS, gTrainerPalette_Lucas),
+    TRAINER_PAL(DAWN, gTrainerPalette_Dawn),
+    TRAINER_PAL(LUCAS_PLATINUM, gTrainerPalette_LucasPlatinum),
+    TRAINER_PAL(DAWN_PLATINUM, gTrainerPalette_DawnPlatinum),
 };
