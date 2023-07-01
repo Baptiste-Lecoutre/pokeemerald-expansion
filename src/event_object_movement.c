@@ -1802,9 +1802,6 @@ static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species,
       form %= NUM_UNOWN_FORMS;
       graphicsInfo = &gPokemonObjectGraphics[form ? SPECIES_UNOWN_B + form - 1 : species];
       break;
-    case SPECIES_CASTFORM: // Sunny, rainy, snowy forms stored separately
-      graphicsInfo = &gCastformObjectGraphics[form % NUM_CASTFORM_FORMS];
-      break;
     default:
       graphicsInfo = &gPokemonObjectGraphics[species];
       break;
@@ -1880,7 +1877,7 @@ static void RefreshFollowerGraphics(struct ObjectEvent *objEvent) {
 }
 
 // Like CastformDataTypeChange, but for overworld weather
-static u8 GetOverworldCastformForm(void) {
+/*static u8 GetOverworldCastformForm(void) {
     switch (GetCurrentWeather())
     {
     case WEATHER_SUNNY_CLOUDS:
@@ -1894,9 +1891,30 @@ static u8 GetOverworldCastformForm(void) {
         return CASTFORM_ICE;
     }
     return CASTFORM_NORMAL;
+}*/
+
+static u16 GetOverworldCastformSpecies(void)
+{
+    switch(GetCurrentWeather())
+    {
+        case WEATHER_SUNNY_CLOUDS:
+        case WEATHER_DROUGHT:
+            return SPECIES_CASTFORM_SUNNY;
+            break;
+        case WEATHER_RAIN:
+        case WEATHER_RAIN_THUNDERSTORM:
+        case WEATHER_DOWNPOUR:
+            return SPECIES_CASTFORM_RAINY;
+            break;
+        case WEATHER_SNOW:
+            return SPECIES_CASTFORM_SNOWY;
+            break;
+    }
+    return SPECIES_CASTFORM;
 }
 
 static bool8 GetMonInfo(struct Pokemon * mon, u16 *species, u8 *form, u8 *shiny) {
+    *form = 0; // default
     if (!mon) {
         *species = SPECIES_NONE;
         *form = 0;
@@ -1905,14 +1923,13 @@ static bool8 GetMonInfo(struct Pokemon * mon, u16 *species, u8 *form, u8 *shiny)
     }
     *species = GetMonData(mon, MON_DATA_SPECIES);
     *shiny = IsMonShiny(mon);
-    *form = 0; // default
     switch (*species)
     {
     case SPECIES_UNOWN:
         *form = GET_UNOWN_LETTER(mon->box.personality);
         break;
     case SPECIES_CASTFORM: // form is based on overworld weather
-        *form = GetOverworldCastformForm();
+        *species = GetOverworldCastformSpecies();
         break;
     }
     return TRUE;
@@ -5119,10 +5136,9 @@ static bool8 EndFollowerTransformEffect(struct ObjectEvent *objectEvent, struct 
 
 static bool8 TryStartFollowerTransformEffect(struct ObjectEvent *objectEvent, struct Sprite *sprite) {
     u32 multi;
-    if (OW_SPECIES(objectEvent) == SPECIES_CASTFORM && OW_FORM(objectEvent) != (multi = GetOverworldCastformForm())) {
-        sprite->data[7] = TRANSFORM_TYPE_PERMANENT << 8;
-        objectEvent->graphicsId &= OBJ_EVENT_GFX_SPECIES_MASK;
-        objectEvent->graphicsId |= multi << OBJ_EVENT_GFX_SPECIES_BITS;
+    if (GET_BASE_SPECIES_ID(OW_SPECIES(objectEvent)) == SPECIES_CASTFORM
+        && OW_SPECIES(objectEvent) != GetOverworldCastformSpecies()) {
+        sprite->data[7] = TRANSFORM_TYPE_WEATHER << 8;
         return TRUE;
     } else if ((gRngValue >> 16) < 18 && GetLocalWildMon(FALSE)
             && (OW_SPECIES(objectEvent) == SPECIES_MEW || OW_SPECIES(objectEvent) == SPECIES_DITTO)) {
@@ -5152,6 +5168,17 @@ static bool8 UpdateFollowerTransformEffect(struct ObjectEvent *objectEvent, stru
         switch (type)
         {
         case TRANSFORM_TYPE_PERMANENT:
+            RefreshFollowerGraphics(objectEvent);
+            break;
+        case TRANSFORM_TYPE_WEATHER:
+            multi = objectEvent->graphicsId;
+            objectEvent->graphicsId = GetOverworldCastformSpecies();
+            if (!objectEvent->graphicsId)
+            {
+                objectEvent->graphicsId = multi;
+                break;
+            }
+            objectEvent->graphicsId += OBJ_EVENT_GFX_MON_BASE;
             RefreshFollowerGraphics(objectEvent);
             break;
         case TRANSFORM_TYPE_RANDOM_WILD:
