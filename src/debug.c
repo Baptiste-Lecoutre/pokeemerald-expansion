@@ -750,6 +750,7 @@ static void DebugAction_DestroyExtraWindow(u8 taskId)
     ClearStdWindowAndFrame(gTasks[taskId].data[2], TRUE);
     RemoveWindow(gTasks[taskId].data[2]);
 
+    DestroyListMenuTask(gTasks[taskId].data[0], NULL, NULL);
     DestroyTask(taskId);
     ScriptContext_Enable();
     UnfreezeObjectEvents();
@@ -1215,6 +1216,7 @@ static const u8 sWeatherNames[22][24] = {
     [WEATHER_DOWNPOUR]           = _("DOWNPOUR"),
     [WEATHER_UNDERWATER_BUBBLES] = _("UNDERWATER BUBBLES"),
     [WEATHER_ABNORMAL]           = _("ABNORMAL(NOT WORKING)"),
+    [WEATHER_LEAVES]             = _("LEAVES"),
     [WEATHER_ROUTE119_CYCLE]     = _("ROUTE119 CYCLE"),
     [WEATHER_ROUTE123_CYCLE]     = _("ROUTE123 CYCLE"),
 };
@@ -1277,10 +1279,10 @@ static void DebugAction_Util_Weather_SelectId(u8 taskId)
         StringCopy(gStringVar2, gText_DigitIndicator[gTasks[taskId].data[4]]);
         ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].data[3], STR_CONV_MODE_LEADING_ZEROS, 2);
 
-        if (gTasks[taskId].data[3] <= 15 || gTasks[taskId].data[3] >= 20)
-            StringCopyPadded(gStringVar1, sWeatherNames[gTasks[taskId].data[3]], CHAR_SPACE, 30);
+        if (gTasks[taskId].data[3] <= WEATHER_LEAVES || gTasks[taskId].data[3] >= 20)
+            StringCopyPadded(gStringVar1, sWeatherNames[gTasks[taskId].data[3]], CHAR_SPACE, 40);
         else
-            StringCopyPadded(gStringVar1, sText_WeatherNotDefined, CHAR_SPACE, 30);
+            StringCopyPadded(gStringVar1, sText_WeatherNotDefined, CHAR_SPACE, 40);
 
         StringExpandPlaceholders(gStringVar4, sDebugText_Util_Weather_ID);
         AddTextPrinterParameterized(gTasks[taskId].data[2], 1, gStringVar4, 1, 1, 0, NULL);
@@ -1288,7 +1290,7 @@ static void DebugAction_Util_Weather_SelectId(u8 taskId)
 
     if (JOY_NEW(A_BUTTON))
     {
-        if (gTasks[taskId].data[3] <= 14 || gTasks[taskId].data[3] >= 20)
+        if ((gTasks[taskId].data[3] <= WEATHER_LEAVES || gTasks[taskId].data[3] >= 20) && gTasks[taskId].data[3] != WEATHER_ABNORMAL)
         {
             gTasks[taskId].data[5] = gTasks[taskId].data[3];
             SetWeather(gTasks[taskId].data[5]);
