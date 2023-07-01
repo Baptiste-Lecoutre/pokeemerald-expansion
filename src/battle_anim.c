@@ -457,7 +457,7 @@ static u8 GetBattleAnimMoveTargets(u8 battlerArgIndex, u8 *targets)
 
         if (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(targets[0]))))
         {
-            targets[2] = BATTLE_PARTNER(BATTLE_OPPOSITE(targets[0]));
+            targets[2] = BATTLE_PARTNER(BATTLE_OPPOSITE(targets[0])); 
             numTargets++;
         }
         break;
@@ -525,13 +525,12 @@ static void Cmd_createsprite(void)
 
     subpriority = GetSubpriorityForMoveAnim(argVar);
 
-    if (CreateSpriteAndAnimate(template,
+    CreateSpriteAndAnimate(
+        template,
         GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_X_2),
         GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_Y_PIC_OFFSET),
-        subpriority) != MAX_SPRITES) // Don't increment the task count if the sprite couldn't be created(i.e. there are too many created sprites atm).
-     {
-         gAnimVisualTaskCount++;
-     }
+        subpriority);
+    gAnimVisualTaskCount++;
 }
 
 static void CreateSpriteOnTargets(const struct SpriteTemplate *template, u8 argVar, u8 battlerArgIndex, u8 argsCount, bool32 overwriteAnimTgt)
@@ -556,13 +555,12 @@ static void CreateSpriteOnTargets(const struct SpriteTemplate *template, u8 argV
         if (overwriteAnimTgt)
             gBattleAnimArgs[battlerArgIndex] = targets[i];
 
-        if (CreateSpriteAndAnimate(template,
+        CreateSpriteAndAnimate(
+            template,
             GetBattlerSpriteCoord(targets[i], BATTLER_COORD_X_2),
             GetBattlerSpriteCoord(targets[i], BATTLER_COORD_Y_PIC_OFFSET),
-            subpriority) != MAX_SPRITES) // Don't increment the task count if the sprite couldn't be created(i.e. there are too many created sprites atm).
-        {
-            gAnimVisualTaskCount++;
-        }
+            subpriority);
+        gAnimVisualTaskCount++;
     }
 }
 

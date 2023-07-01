@@ -196,8 +196,8 @@ static void SpriteCB_StatusSummaryBalls_OnSwitchout(struct Sprite *);
 static void SpriteCb_MegaTrigger(struct Sprite *);
 static void MegaIndicator_SetVisibilities(u32 healthboxId, bool32 invisible);
 static void MegaIndicator_UpdateLevel(u32 healthboxId, u32 level);
-static void MegaIndicator_CreateSprite(u32 battlerId, u32 healthboxSpriteId);
-static void MegaIndicator_UpdateOamPriority(u32 healthboxId, u32 oamPriority);
+static void MegaIndicator_CreateSprites(u32 battlerId, u32 healthboxSpriteId);
+static void MegaIndicator_UpdateOamPriorities(u32 healthboxId, u32 oamPriority);
 static void SpriteCb_MegaIndicator(struct Sprite *);
 
 static u8 GetStatusIconForBattlerId(u8, u8);
@@ -687,7 +687,7 @@ static const struct SpriteTemplate sSpriteTemplate_MegaTrigger =
 
 // data fields for healthboxMain
 // oam.affineParam holds healthboxRight spriteId
-#define hMain_MegaIndicatorId       data[3]
+#define hMain_MegaIndicatorIds      data[3] // Mega, Alpha, Omega as u8 in data[3], data[3] + 1, data[4]
 #define hMain_HealthBarSpriteId     data[5]
 #define hMain_Battler               data[6]
 #define hMain_Data7                 data[7]
@@ -802,8 +802,8 @@ u8 CreateBattlerHealthboxSprites(u8 battlerId)
     healthBarSpritePtr->hBar_Data6 = data6;
     healthBarSpritePtr->invisible = TRUE;
 
-    // Create mega indicator sprite.
-    MegaIndicator_CreateSprite(battlerId, healthboxLeftSpriteId);
+    // Create mega indicator sprites.
+    MegaIndicator_CreateSprites(battlerId, healthboxLeftSpriteId);
 
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
@@ -938,7 +938,7 @@ void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
         gSprites[healthboxRightSpriteId].oam.priority = priority;
         gSprites[healthbarSpriteId].oam.priority = priority;
 
-        MegaIndicator_UpdateOamPriority(healthboxLeftSpriteId, priority);
+        MegaIndicator_UpdateOamPriorities(healthboxLeftSpriteId, priority);
 
     #if B_HIDE_HEALTHBOX_IN_ANIMS
         if (hideHPBoxes && IsBattlerAlive(i))
@@ -1513,72 +1513,77 @@ void MegaIndicator_LoadSpritesGfx(void)
     LoadSpritePalettes(sMegaIndicator_SpritePalettes);
 }
 
-static bool32 MegaIndicator_ShouldBeInvisible(u32 battlerId, struct Sprite *sprite)
+static bool32 MegaIndicator_ShouldBeInvisible(u32 battlerId, u32 indicatorType)
 {
     u32 side = GetBattlerSide(battlerId);
-    bool32 megaEvolved = IsBattlerMegaEvolved(battlerId);
-    bool32 primalReverted = IsBattlerPrimalReverted(battlerId);
-
-    if (!megaEvolved && !primalReverted)
-        return TRUE;
-
-    if (megaEvolved)
-        sprite->tType = INDICATOR_MEGA;
-    else if (primalReverted && gBattleMons[battlerId].species == SPECIES_KYOGRE_PRIMAL)
-        sprite->tType = INDICATOR_ALPHA;
-    else if (primalReverted && gBattleMons[battlerId].species == SPECIES_GROUDON_PRIMAL)
-        sprite->tType = INDICATOR_OMEGA;
-
-    sprite->oam.tileNum = GetSpriteTileStartByTag(sMegaIndicatorTags[sprite->tType][0]);
-    sprite->oam.paletteNum = IndexOfSpritePaletteTag(sMegaIndicatorTags[sprite->tType][1]);
-    return FALSE;
+    if (indicatorType == INDICATOR_MEGA)
+    {
+        if (IsBattlerMegaEvolved(battlerId))
+            return FALSE;
+    }
+    else
+    {
+        if (indicatorType == INDICATOR_ALPHA && gBattleMons[battlerId].species != SPECIES_KYOGRE_PRIMAL)
+            return TRUE;
+        else if (indicatorType == INDICATOR_OMEGA && gBattleMons[battlerId].species != SPECIES_GROUDON_PRIMAL)
+            return TRUE;
+        if (IsBattlerPrimalReverted(battlerId))
+            return FALSE;
+    }
+    return TRUE;
 }
 
-static u8 *MegaIndicator_GetSpriteId(u32 healthboxSpriteId)
+static u8 *MegaIndicator_GetSpriteIds(u32 healthboxSpriteId)
 {
-    u8 *spriteId = (u8 *)(&gSprites[healthboxSpriteId].hMain_MegaIndicatorId);
-    return spriteId;
+    u8 *spriteIds = (u8 *)(&gSprites[healthboxSpriteId].hMain_MegaIndicatorIds);
+    return spriteIds;
 }
 
 void MegaIndicator_SetVisibilities(u32 healthboxId, bool32 invisible)
 {
-    u8 *spriteId = MegaIndicator_GetSpriteId(healthboxId);
+    u32 i;
+    u8 *spriteIds = MegaIndicator_GetSpriteIds(healthboxId);
     u32 battlerId = gSprites[healthboxId].hMain_Battler;
 
     if (GetSafariZoneFlag())
         return;
 
-    if (invisible == TRUE)
-        gSprites[*spriteId].invisible = TRUE;
-    else // Try visible.
-        gSprites[*spriteId].invisible = MegaIndicator_ShouldBeInvisible(battlerId, &gSprites[*spriteId]);
+    for (i = 0; i < INDICATOR_COUNT; i++)
+    {
+        if (invisible == TRUE)
+            gSprites[spriteIds[i]].invisible = TRUE;
+        else // Try visible.
+            gSprites[spriteIds[i]].invisible = MegaIndicator_ShouldBeInvisible(battlerId, i);
+    }
 }
 
-static void MegaIndicator_UpdateOamPriority(u32 healthboxId, u32 oamPriority)
+static void MegaIndicator_UpdateOamPriorities(u32 healthboxId, u32 oamPriority)
 {
-    u8 *spriteId = MegaIndicator_GetSpriteId(healthboxId);
-    gSprites[*spriteId].oam.priority = oamPriority;
+    u32 i;
+    u8 *spriteIds = MegaIndicator_GetSpriteIds(healthboxId);
+    for (i = 0; i < INDICATOR_COUNT; i++)
+        gSprites[spriteIds[i]].oam.priority = oamPriority;
 }
 
 static void MegaIndicator_UpdateLevel(u32 healthboxId, u32 level)
 {
     u32 i;
     s16 xDelta = 0;
-    u8 *spriteId = MegaIndicator_GetSpriteId(healthboxId);
+    u8 *spriteIds = MegaIndicator_GetSpriteIds(healthboxId);
 
     if (level >= 100)
         xDelta -= 4;
     else if (level < 10)
         xDelta += 5;
 
-    gSprites[*spriteId].tLevelXDelta = xDelta;
+    for (i = 0; i < INDICATOR_COUNT; i++)
+        gSprites[spriteIds[i]].tLevelXDelta = xDelta;
 }
 
-static void MegaIndicator_CreateSprite(u32 battlerId, u32 healthboxSpriteId)
+static void MegaIndicator_CreateSprites(u32 battlerId, u32 healthboxSpriteId)
 {
-    struct SpriteTemplate sprTemplate;
-    u32 position, level;
-    u8 *spriteId;
+    u32 position, i, level;
+    u8 *spriteIds;
     s16 xHealthbox = 0, y = 0;
     s32 x = 0;
 
@@ -1588,15 +1593,18 @@ static void MegaIndicator_CreateSprite(u32 battlerId, u32 healthboxSpriteId)
     x = sIndicatorPositions[position][0];
     y += sIndicatorPositions[position][1];
 
-    spriteId = MegaIndicator_GetSpriteId(healthboxSpriteId);
-    sprTemplate = sSpriteTemplate_MegaIndicator;
-    sprTemplate.tileTag = sMegaIndicatorTags[INDICATOR_MEGA][0];
-    sprTemplate.paletteTag = sMegaIndicatorTags[INDICATOR_MEGA][1];
-    *spriteId = CreateSpriteAtEnd(&sprTemplate, 0, y, 0);
-    gSprites[*spriteId].tType = INDICATOR_MEGA;
-    gSprites[*spriteId].tBattler = battlerId;
-    gSprites[*spriteId].tPosX = x;
-    gSprites[*spriteId].invisible = TRUE;
+    spriteIds = MegaIndicator_GetSpriteIds(healthboxSpriteId);
+    for (i = 0; i < INDICATOR_COUNT; i++)
+    {
+        struct SpriteTemplate sprTemplate = sSpriteTemplate_MegaIndicator;
+        sprTemplate.tileTag = sMegaIndicatorTags[i][0];
+        sprTemplate.paletteTag = sMegaIndicatorTags[i][1];
+        spriteIds[i] = CreateSpriteAtEnd(&sprTemplate, 0, y, 0);
+        gSprites[spriteIds[i]].tType = i;
+        gSprites[spriteIds[i]].tBattler = battlerId;
+        gSprites[spriteIds[i]].tPosX = x;
+        gSprites[spriteIds[i]].invisible = TRUE;
+    }
 }
 
 static void SpriteCb_MegaIndicator(struct Sprite *sprite)
