@@ -1126,6 +1126,7 @@ struct SaveBlock1
     // sizeof: 0x3???
                 u16 registeredItemList[4];
                 u8 dexNavChain;
+                u8 raidAreaFlags[5]; // are raid battle done for the day? -> only routes for now
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;

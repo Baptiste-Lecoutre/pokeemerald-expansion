@@ -8,11 +8,15 @@
 #include "battle_transition.h"
 #include "data.h"
 #include "event_data.h"
+#include "item.h"
 #include "malloc.h"
+#include "overworld.h"
 #include "pokemon.h"
+#include "random.h"
 #include "sprite.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
+#include "constants/item.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 
@@ -63,6 +67,38 @@ static const u16 sGen9RaidHPMultipliers[] = {
     [RAID_RANK_5] = UQ_4_12(20.0),
     [RAID_RANK_6] = UQ_4_12(25.0),
     [RAID_RANK_7] = UQ_4_12(30.0),
+};
+
+static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
+{	//In percent
+	100,
+	80,
+	80,
+	50,
+	50,
+	30,
+	30,
+	25,
+	25,
+	5,
+	4,
+	1,
+};
+
+static const u8 sRaidBattleDropItems[MAX_RAID_DROPS] =
+{
+	ITEM_MASTER_BALL,
+    ITEM_NUGGET,
+	ITEM_BOTTLE_CAP,
+	ITEM_PEARL,
+	ITEM_BIG_PEARL,
+	ITEM_WISHING_PIECE,
+	ITEM_STARDUST,
+	ITEM_COMET_SHARD,
+	ITEM_THUNDER_STONE,
+	ITEM_WATER_STONE,
+	ITEM_LEAF_STONE,
+	ITEM_NONE,
 };
 
 EWRAM_DATA struct RaidData* gRaidData = NULL;
@@ -413,3 +449,125 @@ void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible)
 }
 
 #undef hMain_Battler
+
+static u8 GetRaidMapSectionId(void)
+{
+    u8 currRegionMapSecId = GetCurrentRegionMapSectionId();
+    return currRegionMapSecId - MAPSEC_ROUTE_101;
+}
+
+// battle raid flags
+void SetRaidBattleFlag(void)
+{
+    u8 raidId = GetRaidMapSectionId();
+    u8 index = raidId / 8; //get byte in array
+    u8 bit = raidId % 8;   //get bit in byte
+    u8 mask = 1 << bit;
+
+    gSaveBlock1Ptr->raidAreaFlags[index] |= mask;
+    return;
+}
+
+bool8 GetRaidBattleFlag(void)
+{
+    u8 raidId = GetRaidMapSectionId();
+    u8 index = raidId / 8; //get byte in array
+    u8 bit = raidId % 8;   //get bit in byte
+    u8 mask = 1 << bit;
+
+    return ((gSaveBlock1Ptr->raidAreaFlags[index] & mask) != 0);
+}
+
+void ClearRaidBattleFlag(void)
+{
+    u8 raidId = GetRaidMapSectionId();
+    u8 index = raidId / 8; //get byte in array
+    u8 bit = raidId % 8;   //get bit in byte
+    u8 mask = 1 << bit;
+
+    gSaveBlock1Ptr->raidAreaFlags[index] &= ~mask;
+    return;
+}
+
+void ClearAllRaidBattleFlags(void)
+{
+    u32 i;
+    
+    for (i = 0; i < NELEMS(gSaveBlock1Ptr->raidAreaFlags); i++)
+        gSaveBlock1Ptr->raidAreaFlags[i] = 0;
+}
+
+u16 GetRaidRewardAmount(u16 item)
+{
+	if (GetPocketByItemId(item) == POCKET_POKE_BALLS)
+		return Random() % 11 + 5; //5 - 15
+
+	if (GetPocketByItemId(item) == POCKET_BERRIES)
+		return Random() % 11 + 5; //5 - 15
+
+	/*switch (gItemsByType[item]) {
+	case ITEM_TYPE_HEALTH_RECOVERY:
+	case ITEM_TYPE_STATUS_RECOVERY:
+		return Random() % 5 + 1; //1 - 5
+	case ITEM_TYPE_PP_RECOVERY:
+	case ITEM_TYPE_STAT_BOOST_DRINK:
+		return Random() % 3 + 1; //1 - 3
+	case ITEM_TYPE_STAT_BOOST_WING:
+		return Random() % 21 + 10; //10 - 30
+	case ITEM_TYPE_SHARD:
+		return Random() % 10 + 1; //1 - 10
+	default:*/
+		return 1;
+	//}
+}
+
+static u8 TryAlterRaidItemDropRate(u16 item, u8 rate)
+{
+    u32 i;
+
+	if (FlagGet(FLAG_TEMP_C)) // set if using wishing piece, bumps up the rates to next 10%
+    {
+        rate = (rate / 10 + 1) * 10;
+    }
+    
+    if (item == ITEM_WISHING_PIECE)
+	{
+		for (i = 0; i < PARTY_SIZE; i++)
+		{
+			if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL) == SPECIES_JIRACHI)
+			{
+				if (rate < 20)
+					rate = 20; //Bump up to 20%
+				break;
+			}
+		}
+	}
+
+	return rate;
+}
+
+void GiveRaidBattleRewards(void)
+{
+    u32 i;
+	u8 numStars = gRaidData->rank;
+	gSpecialVar_0x800B = FALSE; //Not done giving rewards
+
+	for (i = VarGet(VAR_TEMP_A); i < MAX_RAID_DROPS; i++)
+    {
+        u16 dropItem = sRaidBattleDropItems[i]; // consider raid rank
+        u8 dropRate = sRaidBattleDropRates[i];
+        VarSet(VAR_TEMP_A, i+1);
+
+        dropRate = TryAlterRaidItemDropRate(dropItem, dropRate);
+
+		if (dropItem != ITEM_NONE
+			&& (Random() % 100 < dropRate))
+	    {
+			gSpecialVar_LastTalked = 0xFD; //So no event objects disappear
+			gSpecialVar_0x8000 = dropItem;//raid->data[i].drops[(*(GetVarPointer(VAR_TEMP_B)))++];//dropItem;
+			gSpecialVar_0x8001 = GetRaidRewardAmount(gSpecialVar_0x8000);
+			return;
+		}
+	}
+	gSpecialVar_0x800B = TRUE; //Done giving rewards
+}

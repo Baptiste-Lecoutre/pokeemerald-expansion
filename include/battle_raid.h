@@ -32,4 +32,11 @@ u16 GetShieldDamageRequired(u16 hp, u16 maxHP);
 u16 GetShieldDamageReduction(void);
 void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible);
 
+void SetRaidBattleFlag(void);
+bool8 GetRaidBattleFlag(void);
+void ClearRaidBattleFlag(void);
+void ClearAllRaidBattleFlags(void);
+
+void GiveRaidBattleRewards(void);
+
 #endif

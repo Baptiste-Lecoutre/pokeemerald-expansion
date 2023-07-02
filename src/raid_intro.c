@@ -616,8 +616,7 @@ static void ClearVramOamPlttRegs(void)
 
 static bool8 HasRaidBattleAlreadyBeenDone(void)
 {
-    // TODO: Check whether Raid is available.
-    return FALSE;
+    return GetRaidBattleFlag();
 }
 
 void IsRaidBattleAvailable(void)

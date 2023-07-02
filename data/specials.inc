@@ -566,3 +566,8 @@ gSpecials::
 	def_special IsItemFossil
 	def_special DoesPlayerHaveFossil
 	def_special Bag_ChooseItem
+	def_special IsRaidBattleAvailable
+	def_special SetRaidBattleFlag
+	def_special ClearRaidBattleFlag
+	def_special ClearAllRaidBattleFlags
+	def_special GiveRaidBattleRewards
