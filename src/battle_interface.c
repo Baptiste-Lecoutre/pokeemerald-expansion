@@ -28,8 +28,10 @@
 #include "item.h"
 #include "item_icon.h"
 #include "item_use.h"
+#include "event_data.h"
 #include "test_runner.h"
 #include "constants/battle_anim.h"
+#include "constants/battle_tower.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/items.h"
@@ -3265,6 +3267,8 @@ bool32 CanThrowLastUsedBall(void)
     return FALSE;
 #else
     if (!CanThrowBall())
+        return FALSE;
+    if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS)
         return FALSE;
     if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER))
         return FALSE;

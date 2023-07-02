@@ -37,6 +37,7 @@
 #include "constants/trainers.h"
 #include "constants/event_objects.h"
 #include "constants/moves.h"
+#include "constants/songs.h"
 
 extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_MaxieTrainer[];
 extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_TabithaTrainer[];
@@ -2167,7 +2168,12 @@ void DoSpecialTrainerBattle(void)
         FillPartnerParty(gPartnerTrainerId);
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);
-        if (gSpecialVar_0x8005 & MULTI_BATTLE_2_VS_WILD)
+        if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS)
+        {
+            PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
+            BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);
+        }
+        else if (gSpecialVar_0x8005 & MULTI_BATTLE_2_VS_WILD)
             BattleTransition_StartOnField(GetWildBattleTransition());
         else
             BattleTransition_StartOnField(GetTrainerBattleTransition());
