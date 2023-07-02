@@ -13,6 +13,7 @@
 #include "overworld.h"
 #include "pokemon.h"
 #include "random.h"
+#include "rtc.h"
 #include "sprite.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
@@ -67,6 +68,41 @@ static const u16 sGen9RaidHPMultipliers[] = {
     [RAID_RANK_5] = UQ_4_12(20.0),
     [RAID_RANK_6] = UQ_4_12(25.0),
     [RAID_RANK_7] = UQ_4_12(30.0),
+};
+
+const u8 gRaidBattleStarsByBadges[][2] =
+{
+//	[0] = {NO_RAID,         NO_RAID},
+	[1] = {RAID_RANK_1, 	RAID_RANK_1},
+	[2] = {RAID_RANK_1,   RAID_RANK_2},
+	[3] = {RAID_RANK_2,   RAID_RANK_2},
+	[4] = {RAID_RANK_2,   RAID_RANK_3},
+	[5] = {RAID_RANK_3, RAID_RANK_3},
+	[6] = {RAID_RANK_3, RAID_RANK_4},
+	[7] = {RAID_RANK_4,  RAID_RANK_4},
+	[8] = {RAID_RANK_4,  RAID_RANK_5},
+	[9] = {RAID_RANK_5,  RAID_RANK_6}, //Beat Game
+};
+
+const u8 gRaidBattleLevelRanges[MAX_RAID_RANK][2] =
+{
+	[RAID_RANK_1]   = {15, 20},
+	[RAID_RANK_2]   = {25, 30},
+	[RAID_RANK_3] = {35, 40},
+	[RAID_RANK_4]  = {50, 55},
+	[RAID_RANK_5]  = {60, 65},
+	[RAID_RANK_6]   = {75, 90},
+};
+
+//The chance that each move is replaced with an Egg Move
+const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK] =
+{
+	[RAID_RANK_1]   = 0,
+	[RAID_RANK_2]   = 10,
+	[RAID_RANK_3] = 30,
+	[RAID_RANK_4]  = 50,
+	[RAID_RANK_5]  = 70,
+	[RAID_RANK_6]   = 70,
 };
 
 static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
@@ -570,4 +606,25 @@ void GiveRaidBattleRewards(void)
 		}
 	}
 	gSpecialVar_0x800B = TRUE; //Done giving rewards
+}
+
+u32 GetRaidRandomNumber(void)
+{
+	//Make sure no values are 0
+	u8 day = (gLocalTime.days == 0) ? 32 :gLocalTime.days;
+    u8 hour = (gLocalTime.hours == 0) ? 24 : gLocalTime.hours;
+	u8 lastMapGroup = (gSaveBlock1Ptr->dynamicWarp.mapGroup == 0) ? 0xFF : gSaveBlock1Ptr->dynamicWarp.mapGroup;
+	u8 lastMapNum = (gSaveBlock1Ptr->dynamicWarp.mapNum == 0) ? 0xFF : gSaveBlock1Ptr->dynamicWarp.mapNum;
+	u8 lastWarpId = (gSaveBlock1Ptr->dynamicWarp.warpId == 0) ? 0xFF : gSaveBlock1Ptr->dynamicWarp.warpId;
+	u16 lastPos = (gSaveBlock1Ptr->dynamicWarp.x + gSaveBlock1Ptr->dynamicWarp.y == 0) ? 0xFFFF : (u16) (gSaveBlock1Ptr->dynamicWarp.x + gSaveBlock1Ptr->dynamicWarp.y);
+	
+    #ifdef VAR_RAID_NUMBER_OFFSET
+	u16 offset = VarGet(VAR_RAID_NUMBER_OFFSET); //Setting this var changes all the raid spawns for the current hour (helps with better Wishing Piece)
+	#else
+	u16 offset = 0;
+	#endif
+
+	//return ((hour * (day + month) * lastMapGroup * (lastMapNum + lastWarpId + lastPos)) + ((hour * (day + month)) ^ dayOfWeek) + offset) ^ T1_READ_32(gSaveBlock2Ptr->playerTrainerId);
+    //return ((hour * day * lastMapGroup * (lastMapNum + lastWarpId + lastPos)) + ((hour * day) ^ 8) + offset) ^ T1_READ_32(gSaveBlock2Ptr->playerTrainerId);
+    return RandomSeeded(hour * day * lastMapGroup * (lastMapNum + lastWarpId + lastPos) + offset, TRUE);
 }
