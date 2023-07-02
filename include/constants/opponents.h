@@ -51,7 +51,7 @@
 #define TRAINER_DUSTY_2                      47
 #define TRAINER_DUSTY_3                      48
 #define TRAINER_DUSTY_4                      49
-#define TRAINER_DUSTY_5                      50
+#define TRAINER_GRUNT_METEOR_FALLS                      50
 #define TRAINER_GABBY_AND_TY_1               51
 #define TRAINER_GABBY_AND_TY_2               52
 #define TRAINER_GABBY_AND_TY_3               53
@@ -832,7 +832,7 @@
 #define TRAINER_CRISTIN_2                   828
 #define TRAINER_CRISTIN_3                   829
 #define TRAINER_CRISTIN_4                   830
-#define TRAINER_CRISTIN_5                   831
+#define TRAINER_COURTNEY_METEOR_FALLS                   831
 #define TRAINER_FERNANDO_2                  832
 #define TRAINER_FERNANDO_3                  833
 #define TRAINER_FERNANDO_4                  834
@@ -870,5 +870,11 @@
 #define TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC 903
 #define TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP 904
 #define TRAINER_BRENDAN_VICTORY_ROAD_TREECKO 905
+#define MAY_MUDKIP_METEOR_FALLS 906
+#define MAY_TORCHIC_METEOR_FALLS 907
+#define MAY_TREECKO_METEOR_FALLS 908
+#define BRENDAN_MUDKIP_METEOR_FALLS 909
+#define BRENDAN_TORCHIC_METEOR_FALLS 910
+#define BRENDAN_TREECKO_METEOR_FALLS 911
 
 #endif  // GUARD_CONSTANTS_OPPONENTS_H
