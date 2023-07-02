@@ -2148,7 +2148,7 @@ void DoSpecialTrainerBattle(void)
         BattleTransition_StartOnField(B_TRANSITION_MAGMA);
         break;
     case SPECIAL_BATTLE_MULTI:
-        if (gSpecialVar_0x8005 & MULTI_BATTLE_2_VS_WILD) // Player + AI against wild mon
+        if (gSpecialVar_0x8005 & (MULTI_BATTLE_2_VS_WILD | MULTI_BATTLE_SOOTOPOLIS)) // Player + AI against wild mon
         {
             gBattleTypeFlags = BATTLE_TYPE_DOUBLE | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
         }

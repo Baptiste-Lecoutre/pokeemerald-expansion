@@ -45,6 +45,7 @@ void SpriteCB_ShowAsMoveTarget(struct Sprite *sprite);
 void SpriteCB_HideAsMoveTarget(struct Sprite *sprite);
 void SpriteCB_OpponentMonFromBall(struct Sprite *sprite);
 void SpriteCB_BattleSpriteStartSlideLeft(struct Sprite *sprite);
+void SpriteCB_MoveWildMonToLeft(struct Sprite *sprite);
 void SpriteCB_FaintSlideAnim(struct Sprite *sprite);
 void DoBounceEffect(u8 battler, u8 which, s8 delta, s8 amplitude);
 void EndBounceEffect(u8 battler, u8 which);

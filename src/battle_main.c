@@ -56,6 +56,7 @@
 #include "constants/abilities.h"
 #include "constants/battle_move_effects.h"
 #include "constants/battle_string_ids.h"
+#include "constants/battle_tower.h"
 #include "constants/hold_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -2745,6 +2746,18 @@ static void SpriteCB_MoveWildMonToRight(struct Sprite *sprite)
     }
 }
 
+void SpriteCB_MoveWildMonToLeft(struct Sprite *sprite)
+{
+    if ((gIntroSlideFlags & 1) == 0)
+    {
+        sprite->x2 -= 2;
+        if (sprite->x2 == 0)
+        {
+            sprite->callback = SpriteCB_WildMonShowHealthbox;
+        }
+    }
+}
+
 static void SpriteCB_WildMonShowHealthbox(struct Sprite *sprite)
 {
     if (sprite->animEnded)
@@ -2898,7 +2911,10 @@ void SpriteCB_OpponentMonFromBall(struct Sprite *sprite)
 // This callback is frequently overwritten by SpriteCB_TrainerSlideIn
 void SpriteCB_BattleSpriteStartSlideLeft(struct Sprite *sprite)
 {
-    sprite->callback = SpriteCB_BattleSpriteSlideLeft;
+    if ((gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS) && GetBattlerPosition(sprite->sBattler) == B_POSITION_PLAYER_RIGHT)
+        sprite->callback = SpriteCB_MoveWildMonToLeft;
+    else
+        sprite->callback = SpriteCB_BattleSpriteSlideLeft;
 }
 
 static void SpriteCB_BattleSpriteSlideLeft(struct Sprite *sprite)
@@ -3588,7 +3604,12 @@ static void DoBattleIntro(void)
                 }
                 break;
             case B_POSITION_PLAYER_RIGHT:
-                if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER)) // partner sprite
+                if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS)
+                {
+                    BtlController_EmitLoadMonSprite(BUFFER_A);
+                    MarkBattlerForControllerExec(gActiveBattler);
+                }
+                else if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER)) // partner sprite
                 {
                     BtlController_EmitDrawTrainerPic(BUFFER_A);
                     MarkBattlerForControllerExec(gActiveBattler);
@@ -3797,7 +3818,7 @@ static void DoBattleIntro(void)
         (*state)++;
         break;
     case 19: // player 2 send out
-        if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER))
+        if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER) && !(gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS))
         {
             if (gBattleTypeFlags & BATTLE_TYPE_RECORDED_LINK && !(gBattleTypeFlags & BATTLE_TYPE_RECORDED_IS_MASTER))
                 gActiveBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);

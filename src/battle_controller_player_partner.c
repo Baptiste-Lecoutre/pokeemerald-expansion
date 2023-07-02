@@ -11,6 +11,7 @@
 #include "battle_z_move.h"
 #include "bg.h"
 #include "data.h"
+#include "event_data.h"
 #include "item_use.h"
 #include "link.h"
 #include "main.h"
@@ -27,6 +28,7 @@
 #include "util.h"
 #include "window.h"
 #include "constants/battle_anim.h"
+#include "constants/battle_tower.h"
 #include "constants/songs.h"
 #include "constants/party_menu.h"
 #include "constants/trainers.h"
@@ -1213,10 +1215,20 @@ static void PlayerPartnerHandleLoadMonSprite(void)
                                                GetBattlerSpriteCoord(gActiveBattler, BATTLER_COORD_X_2),
                                                GetBattlerSpriteDefault_Y(gActiveBattler),
                                                GetBattlerSpriteSubpriority(gActiveBattler));
+
     gSprites[gBattlerSpriteIds[gActiveBattler]].x2 = -DISPLAY_WIDTH;
     gSprites[gBattlerSpriteIds[gActiveBattler]].data[0] = gActiveBattler;
+    gSprites[gBattlerSpriteIds[gActiveBattler]].data[2] = species;
+
+    if ((gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS) && GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_RIGHT)
+    {
+        gSprites[gBattlerSpriteIds[gActiveBattler]].x2 = DISPLAY_WIDTH;
+        gSprites[gBattlerSpriteIds[gActiveBattler]].callback = SpriteCB_MoveWildMonToLeft;
+    }
+    
     gSprites[gBattlerSpriteIds[gActiveBattler]].oam.paletteNum = gActiveBattler;
     StartSpriteAnim(&gSprites[gBattlerSpriteIds[gActiveBattler]], 0);
+
     gBattlerControllerFuncs[gActiveBattler] = WaitForMonAnimAfterLoad;
 }
 
