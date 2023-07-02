@@ -1148,3 +1148,4 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/Route123_MirageCave/scripts.inc"
 
 	.include "data/scripts/furfrou.inc"
+	.include "data/scripts/rotom.inc"

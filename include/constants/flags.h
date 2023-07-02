@@ -248,7 +248,7 @@
 #define FLAG_RECEIVED_STARTER_DOLL           0xE2
 #define FLAG_RECEIVED_GOOD_ROD               0xE3
 #define FLAG_REGI_DOORS_OPENED               0xE4
-#define FLAG_UNUSED_0x0E5                    0xE5 // FLAG_RECEIVED_TM27
+#define FLAG_SHOWN_DEOXYS_TO_COSMO                    0xE5 // FLAG_RECEIVED_TM27
 #define FLAG_UNUSED_0x0E6                    0xE6 // FLAG_RECEIVED_TM36
 #define FLAG_UNUSED_0x0E7                    0xE7 // FLAG_RECEIVED_TM05
 #define FLAG_UNUSED_0x0E8                    0xE8 // FLAG_RECEIVED_TM19
