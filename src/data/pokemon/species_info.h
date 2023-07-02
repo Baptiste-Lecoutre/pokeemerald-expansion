@@ -126,7 +126,6 @@
     }
 
 #define PIKACHU_SPECIES_INFO(gender, flip)                                   \
-    {                                                                      \
         .baseHP        = 35,                                               \
         .baseAttack    = 55,                                               \
         .baseSpeed     = 90,                                               \
@@ -307,8 +306,8 @@
         .noFlip = FALSE,                                \
     }
 
-#define COSPLAY_PIKACHU_SPECIES_INFO(flip) PIKACHU_SPECIES_INFO(MON_FEMALE, flip)
-#define CAP_PIKACHU_SPECIES_INFO(flip)     PIKACHU_SPECIES_INFO(MON_MALE, flip)
+#define COSPLAY_PIKACHU_SPECIES_INFO(flip) { PIKACHU_SPECIES_INFO(MON_FEMALE, flip), }
+#define CAP_PIKACHU_SPECIES_INFO(flip)     { PIKACHU_SPECIES_INFO(MON_MALE, flip), }
 
 #define PICHU_SPECIES_INFO(flip)                                           \
     {                                                                      \
@@ -24838,7 +24837,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
     [SPECIES_CHARIZARD_GMAX] = CHARIZARD_SPECIES_INFO,
     [SPECIES_BLASTOISE_GMAX] = BLASTOISE_SPECIES_INFO,
     [SPECIES_BUTTERFREE_GMAX] = BUTTERFREE_SPECIES_INFO,
-    [SPECIES_PIKACHU_GMAX] = PIKACHU_SPECIES_INFO(PERCENT_FEMALE(50), FLIP),
+    [SPECIES_PIKACHU_GMAX] = {PIKACHU_SPECIES_INFO(PERCENT_FEMALE(50), FLIP)},
     [SPECIES_MEOWTH_GMAX] = MEOWTH_SPECIES_INFO,
     [SPECIES_MACHAMP_GMAX] = MACHAMP_SPECIES_INFO,
     [SPECIES_GENGAR_GMAX] = GENGAR_SPECIES_INFO,
