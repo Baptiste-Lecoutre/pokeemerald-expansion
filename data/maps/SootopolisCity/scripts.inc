@@ -512,7 +512,7 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2::
 	choose_mons
 	setsootopolisbattle SPECIES_KYOGRE, 70, ITEM_NONE, SPECIES_GROUDON, 70, ITEM_NONE
-	multi_sootopolis TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	multi_sootopolis PARTNER_RAYQUAZA, TRAINER_BACK_PIC_MAY
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
 	removeobject LOCALID_GROUDON

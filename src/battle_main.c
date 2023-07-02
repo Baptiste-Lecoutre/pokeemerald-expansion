@@ -3606,6 +3606,9 @@ static void DoBattleIntro(void)
             case B_POSITION_PLAYER_RIGHT:
                 if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS)
                 {
+                    gBattleMons[gActiveBattler].statStages[STAT_DEF] = MAX_STAT_STAGE;
+                    gBattleMons[gActiveBattler].statStages[STAT_SPDEF] = MAX_STAT_STAGE;
+                    gBattleMons[gActiveBattler].statStages[STAT_ACC] = MAX_STAT_STAGE;
                     BtlController_EmitLoadMonSprite(BUFFER_A);
                     MarkBattlerForControllerExec(gActiveBattler);
                 }

@@ -12434,3 +12434,12 @@ static const struct TrainerMonNoItemDefaultMoves sParty_MayLinkPlaceholder[] = {
     .species = SPECIES_KYOGRE,
     }
 };
+
+static const struct TrainerMonNoItemCustomMoves sParty_Rayquaza[] = {
+    {
+    .iv = 255,
+    .lvl = 80,
+    .species = SPECIES_RAYQUAZA,
+    .moves = {MOVE_DRAGON_ASCENT, MOVE_SWORDS_DANCE, MOVE_OUTRAGE, MOVE_EXTREME_SPEED}
+    }
+};
