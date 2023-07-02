@@ -2297,3 +2297,15 @@ const u8 gText_RoamerGZapdos[] = _("Orange bird");
 const u8 gText_RoamerGArticuno[] = _("Purple bird");
 const u8 gText_RoamerZacian[] = _("Sword");
 const u8 gText_RoamerZamazenta[] = _("Shield");
+
+// Fufrou forms
+const u8 gText_HeartTrim[] = _("Heart Trim");
+const u8 gText_StarTrim[] = _("Star Trim");
+const u8 gText_DiamondTrim[] = _("Diamond Trim");
+const u8 gText_DebutanteTrim[] = _("Debutante Trim");
+const u8 gText_MatronTrim[] = _("Matron Trim");
+const u8 gText_DandyTrim[] = _("Dandy Trim"); 
+const u8 gText_LaReineTrim[] = _("La Reine Trim");
+const u8 gText_KabukiTrim[] = _("Kabuki Trim");
+const u8 gText_PharaohTrim[] = _("Pharaoh Trim");
+const u8 gText_BackToNatural[] = _("Back to natural");

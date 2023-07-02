@@ -3611,4 +3611,15 @@ extern const u8 gText_RoamerGArticuno[];
 extern const u8 gText_RoamerZacian[];
 extern const u8 gText_RoamerZamazenta[];
 
+extern const u8 gText_HeartTrim[];
+extern const u8 gText_StarTrim[];
+extern const u8 gText_DiamondTrim[];
+extern const u8 gText_DebutanteTrim[];
+extern const u8 gText_MatronTrim[];
+extern const u8 gText_DandyTrim[]; 
+extern const u8 gText_LaReineTrim[];
+extern const u8 gText_KabukiTrim[];
+extern const u8 gText_PharaohTrim[];
+extern const u8 gText_BackToNatural[];
+
 #endif // GUARD_STRINGS_H

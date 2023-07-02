@@ -2483,6 +2483,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_FURFROU_TRIMS:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 11;
+        task->tLeft = 22;
+        task->tTop = 1;
+        task->tWidth = 12;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2892,6 +2902,20 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_RoamerGArticuno,
         gText_RoamerZacian,
         gText_RoamerZamazenta
+    },
+    [SCROLL_MULTI_FURFROU_TRIMS] = 
+    {
+        gText_HeartTrim,
+        gText_StarTrim,
+        gText_DiamondTrim,
+        gText_DebutanteTrim,
+        gText_MatronTrim,
+        gText_DandyTrim, 
+        gText_LaReineTrim,
+        gText_KabukiTrim,
+        gText_PharaohTrim,
+        gText_BackToNatural,
+        gText_Exit
     },
 };
 
@@ -5383,4 +5407,16 @@ bool8 DoesPlayerHaveFossil (void)
         }
     }
     return FALSE;
+}
+
+// Changes the chosen party mon's species to the one stored in gSpecialVar_0x8005
+void ChangeMonSpecies (void)
+{
+    u16 newSpecies;
+    
+    newSpecies = gSpecialVar_0x8005;
+
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES, &newSpecies);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, &newSpecies);
+    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }
