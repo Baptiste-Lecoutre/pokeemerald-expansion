@@ -337,13 +337,13 @@ static const u16 sWhiteOutBadgeMoney[9] = { 8, 16, 24, 36, 48, 64, 80, 100, 120 
 #define TAG_LVLUP_BANNER_MON_ICON 55130
 
 #define NUM_SOFT_CAPS 9
-const u16 sLevelCapFlags[NUM_SOFT_CAPS] =
+const u16 gLevelCapFlags[NUM_SOFT_CAPS] =
 {
     FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_BADGE04_GET,
     FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET,
     FLAG_SYS_GAME_CLEAR,
 };
-const u16 sLevelCaps[NUM_SOFT_CAPS] = { 14, 21, 24, 29, 43, 43, 47, 50, 63};
+const u16 gLevelCaps[NUM_SOFT_CAPS] = { 14, 21, 24, 29, 43, 43, 47, 50, 63};
 const double sLevelCapReduction[7] = { .5, .33, .25, .20, .15, .10, .05 };
 const double sRelativePartyScaling[27] =
 {
@@ -4302,9 +4302,9 @@ double GetPkmnExpMultiplier(u8 level)
     // multiply the usual exp yield by the soft cap multiplier
     for (i = 0; i < NUM_SOFT_CAPS; i++)
     {
-        if (!FlagGet(sLevelCapFlags[i]) && level >= sLevelCaps[i])
+        if (!FlagGet(gLevelCapFlags[i]) && level >= gLevelCaps[i])
         {
-            levelDiff = level - sLevelCaps[i];
+            levelDiff = level - gLevelCaps[i];
             if (levelDiff > 6)
                 levelDiff = 6;
             lvlCapMultiplier = sLevelCapReduction[levelDiff];

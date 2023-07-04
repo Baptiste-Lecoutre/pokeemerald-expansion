@@ -2681,7 +2681,8 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_LearnANewMove,
         gText_RateANickname,
         gText_DoWonderTrade,
-        gText_MysteryGift,
+        gText_TrainEXP,
+//        gText_MysteryGift,
 //        gText_ResetEvents,
         gText_Exit
     },
@@ -5533,4 +5534,56 @@ u8 CountRotomInParty (void)
         }
     }
     return rotomCount;
+}
+
+///////
+void BufferNextLevelCap(void)
+{
+    u8 lvlCap = MAX_LEVEL;
+    u32 i;
+
+    // get lvl cap
+    for (i = 0; i < NUM_SOFT_CAPS; i++)
+    {
+        if (!FlagGet(gLevelCapFlags[i]))
+        {
+            lvlCap = gLevelCaps[i];
+            break;
+        }
+    }
+
+    ConvertIntToDecimalStringN(gStringVar1, lvlCap, STR_CONV_MODE_LEFT_ALIGN, 3);
+}
+
+void IncreasePartyLevelToLevelCap(void)
+{
+    u32 i, targetExp, currExp;
+    u8 lvlCap;
+    u16 species;
+
+    // get lvl cap
+    for (i = 0; i < NUM_SOFT_CAPS; i++)
+    {
+        if (!FlagGet(gLevelCapFlags[i]))
+        {
+            lvlCap = gLevelCaps[i];
+            break;
+        }
+    }
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
+        if (species != SPECIES_NONE && species != SPECIES_EGG)
+        {
+            currExp = GetMonData(&gPlayerParty[i], MON_DATA_EXP);
+            targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][lvlCap - 2];
+
+            if (currExp < targetExp)
+            {
+                SetMonData(&gPlayerParty[i], MON_DATA_EXP, &targetExp);
+                CalculateMonStats(&gPlayerParty[i]);
+            }
+        }
+    }
 }

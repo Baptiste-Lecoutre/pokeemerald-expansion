@@ -572,3 +572,5 @@ gSpecials::
 	def_special TeachRotomMove
 	def_special DoesRotomKnowSpecialMove
 	def_special GetRotomNewSpecialMove
+	def_special BufferNextLevelCap
+	def_special IncreasePartyLevelToLevelCap
