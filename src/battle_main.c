@@ -3881,13 +3881,13 @@ static void TryDoEventsBeforeFirstTurn(void)
         }
     }
     if (!gBattleStruct->overworldWeatherDone
-        && AbilityBattleEffects(0, 0, 0, ABILITYEFFECT_SWITCH_IN_WEATHER, 0) != 0)
+        && AbilityBattleEffects(ABILITYEFFECT_SWITCH_IN_WEATHER, 0, 0, ABILITYEFFECT_SWITCH_IN_WEATHER, 0) != 0)
     {
         gBattleStruct->overworldWeatherDone = TRUE;
         return;
     }
 
-    if (!gBattleStruct->terrainDone && AbilityBattleEffects(0, 0, 0, ABILITYEFFECT_SWITCH_IN_TERRAIN, 0) != 0)
+    if (!gBattleStruct->terrainDone && AbilityBattleEffects(ABILITYEFFECT_SWITCH_IN_TERRAIN, 0, 0, ABILITYEFFECT_SWITCH_IN_TERRAIN, 0) != 0)
     {
         gBattleStruct->terrainDone = TRUE;
         return;
@@ -5780,8 +5780,7 @@ void SetTypeBeforeUsingMove(u16 move, u8 battlerAtk)
         gBattleStruct->dynamicMoveType = TYPE_NORMAL | F_DYNAMIC_TYPE_2;
         gBattleStruct->ateBoost[battlerAtk] = 1;
     }
-    else if (gBattleMoves[move].flags & FLAG_SOUND
-             && attackerAbility == ABILITY_LIQUID_VOICE)
+    else if (gBattleMoves[move].soundMove && attackerAbility == ABILITY_LIQUID_VOICE)
     {
         gBattleStruct->dynamicMoveType = TYPE_WATER | F_DYNAMIC_TYPE_2;
     }
