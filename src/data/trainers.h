@@ -22,7 +22,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_Sawyer1),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_Sawyer1),
     },
 
     [TRAINER_GRUNT_AQUA_HIDEOUT_1] =
@@ -6250,7 +6250,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_BrendanRoute103Mudkip),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_BrendanRoute103Mudkip),
     },
 
     [TRAINER_BRENDAN_ROUTE_110_MUDKIP] =
@@ -6286,7 +6286,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_SETUP_FIRST_TURN,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_BrendanRoute103Treecko),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_BrendanRoute103Treecko),
     },
 
     [TRAINER_BRENDAN_ROUTE_110_TREECKO] =
@@ -6322,7 +6322,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_BrendanRoute103Torchic),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_BrendanRoute103Torchic),
     },
 
     [TRAINER_BRENDAN_ROUTE_110_TORCHIC] =
@@ -10042,7 +10042,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_Sawyer2),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_Sawyer2),
     },
 
     [TRAINER_SAWYER_3] =
@@ -10054,7 +10054,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_Sawyer3),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_Sawyer3),
     },
 
     [TRAINER_SAWYER_4] =
@@ -10066,7 +10066,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_Sawyer4),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_Sawyer4),
     },
 
     [TRAINER_RED_ROUTE121] =
