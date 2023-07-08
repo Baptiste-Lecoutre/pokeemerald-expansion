@@ -1776,6 +1776,16 @@
 	.2byte \item2
 	.endm
 
+	.macro checkPartyHasSpecies species:req
+	.byte 0xe7
+	.2byte \species
+	.endm
+
+	.macro isChosenMonSpecies species:req
+	.byte 0xe8
+	.2byte \species
+	.endm
+
 @ Supplementary
 
 	.macro goto_if_unset flag:req, dest:req

@@ -2297,3 +2297,23 @@ const u8 gText_RoamerGZapdos[] = _("Orange bird");
 const u8 gText_RoamerGArticuno[] = _("Purple bird");
 const u8 gText_RoamerZacian[] = _("Sword");
 const u8 gText_RoamerZamazenta[] = _("Shield");
+
+// Fufrou forms
+const u8 gText_HeartTrim[] = _("Heart Trim");
+const u8 gText_StarTrim[] = _("Star Trim");
+const u8 gText_DiamondTrim[] = _("Diamond Trim");
+const u8 gText_DebutanteTrim[] = _("Debutante Trim");
+const u8 gText_MatronTrim[] = _("Matron Trim");
+const u8 gText_DandyTrim[] = _("Dandy Trim"); 
+const u8 gText_LaReineTrim[] = _("La Reine Trim");
+const u8 gText_KabukiTrim[] = _("Kabuki Trim");
+const u8 gText_PharaohTrim[] = _("Pharaoh Trim");
+const u8 gText_BackToNatural[] = _("Back to natural");
+
+// Rotom form options
+const u8 gText_MicrowaveOven[] = _("Microwave Oven");
+const u8 gText_WashingMachine[] = _("Washing Machine");
+const u8 gText_Refrigerator[] = _("Refrigerator");
+const u8 gText_ElectricFan[] = _("Electric Fan");
+const u8 gText_Lawnmower[] = _("Lawnmower");
+const u8 gText_Recall[] = _("Recall");

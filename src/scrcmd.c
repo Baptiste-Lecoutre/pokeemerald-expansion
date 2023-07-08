@@ -31,6 +31,7 @@
 #include "mystery_event_script.h"
 #include "palette.h"
 #include "party_menu.h"
+#include "pokemon.h"
 #include "pokemon_storage_system.h"
 #include "random.h"
 #include "overworld.h"
@@ -2447,6 +2448,43 @@ bool8 ScrCmd_setsootopolisbattle(struct ScriptContext *ctx)
         heldItem2[1] = item2 >> 8;
         SetMonData(&gEnemyParty[3], MON_DATA_HELD_ITEM, heldItem2);
     }
+    
+    return FALSE;
+}
 
+// Checks if player's party contains a certain species OR one of its forms that
+// shares the same national dex number
+bool8 ScrCmd_checkPartyHasSpecies(struct ScriptContext *ctx)
+{
+    u16 wantedSpecies = ScriptReadHalfword(ctx);
+    u16 partySpecies;
+    int i = 0;
+    u8 partyCount = CalculatePlayerPartyCount();
+    
+    gSpecialVar_Result = FALSE;
+
+    for (i = 0; i < partyCount; i++)
+    {
+        partySpecies = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
+        if (gSpeciesToNationalPokedexNum[partySpecies - 1] == wantedSpecies)
+        {
+            gSpecialVar_Result = TRUE;
+        }
+    }
+    return FALSE;
+}
+
+// Checks if the species stored in gSpecialVar 0x8004 is a certain species OR one of its forms that
+// shares the same national dex number
+bool8 ScrCmd_isChosenMonSpecies(struct ScriptContext *ctx)
+{
+    u16 wantedSpecies = ScriptReadHalfword(ctx);
+    u16 chosenSpecies = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, NULL);
+
+    gSpecialVar_Result = FALSE;
+    if (gSpeciesToNationalPokedexNum[chosenSpecies - 1] == wantedSpecies)
+    {
+        gSpecialVar_Result = TRUE;
+    }
     return FALSE;
 }
