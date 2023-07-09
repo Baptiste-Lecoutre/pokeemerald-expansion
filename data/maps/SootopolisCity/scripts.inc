@@ -90,6 +90,7 @@ SootopolisCity_EventScript_SetLayout::
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_SetLegendariesLayout
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_SetLegendariesLayout
 	goto_if_le VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_SetLegendariesLayout
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_SetLegendariesLayout
 	return
 
 SootopolisCity_EventScript_SetNormalLayout::
@@ -104,7 +105,9 @@ SootopolisCity_EventScript_SetWeather::
 	goto_if_ge VAR_SOOTOPOLIS_CITY_STATE, 6, SootopolisCity_EventScript_SetNormalWeather
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_SetDownpour
 	goto_if_eq VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_SetDownpour
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_SetDownpour
 	goto_if_le VAR_SKY_PILLAR_STATE, 1, Common_EventScript_SetAbnormalWeather
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, Common_EventScript_SetAbnormalWeather
 	return
 
 SootopolisCity_EventScript_SetNormalWeather::
@@ -491,9 +494,9 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	special RemoveCameraObject
 	delay 60
 	fadescreenspeed FADE_TO_BLACK, 8
-	call SootopolisCity_EventScript_SetRoughWater
-	removeobject LOCALID_GROUDON
-	removeobject LOCALID_KYOGRE
+@	call SootopolisCity_EventScript_SetRoughWater
+@	removeobject LOCALID_GROUDON
+@	removeobject LOCALID_KYOGRE
 	addobject LOCALID_RAYQUAZA
   hideobjectat LOCALID_RAYQUAZA, MAP_SOOTOPOLIS_CITY
 	setvar VAR_0x8004, 1
@@ -510,11 +513,14 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	end
 
 SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2::
+	msgbox SootopolisCity_Text_HelpRayquaza, MSGBOX_DEFAULT
 	choose_mons
+	call_if_eq VAR_RESULT, 0, SootopolisCity_EventScript_ChooseMons
 	setsootopolisbattle SPECIES_KYOGRE, 70, ITEM_NONE, SPECIES_GROUDON, 70, ITEM_NONE
 	multi_sootopolis PARTNER_RAYQUAZA, TRAINER_BACK_PIC_MAY
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	call SootopolisCity_EventScript_SetRoughWater
 	removeobject LOCALID_GROUDON
 	removeobject LOCALID_KYOGRE
 	setvar VAR_0x8004, 2
@@ -556,6 +562,11 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2::
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
 	warpwhitefade MAP_SOOTOPOLIS_CITY, 31, 36
 	waitstate
+	end
+
+SootopolisCity_EventScript_ChooseMons::
+	msgbox SootopolisCity_Text_YouNeedToHelpRayquaza, MSGBOX_DEFAULT
+	releaseall
 	end
 
 SootopolisCity_EventScript_RayquazaSceneFromDive::
@@ -1757,3 +1768,10 @@ SootopolisCity_Text_DazzledByMentor:
 	.string "Wallace: I'm sure that you will be\n"
 	.string "dazzled by my mentor's breathtakingly\l"
 	.string "elegant battle style.$"
+
+SootopolisCity_Text_HelpRayquaza:
+	.string "Help Rayquaza calm the ancient Pokémon!$"
+
+SootopolisCity_Text_YouNeedToHelpRayquaza:
+	.string "You need to help Rayquaza calm the\n"
+	.string "ancient Pokémon. Better be prepared!$"

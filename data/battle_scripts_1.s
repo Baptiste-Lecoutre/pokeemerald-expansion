@@ -6759,6 +6759,10 @@ BattleScript_PrintCantRunFromTrainer::
 	printstring STRINGID_NORUNNINGFROMTRAINERS
 	end2
 
+BattleScript_PrintCantEscapeFromThisBattle::
+	printstring STRINGID_NORUNNINGFROMTHISBATTLE
+	end2
+
 BattleScript_PrintFailedToRunString::
 	printfromtable gNoEscapeStringIds
 	waitmessage B_WAIT_TIME_LONG
