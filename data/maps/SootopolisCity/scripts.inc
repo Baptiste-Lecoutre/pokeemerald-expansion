@@ -130,7 +130,12 @@ SootopolisCity_EventScript_SetExitCaveOfOriginObjPos::
 	setobjectxyperm LOCALID_EXPERT, 30, 18
 	setobjectxyperm LOCALID_WALLACE, 31, 18
 	setobjectxyperm LOCALID_STEVEN, 32, 18
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_SetRayquazaAwakenObjPos
 	end
+
+SootopolisCity_EventScript_SetRayquazaAwakenObjPos::
+	setobjectxyperm LOCALID_STEVEN, 20, 36
+	return
 
 SootopolisCity_EventScript_SetOutsideGymObjPos::
 	setobjectxyperm LOCALID_EXPERT, 31, 18
@@ -523,6 +528,7 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2::
 	call SootopolisCity_EventScript_SetRoughWater
 	removeobject LOCALID_GROUDON
 	removeobject LOCALID_KYOGRE
+	setvar VAR_SOOTOPOLIS_CITY_STATE, 5
 	setvar VAR_0x8004, 2
 	special Script_DoRayquazaScene
 	waitstate
@@ -946,7 +952,13 @@ SootopolisCity_EventScript_Steven::
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_StevenHelpedWallace
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_StevenHelpedWallace
 	goto_if_set FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE, SootopolisCity_EventScript_StevenMaxieArchieLeft
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_StevenFightScene
 	msgbox SootopolisCity_Text_SoThatsRayquaza, MSGBOX_DEFAULT
+	releaseall
+	end
+
+SootopolisCity_EventScript_StevenFightScene::
+	msgbox SootopolisCity_Text_SoThatsRayquazaShort, MSGBOX_DEFAULT
 	releaseall
 	end
 
@@ -1720,6 +1732,9 @@ SootopolisCity_Text_SoThatsRayquaza:
 	.string "Steven: So that's Rayquaza…\p"
 	.string "It's incredible how the two rampaging\n"
 	.string "Pokémon would flee from it in fear…$"
+
+SootopolisCity_Text_SoThatsRayquazaShort:
+	.string "Steven: So that's Rayquaza…$"
 
 SootopolisCity_Text_MaxieArchieLeft:
 	.string "Steven: It looks like both Maxie and\n"
