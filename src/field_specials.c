@@ -5536,7 +5536,14 @@ u8 CountRotomInParty (void)
     return rotomCount;
 }
 
-///////
+/////// minimal grinding option in pkmn center
+const u16 sLevelCapAreaFlags[NUM_SOFT_CAPS] = 
+{
+    FLAG_VISITED_RUSTBORO_CITY, FLAG_VISITED_DEWFORD_TOWN, FLAG_VISITED_MAUVILLE_CITY, FLAG_VISITED_LAVARIDGE_TOWN,
+    FLAG_VISITED_PETALBURG_CITY, FLAG_VISITED_FORTREE_CITY, FLAG_VISITED_MOSSDEEP_CITY, FLAG_VISITED_SOOTOPOLIS_CITY,
+    FLAG_VISITED_EVER_GRANDE_CITY,
+};
+
 void BufferNextLevelCap(void)
 {
     u8 lvlCap = MAX_LEVEL;
@@ -5548,6 +5555,8 @@ void BufferNextLevelCap(void)
         if (!FlagGet(gLevelCapFlags[i]))
         {
             lvlCap = gLevelCaps[i];
+            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
+                lvlCap = gLevelCaps[i - 1];
             break;
         }
     }
@@ -5567,6 +5576,8 @@ void IncreasePartyLevelToLevelCap(void)
         if (!FlagGet(gLevelCapFlags[i]))
         {
             lvlCap = gLevelCaps[i];
+            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
+                lvlCap = gLevelCaps[i - 1];
             break;
         }
     }
