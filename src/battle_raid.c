@@ -279,6 +279,26 @@ bool32 ShouldRaidKickPlayer(void)
     return FALSE;
 }
 
+u8 GetRaidShockwaveChance(void)
+{
+    u8 numStars = gRaidData->rank;
+
+	if (gDisableStructs[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].isFirstTurn)
+		return 0; //Don't use first attack with this
+
+    switch (numStars)
+    {
+		case RAID_RANK_1 ... RAID_RANK_3:
+			return 0; //Never
+		case RAID_RANK_4:
+			return 20; //20 % chance before each attack
+		case RAID_RANK_5:
+			return 35; //35 % chance before each attack
+		default:
+			return 50; //50 % chance before each attack
+	}
+}
+
 // Returns the number of shields to produce, or the amount of HP to protect.
 static u16 GetShieldAmount(void)
 {

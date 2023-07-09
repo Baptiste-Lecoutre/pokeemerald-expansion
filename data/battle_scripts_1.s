@@ -10951,7 +10951,7 @@ BattleScript_RaidShockwave::
 	waitmessage B_WAIT_TIME_LONG
 	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE
 	waitanimation
-	@doraidshockwave
+	doraidshockwave
 	clearstatus BS_ATTACKER
 	updatestatusicon BS_ATTACKER
 	return

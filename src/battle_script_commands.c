@@ -1526,6 +1526,15 @@ static void Cmd_attackcanceler(void)
 
     GET_MOVE_TYPE(gCurrentMove, moveType);
 
+    // Raid bosses try to do a shockwave before moving.
+    if (IsRaidBoss(gBattlerAttacker) && !gBattleStruct->raid.usedShockwave && Random() % 100 <= GetRaidShockwaveChance())
+    {
+        gBattleStruct->raid.usedShockwave = TRUE;
+        BattleScriptPushCursor();
+        gBattlescriptCurrInstr = BattleScript_RaidShockwave;
+        return;
+    }
+
     if (WEATHER_HAS_EFFECT && gBattleMoves[gCurrentMove].power)
     {
         if (moveType == TYPE_FIRE && (gBattleWeather & B_WEATHER_RAIN_PRIMAL))
@@ -11520,6 +11529,23 @@ static void Cmd_various(void)
     {
         VARIOUS_ARGS();
         UpdateOamPriorityInAllHealthboxes(1, TRUE);
+        break;
+    }
+    case VARIOUS_DO_RAID_SHOCKWAVE:
+    {
+        VARIOUS_ARGS();
+        for (i = 0; i < gBattlersCount; i++)
+        {
+            if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
+                continue;
+            if (!IsGastroAcidBannedAbility(gBattleMons[i].ability))
+            {
+                if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
+                    gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
+                gStatuses3[i] |= STATUS3_GASTRO_ACID;
+            }
+            TryResetBattlerStatChanges(i);
+        }
         break;
     }
     } // End of switch (cmd->id)

@@ -27,6 +27,7 @@ bool32 IsRaidBoss(u16 battlerId);
 u8 GetRaidBattleTransition(void);
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon);
 bool32 ShouldRaidKickPlayer(void);
+u8 GetRaidShockwaveChance(void);
 bool32 UpdateRaidShield(void);
 u16 GetShieldDamageRequired(u16 hp, u16 maxHP);
 u16 GetShieldDamageReduction(void);
