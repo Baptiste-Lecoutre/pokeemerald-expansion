@@ -279,6 +279,22 @@ bool32 ShouldRaidKickPlayer(void)
     return FALSE;
 }
 
+u8 GetRaidRepeatedAttackChance(void)
+{
+	u8 numStars = gRaidData->rank;
+    switch (numStars)
+    {
+		case RAID_RANK_1 ... RAID_RANK_3:
+			return 0; //Never
+		case RAID_RANK_4:
+			return 30; //30 % of the time after KO or Status Move
+		case RAID_RANK_5:
+			return 50; //50 % of the time after KO or Status Move
+		default:
+			return 70; //70 % of the time after KO or Status Move
+	}
+}
+
 u8 GetRaidShockwaveChance(void)
 {
     u8 numStars = gRaidData->rank;
@@ -297,6 +313,23 @@ u8 GetRaidShockwaveChance(void)
 		default:
 			return 50; //50 % chance before each attack
 	}
+}
+
+u8 GetRaidBossKOStatIncrease(u8 battlerId)
+{
+    u8 level = gBattleMons[battlerId].level;
+
+    switch (level)
+    {
+        case 0 ... 19:
+            return 0;
+        case 20 ... 40:
+            return 1;
+        case 41 ... 70:
+            return 2;
+        default:
+            return 3;
+    }
 }
 
 // Returns the number of shields to produce, or the amount of HP to protect.

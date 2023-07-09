@@ -4127,6 +4127,34 @@ static void Cmd_cleareffectsonfaint(void)
         }
 
         FaintClearSetData(); // Effects like attractions, trapping, etc.
+
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
+        {
+            if ((Random() & 1) == 0)
+            {
+                u8 statId, increase;
+                increase = GetRaidBossKOStatIncrease(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
+
+                if (increase > 0)
+                {
+                    if ((Random() & 1) == 0)
+                        statId = STAT_ATK;
+                    else
+                        statId = STAT_SPATK;
+                    
+                    if (GetBattlerAbility(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)) == ABILITY_CONTRARY)
+                        gBattleScripting.statChanger = SET_STATCHANGER(statId, increase, TRUE);
+                    else
+                        gBattleScripting.statChanger = SET_STATCHANGER(statId, increase, FALSE);
+
+                    if (ChangeStatBuffs(GET_STAT_BUFF_VALUE_WITH_SIGN(gBattleScripting.statChanger), statId, MOVE_EFFECT_CERTAIN | MOVE_EFFECT_AFFECTS_USER, NULL) == STAT_CHANGE_WORKED)
+                    {
+                        BattleScriptPushCursor();
+                        gBattlescriptCurrInstr = BattleScript_StatUpMsg; 
+                    }
+                }
+            }
+        }
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
 }
