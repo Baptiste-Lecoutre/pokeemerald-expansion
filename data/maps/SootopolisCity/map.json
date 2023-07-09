@@ -128,7 +128,7 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2",
+      "script": "SootopolisCity_EventScript_RayquazaFight",
       "flag": "FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON"
     },
     {
@@ -141,7 +141,7 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2",
+      "script": "SootopolisCity_EventScript_RayquazaFight",
       "flag": "FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE"
     },
     {
@@ -154,7 +154,7 @@
       "movement_range_y": 1,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2",
+      "script": "SootopolisCity_EventScript_RayquazaFight",
       "flag": "FLAG_HIDE_SOOTOPOLIS_CITY_RAYQUAZA"
     },
     {

@@ -517,7 +517,7 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	waitstate
 	end
 
-SootopolisCity_EventScript_RayquazaSceneFromPokeCenter2::
+SootopolisCity_EventScript_RayquazaFight::
 	msgbox SootopolisCity_Text_HelpRayquaza, MSGBOX_DEFAULT
 	choose_mons
 	call_if_eq VAR_RESULT, 0, SootopolisCity_EventScript_ChooseMons
@@ -583,9 +583,9 @@ SootopolisCity_EventScript_RayquazaSceneFromDive::
 	special RemoveCameraObject
 	delay 60
 	fadescreenspeed FADE_TO_BLACK, 8
-	call SootopolisCity_EventScript_SetRoughWater
-	removeobject LOCALID_GROUDON
-	removeobject LOCALID_KYOGRE
+@	call SootopolisCity_EventScript_SetRoughWater
+@	removeobject LOCALID_GROUDON
+@	removeobject LOCALID_KYOGRE
 	addobject LOCALID_RAYQUAZA
 	setvar VAR_0x8004, 1
 	special Script_DoRayquazaScene
