@@ -12512,19 +12512,19 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Thalia4[] = {
 
 static const struct TrainerMonNoItemDefaultMoves sParty_RedPetalburgWoods[] = {
     {
-    .iv = 40,
-    .lvl = 40,
-    .species = SPECIES_LUVDISC,
+    .iv = 50,
+    .lvl = 15,
+    .species = SPECIES_CHARMANDER,
     },
     {
-    .iv = 40,
-    .lvl = 40,
-    .species = SPECIES_WAILORD,
+    .iv = 50,
+    .lvl = 15,
+    .species = SPECIES_BULBASAUR,
     },
     {
-    .iv = 40,
-    .lvl = 40,
-    .species = SPECIES_KINGDRA,
+    .iv = 50,
+    .lvl = 15,
+    .species = SPECIES_SQUIRTLE,
     }
 };
 
