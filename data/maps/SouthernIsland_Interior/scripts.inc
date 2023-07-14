@@ -13,7 +13,7 @@ SouthernIsland_Interior_OnResume:
 SouthernIsland_Interior_EventScript_TryRemoveLati::
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_ne VAR_RESULT, B_OUTCOME_CAUGHT, Common_EventScript_NopReturn
-	removeobject LOCALID_LATIOS
+	removeobject VAR_LAST_TALKED
 	return
 
 SouthernIsland_Interior_OnTransition:
@@ -74,8 +74,8 @@ SouthernIsland_Interior_EventScript_Lati::
 	call_if_unset FLAG_TEMP_5, SouthernIsland_Interior_EventScript_AddLatias
 	delay 30
 	applymovement OBJ_EVENT_ID_CAMERA, SouthernIsland_Interior_Movement_CameraPanDown
-	applymovement LOCALID_LATIOS, SouthernIsland_Interior_Movement_LatiApproach
-	applymovement LOCALID_LATIAS, SouthernIsland_Interior_Movement_LatiApproach
+	call_if_unset FLAG_TEMP_4, SouthernIsland_Interior_EventScript_MoveLatios
+	call_if_unset FLAG_TEMP_5, SouthernIsland_Interior_EventScript_MoveLatias
 	waitmovement 0
 	delay 50
 	special RemoveCameraObject
@@ -96,6 +96,14 @@ SouthernIsland_Interior_EventScript_PlayCryLatias::
 
 SouthernIsland_Interior_EventScript_PlayCryLatios::
 	playmoncry SPECIES_LATIOS, CRY_MODE_NORMAL
+	return
+
+SouthernIsland_Interior_EventScript_MoveLatios::
+	applymovement LOCALID_LATIOS, SouthernIsland_Interior_Movement_LatiApproach
+	return
+
+SouthernIsland_Interior_EventScript_MoveLatias::
+	applymovement LOCALID_LATIAS, SouthernIsland_Interior_Movement_LatiApproach
 	return
 
 Toto_dummy::
