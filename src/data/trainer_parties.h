@@ -8602,26 +8602,48 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Trent4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_Trent5[] = {
+static const struct TrainerMonItemCustomMoves sParty_Cynthia1[] = {
     {
-    .iv = 40,
-    .lvl = 33,
-    .species = SPECIES_GRAVELER,
+    .lvl = 80,
+    .species = SPECIES_ROSERADE,
+    .heldItem = ITEM_FOCUS_SASH,
+    .iv = 255,
+    .moves = {MOVE_SLEEP_POWDER, MOVE_SLUDGE_BOMB, MOVE_GIGA_DRAIN, MOVE_SPIKES}
     },
     {
-    .iv = 40,
-    .lvl = 33,
-    .species = SPECIES_GRAVELER,
+    .lvl = 80,
+    .species = SPECIES_TOGEKISS,
+    .heldItem = ITEM_SHELL_BELL,
+    .iv = 255,
+    .moves = {MOVE_AIR_SLASH, MOVE_AURA_SPHERE, MOVE_THUNDER_WAVE, MOVE_ROOST}
     },
     {
-    .iv = 40,
-    .lvl = 33,
-    .species = SPECIES_GRAVELER,
+    .lvl = 5,
+    .species = SPECIES_SPIRITOMB,
+    .heldItem = ITEM_LEFTOVERS,
+    .iv = 255,
+    .moves = {MOVE_DARK_PULSE, MOVE_CALM_MIND, MOVE_SUBSTITUTE, MOVE_RECOVER}
     },
     {
-    .iv = 40,
-    .lvl = 33,
-    .species = SPECIES_GOLEM,
+    .lvl = 81,
+    .species = SPECIES_LUCARIO,
+    .heldItem = ITEM_CHOICE_SCARF,
+    .iv = 255,
+    .moves = {MOVE_CLOSE_COMBAT, MOVE_METEOR_MASH, MOVE_STRENGTH, MOVE_ICE_PUNCH}
+    },
+    {
+    .lvl = 80,
+    .species = SPECIES_MILOTIC,
+    .heldItem = ITEM_LEFTOVERS,
+    .iv = 255,
+    .moves = {MOVE_SCALD, MOVE_ICE_BEAM, MOVE_RECOVER, MOVE_MIRROR_COAT}
+    },
+    {
+    .lvl = 82,
+    .species = SPECIES_GARCHOMP,
+    .heldItem = ITEM_GARCHOMPITE,
+    .iv = 255,
+    .moves = {MOVE_EARTHQUAKE, MOVE_DRACO_METEOR, MOVE_STONE_EDGE, MOVE_FIRE_BLAST}
     }
 };
 
@@ -8703,16 +8725,48 @@ static const struct TrainerMonNoItemDefaultMoves sParty_KiraAndDan4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_KiraAndDan5[] = {
+static const struct TrainerMonItemCustomMoves sParty_Cynthia2[] = {
     {
-    .iv = 40,
-    .lvl = 39,
-    .species = SPECIES_VOLBEAT,
+    .iv = 255,
+    .lvl = 80,
+    .species = SPECIES_TOGEKISS,
+    .heldItem = ITEM_LEFTOVERS,
+    .moves = {MOVE_AIR_SLASH, MOVE_ROOST, MOVE_THUNDER_WAVE, MOVE_NASTY_PLOT}
     },
     {
-    .iv = 40,
-    .lvl = 39,
-    .species = SPECIES_ILLUMISE,
+    .iv = 255,
+    .lvl = 80,
+    .species = SPECIES_ROSERADE,
+    .heldItem = ITEM_CHOICE_SCARF,
+    .moves = {MOVE_SLEEP_POWDER, MOVE_SLUDGE_BOMB, MOVE_LEAF_STORM, MOVE_DAZZLING_GLEAM}
+    },
+    {
+    .lvl = 80,
+    .species = SPECIES_SPIRITOMB,
+    .heldItem = ITEM_LEFTOVERS,
+    .iv = 255,
+    .moves = {MOVE_DOUBLE_TEAM, MOVE_FOUL_PLAY, MOVE_SUBSTITUTE, MOVE_RECOVER}
+    },
+    {
+    .lvl = 83,
+    .species = SPECIES_MILOTIC,
+    .heldItem = ITEM_LEFTOVERS,
+    .iv = 255,
+    .moves = {MOVE_SCALD, MOVE_ICE_BEAM, MOVE_RECOVER, MOVE_TOXIC}
+    },
+    {
+    .lvl = 81,
+    .species = SPECIES_LUCARIO,
+    .heldItem = ITEM_LUCARIONITE,
+    .iv = 255,
+    .moves = {MOVE_CLOSE_COMBAT, MOVE_CRUNCH, MOVE_BULLET_PUNCH, MOVE_SWORDS_DANCE}
+    },
+    {
+    .iv = 255,
+    .lvl = 82,
+    .species = SPECIES_GARCHOMP,
+    .heldItem = ITEM_SHELL_BELL,
+    .moves = {MOVE_EARTHQUAKE, MOVE_DRAGON_CLAW, MOVE_STONE_EDGE, MOVE_SWORDS_DANCE}
     }
 };
 

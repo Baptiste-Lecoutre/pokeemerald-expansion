@@ -640,14 +640,14 @@
 #define TRAINER_TRENT_2                     636
 #define TRAINER_TRENT_3                     637
 #define TRAINER_TRENT_4                     638
-#define TRAINER_TRENT_5                     639
+#define TRAINER_CYNTHIA_1                     639
 #define TRAINER_DEZ_AND_LUKE                640
 #define TRAINER_LEA_AND_JED                 641
 #define TRAINER_KIRA_AND_DAN_1              642
 #define TRAINER_KIRA_AND_DAN_2              643
 #define TRAINER_KIRA_AND_DAN_3              644
 #define TRAINER_KIRA_AND_DAN_4              645
-#define TRAINER_KIRA_AND_DAN_5              646
+#define TRAINER_CYNTHIA_2              646
 #define TRAINER_JOHANNA                     647
 #define TRAINER_GERALD                      648
 #define TRAINER_VIVIAN                      649
