@@ -884,6 +884,16 @@ const struct MenuAction MultichoiceList_DeoxysFormes[] =
     {gText_Exit},
 };
 
+const struct MenuAction MultichoiceList_StarterMoves[] = 
+{
+    {gText_GrassPledge},
+    {gText_FirePledge},
+    {gText_WaterPledge},
+    {gText_FrenzyPlant},
+    {gText_BlastBurn},
+    {gText_HydroCannon},
+};
+
 static const struct MenuAction MultichoiceList_Exit[] =
 {
     {gText_Exit},
@@ -1025,6 +1035,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_SINNOH_COSTUMES]            = MULTICHOICE(MultichoiceList_SinnohCostumes),
     [MULTI_ROTOM_APPLIANCES]           = MULTICHOICE(MultichoiceList_RotomAppliances),
     [MULTI_DEOXYS_FORMES]              = MULTICHOICE(MultichoiceList_DeoxysFormes),
+    [MULTI_STARTER_MOVES]              = MULTICHOICE(MultichoiceList_StarterMoves),
 };
 
 const u8 *const gStdStrings[] =
