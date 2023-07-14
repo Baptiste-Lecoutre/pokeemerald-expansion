@@ -7773,7 +7773,21 @@ u16 GetBattleBGM(void)
         case TRAINER_CLASS_TEAM_ROCKET:
             return MUS_VS_AQUA_MAGMA;
         case TRAINER_CLASS_LEADER:
-            return MUS_VS_GYM_LEADER;
+            switch (gTrainerBattleOpponent_A)
+            {
+            case TRAINER_BROCK:
+            case TRAINER_MISTY:
+            case TRAINER_LT_SURGE:
+            case TRAINER_ERIKA:
+            case TRAINER_SABRINA:
+            case TRAINER_BLAINE:
+            case TRAINER_KOGA:
+            case TRAINER_BLUE:
+                return MUS_RG_VS_GYM_LEADER;
+            default:
+                return MUS_VS_GYM_LEADER;
+            }
+            
         case TRAINER_CLASS_CHAMPION:
             return MUS_VS_CHAMPION;
         case TRAINER_CLASS_RIVAL:
