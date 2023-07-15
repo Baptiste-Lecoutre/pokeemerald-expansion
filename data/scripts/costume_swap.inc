@@ -1,22 +1,24 @@
 EventScript_Dresser::
 	lockall
-	msgbox Text_ChangeClothes, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, EventScript_CloseDresser
-	message Text_ChooseRegionStyle
-	waitmessage
-	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 5, FALSE
-	switch VAR_RESULT
-	case 0, EventScript_KantoCostumes
-	case 1, EventScript_JohtoCostumes
-	case 2, EventScript_HoennCostumes
-	case 3, EventScript_SinnohCostumes
-	case 4, EventScript_Dresser_Exit
-	case MULTI_B_PRESSED, EventScript_Dresser_Exit
+	msgbox Text_ChangeClothes, MSGBOX_SIGN @MSGBOX_YESNO
+	releaseall
 	end
+@	goto_if_eq VAR_RESULT, NO, EventScript_CloseDresser
+@	message Text_ChooseRegionStyle
+@	waitmessage
+@	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 5, FALSE
+@	switch VAR_RESULT
+@	case 0, EventScript_KantoCostumes
+@	case 1, EventScript_JohtoCostumes
+@	case 2, EventScript_HoennCostumes
+@	case 3, EventScript_SinnohCostumes
+@	case 4, EventScript_Dresser_Exit
+@	case MULTI_B_PRESSED, EventScript_Dresser_Exit
+@	end
 
 Text_ChangeClothes:
-	.string "It's full of clean clothes!\p"
-	.string "Would you like to change?$"
+	.string "It's full of clean clothes!$"@\p"
+@	.string "Would you like to change?$"
 
 Text_ChooseRegionStyle:
 	.string "Which drawer do you want to\n"
