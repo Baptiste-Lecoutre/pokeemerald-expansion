@@ -108,7 +108,7 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->optionsShowTypeEffectiveness = FALSE;
     gSaveBlock2Ptr->evolveOpponentsMons = FALSE;
     gSaveBlock2Ptr->xpMulti = 2;
-    gSaveBlock2Ptr->xpTeamMod = 0;
+    gSaveBlock2Ptr->xpTeamMod = 1;
     gSaveBlock2Ptr->optionsBaseStatsEqual = FALSE;
     gSaveBlock2Ptr->trainerLvlScale = FALSE;
 
