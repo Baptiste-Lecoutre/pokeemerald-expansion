@@ -6358,7 +6358,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_MayRoute103Mudkip),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_MayRoute103Mudkip),
     },
 
     [TRAINER_MAY_ROUTE_110_MUDKIP] =
@@ -6394,7 +6394,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_MayRoute103Treecko),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_MayRoute103Treecko),
     },
 
     [TRAINER_MAY_ROUTE_110_TREECKO] =
@@ -6430,7 +6430,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_MayRoute103Torchic),
+        .party = NO_ITEM_CUSTOM_MOVES(sParty_MayRoute103Torchic),
     },
 
     [TRAINER_MAY_ROUTE_110_TORCHIC] =
