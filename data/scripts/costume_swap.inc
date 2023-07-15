@@ -17,7 +17,7 @@ EventScript_Dresser::
 @	end
 
 Text_ChangeClothes:
-	.string "It's full of clean clothes!$"@\p"
+	.string "It's full of clean clothes!$" @\p
 @	.string "Would you like to change?$"
 
 Text_ChooseRegionStyle:
