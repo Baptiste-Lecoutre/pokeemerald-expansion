@@ -1200,9 +1200,9 @@ static void DrawHeaderText(void)
     xMid = (8 + widthOptions + 5);
 
     FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, 8, 1, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, sOptionMenuPageNames[sOptions->page], xMid, 1, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_PageNav, GetStringRightAlignXOffset(FONT_NORMAL, gText_PageNav, 198), 1, TEXT_SKIP_DRAW, NULL);
+//    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, 8, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, sOptionMenuPageNames[sOptions->page], 8/*xMid*/, 1, TEXT_SKIP_DRAW, NULL);
+//    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_PageNav, GetStringRightAlignXOffset(FONT_NORMAL, gText_PageNav, 198), 1, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(WIN_HEADER, COPYWIN_FULL);
 }
 
