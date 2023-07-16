@@ -7929,8 +7929,19 @@ u8 IsMonDisobedient(void)
 {
     s32 rnd;
     s32 calc;
+    u32 i;
     u8 obedienceLevel = 0;
     u8 levelReferenced;
+    u8 lvlCap = MAX_LEVEL;
+
+    for (i = 0; i < NUM_SOFT_CAPS; i++)
+    {
+        if (!FlagGet(gLevelCapFlags[i]))
+        {
+            lvlCap = gLevelCaps[i];
+            break;
+        }
+    }
 
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
         return 0;
@@ -7952,14 +7963,14 @@ u8 IsMonDisobedient(void)
         if (FlagGet(FLAG_BADGE08_GET))
             return 0;
 
-        obedienceLevel = 10;
+        obedienceLevel = lvlCap;//10;
 
-        if (FlagGet(FLAG_BADGE02_GET))
+        /*if (FlagGet(FLAG_BADGE02_GET))
             obedienceLevel = 30;
         if (FlagGet(FLAG_BADGE04_GET))
             obedienceLevel = 50;
         if (FlagGet(FLAG_BADGE06_GET))
-            obedienceLevel = 70;
+            obedienceLevel = 70;*/
     }
 
 #if B_OBEDIENCE_MECHANICS >= GEN_8
