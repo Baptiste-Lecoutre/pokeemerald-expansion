@@ -11,7 +11,7 @@ PKMN_Center_Move_Tutor::
 	case 2, PKMN_Center_Move_Tutor_MoveTutorMenu
 	case 3, PKMN_Center_NameRater_EventScript
 	case 4, EventScript_DoWonderTrade @PKMN_Center_EventScript_Mystery_Gift
-	case 5, PKMN_Center_Move_Tutor_General_Exit @PKMN_Center_EventScript_Event_Reset
+	case 5, PKMN_Center_MinimalGrinding @PKMN_Center_EventScript_Event_Reset
 	case 6, PKMN_Center_Move_Tutor_General_Exit
 	case MULTI_B_PRESSED, PKMN_Center_Move_Tutor_General_Exit
 
@@ -289,7 +289,46 @@ PKMN_Center_Move_Tutor_Exit::
 	releaseall
 	end
 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Minimal grinding @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+PKMN_Center_MinimalGrinding::
+	goto_if_unset FLAG_VISITED_RUSTBORO_CITY, PKMN_Center_MinimalGrindingTooEarly
+	special BufferNextLevelCap
+	msgbox PKMN_Center_Text_CurrentLvlCapIs, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, PKMN_Center_MinimalGrindingIncreaseLevels
+	msgbox PKMN_Center_Move_Tutor_Text_SeeYou, MSGBOX_DEFAULT
+	releaseall
+	end
+
+PKMN_Center_MinimalGrindingIncreaseLevels::
+	special IncreasePartyLevelToLevelCap
+	playfanfare MUS_LEVEL_UP
+	waitfanfare
+	msgbox PKMN_Center_Text_YourPartyLevelsincreased, MSGBOX_DEFAULT
+	releaseall
+	end
+
+PKMN_Center_MinimalGrindingTooEarly::
+	msgbox PKMN_Center_Text_CurrentLvlCapTooEarly, MSGBOX_DEFAULT
+	releaseall
+	end
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Strings @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+PKMN_Center_Text_CurrentLvlCapTooEarly:
+	.string "The advised level for the upcoming\n"
+	.string "events is {STR_VAR_1}.\p"
+	.string "It is too early for you to have\n"
+	.string "your party be trained.$"
+
+PKMN_Center_Text_CurrentLvlCapIs:
+	.string "The advised level for the upcoming\n"
+	.string "events is {STR_VAR_1}.\p"
+	.string "Would you like to train your party\n"
+	.string "up to two levels below this value?$"
+
+PKMN_Center_Text_YourPartyLevelsincreased:
+	.string "Your party levels increased!$"
 
 PKMN_Center_EventReset_Text_Reset:
 	.string "Events reset!$"
