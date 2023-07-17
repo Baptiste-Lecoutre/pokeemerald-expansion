@@ -1323,7 +1323,7 @@ RustboroCity_Text_WithThisYourPokemonWillGrowLarger:
 	.string "During some heated battles, your\n"
 	.string "Pokémon will grow giant for three turns\l"
 	.string "and unleash trendemous energy!\p"
-	.string "This Dynamax Orb will allow your Pokémon\n"
+	.string "This Dynamax Band will allow your Pokémon\n"
 	.string "to use this gigantification if you press\l"
 	.string "START before choosing a move.\p"
 	.string "Your attacks will be much stronger and\n"
