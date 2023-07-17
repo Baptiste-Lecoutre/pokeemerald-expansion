@@ -292,6 +292,7 @@ PKMN_Center_Move_Tutor_Exit::
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Minimal grinding @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 PKMN_Center_MinimalGrinding::
+	goto_if_unset FLAG_VISITED_RUSTBORO_CITY, PKMN_Center_MinimalGrindingTooEarly
 	special BufferNextLevelCap
 	msgbox PKMN_Center_Text_CurrentLvlCapIs, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, PKMN_Center_MinimalGrindingIncreaseLevels
@@ -307,7 +308,18 @@ PKMN_Center_MinimalGrindingIncreaseLevels::
 	releaseall
 	end
 
+PKMN_Center_MinimalGrindingTooEarly::
+	msgbox PKMN_Center_Text_CurrentLvlCapTooEarly, MSGBOX_DEFAULT
+	releaseall
+	end
+
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Strings @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+PKMN_Center_Text_CurrentLvlCapTooEarly:
+	.string "The advised level for the upcoming\n"
+	.string "events is {STR_VAR_1}.\p"
+	.string "It is too early for you to have\n"
+	.string "your party be trained.$"
 
 PKMN_Center_Text_CurrentLvlCapIs:
 	.string "The advised level for the upcoming\n"

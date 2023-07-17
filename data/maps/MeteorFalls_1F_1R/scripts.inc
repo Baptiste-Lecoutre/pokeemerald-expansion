@@ -532,7 +532,7 @@ MeteorFalls_1F_1R_Text_StevenGiveMegaRing:
 	.string "Steven: Hi, {PLAYER}{KUN}!\p"
 	.string "It's me, Steven!\n"
 	.string "We met in the cave near Dewford.\p"
-	.string "I see you have already met some\n"
+	.string "I see you have already met the\n"
 	.string "grunts of Team Aqua and Team Magma.\p"
 	.string "These people are dangerous, someone\n"
 	.string "needs to stop them.\p"
