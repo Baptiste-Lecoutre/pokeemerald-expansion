@@ -91,6 +91,7 @@ Debug_Script_5::
 	end
 
 Debug_Script_6::
+	goto PKMN_Center_MinimalGrinding
 	end
 
 Debug_Script_7::

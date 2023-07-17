@@ -51,7 +51,7 @@
 #define TRAINER_DUSTY_2                      47
 #define TRAINER_DUSTY_3                      48
 #define TRAINER_DUSTY_4                      49
-#define TRAINER_DUSTY_5                      50
+#define TRAINER_GRUNT_METEOR_FALLS                      50
 #define TRAINER_GABBY_AND_TY_1               51
 #define TRAINER_GABBY_AND_TY_2               52
 #define TRAINER_GABBY_AND_TY_3               53
@@ -640,14 +640,14 @@
 #define TRAINER_TRENT_2                     636
 #define TRAINER_TRENT_3                     637
 #define TRAINER_TRENT_4                     638
-#define TRAINER_TRENT_5                     639
+#define TRAINER_CYNTHIA_1                     639
 #define TRAINER_DEZ_AND_LUKE                640
 #define TRAINER_LEA_AND_JED                 641
 #define TRAINER_KIRA_AND_DAN_1              642
 #define TRAINER_KIRA_AND_DAN_2              643
 #define TRAINER_KIRA_AND_DAN_3              644
 #define TRAINER_KIRA_AND_DAN_4              645
-#define TRAINER_KIRA_AND_DAN_5              646
+#define TRAINER_CYNTHIA_2              646
 #define TRAINER_JOHANNA                     647
 #define TRAINER_GERALD                      648
 #define TRAINER_VIVIAN                      649
@@ -832,7 +832,7 @@
 #define TRAINER_CRISTIN_2                   828
 #define TRAINER_CRISTIN_3                   829
 #define TRAINER_CRISTIN_4                   830
-#define TRAINER_CRISTIN_5                   831
+#define TRAINER_COURTNEY_METEOR_FALLS                   831
 #define TRAINER_FERNANDO_2                  832
 #define TRAINER_FERNANDO_3                  833
 #define TRAINER_FERNANDO_4                  834
@@ -870,5 +870,11 @@
 #define TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC 903
 #define TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP 904
 #define TRAINER_BRENDAN_VICTORY_ROAD_TREECKO 905
+#define MAY_MUDKIP_METEOR_FALLS 906
+#define MAY_TORCHIC_METEOR_FALLS 907
+#define MAY_TREECKO_METEOR_FALLS 908
+#define BRENDAN_MUDKIP_METEOR_FALLS 909
+#define BRENDAN_TORCHIC_METEOR_FALLS 910
+#define BRENDAN_TREECKO_METEOR_FALLS 911
 
 #endif  // GUARD_CONSTANTS_OPPONENTS_H

@@ -1012,17 +1012,16 @@ Common_EventScript_LegendaryFlewAway::
 EventScript_DoWonderTrade::
 	special ChoosePartyMon
 	waitstate
-	compare VAR_0x8004, PARTY_SIZE
-	goto_if_ge EventScript_End
+	goto_if_ge VAR_0x8004, PARTY_SIZE, EventScript_End
 	copyvar VAR_0x8005, VAR_0x8004
 	special CreateWonderTradePokemon
 	special DoInGameTradeScene
 	waitstate
 	msgbox EventScript_DoWonderTrade_Text_WannaDoAnotherWonderTrade, MSGBOX_YESNO
-	compare VAR_RESULT, YES
-	goto_if_eq EventScript_DoWonderTrade
+	goto_if_eq VAR_RESULT, YES, EventScript_DoWonderTrade
 	msgbox EventScript_DoWonderTrade_Text_Done, MSGBOX_DEFAULT
 	closemessage
+	releaseall
 EventScript_End:
 	end
 
@@ -1146,3 +1145,6 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/LilycoveCity_MirageMountain/scripts.inc"
 
 	.include "data/maps/Route123_MirageCave/scripts.inc"
+
+	.include "data/scripts/furfrou.inc"
+	.include "data/scripts/rotom.inc"

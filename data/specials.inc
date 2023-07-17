@@ -565,3 +565,12 @@ gSpecials::
 	def_special IsItemFossil
 	def_special DoesPlayerHaveFossil
 	def_special Bag_ChooseItem
+	def_special ChangeMonSpecies
+	def_special CountRotomInParty
+	def_special GetRotomState
+	def_special RotomForgetSpecialMove
+	def_special TeachRotomMove
+	def_special DoesRotomKnowSpecialMove
+	def_special GetRotomNewSpecialMove
+	def_special BufferNextLevelCap
+	def_special IncreasePartyLevelToLevelCap

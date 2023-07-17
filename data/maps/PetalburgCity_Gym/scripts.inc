@@ -92,6 +92,8 @@ PetalburgCity_Gym_EventScript_ReturnFromWallyTutorial::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox PetalburgCity_Gym_Text_DadGoCollectBadges, MSGBOX_DEFAULT
+	closemessage
+	giveitem ITEM_AMULET_COIN
 	setvar VAR_PETALBURG_GYM_STATE, 2
 	releaseall
 	end
@@ -1229,7 +1231,8 @@ PetalburgCity_Gym_Text_DadGoCollectBadges:
 	.string "Of course, I'm a Gym Leader, too.\n"
 	.string "We'll battle one day, {PLAYER}.\p"
 	.string "But that's only after you become\n"
-	.string "stronger.$"
+	.string "stronger.\p"
+	.string "Here's something to wish you luck.$"
 
 PetalburgCity_Gym_Text_NormanGoToRustboro:
 	.string "Dad: Hm? Aren't you going to the\n"
