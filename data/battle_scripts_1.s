@@ -166,9 +166,11 @@ gBattleScriptsForMoveEffects::
 	.4byte BattleScript_EffectPsychUp                 @ EFFECT_PSYCH_UP
 	.4byte BattleScript_EffectMirrorCoat              @ EFFECT_MIRROR_COAT
 	.4byte BattleScript_EffectSkullBash               @ EFFECT_SKULL_BASH
+	.4byte BattleScript_EffectTwister                 @ EFFECT_TWISTER
 	.4byte BattleScript_EffectEarthquake              @ EFFECT_EARTHQUAKE
 	.4byte BattleScript_EffectFutureSight             @ EFFECT_FUTURE_SIGHT
 	.4byte BattleScript_EffectGust                    @ EFFECT_GUST
+	.4byte BattleScript_EffectStomp                   @ EFFECT_FLINCH_MINIMIZE_HIT
 	.4byte BattleScript_EffectSolarBeam               @ EFFECT_SOLAR_BEAM
 	.4byte BattleScript_EffectThunder                 @ EFFECT_THUNDER
 	.4byte BattleScript_EffectTeleport                @ EFFECT_TELEPORT
@@ -539,12 +541,11 @@ BattleScript_EffectTeatime::
 @ at least one battler is affected
 	attackanimation
 	waitanimation
-	setbyte gBattlerTarget, 0
 BattleScript_TeatimeLoop:
+	jumpifteainvulnerable BS_TARGET, BattleScript_Teatimevul
 	jumpifrodaffected BS_TARGET, BattleScript_Teatimerod
 	jumpifabsorbaffected BS_TARGET, BattleScript_Teatimesorb
 	jumpifmotoraffected BS_TARGET, BattleScript_Teatimemotor
-	jumpifteainvulnerable BS_TARGET, BattleScript_Teatimevul @ in semi-invulnerable state OR held item is not a Berry
 	orword gHitMarker, HITMARKER_NO_ANIMATIONS | HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_IGNORE_DISGUISE
 	setbyte sBERRY_OVERRIDE, TRUE   @ override the requirements for eating berries
 	consumeberry BS_TARGET, TRUE  @ consume the berry, then restore the item from changedItems
@@ -562,12 +563,6 @@ BattleScript_Teatimevul:
 	goto BattleScript_MoveEnd
 BattleScript_Teatimesorb:
 	call BattleScript_AbilityPopUpTarget
-	tryhealquarterhealth BS_TARGET BattleScript_Teatimesorb_end
-	healthbarupdate BS_TARGET
-	datahpupdate BS_TARGET
-	printstring STRINGID_PKMNREGAINEDHEALTH
-	waitmessage B_WAIT_TIME_LONG
-BattleScript_Teatimesorb_end:
 	moveendto MOVEEND_NEXT_TARGET
 	jumpifnexttargetvalid BattleScript_TeatimeLoop
 	moveendcase MOVEEND_CLEAR_BITS
@@ -5401,6 +5396,12 @@ BattleScript_SkullBashEnd::
 	call BattleScript_PowerHerbActivation
 	goto BattleScript_TwoTurnMovesSecondTurn
 
+BattleScript_EffectTwister:
+BattleScript_FlinchEffect:
+BattleScript_EffectStomp:
+	setmoveeffect MOVE_EFFECT_FLINCH
+	goto BattleScript_EffectHit
+
 BattleScript_EffectBulldoze:
 	setmoveeffect MOVE_EFFECT_SPD_MINUS_1
 BattleScript_EffectEarthquake:
@@ -6819,6 +6820,9 @@ BattleScript_DoSwitchOut::
 	hidepartystatussummary BS_ATTACKER
 	switchinanim BS_ATTACKER, FALSE
 	waitstate
+	jumpifcantreverttoprimal BattleScript_DoSwitchOut2
+	call BattleScript_PrimalReversionRet
+BattleScript_DoSwitchOut2:
 	switchineffects BS_ATTACKER
 	moveendcase MOVEEND_STATUS_IMMUNITY_ABILITIES
 	moveendcase MOVEEND_MIRROR_MOVE
@@ -7983,12 +7987,17 @@ BattleScript_WishMegaEvolution::
 	goto BattleScript_MegaEvolutionAfterString
 
 BattleScript_PrimalReversion::
-	call BattleScript_PrimalReversionRet
-	end2
-	
-BattleScript_PrimalReversionRestoreAttacker::
-	call BattleScript_PrimalReversionRet
-	copybyte gBattlerAttacker, sSAVED_BATTLER
+	printstring STRINGID_EMPTYSTRING3
+	waitmessage 1
+	setbyte gIsCriticalHit, 0
+	handleprimalreversion BS_ATTACKER, 0
+	handleprimalreversion BS_ATTACKER, 1
+	playanimation BS_ATTACKER, B_ANIM_PRIMAL_REVERSION
+	waitanimation
+	handleprimalreversion BS_ATTACKER, 2
+	printstring STRINGID_PKMNREVERTEDTOPRIMAL
+	waitmessage B_WAIT_TIME_LONG
+	switchinabilities BS_ATTACKER
 	end2
 
 BattleScript_PrimalReversionRet::
@@ -8002,7 +8011,6 @@ BattleScript_PrimalReversionRet::
 	handleprimalreversion BS_ATTACKER, 2
 	printstring STRINGID_PKMNREVERTEDTOPRIMAL
 	waitmessage B_WAIT_TIME_LONG
-	switchinabilities BS_ATTACKER
 	return
 
 BattleScript_AttackerFormChange::
@@ -9011,7 +9019,16 @@ BattleScript_PsychicSurgeActivates::
 	call BattleScript_ActivateTerrainEffects
 	end3
 
+BattleScript_HurtTarget_NoString:
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	healthbarupdate BS_TARGET
+	datahpupdate BS_TARGET
+	tryfaintmon BS_TARGET
+	return
+
 BattleScript_BadDreamsActivates::
+	call BattleScript_AbilityPopUp
+	setbyte sFIXED_ABILITY_POPUP, TRUE
 	setbyte gBattlerTarget, 0
 BattleScript_BadDreamsLoop:
 	jumpiftargetally BattleScript_BadDreamsIncrement
@@ -9020,32 +9037,16 @@ BattleScript_BadDreamsLoop:
 	jumpifstatus BS_TARGET, STATUS1_SLEEP, BattleScript_BadDreams_Dmg
 	goto BattleScript_BadDreamsIncrement
 BattleScript_BadDreams_Dmg:
-	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_BadDreams_ShowPopUp
-BattleScript_BadDreams_DmgAfterPopUp:
 	printstring STRINGID_BADDREAMSDMG
 	waitmessage B_WAIT_TIME_LONG
 	dmg_1_8_targethp
-	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
-	healthbarupdate BS_TARGET
-	datahpupdate BS_TARGET
-	jumpifhasnohp BS_TARGET, BattleScript_BadDreams_HidePopUp
+	call BattleScript_HurtTarget_NoString
 BattleScript_BadDreamsIncrement:
 	addbyte gBattlerTarget, 1
 	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_BadDreamsLoop
-	jumpifbyteequal sFIXED_ABILITY_POPUP, sZero, BattleScript_BadDreamsEnd
-	destroyabilitypopup
-	pause 15
 BattleScript_BadDreamsEnd:
-	end3
-BattleScript_BadDreams_ShowPopUp:
-	copybyte gBattlerAbility, gBattlerAttacker
-	call BattleScript_AbilityPopUp
-	setbyte sFIXED_ABILITY_POPUP, TRUE
-	goto BattleScript_BadDreams_DmgAfterPopUp
-BattleScript_BadDreams_HidePopUp:
 	destroyabilitypopup
-	tryfaintmon BS_TARGET 
-	goto BattleScript_BadDreamsIncrement
+	end3
 
 BattleScript_TookAttack::
 	attackstring

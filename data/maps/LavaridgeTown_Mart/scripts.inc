@@ -6,7 +6,7 @@ LavaridgeTown_Mart_EventScript_Clerk::
 	faceplayer
 	message gText_HowMayIServeYou
 	waitmessage
-	pokemart 0 @ LavaridgeTown_Mart_Pokemart
+	pokemart LavaridgeTown_Mart_Pokemart
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end

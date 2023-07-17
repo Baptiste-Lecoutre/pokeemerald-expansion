@@ -35,7 +35,6 @@ FallarborTown_PokemonCenter_1F_EventScript_Lanette::
 	switch VAR_FACING
 	case DIR_NORTH, FallarborTown_PokemonCenter_1F_EventScript_LanetteExitNorth
 	case DIR_WEST, FallarborTown_PokemonCenter_1F_EventScript_LanetteExitWest
-	case DIR_EAST, FallarborTown_PokemonCenter_1F_EventScript_LanetteExitEast
 	end
 
 FallarborTown_PokemonCenter_1F_EventScript_LanetteExitNorth::
@@ -45,13 +44,7 @@ FallarborTown_PokemonCenter_1F_EventScript_LanetteExitNorth::
 	end
 
 FallarborTown_PokemonCenter_1F_EventScript_LanetteExitWest::
-	applymovement LOCALID_LANETTE, FallarborTown_PokemonCenter_1F_Movement_LanetteExitNorth
-	waitmovement 0
-	goto FallarborTown_PokemonCenter_1F_EventScript_LanetteExited
-	end
-
-FallarborTown_PokemonCenter_1F_EventScript_LanetteExitEast::
-	applymovement LOCALID_LANETTE, FallarborTown_PokemonCenter_1F_Movement_LanetteExitEast
+	applymovement LOCALID_LANETTE, FallarborTown_PokemonCenter_1F_Movement_LanetteExitWest
 	waitmovement 0
 	goto FallarborTown_PokemonCenter_1F_EventScript_LanetteExited
 	end
@@ -64,6 +57,10 @@ FallarborTown_PokemonCenter_1F_EventScript_LanetteExited::
 	end
 
 FallarborTown_PokemonCenter_1F_Movement_LanetteExitNorth:
+	walk_right
+	walk_down
+	walk_down
+	walk_left
 	walk_left
 	walk_left
 	walk_left
@@ -74,11 +71,13 @@ FallarborTown_PokemonCenter_1F_Movement_LanetteExitNorth:
 	delay_8
 	step_end
 
-FallarborTown_PokemonCenter_1F_Movement_LanetteExitEast:
+FallarborTown_PokemonCenter_1F_Movement_LanetteExitWest:
+	walk_down
 	walk_down
 	walk_left
 	walk_left
 	walk_left
+	walk_down
 	walk_down
 	walk_down
 	walk_down

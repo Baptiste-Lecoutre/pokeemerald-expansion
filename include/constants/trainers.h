@@ -129,7 +129,6 @@
 #define TRAINER_PIC_DAWN                  109
 #define TRAINER_PIC_LUCAS_PLATINUM        110
 #define TRAINER_PIC_DAWN_PLATINUM         111
-#define TRAINER_PIC_MAGMA_ADMIN_F         112
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0

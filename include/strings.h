@@ -539,7 +539,6 @@ extern const u8 gText_PkmnFriendlyBaseVar2Fell[];
 extern const u8 gText_PkmnFriendlyBaseVar2CantFall[];
 extern const u8 gText_PkmnAdoresBaseVar2Fell[];
 extern const u8 gText_PkmnAlreadyKnows[];
-extern const u8 gText_PkmnFriendshipNotHighEnough[];
 extern const u8 gText_PkmnCantLearnMove[];
 extern const u8 gText_PkmnNeedsToReplaceMove[];
 extern const u8 gText_PkmnLearnedMove3[];
@@ -3611,30 +3610,5 @@ extern const u8 gText_RoamerGZapdos[];
 extern const u8 gText_RoamerGArticuno[];
 extern const u8 gText_RoamerZacian[];
 extern const u8 gText_RoamerZamazenta[];
-
-extern const u8 gText_HeartTrim[];
-extern const u8 gText_StarTrim[];
-extern const u8 gText_DiamondTrim[];
-extern const u8 gText_DebutanteTrim[];
-extern const u8 gText_MatronTrim[];
-extern const u8 gText_DandyTrim[]; 
-extern const u8 gText_LaReineTrim[];
-extern const u8 gText_KabukiTrim[];
-extern const u8 gText_PharaohTrim[];
-extern const u8 gText_BackToNatural[];
-
-extern const u8 gText_MicrowaveOven[];
-extern const u8 gText_WashingMachine[];
-extern const u8 gText_Refrigerator[];
-extern const u8 gText_ElectricFan[];
-extern const u8 gText_Lawnmower[];
-extern const u8 gText_Recall[];
-
-extern const u8 gText_GrassPledge[];
-extern const u8 gText_FirePledge[];
-extern const u8 gText_WaterPledge[];
-extern const u8 gText_FrenzyPlant[];
-extern const u8 gText_BlastBurn[];
-extern const u8 gText_HydroCannon[];
 
 #endif // GUARD_STRINGS_H

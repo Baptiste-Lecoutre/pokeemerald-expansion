@@ -2483,16 +2483,6 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
-    case SCROLL_MULTI_FURFROU_TRIMS:
-        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 11;
-        task->tLeft = 22;
-        task->tTop = 1;
-        task->tWidth = 12;
-        task->tHeight = 12;
-        task->tKeepOpenAfterSelect = FALSE;
-        task->tTaskId = taskId;
-        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2681,8 +2671,7 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_LearnANewMove,
         gText_RateANickname,
         gText_DoWonderTrade,
-        gText_TrainEXP,
-//        gText_MysteryGift,
+        gText_MysteryGift,
 //        gText_ResetEvents,
         gText_Exit
     },
@@ -2903,20 +2892,6 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_RoamerGArticuno,
         gText_RoamerZacian,
         gText_RoamerZamazenta
-    },
-    [SCROLL_MULTI_FURFROU_TRIMS] = 
-    {
-        gText_HeartTrim,
-        gText_StarTrim,
-        gText_DiamondTrim,
-        gText_DebutanteTrim,
-        gText_MatronTrim,
-        gText_DandyTrim, 
-        gText_LaReineTrim,
-        gText_KabukiTrim,
-        gText_PharaohTrim,
-        gText_BackToNatural,
-        gText_Exit
     },
 };
 
@@ -5408,193 +5383,4 @@ bool8 DoesPlayerHaveFossil (void)
         }
     }
     return FALSE;
-}
-
-// Changes the chosen party mon's species to the one stored in gSpecialVar_0x8005
-void ChangeMonSpecies (void)
-{
-    u16 newSpecies;
-    
-    newSpecies = gSpecialVar_0x8005;
-
-    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES, &newSpecies);
-    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, &newSpecies);
-    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
-}
-
-// Rotom form change specials
-// Vars used:
-// gSpecialVar_0x8004: set to the party slot of the chosen Rotom, or the first Rotom found if there's only one
-// gSpecialVar_0x8005: set to the form to change Rotom to (e.g. SPECIES_ROTOM_WASH)
-// gSpecialVar_0x8006: special move learned by Rotom after form change (set by GetRotomNewSpecialMove)
-// gSpecialVar_0x8007: Rotom's initial form
-// gSpecialVar_0x8008: Rotom's initial special move (set by RotomForgetSpecialMove)
-
-// Takes a Rotom form as input and returns its special move
-u16 RotomFormToMove (u16 species)
-{
-    u16 move;
-
-    switch (species)
-    {
-        case SPECIES_ROTOM_HEAT:
-            move = MOVE_OVERHEAT;
-            break;
-        case SPECIES_ROTOM_WASH:
-            move = MOVE_HYDRO_PUMP;
-            break;
-        case SPECIES_ROTOM_FROST:
-            move = MOVE_FREEZE_DRY;
-            break;
-        case SPECIES_ROTOM_FAN:
-            move = MOVE_HURRICANE;
-            break;
-        case SPECIES_ROTOM_MOW:
-            move = MOVE_LEAF_STORM;
-            break;
-        case SPECIES_ROTOM:
-            move = MOVE_THUNDER_SHOCK;
-            break;
-    }
-    return move;
-}
-
-// Stores the special move of the Rotom form in gSpecialVar_0x8005 in gSpecialVar_0x8006
-void GetRotomNewSpecialMove (void)
-{
-    gSpecialVar_0x8006 = RotomFormToMove(gSpecialVar_0x8005);
-}
-
-// Gets Rotom's current form and the matching move, stores them in gSpecialVar_0x8007 and gSpecialVar_0x8008
-void GetRotomState (void)
-{
-    gSpecialVar_0x8007 = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, NULL);
-    gSpecialVar_0x8008 = RotomFormToMove(gSpecialVar_0x8007);
-}
-
-// If Rotom is an appliance form, delete its special move
-// Rotom's initial form must be loaded into gSpecialVar_0x8007 before use.
-// Returns TRUE if the moove was forgotten, false if not
-void RotomForgetSpecialMove (void)
-{
-    u8 i, forgotSpecialMove = 0;
-    u16 currentMove;
-    u16 moveNone = MOVE_NONE;
-
-    currentMove = RotomFormToMove(gSpecialVar_0x8007);
-
-    for (i = 0; i < MAX_MON_MOVES; i++)
-    {
-        if (GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_MOVE1 + i, NULL) == currentMove)
-        {
-            RemoveMonPPBonus(&gPlayerParty[gSpecialVar_0x8004], i);
-            SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_MOVE1 + i, &moveNone);
-            forgotSpecialMove = TRUE;
-            break;
-        }
-    }
-}
-
-// Teaches Rotom's forms their special moves
-// Rotom MUST have an empty moveslot first
-// Move to teach must be stored in gSpecialVar_0x8006
-void TeachRotomMove (void)
-{
-    GiveMoveToMon(&gPlayerParty[gSpecialVar_0x8004], gSpecialVar_0x8006);
-}
-
-// Checks if Rotom knows its special move
-bool8 DoesRotomKnowSpecialMove (void)
-{
-    u16 initialMove, initialSpecies;
-
-    initialSpecies = gSpecialVar_0x8007;
-    initialMove = RotomFormToMove(initialSpecies);
-    return MonKnowsMove(&gPlayerParty[gSpecialVar_0x8004], initialMove);
-}
-
-// Checks how many Rotom player has with them
-// Stores the party position of the last Rotom found in gSpecialVar_0x8004
-// (Useful if there's only one Rotom in the party)
-u8 CountRotomInParty (void)
-{
-    u8 partyCount, rotomCount = 0;
-    u16 i;
-    u32 species;
-
-    partyCount = CalculatePlayerPartyCount();
-    
-    for (i = 0; i < partyCount; i++)
-    {
-        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
-        if (gSpeciesToNationalPokedexNum[species - 1] == SPECIES_ROTOM)
-        {
-            gSpecialVar_0x8004 = i;
-            rotomCount++;
-        }
-    }
-    return rotomCount;
-}
-
-/////// minimal grinding option in pkmn center
-const u16 sLevelCapAreaFlags[NUM_SOFT_CAPS] = 
-{
-    FLAG_VISITED_RUSTBORO_CITY, FLAG_VISITED_DEWFORD_TOWN, FLAG_VISITED_MAUVILLE_CITY, FLAG_VISITED_LAVARIDGE_TOWN,
-    FLAG_VISITED_PETALBURG_CITY, FLAG_VISITED_FORTREE_CITY, FLAG_VISITED_MOSSDEEP_CITY, FLAG_VISITED_SOOTOPOLIS_CITY,
-    FLAG_VISITED_EVER_GRANDE_CITY,
-};
-
-void BufferNextLevelCap(void)
-{
-    u8 lvlCap = MAX_LEVEL;
-    u32 i;
-
-    // get lvl cap
-    for (i = 0; i < NUM_SOFT_CAPS; i++)
-    {
-        if (!FlagGet(gLevelCapFlags[i]))
-        {
-            lvlCap = gLevelCaps[i];
-            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
-                lvlCap = gLevelCaps[i - 1];
-            break;
-        }
-    }
-
-    ConvertIntToDecimalStringN(gStringVar1, lvlCap, STR_CONV_MODE_LEFT_ALIGN, 3);
-}
-
-void IncreasePartyLevelToLevelCap(void)
-{
-    u32 i, targetExp, currExp;
-    u8 lvlCap;
-    u16 species;
-
-    // get lvl cap
-    for (i = 0; i < NUM_SOFT_CAPS; i++)
-    {
-        if (!FlagGet(gLevelCapFlags[i]))
-        {
-            lvlCap = gLevelCaps[i];
-            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
-                lvlCap = gLevelCaps[i - 1];
-            break;
-        }
-    }
-
-    for (i = 0; i < PARTY_SIZE; i++)
-    {
-        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
-        if (species != SPECIES_NONE && species != SPECIES_EGG)
-        {
-            currExp = GetMonData(&gPlayerParty[i], MON_DATA_EXP);
-            targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][lvlCap - 2];
-
-            if (currExp < targetExp)
-            {
-                SetMonData(&gPlayerParty[i], MON_DATA_EXP, &targetExp);
-                CalculateMonStats(&gPlayerParty[i]);
-            }
-        }
-    }
 }

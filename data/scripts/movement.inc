@@ -68,10 +68,6 @@ Common_Movement_WalkInPlaceRight:
 	walk_in_place_right
 	step_end
 
-Common_Movement_WalkInPlaceUp:
-	walk_in_place_up
-	step_end
-
 Common_Movement_WalkUp6:
 	walk_up
 	walk_up

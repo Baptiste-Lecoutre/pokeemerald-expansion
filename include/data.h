@@ -185,7 +185,7 @@ extern const struct MonCoords gTrainerBackPicCoords[];
 extern const struct CompressedSpriteSheet gTrainerBackPicTable[]; // functionally unused
 extern const struct CompressedSpritePalette gTrainerBackPicPaletteTable[];
 
-extern const u8 gEnemyMonElevation[NUM_SPECIES + 1];
+extern const u8 gEnemyMonElevation[NUM_SPECIES];
 
 extern const union AnimCmd *const *const gMonFrontAnimsPtrTable[];
 extern const struct CompressedSpriteSheet gMonFrontPicTable[];
@@ -193,7 +193,7 @@ extern const struct CompressedSpriteSheet gMonFrontPicTableFemale[];
 
 extern const struct Trainer gTrainers[];
 extern const u8 gTrainerClassNames[][13];
-extern const u8 gSpeciesNames[NUM_SPECIES][POKEMON_NAME_LENGTH + 1];
+extern const u8 gSpeciesNames[][POKEMON_NAME_LENGTH + 1];
 extern const u8 gMoveNames[MOVES_COUNT_DYNAMAX][MOVE_NAME_LENGTH + 1];
 extern const u8 *const gZMoveNames[];
 extern const u8 *const gMaxMoveNames[];

@@ -612,14 +612,14 @@ static void ScrollAll(int direction) // to bottom or top
 
 static u8 Process_ChangePage(u8 CurrentPage)
 {
-    if (JOY_NEW(R_BUTTON) && FALSE) //
+    if (JOY_NEW(R_BUTTON))
     {
         if (CurrentPage < PAGE_COUNT - 1)
             CurrentPage++;
         else
             CurrentPage = 0;
     }
-    if (JOY_NEW(L_BUTTON) && FALSE) //
+    if (JOY_NEW(L_BUTTON))
     {
         if (CurrentPage != 0)
             CurrentPage--;
@@ -664,7 +664,7 @@ static void Task_OptionMenuProcessInput(u8 taskId)
         break;
     }
 
-    if ((JOY_NEW(L_BUTTON) || JOY_NEW(R_BUTTON)) && FALSE) //
+    if (JOY_NEW(L_BUTTON) || JOY_NEW(R_BUTTON))
     {
         FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
         ClearStdWindowAndFrame(WIN_OPTIONS, FALSE);
@@ -784,11 +784,11 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsButtonMode = OPTIONS_BUTTON_MODE_NORMAL; //sOptions->sel[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptions->sel[MENUITEM_FRAMETYPE];
 
-    gSaveBlock2Ptr->optionsLevelCap = 1; //sOptions->selKey[MENUITEM_KEY_LVLCAP];
-    gSaveBlock2Ptr->optionsBaseStatsEqual = 0; //sOptions->selKey[MENUITEM_KEY_BASESTATSEQ];
+    gSaveBlock2Ptr->optionsLevelCap = sOptions->selKey[MENUITEM_KEY_LVLCAP];
+    gSaveBlock2Ptr->optionsBaseStatsEqual = sOptions->selKey[MENUITEM_KEY_BASESTATSEQ];
     gSaveBlock2Ptr->optionsTypeChart = sOptions->selKey[MENUITEM_KEY_TYPECHART];
-    gSaveBlock2Ptr->xpMulti = 2; //sOptions->selKey[MENUITEM_KEY_EXPMULTIPLIER];
-    gSaveBlock2Ptr->xpTeamMod = 1; //sOptions->selKey[MENUITEM_KEY_EXPTEAMMOD];
+    gSaveBlock2Ptr->xpMulti = sOptions->selKey[MENUITEM_KEY_EXPMULTIPLIER];
+    gSaveBlock2Ptr->xpTeamMod = sOptions->selKey[MENUITEM_KEY_EXPTEAMMOD];
 
     gSaveBlock2Ptr->optionsRandomnessType = 0;//sOptions->selRand[MENUITEM_RAND_RANDOMNESS_TYPE];
     gSaveBlock2Ptr->randomWildEncounters = 0;//sOptions->selRand[MENUITEM_RAND_WILDENCOUNTERS];
@@ -1200,9 +1200,9 @@ static void DrawHeaderText(void)
     xMid = (8 + widthOptions + 5);
 
     FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
-//    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, 8, 1, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, sOptionMenuPageNames[sOptions->page], 8/*xMid*/, 1, TEXT_SKIP_DRAW, NULL);
-//    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_PageNav, GetStringRightAlignXOffset(FONT_NORMAL, gText_PageNav, 198), 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, 8, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, sOptionMenuPageNames[sOptions->page], xMid, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_PageNav, GetStringRightAlignXOffset(FONT_NORMAL, gText_PageNav, 198), 1, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(WIN_HEADER, COPYWIN_FULL);
 }
 

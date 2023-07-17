@@ -1,7 +1,6 @@
 #include "global.h"
 #include "pokemon.h"
 #include "strings.h"
-#include "string_util.h"
 #include "random.h"
 #include "text.h"
 #include "event_data.h"
@@ -650,7 +649,7 @@ void CreateWonderTradePokemon(u8 whichPlayerMon)
         CreateMon(pokemon, species, level, 0, FALSE, 0, TRUE, (Random() << 16) | Random());
     }
 
-    StringCopy(name,GetSpeciesName(species));
+    GetSpeciesName(name, species);
 
     // 10% chance of having the generated Wonder Traded 'mon carry an item.
     if ((Random() % 99) < 10)

@@ -19,7 +19,7 @@ MagmaHideout_4F_EventScript_Maxie::
 	playse SE_M_DETECT
 	dofieldeffectsparkle 18, 42, 0
 	waitfieldeffect FLDEFF_SPARKLE
-	setvar VAR_RESULT, 0
+	setvar VAR_RESULT, 1
 	playfanfare MUS_AWAKEN_LEGEND
 	playse SE_ORB
 	special DoOrbEffect
@@ -34,35 +34,12 @@ MagmaHideout_4F_EventScript_Maxie::
 	waitmovement 0
 	special FadeOutOrbEffect
 	waitstate
-	playmoncry SPECIES_GROUDON, 2
-	waitmoncry
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
-	waitmovement 0
-	delay 30
-	applymovement LOCALID_MAXIE, Common_Movement_FacePlayer
-	waitmovement 0
-	msgbox MagmaHideout_4F_Text_MaxieOhItWasYou, MSGBOX_DEFAULT
-	closemessage
-	applymovement LOCALID_MAXIE, Common_Movement_WalkInPlaceFasterUp
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
-	waitmovement 0
-	msgbox MagmaHideout_4F_Text_MaxieWowItsGroudon, MSGBOX_DEFAULT
-	closemessage
-	applymovement LOCALID_MAXIE, Common_Movement_FacePlayer
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
-	waitmovement 0
-	msgbox MagmaHideout_4F_Text_MaxieFightMe, MSGBOX_DEFAULT
-	closemessage
-	trainerbattle_no_intro TRAINER_MAXIE_MAGMA_HIDEOUT, MagmaHideout_4F_Text_MaxieDefeat
 	setvar VAR_0x8004, 1  @ vertical pan
 	setvar VAR_0x8005, 1  @ horizontal pan
 	setvar VAR_0x8006, 8  @ num shakes
 	setvar VAR_0x8007, 5  @ shake delay
 	special ShakeCamera
 	waitstate
-	applymovement LOCALID_MAXIE, Common_Movement_WalkInPlaceFasterUp
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
-	waitmovement 0
 	applymovement LOCALID_GROUDON, MagmaHideout_4F_Movement_GroudonExit
 	waitmovement 0
 	removeobject LOCALID_GROUDON
@@ -74,9 +51,18 @@ MagmaHideout_4F_EventScript_Maxie::
 	special ShakeCamera
 	waitstate
 	delay 30
-	applymovement LOCALID_MAXIE, Common_Movement_FacePlayer
+	applymovement LOCALID_MAXIE, MagmaHideout_4F_Movement_MaxieLookAround
+	waitmovement 0
+	msgbox MagmaHideout_4F_Text_MaxieGroudonWhatsWrong, MSGBOX_DEFAULT
+	closemessage
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
 	waitmovement 0
+	delay 30
+	applymovement LOCALID_MAXIE, Common_Movement_FacePlayer
+	waitmovement 0
+	msgbox MagmaHideout_4F_Text_MaxieOhItWasYou, MSGBOX_DEFAULT
+	closemessage
+	trainerbattle_no_intro TRAINER_MAXIE_MAGMA_HIDEOUT, MagmaHideout_4F_Text_MaxieDefeat
 	msgbox MagmaHideout_4F_Text_MaxieImGoingAfterGroudon, MSGBOX_DEFAULT
 	closemessage
 	clearflag FLAG_HIDE_SLATEPORT_CITY_CAPTAIN_STERN
@@ -206,9 +192,9 @@ MagmaHideout_4F_Text_MaxieAwakenGroudon:
 	.string "Maxie: Groudon…\p"
 	.string "Nothing could awaken you from your\n"
 	.string "sleep bathed in magma…\p"
-	.string "This Red Orb is what you sought.\n"
+	.string "This Blue Orb is what you sought.\n"
 	.string "Wasn't it?\p"
-	.string "I have brought you the Red Orb.\n"
+	.string "I have brought you the Blue Orb.\n"
 	.string "Let its shine awaken you!\p"
 	.string "And show me…\n"
 	.string "Show me the full extent of your power!$"
@@ -216,30 +202,16 @@ MagmaHideout_4F_Text_MaxieAwakenGroudon:
 MagmaHideout_4F_Text_MaxieGroudonWhatsWrong:
 	.string "Maxie: Groudon!\n"
 	.string "What's wrong?\p"
-	.string "Wasn't the Red Orb the key?\p"
+	.string "Wasn't the Blue Orb the key?\p"
 	.string "Groudon!\n"
 	.string "Where have you gone…$"
 
 MagmaHideout_4F_Text_MaxieOhItWasYou:
-	.string "Maxie: Oh? You again?\p"
+	.string "Maxie: Oh, so it was you?\p"
 	.string "I've seen you poking around uninvited\n"
 	.string "here and there…\p"
-	.string "I suppose you came to meddle in our\n"
-	.string "affairs yet again?\p"
-	.string "Or perhaps you wanted to see Groudon\n"
-	.string "up close? Very well…$"
-
-MagmaHideout_4F_Text_MaxieWowItsGroudon:
-	.string "Maxie: Behold! Groudon, the\n"
-	.string "super-ancient Pokémon of the land!\p"
-	.string "With the Red Orb in my possession, I\n"
-	.string "have complete control over it.$"
-
-MagmaHideout_4F_Text_MaxieFightMe:
-	.string "Maxie: With Groudon's power, Team Magma's\n"
-	.string "grand ambition will finally be realized!\p"
-	.string "Maxie: But first… I shall put an end\n"
-	.string "to your meddling, once and for all!$"
+	.string "I get it now!\n"
+	.string "You must have pulled a cheap stunt!$"
 
 MagmaHideout_4F_Text_MaxieDefeat:
 	.string "What makes you so adept at handling\n"

@@ -6,7 +6,7 @@ FallarborTown_Mart_EventScript_Clerk::
 	faceplayer
 	message gText_HowMayIServeYou
 	waitmessage
-	pokemart 0 @FallarborTown_Mart_Pokemart
+	pokemart FallarborTown_Mart_Pokemart
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end

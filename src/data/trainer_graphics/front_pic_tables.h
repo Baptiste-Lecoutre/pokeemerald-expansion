@@ -112,7 +112,6 @@ const struct MonCoords gTrainerFrontPicCoords[] =
     [TRAINER_PIC_DAWN] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_LUCAS_PLATINUM] = {.size = 8, .y_offset = 1},
     [TRAINER_PIC_DAWN_PLATINUM] = {.size = 8, .y_offset = 1},
-    [TRAINER_PIC_MAGMA_ADMIN_F] = {.size = 8, .y_offset = 1},
 };
 
 #define TRAINER_SPRITE(trainerPic, sprite, size) [TRAINER_PIC_##trainerPic] = {sprite, size, TRAINER_PIC_##trainerPic}
@@ -231,7 +230,6 @@ const struct CompressedSpriteSheet gTrainerFrontPicTable[] =
     TRAINER_SPRITE(DAWN, gTrainerFrontPic_Dawn, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(LUCAS_PLATINUM, gTrainerFrontPic_LucasPlatinum, TRAINER_PIC_SIZE),
     TRAINER_SPRITE(DAWN_PLATINUM, gTrainerFrontPic_DawnPlatinum, TRAINER_PIC_SIZE),
-    TRAINER_SPRITE(MAGMA_ADMIN_F, gTrainerFrontPic_MagmaAdminF, TRAINER_PIC_SIZE),
 };
 
 #define TRAINER_PAL(trainerPic, pal) [TRAINER_PIC_##trainerPic] = {pal, TRAINER_PIC_##trainerPic}
@@ -350,5 +348,4 @@ const struct CompressedSpritePalette gTrainerFrontPicPaletteTable[] =
     TRAINER_PAL(DAWN, gTrainerPalette_Dawn),
     TRAINER_PAL(LUCAS_PLATINUM, gTrainerPalette_LucasPlatinum),
     TRAINER_PAL(DAWN_PLATINUM, gTrainerPalette_DawnPlatinum),
-    TRAINER_PAL(MAGMA_ADMIN_F, gTrainerPalette_MagmaAdmin),
 };

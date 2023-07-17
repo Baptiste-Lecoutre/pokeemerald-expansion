@@ -249,7 +249,7 @@ TrainerHill_Entrance_EventScript_Clerk::
 	message gText_HowMayIServeYou
 	waitmessage
 	goto_if_set FLAG_SYS_GAME_CLEAR, TrainerHill_Entrance_EventScript_ExpandedPokemart
-	pokemart 0 @ TrainerHill_Entrance_Pokemart_Basic
+	pokemart TrainerHill_Entrance_Pokemart_Basic
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end

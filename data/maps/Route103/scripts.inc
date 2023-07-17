@@ -27,7 +27,6 @@ Route103_EventScript_Rival::
 	end
 
 Route103_EventScript_RivalMay::
-	goto_if_set FLAG_SYS_GAME_CLEAR, Route103_EventScript_RivalMayRematch
 	msgbox Route103_Text_MayRoute103Pokemon, MSGBOX_DEFAULT
 	closemessage
 	playbgm MUS_ENCOUNTER_MAY, TRUE
@@ -45,7 +44,6 @@ Route103_EventScript_RivalMay::
 	end
 
 Route103_EventScript_RivalBrendan::
-	goto_if_set FLAG_SYS_GAME_CLEAR, Route103_EventScript_RivalBrendanRematch
 	msgbox Route103_Text_BrendanRoute103Pokemon, MSGBOX_DEFAULT
 	closemessage
 	playbgm MUS_ENCOUNTER_BRENDAN, TRUE
@@ -60,38 +58,6 @@ Route103_EventScript_RivalBrendan::
 	case 0, Route103_EventScript_StartBrendanBattleTreecko
 	case 1, Route103_EventScript_StartBrendanBattleTorchic
 	case 2, Route103_EventScript_StartBrendanBattleMudkip
-	end
-
-Route103_EventScript_RivalMayRematch::
-	goto_if_set FLAG_DAILY_REMATCH_RIVAL, Route103_EventScript_AfterMayRematch
-	playbgm MUS_ENCOUNTER_MAY, 1
-	applymovement LOCALID_RIVAL, Common_Movement_FacePlayer
-	waitmovement 0
-	applymovement LOCALID_RIVAL, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement LOCALID_RIVAL, Common_Movement_Delay48
-	waitmovement 0
-	msgbox Route103_Text_MayRematch, MSGBOX_DEFAULT
-	switch VAR_STARTER_MON
-	case 0, Route103_EventScript_StartMayRematchTreecko
-	case 1, Route103_EventScript_StartMayRematchTorchic
-	case 2, Route103_EventScript_StartMayRematchMudkip
-	end
-
-Route103_EventScript_RivalBrendanRematch::
-	goto_if_set FLAG_DAILY_REMATCH_RIVAL, Route103_EventScript_AfterBrendanRematch
-	playbgm MUS_ENCOUNTER_BRENDAN, 1
-	applymovement LOCALID_RIVAL, Common_Movement_FacePlayer
-	waitmovement 0
-	applymovement LOCALID_RIVAL, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement LOCALID_RIVAL, Common_Movement_Delay48
-	waitmovement 0
-	msgbox Route103_Text_BrendanRematch, MSGBOX_DEFAULT
-	switch VAR_STARTER_MON
-	case 0, Route103_EventScript_StartBrendanRematchTreecko
-	case 1, Route103_EventScript_StartBrendanRematchTorchic
-	case 2, Route103_EventScript_StartBrendanRematchMudkip
 	end
 
 Route103_EventScript_StartMayBattleTreecko::
@@ -132,69 +98,6 @@ Route103_EventScript_AfterMayBattle::
 Route103_EventScript_AfterBrendanBattle::
 	msgbox Route103_Text_BrendanTimeToHeadBack, MSGBOX_DEFAULT
 	goto Route103_EventScript_RivalExit
-	end
-
-@@@@@@@@@@@@@@@@@@@@@@@@ Rematch teams @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-Route103_EventScript_StartMayRematchTreecko:: @ 81EC48E
-	trainerbattle_no_intro TRAINER_MAY_LILYCOVE_TREECKO, Route103_Text_MayRematchDefeated
-	goto Route103_EventScript_AfterMayRematch
-	end
-
-Route103_EventScript_StartMayRematchTorchic:: @ 81EC49E
-	trainerbattle_no_intro TRAINER_MAY_LILYCOVE_TORCHIC, Route103_Text_MayRematchDefeated
-	goto Route103_EventScript_AfterMayRematch
-	end
-
-Route103_EventScript_StartMayRematchMudkip:: @ 81EC4AE
-	trainerbattle_no_intro TRAINER_MAY_LILYCOVE_MUDKIP, Route103_Text_MayRematchDefeated
-	goto Route103_EventScript_AfterMayRematch
-	end
-
-Route103_EventScript_StartBrendanRematchTreecko:: @ 81EC4BE
-	trainerbattle_no_intro TRAINER_BRENDAN_LILYCOVE_TREECKO, Route103_Text_BrendanRematchDefeated
-	goto Route103_EventScript_AfterBrendanRematch
-	end
-
-Route103_EventScript_StartBrendanRematchTorchic:: @ 81EC4CE
-	trainerbattle_no_intro TRAINER_BRENDAN_LILYCOVE_TORCHIC, Route103_Text_BrendanRematchDefeated
-	goto Route103_EventScript_AfterBrendanRematch
-	end
-
-Route103_EventScript_StartBrendanRematchMudkip:: @ 81EC4DE
-	trainerbattle_no_intro TRAINER_BRENDAN_LILYCOVE_MUDKIP, Route103_Text_BrendanRematchDefeated
-	goto Route103_EventScript_AfterBrendanRematch
-	end
-
-Route103_EventScript_AfterMayRematch:: @ 81EC4EE
-	msgbox Route103_Text_MayPostRematch, MSGBOX_DEFAULT
-	setflag FLAG_DAILY_REMATCH_RIVAL
-	goto_if_unset FLAG_ENABLE_SHIP_SOUTHERN_ISLAND, Route103_EventScript_MayGiveEonTicket
-	releaseall
-	end
-
-Route103_EventScript_AfterBrendanRematch:: @ 81EC4FC
-	msgbox Route103_Text_BrendanPostRematch, MSGBOX_DEFAULT
-	setflag FLAG_DAILY_REMATCH_RIVAL
-	goto_if_unset FLAG_ENABLE_SHIP_SOUTHERN_ISLAND, Route103_EventScript_BrendanGiveEonTicket
-	releaseall
-	end
-
-Route103_EventScript_BrendanGiveEonTicket::
-	msgbox Route103_Text_BrendanGiveEonTicket, MSGBOX_DEFAULT
-	setflag FLAG_ENABLE_SHIP_SOUTHERN_ISLAND
-	giveitem ITEM_EON_TICKET
-	savebgm MUS_DUMMY
-	fadedefaultbgm
-	releaseall
-	end
-
-Route103_EventScript_MayGiveEonTicket::
-	msgbox Route103_Text_MayGiveEonTicket, MSGBOX_DEFAULT
-	setflag FLAG_ENABLE_SHIP_SOUTHERN_ISLAND
-	giveitem ITEM_EON_TICKET
-	savebgm MUS_DUMMY
-	fadedefaultbgm
-	releaseall
 	end
 
 Route103_EventScript_RivalExit::
@@ -450,70 +353,3 @@ Route103_Text_RouteSign:
 	.string "Route 103\n"
 	.string "{DOWN_ARROW} Oldale Town$"
 
-Route103_Text_MayRematch:
-	.string "May: Here we are on Route 103 again!\n"
-	.string "Wow, it's so nostalgic, you know?\p"
-	.string "This is where we first battled,\n"
-	.string "isn't it?\p"
-	.string "… {PLAYER}!\n"
-	.string "Could you do something for me?\p"
-	.string "Come on!\n"
-	.string "Let's battle one more time!\p"
-	.string "I wanna know what you saw on\n"
-	.string "your journey, how you felt,\l"
-	.string "and what you experienced out there.\p"
-	.string "I want to understand everything about\n"
-	.string "you and your Pokémon, {PLAYER}!\p"
-	.string "And then…\p"
-	.string "I want you to understand everything\l"
-	.string "about me and mine!$"
-
-Route103_Text_MayRematchDefeated:
-	.string "…\p"
-	.string "Thanks, {PLAYER}!\n"
-	.string "You really are a Champion!$"
-
-Route103_Text_MayPostRematch:
-	.string "May: Meeting so many different people…\n"
-	.string "And encountering so many Pokémon…\p"
-	.string "It's just really…\n"
-	.string "It's been really, really fun!$"
-
-Route103_Text_BrendanRematch:
-	.string "Brendan: Man, this is nostalgic.\n"
-	.string "Back on Route 103, huh?\p"
-	.string "This is where we battled the first\n"
-	.string "time, huh?\p"
-	.string "Hey, {PLAYER}…\n"
-	.string "Do me a favor?\p"
-	.string "Come on!\n"
-	.string "Let's battle one more time!\p"
-	.string "I wanna know about what you saw on\n"
-	.string "your journey, how you felt,\l"
-	.string "and what you experienced out there.\p"
-	.string "I want to know all about you\n"
-	.string "and your Pokémon, {PLAYER}.\p"
-	.string "But that's not all…\p"
-	.string "I want you to know all about\n"
-	.string "me and mine!$"
-
-Route103_Text_BrendanRematchDefeated:
-	.string "…\p"
-	.string "Thanks, {PLAYER}!\n"
-	.string "Just what I'd expect from a Champion!$"
-
-Route103_Text_BrendanPostRematch:
-	.string "Brendan: Getting to meet so many\n"
-	.string "different people…\p"
-	.string "And so many different Pokémon…\p"
-	.string "It's like… I don't know…\n"
-	.string "It's been really, really fun!$"
-
-Route103_Text_BrendanGiveEonTicket:
-	.string "Brendan: One more thing, {PLAYER}.\n"
-	.string "Take this as thanks for a great battle!$"
-
-Route103_Text_MayGiveEonTicket:
-	.string "May: Oh, by the way, {PLAYER}.\n"
-	.string "I've got something for you!\p"
-	.string "Please take this Ticket!$"
