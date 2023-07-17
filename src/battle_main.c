@@ -3111,7 +3111,9 @@ static bool8 IsMajorBattle(void)
         || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_MAGMA_LEADER
         || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_MAGMA_LEADER
         || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_AQUA_LEADER
-        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_AQUA_LEADER)
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_AQUA_LEADER
+        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_RIVAL
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_RIVAL)
         return TRUE;
     return FALSE;
 }
@@ -3178,7 +3180,12 @@ static void BattleStartClearSetData(void)
     }
 
     if(IsMajorBattle())
+    {
         gBattleScripting.battleStyle = OPTIONS_BATTLE_STYLE_SET;
+        
+        //if (gTrainerBattleOpponent_A != TRAINER_ROXANNE_1)
+        FlagSet(B_FLAG_DYNAMAX_BATTLE);
+    }
     else
         gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
 	gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
@@ -5546,6 +5553,7 @@ static void HandleEndTurn_FinishBattle(void)
         {
             gBattleMons[i].species = SPECIES_NONE;
         }
+        FlagClear(B_FLAG_DYNAMAX_BATTLE);
         gBattleMainFunc = FreeResetData_ReturnToOvOrDoEvolutions;
         gCB2_AfterEvolution = BattleMainCB2;
     }
