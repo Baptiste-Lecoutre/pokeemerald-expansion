@@ -409,7 +409,8 @@
 #define EFFECT_INFERNAL_PARADE              403
 #define EFFECT_TAKE_HEART                   404
 #define EFFECT_AXE_KICK                     405
+#define EFFECT_MAX_MOVE                     406
 
-#define NUM_BATTLE_MOVE_EFFECTS             406
+#define NUM_BATTLE_MOVE_EFFECTS             407
 
 #endif  // GUARD_CONSTANTS_BATTLE_MOVE_EFFECTS_H

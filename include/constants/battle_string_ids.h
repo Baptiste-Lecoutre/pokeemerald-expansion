@@ -664,12 +664,25 @@
 #define STRINGID_SNOWCONTINUES                        662
 #define STRINGID_SNOWSTOPPED                          663
 #define STRINGID_SNOWWARNINGSNOW                      664
-#define STRINGID_PKMNGAINEDEXPSHARE                   665
-#define STRINGID_PKMNDROPPEDITEM                      666
-#define STRINGID_BAGISFULL                            667
-#define STRINGID_NORUNNINGFROMTHISBATTLE              668
+#define STRINGID_SHARPSTEELFLOATS                     665
+#define STRINGID_SHARPSTEELDMG                        666
+#define STRINGID_PKMNBLEWAWAYSHARPSTEEL               667
+#define STRINGID_SHARPSTEELDISAPPEAREDFROMTEAM        668
+#define STRINGID_TEAMTRAPPEDWITHVINES                 669
+#define STRINGID_PKMNHURTBYVINES                      670
+#define STRINGID_TEAMCAUGHTINVORTEX                   671
+#define STRINGID_PKMNHURTBYVORTEX                     672
+#define STRINGID_TEAMSURROUNDEDBYFIRE                 673
+#define STRINGID_PKMNBURNINGUP                        674
+#define STRINGID_TEAMSURROUNDEDBYROCKS                675
+#define STRINGID_PKMNHURTBYROCKSTHROWN                676
+#define STRINGID_MOVEBLOCKEDBYDYNAMAX                 677
+#define STRINGID_PKMNGAINEDEXPSHARE                   678
+#define STRINGID_PKMNDROPPEDITEM                      679
+#define STRINGID_BAGISFULL                            680
+#define STRINGID_NORUNNINGFROMTHISBATTLE              681
 
-#define BATTLESTRINGS_COUNT                           669
+#define BATTLESTRINGS_COUNT                           682
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -964,8 +977,10 @@
 // gDmgHazardsStringIds
 #define B_MSG_PKMNHURTBYSPIKES   0
 #define B_MSG_STEALTHROCKDMG     1
-#define B_MSG_POINTEDSTONESFLOAT 2
-#define B_MSG_SPIKESSCATTERED    3
+#define B_MSG_SHARPSTEELDMG      2
+#define B_MSG_POINTEDSTONESFLOAT 3
+#define B_MSG_SPIKESSCATTERED    4
+#define B_MSG_SHARPSTEELFLOATS   5
 
 // gItemDroppedStringIds
 #define B_MSG_ITEM_DROPPED   0

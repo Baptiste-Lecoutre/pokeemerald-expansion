@@ -88,6 +88,10 @@ enum RandomTag
     RNG_TRI_ATTACK,
     RNG_TRIPLE_ARROWS_DEFENSE_DOWN,
     RNG_TRIPLE_ARROWS_FLINCH,
+    RNG_G_MAX_STUN_SHOCK,
+    RNG_G_MAX_BEFUDDLE,
+    RNG_G_MAX_REPLENISH,
+    RNG_G_MAX_SNOOZE,
 };
 
 #define RandomWeighted(tag, ...) \
