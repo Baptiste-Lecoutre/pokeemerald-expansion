@@ -8552,7 +8552,7 @@ static const struct TrainerMonNoItemCustomMoves sParty_MayRustboroMudkip[] = {
     {
     .iv = 25,
     .lvl = 14,
-    .species = SPECIES_SWELLOW,
+    .species = SPECIES_TAILLOW,
     .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
     },
     {
@@ -11191,7 +11191,7 @@ static const struct TrainerMonNoItemCustomMoves sParty_MayRustboroTreecko[] = {
     {
     .iv = 25,
     .lvl = 14,
-    .species = SPECIES_SWELLOW,
+    .species = SPECIES_TAILLOW,
     .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
     },
     {
@@ -11218,7 +11218,7 @@ static const struct TrainerMonNoItemCustomMoves sParty_MayRustboroTorchic[] = {
     {
     .iv = 25,
     .lvl = 14,
-    .species = SPECIES_SWELLOW,
+    .species = SPECIES_TAILLOW,
     .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
     },
     {
