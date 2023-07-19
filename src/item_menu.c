@@ -953,6 +953,11 @@ static void GetItemName(s8 *dest, u16 itemId)
             ConvertIntToDecimalStringN(gStringVar1, itemId - ITEM_HM01 + 1, STR_CONV_MODE_LEADING_ZEROS, 1);
             StringExpandPlaceholders(dest, gText_NumberItem_HM);
         }
+        else if (itemId == ITEM_TM100)
+        {
+            ConvertIntToDecimalStringN(gStringVar1, itemId - ITEM_TM01 + 1, STR_CONV_MODE_LEADING_ZEROS, 3);
+            StringExpandPlaceholders(dest, gText_NumberItem_TMBerry);
+        }
         else
         {
             // Get TM number
