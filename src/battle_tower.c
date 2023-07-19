@@ -2168,7 +2168,7 @@ void DoSpecialTrainerBattle(void)
         FillPartnerParty(gPartnerTrainerId);
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);
-        if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS)
+        if (FlagGet(FLAG_SOOTOPOLIS_BATTLE))
         {
             PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
             BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);

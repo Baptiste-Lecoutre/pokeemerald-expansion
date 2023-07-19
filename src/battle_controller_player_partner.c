@@ -1242,7 +1242,7 @@ static void PlayerPartnerHandleLoadMonSprite(void)
     gSprites[gBattlerSpriteIds[gActiveBattler]].data[0] = gActiveBattler;
     gSprites[gBattlerSpriteIds[gActiveBattler]].data[2] = species;
 
-    if ((gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS) && GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_RIGHT)
+    if (FlagGet(FLAG_SOOTOPOLIS_BATTLE) && GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_RIGHT)
     {
         gSprites[gBattlerSpriteIds[gActiveBattler]].x2 = DISPLAY_WIDTH;
         gSprites[gBattlerSpriteIds[gActiveBattler]].callback = SpriteCB_MoveWildMonToLeft;

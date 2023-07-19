@@ -2913,7 +2913,7 @@ void SpriteCB_OpponentMonFromBall(struct Sprite *sprite)
 // This callback is frequently overwritten by SpriteCB_TrainerSlideIn
 void SpriteCB_BattleSpriteStartSlideLeft(struct Sprite *sprite)
 {
-    if ((gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS) && GetBattlerPosition(sprite->sBattler) == B_POSITION_PLAYER_RIGHT)
+    if (FlagGet(FLAG_SOOTOPOLIS_BATTLE) && GetBattlerPosition(sprite->sBattler) == B_POSITION_PLAYER_RIGHT)
         sprite->callback = SpriteCB_MoveWildMonToLeft;
     else
         sprite->callback = SpriteCB_BattleSpriteSlideLeft;
@@ -3619,7 +3619,7 @@ static void DoBattleIntro(void)
                 }
                 break;
             case B_POSITION_PLAYER_RIGHT:
-                if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS)
+                if (FlagGet(FLAG_SOOTOPOLIS_BATTLE))
                 {
                     gBattleMons[gActiveBattler].statStages[STAT_DEF] = MAX_STAT_STAGE;
                     gBattleMons[gActiveBattler].statStages[STAT_SPDEF] = MAX_STAT_STAGE;
@@ -3836,7 +3836,7 @@ static void DoBattleIntro(void)
         (*state)++;
         break;
     case 19: // player 2 send out
-        if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER) && !(gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS))
+        if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER) && !FlagGet(FLAG_SOOTOPOLIS_BATTLE))
         {
             if (gBattleTypeFlags & BATTLE_TYPE_RECORDED_LINK && !(gBattleTypeFlags & BATTLE_TYPE_RECORDED_IS_MASTER))
                 gActiveBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
@@ -4320,7 +4320,7 @@ static void HandleTurnActionSelectionState(void)
                     }
                     break;
                 case B_ACTION_USE_ITEM:
-                    if (FlagGet(B_FLAG_NO_BAG_USE) || (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS))
+                    if (FlagGet(B_FLAG_NO_BAG_USE) || FlagGet(FLAG_SOOTOPOLIS_BATTLE))
                     {
                         RecordedBattle_ClearBattlerAction(gActiveBattler, 1);
                         gSelectionBattleScripts[gActiveBattler] = BattleScript_ActionSelectionItemsCantBeUsed;
@@ -4454,7 +4454,7 @@ static void HandleTurnActionSelectionState(void)
                     BattleScriptExecute(BattleScript_PrintCantRunFromTrainer);
                     gBattleCommunication[gActiveBattler] = STATE_BEFORE_ACTION_CHOSEN;
                 }
-                else if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS
+                else if (FlagGet(FLAG_SOOTOPOLIS_BATTLE)
                          && gBattleResources->bufferB[gActiveBattler][1] == B_ACTION_RUN)
                 {
                     BattleScriptExecute(BattleScript_PrintCantEscapeFromThisBattle);

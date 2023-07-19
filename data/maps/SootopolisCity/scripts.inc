@@ -525,6 +525,7 @@ SootopolisCity_EventScript_RayquazaFight::
 	multi_sootopolis PARTNER_RAYQUAZA, TRAINER_BACK_PIC_MAY
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	clearflag FLAG_SOOTOPOLIS_BATTLE
 	call SootopolisCity_EventScript_SetRoughWater
 	removeobject LOCALID_GROUDON
 	removeobject LOCALID_KYOGRE

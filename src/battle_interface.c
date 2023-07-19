@@ -3278,7 +3278,7 @@ bool32 CanThrowLastUsedBall(void)
 #else
     if (!CanThrowBall())
         return FALSE;
-    if (gSpecialVar_0x8005 & MULTI_BATTLE_SOOTOPOLIS)
+    if (FlagGet(FLAG_SOOTOPOLIS_BATTLE))
         return FALSE;
     if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER))
         return FALSE;
