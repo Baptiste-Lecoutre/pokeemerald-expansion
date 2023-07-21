@@ -783,7 +783,7 @@ MauvilleCity_GameCorner_EventScript_PrizeCornerStarter::
 	lock
 	faceplayer
 	msgbox MauvilleCity_GameCorner_Text_ExchangeCoinsForPokemon, MSGBOX_DEFAULT
-	checkitem ITEM_COIN_CASE, 1
+	checkitem ITEM_COIN_CASE
 	compare VAR_RESULT, TRUE
 	goto_if_eq MauvilleCity_GameCorner_EventScript_ChooseStarterPrizeMessage
 	release
