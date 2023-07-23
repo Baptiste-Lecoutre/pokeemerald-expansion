@@ -130,7 +130,7 @@ bool32 CanDynamax(u16 battlerId)
         return FALSE;
 
     // Cannot Dynamax if you can Mega Evolve or use a Z-Move
-    if (holdEffect == HOLD_EFFECT_MEGA_STONE && holdEffect == HOLD_EFFECT_Z_CRYSTAL)
+    if (holdEffect == HOLD_EFFECT_MEGA_STONE || holdEffect == HOLD_EFFECT_Z_CRYSTAL)
         return FALSE;
 
     // Cannot Dynamax if your side has already or will Dynamax.
