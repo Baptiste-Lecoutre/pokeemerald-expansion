@@ -205,6 +205,30 @@ SlateportCity_Pokemart_Incense::
 	release
 	end
 
+SlateportCity_EventScript_EvoStonesStand::
+	lock
+	faceplayer
+	message SlateportCity_Text_EvoStonesStand
+	waitmessage
+	pokemart SlateportCity_PokeMart_EvoStones
+	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
+	release
+	end
+
+	.align 2
+SlateportCity_PokeMart_EvoStones::
+	.2byte ITEM_FIRE_STONE
+	.2byte ITEM_WATER_STONE
+	.2byte ITEM_LEAF_STONE
+	.2byte ITEM_THUNDER_STONE
+	.2byte ITEM_ICE_STONE
+	.2byte ITEM_MOON_STONE
+	.2byte ITEM_SUN_STONE
+	.2byte ITEM_OVAL_STONE
+	.2byte ITEM_NONE
+	release
+	end
+
 SlateportCity_EventScript_EffortRibbonWoman::
 	lock
 	faceplayer
@@ -1013,6 +1037,10 @@ SlateportCity_Text_PowerItemsSellWhatYouNeed:
 SlateportCity_Text_IncenseStand:
 	.string "Wouldn't you like some fragrant\n"
 	.string "incense?$"
+
+SlateportCity_Text_EvoStonesStand:
+	.string "Can't make your Pokémon evolve?\n"
+	.string "Look at these stones!$"
 
 SlateportCity_Text_OhYourPokemon:
 	.string "Oh?\n"

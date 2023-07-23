@@ -5,33 +5,33 @@ MauvilleCity_House2_EventScript_Woman::
 	lock
 	faceplayer
 	goto_if_set FLAG_RECEIVED_COIN_CASE, MauvilleCity_House2_EventScript_ReceivedCoinCase
-	msgbox MauvilleCity_House2_Text_BuyHarborMailAtSlateport, MSGBOX_DEFAULT
-	checkitem ITEM_HARBOR_MAIL
-	goto_if_eq VAR_RESULT, TRUE, MauvilleCity_House2_EventScript_AskToTradeForHarborMail
+	msgbox MauvilleCity_House2_Text_BuyOvalStoneAtSlateport, MSGBOX_DEFAULT
+	checkitem ITEM_OVAL_STONE, 1
+	goto_if_eq VAR_RESULT, TRUE, MauvilleCity_House2_EventScript_AskToTradeForOvalStone
 	release
 	end
 
-MauvilleCity_House2_EventScript_AskToTradeForHarborMail::
+MauvilleCity_House2_EventScript_AskToTradeForOvalStone:
 	playse SE_PIN
 	applymovement VAR_LAST_TALKED, Common_Movement_ExclamationMark
 	waitmovement 0
 	applymovement VAR_LAST_TALKED, Common_Movement_Delay48
 	waitmovement 0
-	msgbox MauvilleCity_House2_Text_TradeHarborMailForCoinCase, MSGBOX_YESNO
+	msgbox MauvilleCity_House2_Text_TradeOvalStoneForCoinCase, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, MauvilleCity_House2_EventScript_AcceptTrade
 	goto_if_eq VAR_RESULT, NO, MauvilleCity_House2_EventScript_DeclineTrade
 	end
 
 MauvilleCity_House2_EventScript_AcceptTrade::
 	msgbox MauvilleCity_House2_Text_IllTradeYouCoinCase, MSGBOX_DEFAULT
-	removeitem ITEM_HARBOR_MAIL
+	removeitem ITEM_OVAL_STONE, 1
 	giveitem ITEM_COIN_CASE
 	setflag FLAG_RECEIVED_COIN_CASE
 	goto MauvilleCity_House2_EventScript_ReceivedCoinCase
 	end
 
 MauvilleCity_House2_EventScript_ReceivedCoinCase::
-	msgbox MauvilleCity_House2_Text_UseCoinCaseAtGameCorner, MSGBOX_DEFAULT
+	msgbox MauvilleCity_House2_Text_HuhItDoesntWork, MSGBOX_DEFAULT
 	release
 	end
 
@@ -111,24 +111,26 @@ MauvilleCity_House2_EventScript_StarterMoveTaught::
 	release
 	end
 
-MauvilleCity_House2_Text_BuyHarborMailAtSlateport:
+MauvilleCity_House2_Text_BuyOvalStoneAtSlateport:
 	.string "If I had a Bike, it'd be easy to cycle to\n"
 	.string "Slateport for some shopping.\p"
-	.string "I'd be able to buy Harbor Mail at the\n"
+	.string "I'd be able to buy an Oval Stone at the\n"
 	.string "Pokémon Mart in Slateport…\p"
 	.string "I want one so much…$"
 
-MauvilleCity_House2_Text_TradeHarborMailForCoinCase:
-	.string "Oh! You have Harbor Mail?\n"
+MauvilleCity_House2_Text_TradeOvalStoneForCoinCase:
+	.string "Oh! You have an Oval Stone?\n"
 	.string "Will you trade it for a Coin Case?$"
 
 MauvilleCity_House2_Text_IllTradeYouCoinCase:
-	.string "Oh, I'm so happy!\n"
-	.string "Okay, I'll trade you a Coin Case!$"
+	.string "Oh, now I can evolve my Eevee!\n"
+	.string "I'm so happy!\p"
+	.string "Okay, I'll trade you a Coin Case!\n"
+	.string "It can be used at the Game Corner.$"
 
-MauvilleCity_House2_Text_UseCoinCaseAtGameCorner:
-	.string "That Coin Case can be used\n"
-	.string "at the Game Corner.$"
+MauvilleCity_House2_Text_HuhItDoesntWork:
+	.string "Huh !? An Oval Stone doesn't work\n"
+	.string "on my Eevee?$"
 
 MauvilleCity_House2_Text_ThatsDisappointing:
 	.string "Oh, that's disappointing.\p"
