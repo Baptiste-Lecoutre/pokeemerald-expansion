@@ -1913,7 +1913,10 @@ static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId)
 
 static void MoveSelectionDisplayMoveType(void)
 {
-    MoveSelectionDisplayMoveTypeDoubles(B_POSITION_OPPONENT_LEFT);
+    if (!IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)) && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))
+        MoveSelectionDisplayMoveTypeDoubles(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT));
+    else
+        MoveSelectionDisplayMoveTypeDoubles(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
 }
 
 static void MoveSelectionDisplaySplitIcon(void){
