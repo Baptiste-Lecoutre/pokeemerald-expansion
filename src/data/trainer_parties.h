@@ -11873,7 +11873,7 @@ static const struct TrainerMonItemCustomMoves sParty_Erika[] = {
     .iv = 50,
     .lvl = 30,
     .species = SPECIES_EXEGGUTOR_ALOLAN,
-    .heldItem = ITEM_NONE,
+    .heldItem = ITEM_LUM_BERRY,
     .moves = {MOVE_BREAKING_SWIPE, MOVE_ENERGY_BALL, MOVE_PSYBEAM, MOVE_SUNNY_DAY}
     },
     {
