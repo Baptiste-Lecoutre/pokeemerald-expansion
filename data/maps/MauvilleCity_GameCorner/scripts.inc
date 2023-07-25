@@ -8,6 +8,7 @@ MauvilleCity_GameCorner_MapScripts::
 	.set TM24_COINS,  4000
 	.set TM13_COINS,  4000
 	.set STARTER_COINS, 	2500
+	.set HIDDEN_ABILITY_COINS, 	500
 	.set DOLL_COINS,  1000
 
 	.set COINS_PRICE_50,  1000
@@ -962,12 +963,12 @@ MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize::
 	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	checkcoins VAR_0x8007
 	goto_if_lt VAR_0x8007, VAR_0x8006, MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter
-	goto_if_lt VAR_0x8007, VAR_0x8008, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	goto_if_lt VAR_0x8007, VAR_0x8008, MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility
 	msgbox MauvilleCity_GameCorner_Text_DoYouWantYourXToBeShiny, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility
 	copyvar VAR_0x8006, VAR_0x8008
 	setflag P_FLAG_FORCE_SHINY
-	goto MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	goto MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility
 	
 MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter::
 	msgbox MauvilleCity_GameCorner_Text_NotEnoughCoins, MSGBOX_DEFAULT
@@ -979,6 +980,16 @@ MauvilleCity_GameCorner_EventScript_CancelPokemonSelect::
 	hidecoinsbox 0, 0
 	release
 	end
+
+MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility::
+	copyvar VAR_0x8008, VAR_0x8006
+	addvar VAR_0x8008, HIDDEN_ABILITY_COINS
+	goto_if_lt VAR_0x8007, VAR_0x8008, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	msgbox MauvilleCity_GameCorner_Text_DoYouWantYourXToKnowHA, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	copyvar VAR_0x8006, VAR_0x8008
+	setflag P_FLAG_FORCE_HIDDEN_ABILITY
+	goto MauvilleCity_GameCorner_EventScript_ReceivePokemon
 
 MauvilleCity_GameCorner_EventScript_ReceivePokemon::
 	msgbox MauvilleCity_GameCorner_Text_ThanksPleaseTakePokemon, MSGBOX_DEFAULT
@@ -1043,6 +1054,10 @@ MauvilleCity_GameCorner_Text_SoYourChoiceIsThePokemonX:
 MauvilleCity_GameCorner_Text_DoYouWantYourXToBeShiny:
 	.string "Would you like your {STR_VAR_1}\n"
 	.string "to be shiny for 2500 more coins?$"
+
+MauvilleCity_GameCorner_Text_DoYouWantYourXToKnowHA:
+	.string "Your {STR_VAR_1} can have its\n"
+	.string "Hidden Ability for 500 more coins. Deal?$"
 
 MauvilleCity_GameCorner_Text_TakeCareOfPokemon:
 	.string "Take good care of {STR_VAR_1}!$"
