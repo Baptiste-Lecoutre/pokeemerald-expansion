@@ -955,13 +955,18 @@ MauvilleCity_GameCorner_EventScript_Sobble::
 	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
 	
 MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize::
+	copyvar VAR_0x8008, VAR_0x8006
+	addvar VAR_0x8008, STARTER_COINS
 	bufferspeciesname 0, VAR_TEMP_1
 	msgbox MauvilleCity_GameCorner_Text_SoYourChoiceIsThePokemonX, MSGBOX_YESNO
-	compare VAR_RESULT, NO
-	goto_if_eq MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	checkcoins VAR_0x8007
-	compare VAR_0x8007, VAR_0x8006
-	goto_if_lt MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter
+	goto_if_lt VAR_0x8007, VAR_0x8006, MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter
+	goto_if_lt VAR_0x8007, VAR_0x8008, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	msgbox MauvilleCity_GameCorner_Text_DoYouWantYourXToBeShiny, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	copyvar VAR_0x8006, VAR_0x8008
+	setflag P_FLAG_FORCE_SHINY
 	goto MauvilleCity_GameCorner_EventScript_ReceivePokemon
 	
 MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter::
@@ -1034,6 +1039,10 @@ MauvilleCity_GameCorner_Text_WhichStarterType:
 
 MauvilleCity_GameCorner_Text_SoYourChoiceIsThePokemonX:
 	.string "So your choice is {STR_VAR_1}?$"
+
+MauvilleCity_GameCorner_Text_DoYouWantYourXToBeShiny:
+	.string "Would you like your {STR_VAR_1}\n"
+	.string "to be shiny for 2500 more coins?$"
 
 MauvilleCity_GameCorner_Text_TakeCareOfPokemon:
 	.string "Take good care of {STR_VAR_1}!$"
