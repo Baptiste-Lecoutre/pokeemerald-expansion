@@ -399,6 +399,67 @@ const struct TrainerMoney gTrainerMoneyTable[] =
     {0xFF, 5}, // Any trainer class not listed above uses this
 };
 
+const s8 gTrainerClassLevelOffsetTable[] = 
+{
+    [TRAINER_CLASS_TEAM_AQUA] = - 2,
+    [TRAINER_CLASS_AQUA_ADMIN] = 0,
+    [TRAINER_CLASS_AQUA_LEADER] = 1,
+    [TRAINER_CLASS_AROMA_LADY] = - 2,
+    [TRAINER_CLASS_RUIN_MANIAC] = - 2,
+    [TRAINER_CLASS_INTERVIEWER] = - 1,
+    [TRAINER_CLASS_TUBER_F] = - 2,
+    [TRAINER_CLASS_TUBER_M] = - 2,
+    [TRAINER_CLASS_SIS_AND_BRO] = - 2,
+    [TRAINER_CLASS_COOLTRAINER] = 0,
+    [TRAINER_CLASS_HEX_MANIAC] = - 2,
+    [TRAINER_CLASS_LADY] = - 2,
+    [TRAINER_CLASS_BEAUTY] = - 2,
+    [TRAINER_CLASS_RICH_BOY] = - 2,
+    [TRAINER_CLASS_POKEMANIAC] = - 2,
+    [TRAINER_CLASS_SWIMMER_M] = - 2,
+    [TRAINER_CLASS_BLACK_BELT] = - 1,
+    [TRAINER_CLASS_GUITARIST] = - 2,
+    [TRAINER_CLASS_KINDLER] = - 2,
+    [TRAINER_CLASS_CAMPER] = - 2,
+    [TRAINER_CLASS_OLD_COUPLE] = - 2,
+    [TRAINER_CLASS_BUG_MANIAC] = - 3,
+    [TRAINER_CLASS_PSYCHIC] = - 2,
+    [TRAINER_CLASS_GENTLEMAN] = - 2,
+    [TRAINER_CLASS_ELITE_FOUR] = 1,
+    [TRAINER_CLASS_LEADER] = 1,
+    [TRAINER_CLASS_SCHOOL_KID] = - 3,
+    [TRAINER_CLASS_SR_AND_JR] = - 3,
+    [TRAINER_CLASS_POKEFAN] = - 3,
+    [TRAINER_CLASS_EXPERT] = 0,
+    [TRAINER_CLASS_YOUNGSTER] = - 3,
+    [TRAINER_CLASS_CHAMPION] = 2,
+    [TRAINER_CLASS_FISHERMAN] = - 2,
+    [TRAINER_CLASS_TRIATHLETE] = - 1,
+    [TRAINER_CLASS_DRAGON_TAMER] = 0,
+    [TRAINER_CLASS_BIRD_KEEPER] = - 2,
+    [TRAINER_CLASS_NINJA_BOY] = - 2,
+    [TRAINER_CLASS_BATTLE_GIRL] = - 1,
+    [TRAINER_CLASS_PARASOL_LADY] = - 2,
+    [TRAINER_CLASS_SWIMMER_F] = - 2,
+    [TRAINER_CLASS_PICNICKER] = - 2,
+    [TRAINER_CLASS_TWINS] = - 2,
+    [TRAINER_CLASS_SAILOR] = - 2,
+    [TRAINER_CLASS_COLLECTOR] = - 2,
+    [TRAINER_CLASS_RIVAL] = 0,
+    [TRAINER_CLASS_PKMN_BREEDER] = - 1,
+    [TRAINER_CLASS_PKMN_RANGER] = - 1,
+    [TRAINER_CLASS_TEAM_MAGMA] = - 2,
+    [TRAINER_CLASS_MAGMA_ADMIN] = 0,
+    [TRAINER_CLASS_MAGMA_LEADER] = 1,
+    [TRAINER_CLASS_LASS] = - 1,
+    [TRAINER_CLASS_BUG_CATCHER] = - 3,
+    [TRAINER_CLASS_HIKER] = - 2,
+    [TRAINER_CLASS_YOUNG_COUPLE] = - 3,
+    [TRAINER_CLASS_WINSTRATE] = 0,
+    [TRAINER_CLASS_TEAM_ROCKET] = - 2,
+    [TRAINER_CLASS_BOSS] = 1,
+};
+
 #if B_TRAINER_CLASS_POKE_BALLS >= GEN_7
 static const u16 sTrainerBallTable[TRAINER_CLASS_COUNT] =
 {
@@ -1962,16 +2023,16 @@ static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct Trai
     }
 }
 
-struct Trainer TryOverrideParty(struct Trainer *trainer)
+/*struct Trainer TryOverrideParty(struct Trainer *trainer)
 {
     //*trainer = gTrainers[TRAINER_WALLACE];
     return *trainer;
-}
+}*/
 
 u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags)
 {
     u32 personalityValue;
-    u8 fixedIV;
+    u8 fixedIV, monLevel, averageOpponentLevel = 0, playerLevel = GetHighestLevelInPlayerParty();
     s32 i, j;
     u8 monsCount;
     s32 ball = -1;
@@ -1982,7 +2043,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
         if (firstTrainer == TRUE)
             ZeroEnemyPartyMons();
 
-        *trainer = TryOverrideParty(trainer);
+//        *trainer = TryOverrideParty(trainer);
 
         if (battleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
         {
@@ -2013,14 +2074,34 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
             {
                 const struct TrainerMonNoItemDefaultMoves *partyData = trainer->party.NoItemDefaultMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+
+                for (j = 0; j < monsCount; j++)
+                    averageOpponentLevel += partyData[j].lvl;
+                averageOpponentLevel /= monsCount;
+                monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClassLevelOffsetTable[trainer->trainerClass];
+                if (monLevel > MAX_LEVEL)
+                    monLevel = MAX_LEVEL;
+                else if (monLevel < 2)
+                    monLevel = 2;
+
+                CreateMon(&party[i], partyData[i].species, monLevel, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
                 break;
             }
             case F_TRAINER_PARTY_CUSTOM_MOVESET:
             {
                 const struct TrainerMonNoItemCustomMoves *partyData = trainer->party.NoItemCustomMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+
+                for (j = 0; j < monsCount; j++)
+                    averageOpponentLevel += partyData[j].lvl;
+                averageOpponentLevel /= monsCount;
+                monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClassLevelOffsetTable[trainer->trainerClass];
+                if (monLevel > MAX_LEVEL)
+                    monLevel = MAX_LEVEL;
+                else if (monLevel < 2)
+                    monLevel = 2;
+                
+                CreateMon(&party[i], partyData[i].species, monLevel, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
 
                 for (j = 0; j < MAX_MON_MOVES; j++)
                 {
@@ -2033,7 +2114,17 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
             {
                 const struct TrainerMonItemDefaultMoves *partyData = trainer->party.ItemDefaultMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+
+                for (j = 0; j < monsCount; j++)
+                    averageOpponentLevel += partyData[j].lvl;
+                averageOpponentLevel /= monsCount;
+                monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClassLevelOffsetTable[trainer->trainerClass];
+                if (monLevel > MAX_LEVEL)
+                    monLevel = MAX_LEVEL;
+                else if (monLevel < 2)
+                    monLevel = 2;
+
+                CreateMon(&party[i], partyData[i].species, monLevel, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
 
                 SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
                 break;
@@ -2042,7 +2133,18 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
             {
                 const struct TrainerMonItemCustomMoves *partyData = trainer->party.ItemCustomMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                CreateMon(&party[i], partyData[i].species, partyData[i].lvl, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
+                
+                
+                for (j = 0; j < monsCount; j++)
+                    averageOpponentLevel += partyData[j].lvl;
+                averageOpponentLevel /= monsCount;
+                monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClassLevelOffsetTable[trainer->trainerClass];
+                if (monLevel > MAX_LEVEL)
+                    monLevel = MAX_LEVEL;
+                else if (monLevel < 2)
+                    monLevel = 2;
+                
+                CreateMon(&party[i], partyData[i].species, monLevel, fixedIV, TRUE, personalityValue, OT_ID_RANDOM_NO_SHINY, 0);
 
                 SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
 
