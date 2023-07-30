@@ -1050,6 +1050,8 @@ const struct MonCoords gMonFrontPicCoords[NUM_SPECIES + 1] =
     [SPECIES_PIKACHU_POP_STAR]             = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
     [SPECIES_PIKACHU_PH_D]                 = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
     [SPECIES_PIKACHU_LIBRE]                = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
+    [SPECIES_PIKACHU_SURFING]              = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
+    [SPECIES_PIKACHU_FLYING]               = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  0 },
     // Cap Pikachu
     [SPECIES_PIKACHU_ORIGINAL_CAP]         = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },
     [SPECIES_PIKACHU_HOENN_CAP]            = { .size = MON_COORDS_SIZE(48, 48), .y_offset =  9 },

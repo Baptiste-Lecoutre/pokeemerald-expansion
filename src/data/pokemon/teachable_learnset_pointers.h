@@ -1046,6 +1046,8 @@ const u16 *const gTeachableLearnsets[NUM_SPECIES] =
     [SPECIES_PIKACHU_POP_STAR] = sPikachuTeachableLearnset,
     [SPECIES_PIKACHU_PH_D] = sPikachuTeachableLearnset,
     [SPECIES_PIKACHU_LIBRE] = sPikachuTeachableLearnset,
+    [SPECIES_PIKACHU_SURFING] = sPikachuTeachableLearnset,
+    [SPECIES_PIKACHU_FLYING] = sPikachuTeachableLearnset,
     // Cap Pikachu
     [SPECIES_PIKACHU_ORIGINAL_CAP] = sPikachuTeachableLearnset,
     [SPECIES_PIKACHU_HOENN_CAP] = sPikachuTeachableLearnset,

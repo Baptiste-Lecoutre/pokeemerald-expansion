@@ -10424,6 +10424,18 @@ static const union AnimCmd sAnim_PikachuLibre_1[] =
     ANIMCMD_END,
 };
 
+static const union AnimCmd sAnim_PikachuSurfing_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_PikachuFlying_1[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
 static const union AnimCmd sAnim_PikachuOriginalCap_1[] =
 {
     ANIMCMD_FRAME(0, 1),
@@ -11835,6 +11847,8 @@ SINGLE_ANIMATION(PikachuBelle);
 SINGLE_ANIMATION(PikachuPopStar);
 SINGLE_ANIMATION(PIKACHU_PH_D);
 SINGLE_ANIMATION(PikachuLibre);
+SINGLE_ANIMATION(PikachuSurfing);
+SINGLE_ANIMATION(PikachuFlying);
 SINGLE_ANIMATION(PikachuOriginalCap);
 SINGLE_ANIMATION(PikachuHoennCap);
 SINGLE_ANIMATION(PikachuSinnohCap);
@@ -12962,6 +12976,8 @@ const union AnimCmd *const *const gMonFrontAnimsPtrTable[NUM_SPECIES + 1] =
     [SPECIES_PIKACHU_POP_STAR] = sAnims_PikachuPopStar,
     [SPECIES_PIKACHU_PH_D] = sAnims_PIKACHU_PH_D,
     [SPECIES_PIKACHU_LIBRE] = sAnims_PikachuLibre,
+    [SPECIES_PIKACHU_SURFING] = sAnims_PikachuSurfing,
+    [SPECIES_PIKACHU_FLYING] = sAnims_PikachuFlying,
     [SPECIES_PIKACHU_ORIGINAL_CAP] = sAnims_PikachuOriginalCap,
     [SPECIES_PIKACHU_HOENN_CAP] = sAnims_PikachuHoennCap,
     [SPECIES_PIKACHU_SINNOH_CAP] = sAnims_PikachuSinnohCap,

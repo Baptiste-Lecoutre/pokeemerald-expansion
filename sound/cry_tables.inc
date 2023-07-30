@@ -2187,6 +2187,8 @@ gCryTable::
 	cry Cry_Unown
 	cry Cry_Unown
 .endif
+	cry Cry_Pikachu
+	cry Cry_Pikachu
 
 	.align 2
 gCryTable_Reverse::
@@ -4323,3 +4325,5 @@ gCryTable_Reverse::
 	cry_reverse Cry_Unown
 	cry_reverse Cry_Unown
 .endif
+	cry_reverse Cry_Pikachu
+	cry_reverse Cry_Pikachu

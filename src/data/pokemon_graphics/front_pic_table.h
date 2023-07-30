@@ -1044,6 +1044,8 @@ const struct CompressedSpriteSheet gMonFrontPicTable[NUM_SPECIES + 1] =
     SPECIES_SPRITE(PIKACHU_POP_STAR, gMonFrontPic_PikachuPopStar),
     SPECIES_SPRITE(PIKACHU_PH_D, gMonFrontPic_PikachuPhD),
     SPECIES_SPRITE(PIKACHU_LIBRE, gMonFrontPic_PikachuLibre),
+    SPECIES_SPRITE(PIKACHU_SURFING, gMonFrontPic_PikachuSurfing),
+    SPECIES_SPRITE(PIKACHU_FLYING, gMonFrontPic_PikachuFlying),
 
     SPECIES_SPRITE(PIKACHU_ORIGINAL_CAP, gMonFrontPic_PikachuOriginalCap),
     SPECIES_SPRITE(PIKACHU_HOENN_CAP, gMonFrontPic_PikachuHoennCap),

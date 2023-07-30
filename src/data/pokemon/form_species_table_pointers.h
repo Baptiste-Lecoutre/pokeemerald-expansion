@@ -303,6 +303,8 @@ const u16 *const gFormSpeciesIdTables[NUM_SPECIES] =
     [SPECIES_PIKACHU_POP_STAR] = sPikachuFormSpeciesIdTable,
     [SPECIES_PIKACHU_PH_D] = sPikachuFormSpeciesIdTable,
     [SPECIES_PIKACHU_LIBRE] = sPikachuFormSpeciesIdTable,
+    [SPECIES_PIKACHU_SURFING] = sPikachuFormSpeciesIdTable,
+    [SPECIES_PIKACHU_FLYING] = sPikachuFormSpeciesIdTable,
     // Cap Pikachu
     [SPECIES_PIKACHU_ORIGINAL_CAP] = sPikachuFormSpeciesIdTable,
     [SPECIES_PIKACHU_HOENN_CAP] = sPikachuFormSpeciesIdTable,

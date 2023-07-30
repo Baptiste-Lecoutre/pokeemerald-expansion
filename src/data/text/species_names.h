@@ -1049,6 +1049,8 @@ const u8 gSpeciesNames[NUM_SPECIES][POKEMON_NAME_LENGTH + 1] = {
     [SPECIES_PIKACHU_POP_STAR] = _("Pikachu"),
     [SPECIES_PIKACHU_PH_D] = _("Pikachu"),
     [SPECIES_PIKACHU_LIBRE] = _("Pikachu"),
+    [SPECIES_PIKACHU_SURFING] = _("Pikachu"),
+    [SPECIES_PIKACHU_FLYING] = _("Pikachu"),
     // Cap Pikachu
     [SPECIES_PIKACHU_ORIGINAL_CAP] = _("Pikachu"),
     [SPECIES_PIKACHU_HOENN_CAP] = _("Pikachu"),
