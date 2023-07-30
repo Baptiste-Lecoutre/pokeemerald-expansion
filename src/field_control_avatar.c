@@ -183,12 +183,12 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
             input->checkStandardWildEncounter = TRUE;
     }
 
-    if (!gSaveBlock2Ptr->showItemIconsWheel)
+    /*if (!gSaveBlock2Ptr->showItemIconsWheel)
     {
-        DestroyItemIconSprites();
+        DestroyItemIconSprites();*/
         SetDirectionFromHeldKeys(heldKeys);
         input->dpadDirection = sCurrentDirection;
-    }
+    /*}
     else
     {
         //sRegisteredKeyItem = 4;
@@ -200,8 +200,7 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
             input->dpadDirectionRegister = sRegisteredKeyItem = 2;
         else if (newKeys & DPAD_LEFT || heldKeys & DPAD_LEFT)
             input->dpadDirectionRegister = sRegisteredKeyItem = 3;
-            
-    }
+    }*/
 
 #if DEBUG_OVERWORLD_MENU == TRUE && DEBUG_OVERWORLD_IN_MENU == FALSE
     if ((heldKeys & DEBUG_OVERWORLD_HELD_KEYS) && input->DEBUG_OVERWORLD_TRIGGER_EVENT)
@@ -261,23 +260,25 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     if (input->pressedAButton && TrySetupDiveDownScript() == TRUE)
         return TRUE;
 
-    if (gSaveBlock2Ptr->showItemIconsWheel && (input->pressedAButton || input->pressedBButton))
+    /*if (gSaveBlock2Ptr->showItemIconsWheel && (input->pressedAButton || input->pressedBButton))
     {
         gSaveBlock2Ptr->showItemIconsWheel = FALSE;
         sRegisteredKeyItem = 4;
         DestroyItemIconSprites();
-    }
+    }*/
 
     if (input->pressedStartButton)
     {
         PlaySE(SE_WIN_OPEN);
-        gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-        DestroyItemIconSprites();
+//        gSaveBlock2Ptr->showItemIconsWheel = FALSE;
+//        DestroyItemIconSprites();
         ShowStartMenu();
         return TRUE;
     }
 
-    if (input->pressedSelectButton && PlayerHasOneRegisteredItem())
+    if (input->pressedSelectButton && UseRegisteredKeyItemOnField() == TRUE)
+        return TRUE;
+    /*if (input->pressedSelectButton && PlayerHasOneRegisteredItem())
     {
         gSaveBlock2Ptr->showItemIconsWheel = !gSaveBlock2Ptr->showItemIconsWheel;
         sRegisteredKeyItem = 4;
@@ -298,7 +299,7 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
                 return TRUE;
             }
         }
-    }
+    }*/
     
     if (input->tookStep && TryFindHiddenPokemon())
         return TRUE;

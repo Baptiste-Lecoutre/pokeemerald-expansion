@@ -1099,7 +1099,7 @@ struct SaveBlock1
     /*0x3???*/ struct TrainerHillSave trainerHill;
     /*0x3???*/ struct WaldaPhrase waldaPhrase;
     // sizeof: 0x3???
-                u16 registeredItemList[4];
+                u16 registeredItemList[MAX_REGISTERED_ITEMS];
                 u8 dexNavChain;
 };
 
