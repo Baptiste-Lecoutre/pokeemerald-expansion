@@ -98,10 +98,6 @@ enum {
     ACTION_SHOW,
     ACTION_GIVE_FAVOR_LADY,
     ACTION_CONFIRM_QUIZ_LADY,
-    /*ACTION_BUTTON_UP,
-    ACTION_BUTTON_RIGHT,
-    ACTION_BUTTON_DOWN,
-    ACTION_BUTTON_LEFT,*/
     ACTION_DUMMY,
 };
 
@@ -227,16 +223,6 @@ static void CancelSell(u8);
 // Key item wheel
 static void Task_KeyItemWheel(u8 taskId);
 
-/*// tx_registered_items_wheel_icons
-static void ItemMenu_Register_Up(u8 taskId);
-static void ItemMenu_Register_Right(u8 taskId);
-static void ItemMenu_Register_Down(u8 taskId);
-static void ItemMenu_Register_Left(u8 taskId);
-static void ItemMenu_Deselect(u8 taskId);
-static bool8 Register_IsItemInList(u16 itemId);
-static u8 Register_GetItemListPosition(u16 itemId);
-static void ShowItemIconSprite(u16 item, bool8 firstTime, bool8 flash);*/
-
 static const struct BgTemplate sBgTemplates_ItemMenu[] =
 {
     {
@@ -290,11 +276,6 @@ static const struct ListMenuTemplate sItemListMenu =
     .cursorKind = CURSOR_BLACK_ARROW
 };
 
-static const u8 sMenuText_Up[] = _("UP");//_("Up");
-static const u8 sMenuText_Right[] = _("RIGHT");//_("Right");
-static const u8 sMenuText_Down[] = _("DOWN");//_("Down");
-static const u8 sMenuText_Left[] = _("LEFT");//_("Left");
-
 static const struct MenuAction sItemMenuActions[] = {
     [ACTION_USE]               = {gMenuText_Use,      ItemMenu_UseOutOfBattle},
     [ACTION_TOSS]              = {gMenuText_Toss,     ItemMenu_Toss},
@@ -310,10 +291,6 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_SHOW]              = {gMenuText_Show,     ItemMenu_Show},
     [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,    ItemMenu_GiveFavorLady},
     [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,  ItemMenu_ConfirmQuizLady},
-    /*[ACTION_BUTTON_UP]         = {sMenuText_Up,       ItemMenu_Register_Up},
-    [ACTION_BUTTON_RIGHT]      = {sMenuText_Right,    ItemMenu_Register_Right},
-    [ACTION_BUTTON_DOWN]       = {sMenuText_Down,     ItemMenu_Register_Down},
-    [ACTION_BUTTON_LEFT]       = {sMenuText_Left,     ItemMenu_Register_Left},*/
     [ACTION_DUMMY]             = {gText_EmptyString2, NULL}
 };
 
@@ -373,11 +350,6 @@ static const u8 sContextMenuItems_FavorLady[] = {
 static const u8 sContextMenuItems_QuizLady[] = {
     ACTION_CONFIRM_QUIZ_LADY, ACTION_CANCEL
 };
-
-/*static const u8 sContextMenu_RegisterKeyItem[] = {
-    ACTION_BUTTON_UP, ACTION_BUTTON_RIGHT,
-    ACTION_BUTTON_DOWN, ACTION_BUTTON_LEFT,
-};*/
 
 static const TaskFunc sContextMenuFuncs[] = {
     [ITEMMENULOCATION_FIELD] =                  Task_ItemContext_Normal,
@@ -750,9 +722,6 @@ static EWRAM_DATA struct ListBuffer1 *sListBuffer1 = 0;
 static EWRAM_DATA struct ListBuffer2 *sListBuffer2 = 0;
 EWRAM_DATA u16 gSpecialVar_ItemId = 0;
 static EWRAM_DATA struct TempWallyBag *sTempWallyBag = 0;
-static EWRAM_DATA bool8 sRegisterSubMenu = FALSE;
-EWRAM_DATA u8 sRegisteredItemIconSpriteId[4] = {0};
-EWRAM_DATA u8 sRegisteredItemIconSpriteId2[4] = {0};
 // used to hold the palette for the 4th (clockwise) item in the key item wheel
 // so it can be scanline-copied into place
 // This could be 12 bytes smaller if we used AllocZeroed,
@@ -2305,8 +2274,6 @@ static void ItemMenu_Cancel(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
-    sRegisterSubMenu = FALSE;
-
     RemoveContextWindow();
     PrintItemDescription(tListPosition);
     ScheduleBgCopyTilemapToVram(0);
@@ -3068,273 +3035,3 @@ static void PrintTMHMMoveData(u16 itemId)
         CopyWindowToVram(WIN_TMHM_INFO, COPYWIN_GFX);
     }
 }
-
-/* // tx_registered_items_wheel_icons
-static bool8 Register_IsItemInList(u16 itemId)
-{
-    u8 i;
-    for (i = 0; i < 4; i++)
-    {
-        if (gSaveBlock1Ptr->registeredItemList[i] == itemId)
-            return TRUE;
-    }
-    return FALSE;
-}
-
-static u8 Register_GetItemListPosition(u16 itemId)
-{
-    u8 i;
-    for (i = 0; i < 4; i++)
-    {
-        if (gSaveBlock1Ptr->registeredItemList[i] == itemId)
-            return i;
-    }
-    return FALSE;
-}
-
-static void ResetRegisteredItem(u16 item)
-{
-    if (Register_IsItemInList(item))
-        gSaveBlock1Ptr->registeredItemList[Register_GetItemListPosition(item)] = ITEM_NONE;
-}
-
-static void ItemMenu_FinishRegister(u8 taskId)
-{
-    s16* data = gTasks[taskId].data;
-    u16* scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
-    u16* cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
-
-    DestroyListMenuTask(data[0], scrollPos, cursorPos);
-    LoadBagItemListBuffers(gBagPosition.pocket);
-    data[0] = ListMenuInit(&gMultiuseListMenuTemplate, *scrollPos, *cursorPos);
-    ScheduleBgCopyTilemapToVram(0);
-    ItemMenu_Cancel(taskId);
-}
-
-static void ItemMenu_Register(u8 taskId)
-{
-    s16* data = gTasks[taskId].data;
-    u16* scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
-    u16* cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
-    int listPosition;
-
-    RemoveContextWindow();
-    sRegisterSubMenu = TRUE;
-    listPosition = ListMenu_ProcessInput(data[0]);
-    ListMenuGetScrollAndRow(data[0], scrollPos, cursorPos);
-    BagDestroyPocketScrollArrowPair();
-    BagMenu_PrintCursor(data[0], 2);
-    data[1] = listPosition;
-    data[2] = BagGetQuantityByPocketPosition(gBagPosition.pocket + 1, listPosition);
-    gSpecialVar_ItemId = BagGetItemIdByPocketPosition(gBagPosition.pocket + 1, listPosition);
-    sContextMenuFuncs[gBagPosition.location](taskId);
-}
-
-static void ItemMenu_RegisterList(u8 taskId, u8 pos)
-{
-    if (Register_IsItemInList(gSpecialVar_ItemId))
-        gSaveBlock1Ptr->registeredItemList[Register_GetItemListPosition(gSpecialVar_ItemId)] = ITEM_NONE;
-
-    gSaveBlock1Ptr->registeredItemList[pos] = gSpecialVar_ItemId;
-
-    gTasks[taskId].func = ItemMenu_FinishRegister;
-}
-
-static void ItemMenu_Register_Up(u8 taskId)
-{
-    ItemMenu_RegisterList(taskId, 0);
-}
-static void ItemMenu_Register_Right(u8 taskId)
-{
-    ItemMenu_RegisterList(taskId, 1);
-}
-static void ItemMenu_Register_Down(u8 taskId)
-{
-    ItemMenu_RegisterList(taskId, 2);
-}
-static void ItemMenu_Register_Left(u8 taskId)
-{
-    ItemMenu_RegisterList(taskId, 3);
-}
-
-static void ItemMenu_Deselect(u8 taskId)
-{
-    s16* data = gTasks[taskId].data;
-    u16* scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
-    u16* cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
-    int listPosition = ListMenu_ProcessInput(data[0]);
-
-    ResetRegisteredItem(BagGetItemIdByPocketPosition(gBagPosition.pocket + 1, listPosition));
-    gTasks[taskId].func = ItemMenu_FinishRegister;
-}
-
-#define tUsingRegisteredKeyItem data[3]
-bool8 UseRegisteredKeyItemOnField(u8 button)
-{
-    u8 taskId;
-    u16 registeredItem;
-
-    if (InUnionRoom() == TRUE || InBattlePyramid() || InBattlePike() || InMultiPartnerRoom() == TRUE)
-        return FALSE;
-
-    HideMapNamePopUpWindow();
-    ChangeBgY_ScreenOff(0, 0, 0);
-
-    switch (button)
-    {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-        registeredItem = gSaveBlock1Ptr->registeredItemList[button];
-        break;
-    default:
-        return FALSE;
-    }
-
-    if (registeredItem != ITEM_NONE)
-    {
-        if (CheckBagHasItem(registeredItem, 1) == TRUE)
-        {
-            LockPlayerFieldControls();
-            FreezeObjectEvents();
-            PlayerFreeze();
-            StopPlayerAvatar();
-            gSpecialVar_ItemId = registeredItem;
-            taskId = CreateTask(ItemId_GetFieldFunc(registeredItem), 8);
-            gTasks[taskId].tUsingRegisteredKeyItem = TRUE;
-            return TRUE;
-        }
-        else
-            gSaveBlock1Ptr->registeredItemList[button] = ITEM_NONE;
-    }
-
-    ScriptContext_SetupScript(EventScript_SelectWithoutRegisteredItem);
-    return TRUE;
-}
-
-#undef tUsingRegisteredKeyItem
-
-// code for the icons
-void DrawRegisteredQuickAccess(void)
-{
-    bool8 handleFlash = FALSE;
-    u8 i;
-    u16 itemId;
-
-    if (gSaveBlock1Ptr->registeredItem != ITEM_NONE)
-        return;
-    else
-        gSaveBlock1Ptr->registeredItem = TRUE;
-
-
-    if (GetFlashLevel() > 1)
-        handleFlash = TRUE;
-
-    for (i = 0; i < 4; i++)
-    {
-        itemId = gSaveBlock1Ptr->registeredItemList[i];
-        if (itemId != ITEM_NONE)
-            ShowItemIconSprite(itemId, i, handleFlash);
-    }
-}
-
-#include "gpu_regs.h"
-#define ITEM_TAG 0x2722 //same as money label
-static void ShowItemIconSprite(u16 item, u8 position, bool8 flash)
-{
-	s16 x, y;
-	u8 iconSpriteId;   
-    u8 spriteId2 = MAX_SPRITES;
-
-    if (flash)
-    {
-        SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_OBJWIN_ON);
-        SetGpuRegBits(REG_OFFSET_WINOUT, WINOUT_WINOBJ_OBJ);
-    }
-
-    iconSpriteId = AddItemIconSprite(ITEM_TAG + position*16, ITEM_TAG + position*16, item);
-    if (flash)
-        spriteId2 = AddItemIconSprite(ITEM_TAG + position*16, ITEM_TAG + position*16, item);
-
-	if (iconSpriteId != MAX_SPRITES)
-	{        
-        switch (position)
-        {
-        case 0:
-			x = 124;
-			y = 45; //55;
-            break;
-        case 1:
-			x = 158; //148;
-			y = 80;
-            break;
-        case 2:
-            x = 124; //122;
-            y = 115; //105;
-            break;
-        case 3:
-            x = 90; //100;
-            y = 80;
-            break;
-        }
-
-		gSprites[iconSpriteId].x2 = x;
-		gSprites[iconSpriteId].y2 = y;
-		gSprites[iconSpriteId].oam.priority = 0;
-	}
-
-    if (spriteId2 != MAX_SPRITES)
-    {
-        gSprites[spriteId2].x2 = x;
-        gSprites[spriteId2].y2 = y;
-        gSprites[spriteId2].oam.priority = 0;
-        gSprites[spriteId2].oam.objMode = ST_OAM_OBJ_WINDOW;
-        sRegisteredItemIconSpriteId2[position] = spriteId2;
-    }
-
-	sRegisteredItemIconSpriteId[position] = iconSpriteId;
-}
-
-void DestroyItemIconSprites(void)
-{    
-    u8 i;
-
-    if (gSaveBlock1Ptr->registeredItem == ITEM_NONE)
-        return;
-    else
-        gSaveBlock1Ptr->registeredItem = ITEM_NONE;
-
-    for (i = 0; i<4; i++)
-    {
-        if (gSaveBlock1Ptr->registeredItemList[i] != ITEM_NONE)
-        {
-            FreeSpriteTilesByTag(ITEM_TAG + i);
-            FreeSpritePaletteByTag(ITEM_TAG + i);
-            if (sRegisteredItemIconSpriteId[i] != MAX_SPRITES)
-            {
-                FreeSpriteOamMatrix(&gSprites[sRegisteredItemIconSpriteId[i]]);
-                DestroySprite(&gSprites[sRegisteredItemIconSpriteId[i]]);
-            }
-
-            if (GetFlashLevel() > 1 && sRegisteredItemIconSpriteId2[i] != MAX_SPRITES)
-            {
-                //FreeSpriteTilesByTag(ITEM_TAG);
-                //FreeSpritePaletteByTag(ITEM_TAG);
-                FreeSpriteOamMatrix(&gSprites[sRegisteredItemIconSpriteId2[i]]);
-                DestroySprite(&gSprites[sRegisteredItemIconSpriteId2[i]]);
-            }
-        }
-    }
-}
-
-bool8 PlayerHasOneRegisteredItem(void)
-{
-    u32 i;
-    for (i = 0; i < 4; i++)
-    {
-        if (gSaveBlock1Ptr->registeredItemList[i] != ITEM_NONE)
-            return TRUE;
-    }
-    return FALSE;
-}*/
