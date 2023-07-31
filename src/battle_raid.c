@@ -145,14 +145,45 @@ static u16 GetNextShieldThreshold(void);
 static u32 CreateRaidBarrierSprite(u8 index);
 static void CreateAllRaidBarrierSprites(void);
 static void DestroyRaidBarrierSprite(u8 index);
+u32 GetRaidRandomNumber(void);
 
 // Sets the data for the Raid being loaded from the map information.
 bool32 InitRaidData(void)
 {
-    // TODO: Generate the Pokemon, rank, and partners based on a seed.
-    //       The above would be selected from a list based off map sections.
-    gRaidData.rank = 6;
-    CreateMon(&gEnemyParty[0], SPECIES_SALAMENCE, 50, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    u16 numBadges, min, max;
+	u32 i, randomNum = GetRaidRandomNumber();
+    u8 raidBossLevel;
+
+    // determine raid rank based on number of badges
+    numBadges = 0;
+    for (i = 0; i < 8; i++)
+    {
+        if (FlagGet(FLAG_BADGE01_GET + i))
+            numBadges++;
+    }
+
+    min = gRaidBattleStarsByBadges[numBadges][0];
+	max = gRaidBattleStarsByBadges[numBadges][1];
+
+    if (min == max)
+        gRaidData.rank = min;
+    else
+        gRaidData.rank = (randomNum % ((max + 1) - min)) + min;
+    
+    // determine raid boss level based on raid rank
+    min = gRaidBattleLevelRanges[gRaidData.rank][0];
+	max = gRaidBattleLevelRanges[gRaidData.rank][1];
+
+    if (min == max)
+        raidBossLevel = min;
+    else
+        raidBossLevel = (randomNum % ((max + 1) - min)) + min;
+
+    // determine raid type
+    gRaidData.raidType = RAID_TYPE_MAX;
+    
+    // create raid boss
+    CreateMon(&gEnemyParty[0], SPECIES_SALAMENCE, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
 }
@@ -162,7 +193,7 @@ bool32 InitCustomRaidData(void)
 {
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
-    CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, 30, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, gSpecialVar_0x8007, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
 }
