@@ -140,6 +140,8 @@ static const u8 sRaidBattleDropItems[MAX_RAID_DROPS] =
 EWRAM_DATA struct RaidData gRaidData = {0};
 
 // forward declarations
+static u8 GetRaidShieldThresholdTotalNumber(void);
+static u16 GetNextShieldThreshold(void);
 static u32 CreateRaidBarrierSprite(u8 index);
 static void CreateAllRaidBarrierSprites(void);
 static void DestroyRaidBarrierSprite(u8 index);
@@ -170,9 +172,9 @@ void InitRaidBattleData(void)
 {
     u8 i;
 
+    gBattleStruct->raid.shieldsRemaining = GetRaidShieldThresholdTotalNumber();
+    gBattleStruct->raid.nextShield = GetNextShieldThreshold();
     gBattleStruct->raid.shield = 0;
-    gBattleStruct->raid.nextShield = 50; // TODO: calculate
-    gBattleStruct->raid.shieldsRemaining = 0; // TODO: calculate
     gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
 	gBattleStruct->raid.energy = B_POSITION_PLAYER_LEFT;
 
@@ -310,7 +312,7 @@ u8 GetRaidBossKOStatIncrease(u8 battlerId)
             return 1;
         case 41 ... 70:
             return 2;
-        default:
+        default: // > 70
             return 3;
     }
 }
@@ -341,12 +343,34 @@ static u16 GetShieldAmount(void)
     if (gRaidData.rank < RAID_RANK_5)
         retVal -= 1;
     return retVal;
+    // only valid for dynamax raids atm
 }
 
+static u8 GetRaidShieldThresholdTotalNumber(void)
+{
+    switch (gRaidData.rank)
+    {
+        case RAID_RANK_7:
+            return 3;
+        case RAID_RANK_5 ... RAID_RANK_6:
+            return 2;
+        case RAID_RANK_3 ... RAID_RANK_4:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+// returns the next shield threshold in health percents
 static u16 GetNextShieldThreshold(void)
 {
-    // TODO: Actually calculate this.
-    return 0;
+    u8 total = GetRaidShieldThresholdTotalNumber();
+    u8 remaining = gBattleStruct->raid.shieldsRemaining;
+
+    if (remaining == 0 || total == 0)
+        return 0;
+    else
+        return (remaining * 100) / (total + 1);
 }
 
 // Updates the state of the Raid shield (set up, clearing, or breaking individual barriers).
@@ -356,6 +380,7 @@ bool32 UpdateRaidShield(void)
     {
         gBattleStruct->raid.state &= ~RAID_CREATE_SHIELD;
         gBattlerTarget = B_POSITION_OPPONENT_LEFT;
+        gBattleStruct->raid.shieldsRemaining--;
 
         // Set up shield data.
         gBattleStruct->raid.shield = GetShieldAmount();
