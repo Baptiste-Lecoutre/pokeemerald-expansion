@@ -264,6 +264,25 @@ bool32 ShouldRaidKickPlayer(void)
     return FALSE;
 }
 
+bool8 DoesRaidPreventMove(u16 move)
+{
+    switch(move) // data from Bulbapedia
+    {
+        case MOVE_BUG_BITE:
+        case MOVE_COVET:
+        case MOVE_INCINERATE:
+        case MOVE_KNOCK_OFF:
+        case MOVE_PERISH_SONG:
+        case MOVE_PLUCK:
+        case MOVE_SELF_DESTRUCT:
+        case MOVE_SUPER_FANG:
+        case MOVE_THIEF:
+        case MOVE_TRICK:
+            return TRUE;
+    }
+    return FALSE;
+}
+
 u8 GetRaidRepeatedAttackChance(void)
 {
 	u8 numStars = gRaidData.rank;

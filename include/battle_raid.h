@@ -26,6 +26,7 @@ bool32 IsRaidBoss(u16 battlerId);
 u8 GetRaidBattleTransition(void);
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon);
 bool32 ShouldRaidKickPlayer(void);
+bool8 DoesRaidPreventMove(u16 move);
 u8 GetRaidRepeatedAttackChance(void);
 u8 GetRaidShockwaveChance(void);
 u8 GetRaidBossKOStatIncrease(u8 battlerId);

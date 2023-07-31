@@ -1700,6 +1700,25 @@ static void Cmd_attackcanceler(void)
         }
     }
 
+    // Raid shields prevent status moves.
+    if (IsRaidBoss(gBattlerTarget)
+        && GetBattlerPosition(gBattlerAttacker) != B_POSITION_OPPONENT_LEFT
+        && gBattleStruct->raid.shield > 0
+        && gBattleMoves[gCurrentMove].split & SPLIT_STATUS)
+    {
+        gHitMarker |= HITMARKER_UNABLE_TO_USE_MOVE;
+        gBattlescriptCurrInstr = BattleScript_ButItFailedAtkStringPpReduce;
+        return;
+    }
+
+    // Certain moves are prevented in Raid Battles.
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && DoesRaidPreventMove(gCurrentMove))
+    {
+        gHitMarker |= HITMARKER_UNABLE_TO_USE_MOVE;
+        gBattlescriptCurrInstr = BattleScript_MoveBlockedByDynamax;
+        return;
+    }
+
     if (gSpecialStatuses[gBattlerTarget].lightningRodRedirected)
     {
         gSpecialStatuses[gBattlerTarget].lightningRodRedirected = FALSE;
@@ -3069,6 +3088,10 @@ void SetMoveEffect(bool32 primary, u32 certain)
         INCREMENT_RESET_RETURN
 
     if (DoesSubstituteBlockMove(gBattlerAttacker, gEffectBattler, gCurrentMove) && affectsUser != MOVE_EFFECT_AFFECTS_USER)
+        INCREMENT_RESET_RETURN
+    
+    // Raid shields prevent secondary move effects.
+    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0)
         INCREMENT_RESET_RETURN
 
     if (gBattleScripting.moveEffect <= PRIMARY_STATUS_MOVE_EFFECT) // status change
