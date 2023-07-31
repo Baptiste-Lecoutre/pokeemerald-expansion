@@ -68,7 +68,6 @@ static void Task_PlayMapChosenOrBattleBGM(u8 taskId);
 static bool8 ShouldSkipFriendshipChange(void);
 static void RemoveIVIndexFromList(u8 *ivs, u8 selectedIv);
 void TrySpecialOverworldEvo();
-static u16 GetPreEvolution(u16 species);
 
 EWRAM_DATA static u8 sLearningMoveTableID = 0;
 EWRAM_DATA u8 gPlayerPartyCount = 0;
@@ -7631,7 +7630,7 @@ u8 CanLearnTeachableMove(u16 species, u16 move)
     }
 }
 
-static u16 GetPreEvolution(u16 species){
+u16 GetPreEvolution(u16 species){
     int i, j;
 
     for (i = 1; i < NUM_SPECIES; i++)

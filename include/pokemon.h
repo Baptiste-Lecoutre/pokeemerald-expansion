@@ -589,5 +589,6 @@ void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
 u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset);
 u16 GetNextRegionalForm(u16 species);
 u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGender);
+u16 GetPreEvolution(u16 species);
 
 #endif // GUARD_POKEMON_H
