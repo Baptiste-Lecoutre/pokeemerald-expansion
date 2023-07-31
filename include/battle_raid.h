@@ -11,7 +11,6 @@ struct RaidType {
 struct RaidData {
     u8 rank;
     u8 raidType;
-//    struct Pokemon* mon;
 //    struct Trainer* partners;
     u8 numPartners;
 };

@@ -653,8 +653,8 @@ static bool32 GetRaidBattleData(void)
 	
 	if (success)
 	{
-		sRaidBattleIntro->species = GetMonData(&gEnemyParty[0]/*gRaidData->mon*/, MON_DATA_SPECIES, NULL);
-		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0]/*gRaidData->mon*/, MON_DATA_PERSONALITY, NULL);
+		sRaidBattleIntro->species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
+		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0], MON_DATA_PERSONALITY, NULL);
 
 		// Placeholder Data
 		// TODO: Fill using gRaidData->partners.

@@ -147,18 +147,10 @@ static void DestroyRaidBarrierSprite(u8 index);
 // Sets the data for the Raid being loaded from the map information.
 bool32 InitRaidData(void)
 {
-    // Initialize fields if needed.
-    /*if (gRaidData == NULL)
-        gRaidData = AllocZeroed(sizeof(struct RaidData));*/
-    /*if (gRaidData->mon == NULL)
-        gRaidData->mon = AllocZeroed(sizeof(struct Pokemon));*/
-    /*if (gRaidData->partners == NULL) // TODO: use numPartners or set it here
-        gRaidData->partners = AllocZeroed(3 * sizeof(struct Trainer));*/
-
     // TODO: Generate the Pokemon, rank, and partners based on a seed.
     //       The above would be selected from a list based off map sections.
     gRaidData.rank = 6;
-    CreateMon(&gEnemyParty[0]/*gRaidData->mon*/, SPECIES_SALAMENCE, 50, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(&gEnemyParty[0], SPECIES_SALAMENCE, 50, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
 }
@@ -166,18 +158,9 @@ bool32 InitRaidData(void)
 // Sets the data for the Raid being loaded from set variables.
 bool32 InitCustomRaidData(void)
 {
-    // Initialize fields if needed.
-    /*if (gRaidData == NULL)
-        gRaidData = AllocZeroed(sizeof(struct RaidData));*/
-    /*if (gRaidData->mon == NULL)
-        gRaidData->mon = AllocZeroed(sizeof(struct Pokemon));*/
-    /*if (gRaidData->partners == NULL) // TODO: use numPartners or set it here
-        gRaidData->partners = AllocZeroed(3 * sizeof(struct Trainer));*/
-
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
     CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, 30, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
-//    gRaidData->mon = &gEnemyParty[0];
 
     return TRUE;
 }
