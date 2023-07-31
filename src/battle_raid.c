@@ -84,7 +84,7 @@ const u8 gRaidBattleStarsByBadges[][2] =
 	[9] = {RAID_RANK_5, RAID_RANK_6}, //Beat Game
 };
 
-const u8 gRaidBattleLevelRanges[MAX_RAID_RANK][2] =
+const u8 gRaidBattleLevelRanges[MAX_RAID_RANK + 1][2] =
 {
 	[RAID_RANK_1]   = {15, 20},
 	[RAID_RANK_2]   = {25, 30},
@@ -92,17 +92,19 @@ const u8 gRaidBattleLevelRanges[MAX_RAID_RANK][2] =
 	[RAID_RANK_4]  = {50, 55},
 	[RAID_RANK_5]  = {60, 65},
 	[RAID_RANK_6]   = {75, 90},
+    [RAID_RANK_7] = {90, 100},
 };
 
 //The chance that each move is replaced with an Egg Move
-const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK] =
+const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK + 1] =
 {
 	[RAID_RANK_1] = 0,
 	[RAID_RANK_2] = 10,
 	[RAID_RANK_3] = 30,
 	[RAID_RANK_4] = 50,
 	[RAID_RANK_5] = 70,
-	[RAID_RANK_6] = 70,
+	[RAID_RANK_6] = 80,
+    [RAID_RANK_7] = 90,
 };
 
 static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
@@ -137,6 +139,8 @@ static const u8 sRaidBattleDropItems[MAX_RAID_DROPS] =
 	ITEM_NONE,
 };
 
+extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
+
 EWRAM_DATA struct RaidData gRaidData = {0};
 
 // forward declarations
@@ -150,9 +154,12 @@ u32 GetRaidRandomNumber(void);
 // Sets the data for the Raid being loaded from the map information.
 bool32 InitRaidData(void)
 {
-    u16 numBadges, min, max;
+    u16 numBadges, min, max, species, preEvoSpecies, postEvoSpecies = SPECIES_NONE;
 	u32 i, randomNum = GetRaidRandomNumber();
-    u8 raidBossLevel;
+    u8 raidBossLevel, numPostEvoSpecies = 0;;
+
+    // determine raid type
+    gRaidData.raidType = RAID_TYPE_MAX;
 
     // determine raid rank based on number of badges
     numBadges = 0;
@@ -179,11 +186,50 @@ bool32 InitRaidData(void)
     else
         raidBossLevel = (randomNum % ((max + 1) - min)) + min;
 
-    // determine raid type
-    gRaidData.raidType = RAID_TYPE_MAX;
+    // determine raid species
+    species = randomNum % FORMS_START + 1;
+
+    // should check here for legendaries & mythicals. Maybe choose a random form as well
+    preEvoSpecies = GetPreEvolution(species);
+    postEvoSpecies = gEvolutionTable[species][0].targetSpecies;
+
+    // if low rank raid and pre-evolution exists, go for it
+    if (preEvoSpecies != SPECIES_NONE && gRaidData.rank < RAID_RANK_3)
+    {
+        species = preEvoSpecies;
+        preEvoSpecies = GetPreEvolution(species);
+
+        // if lowest rank and can find an even lower evolution, go for it
+        if (preEvoSpecies != SPECIES_NONE && gRaidData.rank < RAID_RANK_2)
+            species = preEvoSpecies;
+    }
+
+    // if higher raid rank and post evolution exists, choose a post evolution in a random evo line
+    if (postEvoSpecies != SPECIES_NONE && gRaidData.rank > RAID_RANK_2)
+    {
+        for (i = 0; i < EVOS_PER_MON; i++)
+        {
+            if (gEvolutionTable[species][i].targetSpecies)
+                numPostEvoSpecies++;
+        }
+        species = gEvolutionTable[species][randomNum % numPostEvoSpecies].targetSpecies;
+        postEvoSpecies = gEvolutionTable[species][0].targetSpecies;
+        numPostEvoSpecies = 0;
+        
+        // if even higher raid rank, use last evo stage and choose a random evo line 
+        if (postEvoSpecies != SPECIES_NONE && gRaidData.rank > RAID_RANK_4)
+        {
+            for (i = 0; i < EVOS_PER_MON; i++)
+            {
+                if (gEvolutionTable[species][i].targetSpecies)
+                    numPostEvoSpecies++;
+            }
+            species = gEvolutionTable[species][randomNum % numPostEvoSpecies].targetSpecies;
+        }
+    }
     
     // create raid boss
-    CreateMon(&gEnemyParty[0], SPECIES_SALAMENCE, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
 }
