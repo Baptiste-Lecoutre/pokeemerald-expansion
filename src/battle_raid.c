@@ -73,15 +73,15 @@ static const u16 sGen9RaidHPMultipliers[] = {
 const u8 gRaidBattleStarsByBadges[][2] =
 {
 //	[0] = {NO_RAID,         NO_RAID},
-	[1] = {RAID_RANK_1, 	RAID_RANK_1},
-	[2] = {RAID_RANK_1,   RAID_RANK_2},
-	[3] = {RAID_RANK_2,   RAID_RANK_2},
-	[4] = {RAID_RANK_2,   RAID_RANK_3},
+	[1] = {RAID_RANK_1, RAID_RANK_1},
+	[2] = {RAID_RANK_1, RAID_RANK_2},
+	[3] = {RAID_RANK_2, RAID_RANK_2},
+	[4] = {RAID_RANK_2, RAID_RANK_3},
 	[5] = {RAID_RANK_3, RAID_RANK_3},
 	[6] = {RAID_RANK_3, RAID_RANK_4},
-	[7] = {RAID_RANK_4,  RAID_RANK_4},
-	[8] = {RAID_RANK_4,  RAID_RANK_5},
-	[9] = {RAID_RANK_5,  RAID_RANK_6}, //Beat Game
+	[7] = {RAID_RANK_4, RAID_RANK_4},
+	[8] = {RAID_RANK_4, RAID_RANK_5},
+	[9] = {RAID_RANK_5, RAID_RANK_6}, //Beat Game
 };
 
 const u8 gRaidBattleLevelRanges[MAX_RAID_RANK][2] =
@@ -97,12 +97,12 @@ const u8 gRaidBattleLevelRanges[MAX_RAID_RANK][2] =
 //The chance that each move is replaced with an Egg Move
 const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK] =
 {
-	[RAID_RANK_1]   = 0,
-	[RAID_RANK_2]   = 10,
+	[RAID_RANK_1] = 0,
+	[RAID_RANK_2] = 10,
 	[RAID_RANK_3] = 30,
-	[RAID_RANK_4]  = 50,
-	[RAID_RANK_5]  = 70,
-	[RAID_RANK_6]   = 70,
+	[RAID_RANK_4] = 50,
+	[RAID_RANK_5] = 70,
+	[RAID_RANK_6] = 70,
 };
 
 static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
@@ -318,10 +318,29 @@ u8 GetRaidBossKOStatIncrease(u8 battlerId)
 // Returns the number of shields to produce, or the amount of HP to protect.
 static u16 GetShieldAmount(void)
 {
-    // TODO: Actually calculate this.
-    if (gRaidData.rank == 5)
-        return 4;
-    return 3;
+    u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES);
+    u8 hp = gSpeciesInfo[species].baseHP;
+    u8 def = gSpeciesInfo[species].baseDefense;
+    u8 spDef = gSpeciesInfo[species].baseSpDefense;
+    u8 retVal;
+
+    // Currently uses the sum of defenses to determine barrier count.
+    switch (hp + def + spDef)
+    {
+        case 0 ... 199:
+            retVal = 3;
+            break;
+        case 200 ... 300:
+            retVal = 4;
+            break;
+        default: // > 300
+            retVal = MAX_BARRIER_COUNT;
+            break;
+    }
+
+    if (gRaidData.rank < RAID_RANK_5)
+        retVal -= 1;
+    return retVal;
 }
 
 static u16 GetNextShieldThreshold(void)
