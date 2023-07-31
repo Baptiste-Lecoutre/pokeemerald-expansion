@@ -4153,6 +4153,9 @@ static void Cmd_cleareffectsonfaint(void)
 
         if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
         {
+            if (gCurrentMove != MOVE_STRUGGLE && (Random() % 100) <= GetRaidRepeatedAttackChance())
+                gBattleStruct->raid.movedTwice = FALSE;
+
             if ((Random() & 1) == 0)
             {
                 u8 statId, increase;
