@@ -11,13 +11,13 @@ struct RaidType {
 struct RaidData {
     u8 rank;
     u8 raidType;
-    struct Pokemon* mon;
-    struct Trainer* partners;
+//    struct Pokemon* mon;
+//    struct Trainer* partners;
     u8 numPartners;
 };
 
 extern const struct RaidType gRaidTypes[NUM_RAID_TYPES];
-extern struct RaidData* gRaidData;
+extern struct RaidData gRaidData;
 
 // Functions
 bool32 InitRaidData(void);

@@ -462,7 +462,7 @@ static void ShowStars(void)
     u8 i;
     LoadSpriteSheet(&sRaidBattleStarSpriteSheet);
 	LoadSpritePalette(&sRaidBattleStarSpritePalette);
-	for (i = 0; i < gRaidData->rank; i++)
+	for (i = 0; i < gRaidData.rank; i++)
 		CreateSprite(&sRaidBattleStarSpriteTemplate, 10 + (9 * i), 8, 0);
 }
 
@@ -643,15 +643,18 @@ void InitRaidIntro(void)
 static bool32 GetRaidBattleData(void)
 {
 	bool32 success;
-	if (gSpecialVar_0x8000 && InitCustomRaidData())
-		success = TRUE;
+	if (gSpecialVar_0x8000)
+	{
+		if (InitCustomRaidData())
+			success = TRUE;
+	}
 	else if (InitRaidData())
 		success = TRUE;
 	
 	if (success)
 	{
-		sRaidBattleIntro->species = GetMonData(gRaidData->mon, MON_DATA_SPECIES, NULL);
-		sRaidBattleIntro->personality = GetMonData(gRaidData->mon, MON_DATA_PERSONALITY, NULL);
+		sRaidBattleIntro->species = GetMonData(&gEnemyParty[0]/*gRaidData->mon*/, MON_DATA_SPECIES, NULL);
+		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0]/*gRaidData->mon*/, MON_DATA_PERSONALITY, NULL);
 
 		// Placeholder Data
 		// TODO: Fill using gRaidData->partners.

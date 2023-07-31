@@ -100,7 +100,7 @@ bool32 IsDynamaxed(u16 battlerId)
 {
     u8 side = GetBattlerSide(battlerId);
     if (gBattleStruct->dynamax.dynamaxed[battlerId]
-        || (IsRaidBoss(battlerId) && gRaidTypes[gRaidData->raidType].gimmick == GIMMICK_DYNAMAX))
+        || (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_DYNAMAX))
         return TRUE;
     return FALSE;
 }

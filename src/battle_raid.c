@@ -137,7 +137,7 @@ static const u8 sRaidBattleDropItems[MAX_RAID_DROPS] =
 	ITEM_NONE,
 };
 
-EWRAM_DATA struct RaidData* gRaidData = NULL;
+EWRAM_DATA struct RaidData gRaidData = {0};
 
 // forward declarations
 static u32 CreateRaidBarrierSprite(u8 index);
@@ -148,17 +148,17 @@ static void DestroyRaidBarrierSprite(u8 index);
 bool32 InitRaidData(void)
 {
     // Initialize fields if needed.
-    if (gRaidData == NULL)
-        gRaidData = AllocZeroed(sizeof(struct RaidData));
-    if (gRaidData->mon == NULL)
-        gRaidData->mon = AllocZeroed(sizeof(struct Pokemon));
-    if (gRaidData->partners == NULL) // TODO: use numPartners or set it here
-        gRaidData->partners = AllocZeroed(3 * sizeof(struct Trainer));
+    /*if (gRaidData == NULL)
+        gRaidData = AllocZeroed(sizeof(struct RaidData));*/
+    /*if (gRaidData->mon == NULL)
+        gRaidData->mon = AllocZeroed(sizeof(struct Pokemon));*/
+    /*if (gRaidData->partners == NULL) // TODO: use numPartners or set it here
+        gRaidData->partners = AllocZeroed(3 * sizeof(struct Trainer));*/
 
     // TODO: Generate the Pokemon, rank, and partners based on a seed.
     //       The above would be selected from a list based off map sections.
-    gRaidData->rank = 6;
-    CreateMon(gRaidData->mon, SPECIES_SALAMENCE, 50, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    gRaidData.rank = 6;
+    CreateMon(&gEnemyParty[0]/*gRaidData->mon*/, SPECIES_SALAMENCE, 50, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
 }
@@ -167,17 +167,17 @@ bool32 InitRaidData(void)
 bool32 InitCustomRaidData(void)
 {
     // Initialize fields if needed.
-    if (gRaidData == NULL)
-        gRaidData = AllocZeroed(sizeof(struct RaidData));
-    if (gRaidData->mon == NULL)
-        gRaidData->mon = AllocZeroed(sizeof(struct Pokemon));
-    if (gRaidData->partners == NULL) // TODO: use numPartners or set it here
-        gRaidData->partners = AllocZeroed(3 * sizeof(struct Trainer));
+    /*if (gRaidData == NULL)
+        gRaidData = AllocZeroed(sizeof(struct RaidData));*/
+    /*if (gRaidData->mon == NULL)
+        gRaidData->mon = AllocZeroed(sizeof(struct Pokemon));*/
+    /*if (gRaidData->partners == NULL) // TODO: use numPartners or set it here
+        gRaidData->partners = AllocZeroed(3 * sizeof(struct Trainer));*/
 
-    gRaidData->raidType = gSpecialVar_0x8001;
-    gRaidData->rank = gSpecialVar_0x8002;
-    CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, 50, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
-    gRaidData->mon = &gEnemyParty[0];
+    gRaidData.raidType = gSpecialVar_0x8001;
+    gRaidData.rank = gSpecialVar_0x8002;
+    CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, 30, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+//    gRaidData->mon = &gEnemyParty[0];
 
     return TRUE;
 }
@@ -214,7 +214,7 @@ bool32 IsRaidBoss(u16 battlerId)
 // Returns the battle transition ID for the Raid battle.
 u8 GetRaidBattleTransition(void)
 {
-    if (gRaidData->raidType == RAID_TYPE_TERA)
+    if (gRaidData.raidType == RAID_TYPE_TERA)
         return B_TRANSITION_TERA_RAID;
     else
         return B_TRANSITION_MAX_RAID;
@@ -224,10 +224,10 @@ u8 GetRaidBattleTransition(void)
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 {
     u16 mult;
-    if (gRaidTypes[gRaidData->raidType].shield == RAID_GEN_8)
-        mult = sGen8RaidHPMultipliers[gRaidData->rank];
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
+        mult = sGen8RaidHPMultipliers[gRaidData.rank];
     else
-        mult = sGen9RaidHPMultipliers[gRaidData->rank];
+        mult = sGen9RaidHPMultipliers[gRaidData.rank];
 
     if (GetMonData(mon, MON_DATA_SPECIES) != SPECIES_SHEDINJA) {
         u16 hp = UQ_4_12_TO_INT((GetMonData(mon, MON_DATA_HP) * mult) + UQ_4_12_ROUND);
@@ -241,7 +241,7 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 bool32 ShouldRaidKickPlayer(void)
 {
     // Gen 8-style raids are capped at 10 turns.
-    if (gRaidTypes[gRaidData->raidType].rules == RAID_GEN_8)
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
     {
         switch (gBattleResults.battleTurnCounter)
         {
@@ -281,7 +281,7 @@ bool32 ShouldRaidKickPlayer(void)
 
 u8 GetRaidRepeatedAttackChance(void)
 {
-	u8 numStars = gRaidData->rank;
+	u8 numStars = gRaidData.rank;
     switch (numStars)
     {
 		case RAID_RANK_1 ... RAID_RANK_3:
@@ -297,7 +297,7 @@ u8 GetRaidRepeatedAttackChance(void)
 
 u8 GetRaidShockwaveChance(void)
 {
-    u8 numStars = gRaidData->rank;
+    u8 numStars = gRaidData.rank;
 
 	if (gDisableStructs[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].isFirstTurn)
 		return 0; //Don't use first attack with this
@@ -336,6 +336,8 @@ u8 GetRaidBossKOStatIncrease(u8 battlerId)
 static u16 GetShieldAmount(void)
 {
     // TODO: Actually calculate this.
+    if (gRaidData.rank == 5)
+        return 4;
     return 3;
 }
 
@@ -356,7 +358,7 @@ bool32 UpdateRaidShield(void)
         // Set up shield data.
         gBattleStruct->raid.shield = GetShieldAmount();
         gBattleStruct->raid.nextShield = GetNextShieldThreshold();
-        if (gRaidTypes[gRaidData->raidType].shield == RAID_GEN_8)
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
             CreateAllRaidBarrierSprites();
 
         // Play animation and message.
@@ -390,7 +392,7 @@ bool32 UpdateRaidShield(void)
     else if (gBattleStruct->raid.state & RAID_RESHOW_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_RESHOW_SHIELD;
-        if (gRaidTypes[gRaidData->raidType].shield == RAID_GEN_8)
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
             CreateAllRaidBarrierSprites();
         return TRUE;
     }
@@ -419,7 +421,7 @@ u16 GetShieldDamageRequired(u16 hp, u16 maxHP)
 u16 GetShieldDamageReduction(void)
 {
     // Gen 8-style shields reduce damage by a constant 95%.
-    if (gRaidTypes[gRaidData->raidType].shield == RAID_GEN_8)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
     {
         return UQ_4_12(1-0.95);
     }
@@ -638,7 +640,7 @@ static u8 TryAlterRaidItemDropRate(u16 item, u8 rate)
 void GiveRaidBattleRewards(void)
 {
     u32 i;
-	u8 numStars = gRaidData->rank;
+	u8 numStars = gRaidData.rank;
 	gSpecialVar_0x800B = FALSE; //Not done giving rewards
 
 	for (i = VarGet(VAR_TEMP_A); i < MAX_RAID_DROPS; i++)

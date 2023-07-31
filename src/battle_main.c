@@ -3917,8 +3917,8 @@ static void TryDoEventsBeforeFirstTurn(void)
     {
         InitRaidBattleData();
         gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-        gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData->raidType].gimmick;
-        gBattleCommunication[1] = gRaidTypes[gRaidData->raidType].rules;
+        gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData.raidType].gimmick;
+        gBattleCommunication[1] = gRaidTypes[gRaidData.raidType].rules;
         BattleScriptExecute(BattleScript_RaidIntro);
         return;
     }
