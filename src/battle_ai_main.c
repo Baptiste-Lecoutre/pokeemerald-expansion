@@ -8,6 +8,7 @@
 #include "battle_setup.h"
 #include "battle_z_move.h"
 #include "data.h"
+#include "debug.h"
 #include "event_data.h"
 #include "item.h"
 #include "pokemon.h"
@@ -152,6 +153,11 @@ static u32 GetWildAiFlags(void)
 
 void BattleAI_SetupFlags(void)
 {
+#if DEBUG_OVERWORLD_MENU == TRUE
+    if (gIsDebugBattle)
+        AI_THINKING_STRUCT->aiFlags = gDebugAIFlags;
+    else
+#endif
     if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
         AI_THINKING_STRUCT->aiFlags = GetAiScriptsInRecordedBattle();
     else if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
@@ -4383,8 +4389,9 @@ static s16 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s16 score)
         break;
     case EFFECT_SUPERPOWER:
     case EFFECT_OVERHEAT:
+    case EFFECT_MAKE_IT_RAIN:
         if (AI_DATA->abilities[battlerAtk] == ABILITY_CONTRARY)
-            score += 10;
+            score += 3;
         break;
     case EFFECT_MAGIC_COAT:
         if (IS_MOVE_STATUS(predictedMove) && AI_GetBattlerMoveTargetType(battlerDef, predictedMove) & (MOVE_TARGET_SELECTED | MOVE_TARGET_OPPONENTS_FIELD | MOVE_TARGET_BOTH))
@@ -5191,7 +5198,6 @@ static s16 AI_HPAware(u8 battlerAtk, u8 battlerDef, u16 move, s16 score)
             case EFFECT_ROOST:
             case EFFECT_MEMENTO:
             case EFFECT_GRUDGE:
-            case EFFECT_OVERHEAT:
                 score -= 2;
                 break;
             default:

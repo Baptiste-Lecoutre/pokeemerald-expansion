@@ -377,8 +377,7 @@ struct BattleMove
     u32 ignoreTypeIfFlyingAndUngrounded:1;
     u32 thawsUser:1;
     u32 ignoresSubstitute:1;
-    u32 twoStrikes:1; // May apply its effect on each hit.
-    u32 threeStrikes:1; // May apply its effect on each hit.
+    u32 strikeCount:4;  // Max 15 hits. Defaults to 1 if not set. May apply its effect on each hit.
     u32 meFirstBanned:1;
     u32 gravityBanned:1;
     u32 mimicBanned:1;
@@ -498,6 +497,8 @@ void SetMonMoveSlot(struct Pokemon *mon, u16 move, u8 slot);
 void SetBattleMonMoveSlot(struct BattlePokemon *mon, u16 move, u8 slot);
 void GiveMonInitialMoveset(struct Pokemon *mon);
 void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon);
+void GiveMonInitialMoveset_Fast(struct Pokemon *mon);
+void GiveBoxMonInitialMoveset_Fast(struct BoxPokemon *boxMon);
 u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove);
 void DeleteFirstMoveAndGiveMoveToMon(struct Pokemon *mon, u16 move);
 void DeleteFirstMoveAndGiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
