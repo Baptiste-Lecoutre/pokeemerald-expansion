@@ -10068,7 +10068,23 @@ bool32 CanMegaEvolve(u8 battlerId)
 
     // Check if there is an entry in the evolution table for Wish Mega Evolution.
     if (GetBattleFormChangeTargetSpecies(battlerId, FORM_CHANGE_BATTLE_MEGA_EVOLUTION_MOVE) != SPECIES_NONE)
+    {
+        #if DEBUG_BATTLE_MENU == TRUE
+        if (gBattleStruct->debugHoldEffects[battlerId])
+            holdEffect = gBattleStruct->debugHoldEffects[battlerId];
+        else
+    #endif
+        if (itemId == ITEM_ENIGMA_BERRY_E_READER)
+            holdEffect = gEnigmaBerries[battlerId].holdEffect;
+        else
+            holdEffect = ItemId_GetHoldEffect(itemId);
+        
+        // Cannot use mega evolve if holding Z-crystal
+        if (holdEffect == HOLD_EFFECT_Z_CRYSTAL)
+            return FALSE;
+        
         return TRUE;
+    }
 
     // No checks passed, the mon CAN'T mega evolve.
     return FALSE;
