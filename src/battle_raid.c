@@ -65,9 +65,9 @@ static const u16 sGen9RaidHPMultipliers[] = {
     [RAID_RANK_2] = UQ_4_12(5.0),
     [RAID_RANK_3] = UQ_4_12(8.0),
     [RAID_RANK_4] = UQ_4_12(12.0),
-    [RAID_RANK_5] = UQ_4_12(20.0),
-    [RAID_RANK_6] = UQ_4_12(25.0),
-    [RAID_RANK_7] = UQ_4_12(30.0),
+    [RAID_RANK_5] = UQ_4_12(13.0), //UQ_4_12(20.0),
+    [RAID_RANK_6] = UQ_4_12(14.0), //UQ_4_12(25.0),
+    [RAID_RANK_7] = UQ_4_12(15.0), //UQ_4_12(30.0),
 };
 
 const u8 gRaidBattleStarsByBadges[][2] =
