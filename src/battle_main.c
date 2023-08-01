@@ -16,6 +16,7 @@
 #include "berry.h"
 #include "bg.h"
 #include "data.h"
+#include "debug.h"
 #include "decompress.h"
 #include "dexnav.h"
 #include "dma3.h"
@@ -120,7 +121,6 @@ static void SpriteCB_UnusedBattleInit_Main(struct Sprite *sprite);
 static void TrySpecialEvolution(void);
 static u32 Crc32B (const u8 *data, u32 size);
 static u32 GeneratePartyHash(const struct Trainer *trainer, u32 i);
-static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonCustomized *partyEntry);
 
 EWRAM_DATA u16 gBattle_BG0_X = 0;
 EWRAM_DATA u16 gBattle_BG0_Y = 0;
@@ -567,7 +567,13 @@ static void CB2_InitBattleInternal(void)
     gBattle_BG3_X = 0;
     gBattle_BG3_Y = 0;
 
+#if DEBUG_OVERWORLD_MENU == FALSE 
+    
     gBattleTerrain = BattleSetup_GetTerrainId();
+#else
+    if (!gIsDebugBattle)
+        gBattleTerrain = BattleSetup_GetTerrainId();
+#endif
     if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
         gBattleTerrain = BATTLE_TERRAIN_BUILDING;
 
@@ -590,6 +596,7 @@ static void CB2_InitBattleInternal(void)
     else
         SetMainCallback2(CB2_HandleStartBattle);
 
+#if DEBUG_OVERWORLD_MENU == FALSE 
     if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED)))
     {
         CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
@@ -598,6 +605,18 @@ static void CB2_InitBattleInternal(void)
         SetWildMonHeldItem();
         CalculateEnemyPartyCount();
     }
+#else
+    if (!gIsDebugBattle)
+    {
+        if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED)))
+        {
+            CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
+            if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+                CreateNPCTrainerParty(&gEnemyParty[PARTY_SIZE / 2], gTrainerBattleOpponent_B, FALSE);
+            SetWildMonHeldItem();
+        }
+    }
+#endif
 
     gMain.inBattle = TRUE;
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
@@ -1937,7 +1956,7 @@ u32 GeneratePersonalityForGender(u32 gender, u32 species)
         return speciesInfo->genderRatio / 2;
 }
 
-static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonCustomized *partyEntry)
+void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonCustomized *partyEntry)
 {
     bool32 noMoveSet = TRUE;
     u32 j;
@@ -3111,7 +3130,9 @@ static bool8 IsMajorBattle(void)
         || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_MAGMA_LEADER
         || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_MAGMA_LEADER
         || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_AQUA_LEADER
-        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_AQUA_LEADER)
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_AQUA_LEADER
+        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_RIVAL
+        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_RIVAL)
         return TRUE;
     return FALSE;
 }
@@ -3178,7 +3199,12 @@ static void BattleStartClearSetData(void)
     }
 
     if(IsMajorBattle())
+    {
         gBattleScripting.battleStyle = OPTIONS_BATTLE_STYLE_SET;
+        
+        //if (gTrainerBattleOpponent_A != TRAINER_ROXANNE_1)
+        FlagSet(B_FLAG_DYNAMAX_BATTLE);
+    }
     else
         gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
 	gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
@@ -3888,13 +3914,13 @@ static void TryDoEventsBeforeFirstTurn(void)
         }
     }
     if (!gBattleStruct->overworldWeatherDone
-        && AbilityBattleEffects(0, 0, 0, ABILITYEFFECT_SWITCH_IN_WEATHER, 0) != 0)
+        && AbilityBattleEffects(ABILITYEFFECT_SWITCH_IN_WEATHER, 0, 0, ABILITYEFFECT_SWITCH_IN_WEATHER, 0) != 0)
     {
         gBattleStruct->overworldWeatherDone = TRUE;
         return;
     }
 
-    if (!gBattleStruct->terrainDone && AbilityBattleEffects(0, 0, 0, ABILITYEFFECT_SWITCH_IN_TERRAIN, 0) != 0)
+    if (!gBattleStruct->terrainDone && AbilityBattleEffects(ABILITYEFFECT_SWITCH_IN_TERRAIN, 0, 0, ABILITYEFFECT_SWITCH_IN_TERRAIN, 0) != 0)
     {
         gBattleStruct->terrainDone = TRUE;
         return;
@@ -3932,13 +3958,8 @@ static void TryDoEventsBeforeFirstTurn(void)
     {
         gBattlerAttacker = gBattlerByTurnOrder[gBattleStruct->switchInAbilitiesCounter++];
 
-        // Primal Reversion
-        if (GetBattlerHoldEffect(gBattlerAttacker, TRUE) == HOLD_EFFECT_PRIMAL_ORB
-            && GetBattleFormChangeTargetSpecies(gBattlerAttacker, FORM_CHANGE_BATTLE_PRIMAL_REVERSION) != SPECIES_NONE)
-        {
-            BattleScriptExecute(BattleScript_PrimalReversion);
+        if (TryPrimalReversion(gBattlerAttacker))
             return;
-        }
         if (AbilityBattleEffects(ABILITYEFFECT_ON_SWITCHIN, gBattlerAttacker, 0, 0, 0) != 0)
             return;
     }
@@ -5558,6 +5579,7 @@ static void HandleEndTurn_FinishBattle(void)
 
             // Clear original species field
             gBattleStruct->changedSpecies[B_SIDE_PLAYER][i] = SPECIES_NONE;
+            gBattleStruct->changedSpecies[B_SIDE_OPPONENT][i] = SPECIES_NONE;
 
         #if B_RECALCULATE_STATS >= GEN_5
             // Recalculate the stats of every party member before the end
@@ -5572,6 +5594,7 @@ static void HandleEndTurn_FinishBattle(void)
         {
             gBattleMons[i].species = SPECIES_NONE;
         }
+        FlagClear(B_FLAG_DYNAMAX_BATTLE);
         gBattleMainFunc = FreeResetData_ReturnToOvOrDoEvolutions;
         gCB2_AfterEvolution = BattleMainCB2;
     }
@@ -5845,8 +5868,7 @@ void SetTypeBeforeUsingMove(u16 move, u8 battlerAtk)
         if (!IsDynamaxed(battlerAtk))
             gBattleStruct->ateBoost[battlerAtk] = 1;
     }
-    else if (gBattleMoves[move].flags & FLAG_SOUND
-             && attackerAbility == ABILITY_LIQUID_VOICE)
+    else if (gBattleMoves[move].soundMove && attackerAbility == ABILITY_LIQUID_VOICE)
     {
         gBattleStruct->dynamicMoveType = TYPE_WATER | F_DYNAMIC_TYPE_2;
     }

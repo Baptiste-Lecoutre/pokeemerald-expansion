@@ -248,7 +248,7 @@
 #define FLAG_RECEIVED_STARTER_DOLL           0xE2
 #define FLAG_RECEIVED_GOOD_ROD               0xE3
 #define FLAG_REGI_DOORS_OPENED               0xE4
-#define FLAG_UNUSED_0x0E5                    0xE5 // FLAG_RECEIVED_TM27
+#define FLAG_SHOWN_DEOXYS_TO_COSMO                    0xE5 // FLAG_RECEIVED_TM27
 #define FLAG_UNUSED_0x0E6                    0xE6 // FLAG_RECEIVED_TM36
 #define FLAG_UNUSED_0x0E7                    0xE7 // FLAG_RECEIVED_TM05
 #define FLAG_UNUSED_0x0E8                    0xE8 // FLAG_RECEIVED_TM19
@@ -290,7 +290,7 @@
 #define FLAG_RECEIVED_LAVARIDGE_EGG          0x10A
 #define FLAG_RECEIVED_REVIVED_FOSSIL_MON     0x10B
 #define FLAG_SECRET_BASE_REGISTRY_ENABLED    0x10C
-#define FLAG_UNUSED_0x10D                    0x10D // FLAG_RECEIVED_TM46
+#define FLAG_HIDE_MOSSDEEP_CYNTHIA                    0x10D // FLAG_RECEIVED_TM46
 #define FLAG_CONTEST_SKETCH_CREATED          0x10E  // Set but never read
 #define FLAG_EVIL_TEAM_ESCAPED_STERN_SPOKE   0x10F
 #define FLAG_RECEIVED_EXP_SHARE              0x110
@@ -479,15 +479,15 @@
 #define FLAG_DEFEATED_KYOGRE                 0x1BE
 #define FLAG_DEFEATED_GROUDON                0x1BF
 #define FLAG_DEFEATED_RAYQUAZA               0x1C0
-#define FLAG_DEFEATED_VOLTORB_1_NEW_MAUVILLE 0x1C1
-#define FLAG_DEFEATED_VOLTORB_2_NEW_MAUVILLE 0x1C2
-#define FLAG_DEFEATED_VOLTORB_3_NEW_MAUVILLE 0x1C3
+#define FLAG_DEFEATED_ELECTRODE_1_NEW_MAUVILLE 0x1C1
+#define FLAG_DEFEATED_ELECTRODE_2_NEW_MAUVILLE 0x1C2
+#define FLAG_DEFEATED_ELECTRODE_3_NEW_MAUVILLE 0x1C3
 #define FLAG_DEFEATED_ELECTRODE_1_AQUA_HIDEOUT 0x1C4
 #define FLAG_DEFEATED_ELECTRODE_2_AQUA_HIDEOUT 0x1C5
 #define FLAG_DEFEATED_SUDOWOODO              0x1C6
 #define FLAG_DEFEATED_MEW                    0x1C7
-#define FLAG_DEFEATED_LATIAS_OR_LATIOS       0x1C8
-#define FLAG_CAUGHT_LATIAS_OR_LATIOS         0x1C9
+#define FLAG_DEFEATED_LATIOS       0x1C8
+#define FLAG_CAUGHT_LATIOS         0x1C9
 #define FLAG_CAUGHT_MEW                      0x1CA
 #define FLAG_MET_SCOTT_AFTER_OBTAINING_STONE_BADGE 0x1CB
 #define FLAG_MET_SCOTT_IN_VERDANTURF         0x1CC
@@ -505,17 +505,17 @@
 #define FLAG_ENABLE_TATE_AND_LIZA_MATCH_CALL 0x1D8
 #define FLAG_ENABLE_JUAN_MATCH_CALL          0x1D9
 
-#define FLAG_UNUSED_0x1DA                    0x1DA // Unused Flag
+#define FLAG_CAUGHT_LATIAS                    0x1DA // Unused Flag
 
 #define FLAG_SHOWN_MYSTIC_TICKET             0x1DB
 #define FLAG_DEFEATED_HO_OH                  0x1DC
 #define FLAG_DEFEATED_LUGIA                  0x1DD
 
-#define FLAG_UNUSED_0x1DE                    0x1DE // Unused Flag
-#define FLAG_UNUSED_0x1DF                    0x1DF // Unused Flag
-#define FLAG_UNUSED_0x1E0                    0x1E0 // Unused Flag
-#define FLAG_UNUSED_0x1E1                    0x1E1 // Unused Flag
-#define FLAG_UNUSED_0x1E2                    0x1E2 // Unused Flag
+#define FLAG_DEFEATED_LATIAS                    0x1DE // Unused Flag
+#define FLAG_DEFEATED_ZAPDOS                    0x1DF // Unused Flag
+#define FLAG_DEFEATED_ARTICUNO                    0x1E0 // Unused Flag
+#define FLAG_DEFEATED_MOLTRES                    0x1E1 // Unused Flag
+#define FLAG_DEFEATED_REGIGIGAS                    0x1E2 // Unused Flag
 #define FLAG_UNUSED_0x1E3                    0x1E3 // Unused Flag
 
 // Mystery Gift Flags (Unknown)
@@ -1017,9 +1017,9 @@
 #define FLAG_HIDE_LILYCOVE_CITY_RIVAL                               0x3CB
 #define FLAG_HIDE_ROUTE_120_STEVEN                                  0x3CC
 #define FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN                            0x3CD
-#define FLAG_HIDE_NEW_MAUVILLE_VOLTORB_1                            0x3CE
-#define FLAG_HIDE_NEW_MAUVILLE_VOLTORB_2                            0x3CF
-#define FLAG_HIDE_NEW_MAUVILLE_VOLTORB_3                            0x3D0
+#define FLAG_HIDE_NEW_MAUVILLE_ELECTRODE_1                            0x3CE
+#define FLAG_HIDE_NEW_MAUVILLE_ELECTRODE_2                            0x3CF
+#define FLAG_HIDE_NEW_MAUVILLE_ELECTRODE_3                            0x3D0
 #define FLAG_HIDE_AQUA_HIDEOUT_B1F_ELECTRODE_1                      0x3D1
 #define FLAG_ITEM_AQUA_HIDEOUT_B1F_SHARPEDONITE                      0x3D2
 #define FLAG_HIDE_OLDALE_TOWN_RIVAL                                 0x3D3
@@ -1501,8 +1501,8 @@
 
 #define FLAG_RECEIVED_POKEDEX_FROM_BIRCH            (SYSTEM_FLAGS + 0x84)
 
-#define FLAG_UNUSED_0x8E5                           (SYSTEM_FLAGS + 0x85) // Unused Flag
-#define FLAG_UNUSED_0x8E6                           (SYSTEM_FLAGS + 0x86) // Unused Flag
+#define FLAG_SYS_EXP_SHARE                           (SYSTEM_FLAGS + 0x85) // Unused Flag
+#define FLAG_DYNAMAX_BATTLE                           (SYSTEM_FLAGS + 0x86) // Unused Flag
 #define FLAG_UNUSED_0x8E7                           (SYSTEM_FLAGS + 0x87) // Unused Flag
 #define FLAG_UNUSED_0x8E8                           (SYSTEM_FLAGS + 0x88) // Unused Flag
 #define FLAG_UNUSED_0x8E9                           (SYSTEM_FLAGS + 0x89) // Unused Flag
@@ -1565,10 +1565,10 @@
 // These flags are cleared once per day
 // The start and end are byte-aligned because the flags are cleared in byte increments
 #define DAILY_FLAGS_START                           (FLAG_UNUSED_0x91F + (8 - FLAG_UNUSED_0x91F % 8))
-#define FLAG_UNUSED_0x920                           (DAILY_FLAGS_START + 0x0)  // Unused Flag
+#define FLAG_DAILY_REMATCH_RIVAL                           (DAILY_FLAGS_START + 0x0)  // Unused Flag
 #define FLAG_DAILY_CONTEST_LOBBY_RECEIVED_BERRY     (DAILY_FLAGS_START + 0x1)
 #define FLAG_DAILY_SECRET_BASE                      (DAILY_FLAGS_START + 0x2)
-#define FLAG_UNUSED_0x923                           (DAILY_FLAGS_START + 0x3)  // Unused Flag
+#define FLAG_DAILY_REMATCH_CYNTHIA                           (DAILY_FLAGS_START + 0x3)  // Unused Flag
 #define FLAG_UNUSED_0x924                           (DAILY_FLAGS_START + 0x4)  // Unused Flag
 #define FLAG_UNUSED_0x925                           (DAILY_FLAGS_START + 0x5)  // Unused Flag
 #define FLAG_UNUSED_0x926                           (DAILY_FLAGS_START + 0x6)  // Unused Flag

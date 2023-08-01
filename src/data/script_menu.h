@@ -865,6 +865,35 @@ static const struct MenuAction MultichoiceList_SinnohCostumes[] =
     {gText_Cancel2},
 };
 
+const struct MenuAction MultichoiceList_RotomAppliances[] = 
+{
+    {gText_MicrowaveOven},
+    {gText_WashingMachine},
+    {gText_Refrigerator},
+    {gText_ElectricFan},
+    {gText_Lawnmower},
+    {gText_Recall},
+};
+
+const struct MenuAction MultichoiceList_DeoxysFormes[] =
+{
+    {gText_Normal},
+    {gText_Attack},
+    {gText_Defense},
+    {gText_Speed},
+    {gText_Exit},
+};
+
+const struct MenuAction MultichoiceList_StarterMoves[] = 
+{
+    {gText_GrassPledge},
+    {gText_FirePledge},
+    {gText_WaterPledge},
+    {gText_FrenzyPlant},
+    {gText_BlastBurn},
+    {gText_HydroCannon},
+};
+
 static const struct MenuAction MultichoiceList_Exit[] =
 {
     {gText_Exit},
@@ -1004,6 +1033,9 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_JOHTO_COSTUMES]             = MULTICHOICE(MultichoiceList_JohtoCostumes),
     [MULTI_HOENN_COSTUMES]             = MULTICHOICE(MultichoiceList_HoennCostumes),
     [MULTI_SINNOH_COSTUMES]            = MULTICHOICE(MultichoiceList_SinnohCostumes),
+    [MULTI_ROTOM_APPLIANCES]           = MULTICHOICE(MultichoiceList_RotomAppliances),
+    [MULTI_DEOXYS_FORMES]              = MULTICHOICE(MultichoiceList_DeoxysFormes),
+    [MULTI_STARTER_MOVES]              = MULTICHOICE(MultichoiceList_StarterMoves),
 };
 
 const u8 *const gStdStrings[] =

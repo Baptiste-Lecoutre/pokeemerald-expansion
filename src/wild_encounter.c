@@ -963,7 +963,7 @@ void FishingWildEncounter(u8 rod)
     {
         species = GenerateFishingWildMon(gWildMonHeaders[GetCurrentMapWildMonHeaderId()].fishingMonsInfo, rod);
     }
-    IncrementGameStat(GAME_STAT_FISHING_CAPTURES);
+    IncrementGameStat(GAME_STAT_FISHING_ENCOUNTERS);
     SetPokemonAnglerSpecies(species);
     gIsFishingEncounter = TRUE;
     BattleSetup_StartWildBattle();
@@ -1190,6 +1190,7 @@ bool8 TryDoDoubleWildBattle(void)
 #endif
     return FALSE;
 }
+
 u8 ChooseHiddenMonIndex(void)
 {
     #ifdef ENCOUNTER_CHANCE_HIDDEN_MONS_TOTAL
@@ -1211,3 +1212,13 @@ bool32 MapHasNoEncounterData(void)
     return (GetCurrentMapWildMonHeaderId() == HEADER_NONE);
 }
 
+
+bool8 StandardWildEncounter_Debug(void)
+{
+    u16 headerId = GetCurrentMapWildMonHeaderId();
+    if (TryGenerateWildMon(gWildMonHeaders[headerId].landMonsInfo, WILD_AREA_LAND, 0) != TRUE)
+        return FALSE;
+
+    DoStandardWildBattle_Debug();
+    return TRUE;
+}

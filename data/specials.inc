@@ -571,3 +571,13 @@ gSpecials::
 	def_special ClearRaidBattleFlag
 	def_special ClearAllRaidBattleFlags
 	def_special GiveRaidBattleRewards
+	def_special ChangeMonSpecies
+	def_special CountRotomInParty
+	def_special GetRotomState
+	def_special RotomForgetSpecialMove
+	def_special TeachRotomMove
+	def_special DoesRotomKnowSpecialMove
+	def_special GetRotomNewSpecialMove
+	def_special BufferNextLevelCap
+	def_special IncreasePartyLevelToLevelCap
+	def_special CheckSpeciesInParty

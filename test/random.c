@@ -2,6 +2,47 @@
 #include "test.h"
 #include "random.h"
 
+// We expect each element to have an indexSum of 3.5 * 1024.
+// Therefore the maximum error is 8*3584, or 28672.
+#define SHUFFLE_TEST_IMPL \
+    u32 i, j, error; \
+    u16 indexSum[7]; \
+    memset(indexSum, 0, sizeof(indexSum)); \
+    for (i = 0; i < 1024; i++) \
+    { \
+        Shuffle(array, ARRAY_COUNT(array), sizeof(array[0])); \
+        for (j = 0; j < ARRAY_COUNT(array); j++) \
+            indexSum[array[j]] += j; \
+    } \
+    error = 0; \
+    for (i = 0; i < ARRAY_COUNT(indexSum); i++) \
+        error += abs(3584 - indexSum[i]); \
+    EXPECT_LT(error, (int)(28672 * 0.025));
+
+TEST("Shuffle randomizes the array [Shuffle8]")
+{
+    u8 array[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    SHUFFLE_TEST_IMPL;
+}
+
+TEST("Shuffle randomizes the array [Shuffle16]")
+{
+    u16 array[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    SHUFFLE_TEST_IMPL;
+}
+
+TEST("Shuffle randomizes the array [Shuffle32]")
+{
+    u32 array[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    SHUFFLE_TEST_IMPL;
+}
+
+TEST("Shuffle randomizes the array [Shuffle64]")
+{
+    u64 array[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    SHUFFLE_TEST_IMPL;
+}
+
 TEST("RandomUniform generates lo..hi")
 {
     u32 lo, hi, i;
@@ -13,6 +54,25 @@ TEST("RandomUniform generates lo..hi")
     {
         u32 r = RandomUniformDefault(RNG_NONE, lo, hi);
         EXPECT(lo <= r && r <= hi);
+    }
+}
+
+static bool32 InvalidEven(u32 n)
+{
+    return n % 2 == 0;
+}
+
+TEST("RandomUniformExcept generates lo..hi")
+{
+    u32 lo, hi, i;
+    PARAMETRIZE { lo = 0; hi = 1; }
+    PARAMETRIZE { lo = 0; hi = 2; }
+    PARAMETRIZE { lo = 0; hi = 3; }
+    PARAMETRIZE { lo = 2; hi = 4; }
+    for (i = 0; i < 1024; i++)
+    {
+        u32 r = RandomUniformExceptDefault(RNG_NONE, lo, hi, InvalidEven);
+        EXPECT(lo <= r && r <= hi && r % 2 != 0);
     }
 }
 
@@ -63,6 +123,29 @@ TEST("RandomUniform generates uniform distribution")
         error += abs(UQ_4_12(0.25) - distribution[i]);
 
     EXPECT_LT(error, UQ_4_12(0.025));
+}
+
+TEST("RandomUniformExcept generates uniform distribution")
+{
+    u32 i, error;
+    u16 distribution[4];
+
+    memset(distribution, 0, sizeof(distribution));
+    for (i = 0; i < 4096; i++)
+    {
+        u32 r = RandomUniformExceptDefault(RNG_NONE, 0, ARRAY_COUNT(distribution) - 1, InvalidEven);
+        EXPECT(0 <= r && r < ARRAY_COUNT(distribution));
+        distribution[r]++;
+    }
+
+    error = 0;
+    for (i = 0; i < ARRAY_COUNT(distribution); i++)
+    {
+        if (i % 2 != 0)
+            error += abs(UQ_4_12(0.5) - distribution[i]);
+    }
+
+    EXPECT_LT(error, UQ_4_12(0.05));
 }
 
 TEST("RandomWeighted generates distribution in proportion to the weights")

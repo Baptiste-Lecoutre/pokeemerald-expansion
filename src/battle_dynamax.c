@@ -119,8 +119,8 @@ bool32 CanDynamax(u16 battlerId)
 
 
     // Check if Player has a Dynamax Band.
-    if ((GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT || (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) && GetBattlerPosition(battlerId) == B_POSITION_PLAYER_RIGHT))
-          && !CheckBagHasItem(ITEM_DYNAMAX_BAND, 1))
+    if (/*(GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT || (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) && GetBattlerPosition(battlerId) == B_POSITION_PLAYER_RIGHT))
+          &&*/ !CheckBagHasItem(ITEM_DYNAMAX_BAND, 1))
         return FALSE;
 
     // Check if species isn't allowed to Dynamax.
@@ -409,7 +409,7 @@ u8 GetMaxMovePower(u16 move)
 
 static u8 GetMaxPowerTier(u16 move)
 {
-    if (gBattleMoves[move].flags & FLAG_TWO_STRIKES)
+    if (gBattleMoves[move].strikeCount > 1)
     {
         switch(gBattleMoves[move].power)
         {

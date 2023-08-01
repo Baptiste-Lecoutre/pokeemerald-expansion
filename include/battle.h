@@ -630,6 +630,7 @@ struct BattleStruct
     u8 wishPerishSongBattlerId;
     bool8 overworldWeatherDone;
     bool8 terrainDone;
+    u8 isAtkCancelerForCalledMove; // Certain cases in atk canceler should only be checked once, when the original move is called, however others need to be checked the twice.
     u8 atkCancellerTracker;
     struct BattleTvMovePoints tvMovePoints;
     struct BattleTv tv;
@@ -660,7 +661,6 @@ struct BattleStruct
     u8 stolenStats[NUM_BATTLE_STATS]; // hp byte is used for which stats to raise, other inform about by how many stages
     u8 lastMoveFailed; // as bits for each battler, for the sake of Stomping Tantrum
     u8 lastMoveTarget[MAX_BATTLERS_COUNT]; // The last target on which each mon used a move, for the sake of Instruct
-    u8 debugHoldEffects[MAX_BATTLERS_COUNT]; // These override actual items' hold effects.
     u16 tracedAbility[MAX_BATTLERS_COUNT];
     u16 hpBefore[MAX_BATTLERS_COUNT]; // Hp of battlers before using a move. For Berserk
     bool8 spriteIgnore0Hp;
@@ -673,7 +673,7 @@ struct BattleStruct
     bool8 friskedAbility; // If identifies two mons, show the ability pop-up only once.
     u8 sameMoveTurns[MAX_BATTLERS_COUNT]; // For Metronome, number of times the same moves has been SUCCESFULLY used.
     u16 moveEffect2; // For Knock Off
-    u16 changedSpecies[NUM_BATTLE_SIDES][PARTY_SIZE]; // For Zygarde or future forms when multiple mons can change into the same pokemon.
+    u16 changedSpecies[NUM_BATTLE_SIDES][PARTY_SIZE]; // For forms when multiple mons can change into the same pokemon.
     u8 quickClawBattlerId;
     struct LostItem itemLost[PARTY_SIZE];  // Player's team that had items consumed or stolen (two bytes per party member)
     u8 blunderPolicy:1; // should blunder policy activate
@@ -696,7 +696,7 @@ struct BattleStruct
     u8 storedHealingWish:4; // Each battler as a bit.
     u8 storedLunarDance:4; // Each battler as a bit.
     u8 bonusCritStages[MAX_BATTLERS_COUNT]; // G-Max Chi Strike boosts crit stages of allies.
-    u16 supremeOverlordModifier[MAX_BATTLERS_COUNT];
+    uq4_12_t supremeOverlordModifier[MAX_BATTLERS_COUNT];
     u8 itemPartyIndex[MAX_BATTLERS_COUNT];
     u8 itemMoveIndex[MAX_BATTLERS_COUNT];
     bool8 trainerSlideHalfHpMsgDone;
@@ -726,6 +726,12 @@ struct BattleStruct
 #define IS_MOVE_SPECIAL(move)(GetBattleMoveSplit(move) == SPLIT_SPECIAL)
 #define IS_MOVE_STATUS(move)(gBattleMoves[move].split == SPLIT_STATUS)
 
+#define IS_MOVE_RECOIL(move)(gBattleMoves[move].effect == EFFECT_RECOIL_25          \
+                          || gBattleMoves[move].effect == EFFECT_RECOIL_IF_MISS     \
+                          || gBattleMoves[move].effect == EFFECT_RECOIL_50          \
+                          || gBattleMoves[move].effect == EFFECT_RECOIL_33          \
+                          || gBattleMoves[move].effect == EFFECT_RECOIL_33_STATUS)
+
 #define BATTLER_MAX_HP(battlerId)(gBattleMons[battlerId].hp == gBattleMons[battlerId].maxHP)
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0))
 #define BATTLER_DAMAGED(battlerId) ((gSpecialStatuses[battlerId].physicalDmg != 0 || gSpecialStatuses[battlerId].specialDmg != 0))
@@ -743,7 +749,6 @@ struct BattleStruct
     gBattleMons[battlerId].type2 = gSpeciesInfo[gBattleMons[battlerId].species].types[1];   \
     gBattleMons[battlerId].type3 = TYPE_MYSTERY;                                            \
 }
-
 
 #define IS_BATTLER_PROTECTED(battlerId)(gProtectStructs[battlerId].protected                                           \
                                         || gSideStatuses[GetBattlerSide(battlerId)] & SIDE_STATUS_WIDE_GUARD           \
@@ -1049,5 +1054,9 @@ extern u16 gLastThrownBall;
 extern u8 gPartyCriticalHits[PARTY_SIZE];
 
 extern bool8 gDescriptionSubmenu;
+
+#define NUM_SOFT_CAPS 9
+extern const u16 gLevelCapFlags[NUM_SOFT_CAPS];
+extern const u16 gLevelCaps[NUM_SOFT_CAPS];
 
 #endif // GUARD_BATTLE_H
