@@ -1538,6 +1538,7 @@ static u8 GetEncounterLevelFromMapData(u16 species, u8 environment)
     const struct WildPokemonInfo *hiddenMonsInfo = gWildMonHeaders[headerId].hiddenMonsInfo;
     u8 min = 100;
     u8 max = 0;
+    u8 playerMedianLevel = GetMedianLevelOfPlayerParty();
     u8 i;
     
     switch (environment)
@@ -1593,6 +1594,9 @@ static u8 GetEncounterLevelFromMapData(u16 species, u8 environment)
 
     if (max == 0)
         return MON_LEVEL_NONEXISTENT;
+    
+    min = playerMedianLevel - 6;
+    max = playerMedianLevel - 3;
 
     return RandRange(min, max);
 }
