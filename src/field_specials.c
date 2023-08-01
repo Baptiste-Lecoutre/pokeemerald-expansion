@@ -5598,3 +5598,40 @@ void IncreasePartyLevelToLevelCap(void)
         }
     }
 }
+
+// Checks the player's party for up to three different Pokemon. Useful for Legendary events.
+// gSpecialVar_0x8004: set to first species to check for
+// gSpecialVar_0x8005: set to second species to check for
+// gSpecialVar_0x8006: set to third species to check for
+// gSpecialVar_0x8007: set to number of species to check for
+// Returns TRUE if all species are found, FALSE if not
+bool8 CheckSpeciesInParty (void)
+{
+    u16 species1 = gSpecialVar_0x8004;
+    u16 species2 = gSpecialVar_0x8005;
+    u16 species3 = gSpecialVar_0x8006;
+    u32 numSpecies = gSpecialVar_0x8007;
+    u32 i;
+    u32 speciesFound = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == species1)
+        {
+            speciesFound++;
+        }
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == species2)
+        {
+            speciesFound++;
+        }
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == species3)
+        {
+            speciesFound++;
+        }
+    }
+
+    if (speciesFound == numSpecies){
+        return TRUE;
+    }
+    return FALSE;
+}
