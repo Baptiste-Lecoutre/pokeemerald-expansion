@@ -217,4 +217,3 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - bag sprites
     - make magma bright during the night -> change the DNS from Merpp to Sierra? 
     - dexnav interface
-    - title screen to finish. look at StartPokemonLogoShine for the right position. rework the bg and add another bg to replace clouds
