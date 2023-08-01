@@ -407,7 +407,7 @@ u8 GetMaxMovePower(u16 move)
 
 static u8 GetMaxPowerTier(u16 move)
 {
-    if (gBattleMoves[move].twoStrikes)
+    if (gBattleMoves[move].strikeCount > 1)
     {
         switch(gBattleMoves[move].power)
         {
