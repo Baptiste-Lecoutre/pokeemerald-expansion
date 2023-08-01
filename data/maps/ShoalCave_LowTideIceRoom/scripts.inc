@@ -1,4 +1,5 @@
 ShoalCave_LowTideIceRoom_MapScripts::
+	map_script MAP_SCRIPT_ON_RESUME, Common_EventScript_RemoveOverworldAfterBattle
 	.byte 0
 
 ShoalCave_LowTideIceRoom_EventScript_Articuno::

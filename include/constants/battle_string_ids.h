@@ -676,12 +676,13 @@
 #define STRINGID_PKMNBURNINGUP                        674
 #define STRINGID_TEAMSURROUNDEDBYROCKS                675
 #define STRINGID_PKMNHURTBYROCKSTHROWN                676
-#define STRINGID_MOVEBLOCKEDBYDYNAMAX                 677
-#define STRINGID_PKMNGAINEDEXPSHARE                   678
-#define STRINGID_PKMNDROPPEDITEM                      679
-#define STRINGID_BAGISFULL                            680
+#define STRINGID_PKMNITEMMELTED                       677
+#define STRINGID_MOVEBLOCKEDBYDYNAMAX                 678
+#define STRINGID_PKMNGAINEDEXPSHARE                   679
+#define STRINGID_PKMNDROPPEDITEM                      680
+#define STRINGID_BAGISFULL                            681
 
-#define BATTLESTRINGS_COUNT                           681
+#define BATTLESTRINGS_COUNT                           682
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -842,6 +843,10 @@
 #define B_MSG_SENT_LANETTES_PC  1
 #define B_MSG_SOMEONES_BOX_FULL 2
 #define B_MSG_LANETTES_BOX_FULL 3
+
+// gPrimalWeatherBlocksStringIds
+#define B_MSG_PRIMAL_WEATHER_FIZZLED_BY_RAIN    0
+#define B_MSG_PRIMAL_WEATHER_EVAPORATED_IN_SUN  1
 
 // gInobedientStringIds
 #define B_MSG_LOAFING            0

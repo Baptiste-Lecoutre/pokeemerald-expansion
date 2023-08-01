@@ -574,3 +574,4 @@ gSpecials::
 	def_special GetRotomNewSpecialMove
 	def_special BufferNextLevelCap
 	def_special IncreasePartyLevelToLevelCap
+	def_special CheckSpeciesInParty
