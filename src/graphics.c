@@ -2062,8 +2062,8 @@ const u32 gBerryCrush_Crusher_Gfx[] = INCBIN_U32("graphics/berry_crush/crusher.4
 const u32 gBerryCrush_TextWindows_Tilemap[] = INCBIN_U32("graphics/berry_crush/text_windows.bin.lz");
 
 // Type icons in battle
-const u8 TypeIconsTiles[] = INCBIN_U8("graphics/types/TypeIcons_Healthbox.4bpp");
-const u16 TypeIconsPal[] = INCBIN_U16("graphics/types/TypeIcons_Healthbox.gbapal");
+const u8 gTypeIconsTiles[] = INCBIN_U8("graphics/types/TypeIcons_Healthbox.4bpp");
+const u16 gTypeIconsPal[] = INCBIN_U16("graphics/types/TypeIcons_Healthbox.gbapal");
 
 // DexNav
 const u16 gDexNav_Gui_Pal[] = INCBIN_U16("graphics/dexnav/gui.gbapal");

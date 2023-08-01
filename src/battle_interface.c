@@ -3506,25 +3506,25 @@ void TryChangeLastUsedBall(bool8 increase)
 #define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (1 * 2 * frame * 32), .size = 1 * 2 * 32}
 static const struct SpriteFrameImage sTypeIconPicTable[] = 
 {
-    [TYPE_NORMAL] =		type_icon_frame(TypeIconsTiles, TYPE_NORMAL),
-	[TYPE_FIGHTING] =	type_icon_frame(TypeIconsTiles, TYPE_FIGHTING),
-	[TYPE_FLYING] =		type_icon_frame(TypeIconsTiles, TYPE_FLYING),
-	[TYPE_POISON] =		type_icon_frame(TypeIconsTiles, TYPE_POISON),
-	[TYPE_GROUND] =		type_icon_frame(TypeIconsTiles, TYPE_GROUND),
-	[TYPE_ROCK] =		type_icon_frame(TypeIconsTiles, TYPE_ROCK),
-	[TYPE_BUG] =		type_icon_frame(TypeIconsTiles, TYPE_BUG),
-	[TYPE_GHOST] =		type_icon_frame(TypeIconsTiles, TYPE_GHOST),
-	[TYPE_STEEL] =		type_icon_frame(TypeIconsTiles, TYPE_STEEL),
-	[TYPE_MYSTERY] =	type_icon_frame(TypeIconsTiles, TYPE_MYSTERY),
-	[TYPE_FIRE] =		type_icon_frame(TypeIconsTiles, TYPE_FIRE),
-	[TYPE_WATER] =		type_icon_frame(TypeIconsTiles, TYPE_WATER),
-	[TYPE_GRASS] =		type_icon_frame(TypeIconsTiles, TYPE_GRASS),
-	[TYPE_ELECTRIC] =	type_icon_frame(TypeIconsTiles, TYPE_ELECTRIC),
-	[TYPE_PSYCHIC] =	type_icon_frame(TypeIconsTiles, TYPE_PSYCHIC),
-	[TYPE_ICE] =		type_icon_frame(TypeIconsTiles, TYPE_ICE),
-	[TYPE_DRAGON] =		type_icon_frame(TypeIconsTiles, TYPE_DRAGON),
-	[TYPE_DARK] =		type_icon_frame(TypeIconsTiles, TYPE_DARK),
-    [TYPE_FAIRY] =      type_icon_frame(TypeIconsTiles, TYPE_FAIRY),
+    [TYPE_NORMAL] =		type_icon_frame(gTypeIconsTiles, TYPE_NORMAL),
+	[TYPE_FIGHTING] =	type_icon_frame(gTypeIconsTiles, TYPE_FIGHTING),
+	[TYPE_FLYING] =		type_icon_frame(gTypeIconsTiles, TYPE_FLYING),
+	[TYPE_POISON] =		type_icon_frame(gTypeIconsTiles, TYPE_POISON),
+	[TYPE_GROUND] =		type_icon_frame(gTypeIconsTiles, TYPE_GROUND),
+	[TYPE_ROCK] =		type_icon_frame(gTypeIconsTiles, TYPE_ROCK),
+	[TYPE_BUG] =		type_icon_frame(gTypeIconsTiles, TYPE_BUG),
+	[TYPE_GHOST] =		type_icon_frame(gTypeIconsTiles, TYPE_GHOST),
+	[TYPE_STEEL] =		type_icon_frame(gTypeIconsTiles, TYPE_STEEL),
+	[TYPE_MYSTERY] =	type_icon_frame(gTypeIconsTiles, TYPE_MYSTERY),
+	[TYPE_FIRE] =		type_icon_frame(gTypeIconsTiles, TYPE_FIRE),
+	[TYPE_WATER] =		type_icon_frame(gTypeIconsTiles, TYPE_WATER),
+	[TYPE_GRASS] =		type_icon_frame(gTypeIconsTiles, TYPE_GRASS),
+	[TYPE_ELECTRIC] =	type_icon_frame(gTypeIconsTiles, TYPE_ELECTRIC),
+	[TYPE_PSYCHIC] =	type_icon_frame(gTypeIconsTiles, TYPE_PSYCHIC),
+	[TYPE_ICE] =		type_icon_frame(gTypeIconsTiles, TYPE_ICE),
+	[TYPE_DRAGON] =		type_icon_frame(gTypeIconsTiles, TYPE_DRAGON),
+	[TYPE_DARK] =		type_icon_frame(gTypeIconsTiles, TYPE_DARK),
+    [TYPE_FAIRY] =      type_icon_frame(gTypeIconsTiles, TYPE_FAIRY),
 };
 
 static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] = 
@@ -3560,7 +3560,7 @@ static const struct OamData sTypeIconOAM =
 
 static const struct SpritePalette sTypeIconPalTemplate = 
 {
-    .data = TypeIconsPal,
+    .data = gTypeIconsPal,
     .tag = TYPE_ICON_TAG,
 };
 

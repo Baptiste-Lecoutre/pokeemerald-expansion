@@ -11010,8 +11010,8 @@ extern const u8 gMailTilemap_Retro[];
 extern const u8 gMonMarkingsMenu_Gfx[];
 extern const u16 gMonMarkingsMenu_Pal[];
 
-extern const u8 TypeIconsTiles[];
-extern const u16 TypeIconsPal[];
+extern const u8 gTypeIconsTiles[];
+extern const u16 gTypeIconsPal[];
 
 // poke vial
 extern const u32 gItemIcon_PokeVial[];
