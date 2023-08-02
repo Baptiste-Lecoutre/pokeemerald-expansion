@@ -582,7 +582,7 @@ static const struct OamData sOamData_RaidBarrier =
     .affineParam = 0,
 };
 
-static const s8 sBarrierPosition[2] = {48, 10};
+static const s8 sBarrierPosition[2] = {43, 9}; // 48 10
 
 // Sync up barrier sprites with healthbox.
 static void SpriteCb_RaidBarrier(struct Sprite *sprite)
