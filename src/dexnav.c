@@ -1538,6 +1538,7 @@ static u8 GetEncounterLevelFromMapData(u16 species, u8 environment)
     const struct WildPokemonInfo *hiddenMonsInfo = gWildMonHeaders[headerId].hiddenMonsInfo;
     u8 min = 100;
     u8 max = 0;
+    u8 playerMedianLevel = GetMedianLevelOfPlayerParty();
     u8 i;
     
     switch (environment)
@@ -1593,6 +1594,9 @@ static u8 GetEncounterLevelFromMapData(u16 species, u8 environment)
 
     if (max == 0)
         return MON_LEVEL_NONEXISTENT;
+    
+    min = playerMedianLevel - 6;
+    max = playerMedianLevel - 3;
 
     return RandRange(min, max);
 }
@@ -2085,210 +2089,277 @@ void LoadDexnavBgTilemap()
 void LoadDexnavBgPal()
 {
     u8 i = GetCurrentRegionMapSectionId();
+    u16 count;
 
     switch(i)
     {
         case MAPSEC_ROUTE_101:
-            LoadPalette(gDexNav_Route101_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Route101_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_102:
-            LoadPalette(gDexNav_Route102_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route102_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_103:
-            LoadPalette(gDexNav_Route103_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_Route103_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_104:
-            LoadPalette(gDexNav_Route104_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_Route104_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_105:
-            LoadPalette(gDexNav_Route105_Pal, 16, 128);
+            count = 128;
+            LoadPalette(gDexNav_Route105_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_106:
-            LoadPalette(gDexNav_Route106_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_Route106_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_107:
-            LoadPalette(gDexNav_Route107_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_Route107_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_108:
-            LoadPalette(gDexNav_Route108_Pal, 16, 128);
+            count = 128;
+            LoadPalette(gDexNav_Route108_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_109:
-            LoadPalette(gDexNav_Route109_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route109_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_110:
-            LoadPalette(gDexNav_Route110_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_Route110_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_111:
-            LoadPalette(gDexNav_Route111_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_Route111_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_112:
-            LoadPalette(gDexNav_Route112_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route112_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_113:
-            LoadPalette(gDexNav_Route113_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_Route113_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_114:
-            LoadPalette(gDexNav_Route114_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Route114_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_115:
-            LoadPalette(gDexNav_Route115_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route115_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_116:
-            LoadPalette(gDexNav_Route116_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route116_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_117:
-            LoadPalette(gDexNav_Route117_Pal, 16, 128);
+            count = 128;
+            LoadPalette(gDexNav_Route117_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_118:
-            LoadPalette(gDexNav_Route118_Pal, 16, 128);
+            count = 128;
+            LoadPalette(gDexNav_Route118_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_119:
-            LoadPalette(gDexNav_Route119_Pal, 16, 128);
+            count = 128;
+            LoadPalette(gDexNav_Route119_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_120:
-            LoadPalette(gDexNav_Route120_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route120_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_121:
-            LoadPalette(gDexNav_Route121_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Route121_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_122:
-            LoadPalette(gDexNav_Route122_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_Route122_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_123:
-            LoadPalette(gDexNav_Route123_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route123_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_124:
-            LoadPalette(gDexNav_Route124_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route124_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_125:
-            LoadPalette(gDexNav_Route125_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Route125_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_126:
-            LoadPalette(gDexNav_Route126_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route126_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_127:
-            LoadPalette(gDexNav_Route127_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route127_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_128:
-            LoadPalette(gDexNav_Route128_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Route128_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_129:
-            LoadPalette(gDexNav_Route129_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route129_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_130:
-            LoadPalette(gDexNav_Route130_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route130_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_131:
-            LoadPalette(gDexNav_Route131_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route131_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_132:
-            LoadPalette(gDexNav_Route132_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route132_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_133:
-            LoadPalette(gDexNav_Route133_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Route133_Pal, 16, count);
             break;
         case MAPSEC_ROUTE_134:
-            LoadPalette(gDexNav_Route134_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Route134_Pal, 16, count);
             break;
         case MAPSEC_DEWFORD_TOWN:
-            LoadPalette(gDexNav_Dewford_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_Dewford_Pal, 16, count);
             break;
         case MAPSEC_PACIFIDLOG_TOWN:
-            LoadPalette(gDexNav_Pacifidlog_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_Pacifidlog_Pal, 16, count);
             break;
         case MAPSEC_PETALBURG_CITY:
-            LoadPalette(gDexNav_Petalburg_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_Petalburg_Pal, 16, count);
             break;
         case MAPSEC_SLATEPORT_CITY:
-            LoadPalette(gDexNav_Slateport_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_Slateport_Pal, 16, count);
             break;
         case MAPSEC_LILYCOVE_CITY:
-            LoadPalette(gDexNav_Lilycove_Pal, 16, 128);
+            count = 128;
+            LoadPalette(gDexNav_Lilycove_Pal, 16, count);
             break;
         case MAPSEC_MOSSDEEP_CITY:
-            LoadPalette(gDexNav_Mossdeep_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Mossdeep_Pal, 16, count);
             break;
         case MAPSEC_SOOTOPOLIS_CITY:
-            LoadPalette(gDexNav_Sootopolis_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_Sootopolis_Pal, 16, count);
             break;
         case MAPSEC_EVER_GRANDE_CITY:
-            LoadPalette(gDexNav_EverGrande_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_EverGrande_Pal, 16, count);
             break;
         case MAPSEC_UNDERWATER_124:
         case MAPSEC_UNDERWATER_126:
         case MAPSEC_UNDERWATER_127:
         case MAPSEC_UNDERWATER_128:
-            LoadPalette(gDexNav_Underwater_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Underwater_Pal, 16, count);
             break;
         case MAPSEC_GRANITE_CAVE:
-            LoadPalette(gDexNav_GraniteCave_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_GraniteCave_Pal, 16, count);
             break;
         case MAPSEC_BATTLE_FRONTIER:
-            LoadPalette(gDexNav_BattleFrontier_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_BattleFrontier_Pal, 16, count);
             break;
         case MAPSEC_PETALBURG_WOODS:
-            LoadPalette(gDexNav_PetalburgWoods_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_PetalburgWoods_Pal, 16, count);
             break;
         case MAPSEC_RUSTURF_TUNNEL:
-            LoadPalette(gDexNav_RusturfTunnel_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_RusturfTunnel_Pal, 16, count);
             break;
         case MAPSEC_ABANDONED_SHIP:
-            LoadPalette(gDexNav_AbandonedShip_Pal, 16, 160);
+            count = 160;
+            LoadPalette(gDexNav_AbandonedShip_Pal, 16, count);
             break;
         case MAPSEC_NEW_MAUVILLE:
-            LoadPalette(gDexNav_NewMauville_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_NewMauville_Pal, 16, count);
             break;
         case MAPSEC_METEOR_FALLS:
         case MAPSEC_METEOR_FALLS2:
-            LoadPalette(gDexNav_MeteorFalls_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_MeteorFalls_Pal, 16, count);
             break;
         case MAPSEC_MT_PYRE:
-            LoadPalette(gDexNav_MtPyreInside_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_MtPyreInside_Pal, 16, count);
             break;
         case MAPSEC_SHOAL_CAVE:
-            LoadPalette(gDexNav_ShoalCaveLow_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_ShoalCaveLow_Pal, 16, count);
             break;
         case MAPSEC_SEAFLOOR_CAVERN:
-            LoadPalette(gDexNav_SeafloorCavern_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_SeafloorCavern_Pal, 16, count);
             break;
         case MAPSEC_VICTORY_ROAD:
-            LoadPalette(gDexNav_VictoryRoad_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_VictoryRoad_Pal, 16, count);
             break;
         case MAPSEC_MIRAGE_ISLAND:
-            LoadPalette(gDexNav_MirageIsland_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_MirageIsland_Pal, 16, count);
             break;
         case MAPSEC_FIERY_PATH:
         case MAPSEC_FIERY_PATH2:
-            LoadPalette(gDexNav_FieryPath_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_FieryPath_Pal, 16, count);
             break;
         case MAPSEC_JAGGED_PASS:
         case MAPSEC_JAGGED_PASS2:
-            LoadPalette(gDexNav_JaggedPass_Pal, 16, 64);
+            count = 64;
+            LoadPalette(gDexNav_JaggedPass_Pal, 16, count);
             break;
         case MAPSEC_SKY_PILLAR:
-            LoadPalette(gDexNav_SkyPillar_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_SkyPillar_Pal, 16, count);
             break;
         case MAPSEC_AQUA_HIDEOUT:
-            LoadPalette(gDexNav_AquaHideout_Pal, 16, 96);
+            count = 96;
+            LoadPalette(gDexNav_AquaHideout_Pal, 16, count);
             break;
         case MAPSEC_MAGMA_HIDEOUT:
-            LoadPalette(gDexNav_MagmaHideout_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_MagmaHideout_Pal, 16, count);
             break;
         case MAPSEC_MIRAGE_TOWER:
-            LoadPalette(gDexNav_MirageTower_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_MirageTower_Pal, 16, count);
             break;
         case MAPSEC_ARTISAN_CAVE:
-            LoadPalette(gDexNav_ArtisanCave_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_ArtisanCave_Pal, 16, count);
             break;
         case MAPSEC_DESERT_UNDERPASS:
-            LoadPalette(gDexNav_DesertUnderpass_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_DesertUnderpass_Pal, 16, count);
             break;
         case MAPSEC_ALTERING_CAVE:
-            LoadPalette(gDexNav_AlteringCave_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_AlteringCave_Pal, 16, count);
             break;
         default:
-            LoadPalette(gDexNav_Default_Pal, 16, 32);
+            count = 32;
+            LoadPalette(gDexNav_Default_Pal, 16, count);
     }
+    TintPalette_CustomTone_Blend(&gPlttBufferUnfaded[16], count, Q_8_8(0.6), Q_8_8(0.6), Q_8_8(0.6));
 }
 
 static bool8 DexNav_LoadGraphics(void)
@@ -2973,7 +3044,7 @@ static void PrintCurrentSpeciesInfo(void)
     
     //current chain
     ConvertIntToDecimalStringN(gStringVar1, gSaveBlock1Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
-    AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, CHAIN_BONUS_Y, sFontColor_Black, 0, gStringVar1);
+    AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, CHAIN_BONUS_Y, sFontColor_Black, 0, gStringVar1);
     
     CopyWindowToVram(WINDOW_INFO, 3);
     PutWindowTilemap(WINDOW_INFO);

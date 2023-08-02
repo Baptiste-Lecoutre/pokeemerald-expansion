@@ -1344,6 +1344,34 @@ void TintPalette_CustomTone(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 b
     }
 }
 
+void TintPalette_CustomTone_Blend(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 bTone)
+{
+    s32 r, g, b, i;
+    u32 gray;
+
+    for (i = 0; i < count; i++)
+    {
+        r = GET_R(*palette);
+        g = GET_G(*palette);
+        b = GET_B(*palette);
+
+        gray = (r * Q_8_8(0.3) + g * Q_8_8(0.59) + b * Q_8_8(0.1133)) >> 8;
+
+        r = (u16)((rTone * r)) >> 8;
+        g = (u16)((gTone * g)) >> 8;
+        b = (u16)((bTone * b)) >> 8;
+
+        if (r > 31)
+            r = 31;
+        if (g > 31)
+            g = 31;
+        if (b > 31)
+            b = 31;
+
+        *palette++ = RGB2(r, g, b);
+    }
+}
+
 // Tints from Unfaded to Faded, using a 15-bit GBA color
 void TintPalette_RGB_Copy(u16 palOffset, u32 blendColor) {
   s32 newR, newG, newB, rTone, gTone, bTone;

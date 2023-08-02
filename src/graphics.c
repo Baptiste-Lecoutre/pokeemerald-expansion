@@ -2276,3 +2276,6 @@ const u32 gDexNav_DesertUnderpass_Tilemap[] = INCBIN_U32("graphics/dexnav/Desert
 const u16 gDexNav_AlteringCave_Pal[] = INCBIN_U16("graphics/dexnav/AlteringCave_tiles.gbapal");
 const u32 gDexNav_AlteringCave_Gfx[] = INCBIN_U32("graphics/dexnav/AlteringCave_tiles.4bpp.lz");
 const u32 gDexNav_AlteringCave_Tilemap[] = INCBIN_U32("graphics/dexnav/AlteringCave_tiles.bin.lz");
+
+const u8 gPopUpWindowBorder_Tiles[] = INCBIN_U8("graphics/interface/window_popup_tiles.4bpp");\
+const u16 gPopUpWindowBorder_Palette[] = INCBIN_U16("graphics/interface/map_popup_palette.gbapal");

@@ -217,3 +217,4 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - healthboxes & mega-zmoves triggers
     - bag sprites
     - make magma bright during the night -> change the DNS from Merpp to Sierra? 
+    - dexnav interface

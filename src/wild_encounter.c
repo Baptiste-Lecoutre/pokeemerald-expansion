@@ -58,7 +58,6 @@ static void ApplyCleanseTagEncounterRateMod(u32 *encRate);
 static u8 GetMaxLevelOfSpeciesInWildTable(const struct WildPokemon *wildMon, u16 species, u8 area);
 static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u16 ability, u8 *monIndex);
 static bool8 IsAbilityAllowingEncounter(u8 level);
-static u8 GetMedianLevelOfPlayerParty(void);
 
 EWRAM_DATA static u8 sWildEncountersDisabled = 0;
 EWRAM_DATA static u32 sFeebasRngValue = 0;
@@ -302,7 +301,7 @@ static u8 ChooseWildMonIndex_Fishing(u8 rod)
 }
 
 // Used to scale wild Pokemon levels
-static u8 GetMedianLevelOfPlayerParty(void)
+u8 GetMedianLevelOfPlayerParty(void)
 {
     u8 i, j, temp, medianLevel, medianIndex = 0;
     u8 playerPartyCount = CalculatePlayerBattlerPartyCount();

@@ -11121,4 +11121,7 @@ extern const u32 gItemIconPalette_PokeVial[];
 extern const u32 gItemIcon_EonFlute[];
 extern const u32 gItemIconPalette_EonFlute[];
 
+extern const u8 gPopUpWindowBorder_Tiles[];
+extern const u16 gPopUpWindowBorder_Palette[];
+
 #endif //GUARD_GRAPHICS_H
