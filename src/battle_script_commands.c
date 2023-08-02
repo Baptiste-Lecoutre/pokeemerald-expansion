@@ -339,10 +339,13 @@ static const u16 sWhiteOutBadgeMoney[9] = { 8, 16, 24, 36, 48, 64, 80, 100, 120 
 const u16 gLevelCapFlags[NUM_SOFT_CAPS] =
 {
     FLAG_BADGE01_GET, FLAG_BADGE02_GET, FLAG_BADGE03_GET, FLAG_MET_ARCHIE_METEOR_FALLS, FLAG_BADGE04_GET,
-    FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET,
-    FLAG_SYS_GAME_CLEAR,
+    FLAG_BADGE05_GET, FLAG_BADGE06_GET, FLAG_BADGE07_GET, FLAG_BADGE08_GET, FLAG_SYS_GAME_CLEAR,
 };
-const u16 gLevelCaps[NUM_SOFT_CAPS] = { 15, 21, 32, 43, 47, 50, 60, 70, 50, 75};
+const u16 gLevelCaps[NUM_SOFT_CAPS] = 
+{
+    15, 21, 32, 43, 47,
+    50, 60, 70, 80, 90
+};
 const double sLevelCapReduction[7] = { .5, .33, .25, .20, .15, .10, .05 };
 const double sRelativePartyScaling[27] =
 {
