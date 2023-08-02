@@ -2148,7 +2148,7 @@ END:
     }
 
     // Raid shields apply a damage reduction that can fully negate damage.
-    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0)
+    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && gBattleMoveDamage)
     {
         gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
         gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
