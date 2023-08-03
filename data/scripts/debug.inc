@@ -89,7 +89,7 @@ Debug_Script_4::
 
 Debug_Script_5::
 	lockall
-	preparefixedraid 0, 5, SPECIES_SALAMENCE, 30
+@	preparefixedraid 0, 5, SPECIES_SALAMENCE, 30
 	special InitRaidIntro
 	waitstate
 	goto_if_eq VAR_RESULT, TRUE, Debug_DoFixedRaid

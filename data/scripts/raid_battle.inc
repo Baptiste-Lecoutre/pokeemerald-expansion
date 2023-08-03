@@ -12,6 +12,11 @@ EventScript_RaidBattleIntroScreen::
     special InitRaidIntro
     waitstate
     goto_if_eq VAR_RESULT, FALSE, EventScript_RaidBattleEnd
+    doraidbattle
+    waitstate
+    specialvar VAR_RESULT, GetBattleOutcome
+    goto_if_eq VAR_RESULT, B_OUTCOME_RAN, EventScript_RaidBattleEnd
+    goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, EventScript_RaidBattleEnd
     special SetRaidBattleFlag
     setvar VAR_TEMP_A, 0
     goto EventScript_RaidBattleGiveRewards
@@ -35,6 +40,7 @@ EventScript_ThrowWishingPiece::
 EventScript_NoRaidBattle::
     msgbox Text_DenIsEmpty
     checkitem ITEM_WISHING_PIECE, 1
+    goto_if_eq VAR_RESULT, TRUE, EventScript_ThrowWishingPiece
     releaseall
     end
 
