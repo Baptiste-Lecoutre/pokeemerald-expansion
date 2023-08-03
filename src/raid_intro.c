@@ -41,6 +41,7 @@ enum Windows
 	WIN_TYPE_1,
 	WIN_TYPE_2,
 	WIN_INSTRUCTIONS,
+	WIN_PARTNER_NOT_AVAILABLE,
 	WINDOW_COUNT,
 };
 
@@ -81,6 +82,7 @@ static const u8 sText_RecommendedLevel[]        = _("Recommended Level: ");
 static const u8 sText_RaidIntroSelection[]      = _("{DPAD_UPDOWN}Pick {A_BUTTON}Choose {START_BUTTON}Random {B_BUTTON}Cancel");
 static const u8 sText_RaidBattleRules[]         = _("Battle ends if:\n 4 Pokemon faint\n 10 turns pass");
 static const u8 sText_RaidBattleChoosePartner[] = _("Available Partners");
+static const u8 sText_raidPartnerNotAvailable[] = _("Not available");
 
 static const struct WindowTemplate sRaidBattleIntroWinTemplates[WINDOW_COUNT + 1] =
 {
@@ -143,6 +145,16 @@ static const struct WindowTemplate sRaidBattleIntroWinTemplates[WINDOW_COUNT + 1
 		.height = 2,
 		.paletteNum = 15,
 		.baseBlock = 167,
+	},
+	[WIN_PARTNER_NOT_AVAILABLE] = 
+	{
+		.bg = 1,
+		.tilemapLeft = 14,
+		.tilemapTop = 6,
+		.width = 15,
+		.height = 11,
+		.paletteNum = 15,
+		.baseBlock = 233,
 	},
 	DUMMY_WIN_TEMPLATE
 };
@@ -513,9 +525,11 @@ static void ShowRaidPokemonTypes(void)
 static void ShowPartnerTeams(void)
 {
 	u8 i, j;
+	const u8 partnerColour[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
 
 	for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 	{
+		AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
 		if (sRaidBattleIntro->partners[i].graphicsId != 0)
 		{
             u32 spriteId;
@@ -523,7 +537,7 @@ static void ShowPartnerTeams(void)
 			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, 126, 59 + (i * 33), 0);
             gSprites[spriteId].oam.priority = 0;
 
-			for (j = 0; j < MAX_TEAM_SIZE; ++j)
+			/*for (j = 0; j < MAX_TEAM_SIZE; ++j)
 			{
 				u16 species = sRaidBattleIntro->partners[i].team[j];
 				if (species != SPECIES_NONE)
@@ -531,7 +545,7 @@ static void ShowPartnerTeams(void)
 					LoadMonIconPalette(species);
 					CreateMonIcon(species, SpriteCB_MonIcon, 158 + (32 * j), 59 + (i * 33), 0, 0xFFFFFFFF);
 				}
-			}
+			}*/
 		}
 	}
 }
