@@ -35,13 +35,14 @@
 #define RAID_STORM_TIMER_MAX        27000 // 7.5 minutes, in frames
 
 // Raid Ranks
-#define RAID_RANK_1     0
-#define RAID_RANK_2     1
-#define RAID_RANK_3     2
-#define RAID_RANK_4     3
-#define RAID_RANK_5     4
-#define RAID_RANK_6     5
-#define RAID_RANK_7     6
+#define NO_RAID         0
+#define RAID_RANK_1     1
+#define RAID_RANK_2     2
+#define RAID_RANK_3     3
+#define RAID_RANK_4     4
+#define RAID_RANK_5     5
+#define RAID_RANK_6     6
+#define RAID_RANK_7     7
 #define MAX_RAID_RANK   RAID_RANK_7
 
 // Other Constants

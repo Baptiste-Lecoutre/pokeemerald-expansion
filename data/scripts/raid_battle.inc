@@ -1,5 +1,6 @@
 EventScript_RaidBattle::
     lockall
+    goto_if_unset FLAG_BADGE01_GET, EventScript_RaidBattleNoDynamaxBand
     checkitem ITEM_DYNAMAX_BAND, 1
     goto_if_eq VAR_RESULT, FALSE, EventScript_RaidBattleNoDynamaxBand
     special IsRaidBattleAvailable

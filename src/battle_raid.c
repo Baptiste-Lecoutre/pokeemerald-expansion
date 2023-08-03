@@ -51,6 +51,7 @@ const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
 
 // Rank-based HP Multipliers
 static const u16 sGen8RaidHPMultipliers[] = {
+    [NO_RAID]     = UQ_4_12(1.0),
     [RAID_RANK_1] = UQ_4_12(1.4),
     [RAID_RANK_2] = UQ_4_12(1.6),
     [RAID_RANK_3] = UQ_4_12(1.9),
@@ -61,6 +62,7 @@ static const u16 sGen8RaidHPMultipliers[] = {
 };
 
 static const u16 sGen9RaidHPMultipliers[] = {
+    [NO_RAID]     = UQ_4_12(1.0),
     [RAID_RANK_1] = UQ_4_12(5.0),
     [RAID_RANK_2] = UQ_4_12(5.0),
     [RAID_RANK_3] = UQ_4_12(8.0),
@@ -72,7 +74,7 @@ static const u16 sGen9RaidHPMultipliers[] = {
 
 const u8 gRaidBattleStarsByBadges[][2] =
 {
-//	[0] = {NO_RAID,         NO_RAID},
+	[0] = {NO_RAID,         NO_RAID},
 	[1] = {RAID_RANK_1, RAID_RANK_1},
 	[2] = {RAID_RANK_1, RAID_RANK_2},
 	[3] = {RAID_RANK_2, RAID_RANK_2},
@@ -86,19 +88,21 @@ const u8 gRaidBattleStarsByBadges[][2] =
 
 const u8 gRaidBattleLevelRanges[MAX_RAID_RANK + 1][2] =
 {
-	[RAID_RANK_1]   = {15, 20},
-	[RAID_RANK_2]   = {25, 30},
+	[NO_RAID]     = {1, 2},
+    [RAID_RANK_1] = {15, 20},
+	[RAID_RANK_2] = {25, 30},
 	[RAID_RANK_3] = {35, 40},
-	[RAID_RANK_4]  = {50, 55},
-	[RAID_RANK_5]  = {60, 65},
-	[RAID_RANK_6]   = {75, 90},
+	[RAID_RANK_4] = {50, 55},
+	[RAID_RANK_5] = {60, 65},
+	[RAID_RANK_6] = {75, 90},
     [RAID_RANK_7] = {90, 100},
 };
 
 //The chance that each move is replaced with an Egg Move
 const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK + 1] =
 {
-	[RAID_RANK_1] = 0,
+	[NO_RAID]     = 0,
+    [RAID_RANK_1] = 0,
 	[RAID_RANK_2] = 10,
 	[RAID_RANK_3] = 30,
 	[RAID_RANK_4] = 50,
@@ -365,7 +369,7 @@ u8 GetRaidRepeatedAttackChance(void)
 	u8 numStars = gRaidData.rank;
     switch (numStars)
     {
-		case RAID_RANK_1 ... RAID_RANK_3:
+		case NO_RAID ... RAID_RANK_3:
 			return 0; //Never
 		case RAID_RANK_4:
 			return 30; //30 % of the time after KO or Status Move
@@ -385,7 +389,7 @@ u8 GetRaidShockwaveChance(void)
 
     switch (numStars)
     {
-		case RAID_RANK_1 ... RAID_RANK_3:
+		case NO_RAID ... RAID_RANK_3:
 			return 0; //Never
 		case RAID_RANK_4:
 			return 20; //20 % chance before each attack
@@ -799,7 +803,9 @@ u32 GetRaidRandomNumber(void)
     #ifdef VAR_RAID_NUMBER_OFFSET
 	u16 offset = VarGet(VAR_RAID_NUMBER_OFFSET); //Setting this var changes all the raid spawns for the current hour (helps with better Wishing Piece)
 	#else
-	u16 offset = 0;
+	u16 offset = GetRaidMapSectionId();
+    if (FlagGet(FLAG_TEMP_C))
+        offset <<= 8;
 	#endif
 
 	//return ((hour * (day + month) * lastMapGroup * (lastMapNum + lastWarpId + lastPos)) + ((hour * (day + month)) ^ dayOfWeek) + offset) ^ T1_READ_32(gSaveBlock2Ptr->playerTrainerId);
