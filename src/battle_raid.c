@@ -127,9 +127,38 @@ static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
 	1,
 };
 
-static const u8 sRaidBattleDropItems[MAX_RAID_DROPS] =
-{
-	ITEM_MASTER_BALL,
+static const u16 sRaidBattleDropItems_NoRaid[MAX_RAID_DROPS] = {
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE,
+    ITEM_NONE
+};
+
+static const u16 sRaidBattleDropItems_RaidRank1[MAX_RAID_DROPS] = {
+    ITEM_EXP_CANDY_XS,
+    ITEM_NONE,
+    ITEM_STARDUST,
+    ITEM_NONE,
+    ITEM_PEARL,
+    ITEM_EXP_CANDY_XS,
+    ITEM_NONE,
+    ITEM_EXP_CANDY_S,
+    ITEM_RARE_CANDY,
+    ITEM_NUGGET,
+    ITEM_NONE,
+    ITEM_NONE
+};
+
+static const u16 sRaidBattleDropItems_RaidRank2[MAX_RAID_DROPS] = {
+    ITEM_MASTER_BALL,
     ITEM_NUGGET,
 	ITEM_BOTTLE_CAP,
 	ITEM_PEARL,
@@ -140,7 +169,41 @@ static const u8 sRaidBattleDropItems[MAX_RAID_DROPS] =
 	ITEM_THUNDER_STONE,
 	ITEM_WATER_STONE,
 	ITEM_LEAF_STONE,
-	ITEM_NONE,
+	ITEM_NONE,//
+
+    /*ITEM_WISHING_PIECE
+    
+    ITEM_EXP_CANDY_XS
+    ITEM_EXP_CANDY_S
+    ITEM_EXP_CANDY_M
+    ITEM_EXP_CANDY_L
+    ITEM_EXP_CANDY_XL
+    ITEM_RARE_CANDY
+
+    ITEM_ABILITY_CAPSULE
+    ITEM_ABILITY_PATCH
+
+    ITEM_BOTTLE_CAP
+    ITEM_GOLD_BOTTLE_CAP
+
+    ITEM_NUGGET
+    ITEM_BIG_NUGGET
+    ITEM_PEARL
+    ITEM_BIG_PEARL
+    ITEM_STARDUST
+    ITEM_COMET_SHARD*/
+};
+
+static const u16 *const sRaidBattleDropItems[] = 
+{
+    sRaidBattleDropItems_NoRaid, 
+    sRaidBattleDropItems_RaidRank1,
+    sRaidBattleDropItems_RaidRank2,
+    sRaidBattleDropItems_RaidRank2,
+    sRaidBattleDropItems_RaidRank2,
+    sRaidBattleDropItems_RaidRank2,
+    sRaidBattleDropItems_RaidRank2,
+    sRaidBattleDropItems_RaidRank2
 };
 
 extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
@@ -723,6 +786,9 @@ u16 GetRaidRewardAmount(u16 item)
 	if (GetPocketByItemId(item) == POCKET_BERRIES)
 		return Random() % 11 + 5; //5 - 15
 
+    if (item >= ITEM_RARE_CANDY && item <= ITEM_EXP_CANDY_XL)
+        return Random() % 9 + gRaidData.rank;
+
 	/*switch (gItemsByType[item]) {
 	case ITEM_TYPE_HEALTH_RECOVERY:
 	case ITEM_TYPE_STATUS_RECOVERY:
@@ -761,6 +827,8 @@ static u8 TryAlterRaidItemDropRate(u16 item, u8 rate)
 		}
 	}
 
+    rate += gRaidData.rank;
+
 	return rate;
 }
 
@@ -772,7 +840,7 @@ void GiveRaidBattleRewards(void)
 
 	for (i = VarGet(VAR_TEMP_A); i < MAX_RAID_DROPS; i++)
     {
-        u16 dropItem = sRaidBattleDropItems[i]; // consider raid rank
+        u16 dropItem = sRaidBattleDropItems[numStars][i]; // consider raid rank
         u8 dropRate = sRaidBattleDropRates[i];
         VarSet(VAR_TEMP_A, i+1);
 
