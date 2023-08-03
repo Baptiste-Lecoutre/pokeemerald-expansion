@@ -41,5 +41,6 @@ void ClearRaidBattleFlag(void);
 void ClearAllRaidBattleFlags(void);
 
 void GiveRaidBattleRewards(void);
+u8 GetRaidRecommendedLevel(void);
 
 #endif

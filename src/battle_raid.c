@@ -880,3 +880,14 @@ u32 GetRaidRandomNumber(void)
     //return ((hour * day * lastMapGroup * (lastMapNum + lastWarpId + lastPos)) + ((hour * day) ^ 8) + offset) ^ T1_READ_32(gSaveBlock2Ptr->playerTrainerId);
     return RandomSeeded(hour * day * lastMapGroup * (lastMapNum + lastWarpId + lastPos) + offset, TRUE);
 }
+
+u8 GetRaidRecommendedLevel(void)
+{
+	u8 numStars = gRaidData.rank;
+    u8 recommendedLevel = gRaidBattleLevelRanges[numStars][1] + 5; //Max level + 5
+
+    if (recommendedLevel > MAX_LEVEL)
+        recommendedLevel = MAX_LEVEL;
+
+	return recommendedLevel; 
+}

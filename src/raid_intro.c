@@ -460,7 +460,7 @@ static void PrintInstructions(void)
 	AddTextPrinterParameterized3(WIN_RULES, 0, 0, 2, colour, 0, sText_RaidBattleRules);
 
 	StringCopy(gStringVar1, sText_RecommendedLevel);
-    ConvertIntToDecimalStringN(gStringVar2, 50, 0, 3); // placeholder
+    ConvertIntToDecimalStringN(gStringVar2, GetRaidRecommendedLevel(), 0, 3); // placeholder
 	StringAppend(gStringVar1, gStringVar2);
 	AddTextPrinterParameterized3(WIN_RECOMMENDED_LEVEL, 0, 4, 0, colour, 0, gStringVar1);
 
