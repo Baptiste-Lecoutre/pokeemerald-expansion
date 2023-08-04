@@ -561,10 +561,16 @@ gSpecials::
 	def_special GetPlayerCostumeId
 	def_special GetStaticEncounterLevel
  	def_special GetHighestLevelInPlayerParty
+	def_special InitRaidIntro
 	def_special FossilToSpecies
 	def_special IsItemFossil
 	def_special DoesPlayerHaveFossil
 	def_special Bag_ChooseItem
+	def_special IsRaidBattleAvailable
+	def_special SetRaidBattleFlag
+	def_special ClearRaidBattleFlag
+	def_special ClearAllRaidBattleFlags
+	def_special GiveRaidBattleRewards
 	def_special ChangeMonSpecies
 	def_special CountRotomInParty
 	def_special GetRotomState
@@ -574,3 +580,4 @@ gSpecials::
 	def_special GetRotomNewSpecialMove
 	def_special BufferNextLevelCap
 	def_special IncreasePartyLevelToLevelCap
+	def_special CheckSpeciesInParty

@@ -2185,6 +2185,19 @@ void DoSpecialTrainerBattle(void)
         if (gSpecialVar_0x8005 & MULTI_BATTLE_CHOOSE_MONS) // Skip mons restoring(done in the script)
             gBattleScripting.specialTrainerBattleType = 0xFF;
         break;
+    // TODO: Does this belong with all the other multi battles?
+    case SPECIAL_BATTLE_RAID:
+        gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;// | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
+	
+        // TODO: Get Partner properly.
+        /*gPartnerSpriteId = TRAINER_BACK_PIC_WALLY;
+        gPartnerTrainerId = TRAINER_WALLY_VR_2 + TRAINER_CUSTOM_PARTNER;
+        FillPartnerParty(gPartnerTrainerId);*/
+
+        CreateTask(Task_StartBattleAfterTransition, 1);
+        PlayMapChosenOrBattleBGM(0);
+        BattleTransition_StartOnField(GetRaidBattleTransition());
+        break;
     }
 }
 
@@ -3131,13 +3144,8 @@ static void FillPartnerParty(u16 trainerId)
 
                 CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, 0, TRUE, j, otIdType, otID);
                 SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
+                CustomTrainerPartyAssignMoves(&gPlayerParty[i+3], &partyData[i]);
 
-                // TODO: Figure out a default strategy when moves are not set, to generate a good moveset
-                for (j = 0; j < MAX_MON_MOVES; ++j)
-                {
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_MOVE1 + j, &partyData[i].moves[j]);
-                    SetMonData(&gPlayerParty[i+3], MON_DATA_PP1 + j, &gBattleMoves[partyData[i].moves[j]].pp);
-                }
                 SetMonData(&gPlayerParty[i+3], MON_DATA_IVS, &(partyData[i].iv));
                 if (partyData[i].ev != NULL)
                 {
@@ -3176,6 +3184,8 @@ static void FillPartnerParty(u16 trainerId)
 
             StringCopy(trainerName, gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].trainerName);
             SetMonData(&gPlayerParty[i + 3], MON_DATA_OT_NAME, trainerName);
+            j = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].encounterMusic_gender >> 7;
+            SetMonData(&gPlayerParty[i+3], MON_DATA_OT_GENDER, &j);
         }
     }
     else if (trainerId == TRAINER_EREADER)

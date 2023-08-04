@@ -676,13 +676,33 @@
 #define STRINGID_PKMNBURNINGUP                        674
 #define STRINGID_TEAMSURROUNDEDBYROCKS                675
 #define STRINGID_PKMNHURTBYROCKSTHROWN                676
-#define STRINGID_MOVEBLOCKEDBYDYNAMAX                 677
-#define STRINGID_PKMNGAINEDEXPSHARE                   678
-#define STRINGID_PKMNDROPPEDITEM                      679
-#define STRINGID_BAGISFULL                            680
-#define STRINGID_NORUNNINGFROMTHISBATTLE              681
+#define STRINGID_PKMNITEMMELTED                       677
+#define STRINGID_MOVEBLOCKEDBYDYNAMAX                 678
+#define STRINGID_PKMNAPPEARSMASSIVE                   679
+#define STRINGID_DYNAMAXENERGYGATHERED                680
+#define STRINGID_RAIDSHIELDAPPEARED                   681
+#define STRINGID_RAIDSHIELDDISAPPEARED                682
+#define STRINGID_CATCHRAIDMON                         683
+#define STRINGID_PKMNISTOOSTRONG                      684
+#define STRINGID_PKMNNULLIFIEDOTHERS                  685
+#define STRINGID_MOVEPREVENTEDBYDYNAMAX               686
+#define STRINGID_RAIDPKMNDISAPPEARED                  687
+#define STRINGID_STORMSTARTEDBREWING                  688
+#define STRINGID_STORMGETTINGSTRONGER                 689
+#define STRINGID_STORMGETTINGEVENSTRONGER             690
+#define STRINGID_STORMGETTINGTOOSTRONG                691
+#define STRINGID_BLOWNOUTOFDEN                        692
+#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           693
+#define STRINGID_ENERGYGATHEREDAROUNDPKMN             694
+#define STRINGID_PKMNBROKEITSSTANCE                   695
+#define STRINGID_RAIDNOTMUCHTIMELEFT                  696
+#define STRINGID_RAIDPKMNRELEASEDENERGY               697
+#define STRINGID_PKMNGAINEDEXPSHARE                   698
+#define STRINGID_PKMNDROPPEDITEM                      699
+#define STRINGID_BAGISFULL                            700
+#define STRINGID_NORUNNINGFROMTHISBATTLE              701
 
-#define BATTLESTRINGS_COUNT                           682
+#define BATTLESTRINGS_COUNT                           702
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -844,6 +864,10 @@
 #define B_MSG_SOMEONES_BOX_FULL 2
 #define B_MSG_LANETTES_BOX_FULL 3
 
+// gPrimalWeatherBlocksStringIds
+#define B_MSG_PRIMAL_WEATHER_FIZZLED_BY_RAIN    0
+#define B_MSG_PRIMAL_WEATHER_EVAPORATED_IN_SUN  1
+
 // gInobedientStringIds
 #define B_MSG_LOAFING            0
 #define B_MSG_WONT_OBEY          1
@@ -985,5 +1009,12 @@
 // gItemDroppedStringIds
 #define B_MSG_ITEM_DROPPED   0
 #define B_MSG_BAG_IS_FULL    1
+
+// gRaidStateStringIds
+#define B_MSG_RAID_STORM_STARTED        0
+#define B_MSG_GETTING_STRONGER          1
+#define B_MSG_GETTING_EVEN_STRONGER     2
+#define B_MSG_GETTING_TOO_STRONG        3
+#define B_MSG_PKMN_RELEASED_ENERGY      4
 
 #endif // GUARD_CONSTANTS_BATTLE_STRING_IDS_H

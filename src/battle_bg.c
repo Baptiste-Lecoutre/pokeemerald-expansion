@@ -815,6 +815,12 @@ void DrawMainBattleBackground(void)
             break;
         }
     }
+    else if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+    {
+        LZDecompressVram(sBattleTerrainTable[BATTLE_TERRAIN_CAVE].tileset, (void *)(BG_CHAR_ADDR(2)));
+        LZDecompressVram(sBattleTerrainTable[BATTLE_TERRAIN_CAVE].tilemap, (void *)(BG_SCREEN_ADDR(26)));
+        LoadCompressedPalette(sBattleTerrainTable[BATTLE_TERRAIN_CAVE].palette, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
+    }
     else
     {
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -1212,6 +1218,11 @@ void DrawBattleEntryBackground(void)
             LZDecompressVram(gBattleTerrainAnimTilemap_Rayquaza, (void*)(BG_SCREEN_ADDR(28)));
             break;
         }
+    }
+    else if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+    {
+        LZDecompressVram(sBattleTerrainTable[BATTLE_TERRAIN_CAVE].entryTileset, (void *)(BG_CHAR_ADDR(1)));
+        LZDecompressVram(sBattleTerrainTable[BATTLE_TERRAIN_CAVE].entryTilemap, (void *)(BG_SCREEN_ADDR(28)));
     }
     else
     {

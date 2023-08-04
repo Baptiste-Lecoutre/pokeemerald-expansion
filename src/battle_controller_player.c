@@ -366,7 +366,7 @@ static void HandleInputChooseAction(void)
         }
         else
         {
-            if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER))//if wild, pressing B moves cursor to run
+            if (!(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_RAID)))//if wild, pressing B moves cursor to run
             {
                 PlaySE(SE_SELECT);
                 ActionSelectionDestroyCursorAt(gActionSelectionCursor[gActiveBattler]);
@@ -1725,6 +1725,12 @@ static void OpenPartyMenuToChooseMon(void)
     {
         u8 caseId;
 
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
+        {
+            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+            UpdateRaidShield();
+        }
+
         gBattlerControllerFuncs[gActiveBattler] = WaitForMonSelection;
         caseId = gTasks[gBattleControllerData[gActiveBattler]].data[0];
         DestroyTask(gBattleControllerData[gActiveBattler]);
@@ -1754,9 +1760,19 @@ static void OpenBagAndChooseItem(void)
     if (!gPaletteFade.active)
     {
         gBattlerControllerFuncs[gActiveBattler] = CompleteWhenChoseItem;
+
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
+        {
+            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+            UpdateRaidShield();
+        }
+
         ReshowBattleScreenDummy();
         FreeAllWindowBuffers();
-        CB2_BagMenuFromBattle();
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+            CB2_ChooseBall();
+        else
+            CB2_BagMenuFromBattle();
     }
 }
 
@@ -3661,6 +3677,13 @@ static void WaitForDebug(void)
 static void PlayerHandleBattleDebug(void)
 {
     BeginNormalPaletteFade(-1, 0, 0, 0x10, 0);
+
+    if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+        UpdateRaidShield();
+    }
+
     SetMainCallback2(CB2_BattleDebugMenu);
     gBattlerControllerFuncs[gActiveBattler] = WaitForDebug;
 }

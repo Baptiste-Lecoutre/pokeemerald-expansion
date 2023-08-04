@@ -62,6 +62,8 @@ enum
 #define TAG_ZMOVE_TRIGGER_PAL           0xD77B
 #define TAG_DYNAMAX_TRIGGER_PAL         0xD77C
 
+#define TAG_RAID_BARRIER_TILE           0xD77E
+
 
 enum
 {

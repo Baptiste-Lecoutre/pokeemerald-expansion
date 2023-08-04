@@ -58,7 +58,6 @@ static void ApplyCleanseTagEncounterRateMod(u32 *encRate);
 static u8 GetMaxLevelOfSpeciesInWildTable(const struct WildPokemon *wildMon, u16 species, u8 area);
 static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u16 ability, u8 *monIndex);
 static bool8 IsAbilityAllowingEncounter(u8 level);
-static u8 GetMedianLevelOfPlayerParty(void);
 
 EWRAM_DATA static u8 sWildEncountersDisabled = 0;
 EWRAM_DATA static u32 sFeebasRngValue = 0;
@@ -302,7 +301,7 @@ static u8 ChooseWildMonIndex_Fishing(u8 rod)
 }
 
 // Used to scale wild Pokemon levels
-static u8 GetMedianLevelOfPlayerParty(void)
+u8 GetMedianLevelOfPlayerParty(void)
 {
     u8 i, j, temp, medianLevel, medianIndex = 0;
     u8 playerPartyCount = CalculatePlayerBattlerPartyCount();
@@ -1190,6 +1189,7 @@ bool8 TryDoDoubleWildBattle(void)
 #endif
     return FALSE;
 }
+
 u8 ChooseHiddenMonIndex(void)
 {
     #ifdef ENCOUNTER_CHANCE_HIDDEN_MONS_TOTAL
@@ -1211,3 +1211,13 @@ bool32 MapHasNoEncounterData(void)
     return (GetCurrentMapWildMonHeaderId() == HEADER_NONE);
 }
 
+
+bool8 StandardWildEncounter_Debug(void)
+{
+    u16 headerId = GetCurrentMapWildMonHeaderId();
+    if (TryGenerateWildMon(gWildMonHeaders[headerId].landMonsInfo, WILD_AREA_LAND, 0) != TRUE)
+        return FALSE;
+
+    DoStandardWildBattle_Debug();
+    return TRUE;
+}

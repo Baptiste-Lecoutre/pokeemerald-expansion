@@ -363,7 +363,8 @@ static const TaskFunc sContextMenuFuncs[] = {
     [ITEMMENULOCATION_QUIZ_LADY] =              Task_ItemContext_Normal,
     [ITEMMENULOCATION_APPRENTICE] =             Task_ItemContext_Normal,
     [ITEMMENULOCATION_WALLY] =                  NULL,
-    [ITEMMENULOCATION_PCBOX] =                  Task_ItemContext_GiveToPC
+    [ITEMMENULOCATION_PCBOX] =                  Task_ItemContext_GiveToPC,
+    [ITEMMENULOCATION_RAIDEND] =                Task_ItemContext_Normal,
 };
 
 static const struct YesNoFuncTable sYesNoTossFunctions = {ConfirmToss, CancelToss};
@@ -748,6 +749,13 @@ void CB2_BagMenuFromBattle(void)
         GoToBattlePyramidBagMenu(PYRAMIDBAG_LOC_BATTLE, CB2_SetUpReshowBattleScreenAfterMenu2);
 }
 
+// Used for opening the bag in the end sequence.
+void CB2_ChooseBall(void)
+{
+    GoToBagMenu(ITEMMENULOCATION_RAIDEND, BALLS_POCKET, CB2_SetUpReshowBattleScreenAfterMenu2);
+}
+
+
 // Choosing berry to plant
 void CB2_ChooseBerry(void)
 {
@@ -811,7 +819,8 @@ void GoToBagMenu(u8 location, u8 pocket, void ( *exitCallback)())
         if (pocket < POCKETS_COUNT)
             gBagPosition.pocket = pocket;
         if (gBagPosition.location == ITEMMENULOCATION_BERRY_TREE ||
-            gBagPosition.location == ITEMMENULOCATION_BERRY_BLENDER_CRUSH)
+            gBagPosition.location == ITEMMENULOCATION_BERRY_BLENDER_CRUSH ||
+            gBagPosition.location == ITEMMENULOCATION_RAIDEND)
             gBagMenu->pocketSwitchDisabled = TRUE;
         gBagMenu->newScreenCallback = NULL;
         gBagMenu->toSwapPos = NOT_SWAPPING;
@@ -1723,6 +1732,7 @@ static void OpenContextMenu(u8 taskId)
     {
     case ITEMMENULOCATION_BATTLE:
     case ITEMMENULOCATION_WALLY:
+    case ITEMMENULOCATION_RAIDEND:
         if (ItemId_GetBattleUsage(gSpecialVar_ItemId))
         {
             gBagMenu->contextMenuItemsPtr = sContextMenuItems_BattleUse;
@@ -2290,7 +2300,7 @@ static void ItemMenu_UseInBattle(u8 taskId)
         return;
 
     RemoveContextWindow();
-    if (type == ITEM_USE_BAG_MENU)
+    if (type == ITEM_USE_BAG_MENU || ItemId_GetBattleUsage(gSpecialVar_ItemId) == EFFECT_ITEM_THROW_BALL)
         ItemUseInBattle_BagMenu(taskId);
     else if (type == ITEM_USE_PARTY_MENU)
         ItemUseInBattle_PartyMenu(taskId);
@@ -2868,16 +2878,16 @@ static void PrintPocketNames(const u8 *pocketName1, const u8 *pocketName2)
 
 static void CopyPocketNameToWindow(u32 a)
 {
-    u8 (* tileDataBuffer)[32][32];
+    u8 (*tileDataBuffer)[32][32];
     u8 *windowTileData;
     int b;
     if (a > 8)
         a = 8;
     tileDataBuffer = &gBagMenu->pocketNameBuffer;
     windowTileData = (u8 *)GetWindowAttribute(2, WINDOW_TILE_DATA);
-    CpuCopy32(tileDataBuffer[0][a], windowTileData, 0x100); // Top half of pocket name
+    CpuCopy32(&tileDataBuffer[0][a], windowTileData, 0x100); // Top half of pocket name
     b = a + 16;
-    CpuCopy32(tileDataBuffer[0][b], windowTileData + 0x100, 0x100); // Bottom half of pocket name
+    CpuCopy32(&tileDataBuffer[0][b], windowTileData + 0x100, 0x100); // Bottom half of pocket name
     CopyWindowToVram(WIN_POCKET_NAME, COPYWIN_GFX);
 }
 

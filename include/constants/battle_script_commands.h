@@ -258,6 +258,10 @@
 #define VARIOUS_TRY_TRAINER_SLIDE_MSG_Z_MOVE         166
 #define VARIOUS_TRY_TRAINER_SLIDE_MSG_MEGA_EVOLUTION 167
 #define VARIOUS_GIVE_DROPPED_ITEMS                   168
+#define VARIOUS_JUMP_IF_NO_BALLS                    169
+#define VARIOUS_CATCH_RAID_BOSS                     170
+#define VARIOUS_HIDE_HEALTHBOXES                    171
+#define VARIOUS_DO_RAID_SHOCKWAVE                   172
 
 // Cmd_manipulatedamage
 #define DMG_CHANGE_SIGN            0
@@ -332,8 +336,9 @@
 #define MOVEEND_DANCER                            31
 #define MOVEEND_EMERGENCY_EXIT                    32
 #define MOVEEND_SYMBIOSIS                         33
-#define MOVEEND_CLEAR_BITS                        34
-#define MOVEEND_COUNT                             35
+#define MOVEEND_RAID                              34
+#define MOVEEND_CLEAR_BITS                        35
+#define MOVEEND_COUNT                             36
 
 // switch cases
 #define B_SWITCH_NORMAL     0

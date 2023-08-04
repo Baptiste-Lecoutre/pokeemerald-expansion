@@ -115,6 +115,7 @@ enum
 {
     SPRITE_ARR_ID_MON,
     SPRITE_ARR_ID_BALL,
+    SPRITE_ARR_ID_HEART,
     SPRITE_ARR_ID_STATUS,
     SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
     SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
@@ -1151,6 +1152,84 @@ static const struct SpriteTemplate sSpriteTemplate_StatusCondition =
 };
 static const u16 sMarkings_Pal[] = INCBIN_U16("graphics/summary_screen/markings.gbapal");
 
+#define GFX_TAG_MAX_FRIENDSHIP_ICON 0x2716 //Some battle tag
+
+static const u32 sMaxFriendshipSummaryScreenIconTiles[] = INCBIN_U32("graphics/summary_screen/MaxFriendshipSummaryScreenIcon.4bpp.lz");
+static const u16 sMaxFriendshipSummaryScreenIconPal[] = INCBIN_U16("graphics/summary_screen/MaxFriendshipSummaryScreenIcon.gbapal");
+
+static const struct OamData sMaxFriendshipIconOam =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0, //Above all
+};
+
+static const union AnimCmd sSpriteAnim_FriendshipIcon0[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_FriendshipIcon1[] =
+{
+    ANIMCMD_FRAME(1, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_FriendshipIcon2[] =
+{
+    ANIMCMD_FRAME(2, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_FriendshipIcon3[] =
+{
+    ANIMCMD_FRAME(3, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_FriendshipIcon4[] =
+{
+    ANIMCMD_FRAME(4, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sSpriteAnimTable_FriendshipIcons[] =
+{
+    sSpriteAnim_FriendshipIcon0,
+    sSpriteAnim_FriendshipIcon1,
+    sSpriteAnim_FriendshipIcon2,
+    sSpriteAnim_FriendshipIcon3,
+    sSpriteAnim_FriendshipIcon4,
+};
+
+static const struct SpriteTemplate sSummaryScreenMaxFriendshipIconTemplate =
+{
+	.tileTag = GFX_TAG_MAX_FRIENDSHIP_ICON,
+	.paletteTag = GFX_TAG_MAX_FRIENDSHIP_ICON,
+	.oam = &sMaxFriendshipIconOam,
+	.anims = sSpriteAnimTable_FriendshipIcons,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct CompressedSpriteSheet sSummaryScreenMaxFriendshipIconSpriteSheet = 
+{
+    .data = sMaxFriendshipSummaryScreenIconTiles, 
+    .size = (8 * 8 * 5) / 2, 
+    .tag = GFX_TAG_MAX_FRIENDSHIP_ICON,
+};
+
+static const struct SpritePalette sSummaryScreenMaxFriendshipIconSpritePalette =
+{
+    .data = sMaxFriendshipSummaryScreenIconPal,
+    .tag = GFX_TAG_MAX_FRIENDSHIP_ICON,
+};
+
+
 // code
 static u8 ShowSplitIcon(u32 split)
 {
@@ -1751,6 +1830,8 @@ static void Task_ChangeSummaryMon(u8 taskId)
         break;
     case 2:
         DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]]);
+        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] != MAX_SPRITES)
+            DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]]);
         break;
     case 3:
         CopyMonToSummaryStruct(&sMonSummaryScreen->currentMon);
@@ -4254,11 +4335,47 @@ static void RemoveAndCreateMonMarkingsSprite(struct Pokemon *mon)
 static void CreateCaughtBallSprite(struct Pokemon *mon)
 {
     u8 ball = ItemIdToBallId(GetMonData(mon, MON_DATA_POKEBALL));
+    u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
 
     LoadBallGfx(ball);
-    sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL] = CreateSprite(&gBallSpriteTemplates[ball], 16, 136, 0);
+    sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL] = CreateSprite(&gBallSpriteTemplates[ball], 21, 136, 0); // 16 136
     gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]].callback = SpriteCallbackDummy;
     gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]].oam.priority = 3;
+
+    if (friendship > 80)
+    {
+        LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenMaxFriendshipIconSpriteSheet);
+		LoadSpritePalette(&sSummaryScreenMaxFriendshipIconSpritePalette);
+
+		sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] = CreateSprite(&sSummaryScreenMaxFriendshipIconTemplate, 8, 137, 0); // 70 93
+		if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] < MAX_SPRITES)
+		{
+			u16 imageNum = 0;
+
+			//Adjust heart colour based on how much friendship
+			switch (friendship)
+			{
+				case 80 ... 129:
+					imageNum = 4;
+					break;
+				case 130 ... 179:
+					imageNum = 3;
+					break;
+				case 180 ... 219:
+					imageNum = 2;
+					break;
+				case 220 ... 254:
+					imageNum = 1;
+					break;
+			}
+
+            StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]], imageNum);
+            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
+            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
+		}
+    }
+    else
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] = MAX_SPRITES;
 }
 
 static void CreateSetStatusSprite(void)

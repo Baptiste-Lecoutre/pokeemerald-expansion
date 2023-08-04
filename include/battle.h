@@ -4,6 +4,7 @@
 // should they be included here or included individually by every file?
 #include "constants/battle.h"
 #include "constants/form_change_types.h"
+#include "constants/battle_raid.h"
 #include "battle_main.h"
 #include "battle_message.h"
 #include "battle_util.h"
@@ -15,6 +16,7 @@
 #include "pokeball.h"
 #include "battle_debug.h"
 #include "battle_dynamax.h"
+#include "battle_raid.h"
 
 #define GET_BATTLER_SIDE(battler)         (GetBattlerPosition(battler) & BIT_SIDE)
 #define GET_BATTLER_SIDE2(battler)        (gBattlerPositions[battler] & BIT_SIDE)
@@ -537,6 +539,18 @@ struct DynamaxData
     u16 levelUpHP;
 };
 
+struct RaidBattleData
+{
+    u8 state;
+    u16 shield;           // stores either num. of shields (GEN_8) or amount of HP protected (GEN_9)
+    u8 nextShield;        // stores the HP threshold (0 to 100) that the next shield should occur
+    u8 shieldsRemaining;  // stores the remaining num. of shields
+    u8 energy;            // stores Dynamax Energy position or Tera Orb charge
+    bool8 usedShockwave:1;
+    bool8 movedTwice:1;
+    u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for Gen 8-style shields
+};
+
 struct LostItem
 {
     u16 originalItem:15;
@@ -639,6 +653,7 @@ struct BattleStruct
     struct MegaEvolutionData mega;
     struct ZMoveData zmove;
     struct DynamaxData dynamax;
+    struct RaidBattleData raid;
     const u8 *trainerSlideMsg;
     bool8 trainerSlideLowHpMsgDone;
     u8 introState;
@@ -658,7 +673,7 @@ struct BattleStruct
     bool8 friskedAbility; // If identifies two mons, show the ability pop-up only once.
     u8 sameMoveTurns[MAX_BATTLERS_COUNT]; // For Metronome, number of times the same moves has been SUCCESFULLY used.
     u16 moveEffect2; // For Knock Off
-    u16 changedSpecies[NUM_BATTLE_SIDES][PARTY_SIZE]; // For Zygarde or future forms when multiple mons can change into the same pokemon.
+    u16 changedSpecies[NUM_BATTLE_SIDES][PARTY_SIZE]; // For forms when multiple mons can change into the same pokemon.
     u8 quickClawBattlerId;
     struct LostItem itemLost[PARTY_SIZE];  // Player's team that had items consumed or stolen (two bytes per party member)
     u8 blunderPolicy:1; // should blunder policy activate
@@ -692,6 +707,7 @@ struct BattleStruct
     bool8 trainerSlideMegaEvolutionMsgDone;
     bool8 trainerSlideZMoveMsgDone;
     bool8 trainerSlideBeforeFirstTurnMsgDone;
+    u32 battleTimer; // frame counter to measure battle time length
 };
 
 #define F_DYNAMIC_TYPE_1 (1 << 6)

@@ -515,7 +515,7 @@
 #define FLAG_DEFEATED_ZAPDOS                    0x1DF // Unused Flag
 #define FLAG_DEFEATED_ARTICUNO                    0x1E0 // Unused Flag
 #define FLAG_DEFEATED_MOLTRES                    0x1E1 // Unused Flag
-#define FLAG_UNUSED_0x1E2                    0x1E2 // Unused Flag
+#define FLAG_DEFEATED_REGIGIGAS                    0x1E2 // Unused Flag
 #define FLAG_UNUSED_0x1E3                    0x1E3 // Unused Flag
 
 // Mystery Gift Flags (Unknown)

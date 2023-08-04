@@ -449,6 +449,9 @@ const u32 gBattleAnimSpriteGfx_SpinningBall[] = INCBIN_U32("graphics/battle_anim
 const u32 gBattleAnimSpritePal_SpinningBall[] = INCBIN_U32("graphics/battle_anims/unused/spinning_ball.gbapal.lz");
 const u32 gBattleAnimSpritePal_SpinningBall2[] = INCBIN_U32("graphics/battle_anims/unused/spinning_ball_2.gbapal.lz");
 
+const u32 gBattleAnimSpriteGfx_WoodHammerHammer[] = INCBIN_U32("graphics/battle_anims/sprites/wood_hammer_hammer.4bpp.lz");
+const u32 gBattleAnimSpritePal_WoodHammerHammer[] = INCBIN_U32("graphics/battle_anims/sprites/wood_hammer_hammer.gbapal.lz");
+
 // old battle interface data, unused
 
 const u32 gOldBattleInterfaceGfx[] = INCBIN_U32("graphics/unused/obi1.4bpp.lz");
@@ -1710,8 +1713,8 @@ const u32 gRouletteMultiplier_Gfx[] = INCBIN_U32("graphics/roulette/multiplier.4
 const u16 gFrontierFactorySelectMenu_Pal[] = INCBIN_U16("graphics/battle_frontier/factory_menu1.gbapal");
 const u16 gFrontierFactorySelectMenu_Pal2[] = INCBIN_U16("graphics/battle_frontier/factory_menu2.gbapal");
 
-const u8 gFrontierFactorySelectMenu_Gfx[] = INCBIN_U8("graphics/battle_frontier/factory_menu1.4bpp");
-const u8 gFrontierFactorySelectMenu_Gfx2[] = INCBIN_U8("graphics/battle_frontier/factory_menu2.4bpp");
+const u16 gFrontierFactorySelectMenu_Gfx[] = INCBIN_U16("graphics/battle_frontier/factory_menu1.4bpp");
+const u16 gFrontierFactorySelectMenu_Gfx2[] = INCBIN_U16("graphics/battle_frontier/factory_menu2.4bpp");
 
 const u16 gFrontierFactorySelectMenu_Tilemap[] = INCBIN_U16("graphics/battle_frontier/factory_menu.bin");
 
@@ -2062,8 +2065,8 @@ const u32 gBerryCrush_Crusher_Gfx[] = INCBIN_U32("graphics/berry_crush/crusher.4
 const u32 gBerryCrush_TextWindows_Tilemap[] = INCBIN_U32("graphics/berry_crush/text_windows.bin.lz");
 
 // Type icons in battle
-const u8 TypeIconsTiles[] = INCBIN_U8("graphics/types/TypeIcons_Healthbox.4bpp");
-const u16 TypeIconsPal[] = INCBIN_U16("graphics/types/TypeIcons_Healthbox.gbapal");
+const u8 gTypeIconsTiles[] = INCBIN_U8("graphics/types/TypeIcons_Healthbox.4bpp");
+const u16 gTypeIconsPal[] = INCBIN_U16("graphics/types/TypeIcons_Healthbox.gbapal");
 
 // DexNav
 const u16 gDexNav_Gui_Pal[] = INCBIN_U16("graphics/dexnav/gui.gbapal");
@@ -2273,3 +2276,6 @@ const u32 gDexNav_DesertUnderpass_Tilemap[] = INCBIN_U32("graphics/dexnav/Desert
 const u16 gDexNav_AlteringCave_Pal[] = INCBIN_U16("graphics/dexnav/AlteringCave_tiles.gbapal");
 const u32 gDexNav_AlteringCave_Gfx[] = INCBIN_U32("graphics/dexnav/AlteringCave_tiles.4bpp.lz");
 const u32 gDexNav_AlteringCave_Tilemap[] = INCBIN_U32("graphics/dexnav/AlteringCave_tiles.bin.lz");
+
+const u8 gPopUpWindowBorder_Tiles[] = INCBIN_U8("graphics/interface/window_popup_tiles.4bpp");\
+const u16 gPopUpWindowBorder_Palette[] = INCBIN_U16("graphics/interface/map_popup_palette.gbapal");

@@ -410,9 +410,8 @@ extern const u8 BattleScript_GulpMissileGorging[];
 extern const u8 BattleScript_GulpMissileGulping[];
 extern const u8 BattleScript_BattleBondActivatesOnMoveEndAttacker[];
 extern const u8 BattleScript_DesolateLandActivates[];
-extern const u8 BattleScript_DesolateLandEvaporatesWaterTypeMoves[];
 extern const u8 BattleScript_PrimordialSeaActivates[];
-extern const u8 BattleScript_PrimordialSeaFizzlesOutFireTypeMoves[];
+extern const u8 BattleScript_PrimalWeatherBlocksMove[];
 extern const u8 BattleScript_DeltaStreamActivates[];
 extern const u8 BattleScript_MysteriousAirCurrentBlowsOn[];
 extern const u8 BattleScript_AttackWeakenedByStrongWinds[];
@@ -509,10 +508,21 @@ extern const u8 BattleScript_EffectRaiseCritAlliesAnim[];
 extern const u8 BattleScript_EffectHealOneSixthAllies[];
 extern const u8 BattleScript_EffectCureStatusAllies[];
 extern const u8 BattleScript_EffectRecycleBerriesAllies[];
-
-// dynamax and max raids
 extern const u8 BattleScript_DynamaxBegins[];
 extern const u8 BattleScript_DynamaxEnds[];
 extern const u8 BattleScript_MoveBlockedByDynamax[];
+
+// raids
+extern const u8 BattleScript_RaidIntro[];
+extern const u8 BattleScript_MaxRaidStormBrews[];
+extern const u8 BattleScript_RaidShieldAppeared[];
+extern const u8 BattleScript_RaidShieldDisappeared[];
+extern const u8 BattleScript_RaidBarrierBroken[];
+extern const u8 BattleScript_RaidShockwave[];
+extern const u8 BattleScript_RaidVictory[];
+extern const u8 BattleScript_FaintRaidBoss[];
+extern const u8 BattleScript_RaidDefeat[];
+extern const u8 BattleScript_TeraRaidTimerLow[];
+extern const u8 BattleScript_RaidBallBlock[];
 
 #endif // GUARD_BATTLE_SCRIPTS_H

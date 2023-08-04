@@ -842,6 +842,7 @@ const u32 gObjectEventPic_ZapdosOW[] = INCBIN_U32("graphics/object_events/pics/p
 const u32 gObjectEventPic_ArticunoOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/Articuno_OW.4bpp");
 const u32 gObjectEventPic_SnorlaxSleeping[] = INCBIN_U32("graphics/object_events/pics/pokemon/snorlax_sleep.4bpp");
 const u16 gObjectEventPal_Snorlax[] = INCBIN_U16("graphics/object_events/palettes/snorlax.gbapal");
+const u32 gObjectEventPic_RaidDen[] = INCBIN_U32("graphics/object_events/pics/misc/raid_den.4bpp");
 
 const u16 gObjectEventPaletteLight[] = INCBIN_U16("graphics/object_events/palettes/light.gbapal");
 const u16 gObjectEventPaletteLight2[] = INCBIN_U16("graphics/object_events/palettes/light2.gbapal");

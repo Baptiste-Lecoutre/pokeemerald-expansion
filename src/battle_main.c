@@ -16,6 +16,7 @@
 #include "berry.h"
 #include "bg.h"
 #include "data.h"
+#include "debug.h"
 #include "decompress.h"
 #include "dexnav.h"
 #include "dma3.h"
@@ -121,7 +122,6 @@ static void SpriteCB_UnusedBattleInit_Main(struct Sprite *sprite);
 static void TrySpecialEvolution(void);
 static u32 Crc32B (const u8 *data, u32 size);
 static u32 GeneratePartyHash(const struct Trainer *trainer, u32 i);
-static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonCustomized *partyEntry);
 static bool8 partyMonHoldDoublePrizeEffect(void);
 
 EWRAM_DATA u16 gBattle_BG0_X = 0;
@@ -631,7 +631,13 @@ static void CB2_InitBattleInternal(void)
     gBattle_BG3_X = 0;
     gBattle_BG3_Y = 0;
 
+#if DEBUG_OVERWORLD_MENU == FALSE 
+    
     gBattleTerrain = BattleSetup_GetTerrainId();
+#else
+    if (!gIsDebugBattle)
+        gBattleTerrain = BattleSetup_GetTerrainId();
+#endif
     if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
         gBattleTerrain = BATTLE_TERRAIN_BUILDING;
 
@@ -654,6 +660,7 @@ static void CB2_InitBattleInternal(void)
     else
         SetMainCallback2(CB2_HandleStartBattle);
 
+#if DEBUG_OVERWORLD_MENU == FALSE 
     if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED)))
     {
         CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
@@ -662,6 +669,18 @@ static void CB2_InitBattleInternal(void)
         SetWildMonHeldItem();
         CalculateEnemyPartyCount();
     }
+#else
+    if (!gIsDebugBattle)
+    {
+        if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED)))
+        {
+            CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
+            if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+                CreateNPCTrainerParty(&gEnemyParty[PARTY_SIZE / 2], gTrainerBattleOpponent_B, FALSE);
+            SetWildMonHeldItem();
+        }
+    }
+#endif
 
     gMain.inBattle = TRUE;
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
@@ -2001,7 +2020,7 @@ u32 GeneratePersonalityForGender(u32 gender, u32 species)
         return speciesInfo->genderRatio / 2;
 }
 
-static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonCustomized *partyEntry)
+void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonCustomized *partyEntry)
 {
     bool32 noMoveSet = TRUE;
     u32 j;
@@ -3218,7 +3237,7 @@ void BeginBattleIntro(void)
 static void BattleMainCB1(void)
 {
     gBattleMainFunc();
-
+    ++gBattleStruct->battleTimer;
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
         gBattlerControllerFuncs[gActiveBattler]();
 }
@@ -3372,6 +3391,8 @@ static void BattleStartClearSetData(void)
 
     gBattleStruct->swapDamageCategory = FALSE; // Photon Geyser, Shell Side Arm, Light That Burns the Sky
     gSelectedMonPartyId = PARTY_SIZE; // Revival Blessing
+
+    CalculateEnemyPartyCount(); // Can be used to check whether Doubles opponent is alone.
 }
 
 void SwitchInClearSetData(void)
@@ -4052,6 +4073,17 @@ static void TryDoEventsBeforeFirstTurn(void)
     }
     memset(gTotemBoosts, 0, sizeof(gTotemBoosts));  // erase all totem boosts just to be safe
 
+    // Raid Intro
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && !(gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+    {
+        InitRaidBattleData();
+        gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+        gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData.raidType].gimmick;
+        gBattleCommunication[1] = gRaidTypes[gRaidData.raidType].rules;
+        BattleScriptExecute(BattleScript_RaidIntro);
+        return;
+    }
+
     // Check neutralizing gas
     if (AbilityBattleEffects(ABILITYEFFECT_NEUTRALIZINGGAS, 0, 0, 0, 0) != 0)
         return;
@@ -4060,7 +4092,7 @@ static void TryDoEventsBeforeFirstTurn(void)
     while (gBattleStruct->switchInAbilitiesCounter < gBattlersCount)
     {
         gBattlerAttacker = gBattlerByTurnOrder[gBattleStruct->switchInAbilitiesCounter++];
-    
+
         if (TryPrimalReversion(gBattlerAttacker))
             return;
         if (AbilityBattleEffects(ABILITYEFFECT_ON_SWITCHIN, gBattlerAttacker, 0, 0, 0) != 0)
@@ -4204,7 +4236,9 @@ void BattleTurnPassed(void)
     gBattleMainFunc = HandleTurnActionSelectionState;
     gRandomTurnNumber = Random();
 
-    if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && ShouldRaidKickPlayer()) // Raid Storm check
+        gBattleMainFunc = HandleEndTurn_FinishBattle;
+    else if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
         BattleScriptExecute(BattleScript_PalacePrintFlavorText);
     else if (gBattleTypeFlags & BATTLE_TYPE_ARENA && gBattleStruct->arenaTurnCounter == 0)
         BattleScriptExecute(BattleScript_ArenaTurnBeginning);
@@ -4232,6 +4266,12 @@ u8 IsRunningFromBattleImpossible(void)
         holdEffect = ItemId_GetHoldEffect(gBattleMons[gActiveBattler].item);
 
     gPotentialItemEffectBattler = gActiveBattler;
+
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+    {
+        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_CANT_ESCAPE;
+        return BATTLE_RUN_FORBIDDEN;
+    }
 
     if (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE) // Cannot ever run from saving Birch's battle.
     {
@@ -5680,6 +5720,7 @@ static void HandleEndTurn_FinishBattle(void)
 
             // Clear original species field
             gBattleStruct->changedSpecies[B_SIDE_PLAYER][i] = SPECIES_NONE;
+            gBattleStruct->changedSpecies[B_SIDE_OPPONENT][i] = SPECIES_NONE;
 
         #if B_RECALCULATE_STATS >= GEN_5
             // Recalculate the stats of every party member before the end

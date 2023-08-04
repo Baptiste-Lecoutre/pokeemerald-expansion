@@ -1,6 +1,7 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
+#include "battle_setup.h"
 #include "pokemon.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
@@ -715,12 +716,14 @@ u32 WhichBattleCoords(u32 battlerId) // 0 - singles, 1 - doubles
         && gPlayerPartyCount == 1
         && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
         return 0;
-    else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
-             && gEnemyPartyCount == 1
-             && !(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+
+    // gEnemyParty count is calculated at the start of battle.
+    if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
+        && ((!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && gEnemyPartyCount == 1)
+        || (BATTLE_TWO_VS_ONE_OPPONENT) || IsRaidBoss(battlerId)))
         return 0;
-    else
-        return IsDoubleBattle();
+    
+    return IsDoubleBattle();
 }
 
 u8 CreateBattlerHealthboxSprites(u8 battlerId)
@@ -810,6 +813,12 @@ u8 CreateBattlerHealthboxSprites(u8 battlerId)
     // Create dynamax indicator sprites.
     DynamaxIndicator_CreateSprite(battlerId, healthboxLeftSpriteId);
 
+    if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+        UpdateRaidShield();
+    }
+
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
 
@@ -889,20 +898,30 @@ void SetBattleBarStruct(u8 battlerId, u8 healthboxSpriteId, s32 maxVal, s32 oldV
 
 void SetHealthboxSpriteInvisible(u8 healthboxSpriteId)
 {
+    u8 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
+
     gSprites[healthboxSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = TRUE;
     MegaIndicator_SetVisibilities(healthboxSpriteId, TRUE);
     DynamaxIndicator_SetVisibilities(healthboxSpriteId, TRUE);
+
+    if (IsRaidBoss(battlerId))
+        RaidBarrier_SetVisibilities(healthboxSpriteId, TRUE);
 }
 
 void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
 {
+    u8 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
+
     gSprites[healthboxSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = FALSE;
     MegaIndicator_SetVisibilities(healthboxSpriteId, FALSE);
     DynamaxIndicator_SetVisibilities(healthboxSpriteId, FALSE);
+
+    if (IsRaidBoss(battlerId))
+        RaidBarrier_SetVisibilities(healthboxSpriteId, FALSE);
 }
 
 static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
@@ -918,18 +937,25 @@ void DummyBattleInterfaceFunc(u8 healthboxSpriteId, bool8 isDoubleBattleBattlerO
 
 static void TryToggleHealboxVisibility(u32 priority, u32 healthboxLeftSpriteId, u32 healthboxRightSpriteId, u32 healthbarSpriteId)
 {
+    u8 battlerId = gSprites[healthboxLeftSpriteId].hMain_Battler;
     bool32 invisible = FALSE;
 
     if (priority == 0)  // start of anim -> make invisible
         invisible = TRUE;
     else if (priority == 1) // end of anim -> make visible
         invisible = FALSE;
+    
+    if (gBattleStruct->raid.state & RAID_CATCHING_BOSS && !invisible) // catching pesky bug
+        return;
 
     gSprites[healthboxLeftSpriteId].invisible = invisible;
     gSprites[healthboxRightSpriteId].invisible = invisible;
     gSprites[healthbarSpriteId].invisible = invisible;
     MegaIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
     DynamaxIndicator_SetVisibilities(healthboxLeftSpriteId, invisible);
+    
+    if (IsRaidBoss(battlerId))
+        RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
 }
 
 void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
@@ -1327,15 +1353,15 @@ void ChangeMegaTriggerSprite(u8 spriteId, u8 animId)
     StartSpriteAnim(&gSprites[spriteId], animId);
 }
 
-#define SINGLES_MEGA_TRIGGER_POS_X_OPTIMAL (30)
-#define SINGLES_MEGA_TRIGGER_POS_X_PRIORITY (31)
-#define SINGLES_MEGA_TRIGGER_POS_X_SLIDE (15)
-#define SINGLES_MEGA_TRIGGER_POS_Y_DIFF (-11)
+#define SINGLES_MEGA_TRIGGER_POS_X_OPTIMAL (29)
+#define SINGLES_MEGA_TRIGGER_POS_X_PRIORITY (30)
+#define SINGLES_MEGA_TRIGGER_POS_X_SLIDE (14)
+#define SINGLES_MEGA_TRIGGER_POS_Y_DIFF (-4)
 
-#define DOUBLES_MEGA_TRIGGER_POS_X_OPTIMAL (30)
-#define DOUBLES_MEGA_TRIGGER_POS_X_PRIORITY (31)
-#define DOUBLES_MEGA_TRIGGER_POS_X_SLIDE (15)
-#define DOUBLES_MEGA_TRIGGER_POS_Y_DIFF (-4)
+#define DOUBLES_MEGA_TRIGGER_POS_X_OPTIMAL (29)
+#define DOUBLES_MEGA_TRIGGER_POS_X_PRIORITY (30)
+#define DOUBLES_MEGA_TRIGGER_POS_X_SLIDE (14)
+#define DOUBLES_MEGA_TRIGGER_POS_Y_DIFF (-2)
 
 #define tBattler    data[0]
 #define tHide       data[1]
@@ -3280,7 +3306,7 @@ bool32 CanThrowLastUsedBall(void)
         return FALSE;
     if (FlagGet(FLAG_SOOTOPOLIS_BATTLE))
         return FALSE;
-    if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER))
+    if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RAID))
         return FALSE;
     if (!CheckBagHasItem(gLastThrownBall, 1))
         return FALSE;
@@ -3447,7 +3473,7 @@ void TryRestoreLastUsedBall(void)
 #if B_LAST_USED_BALL == TRUE
     if (gBattleStruct->ballSpriteIds[0] != MAX_SPRITES)
         TryHideOrRestoreLastUsedBall(1);
-    else
+    else if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
         TryAddLastUsedBallItemSprites();
 #endif
 }
@@ -3481,43 +3507,50 @@ void TryChangeLastUsedBall(bool8 increase)
 // type icons during move selection
 #define TYPE_ICON_TAG 0x2720
 
-#define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (1 * 2 * frame * 32), .size = 1 * 2 * 32}
+#define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (2 * 2 * frame * 32), .size = 2 * 2 * 32}
 static const struct SpriteFrameImage sTypeIconPicTable[] = 
 {
-    [TYPE_NORMAL] =		type_icon_frame(TypeIconsTiles, TYPE_NORMAL),
-	[TYPE_FIGHTING] =	type_icon_frame(TypeIconsTiles, TYPE_FIGHTING),
-	[TYPE_FLYING] =		type_icon_frame(TypeIconsTiles, TYPE_FLYING),
-	[TYPE_POISON] =		type_icon_frame(TypeIconsTiles, TYPE_POISON),
-	[TYPE_GROUND] =		type_icon_frame(TypeIconsTiles, TYPE_GROUND),
-	[TYPE_ROCK] =		type_icon_frame(TypeIconsTiles, TYPE_ROCK),
-	[TYPE_BUG] =		type_icon_frame(TypeIconsTiles, TYPE_BUG),
-	[TYPE_GHOST] =		type_icon_frame(TypeIconsTiles, TYPE_GHOST),
-	[TYPE_STEEL] =		type_icon_frame(TypeIconsTiles, TYPE_STEEL),
-	[TYPE_MYSTERY] =	type_icon_frame(TypeIconsTiles, TYPE_MYSTERY),
-	[TYPE_FIRE] =		type_icon_frame(TypeIconsTiles, TYPE_FIRE),
-	[TYPE_WATER] =		type_icon_frame(TypeIconsTiles, TYPE_WATER),
-	[TYPE_GRASS] =		type_icon_frame(TypeIconsTiles, TYPE_GRASS),
-	[TYPE_ELECTRIC] =	type_icon_frame(TypeIconsTiles, TYPE_ELECTRIC),
-	[TYPE_PSYCHIC] =	type_icon_frame(TypeIconsTiles, TYPE_PSYCHIC),
-	[TYPE_ICE] =		type_icon_frame(TypeIconsTiles, TYPE_ICE),
-	[TYPE_DRAGON] =		type_icon_frame(TypeIconsTiles, TYPE_DRAGON),
-	[TYPE_DARK] =		type_icon_frame(TypeIconsTiles, TYPE_DARK),
-    [TYPE_FAIRY] =      type_icon_frame(TypeIconsTiles, TYPE_FAIRY),
+    [TYPE_NORMAL] =		type_icon_frame(gTypeIconsTiles, TYPE_NORMAL),
+	[TYPE_FIGHTING] =	type_icon_frame(gTypeIconsTiles, TYPE_FIGHTING),
+	[TYPE_FLYING] =		type_icon_frame(gTypeIconsTiles, TYPE_FLYING),
+	[TYPE_POISON] =		type_icon_frame(gTypeIconsTiles, TYPE_POISON),
+	[TYPE_GROUND] =		type_icon_frame(gTypeIconsTiles, TYPE_GROUND),
+	[TYPE_ROCK] =		type_icon_frame(gTypeIconsTiles, TYPE_ROCK),
+	[TYPE_BUG] =		type_icon_frame(gTypeIconsTiles, TYPE_BUG),
+	[TYPE_GHOST] =		type_icon_frame(gTypeIconsTiles, TYPE_GHOST),
+	[TYPE_STEEL] =		type_icon_frame(gTypeIconsTiles, TYPE_STEEL),
+	[TYPE_MYSTERY] =	type_icon_frame(gTypeIconsTiles, TYPE_MYSTERY),
+	[TYPE_FIRE] =		type_icon_frame(gTypeIconsTiles, TYPE_FIRE),
+	[TYPE_WATER] =		type_icon_frame(gTypeIconsTiles, TYPE_WATER),
+	[TYPE_GRASS] =		type_icon_frame(gTypeIconsTiles, TYPE_GRASS),
+	[TYPE_ELECTRIC] =	type_icon_frame(gTypeIconsTiles, TYPE_ELECTRIC),
+	[TYPE_PSYCHIC] =	type_icon_frame(gTypeIconsTiles, TYPE_PSYCHIC),
+	[TYPE_ICE] =		type_icon_frame(gTypeIconsTiles, TYPE_ICE),
+	[TYPE_DRAGON] =		type_icon_frame(gTypeIconsTiles, TYPE_DRAGON),
+	[TYPE_DARK] =		type_icon_frame(gTypeIconsTiles, TYPE_DARK),
+    [TYPE_FAIRY] =      type_icon_frame(gTypeIconsTiles, TYPE_FAIRY),
 };
 
+#define ICON_MOVE_X 10
 static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] = 
 {
     { // Single Battles
-        [B_POSITION_PLAYER_LEFT] = { 220, 86},
-        [B_POSITION_OPPONENT_LEFT] = {20, 26},
+        [B_POSITION_PLAYER_LEFT] = { 216, 86}, // 220 86
+        [B_POSITION_OPPONENT_LEFT] = {24, 25}, // 20 26
         [B_POSITION_PLAYER_RIGHT] = {270, 200}, // out of screen
         [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
     },
     { // Double Battles
-        [B_POSITION_PLAYER_LEFT] = { 225, 71},
-        [B_POSITION_OPPONENT_LEFT] = {20, 15},
-        [B_POSITION_PLAYER_RIGHT] = {220, 96},
-        [B_POSITION_OPPONENT_RIGHT] = {15, 40}, 
+        [B_POSITION_PLAYER_LEFT] = { 221, 71},
+        [B_POSITION_OPPONENT_LEFT] = {24, 14},
+        [B_POSITION_PLAYER_RIGHT] = {216, 96},
+        [B_POSITION_OPPONENT_RIGHT] = {19, 39}, 
+    },
+    { // Raid Battles
+        [B_POSITION_PLAYER_LEFT] = { 221, 71},
+        [B_POSITION_OPPONENT_LEFT] = {24, 25}, // position of singles
+        [B_POSITION_PLAYER_RIGHT] = {216, 96},
+        [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
     },
 };
 
@@ -3525,14 +3558,14 @@ static const struct OamData sTypeIconOAM =
 {
 	.affineMode = ST_OAM_AFFINE_OFF,
 	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(8x16),
-	.size = SPRITE_SIZE(8x16),
+	.shape = SPRITE_SHAPE(16x16),
+	.size = SPRITE_SIZE(16x16),
 	.priority = 2, // put to 2 so that the zmove trigger appears above the type icons // 1,//Same level as health bar 
 };
 
 static const struct SpritePalette sTypeIconPalTemplate = 
 {
-    .data = TypeIconsPal,
+    .data = gTypeIconsPal,
     .tag = TYPE_ICON_TAG,
 };
 
@@ -3553,6 +3586,9 @@ void TryLoadTypeIcons(void)
 	{
         u8 position, battleType= IsDoubleBattle();
         LoadSpritePalette(&sTypeIconPalTemplate);
+
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;
         
 		for (position = 0; position < gBattlersCount; ++position)
 		{
@@ -3607,7 +3643,10 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
     s16 originalY;
 	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
 
-	if (sprite->data[2] == 12 - 2 * sprite->data[4])
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;
+
+	if (sprite->data[2] == ICON_MOVE_X + 2 - 2 * sprite->data[4])
 	{
 		FreeSpritePaletteByTag(TYPE_ICON_TAG);
 		DestroySprite(sprite);
@@ -3642,21 +3681,21 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
     switch (position) {
 		case B_POSITION_OPPONENT_LEFT:
 		case B_POSITION_OPPONENT_RIGHT:
-		    if (sprite->x > sTypeIconPositions[battleType][position].x - 10)
+		    if (sprite->x > sTypeIconPositions[battleType][position].x - ICON_MOVE_X)
     		    sprite->x -= 1;
-            if (sprite->x <= sTypeIconPositions[battleType][position].x - 10)
+            /*if (sprite->x <= sTypeIconPositions[battleType][position].x - ICON_MOVE_X)
                 sprite->oam.priority = 0;
             else
-                sprite->oam.priority = 1;
+                sprite->oam.priority = 1;*/
 			break;
 		case B_POSITION_PLAYER_LEFT:
 		case B_POSITION_PLAYER_RIGHT:
-			if (sprite->x < sTypeIconPositions[battleType][position].x + 10)
+			if (sprite->x < sTypeIconPositions[battleType][position].x + ICON_MOVE_X)
 			    sprite->x += 1;
-            if (sprite->x >= sTypeIconPositions[battleType][position].x + 10)
+            /*if (sprite->x >= sTypeIconPositions[battleType][position].x + ICON_MOVE_X)
                 sprite->oam.priority = 0;
             else
-                sprite->oam.priority = 1;
+                sprite->oam.priority = 1;*/
 			break;
 	}
 

@@ -235,7 +235,10 @@ static void CreateBattlerSprite(u8 battler)
 
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
+            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0
+                && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+                return;
+            if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
                 return;
             if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
                 return;
@@ -304,6 +307,9 @@ static void CreateHealthboxSprite(u8 battler)
             healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
 
         gHealthboxSpriteIds[battler] = healthboxSpriteId;
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+            return;
+
         InitBattlerHealthboxCoords(battler);
         SetHealthboxSpriteVisible(healthboxSpriteId);
 
@@ -328,6 +334,11 @@ static void CreateHealthboxSprite(u8 battler)
         {
             if (!IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[battler]]))
                 SetHealthboxSpriteInvisible(healthboxSpriteId);
+        }
+        // Hide healthboxes when catching a Raid boss.
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+        {
+            SetHealthboxSpriteInvisible(healthboxSpriteId);
         }
     }
 }

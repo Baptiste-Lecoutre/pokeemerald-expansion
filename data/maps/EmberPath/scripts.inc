@@ -1,4 +1,5 @@
 EmberPath_MapScripts::
+	map_script MAP_SCRIPT_ON_RESUME, Common_EventScript_RemoveOverworldAfterBattle
 	.byte 0
 
 EmberPath_EventScript_Moltres::

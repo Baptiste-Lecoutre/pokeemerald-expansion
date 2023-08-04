@@ -96,8 +96,9 @@
 #define SPECIES_INFO_Y          6
 #define TYPE_ICONS_Y            (SPECIES_INFO_Y + 24)
 #define SEARCH_LEVEL_Y          (TYPE_ICONS_Y + 24)
-#define HA_INFO_Y               (SEARCH_LEVEL_Y + 24)
-#define CHAIN_BONUS_Y           (HA_INFO_Y + 24)
+#define CHAIN_BONUS_Y           (SEARCH_LEVEL_Y + 24)
+#define HA_INFO_Y               (CHAIN_BONUS_Y + 24)
+
 
 #define MON_LEVEL_NONEXISTENT   255 //if mon not in area GetEncounterLevel returns this to exit the search
 
