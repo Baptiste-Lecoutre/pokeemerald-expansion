@@ -15257,21 +15257,27 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Fernando4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_RedVictoryRoad[] = {
+static const struct TrainerMonItemCustomMoves sParty_RedVictoryRoad[] = {
     {
-    .iv = 40,
-    .lvl = 41,
-    .species = SPECIES_MANECTRIC,
+    .iv = 250,
+    .lvl = 75,
+    .species = SPECIES_CHARIZARD,
+    .heldItem = ITEM_CHARIZARDITE_X,
+    .moves = {MOVE_DRAGON_CLAW, MOVE_FLARE_BLITZ, MOVE_THUNDER_PUNCH, MOVE_BRICK_BREAK}
     },
     {
-    .iv = 40,
-    .lvl = 41,
-    .species = SPECIES_MANECTRIC,
+    .iv = 250,
+    .lvl = 75,
+    .species = SPECIES_VENUSAUR,
+    .heldItem = ITEM_LIFE_ORB,
+    .moves = MOVE_GIGA_DRAIN, MOVE_SLUDGE_BOMB, MOVE_WEATHER_BALL, MOVE_GROWTH
     },
     {
-    .iv = 40,
-    .lvl = 41,
-    .species = SPECIES_EXPLOUD,
+    .iv = 250,
+    .lvl = 75,
+    .species = SPECIES_BLASTOISE,
+    .heldItem = ITEM_WHITE_HERB,
+    .moves = {MOVE_FLASH_CANNON, MOVE_DARK_PULSE, MOVE_SKULL_BASH, MOVE_SHELL_SMASH}
     }
 };
 
@@ -15338,21 +15344,48 @@ static const struct TrainerMonNoItemCustomMoves sParty_Sawyer4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_RedRoute121[] = {
+static const struct TrainerMonItemCustomMoves sParty_RedRoute121[] = {
     {
-    .iv = 40,
-    .lvl = 33,
-    .species = SPECIES_MACHOKE,
+    .iv = 150,
+    .lvl = 65,
+    .heldItem = ITEM_LIGHT_BALL,
+    .species = SPECIES_PIKACHU_FLYING,
+    .moves = {MOVE_THUNDERBOLT, MOVE_AERIAL_ACE, MOVE_THUNDER_WAVE, MOVE_BODY_SLAM},
     },
     {
-    .iv = 40,
-    .lvl = 33,
-    .species = SPECIES_CAMERUPT,
+    .iv = 150,
+    .lvl = 65,
+    .heldItem = ITEM_FAIRY_GEM,
+    .species = SPECIES_ESPEON,
+    .moves = {MOVE_DAZZLING_GLEAM, MOVE_PSYCHIC, MOVE_SHADOW_BALL, MOVE_CALM_MIND},
     },
     {
-    .iv = 40,
-    .lvl = 33,
-    .species = SPECIES_GOLEM,
+    .iv = 150,
+    .lvl = 65,
+    .heldItem = ITEM_WHITE_HERB,
+    .species = SPECIES_VENUSAUR,
+    .moves = {MOVE_LEAF_STORM, MOVE_TOXIC, MOVE_SLUDGE_BOMB, MOVE_EARTH_POWER},
+    },
+    {
+    .iv = 150,
+    .lvl = 65,
+    .heldItem = ITEM_WHITE_HERB,
+    .species = SPECIES_BLASTOISE,
+    .moves = {MOVE_WATER_PULSE, MOVE_SHELL_SMASH, MOVE_AURA_SPHERE, MOVE_AURORA_BEAM},
+    },
+    {
+    .iv = 150,
+    .lvl = 65,
+    .heldItem = ITEM_CHARIZARDITE_X,
+    .species = SPECIES_CHARIZARD,
+    .moves = {MOVE_FLAMETHROWER, MOVE_THUNDER_PUNCH, MOVE_BRICK_BREAK, MOVE_DRAGON_CLAW},
+    },
+    {
+    .iv = 150,
+    .lvl = 65,
+    .heldItem = ITEM_LEFTOVERS,
+    .species = SPECIES_SNORLAX,
+    .moves = {MOVE_BODY_SLAM, MOVE_CURSE, MOVE_REST, MOVE_SLEEP_TALK},
     }
 };
 
