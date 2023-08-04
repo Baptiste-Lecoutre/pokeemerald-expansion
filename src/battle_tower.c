@@ -3014,6 +3014,7 @@ static void FillPartnerParty(u16 trainerId)
     u16 monId;
     u32 otID;
     u8 trainerName[(PLAYER_NAME_LENGTH * 3) + 1];
+    u8 playerLevel = GetHighestLevelInPlayerParty();
     s32 ball = -1;
     SetFacilityPtrsGetLevel();
 
@@ -3027,7 +3028,7 @@ static void FillPartnerParty(u16 trainerId)
             } while (IsShinyOtIdPersonality(STEVEN_OTID, j) || sStevenMons[i].nature != GetNatureFromPersonality(j));
             CreateMon(&gPlayerParty[MULTI_PARTY_SIZE + i],
                       sStevenMons[i].species,
-                      sStevenMons[i].level,
+                      playerLevel/*sStevenMons[i].level*/,
                       sStevenMons[i].fixedIV,
                       TRUE,
                       #ifdef BUGFIX
@@ -3066,14 +3067,14 @@ static void FillPartnerParty(u16 trainerId)
             {
                 const struct TrainerMonNoItemDefaultMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.NoItemDefaultMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerParty[i + 3], partyData[i].species, playerLevel/*partyData[i].lvl*/, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
                 break;
             }
             case F_TRAINER_PARTY_CUSTOM_MOVESET:
             {
                 const struct TrainerMonNoItemCustomMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.NoItemCustomMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerParty[i + 3], partyData[i].species, playerLevel/*partyData[i].lvl*/, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
 
                 for (j = 0; j < 4; j++)
                 {
@@ -3086,7 +3087,7 @@ static void FillPartnerParty(u16 trainerId)
             {
                 const struct TrainerMonItemDefaultMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.ItemDefaultMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerParty[i + 3], partyData[i].species, playerLevel/*partyData[i].lvl*/, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
 
                 SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
                 break;
@@ -3095,7 +3096,7 @@ static void FillPartnerParty(u16 trainerId)
             {
                 const struct TrainerMonItemCustomMoves *partyData = gTrainers[trainerId - TRAINER_CUSTOM_PARTNER].party.ItemCustomMoves;
 
-                CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
+                CreateMon(&gPlayerParty[i + 3], partyData[i].species, playerLevel/*partyData[i].lvl*/, partyData[i].iv * 31 / 255, TRUE, j, TRUE, otID);
 
                 SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
 
