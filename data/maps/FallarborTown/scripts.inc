@@ -194,9 +194,11 @@ FallarborTown_Movement_RedArrives5:
 
 FallarborTown_Text_OhHeyPlayer:
 	.string "Oh, hey {PLAYER}!\n"
-	.string "Have you tried these Pokemon contests?\p"
+	.string "Long time no see!\p"
+	.string "Did you try these Pokemon tournaments?\n"
+	.string "They are different in every city!\p"
 	.string "We don't have these in Kanto, maybe\n"
-	.string "I'll open a contest hall on my way back.\p"
+	.string "I'll open a facility on my way back.\p"
 	.string "Did you get any better since last time?\n"
 	.string "My Pokémons and I have grown stronger!$"
 
