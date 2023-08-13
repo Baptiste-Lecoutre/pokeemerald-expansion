@@ -2095,6 +2095,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
                 const struct TrainerMonNoItemDefaultMoves *partyData = trainer->party.NoItemDefaultMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
 
+                averageOpponentLevel = 0;
                 for (j = 0; j < monsCount; j++)
                     averageOpponentLevel += partyData[j].lvl;
                 averageOpponentLevel /= monsCount;
@@ -2112,6 +2113,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
                 const struct TrainerMonNoItemCustomMoves *partyData = trainer->party.NoItemCustomMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
 
+                averageOpponentLevel = 0;
                 for (j = 0; j < monsCount; j++)
                     averageOpponentLevel += partyData[j].lvl;
                 averageOpponentLevel /= monsCount;
@@ -2135,6 +2137,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
                 const struct TrainerMonItemDefaultMoves *partyData = trainer->party.ItemDefaultMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
 
+                averageOpponentLevel = 0;
                 for (j = 0; j < monsCount; j++)
                     averageOpponentLevel += partyData[j].lvl;
                 averageOpponentLevel /= monsCount;
@@ -2153,8 +2156,8 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
             {
                 const struct TrainerMonItemCustomMoves *partyData = trainer->party.ItemCustomMoves;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
-                
-                
+
+                averageOpponentLevel = 0;
                 for (j = 0; j < monsCount; j++)
                     averageOpponentLevel += partyData[j].lvl;
                 averageOpponentLevel /= monsCount;
