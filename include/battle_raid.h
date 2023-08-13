@@ -1,6 +1,8 @@
 #ifndef GUARD_BATTLE_RAID_H
 #define GUARD_BATTLE_RAID_H
 
+#include "constants/battle_raid.h"
+
 struct RaidType {
     u8 shield:1;
     u8 shockwave:1;

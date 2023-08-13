@@ -772,10 +772,7 @@ void ClearRaidBattleFlag(void)
 
 void ClearAllRaidBattleFlags(void)
 {
-    u32 i;
-    
-    for (i = 0; i < NELEMS(gSaveBlock1Ptr->raidAreaFlags); i++)
-        gSaveBlock1Ptr->raidAreaFlags[i] = 0;
+    memset(&gSaveBlock1Ptr->raidAreaFlags, 0, sizeof(gSaveBlock1Ptr->raidAreaFlags));
 }
 
 u16 GetRaidRewardAmount(u16 item)
