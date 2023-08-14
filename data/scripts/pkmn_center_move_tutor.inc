@@ -301,7 +301,7 @@ PKMN_Center_MinimalGrinding::
 	end
 
 PKMN_Center_MinimalGrindingIncreaseLevels::
-	special IncreasePartyLevelToLevelCap
+	special IncreasePartyLevelToMaxLevel
 	playfanfare MUS_LEVEL_UP
 	waitfanfare
 	msgbox PKMN_Center_Text_YourPartyLevelsincreased, MSGBOX_DEFAULT
@@ -316,16 +316,16 @@ PKMN_Center_MinimalGrindingTooEarly::
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Strings @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 PKMN_Center_Text_CurrentLvlCapTooEarly:
-	.string "The advised level for the upcoming\n"
+	.string "The level cap for the upcoming\n"
 	.string "events is {STR_VAR_1}.\p"
 	.string "However, it is too early for you\n"
 	.string "to have your party be trained.$"
 
 PKMN_Center_Text_CurrentLvlCapIs:
-	.string "The advised level for the upcoming\n"
+	.string "The level cap for the upcoming\n"
 	.string "events is {STR_VAR_1}.\p"
 	.string "Would you like to train your party\n"
-	.string "up to two levels below this value?$"
+	.string "up to your current highest level?$"
 
 PKMN_Center_Text_YourPartyLevelsincreased:
 	.string "Your party levels increased!$"

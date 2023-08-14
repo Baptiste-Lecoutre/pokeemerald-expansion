@@ -1056,6 +1056,7 @@ extern u8 gPartyCriticalHits[PARTY_SIZE];
 extern bool8 gDescriptionSubmenu;
 
 #define NUM_SOFT_CAPS 10
+extern const u16 gLevelCapAreaFlags[NUM_SOFT_CAPS];
 extern const u16 gLevelCapFlags[NUM_SOFT_CAPS];
 extern const u16 gLevelCaps[NUM_SOFT_CAPS];
 

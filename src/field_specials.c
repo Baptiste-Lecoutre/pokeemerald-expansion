@@ -5539,13 +5539,6 @@ u8 CountRotomInParty (void)
 }
 
 /////// minimal grinding option in pkmn center
-const u16 sLevelCapAreaFlags[NUM_SOFT_CAPS] = 
-{
-    FLAG_VISITED_RUSTBORO_CITY, FLAG_DELIVERED_STEVEN_LETTER, FLAG_VISITED_MAUVILLE_CITY, FLAG_VISITED_FALLARBOR_TOWN, FLAG_VISITED_LAVARIDGE_TOWN,
-    FLAG_VISITED_PETALBURG_CITY, FLAG_VISITED_FORTREE_CITY, FLAG_VISITED_MOSSDEEP_CITY, FLAG_VISITED_SOOTOPOLIS_CITY,
-    FLAG_VISITED_EVER_GRANDE_CITY,
-};
-
 void BufferNextLevelCap(void)
 {
     u8 lvlCap = MAX_LEVEL;
@@ -5557,7 +5550,7 @@ void BufferNextLevelCap(void)
         if (!FlagGet(gLevelCapFlags[i]))
         {
             lvlCap = gLevelCaps[i];
-            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
+            if (!FlagGet(gLevelCapAreaFlags[i]) && i != 0)
                 lvlCap = gLevelCaps[i - 1];
             break;
         }
@@ -5566,23 +5559,11 @@ void BufferNextLevelCap(void)
     ConvertIntToDecimalStringN(gStringVar1, lvlCap, STR_CONV_MODE_LEFT_ALIGN, 3);
 }
 
-void IncreasePartyLevelToLevelCap(void)
+void IncreasePartyLevelToMaxLevel(void)
 {
     u32 i, targetExp, currExp;
-    u8 lvlCap;
+    u8 highestLevel = GetHighestLevelInPlayerParty();
     u16 species;
-
-    // get lvl cap
-    for (i = 0; i < NUM_SOFT_CAPS; i++)
-    {
-        if (!FlagGet(gLevelCapFlags[i]))
-        {
-            lvlCap = gLevelCaps[i];
-            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
-                lvlCap = gLevelCaps[i - 1];
-            break;
-        }
-    }
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -5590,7 +5571,7 @@ void IncreasePartyLevelToLevelCap(void)
         if (species != SPECIES_NONE && species != SPECIES_EGG)
         {
             currExp = GetMonData(&gPlayerParty[i], MON_DATA_EXP);
-            targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][lvlCap - 2];
+            targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][highestLevel];
 
             if (currExp < targetExp)
             {
