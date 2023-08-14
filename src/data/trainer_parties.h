@@ -10183,7 +10183,7 @@ static const struct TrainerMonNoItemCustomMoves sParty_BrendanRustboroTreecko[] 
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_TAILLOW,
-    .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
+    .moves = {MOVE_GUST, MOVE_QUICK_ATTACK, MOVE_GROWL, MOVE_REFRESH}
     },
     {
     .iv = 25,
@@ -10201,7 +10201,7 @@ static const struct TrainerMonNoItemCustomMoves sParty_BrendanRustboroTreecko[] 
     .iv = 50,
     .lvl = 15,
     .species = SPECIES_COMBUSKEN,
-    .moves = {MOVE_DOUBLE_KICK, MOVE_ROCK_TOMB, MOVE_FLAME_CHARGE, MOVE_PECK}
+    .moves = {MOVE_DOUBLE_KICK, MOVE_ROCK_TOMB, MOVE_EMBER, MOVE_PECK}
     }
 };
 
@@ -10210,7 +10210,7 @@ static const struct TrainerMonNoItemCustomMoves sParty_BrendanRustboroMudkip[] =
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_TAILLOW,
-    .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
+    .moves = {MOVE_GUST, MOVE_QUICK_ATTACK, MOVE_GROWL, MOVE_REFRESH}
     },
     {
     .iv = 25,
@@ -10222,13 +10222,13 @@ static const struct TrainerMonNoItemCustomMoves sParty_BrendanRustboroMudkip[] =
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_GROWLITHE,
-    .moves = {MOVE_FLAME_WHEEL, MOVE_BITE, MOVE_REVERSAL, MOVE_ROAR}
+    .moves = {MOVE_EMBER, MOVE_BITE, MOVE_REVERSAL, MOVE_ROAR}
     },
     {
     .iv = 50,
     .lvl = 15,
     .species = SPECIES_GROVYLE,
-    .moves = {MOVE_MEGA_DRAIN, MOVE_DRAGON_BREATH, MOVE_FURY_CUTTER, MOVE_ROCK_TOMB}
+    .moves = {MOVE_MEGA_DRAIN, MOVE_QUICK_ATTACK, MOVE_FURY_CUTTER, MOVE_ROCK_TOMB}
     }
 };
 
@@ -10326,13 +10326,13 @@ static const struct TrainerMonNoItemCustomMoves sParty_BrendanRustboroTorchic[] 
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_TAILLOW,
-    .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
+    .moves = {MOVE_GUST, MOVE_QUICK_ATTACK, MOVE_GROWL, MOVE_REFRESH}
     },
     {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_GROWLITHE,
-    .moves = {MOVE_FLAME_WHEEL, MOVE_BITE, MOVE_REVERSAL, MOVE_ROAR}
+    .moves = {MOVE_EMBER, MOVE_BITE, MOVE_REVERSAL, MOVE_ROAR}
     },
     {
     .iv = 25,
@@ -10344,7 +10344,7 @@ static const struct TrainerMonNoItemCustomMoves sParty_BrendanRustboroTorchic[] 
     .iv = 50,
     .lvl = 15,
     .species = SPECIES_MARSHTOMP,
-    .moves = {MOVE_MUD_SHOT, MOVE_WATER_GUN, MOVE_ROCK_TOMB, MOVE_GROWL}
+    .moves = {MOVE_MUD_SLAP, MOVE_WATER_GUN, MOVE_ROCK_TOMB, MOVE_GROWL}
     }
 };
 
@@ -10353,25 +10353,25 @@ static const struct TrainerMonNoItemCustomMoves sParty_MayRustboroMudkip[] = {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_TAILLOW,
-    .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
+    .moves = {MOVE_GUST, MOVE_QUICK_ATTACK, MOVE_GROWL, MOVE_REFRESH}
     },
     {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_STARYU,
-    .moves = {MOVE_BUBBLE_BEAM, MOVE_RECOVER, MOVE_PSYWAVE, MOVE_SWIFT}
+    .moves = {MOVE_BUBBLE_BEAM, MOVE_DEFENSE_CURL, MOVE_PSYWAVE, MOVE_SWIFT}
     },
     {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_PONYTA,
-    .moves = {MOVE_FLAME_WHEEL, MOVE_TAIL_WHIP, MOVE_TACKLE, MOVE_DOUBLE_KICK}
+    .moves = {MOVE_EMBER, MOVE_TAIL_WHIP, MOVE_TACKLE, MOVE_DOUBLE_KICK}
     },
     {
     .iv = 50,
     .lvl = 15,
     .species = SPECIES_GROVYLE,
-    .moves = {MOVE_MEGA_DRAIN, MOVE_DRAGON_BREATH, MOVE_FURY_CUTTER, MOVE_ROCK_TOMB}
+    .moves = {MOVE_MEGA_DRAIN, MOVE_QUICK_ATTACK, MOVE_FURY_CUTTER, MOVE_ROCK_TOMB}
     }
 };
 
@@ -13457,25 +13457,25 @@ static const struct TrainerMonNoItemCustomMoves sParty_MayRustboroTreecko[] = {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_TAILLOW,
-    .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
+    .moves = {MOVE_GUST, MOVE_QUICK_ATTACK, MOVE_GROWL, MOVE_REFRESH}
     },
     {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_STARYU,
-    .moves = {MOVE_BUBBLE_BEAM, MOVE_RECOVER, MOVE_PSYWAVE, MOVE_SWIFT}
+    .moves = {MOVE_BUBBLE_BEAM, MOVE_DEFENSE_CURL, MOVE_PSYWAVE, MOVE_SWIFT}
     },
     {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_STEENEE,
-    .moves = {MOVE_RAZOR_LEAF, MOVE_CHARM, MOVE_ACUPRESSURE, MOVE_SYNTHESIS}
+    .moves = {MOVE_RAZOR_LEAF, MOVE_CHARM, MOVE_ACUPRESSURE, MOVE_SPORE}
     },
     {
     .iv = 50,
     .lvl = 15,
     .species = SPECIES_COMBUSKEN,
-    .moves = {MOVE_DOUBLE_KICK, MOVE_ROCK_TOMB, MOVE_FLAME_CHARGE, MOVE_PECK}
+    .moves = {MOVE_DOUBLE_KICK, MOVE_ROCK_TOMB, MOVE_EMBER, MOVE_PECK}
     }
 };
 
@@ -13484,25 +13484,25 @@ static const struct TrainerMonNoItemCustomMoves sParty_MayRustboroTorchic[] = {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_TAILLOW,
-    .moves = {MOVE_AERIAL_ACE, MOVE_QUICK_ATTACK, MOVE_ROOST, MOVE_REFRESH}
+    .moves = {MOVE_GUST, MOVE_QUICK_ATTACK, MOVE_GROWL, MOVE_REFRESH}
     },
     {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_STEENEE,
-    .moves = {MOVE_RAZOR_LEAF, MOVE_CHARM, MOVE_ACUPRESSURE, MOVE_SYNTHESIS}
+    .moves = {MOVE_RAZOR_LEAF, MOVE_CHARM, MOVE_ACUPRESSURE, MOVE_SPORE}
     },
     {
     .iv = 25,
     .lvl = 14,
     .species = SPECIES_PONYTA,
-    .moves = {MOVE_FLAME_WHEEL, MOVE_TAIL_WHIP, MOVE_TACKLE, MOVE_DOUBLE_KICK}
+    .moves = {MOVE_EMBER, MOVE_TAIL_WHIP, MOVE_TACKLE, MOVE_DOUBLE_KICK}
     },
     {
     .iv = 50,
     .lvl = 15,
     .species = SPECIES_MARSHTOMP,
-    .moves = {MOVE_MUD_SHOT, MOVE_WATER_GUN, MOVE_ROCK_TOMB, MOVE_GROWL}
+    .moves = {MOVE_MUD_SLAP, MOVE_WATER_GUN, MOVE_ROCK_TOMB, MOVE_GROWL}
     }
 };
 
@@ -15577,17 +15577,17 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Thalia4[] = {
 
 static const struct TrainerMonNoItemDefaultMoves sParty_RedPetalburgWoods[] = {
     {
-    .iv = 100,
+    .iv = 50,
     .lvl = 17,
     .species = SPECIES_CHARMANDER,
     },
     {
-    .iv = 100,
+    .iv = 50,
     .lvl = 17,
     .species = SPECIES_BULBASAUR,
     },
     {
-    .iv = 100,
+    .iv = 50,
     .lvl = 17,
     .species = SPECIES_SQUIRTLE,
     }
