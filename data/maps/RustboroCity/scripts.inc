@@ -844,7 +844,6 @@ RustboroCity_EventScript_MayEncounter::
 	closemessage
 	delay 30
 	setflag FLAG_ENABLE_RIVAL_MATCH_CALL
-	setvar VAR_RUSTBORO_CITY_STATE, 8
 	setvar VAR_ROUTE104_STATE, 2
 	setvar VAR_0x8008, 0
 @	msgbox RustboroCity_Text_MayPassedBrineyWantToBattle, MSGBOX_YESNO
@@ -916,7 +915,6 @@ RustboroCity_EventScript_BrendanEncounter::
 	closemessage
 	delay 30
 	setflag FLAG_ENABLE_RIVAL_MATCH_CALL
-	setvar VAR_RUSTBORO_CITY_STATE, 8
 	setvar VAR_ROUTE104_STATE, 2
 @	msgbox RustboroCity_Text_BrendanPassedBrineyWantToBattle, MSGBOX_YESNO
 @	goto_if_eq VAR_RESULT, YES, RustboroCity_EventScript_BattleBrendan
@@ -974,6 +972,7 @@ RustboroCity_EventScript_GiveDynamaxBand::
 	giveitem ITEM_DYNAMAX_BAND, 1
 	msgbox RustboroCity_Text_WithThisYourPokemonWillGrowLarger, MSGBOX_DEFAULT
 	setflag FLAG_MET_RIVAL_RUSTBORO
+	setvar VAR_RUSTBORO_CITY_STATE, 8
 	return
 
 RustboroCity_Movement_RivalApproachPlayer0:
