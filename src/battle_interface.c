@@ -1,6 +1,7 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
+#include "dma3.h"
 #include "pokemon.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
@@ -215,6 +216,8 @@ static void SpriteCB_LastUsedBallBounce(struct Sprite *);
 static void SpriteCB_MoveInfoWindow(struct Sprite* sprite);
 
 static void SpriteCB_TypeIcon(struct Sprite* sprite);
+
+static void DestroyTeamPreviewTrigger(struct Sprite* sprite);
 
 static const struct OamData sOamData_64x32 =
 {
@@ -3287,7 +3290,7 @@ void TryAddLastUsedBallItemSprites(void)
         gLastThrownBall = gBagPockets[BALLS_POCKET].itemSlots[0].itemId;
     }
 
-    if (!CanThrowLastUsedBall() && !((gBattleTypeFlags & BATTLE_TYPE_TRAINER) && FALSE)) // option to open the enemy party in summary screen
+    if (!CanThrowLastUsedBall() && !((gBattleTypeFlags & BATTLE_TYPE_TRAINER) /*&& FALSE*/)) // option to open the enemy party in summary screen
         return;
 
     // ball
@@ -3720,4 +3723,68 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 
     if (sprite->y > MOVE_INFO_WIN_Y_F) 
         sprite->y -= 1;
+}
+
+// Enemy team preview
+void ChangeBattlerSpritesInvisibilities(bool8 invisible)
+{
+    u32 i;
+
+    for (i = 0; i < gBattlersCount; ++i)
+	{
+		u8 spriteId = gBattlerSpriteIds[i];
+
+        if (spriteId != 0xFF)
+			gSprites[spriteId].invisible = invisible;
+	}
+}
+
+static void Task_DisplayInBattleTeamPreview(u8 taskId)
+{
+    const u8* string;
+
+    //Update Background
+	gBattle_BG0_Y = 0; //Hide action selection - must go before creating icons! Causes sprite bugs otherwise
+	gBattle_BG1_X = 0; //Fix bg offsets if necessary (gets messed up by some battle anims)
+	gBattle_BG1_Y = 0;
+
+    //Update Textbox
+	if (gBattleTypeFlags & BATTLE_TYPE_LINK)
+	{
+		if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
+		{
+			if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
+				string = gText_TeamPreviewMultiText;
+			else
+				string = gText_TeamPreviewMultiLinkText;
+		}
+		else
+			string = gText_TeamPreviewSingleDoubleLinkText;
+	}
+	else
+	{
+		if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+			string = gText_TeamPreviewMultiText;
+		else
+			string = gText_TeamPreviewSingleDoubleText;
+	}
+
+    BattleStringExpandPlaceholdersToDisplayedString(string);
+	BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MSG);
+	DestroyTask(taskId);
+}
+
+void DisplayInBattleTeamPreview(void)
+{
+	CreateTask(Task_DisplayInBattleTeamPreview, 0); //Hide sprites and then load the BG
+}
+
+void HideInBattleTeamPreview(void)
+{
+    //Hide BG
+	gBattle_BG0_Y = 160; //Show action selection
+	RequestDma3Fill(0, (void*)(BG_SCREEN_ADDR(28)), 0x1000, 1); //Wipe tilemap (tiles don't need to be wiped)
+
+	//Clear Textbox
+	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
 }

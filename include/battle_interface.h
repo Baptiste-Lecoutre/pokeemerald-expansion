@@ -109,5 +109,8 @@ void TryChangeLastUsedBall(bool8 increase);
 void UpdateAbilityPopup(u8 battlerId);
 void TryLoadTypeIcons(void);
 void TryLoadMoveInfoWindow(void);
+void ChangeBattlerSpritesInvisibilities(bool8 invisible);
+void DisplayInBattleTeamPreview(void);
+void HideInBattleTeamPreview(void);
 
 #endif // GUARD_BATTLE_INTERFACE_H

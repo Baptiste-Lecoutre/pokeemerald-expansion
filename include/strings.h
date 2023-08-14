@@ -3611,4 +3611,9 @@ extern const u8 gText_RoamerGArticuno[];
 extern const u8 gText_RoamerZacian[];
 extern const u8 gText_RoamerZamazenta[];
 
+extern const u8 gText_TeamPreviewSingleDoubleText[];
+extern const u8 gText_TeamPreviewMultiText[];
+extern const u8 gText_TeamPreviewMultiLinkText[];
+extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
+
 #endif // GUARD_STRINGS_H
