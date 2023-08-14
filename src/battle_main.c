@@ -2052,7 +2052,7 @@ void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonC
 u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags)
 {
     u32 personalityValue;
-    u8 fixedIV, monLevel, averageOpponentLevel = 0, playerLevel = GetHighestLevelInPlayerParty();
+    u8 fixedIV, monLevel, averageOpponentLevel = 0, playerLevel = GetMedianLevelOfPlayerParty();//GetHighestLevelInPlayerParty();
     s32 i, j;
     u8 monsCount;
     s32 ball = -1;
