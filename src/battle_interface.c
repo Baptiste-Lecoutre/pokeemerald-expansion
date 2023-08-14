@@ -24,6 +24,7 @@
 #include "battle_anim.h"
 #include "data.h"
 #include "pokemon_summary_screen.h"
+#include "pokemon_icon.h"
 #include "strings.h"
 #include "battle_debug.h"
 #include "item.h"
@@ -3726,6 +3727,11 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 }
 
 // Enemy team preview
+
+#define GFX_TAG_HELD_ITEM 0x8472
+#define GFX_TAG_TEAM_PREVIEW_STATUS_ICON 0x8473
+#define GFX_TAG_FAINTED_TEAM_PREVIEW_ICON 0x8474
+
 void ChangeBattlerSpritesInvisibilities(bool8 invisible)
 {
     u32 i;
@@ -3741,12 +3747,22 @@ void ChangeBattlerSpritesInvisibilities(bool8 invisible)
 
 static void Task_DisplayInBattleTeamPreview(u8 taskId)
 {
+    u32 i;
+    u8 spriteId;
+	s16 x, y;
     const u8* string;
 
     //Update Background
 	gBattle_BG0_Y = 0; //Hide action selection - must go before creating icons! Causes sprite bugs otherwise
 	gBattle_BG1_X = 0; //Fix bg offsets if necessary (gets messed up by some battle anims)
 	gBattle_BG1_Y = 0;
+
+    LZDecompressVram(gBattleTeamPreview_TileSet, (void *)(BG_CHAR_ADDR(1)));
+    LZDecompressVram(gBattleTeamPreview_TileMap, (void *)(BG_SCREEN_ADDR(28)));
+    LoadCompressedPalette(gBattleTeamPreview_Palette, BG_PLTT_ID(11), PLTT_SIZE_4BPP);
+
+    REG_BG1CNT |= BGCNT_CHARBASE(1); //Original char base that isn't getting used for some reason
+	REG_DISPCNT |= DISPCNT_BG1_ON; //Can't use ShowBg because that resets the charbase
 
     //Update Textbox
 	if (gBattleTypeFlags & BATTLE_TYPE_LINK)
@@ -3781,9 +3797,40 @@ void DisplayInBattleTeamPreview(void)
 
 void HideInBattleTeamPreview(void)
 {
+    u32 i;
+	u8 pal0 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 0); 
+	u8 pal1 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 1);
+	u8 pal2 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 2);
+    u8 pal3 = IndexOfSpritePaletteTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON); //Fainted palette
+
     //Hide BG
 	gBattle_BG0_Y = 160; //Show action selection
 	RequestDma3Fill(0, (void*)(BG_SCREEN_ADDR(28)), 0x1000, 1); //Wipe tilemap (tiles don't need to be wiped)
+
+    //Destroy Sprites
+	for (i = 0; i < MAX_SPRITES; ++i)
+	{
+		if (gSprites[i].inUse)
+		{
+			if (gSprites[i].template->tileTag == GFX_TAG_TEAM_PREVIEW_STATUS_ICON
+			|| gSprites[i].template->tileTag == GFX_TAG_FAINTED_TEAM_PREVIEW_ICON
+			|| gSprites[i].template->tileTag == GFX_TAG_HELD_ITEM)
+				DestroySprite(&gSprites[i]);
+			else if (gSprites[i].oam.paletteNum == pal0
+			|| gSprites[i].oam.paletteNum == pal1
+			|| gSprites[i].oam.paletteNum == pal2
+			|| gSprites[i].oam.paletteNum == pal3)
+				FreeAndDestroyMonIconSprite(&gSprites[i]);
+		}
+	}
+
+	//Free Palettes
+	FreeSpriteTilesByTag(GFX_TAG_HELD_ITEM);
+	FreeSpriteTilesByTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON);
+	FreeSpriteTilesByTag(GFX_TAG_TEAM_PREVIEW_STATUS_ICON);
+	FreeSpritePaletteByTag(GFX_TAG_HELD_ITEM);
+	FreeSpritePaletteByTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON);
+	FreeMonIconPalettes();
 
 	//Clear Textbox
 	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
