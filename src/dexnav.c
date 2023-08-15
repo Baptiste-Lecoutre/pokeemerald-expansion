@@ -361,7 +361,7 @@ static const struct SpriteTemplate sSelectionCursorSpriteTemplate =
 };
 
 // search window sprite templates
-static const struct SpriteTemplate sHeldItemTemplate =
+const struct SpriteTemplate gHeldItemTemplate =
 {
     .tileTag = HELD_ITEM_TAG,
     .paletteTag = 0xFFFF,
@@ -780,7 +780,7 @@ static bool8 TryStartHiddenMonFieldEffect(u8 environment, u8 xSize, u8 ySize, bo
 
 static void DrawDexNavSearchHeldItem(u8* dst)
 {
-    *dst = CreateSprite(&sHeldItemTemplate, SPECIES_ICON_X + 6, GetSearchWindowY() + 18, 0);
+    *dst = CreateSprite(&gHeldItemTemplate, SPECIES_ICON_X + 6, GetSearchWindowY() + 18, 0);
     if (*dst != MAX_SPRITES)
         gSprites[*dst].invisible = TRUE;
 }

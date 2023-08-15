@@ -2,6 +2,7 @@
 #include "malloc.h"
 #include "battle.h"
 #include "battle_setup.h"
+#include "dma3.h"
 #include "pokemon.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
@@ -23,7 +24,10 @@
 #include "safari_zone.h"
 #include "battle_anim.h"
 #include "data.h"
+#include "dexnav.h"
+#include "party_menu.h"
 #include "pokemon_summary_screen.h"
+#include "pokemon_icon.h"
 #include "strings.h"
 #include "battle_debug.h"
 #include "item.h"
@@ -31,6 +35,7 @@
 #include "item_use.h"
 #include "event_data.h"
 #include "test_runner.h"
+#include "constants/abilities.h"
 #include "constants/battle_anim.h"
 #include "constants/battle_tower.h"
 #include "constants/rgb.h"
@@ -218,6 +223,8 @@ static void SpriteCB_LastUsedBallBounce(struct Sprite *);
 static void SpriteCB_MoveInfoWindow(struct Sprite* sprite);
 
 static void SpriteCB_TypeIcon(struct Sprite* sprite);
+
+static void DestroyTeamPreviewTrigger(struct Sprite* sprite);
 
 static const struct OamData sOamData_64x32 =
 {
@@ -3327,7 +3334,7 @@ void TryAddLastUsedBallItemSprites(void)
         gLastThrownBall = gBagPockets[BALLS_POCKET].itemSlots[0].itemId;
     }
 
-    if (!CanThrowLastUsedBall() && !((gBattleTypeFlags & BATTLE_TYPE_TRAINER) && FALSE)) // option to open the enemy party in summary screen
+    if (!CanThrowLastUsedBall() && !((gBattleTypeFlags & BATTLE_TYPE_TRAINER) /*&& FALSE*/)) // option to open the enemy party in summary screen
         return;
 
     // ball
@@ -3592,23 +3599,32 @@ void TryLoadTypeIcons(void)
         
 		for (position = 0; position < gBattlersCount; ++position)
 		{
-            u8 typeNum, monNumTypes = 2;//(gBattleMons[GetBattlerAtPosition(position)].type1 == gBattleMons[GetBattlerAtPosition(position)].type2) ? 1 : 2;
-			if (!IsBattlerAlive(GetBattlerAtPosition(position)))
+            u8 typeNum, monNumTypes = 2;
+			u8 type1, type2;
+            struct Pokemon *illusionMon = GetIllusionMonPtr(GetBattlerAtPosition(position));
+    
+
+            if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
+
+            if (illusionMon != NULL)
+            {
+                type1 = gSpeciesInfo[GetMonData(illusionMon, MON_DATA_SPECIES)].types[0];
+                type2 = gSpeciesInfo[GetMonData(illusionMon, MON_DATA_SPECIES)].types[1];
+            }
+            else
+            {
+                type1 = gBattleMons[GetBattlerAtPosition(position)].type1;
+                type2 = gBattleMons[GetBattlerAtPosition(position)].type2;
+            }
 
 			for (typeNum = 0; typeNum < monNumTypes; ++typeNum) //Load each type
 			{
 				u8 spriteId;
-                u8* type1Ptr = &gBattleMons[GetBattlerAtPosition(position)].type1;
-                u8 type = *(type1Ptr + typeNum);
+                u8 type = (typeNum == 0) ? type1 : type2;
 
                 s16 x = sTypeIconPositions[battleType][position].x;
 				s16 y = sTypeIconPositions[battleType][position].y + (11 * typeNum); //2nd type is 11px below
-
-                //if (battleType)
-                //    y -= (3 * typeNum);
-                //if (monNumTypes == 1)
-                //    y += 6;
 
                 spriteId = CreateSpriteAtEnd(&sTypeIconSpriteTemplate, x, y, 0xFF);
                 
@@ -3772,4 +3788,288 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 
     if (sprite->y > MOVE_INFO_WIN_Y_F) 
         sprite->y -= 1;
+}
+
+// Enemy team preview
+
+#define GFX_TAG_TEAM_PREVIEW_STATUS_ICON 0x8473
+#define GFX_TAG_FAINTED_TEAM_PREVIEW_ICON 0x8474
+
+static const u32 sTeamPreviewFaintedMonIconTiles[] = INCBIN_U32("graphics/battle_interface/teamPreviewFaintedMonIcon.4bpp");
+static const u32 sTeamPreviewStatusIconsTiles[] = INCBIN_U32("graphics/battle_interface/teamPreviewStatusIcons.4bpp.lz");
+
+static const struct OamData sMonIconOamData =
+{
+    .mosaic = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(32x32),
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(32x32),
+    .tileNum = 0,
+    .priority = 0,
+    .paletteNum = 0,
+};
+
+static const struct OamData sHeldItemOam =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0, //Above everything
+};
+
+static const struct SpriteTemplate sTeamPreviewFaintedSpriteTemplate =
+{
+	.tileTag = GFX_TAG_FAINTED_TEAM_PREVIEW_ICON,
+	.paletteTag = POKE_ICON_BASE_PAL_TAG,
+	.oam = &sMonIconOamData,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteTemplate sStatusIconTemplate =
+{
+	.tileTag = GFX_TAG_TEAM_PREVIEW_STATUS_ICON,
+	.paletteTag = POKE_ICON_BASE_PAL_TAG, //Used same palette as mon icon 0
+	.oam = &sHeldItemOam,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteTemplate sHeldItemTemplate =
+{
+    .tileTag = HELD_ITEM_TAG,
+    .paletteTag = HELD_ITEM_TAG,
+    .oam = &sHeldItemOam,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteSheet sTeamPreviewFaintedMonIconSpriteSheet = 
+{
+    sTeamPreviewFaintedMonIconTiles, (32 * 32) / 2, GFX_TAG_FAINTED_TEAM_PREVIEW_ICON
+};
+
+static const struct CompressedSpriteSheet sTeamPreviewStatusIconsSpriteSheet = 
+{
+    sTeamPreviewStatusIconsTiles, (8 * 8 * 6) / 2, GFX_TAG_TEAM_PREVIEW_STATUS_ICON
+};
+
+static bool8 CanShowEnemyMon(u8 monId)
+{
+    return (gBattleStruct->revealedEnemyMons & gBitTable[monId]) != 0;
+}
+
+static bool8 EntireEnemyPartyRevealed(void)
+{
+	u32 i;
+
+	for (i = 0; i < PARTY_SIZE; ++i)
+	{
+		u16 species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG, NULL);
+
+		if (species != SPECIES_NONE && species != SPECIES_EGG)
+		{
+			if (!CanShowEnemyMon(i))
+				return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+void ChangeBattlerSpritesInvisibilities(bool8 invisible)
+{
+    u32 i;
+
+    for (i = 0; i < gBattlersCount; ++i)
+	{
+		u8 spriteId = gBattlerSpriteIds[i];
+
+        if (spriteId != 0xFF)
+			gSprites[spriteId].invisible = invisible;
+	}
+}
+
+static void Task_DisplayInBattleTeamPreview(u8 taskId)
+{
+    u32 i;
+    u8 spriteId;
+	s16 x, y;
+    const u8* string;
+
+    //Update Background
+	gBattle_BG0_Y = 0; //Hide action selection - must go before creating icons! Causes sprite bugs otherwise
+	gBattle_BG1_X = 0; //Fix bg offsets if necessary (gets messed up by some battle anims)
+	gBattle_BG1_Y = 0;
+
+    LZDecompressVram(gBattleTeamPreview_TileSet, (void *)(BG_CHAR_ADDR(1)));
+    LZDecompressVram(gBattleTeamPreview_TileMap, (void *)(BG_SCREEN_ADDR(28)));
+    LoadCompressedPalette(gBattleTeamPreview_Palette, BG_PLTT_ID(11), PLTT_SIZE_4BPP);
+
+    REG_BG1CNT |= BGCNT_CHARBASE(1); //Original char base that isn't getting used for some reason
+	REG_DISPCNT |= DISPCNT_BG1_ON; //Can't use ShowBg because that resets the charbase
+
+    LoadSpriteSheet(&gSpriteSheet_HeldItem);
+    LoadSpritePalette(&gSpritePalette_HeldItem);
+    LoadSpriteSheet(&sTeamPreviewFaintedMonIconSpriteSheet);
+    LoadCompressedSpriteSheet(&sTeamPreviewStatusIconsSpriteSheet);
+    LoadMonIconPalette(SPECIES_NONE); //Used for status icon sprites
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u16 species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG);
+
+        if (species != SPECIES_NONE && species != SPECIES_EGG)
+        {
+            u16 hp = GetMonData(&gEnemyParty[i], MON_DATA_HP);
+            void* callback = hp == 0 ? SpriteCallbackDummy : SpriteCB_MonIcon; //Don't animate when fainted
+
+            if (!CanShowEnemyMon(i))
+                continue;//species = SPECIES_NONE;
+            else if (GetMonAbility(&gEnemyParty[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
+            {
+                u8 battler;
+
+                if (i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)])
+                    species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
+                else if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)])
+                    species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
+            }
+
+            x = (64 + (32 / 2)) + (40 * (i % 3));
+			y = (20 + (32 / 2)) + (40 * (i / 3));
+
+            LoadMonIconPalette(species);
+            spriteId = CreateMonIcon(species, callback, x, y, 1, GetMonData(&gEnemyParty[i], MON_DATA_PERSONALITY));
+
+            if (spriteId < MAX_SPRITES)
+            {
+                struct Sprite* sprite = &gSprites[spriteId];
+                sprite->oam.priority = 0;
+
+                if (species != SPECIES_NONE)
+                {
+                    if (hp > 0)
+                    {
+                        u32 status = GetMonData(&gEnemyParty[i], MON_DATA_STATUS, NULL);
+
+                        if (GetMonData(&gEnemyParty[i], MON_DATA_HELD_ITEM) != ITEM_NONE)
+                        {
+                            x = (80 + (8 / 2)) + (40 * (i % 3)); //Based on the item icon positions on the summary screen
+							y = (44 + (8 / 2)) + (40 * (i / 3));
+							CreateSprite(&sHeldItemTemplate, x, y, 0);
+                        }
+
+                        if (status != 0)
+						{
+							x = (72 + (8 / 2)) + (40 * (i % 3));
+							y = (44 + (8 / 2)) + (40 * (i / 3));
+							spriteId = CreateSprite(&sStatusIconTemplate, x, y, 0);
+
+							if (spriteId < MAX_SPRITES)
+							{
+								u8 tileNum = 0;
+
+								if (status & STATUS1_POISON) //Not including Toxic
+									tileNum = 1;
+								else if (status & STATUS1_BURN)
+									tileNum = 2;
+								else if (status & STATUS1_FREEZE)
+									tileNum = 3;
+								else if (status & STATUS1_PARALYSIS)
+									tileNum = 4;
+								else if (status & STATUS1_TOXIC_POISON)
+									tileNum = 5;
+
+								gSprites[spriteId].oam.tileNum += (8 / 8) * (8 / 8) * tileNum; //Get the right status image
+							}
+						}
+                    }
+                    else
+                        CreateSprite(&sTeamPreviewFaintedSpriteTemplate, x, y, 0);
+                }
+            }
+        }
+    }
+
+    //Update Textbox
+	if (gBattleTypeFlags & BATTLE_TYPE_LINK)
+	{
+		if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
+		{
+			if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
+				string = gText_TeamPreviewMultiText;
+			else
+				string = gText_TeamPreviewMultiLinkText;
+		}
+		else
+			string = gText_TeamPreviewSingleDoubleLinkText;
+	}
+	else
+	{
+		if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+			string = gText_TeamPreviewMultiText;
+		else
+			string = gText_TeamPreviewSingleDoubleText;
+	}
+
+    BattleStringExpandPlaceholdersToDisplayedString(string);
+	BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MSG);
+	DestroyTask(taskId);
+}
+
+void DisplayInBattleTeamPreview(void)
+{
+	CreateTask(Task_DisplayInBattleTeamPreview, 0); //Hide sprites and then load the BG
+}
+
+void HideInBattleTeamPreview(void)
+{
+    u32 i;
+	u8 pal0 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 0); 
+	u8 pal1 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 1);
+	u8 pal2 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 2);
+    u8 pal3 = IndexOfSpritePaletteTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON); //Fainted palette
+
+    //Hide BG
+	gBattle_BG0_Y = 160; //Show action selection
+	RequestDma3Fill(0, (void*)(BG_SCREEN_ADDR(28)), 0x1000, 1); //Wipe tilemap (tiles don't need to be wiped)
+
+    //Destroy Sprites
+	for (i = 0; i < MAX_SPRITES; ++i)
+	{
+		if (gSprites[i].inUse)
+		{
+			if (gSprites[i].template->tileTag == GFX_TAG_TEAM_PREVIEW_STATUS_ICON
+			|| gSprites[i].template->tileTag == GFX_TAG_FAINTED_TEAM_PREVIEW_ICON
+			|| gSprites[i].template->tileTag == HELD_ITEM_TAG)
+				DestroySprite(&gSprites[i]);
+			else if (gSprites[i].oam.paletteNum == pal0
+			|| gSprites[i].oam.paletteNum == pal1
+			|| gSprites[i].oam.paletteNum == pal2
+			|| gSprites[i].oam.paletteNum == pal3)
+				FreeAndDestroyMonIconSprite(&gSprites[i]);
+		}
+	}
+
+	//Free Palettes
+	FreeSpriteTilesByTag(HELD_ITEM_TAG);
+	FreeSpriteTilesByTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON);
+	FreeSpriteTilesByTag(GFX_TAG_TEAM_PREVIEW_STATUS_ICON);
+	FreeSpritePaletteByTag(HELD_ITEM_TAG);
+	FreeSpritePaletteByTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON);
+	FreeMonIconPalettes();
+
+	//Clear Textbox
+	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
 }

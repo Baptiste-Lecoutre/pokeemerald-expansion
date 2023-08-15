@@ -100,14 +100,11 @@ static void PlayerHandleBattleDebug(void);
 static void PlayerCmdEnd(void);
 
 static void PlayerBufferRunCommand(void);
-//static void HandleInputChooseTarget(void);
-//static void HandleInputChooseMove(void);
 static void MoveSelectionDisplayPpNumber(void);
 static void MoveSelectionDisplayPpString(void);
 static void MoveSelectionDisplayMoveType(void);
 static void MoveSelectionDisplayMoveDescription(void);
 static void MoveSelectionDisplayMoveNames(void);
-//static void HandleMoveSwitching(void);
 static void SwitchIn_HandleSoundAndEnd(void);
 static void WaitForMonSelection(void);
 static void CompleteWhenChoseItem(void);
@@ -129,6 +126,7 @@ static void EndDrawPartyStatusSummary(void);
 static void ReloadMoveNames(void);
 static void MoveSelectionDisplaySplitIcon(void);
 static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId);
+static void HandleInputTeamPreview(void);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(void) =
 {
@@ -415,11 +413,21 @@ static void HandleInputChooseAction(void)
                 BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_THROW_BALL, 0);
                 PlayerBufferExecCompleted();
             }
-            else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && FALSE) // option to open the enemy party in summary screen
+            /*else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && FALSE) // option to open the enemy party in summary screen
             {
                 PlaySE(SE_SELECT);
                 TryHideLastUsedBall();
                 OpenEnemyParty();
+            }*/
+            else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+            {
+                PlaySE(SE_SELECT);
+                TryHideLastUsedBall();
+                gBattleAnimAttacker = gActiveBattler;
+                UpdateOamPriorityInAllHealthboxes(0, TRUE);
+                ChangeBattlerSpritesInvisibilities(TRUE);
+                DisplayInBattleTeamPreview();
+                gBattlerControllerFuncs[gActiveBattler] = HandleInputTeamPreview;
             }
         }
         sLastUsedBallHoldFrames = 0;
@@ -3690,4 +3698,18 @@ static void PlayerHandleBattleDebug(void)
 
 static void PlayerCmdEnd(void)
 {
+}
+
+static void HandleInputTeamPreview(void)
+{
+	if (JOY_NEW(A_BUTTON | B_BUTTON | L_BUTTON | DPAD_ANY))
+	{
+		PlaySE(SE_SELECT);
+		TryRestoreLastUsedBall();
+		gBattleAnimAttacker = gActiveBattler;
+		UpdateOamPriorityInAllHealthboxes(1, TRUE);
+		ChangeBattlerSpritesInvisibilities(FALSE);
+		HideInBattleTeamPreview();
+		gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseAction;
+	}
 }

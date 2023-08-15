@@ -120,6 +120,8 @@
 #define MASK_SPECIES         0x3FFF  //first 14 bits
 #define MASK_ENVIRONMENT     0xC000  //last two bit
 
+extern const struct SpriteTemplate gHeldItemTemplate;
+
 //funcs
 void EndDexNavSearch(u8 taskId);
 void Task_OpenDexNavFromStartMenu(u8 taskId);

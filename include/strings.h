@@ -3640,4 +3640,9 @@ extern const u8 gText_FrenzyPlant[];
 extern const u8 gText_BlastBurn[];
 extern const u8 gText_HydroCannon[];
 
+extern const u8 gText_TeamPreviewSingleDoubleText[];
+extern const u8 gText_TeamPreviewMultiText[];
+extern const u8 gText_TeamPreviewMultiLinkText[];
+extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
+
 #endif // GUARD_STRINGS_H

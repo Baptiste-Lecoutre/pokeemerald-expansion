@@ -11134,4 +11134,8 @@ extern const u32 gItemIconPalette_EonFlute[];
 extern const u8 gPopUpWindowBorder_Tiles[];
 extern const u16 gPopUpWindowBorder_Palette[];
 
+extern const u32 gBattleTeamPreview_TileSet[];
+extern const u32 gBattleTeamPreview_TileMap[];
+extern const u32 gBattleTeamPreview_Palette[];
+
 #endif //GUARD_GRAPHICS_H
