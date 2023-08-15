@@ -11040,3 +11040,17 @@ bool32 IsAlly(u32 battlerAtk, u32 battlerDef)
 {
     return (GetBattlerSide(battlerAtk) == GetBattlerSide(battlerDef));
 }
+
+bool8 BattlerHasInnate(u8 battlerId, u16 ability){
+    if(GetBattlerSide(battlerId) == B_SIDE_PLAYER)
+        return SpeciesHasInnate(gBattleMons[battlerId].species, ability, gBattleMons[battlerId].level, gBattleMons[battlerId].personality, FALSE);
+    else
+        return SpeciesHasInnate(gBattleMons[battlerId].species, ability, gBattleMons[battlerId].level, gBattleMons[battlerId].personality, TRUE);
+}
+
+bool8 GetBattlerInnateNum(u8 battlerId, u16 ability){
+    if(GetBattlerSide(battlerId) == B_SIDE_PLAYER)
+        return GetSpeciesInnateNum(gBattleMons[battlerId].species, ability, gBattleMons[battlerId].level, gBattleMons[battlerId].personality, FALSE);
+    else
+        return GetSpeciesInnateNum(gBattleMons[battlerId].species, ability, gBattleMons[battlerId].level, gBattleMons[battlerId].personality, TRUE);
+}

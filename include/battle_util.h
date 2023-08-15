@@ -243,6 +243,9 @@ u8 GetBattlerGender(u8 battlerId);
 bool8 AreBattlersOfOppositeGender(u8 battler1, u8 battler2);
 u32 CalcSecondaryEffectChance(u8 battlerId, u8 secondaryEffectChance);
 
+bool8 BattlerHasInnate(u8 battlerId, u16 ability);
+bool8 GetBattlerInnateNum(u8 battlerId, u16 ability);
+
 bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId);
 static inline u32 ApplyModifier(uq4_12_t modifier, u32 val)
 {
