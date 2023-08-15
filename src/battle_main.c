@@ -3225,6 +3225,7 @@ static void BattleStartClearSetData(void)
 
     gBattleStruct->stickyWebUser = 0xFF;
     gBattleStruct->appearedInBattle = 0;
+    gBattleStruct->revealedEnemyMons = 0;
     gBattleStruct->beatUpSlot = 0;
 
     for (i = 0; i < PARTY_SIZE; i++)
@@ -3941,6 +3942,9 @@ static void TryDoEventsBeforeFirstTurn(void)
         // Record party slots of player's mons that appeared in battle
         if (!BattlerHasAi(i))
             gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
+        //Add to team preview
+        if (GetBattlerSide(i) == B_SIDE_OPPONENT)
+            gBattleStruct->revealedEnemyMons |= gBitTable[gBattlerPartyIndexes[i]];
     }
     TurnValuesCleanUp(FALSE);
     SpecialStatusesClear();

@@ -3804,7 +3804,7 @@ static const struct CompressedSpriteSheet sTeamPreviewStatusIconsSpriteSheet =
 
 static bool8 CanShowEnemyMon(u8 monId)
 {
-    return TRUE;
+    return (gBattleStruct->revealedEnemyMons & gBitTable[monId]) != 0;
 }
 
 static bool8 EntireEnemyPartyRevealed(void)
@@ -3861,7 +3861,7 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
     LoadSpritePalette(&gSpritePalette_HeldItem);
     LoadSpriteSheet(&sTeamPreviewFaintedMonIconSpriteSheet);
     LoadCompressedSpriteSheet(&sTeamPreviewStatusIconsSpriteSheet);
-    LoadMonIconPalette(SPECIES_NONE);
+    LoadMonIconPalette(SPECIES_NONE); //Used for status icon sprites
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -3873,7 +3873,7 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
             void* callback = hp == 0 ? SpriteCallbackDummy : SpriteCB_MonIcon; //Don't animate when fainted
 
             if (!CanShowEnemyMon(i))
-                species = SPECIES_NONE;
+                continue;//species = SPECIES_NONE;
             /*else if (GetMonAbility(&gEnemyParty[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
             {
                 u8 battler;
