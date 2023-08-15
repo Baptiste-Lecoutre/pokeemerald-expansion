@@ -9259,6 +9259,7 @@ const struct Item gItems[] =
         .name = _("Dynamax Band"),
         .itemId = ITEM_DYNAMAX_BAND,
         .price = 0,
+        .importance = 1,
         .description = sDynamaxBandDesc,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
