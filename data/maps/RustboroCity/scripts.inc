@@ -1321,7 +1321,12 @@ RustboroCity_Text_GiveDynamaxBand:
 
 RustboroCity_Text_WithThisYourPokemonWillGrowLarger:
 	.string "During some heated battles, your\n"
-	.string "Pokémon will grow giant and\l"
-	.string "unleash trendemous energy!\p"
-	.string "This gigantification is called\n"
-	.string "Dynamax. Use it wisely!$"
+	.string "Pokémon will grow giant for three turns\l"
+	.string "and unleash trendemous energy!\p"
+	.string "This Dynamax Band will allow your Pokémon\n"
+	.string "to use this gigantification if you press\l"
+	.string "START before choosing a move.\p"
+	.string "Your attacks will be much stronger and\n"
+	.string "will affect the pace of the battle!\p"
+	.string "Dynamax can only be used once per battle,\n"
+	.string "make to use it wisely!$"

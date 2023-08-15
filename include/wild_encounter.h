@@ -47,5 +47,6 @@ u8 ChooseWildMonIndex_WaterRock(void);
 u8 ChooseHiddenMonIndex(void);
 bool32 MapHasNoEncounterData(void);
 u8 GetMedianLevelOfPlayerParty(void);
+bool8 StandardWildEncounter_Debug(void);
 
 #endif // GUARD_WILD_ENCOUNTER_H

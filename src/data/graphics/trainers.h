@@ -356,3 +356,6 @@ const u32 gTrainerPalette_LucasPlatinum[] = INCBIN_U32("graphics/trainers/palett
 
 const u32 gTrainerFrontPic_DawnPlatinum[] = INCBIN_U32("graphics/trainers/front_pics/dawn_platinum_front_pic.4bpp.lz");
 const u32 gTrainerPalette_DawnPlatinum[] = INCBIN_U32("graphics/trainers/palettes/dawn_platinum.gbapal.lz");
+
+const u32 gTrainerFrontPic_MagmaAdminF[] = INCBIN_U32("graphics/trainers/front_pics/magma_admin_f_front_pic.4bpp.lz");
+const u32 gTrainerPalette_MagmaAdminF[] = INCBIN_U32("graphics/trainers/palettes/magma_admin.gbapal.lz");

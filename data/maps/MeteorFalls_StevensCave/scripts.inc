@@ -18,6 +18,7 @@ MeteorFalls_StevensCave_EventScript_Steven::
 	trainerbattle_no_intro TRAINER_STEVEN, MeteorFalls_StevensCave_Text_StevenDefeat
 	msgbox MeteorFalls_StevensCave_Text_MyPredictionCameTrue, MSGBOX_DEFAULT
 	setflag FLAG_DEFEATED_METEOR_FALLS_STEVEN
+	goto_if_unset FLAG_RECEIVED_AURORA_TICKET, MeteorFalls_StevensCave_EventScript_GiveAuroraTicket
 	release
 	end
 
@@ -25,6 +26,14 @@ MeteorFalls_StevensCave_EventScript_Defeated::
 	applymovement LOCALID_STEVEN, Common_Movement_FacePlayer
 	waitmovement 0
 	msgbox MeteorFalls_StevensCave_Text_MyPredictionCameTrue, MSGBOX_DEFAULT
+	release
+	end
+
+MeteorFalls_StevensCave_EventScript_GiveAuroraTicket:
+	msgbox MeteorFalls_StevensCave_Text_BirthIsland, MSGBOX_DEFAULT
+	giveitem ITEM_AURORA_TICKET
+	setflag FLAG_RECEIVED_AURORA_TICKET
+	setflag FLAG_ENABLE_SHIP_BIRTH_ISLAND
 	release
 	end
 
@@ -57,3 +66,10 @@ MeteorFalls_StevensCave_Text_MyPredictionCameTrue:
 	.string "… … … … … …\p"
 	.string "Fufufu, even I couldn't tell you that.$"
 
+MeteorFalls_StevensCave_Text_BirthIsland:
+	.string "But… maybe you'd like to\n"
+	.string "investigate the strange stone that's\l"
+	.string "appeared on Birth Island?\p"
+	.string "Here, take this ticket to the harbor\n"
+	.string "in Lilycove.\p"
+	.string "Perhaps you'll find something useful…$"

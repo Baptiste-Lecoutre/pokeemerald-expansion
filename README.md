@@ -159,7 +159,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Add Z crystals
 - Give access to islands:
     - Eon ticket given by rematching the rival in route 103 in IE (southern island, lati@s)
-    - Old sea map is found in abandonned ship (faraway island, mew)
+    X Old sea map is found in abandonned ship (faraway island, mew)
     - mystic ticket is given by cynthia in mosdeep (navel rock, hooh lugia)
     - aurora ticket is given by steven in meteorfalls (birth island, deoxys)
 
