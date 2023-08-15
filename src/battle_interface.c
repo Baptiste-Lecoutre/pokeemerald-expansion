@@ -33,6 +33,7 @@
 #include "item_icon.h"
 #include "item_use.h"
 #include "test_runner.h"
+#include "constants/abilities.h"
 #include "constants/battle_anim.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
@@ -3549,23 +3550,32 @@ void TryLoadTypeIcons(void)
         
 		for (position = 0; position < gBattlersCount; ++position)
 		{
-            u8 typeNum, monNumTypes = 2;//(gBattleMons[GetBattlerAtPosition(position)].type1 == gBattleMons[GetBattlerAtPosition(position)].type2) ? 1 : 2;
-			if (!IsBattlerAlive(GetBattlerAtPosition(position)))
+            u8 typeNum, monNumTypes = 2;
+			u8 type1, type2;
+            struct Pokemon *illusionMon = GetIllusionMonPtr(GetBattlerAtPosition(position));
+    
+
+            if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
+
+            if (illusionMon != NULL)
+            {
+                type1 = gSpeciesInfo[GetMonData(illusionMon, MON_DATA_SPECIES)].types[0];
+                type2 = gSpeciesInfo[GetMonData(illusionMon, MON_DATA_SPECIES)].types[1];
+            }
+            else
+            {
+                type1 = gBattleMons[GetBattlerAtPosition(position)].type1;
+                type2 = gBattleMons[GetBattlerAtPosition(position)].type2;
+            }
 
 			for (typeNum = 0; typeNum < monNumTypes; ++typeNum) //Load each type
 			{
 				u8 spriteId;
-                u8* type1Ptr = &gBattleMons[GetBattlerAtPosition(position)].type1;
-                u8 type = *(type1Ptr + typeNum);
+                u8 type = (typeNum == 0) ? type1 : type2;
 
                 s16 x = sTypeIconPositions[battleType][position].x;
 				s16 y = sTypeIconPositions[battleType][position].y + (11 * typeNum); //2nd type is 11px below
-
-                //if (battleType)
-                //    y -= (3 * typeNum);
-                //if (monNumTypes == 1)
-                //    y += 6;
 
                 spriteId = CreateSpriteAtEnd(&sTypeIconSpriteTemplate, x, y, 0xFF);
                 
@@ -3874,13 +3884,15 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
 
             if (!CanShowEnemyMon(i))
                 continue;//species = SPECIES_NONE;
-            /*else if (GetMonAbility(&gEnemyParty[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
+            else if (GetMonAbility(&gEnemyParty[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
             {
                 u8 battler;
 
                 if (i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)])
-                    
-            }*/
+                    species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
+                else if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)])
+                    species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
+            }
 
             x = (64 + (32 / 2)) + (40 * (i % 3));
 			y = (20 + (32 / 2)) + (40 * (i / 3));
