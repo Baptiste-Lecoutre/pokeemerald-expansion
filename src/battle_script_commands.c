@@ -1433,7 +1433,7 @@ static void Cmd_attackcanceler(void)
         return;
     }
 
-    // Z-moves and Max Moves bypass protection, but deal reduced damage (factored in CalcFinalDmg)
+    // Z-moves and Max Moves bypass protection, but deal reduced damage (factored in AccumulateOtherModifiers)
     if (gBattleStruct->zmove.active && IS_BATTLER_PROTECTED(gBattlerTarget))
     {
         BattleScriptPush(cmd->nextInstr);
@@ -1642,6 +1642,8 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, u32 atkAbility, u
     s8 buff, accStage, evasionStage;
     u8 atkParam = GetBattlerHoldEffectParam(battlerAtk);
     u8 defParam = GetBattlerHoldEffectParam(battlerDef);
+    u8 atkAlly = BATTLE_PARTNER(battlerAtk);
+    u16 atkAllyAbility = GetBattlerAbility(atkAlly);
 
     gPotentialItemEffectBattler = battlerDef;
     accStage = gBattleMons[battlerAtk].statStages[STAT_ACC];
@@ -1675,30 +1677,66 @@ u32 GetTotalAccuracy(u32 battlerAtk, u32 battlerDef, u32 move, u32 atkAbility, u
     calc = gAccuracyStageRatios[buff].dividend * moveAcc;
     calc /= gAccuracyStageRatios[buff].divisor;
 
-    if (atkAbility == ABILITY_COMPOUND_EYES)
+    // Attacker's ability
+    switch (atkAbility)
+    {
+    case ABILITY_COMPOUND_EYES:
         calc = (calc * 130) / 100; // 1.3 compound eyes boost
-    else if (atkAbility == ABILITY_VICTORY_STAR)
+        break;
+    case ABILITY_VICTORY_STAR:
         calc = (calc * 110) / 100; // 1.1 victory star boost
-    if (IsBattlerAlive(BATTLE_PARTNER(battlerAtk)) && GetBattlerAbility(BATTLE_PARTNER(battlerAtk)) == ABILITY_VICTORY_STAR)
-        calc = (calc * 110) / 100; // 1.1 ally's victory star boost
+        break;
+    case ABILITY_HUSTLE:
+        if (IS_MOVE_PHYSICAL(move))
+            calc = (calc * 80) / 100; // 1.2 hustle loss
+        break;
+    }
 
-    if (defAbility == ABILITY_SAND_VEIL && WEATHER_HAS_EFFECT && gBattleWeather & B_WEATHER_SANDSTORM)
-        calc = (calc * 80) / 100; // 1.2 sand veil loss
-    else if (defAbility == ABILITY_SNOW_CLOAK && WEATHER_HAS_EFFECT && (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)))
-        calc = (calc * 80) / 100; // 1.2 snow cloak loss
-    else if (defAbility == ABILITY_TANGLED_FEET && gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)
-        calc = (calc * 50) / 100; // 1.5 tangled feet loss
+    // Target's ability
+    switch (defAbility)
+    {
+    case ABILITY_SAND_VEIL:
+        if (WEATHER_HAS_EFFECT && gBattleWeather & B_WEATHER_SANDSTORM)
+            calc = (calc * 80) / 100; // 1.2 sand veil loss
+        break;
+    case ABILITY_SNOW_CLOAK:
+        if (WEATHER_HAS_EFFECT && (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)))
+            calc = (calc * 80) / 100; // 1.2 snow cloak loss
+        break;
+    case ABILITY_TANGLED_FEET:
+        if (gBattleMons[battlerDef].status2 & STATUS2_CONFUSION)
+            calc = (calc * 50) / 100; // 1.5 tangled feet loss
+        break;
+    }
 
-    if (atkAbility == ABILITY_HUSTLE && IS_MOVE_PHYSICAL(move))
-        calc = (calc * 80) / 100; // 1.2 hustle loss
+    // Attacker's ally's ability
+    switch (atkAllyAbility)
+    {
+    case ABILITY_VICTORY_STAR:
+        if (IsBattlerAlive(atkAlly))
+            calc = (calc * 110) / 100; // 1.1 ally's victory star boost
+        break;
+    }
 
-    if (defHoldEffect == HOLD_EFFECT_EVASION_UP)
+    // Attacker's hold effect
+    switch (atkHoldEffect)
+    {
+    case HOLD_EFFECT_WIDE_LENS:
+        calc = (calc * (100 + atkParam)) / 100;
+        break;
+    case HOLD_EFFECT_ZOOM_LENS:
+        if (GetBattlerTurnOrderNum(battlerAtk) > GetBattlerTurnOrderNum(battlerDef))
+            calc = (calc * (100 + atkParam)) / 100;
+        break;
+    }
+
+    // Target's hold effect
+    switch (defHoldEffect)
+    {
+    case HOLD_EFFECT_EVASION_UP:
         calc = (calc * (100 - defParam)) / 100;
-
-    if (atkHoldEffect == HOLD_EFFECT_WIDE_LENS)
-        calc = (calc * (100 + atkParam)) / 100;
-    else if (atkHoldEffect == HOLD_EFFECT_ZOOM_LENS && GetBattlerTurnOrderNum(battlerAtk) > GetBattlerTurnOrderNum(battlerDef))
-        calc = (calc * (100 + atkParam)) / 100;
+        break;
+    }
 
     if (gProtectStructs[battlerAtk].usedMicleBerry)
     {
@@ -1728,6 +1766,8 @@ static void Cmd_accuracycheck(void)
 
     u16 type, move = cmd->move;
     u16 moveTarget = GetBattlerMoveTargetType(gBattlerAttacker, move);
+    u16 gBattlerAttackerAbility = GetBattlerAbility(gBattlerAttacker);
+    u8 gBattlerAttackerHoldEffect = GetBattlerHoldEffect(gBattlerAttacker, TRUE);
 
     if (move == ACC_CURR_MOVE)
         move = gCurrentMove;
@@ -1742,10 +1782,11 @@ static void Cmd_accuracycheck(void)
             gBattlescriptCurrInstr = cmd->nextInstr;
     }
     else if (gSpecialStatuses[gBattlerAttacker].parentalBondState == PARENTAL_BOND_2ND_HIT
-        || (gSpecialStatuses[gBattlerAttacker].multiHitOn && (gBattleMoves[move].effect != EFFECT_TRIPLE_KICK
-        || GetBattlerAbility(gBattlerAttacker) == ABILITY_SKILL_LINK)))
+        || (gSpecialStatuses[gBattlerAttacker].multiHitOn
+        && (gBattlerAttackerAbility == ABILITY_SKILL_LINK || gBattlerAttackerHoldEffect == HOLD_EFFECT_LOADED_DICE
+        || !(gBattleMoves[move].effect == EFFECT_TRIPLE_KICK || gBattleMoves[move].effect == EFFECT_POPULATION_BOMB))))
     {
-        // No acc checks for second hit of Parental Bond or multi hit moves, except Triple Kick/Triple Axel
+        // No acc checks for second hit of Parental Bond or multi hit moves, except Triple Kick/Triple Axel/Population Bomb
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
     else
@@ -1762,16 +1803,16 @@ static void Cmd_accuracycheck(void)
             gBattlerAttacker,
             gBattlerTarget,
             move,
-            GetBattlerAbility(gBattlerAttacker),
+            gBattlerAttackerAbility,
             GetBattlerAbility(gBattlerTarget),
-            GetBattlerHoldEffect(gBattlerAttacker, TRUE),
+            gBattlerAttackerHoldEffect,
             GetBattlerHoldEffect(gBattlerTarget, TRUE)
         );
 
         if (!RandomPercentage(RNG_ACCURACY, accuracy))
         {
             gMoveResultFlags |= MOVE_RESULT_MISSED;
-            if (GetBattlerHoldEffect(gBattlerAttacker, TRUE) == HOLD_EFFECT_BLUNDER_POLICY)
+            if (gBattlerAttackerHoldEffect == HOLD_EFFECT_BLUNDER_POLICY)
                 gBattleStruct->blunderPolicy = TRUE;    // Only activates from missing through acc/evasion checks
 
             if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE &&
@@ -3948,11 +3989,7 @@ static void Cmd_jumpifsideaffecting(void)
     u32 flags;
     const u8 *jumpInstr;
 
-    if (cmd->battler == BS_ATTACKER)
-        side = GET_BATTLER_SIDE(gBattlerAttacker);
-    else
-        side = GET_BATTLER_SIDE(gBattlerTarget);
-
+    side = GET_BATTLER_SIDE(GetBattlerForBattleScript(cmd->battler));
     flags = cmd->flags;
     jumpInstr = cmd->jumpInstr;
 
@@ -8647,8 +8684,9 @@ static bool32 IsTeatimeAffected(u32 battlerId)
 
 #define UPDATE_COURTCHANGED_BATTLER(structField)\
 {                                               \
-    sideTimerPlayer->structField ^= BIT_SIDE;        \
-    sideTimerOpp->structField ^= BIT_SIDE;        \
+    temp = sideTimerPlayer->structField;        \
+    sideTimerPlayer->structField = BATTLE_OPPOSITE(sideTimerOpp->structField);        \
+    sideTimerOpp->structField = BATTLE_OPPOSITE(temp);        \
 }                                               \
 
 static bool32 CourtChangeSwapSideStatuses(void)
@@ -8683,9 +8721,7 @@ static bool32 CourtChangeSwapSideStatuses(void)
     UPDATE_COURTCHANGED_BATTLER(auroraVeilBattlerId);
     UPDATE_COURTCHANGED_BATTLER(tailwindBattlerId);
     UPDATE_COURTCHANGED_BATTLER(luckyChantBattlerId);
-
-    // For Mirror Armor only
-    gBattleStruct->stickyWebUser = gBattlerAttacker;
+    UPDATE_COURTCHANGED_BATTLER(stickyWebBattlerId);
 
     // Track which side originally set the Sticky Web
     SWAP(sideTimerPlayer->stickyWebBattlerSide, sideTimerOpp->stickyWebBattlerSide, temp);
@@ -8723,33 +8759,6 @@ static void HandleScriptMegaPrimal(u32 caseId, u32 battlerId, bool32 isMega)
         if (isMega)
             gBattleStruct->mega.alreadyEvolved[position] = TRUE;
     }
-}
-
-static bool32 CanTeleport(u8 battlerId)
-{
-    struct Pokemon *party = GetBattlerParty(battlerId);
-    u32 species, count, i;
-
-    for (i = 0; i < PARTY_SIZE; i++)
-    {
-        species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
-        if (species != SPECIES_NONE && species != SPECIES_EGG && GetMonData(&party[i], MON_DATA_HP) != 0)
-            count++;
-    }
-
-    switch (GetBattlerSide(battlerId))
-    {
-    case B_SIDE_OPPONENT:
-        if (count == 1 || gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
-            return FALSE;
-        break;
-    case B_SIDE_PLAYER:
-        if (count == 1 || (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && count <= 2))
-            return FALSE;
-        break;
-    }
-
-    return TRUE;
 }
 
 // Return True if the order was changed, and false if the order was not changed(for example because the target would move after the attacker anyway).
@@ -10700,8 +10709,8 @@ static void Cmd_various(void)
         //  If Pokémon which set up Sticky Web is not on the field, no Pokémon have their Speed lowered."
         gBattlerAttacker = gBattlerTarget;  // Initialize 'fail' condition
         SET_STATCHANGER(STAT_SPEED, 1, TRUE);
-        if (gBattleStruct->stickyWebUser != 0xFF)
-            gBattlerAttacker = gBattleStruct->stickyWebUser;
+        if (gSideTimers[GetBattlerSide(gActiveBattler)].stickyWebBattlerId != 0xFF)
+            gBattlerAttacker = gSideTimers[GetBattlerSide(gActiveBattler)].stickyWebBattlerId;
         break;
     }
     case VARIOUS_CUT_1_3_HP_RAISE_STATS:
@@ -13794,7 +13803,7 @@ static void Cmd_jumpifnopursuitswitchdmg(void)
         && !(gBattleMons[gBattlerTarget].status1 & (STATUS1_SLEEP | STATUS1_FREEZE))
         && gBattleMons[gBattlerAttacker].hp
         && !gDisableStructs[gBattlerTarget].truantCounter
-        && gChosenMoveByBattler[gBattlerTarget] == MOVE_PURSUIT)
+        && gBattleMoves[gChosenMoveByBattler[gBattlerTarget]].effect == EFFECT_PURSUIT)
     {
         s32 i;
 
@@ -13804,7 +13813,7 @@ static void Cmd_jumpifnopursuitswitchdmg(void)
                 gActionsByTurnOrder[i] = B_ACTION_TRY_FINISH;
         }
 
-        gCurrentMove = MOVE_PURSUIT;
+        gCurrentMove = gChosenMoveByBattler[gBattlerTarget];
         gCurrMovePos = gChosenMovePos = *(gBattleStruct->chosenMovePositions + gBattlerTarget);
         gBattlescriptCurrInstr = cmd->nextInstr;
         gBattleScripting.animTurn = 1;
@@ -13988,9 +13997,9 @@ static void Cmd_setstickyweb(void)
     else
     {
         gSideStatuses[targetSide] |= SIDE_STATUS_STICKY_WEB;
+        gSideTimers[targetSide].stickyWebBattlerId = gBattlerAttacker; // For Mirror Armor
         gSideTimers[targetSide].stickyWebBattlerSide = GetBattlerSide(gBattlerAttacker); // For Court Change/Defiant - set this to the user's side
         gSideTimers[targetSide].stickyWebAmount = 1;
-        gBattleStruct->stickyWebUser = gBattlerAttacker;    // For Mirror Armor
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
 }
@@ -15224,10 +15233,10 @@ static void Cmd_pursuitdoubles(void)
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
         && !(gAbsentBattlerFlags & gBitTable[gActiveBattler])
         && gChosenActionByBattler[gActiveBattler] == B_ACTION_USE_MOVE
-        && gChosenMoveByBattler[gActiveBattler] == MOVE_PURSUIT)
+        && gBattleMoves[gChosenMoveByBattler[gActiveBattler]].effect == EFFECT_PURSUIT)
     {
         gActionsByTurnOrder[gActiveBattler] = B_ACTION_TRY_FINISH;
-        gCurrentMove = MOVE_PURSUIT;
+        gCurrentMove = gChosenMoveByBattler[gActiveBattler];
         gBattlescriptCurrInstr = cmd->nextInstr;
         gBattleScripting.animTurn = 1;
         gBattleScripting.savedBattler = gBattlerAttacker;
@@ -16252,13 +16261,6 @@ void BS_GetBattlerSide(void)
 {
     NATIVE_ARGS(u8 battler);
     gBattleCommunication[0] = GetBattlerSide(GetBattlerForBattleScript(cmd->battler));
-    gBattlescriptCurrInstr = cmd->nextInstr;
-}
-
-void BS_CanTeleport(void)
-{
-    NATIVE_ARGS(u8 battler);
-    gBattleCommunication[0] = CanTeleport(cmd->battler);
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
