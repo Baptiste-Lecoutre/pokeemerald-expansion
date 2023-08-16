@@ -2517,9 +2517,9 @@ static bool32 PartyBattlerShouldAvoidHazards(u8 currBattler, u8 switchBattler)
     if (flags == 0)
         return FALSE;
 
-    if (ability == ABILITY_MAGIC_GUARD)
+    if (ability == ABILITY_MAGIC_GUARD || MonHasInnate(mon, ABILITY_MAGIC_GUARD))
         return FALSE;
-    if (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM || ability == ABILITY_KLUTZ)
+    if (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM || ability == ABILITY_KLUTZ || MonHasInnate(mon, ABILITY_KLUTZ))
         holdEffect = HOLD_EFFECT_NONE;
     else
         holdEffect = gItems[GetMonData(mon, MON_DATA_HELD_ITEM)].holdEffect;
@@ -2530,7 +2530,7 @@ static bool32 PartyBattlerShouldAvoidHazards(u8 currBattler, u8 switchBattler)
         hazardDamage += GetStealthHazardDamageByTypesAndHP(gBattleMoves[MOVE_STEALTH_ROCK].type, type1, type2, maxHp);
 
     if (flags & SIDE_STATUS_SPIKES && ((type1 != TYPE_FLYING && type2 != TYPE_FLYING
-        && ability != ABILITY_LEVITATE && holdEffect != HOLD_EFFECT_AIR_BALLOON)
+        && (ability != ABILITY_LEVITATE && !MonHasInnate(mon, ABILITY_LEVITATE)) && holdEffect != HOLD_EFFECT_AIR_BALLOON)
         || holdEffect == HOLD_EFFECT_IRON_BALL || gFieldStatuses & STATUS_FIELD_GRAVITY))
     {
         u8 spikesDmg = maxHp / ((5 - gSideTimers[GetBattlerSide(currBattler)].spikesAmount) * 2);

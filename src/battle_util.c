@@ -10424,7 +10424,7 @@ bool32 SetIllusionMon(struct Pokemon *mon, u32 battlerId)
     u8 side, partyCount;
 
     gBattleStruct->illusion[battlerId].set = 1;
-    if (GetMonAbility(mon) != ABILITY_ILLUSION)
+    if (GetMonAbility(mon) != ABILITY_ILLUSION && !MonHasInnate(mon, ABILITY_ILLUSION))
         return FALSE;
 
     party = GetBattlerParty(battlerId);

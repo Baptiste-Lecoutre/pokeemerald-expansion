@@ -13423,7 +13423,7 @@ static void Cmd_healpartystatus(void)
 
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_BELL;
 
-        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_SOUNDPROOF)
+        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_SOUNDPROOF && !BattlerHasInnate(gBattlerAttacker, ABILITY_SOUNDPROOF))
         {
             gBattleMons[gBattlerAttacker].status1 = 0;
             gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_NIGHTMARE;
@@ -13439,7 +13439,7 @@ static void Cmd_healpartystatus(void)
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
             && !(gAbsentBattlerFlags & gBitTable[gActiveBattler]))
         {
-            if (GetBattlerAbility(gActiveBattler) != ABILITY_SOUNDPROOF)
+            if (GetBattlerAbility(gActiveBattler) != ABILITY_SOUNDPROOF && !BattlerHasInnate(gActiveBattler, ABILITY_SOUNDPROOF))
             {
                 gBattleMons[gActiveBattler].status1 = 0;
                 gBattleMons[gActiveBattler].status2 &= ~STATUS2_NIGHTMARE;
@@ -13471,7 +13471,7 @@ static void Cmd_healpartystatus(void)
                 else
                     ability = GetAbilityBySpecies(species, abilityNum);
 
-                if (ability != ABILITY_SOUNDPROOF)
+                if (ability != ABILITY_SOUNDPROOF && !MonHasInnate(&party[i], ABILITY_SOUNDPROOF))
                     toHeal |= (1 << i);
             }
         }
