@@ -507,6 +507,11 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113A
 #define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
 
+#define OBJ_EVENT_PAL_TAG_FOLLOW_MON_1            0x113C
+#define OBJ_EVENT_PAL_TAG_FOLLOW_MON_2            0x113D
+#define OBJ_EVENT_PAL_TAG_FOLLOW_MON_3            0x113E
+#define OBJ_EVENT_PAL_TAG_FOLLOW_MON_4            0x113F
+
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
 #define OBJ_EVENT_PAL_TAG_EMOTES                  0x8003
@@ -520,7 +525,7 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #include "data/object_events/base_oam.h"
 #include "data/object_events/object_event_subsprites.h"
 #include "data/object_events/object_event_graphics_info.h"
-#include "data/object_events/object_event_graphics_info_followers.h"
+//#include "data/object_events/object_event_graphics_info_followers.h"
 
 static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Npc1,                  OBJ_EVENT_PAL_TAG_NPC_1},
@@ -581,6 +586,10 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Dawn,                  OBJ_EVENT_PAL_TAG_DAWN},
     {gObjectEventPal_LucasPlatinum,         OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM},
     {gObjectEventPal_DawnPlatinum,          OBJ_EVENT_PAL_TAG_DAWN_PLATINUM},
+    {gObjectEventPal_FollowMon1,            OBJ_EVENT_PAL_TAG_FOLLOW_MON_1},
+    {gObjectEventPal_FollowMon2,            OBJ_EVENT_PAL_TAG_FOLLOW_MON_2},
+    {gObjectEventPal_FollowMon3,            OBJ_EVENT_PAL_TAG_FOLLOW_MON_3},
+    {gObjectEventPal_FollowMon4,            OBJ_EVENT_PAL_TAG_FOLLOW_MON_4},
     {gObjectEventPaletteLight,              OBJ_EVENT_PAL_TAG_LIGHT},
     {gObjectEventPaletteLight2,             OBJ_EVENT_PAL_TAG_LIGHT_2},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
@@ -1797,7 +1806,7 @@ struct ObjectEvent * GetFollowerObject(void) { // Return follower ObjectEvent or
 // Return graphicsInfo for a pokemon species & form
 static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species, u8 form) {
   const struct ObjectEventGraphicsInfo *graphicsInfo;
-  switch (species) {
+  /*switch (species) {
     case SPECIES_UNOWN: // Letters >A are defined as species >= NUM_SPECIES, so are not contiguous with A
       form %= NUM_UNOWN_FORMS;
       graphicsInfo = &gPokemonObjectGraphics[form ? SPECIES_UNOWN_B + form - 1 : species];
@@ -1806,7 +1815,9 @@ static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species,
       graphicsInfo = &gPokemonObjectGraphics[species];
       break;
   }
-  return graphicsInfo->tileTag == TAG_NONE ? graphicsInfo : &gPokemonObjectGraphics[SPECIES_PORYGON]; // avoid OOB access
+  return graphicsInfo->tileTag == TAG_NONE ? graphicsInfo : &gPokemonObjectGraphics[SPECIES_PORYGON]; // avoid OOB access*/
+  graphicsInfo = gObjectEventMonGraphicsInfoPointers[species];
+  return gObjectEventMonGraphicsInfoPointers[species];
 }
 
 // Find, or load, the palette for the specified pokemon info
@@ -1947,7 +1958,7 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
   bool8 shiny;
   u8 form;
   // Avoid spawning large (64x64) follower pokemon inside buildings //optionsShowFollowerPokemon
-  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER)) {
+  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER) /*&& FALSE*/) {
     if (objEvent == NULL) { // Spawn follower
       struct ObjectEventTemplate template = {
         .localId = OBJ_EVENT_ID_FOLLOWER,

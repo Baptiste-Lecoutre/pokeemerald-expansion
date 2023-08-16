@@ -955,3 +955,10 @@ const u32 gObjectEventPic_DawnPlatinumFishing[] = INCBIN_U32("graphics/object_ev
 const u32 gObjectEventPic_DawnPlatinumWatering[] = INCBIN_U32("graphics/object_events/pics/people/dawn_platinum/watering.4bpp");
 const u32 gObjectEventPic_DawnPlatinumDecorating[] = INCBIN_U32("graphics/object_events/pics/people/dawn_platinum/decorating.4bpp");
 const u16 gObjectEventPal_DawnPlatinum[] = INCBIN_U16("graphics/object_events/palettes/dawn_platinum.gbapal");
+
+const u16 gObjectEventPal_FollowMon1[] = INCBIN_U16("graphics/object_events/palettes/followmon_1.gbapal");
+const u16 gObjectEventPal_FollowMon2[] = INCBIN_U16("graphics/object_events/palettes/followmon_2.gbapal");
+const u16 gObjectEventPal_FollowMon3[] = INCBIN_U16("graphics/object_events/palettes/followmon_3.gbapal");
+const u16 gObjectEventPal_FollowMon4[] = INCBIN_U16("graphics/object_events/palettes/followmon_4.gbapal");
+
+#include "../../../graphics/object_events/pics/pokemon_ow/include/object_event_graphics_gen.h"
