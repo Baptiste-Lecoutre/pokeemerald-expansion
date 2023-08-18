@@ -6149,7 +6149,11 @@ u32 IsAbilityOnSide(u32 battlerId, u32 ability)
 {
     if (IsBattlerAlive(battlerId) && GetBattlerAbility(battlerId) == ability)
         return battlerId + 1;
+    else if (IsBattlerAlive(battlerId) && BattlerHasInnate(battlerId, ability))
+        return battlerId + 1;
     else if (IsBattlerAlive(BATTLE_PARTNER(battlerId)) && GetBattlerAbility(BATTLE_PARTNER(battlerId)) == ability)
+        return BATTLE_PARTNER(battlerId) + 1;
+    else if (IsBattlerAlive(BATTLE_PARTNER(battlerId)) && BattlerHasInnate(BATTLE_PARTNER(battlerId), ability))
         return BATTLE_PARTNER(battlerId) + 1;
     else
         return 0;
@@ -6166,7 +6170,7 @@ u32 IsAbilityOnField(u32 ability)
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (IsBattlerAlive(i) && GetBattlerAbility(i) == ability)
+        if (IsBattlerAlive(i) && (GetBattlerAbility(i) == ability || BattlerHasInnate(i, ability)))
             return i + 1;
     }
 
@@ -6179,7 +6183,7 @@ u32 IsAbilityOnFieldExcept(u32 battlerId, u32 ability)
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (i != battlerId && IsBattlerAlive(i) && GetBattlerAbility(i) == ability)
+        if (i != battlerId && IsBattlerAlive(i) && (GetBattlerAbility(i) == ability || BattlerHasInnate(i, ability)))
             return i + 1;
     }
 
