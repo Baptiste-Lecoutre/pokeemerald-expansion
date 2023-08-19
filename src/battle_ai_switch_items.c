@@ -88,7 +88,7 @@ static bool8 ShouldSwitchIfWonderGuard(void)
 
     opposingPosition = BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler));
 
-    if (GetBattlerAbility(GetBattlerAtPosition(opposingPosition)) != ABILITY_WONDER_GUARD)
+    if (GetBattlerAbility(GetBattlerAtPosition(opposingPosition)) != ABILITY_WONDER_GUARD && BattlerHasInnate(GetBattlerAtPosition(opposingPosition), ABILITY_WONDER_GUARD))
         return FALSE;
 
     // Check if Pokemon has a super effective move.
@@ -241,7 +241,7 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
     //Perish Song
     if (gStatuses3[gActiveBattler] & STATUS3_PERISH_SONG
         && gDisableStructs[gActiveBattler].perishSongTimer == 0
-        && monAbility != ABILITY_SOUNDPROOF)
+        && monAbility != ABILITY_SOUNDPROOF && !BattlerHasInnate(gActiveBattler, ABILITY_SOUNDPROOF))
         switchMon = TRUE;
 
     if (AI_THINKING_STRUCT->aiFlags & AI_FLAG_SMART_SWITCHING)
@@ -286,8 +286,8 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
                                 && i != gBattlerPartyIndexes[gActiveBattler]
                                 && i != gBattlerPartyIndexes[BATTLE_PARTNER(gActiveBattler)]
                                 && IsBattlerGrounded(gActiveBattler)
-                                && (GetMonAbility(&party[i]) == ABILITY_MISTY_SURGE
-                                    || GetMonAbility(&party[i]) == ABILITY_ELECTRIC_SURGE)) //Ally has Misty or Electric Surge
+                                && (GetMonAbility(&party[i]) == ABILITY_MISTY_SURGE || MonHasInnate(&party[i], ABILITY_MISTY_SURGE)
+                                    || GetMonAbility(&party[i]) == ABILITY_ELECTRIC_SURGE || MonHasInnate(&party[i], ABILITY_ELECTRIC_SURGE))) //Ally has Misty or Electric Surge
                                 {
                                     *(gBattleStruct->AI_monToSwitchIntoId + BATTLE_PARTNER(gActiveBattler)) = i;
                                     BtlController_EmitTwoReturnValues(BUFFER_B, B_ACTION_SWITCH, 0);
@@ -304,9 +304,9 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
                 switchMon = FALSE;
 
             //Checks to see if active Pokemon can do something against sleep
-            if ((monAbility == ABILITY_NATURAL_CURE
-                || monAbility == ABILITY_SHED_SKIN
-                || monAbility == ABILITY_EARLY_BIRD)
+            if ((monAbility == ABILITY_NATURAL_CURE || BattlerHasInnate(gActiveBattler, ABILITY_NATURAL_CURE)
+                || monAbility == ABILITY_SHED_SKIN || BattlerHasInnate(gActiveBattler, ABILITY_SHED_SKIN)
+                || monAbility == ABILITY_EARLY_BIRD || BattlerHasInnate(gActiveBattler, ABILITY_EARLY_BIRD))
                 || holdEffect == (HOLD_EFFECT_CURE_SLP | HOLD_EFFECT_CURE_STATUS)
                 || HasMove(gActiveBattler, MOVE_SLEEP_TALK)
                 || (HasMoveEffect(gActiveBattler, MOVE_SNORE) && AI_GetTypeEffectiveness(MOVE_SNORE, gActiveBattler, opposingBattler) >= UQ_4_12(1.0))
@@ -318,7 +318,9 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
             //Check if Active Pokemon evasion boosted and might be able to dodge until awake
             if (gBattleMons[gActiveBattler].statStages[STAT_EVASION] > (DEFAULT_STAT_STAGE + 3)
                 && AI_DATA->abilities[opposingBattler] != ABILITY_UNAWARE
+                && !BattlerHasInnate(opposingBattler, ABILITY_UNAWARE)
                 && AI_DATA->abilities[opposingBattler] != ABILITY_KEEN_EYE
+                && !BattlerHasInnate(opposingBattler, ABILITY_KEEN_EYE)
                 && !(gBattleMons[gActiveBattler].status2 & STATUS2_FORESIGHT)
                 && !(gStatuses3[gActiveBattler] & STATUS3_MIRACLE_EYED))
                 switchMon = FALSE;
@@ -326,7 +328,7 @@ static bool8 ShouldSwitchIfGameStatePrompt(void)
         }
 
         //Secondary Damage
-        if (monAbility != ABILITY_MAGIC_GUARD
+        if (monAbility != ABILITY_MAGIC_GUARD && !BattlerHasInnate(gActiveBattler, ABILITY_MAGIC_GUARD)
             && !AiExpectsToFaintPlayer())
         {
             //Toxic
@@ -941,7 +943,7 @@ u8 GetMostSuitableMonToSwitchInto(void)
             || gBattlerPartyIndexes[battlerIn2] == i
             || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
             || i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)
-            || (GetMonAbility(&party[i]) == ABILITY_TRUANT && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.)
+            || ((GetMonAbility(&party[i]) == ABILITY_TRUANT || MonHasInnate(&party[i], ABILITY_TRUANT)) && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.)
         {
             invalidMons |= gBitTable[i];
         }

@@ -2417,7 +2417,7 @@ static u32 GetWeatherDamage(u8 battlerId)
                 damage = 1;
         }
     }
-    if ((gBattleWeather & B_WEATHER_HAIL) && ability != ABILITY_ICE_BODY)
+    if ((gBattleWeather & B_WEATHER_HAIL) && ability != ABILITY_ICE_BODY && !BattlerHasInnate(battlerId, ABILITY_ICE_BODY))
     {
         if (BattlerAffectedByHail(battlerId, ability)
           && !(gStatuses3[battlerId] & (STATUS3_UNDERGROUND | STATUS3_UNDERWATER))
