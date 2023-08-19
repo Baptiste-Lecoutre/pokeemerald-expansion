@@ -3980,6 +3980,8 @@ static void Cmd_jumpifability(void)
         battlerId = GetBattlerForBattleScript(cmd->battler);
         if (GetBattlerAbility(battlerId) == ability)
             hasAbility = TRUE;
+        else if (BattlerHasInnate(battlerId, ability))
+            hasAbility = TRUE;
         break;
     case BS_ATTACKER_SIDE:
         battlerId = IsAbilityOnSide(gBattlerAttacker, ability);
