@@ -469,6 +469,8 @@ void HandleInputChooseTarget(void)
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_MEGA_EVOLUTION | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->dynamax.playerSelect)
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->burst.playerSelect)
+            BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | (gMultiUsePlayerCursor << 8));
         EndBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX);
@@ -634,6 +636,8 @@ static void HandleInputShowEntireFieldTargets(void)
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_MEGA_EVOLUTION | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->dynamax.playerSelect)
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->burst.playerSelect)
+            BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | (gMultiUsePlayerCursor << 8));
         HideTriggerSprites();
@@ -664,6 +668,8 @@ static void HandleInputShowTargets(void)
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_MEGA_EVOLUTION | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->dynamax.playerSelect)
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->burst.playerSelect)
+            BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | (gMultiUsePlayerCursor << 8));
         HideTriggerSprites();
@@ -802,6 +808,8 @@ void HandleInputChooseMove(void)
                 BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_MEGA_EVOLUTION | (gMultiUsePlayerCursor << 8));
             else if (gBattleStruct->dynamax.playerSelect)
                 BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+            else if (gBattleStruct->burst.playerSelect)
+                BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
             else
                 BtlController_EmitTwoReturnValues(BUFFER_B, 10, gMoveSelectionCursor[gActiveBattler] | (gMultiUsePlayerCursor << 8));
             HideTriggerSprites();
@@ -839,6 +847,7 @@ void HandleInputChooseMove(void)
         {
             gBattleStruct->mega.playerSelect = FALSE;
             gBattleStruct->dynamax.playerSelect = FALSE;
+            gBattleStruct->burst.playerSelect = FALSE;
             gBattleStruct->zmove.viable = FALSE;
             BtlController_EmitTwoReturnValues(BUFFER_B, 10, 0xFFFF);
             HideTriggerSprites();
@@ -923,6 +932,12 @@ void HandleInputChooseMove(void)
             ChangeMegaTriggerSprite(gBattleStruct->mega.triggerSpriteId, gBattleStruct->mega.playerSelect);
             PlaySE(SE_SELECT);
         }
+        else if (CanUltraBurst(gActiveBattler))
+        {
+            gBattleStruct->burst.playerSelect ^= 1;
+            ChangeBurstTriggerSprite(gBattleStruct->burst.triggerSpriteId, gBattleStruct->burst.playerSelect);
+            PlaySE(SE_SELECT);
+        }
         else if (gBattleStruct->zmove.viable)
         {
             // show z move name / info
@@ -953,6 +968,7 @@ static void ReloadMoveNames(void)
 {
     gBattleStruct->mega.playerSelect = FALSE;
     gBattleStruct->dynamax.playerSelect = FALSE;
+    gBattleStruct->burst.playerSelect = FALSE;
     gBattleStruct->zmove.viewing = FALSE;
     MoveSelectionDestroyCursorAt(0);
     MoveSelectionDisplayMoveNames();
@@ -3148,11 +3164,15 @@ void PlayerHandleChooseMove(void)
         InitMoveSelectionsVarsAndStrings();
         gBattleStruct->mega.playerSelect = FALSE;
         gBattleStruct->dynamax.playerSelect = FALSE;
+        gBattleStruct->burst.playerSelect = FALSE;
         if (!IsMegaTriggerSpriteActive())
             gBattleStruct->mega.triggerSpriteId = 0xFF;
         if (CanMegaEvolve(gActiveBattler))
             CreateMegaTriggerSprite(gActiveBattler, 0);
-
+        if (!IsBurstTriggerSpriteActive())
+            gBattleStruct->burst.triggerSpriteId = 0xFF;
+        if (CanUltraBurst(gActiveBattler))
+            CreateBurstTriggerSprite(gActiveBattler, 0);
         if (!IsZMoveTriggerSpriteActive())
             gBattleStruct->zmove.triggerSpriteId = 0xFF;
         GetUsableZMoves(gActiveBattler, moveInfo->moves);

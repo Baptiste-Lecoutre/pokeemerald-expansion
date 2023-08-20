@@ -495,6 +495,15 @@ struct MegaEvolutionData
     u8 triggerSpriteId;
 };
 
+struct UltraBurstData
+{
+    u8 toBurst; // As flags using gBitTable.
+    bool8 alreadyBursted[4]; // Array id is used for mon position.
+    u8 battlerId;
+    bool8 playerSelect;
+    u8 triggerSpriteId;
+};
+
 struct Illusion
 {
     u8 on;
@@ -652,6 +661,7 @@ struct BattleStruct
     u8 abilityPopUpSpriteIds[MAX_BATTLERS_COUNT][2];    // two per battler
     bool8 throwingPokeBall;
     struct MegaEvolutionData mega;
+    struct UltraBurstData burst;
     struct ZMoveData zmove;
     struct DynamaxData dynamax;
     struct RaidBattleData raid;

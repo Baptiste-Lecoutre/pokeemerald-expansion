@@ -257,11 +257,12 @@
 #define VARIOUS_TRY_REVIVAL_BLESSING                 165
 #define VARIOUS_TRY_TRAINER_SLIDE_MSG_Z_MOVE         166
 #define VARIOUS_TRY_TRAINER_SLIDE_MSG_MEGA_EVOLUTION 167
-#define VARIOUS_GIVE_DROPPED_ITEMS                   168
-#define VARIOUS_JUMP_IF_NO_BALLS                    169
-#define VARIOUS_CATCH_RAID_BOSS                     170
-#define VARIOUS_HIDE_HEALTHBOXES                    171
-#define VARIOUS_DO_RAID_SHOCKWAVE                   172
+#define VARIOUS_HANDLE_ULTRA_BURST                   168
+#define VARIOUS_GIVE_DROPPED_ITEMS                   169
+#define VARIOUS_JUMP_IF_NO_BALLS                    170
+#define VARIOUS_CATCH_RAID_BOSS                     171
+#define VARIOUS_HIDE_HEALTHBOXES                    172
+#define VARIOUS_DO_RAID_SHOCKWAVE                   173
 
 // Cmd_manipulatedamage
 #define DMG_CHANGE_SIGN            0

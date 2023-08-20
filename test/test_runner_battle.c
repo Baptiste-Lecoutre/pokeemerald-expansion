@@ -1486,6 +1486,9 @@ void Move(u32 sourceLine, struct BattlePokemon *battler, struct MoveContext ctx)
     if (ctx.explicitDynamax && ctx.dynamax)
         moveSlot |= RET_DYNAMAX;
 
+    if (ctx.explicitUltraBurst && ctx.ultraBurst)
+        moveSlot |= RET_ULTRA_BURST;
+
     if (ctx.explicitTarget)
     {
         target = ctx.target - gBattleMons;

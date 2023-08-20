@@ -55,15 +55,16 @@ enum
 #define TAG_ZMOVE_TRIGGER_TILE          0xD77B
 #define TAG_DYNAMAX_TRIGGER_TILE        0xD77C
 #define TAG_DYNAMAX_INDICATOR_TILE      0xD77D
+#define TAG_BURST_TRIGGER_TILE          0xD77F
 
 #define TAG_MEGA_TRIGGER_PAL            0xD777
 #define TAG_MEGA_INDICATOR_PAL          0xD778
 #define TAG_MISC_INDICATOR_PAL          0xD779 // Alpha, Omega, and Dynamax indicators use the same palette as each of them only uses 4 different colors.
 #define TAG_ZMOVE_TRIGGER_PAL           0xD77B
 #define TAG_DYNAMAX_TRIGGER_PAL         0xD77C
+#define TAG_BURST_TRIGGER_PAL           0xD77F
 
 #define TAG_RAID_BARRIER_TILE           0xD77E
-
 
 enum
 {
@@ -98,6 +99,11 @@ void CreateMegaTriggerSprite(u8 battlerId, u8 palId);
 bool32 IsMegaTriggerSpriteActive(void);
 void HideMegaTriggerSprite(void);
 void DestroyMegaTriggerSprite(void);
+void ChangeBurstTriggerSprite(u8 spriteId, u8 animId);
+void CreateBurstTriggerSprite(u8 battlerId, u8 palId);
+bool32 IsBurstTriggerSpriteActive(void);
+void HideBurstTriggerSprite(void);
+void DestroyBurstTriggerSprite(void);
 void MegaIndicator_LoadSpritesGfx(void);
 u8 CreatePartyStatusSummarySprites(u8 battler, struct HpAndStatus *partyInfo, bool8 skipPlayer, bool8 isBattleStart);
 void Task_HidePartyStatusSummary(u8 taskId);

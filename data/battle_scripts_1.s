@@ -5064,7 +5064,7 @@ BattleScript_EffectBatonPass::
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectRapidSpin::
-.if B_SPEED_BUFFING_RAPID_SPIN == GEN_8
+.if B_SPEED_BUFFING_RAPID_SPIN >= GEN_8
 	call BattleScript_EffectHit_Ret
 	jumpifhalfword CMP_COMMON_BITS, gMoveResultFlags, MOVE_RESULT_DOESNT_AFFECT_FOE, BattleScript_MoveEnd
 	setmoveeffect MOVE_EFFECT_RAPIDSPIN | MOVE_EFFECT_AFFECTS_USER | MOVE_EFFECT_CERTAIN
@@ -7828,6 +7828,21 @@ BattleScript_PrimalReversionRet::
 	waitmessage B_WAIT_TIME_LONG
 	switchinabilities BS_ATTACKER
 	return
+
+BattleScript_UltraBurst::
+	printstring STRINGID_EMPTYSTRING3
+	trytrainerslidezmovemsg BS_ATTACKER
+	printstring STRINGID_ULTRABURSTREACTING
+	waitmessage B_WAIT_TIME_LONG
+	setbyte gIsCriticalHit, 0
+	handleultraburst BS_ATTACKER, 0
+	playanimation BS_ATTACKER, B_ANIM_ULTRA_BURST
+	waitanimation
+	handleultraburst BS_ATTACKER, 1
+	printstring STRINGID_ULTRABURSTCOMPLETED
+	waitmessage B_WAIT_TIME_LONG
+	switchinabilities BS_ATTACKER
+	end3
 
 BattleScript_AttackerFormChange::
 	pause 5
