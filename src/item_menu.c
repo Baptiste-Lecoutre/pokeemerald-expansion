@@ -35,6 +35,7 @@
 #include "party_menu.h"
 #include "player_pc.h"
 #include "pokemon.h"
+#include "pokemon_icon.h"
 #include "pokemon_summary_screen.h"
 #include "scanline_effect.h"
 #include "script.h"
@@ -45,6 +46,7 @@
 #include "string_util.h"
 #include "task.h"
 #include "text_window.h"
+#include "util.h"
 #include "menu_helpers.h"
 #include "window.h"
 #include "apprentice.h"
@@ -220,6 +222,9 @@ static void ConfirmToss(u8);
 static void CancelToss(u8);
 static void ConfirmSell(u8);
 static void CancelSell(u8);
+static void DrawPartyMonIcons(void);
+static void DestroyPartyMonIcons(void);
+static void TintPartyMonIcons(u16 itemId);
 
 // tx_registered_items_wheel_icons
 static void ItemMenu_Register_Up(u8 taskId);
@@ -587,6 +592,8 @@ static EWRAM_DATA struct TempWallyBag *sTempWallyBag = 0;
 static EWRAM_DATA bool8 sRegisterSubMenu = FALSE;
 EWRAM_DATA u8 sRegisteredItemIconSpriteId[4] = {0};
 EWRAM_DATA u8 sRegisteredItemIconSpriteId2[4] = {0};
+static EWRAM_DATA u8    spriteIdData[PARTY_SIZE] = {};
+static EWRAM_DATA u16   spriteIdPalette[PARTY_SIZE] = {};
 
 void ResetBagScrollPositions(void)
 {
@@ -798,7 +805,10 @@ static bool8 SetupBagMenu(void)
         gMain.state++;
         break;
     case 15:
-        AddBagVisualSprite(gBagPosition.pocket);
+        if (gBagPosition.pocket != (POCKET_TM_HM - 1))
+            AddBagVisualSprite(gBagPosition.pocket);
+        else
+            DrawPartyMonIcons();
         gMain.state++;
         break;
     case 16:
@@ -985,6 +995,8 @@ static void BagMenu_MoveCursorCallback(s32 itemIndex, bool8 onInit, struct ListM
            AddBagItemIconSprite(BagGetItemIdByPocketPosition(gBagPosition.pocket + 1, itemIndex), gBagMenu->itemIconSlot);
         else
            AddBagItemIconSprite(ITEM_LIST_END, gBagMenu->itemIconSlot);
+        if (gBagPosition.pocket + 1 == POCKET_TM_HM)
+            TintPartyMonIcons(BagGetItemIdByPocketPosition(gBagPosition.pocket + 1, itemIndex));
         gBagMenu->itemIconSlot ^= 1;
         if (!gBagMenu->inhibitItemDescriptionPrint)
             PrintItemDescription(itemIndex);
@@ -1391,7 +1403,23 @@ static void SwitchBagPocket(u8 taskId, s16 deltaBagPocketId, bool16 skipEraseLis
     DrawPocketIndicatorSquare(newPocket, TRUE);
     FillBgTilemapBufferRect_Palette0(2, 11, 14, 2, 15, 16);
     ScheduleBgCopyTilemapToVram(2);
-    SetBagVisualPocketId(newPocket, TRUE);
+
+    if (newPocket + 1 == POCKET_TM_HM)
+    {
+        RemoveBagSprite(ITEMMENUSPRITE_BAG);
+        DrawPartyMonIcons();
+        TintPartyMonIcons(BagGetItemIdByPocketPosition(gBagPosition.pocket + 1, gBagPosition.cursorPosition[gBagPosition.pocket]));
+    }
+    else if (gBagPosition.pocket + 1 == POCKET_TM_HM)
+    {
+        DestroyPartyMonIcons();
+        LoadCompressedSpritePalette(&gBagPaletteTable);
+        LoadCompressedSpriteSheet(&gBagMaleSpriteSheet);
+        AddBagVisualSprite(newPocket);
+    }
+    else
+        SetBagVisualPocketId(newPocket, TRUE);
+
     RemoveBagSprite(ITEMMENUSPRITE_BALL);
     AddSwitchPocketRotatingBallSprite(deltaBagPocketId);
     SetTaskFuncWithFollowupFunc(taskId, Task_SwitchBagPocket, gTasks[taskId].func);
@@ -2953,4 +2981,82 @@ bool8 PlayerHasOneRegisteredItem(void)
             return TRUE;
     }
     return FALSE;
+}
+
+// Party icons in TMHM pocket
+
+#define sMonIconStill data[3]
+static void SpriteCb_TMMonIcon(struct Sprite *sprite)
+{
+    if (!sprite->sMonIconStill)
+        UpdateMonIconFrame(sprite);
+}
+#undef sMonIconStill
+
+void LoadMonIconPalettesTinted(void)
+{
+    u16 paletteOffset;
+
+    // load mon icon palettes
+    LoadMonIconPalettes();
+
+    // load another one for blend in slot 15
+    LoadSpritePaletteInSlot(&gMonIconPaletteTable[0],15);
+    paletteOffset = 15 * 16 + 0x100;
+    BlendPalette(paletteOffset, 16, 16, RGB(15, 15, 15));
+    CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
+}
+
+static void DrawPartyMonIcons(void)
+{
+    u32 i;
+    u16 species;
+    u8 icon_x = 0, icon_y = 0;
+
+    LoadMonIconPalettesTinted();
+
+    for (i = 0; i < gPlayerPartyCount; i++)
+    {
+        if (gPlayerPartyCount < 4)
+        {
+            icon_x = 20 + 32 * i;
+            icon_y = 45;
+        }
+        else
+        {
+            icon_x = 20 + 32 * (i < 3 ? i : i - 3);
+            icon_y = i < 3 ? 40 : 60;
+        }
+
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
+        spriteIdData[i] = CreateMonIcon(species, SpriteCb_TMMonIcon, icon_x, icon_y, 1, GetMonData(&gPlayerParty[i], MON_DATA_PERSONALITY));
+
+        //Set priority, stop movement and save original palette position
+        gSprites[spriteIdData[i]].oam.priority = 0;
+        StartSpriteAnim(&gSprites[spriteIdData[i]], 4); //full stop
+        spriteIdPalette[i] = gSprites[spriteIdData[i]].oam.paletteNum; //save correct palette number to array
+    }
+}
+
+static void TintPartyMonIcons(u16 itemId)
+{
+    u32 i;
+    
+    for (i = 0; i < gPlayerPartyCount; i++)
+    {
+        if (!CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), ItemIdToBattleMoveId(itemId)))
+            gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
+        else
+            gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
+    }
+}
+
+static void DestroyPartyMonIcons(void)
+{
+    u32 i;
+    for (i = 0; i < gPlayerPartyCount; i++)
+    {
+        FreeAndDestroyMonIconSprite(&gSprites[spriteIdData[i]]);
+        FreeMonIconPalettes();
+    }
 }
