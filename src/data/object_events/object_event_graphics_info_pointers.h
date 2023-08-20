@@ -342,6 +342,24 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DawnPlatinu
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DawnPlatinumFishing;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DawnPlatinumWatering;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DawnPlatinumDecorating;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseNormal;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseMachBike;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseAcroBike;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseSurfing;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseUnderwater;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseFieldMove;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseFishing;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseWatering;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ChaseDecorating;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineNormal;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineMachBike;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineAcroBike;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineSurfing;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineUnderwater;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineFieldMove;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineFishing;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineWatering;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ElaineDecorating;
 
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bard;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hipster;
@@ -695,6 +713,24 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_DAWN_PLATINUM_FISHING] =          &gObjectEventGraphicsInfo_DawnPlatinumFishing,
     [OBJ_EVENT_GFX_DAWN_PLATINUM_WATERING] =         &gObjectEventGraphicsInfo_DawnPlatinumWatering,
     [OBJ_EVENT_GFX_DAWN_PLATINUM_DECORATING] =       &gObjectEventGraphicsInfo_DawnPlatinumDecorating,
+    [OBJ_EVENT_GFX_CHASE_NORMAL] =           		 &gObjectEventGraphicsInfo_ChaseNormal,
+    [OBJ_EVENT_GFX_CHASE_MACH_BIKE] =        		 &gObjectEventGraphicsInfo_ChaseMachBike,
+    [OBJ_EVENT_GFX_CHASE_ACRO_BIKE] =        	 	 &gObjectEventGraphicsInfo_ChaseAcroBike,
+    [OBJ_EVENT_GFX_CHASE_SURFING] =          		 &gObjectEventGraphicsInfo_ChaseSurfing,
+    [OBJ_EVENT_GFX_CHASE_UNDERWATER] =       		 &gObjectEventGraphicsInfo_ChaseUnderwater,
+    [OBJ_EVENT_GFX_CHASE_FIELD_MOVE] =       	     &gObjectEventGraphicsInfo_ChaseFieldMove,
+    [OBJ_EVENT_GFX_CHASE_FISHING] =          		 &gObjectEventGraphicsInfo_ChaseFishing,
+    [OBJ_EVENT_GFX_CHASE_WATERING] =         		 &gObjectEventGraphicsInfo_ChaseWatering,
+    [OBJ_EVENT_GFX_CHASE_DECORATING] =       		 &gObjectEventGraphicsInfo_ChaseDecorating,
+    [OBJ_EVENT_GFX_ELAINE_NORMAL] =           		 &gObjectEventGraphicsInfo_ElaineNormal,
+    [OBJ_EVENT_GFX_ELAINE_MACH_BIKE] =        		 &gObjectEventGraphicsInfo_ElaineMachBike,
+    [OBJ_EVENT_GFX_ELAINE_ACRO_BIKE] =        	 	 &gObjectEventGraphicsInfo_ElaineAcroBike,
+    [OBJ_EVENT_GFX_ELAINE_SURFING] =          		 &gObjectEventGraphicsInfo_ElaineSurfing,
+    [OBJ_EVENT_GFX_ELAINE_UNDERWATER] =       		 &gObjectEventGraphicsInfo_ElaineUnderwater,
+    [OBJ_EVENT_GFX_ELAINE_FIELD_MOVE] =       	     &gObjectEventGraphicsInfo_ElaineFieldMove,
+    [OBJ_EVENT_GFX_ELAINE_FISHING] =          		 &gObjectEventGraphicsInfo_ElaineFishing,
+    [OBJ_EVENT_GFX_ELAINE_WATERING] =         		 &gObjectEventGraphicsInfo_ElaineWatering,
+    [OBJ_EVENT_GFX_ELAINE_DECORATING] =       		 &gObjectEventGraphicsInfo_ElaineDecorating,
 };
 
 const struct ObjectEventGraphicsInfo *const gMauvilleOldManGraphicsInfoPointers[] = {
