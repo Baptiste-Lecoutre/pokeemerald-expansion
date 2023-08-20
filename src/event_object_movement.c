@@ -508,6 +508,7 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
 #define OBJ_EVENT_PAL_TAG_CHASE                   0x113C
 #define OBJ_EVENT_PAL_TAG_ELAINE                  0x113D
+#define OBJ_EVENT_PAL_TAG_WALLY                   0x113E
 
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
@@ -585,6 +586,7 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_DawnPlatinum,          OBJ_EVENT_PAL_TAG_DAWN_PLATINUM},
     {gObjectEventPal_Chase,                 OBJ_EVENT_PAL_TAG_CHASE},
     {gObjectEventPal_Elaine,                OBJ_EVENT_PAL_TAG_ELAINE},
+    {gObjectEventPal_Wally,                 OBJ_EVENT_PAL_TAG_WALLY},
     {gObjectEventPaletteLight,              OBJ_EVENT_PAL_TAG_LIGHT},
     {gObjectEventPaletteLight2,             OBJ_EVENT_PAL_TAG_LIGHT_2},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
@@ -697,6 +699,13 @@ static const u16 sReflectionPaletteTags_RedLeaf[] = {
     OBJ_EVENT_PAL_TAG_RED_LEAF,
 };
 
+static const u16 sReflectionPaletteTags_Wally[] = {
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+};
+
 static const struct PairedPalettes sSpecialObjectReflectionPaletteSets[] = {
     {OBJ_EVENT_PAL_TAG_BRENDAN,          sReflectionPaletteTags_Brendan},
     {OBJ_EVENT_PAL_TAG_MAY,              sReflectionPaletteTags_May},
@@ -711,6 +720,7 @@ static const struct PairedPalettes sSpecialObjectReflectionPaletteSets[] = {
     {OBJ_EVENT_PAL_TAG_NPC_3,            sReflectionPaletteTags_Npc3},
     {OBJ_EVENT_PAL_TAG_SUBMARINE_SHADOW, sReflectionPaletteTags_SubmarineShadow},
     {OBJ_EVENT_PAL_TAG_RED_LEAF,         sReflectionPaletteTags_RedLeaf},
+    {OBJ_EVENT_PAL_TAG_WALLY,            sReflectionPaletteTags_Wally},
     {OBJ_EVENT_PAL_TAG_NONE,             NULL},
 };
 
