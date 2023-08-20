@@ -183,6 +183,8 @@
 #define	DAWN_COSTUME				8
 #define	LUCAS_PLATINUM_COSTUME		9
 #define	DAWN_PLATINUM_COSTUME		10
-#define COSTUME_COUNT   			11
+#define CHASE_COSTUME               11
+#define ELAINE_COSTUME              12
+#define COSTUME_COUNT   			13
 
 #endif // GUARD_CONSTANTS_GLOBAL_H

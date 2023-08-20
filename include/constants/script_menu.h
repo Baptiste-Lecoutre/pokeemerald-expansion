@@ -134,9 +134,10 @@
 #define MULTI_JOHTO_COSTUMES               123
 #define MULTI_HOENN_COSTUMES               124
 #define MULTI_SINNOH_COSTUMES              125
-#define MULTI_ROTOM_APPLIANCES             126
-#define MULTI_DEOXYS_FORMES                127
-#define MULTI_STARTER_MOVES                128
+#define MULTI_LGPE_COSTUMES                126
+#define MULTI_ROTOM_APPLIANCES             127
+#define MULTI_DEOXYS_FORMES                128
+#define MULTI_STARTER_MOVES                129
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

@@ -9104,6 +9104,12 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
         case DAWN_PLATINUM_COSTUME:
             trainerPic = TRAINER_PIC_DAWN_PLATINUM;
             break;
+        case CHASE_COSTUME:
+            trainerPic = TRAINER_PIC_CHASE;
+            break;
+        case ELAINE_COSTUME:
+            trainerPic = TRAINER_PIC_ELAINE;
+            break;
     }
 
     return trainerPic;

@@ -2270,6 +2270,7 @@ const u8 gText_FirstDrawer[] = _("First");
 const u8 gText_SecondDrawer[] = _("Second");
 const u8 gText_ThirdDrawer[] = _("Third");
 const u8 gText_FourthDrawer[] = _("Fourth");
+const u8 gText_FifthDrawer[] = _("Fifth");
 
 const u8 gText_RedCostume[] = _("Red");
 const u8 gText_LeafCostume[] = _("Green");
@@ -2282,6 +2283,8 @@ const u8 gText_LucasCostume[] = _("Diamond");
 const u8 gText_DawnCostume[] = _("Pearl");
 const u8 gText_LucasPlatinumCostume[] = _("Platinum 1");
 const u8 gText_DawnPlatinumCostume[] = _("Platinum 2");
+const u8 gText_ChaseCostume[] = _("Partner 1");
+const u8 gText_ElaineCostume[] = _("Partner 2");
 
 const u8 gText_RoamerEntei[] = _("Red dog");
 const u8 gText_RoamerSuicune[] = _("Red dog");

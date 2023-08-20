@@ -49,6 +49,7 @@ EventScript_Dresser_Loop::
 	case 1, EventScript_JohtoCostumes
 	case 2, EventScript_HoennCostumes
 	case 3, EventScript_SinnohCostumes
+	case 4, EventScript_LGPECostumes
 	case MULTI_B_PRESSED, EventScript_Dresser_Exit
 	end
 
@@ -200,6 +201,35 @@ EventScript_CostumeSwap_DawnPlatinum::
 	lockall
 	fadescreen FADE_TO_BLACK
 	setvar VAR_TEMP_1, DAWN_PLATINUM_COSTUME
+	special SwapPlayersCostume
+	fadescreen FADE_FROM_BLACK
+	goto EventScript_Dresser_Finish
+	end
+
+EventScript_LGPECostumes::
+	msgbox Text_ChooseOutfit
+	waitmessage
+	multichoicedefault 0, 0, MULTI_LGPE_COSTUMES, 5, FALSE
+	switch VAR_RESULT
+	case 0, EventScript_CostumeSwap_Chase
+	case 1, EventScript_CostumeSwap_Elaine
+	case 2, EventScript_Dresser_Loop
+	case MULTI_B_PRESSED, EventScript_Dresser_Loop
+	end
+
+EventScript_CostumeSwap_Chase::
+	lockall
+	fadescreen FADE_TO_BLACK
+	setvar VAR_TEMP_1, CHASE_COSTUME
+	special SwapPlayersCostume
+	fadescreen FADE_FROM_BLACK
+	goto EventScript_Dresser_Finish
+	end
+
+EventScript_CostumeSwap_Elaine::
+	lockall
+	fadescreen FADE_TO_BLACK
+	setvar VAR_TEMP_1, ELAINE_COSTUME
 	special SwapPlayersCostume
 	fadescreen FADE_FROM_BLACK
 	goto EventScript_Dresser_Finish
