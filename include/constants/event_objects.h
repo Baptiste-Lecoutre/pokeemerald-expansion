@@ -357,6 +357,26 @@
 #define OBJ_EVENT_GFX_DAWN_PLATINUM_DECORATING  	COSTUME_GFX + 80
 #define OBJ_EVENT_GFX_DAWN_PLATINUM_UNDERWATER  	COSTUME_GFX + 81
 
+#define OBJ_EVENT_GFX_CHASE_NORMAL 					COSTUME_GFX + 82
+#define OBJ_EVENT_GFX_CHASE_FIELD_MOVE         		COSTUME_GFX + 83
+#define OBJ_EVENT_GFX_CHASE_SURFING            		COSTUME_GFX + 84
+#define OBJ_EVENT_GFX_CHASE_MACH_BIKE          		COSTUME_GFX + 85
+#define OBJ_EVENT_GFX_CHASE_ACRO_BIKE          		COSTUME_GFX + 86
+#define OBJ_EVENT_GFX_CHASE_FISHING            		COSTUME_GFX + 87
+#define OBJ_EVENT_GFX_CHASE_WATERING           		COSTUME_GFX + 88
+#define OBJ_EVENT_GFX_CHASE_DECORATING         		COSTUME_GFX + 89
+#define OBJ_EVENT_GFX_CHASE_UNDERWATER         		COSTUME_GFX + 90
+
+#define OBJ_EVENT_GFX_ELAINE_NORMAL 				COSTUME_GFX + 91
+#define OBJ_EVENT_GFX_ELAINE_FIELD_MOVE         	COSTUME_GFX + 92
+#define OBJ_EVENT_GFX_ELAINE_SURFING            	COSTUME_GFX + 93
+#define OBJ_EVENT_GFX_ELAINE_MACH_BIKE          	COSTUME_GFX + 94
+#define OBJ_EVENT_GFX_ELAINE_ACRO_BIKE          	COSTUME_GFX + 95
+#define OBJ_EVENT_GFX_ELAINE_FISHING            	COSTUME_GFX + 96
+#define OBJ_EVENT_GFX_ELAINE_WATERING           	COSTUME_GFX + 97
+#define OBJ_EVENT_GFX_ELAINE_DECORATING         	COSTUME_GFX + 98
+#define OBJ_EVENT_GFX_ELAINE_UNDERWATER         	COSTUME_GFX + 99
+
 // NOTE: By default, the max value for NUM_OBJ_EVENT_GFX is 239.
 //
 // Object event graphics ids are 1 byte in size (max value of 255), and the dynamic
@@ -366,7 +386,7 @@
 // object graphics that can be removed. If more graphics are needed, anything that
 // stores graphics ids will need to be increased in size. See wiki entry below:
 // https://github.com/pret/pokeemerald/wiki/Feature-Branches#overworld-expansion
-#define NUM_OBJ_EVENT_GFX                        OBJ_EVENT_GFX_DAWN_PLATINUM_UNDERWATER + 1 //259
+#define NUM_OBJ_EVENT_GFX                        OBJ_EVENT_GFX_ELAINE_UNDERWATER + 1 //259
 
 
 // These are dynamic object gfx ids.

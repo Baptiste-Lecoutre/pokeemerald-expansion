@@ -1432,6 +1432,12 @@ static void SetUpPlacingDecorationPlayerAvatar(u8 taskId, struct PlaceDecoration
     case DAWN_PLATINUM_COSTUME:
         sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_DAWN_PLATINUM_DECORATING, SpriteCallbackDummy, x, 72, 0);
         break;
+    case CHASE_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_CHASE_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
+    case ELAINE_COSTUME:
+        sDecor_CameraSpriteObjectIdx2 = CreateObjectGraphicsSprite(OBJ_EVENT_GFX_ELAINE_DECORATING, SpriteCallbackDummy, x, 72, 0);
+        break;
     }
 
     gSprites[sDecor_CameraSpriteObjectIdx2].oam.priority = 1;

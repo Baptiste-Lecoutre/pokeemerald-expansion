@@ -3593,11 +3593,14 @@ extern const u8 gText_LucasCostume[];
 extern const u8 gText_DawnCostume[];
 extern const u8 gText_LucasPlatinumCostume[];
 extern const u8 gText_DawnPlatinumCostume[];
+extern const u8 gText_ChaseCostume[];
+extern const u8 gText_ElaineCostume[];
 
 extern const u8 gText_FirstDrawer[];
 extern const u8 gText_SecondDrawer[];
 extern const u8 gText_ThirdDrawer[];
 extern const u8 gText_FourthDrawer[];
+extern const u8 gText_FifthDrawer[];
 
 extern const u8 gText_RoamerEntei[];
 extern const u8 gText_RoamerSuicune[];

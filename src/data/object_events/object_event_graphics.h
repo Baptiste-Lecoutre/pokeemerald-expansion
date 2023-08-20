@@ -956,3 +956,27 @@ const u32 gObjectEventPic_DawnPlatinumFishing[] = INCBIN_U32("graphics/object_ev
 const u32 gObjectEventPic_DawnPlatinumWatering[] = INCBIN_U32("graphics/object_events/pics/people/dawn_platinum/watering.4bpp");
 const u32 gObjectEventPic_DawnPlatinumDecorating[] = INCBIN_U32("graphics/object_events/pics/people/dawn_platinum/decorating.4bpp");
 const u16 gObjectEventPal_DawnPlatinum[] = INCBIN_U16("graphics/object_events/palettes/dawn_platinum.gbapal");
+
+const u32 gObjectEventPic_ChaseNormal[] = INCBIN_U32("graphics/object_events/pics/people/chase/walking.4bpp");
+const u32 gObjectEventPic_ChaseRunning[] = INCBIN_U32("graphics/object_events/pics/people/chase/running.4bpp");
+const u32 gObjectEventPic_ChaseSurfing[] = INCBIN_U32("graphics/object_events/pics/people/chase/surfing.4bpp");
+const u32 gObjectEventPic_ChaseUnderwater[] = INCBIN_U32("graphics/object_events/pics/people/chase/underwater.4bpp");
+const u32 gObjectEventPic_ChaseMachBike[] = INCBIN_U32("graphics/object_events/pics/people/chase/mach_bike.4bpp");
+const u32 gObjectEventPic_ChaseAcroBike[] = INCBIN_U32("graphics/object_events/pics/people/chase/acro_bike.4bpp");
+const u32 gObjectEventPic_ChaseFieldMove[] = INCBIN_U32("graphics/object_events/pics/people/chase/field_move.4bpp");
+const u32 gObjectEventPic_ChaseFishing[] = INCBIN_U32("graphics/object_events/pics/people/chase/fishing.4bpp");
+const u32 gObjectEventPic_ChaseWatering[] = INCBIN_U32("graphics/object_events/pics/people/chase/watering.4bpp");
+const u32 gObjectEventPic_ChaseDecorating[] = INCBIN_U32("graphics/object_events/pics/people/chase/decorating.4bpp");
+const u16 gObjectEventPal_Chase[] = INCBIN_U16("graphics/object_events/palettes/chase.gbapal");
+
+const u32 gObjectEventPic_ElaineNormal[] = INCBIN_U32("graphics/object_events/pics/people/elaine/walking.4bpp");
+const u32 gObjectEventPic_ElaineRunning[] = INCBIN_U32("graphics/object_events/pics/people/elaine/running.4bpp");
+const u32 gObjectEventPic_ElaineSurfing[] = INCBIN_U32("graphics/object_events/pics/people/elaine/surfing.4bpp");
+const u32 gObjectEventPic_ElaineUnderwater[] = INCBIN_U32("graphics/object_events/pics/people/elaine/underwater.4bpp");
+const u32 gObjectEventPic_ElaineMachBike[] = INCBIN_U32("graphics/object_events/pics/people/elaine/mach_bike.4bpp");
+const u32 gObjectEventPic_ElaineAcroBike[] = INCBIN_U32("graphics/object_events/pics/people/elaine/acro_bike.4bpp");
+const u32 gObjectEventPic_ElaineFieldMove[] = INCBIN_U32("graphics/object_events/pics/people/elaine/field_move.4bpp");
+const u32 gObjectEventPic_ElaineFishing[] = INCBIN_U32("graphics/object_events/pics/people/elaine/fishing.4bpp");
+const u32 gObjectEventPic_ElaineWatering[] = INCBIN_U32("graphics/object_events/pics/people/elaine/watering.4bpp");
+const u32 gObjectEventPic_ElaineDecorating[] = INCBIN_U32("graphics/object_events/pics/people/elaine/decorating.4bpp");
+const u16 gObjectEventPal_Elaine[] = INCBIN_U16("graphics/object_events/palettes/elaine.gbapal");
