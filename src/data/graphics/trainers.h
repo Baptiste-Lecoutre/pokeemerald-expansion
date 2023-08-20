@@ -309,6 +309,12 @@ const u32 gTrainerBackPicPalette_LucasPlatinum[] = INCBIN_U32("graphics/trainers
 const u8 gTrainerBackPic_DawnPlatinum[] = INCBIN_U8("graphics/trainers/back_pics/dawn_platinum_back_pic.4bpp");
 const u32 gTrainerBackPicPalette_DawnPlatinum[] = INCBIN_U32("graphics/trainers/palettes/dawn_platinum_back_pic.gbapal.lz");
 
+const u8 gTrainerBackPic_Chase[] = INCBIN_U8("graphics/trainers/back_pics/chase_back_pic.4bpp");
+const u32 gTrainerBackPicPalette_Chase[] = INCBIN_U32("graphics/trainers/palettes/chase_back_pic.gbapal.lz");
+
+const u8 gTrainerBackPic_Elaine[] = INCBIN_U8("graphics/trainers/back_pics/elaine_back_pic.4bpp");
+const u32 gTrainerBackPicPalette_Elaine[] = INCBIN_U32("graphics/trainers/palettes/elaine_back_pic.gbapal.lz");
+
 const u32 gTrainerFrontPic_LeaderBrock[] = INCBIN_U32("graphics/trainers/front_pics/brock.4bpp.lz");
 const u32 gTrainerPalette_LeaderBrock[] = INCBIN_U32("graphics/trainers/front_pics/brock.gbapal.lz");
 const u32 gTrainerFrontPic_LeaderMisty[] = INCBIN_U32("graphics/trainers/front_pics/misty.4bpp.lz");
@@ -359,3 +365,9 @@ const u32 gTrainerPalette_DawnPlatinum[] = INCBIN_U32("graphics/trainers/palette
 
 const u32 gTrainerFrontPic_MagmaAdminF[] = INCBIN_U32("graphics/trainers/front_pics/magma_admin_f_front_pic.4bpp.lz");
 const u32 gTrainerPalette_MagmaAdminF[] = INCBIN_U32("graphics/trainers/palettes/magma_admin.gbapal.lz");
+
+const u32 gTrainerFrontPic_Chase[] = INCBIN_U32("graphics/trainers/front_pics/chase_front_pic.4bpp.lz");
+const u32 gTrainerPalette_Chase[] = INCBIN_U32("graphics/trainers/palettes/chase.gbapal.lz");
+
+const u32 gTrainerFrontPic_Elaine[] = INCBIN_U32("graphics/trainers/front_pics/elaine_front_pic.4bpp.lz");
+const u32 gTrainerPalette_Elaine[] = INCBIN_U32("graphics/trainers/palettes/elaine.gbapal.lz");

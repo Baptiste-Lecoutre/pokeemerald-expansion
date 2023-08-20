@@ -7345,6 +7345,8 @@ extern const u32 gTrainerFrontPic_Dawn[];
 extern const u32 gTrainerFrontPic_LucasPlatinum[];
 extern const u32 gTrainerFrontPic_DawnPlatinum[];
 extern const u32 gTrainerFrontPic_MagmaAdminF[];
+extern const u32 gTrainerFrontPic_Chase[];
+extern const u32 gTrainerFrontPic_Elaine[];
 
 extern const u32 gTrainerPalette_Hiker[];
 extern const u32 gTrainerPalette_AquaGruntM[];
@@ -7448,6 +7450,8 @@ extern const u32 gTrainerPalette_Dawn[];
 extern const u32 gTrainerPalette_LucasPlatinum[];
 extern const u32 gTrainerPalette_DawnPlatinum[];
 extern const u32 gTrainerPalette_MagmaAdmin[];
+extern const u32 gTrainerPalette_Chase[];
+extern const u32 gTrainerPalette_Elaine[];
 
 extern const u8 gTrainerBackPic_Brendan[];
 extern const u8 gTrainerBackPic_May[];
@@ -7464,6 +7468,8 @@ extern const u8 gTrainerBackPic_Lucas[];
 extern const u8 gTrainerBackPic_Dawn[];
 extern const u8 gTrainerBackPic_LucasPlatinum[];
 extern const u8 gTrainerBackPic_DawnPlatinum[];
+extern const u8 gTrainerBackPic_Chase[];
+extern const u8 gTrainerBackPic_Elaine[];
 
 extern const u32 gTrainerBackPicPalette_Red[];
 extern const u32 gTrainerBackPicPalette_Leaf[];
@@ -7478,6 +7484,8 @@ extern const u32 gTrainerBackPicPalette_Lucas[];
 extern const u32 gTrainerBackPicPalette_Dawn[];
 extern const u32 gTrainerBackPicPalette_LucasPlatinum[];
 extern const u32 gTrainerBackPicPalette_DawnPlatinum[];
+extern const u32 gTrainerBackPicPalette_Chase[];
+extern const u32 gTrainerBackPicPalette_Elaine[];
 
 extern const u32 gTrainerFrontPic_LeaderBrock[];
 extern const u32 gTrainerPalette_LeaderBrock[];
