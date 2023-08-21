@@ -786,7 +786,8 @@ u32 WhichBattleCoords(u32 battlerId) // 0 - singles, 1 - doubles
     // gEnemyParty count is calculated at the start of battle.
     if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
         && ((!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && gEnemyPartyCount == 1)
-        || (BATTLE_TWO_VS_ONE_OPPONENT) || IsRaidBoss(battlerId)))
+        || (BATTLE_TWO_VS_ONE_OPPONENT) || IsRaidBoss(battlerId))
+        && !WILD_DOUBLE_BATTLE)
         return 0;
     
     return IsDoubleBattle();
@@ -3734,12 +3735,12 @@ static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] =
         [B_POSITION_PLAYER_RIGHT] = {216, 96},
         [B_POSITION_OPPONENT_RIGHT] = {19, 39}, 
     },
-    { // Raid Battles
+    /*{ // Raid Battles
         [B_POSITION_PLAYER_LEFT] = { 221, 71},
         [B_POSITION_OPPONENT_LEFT] = {24, 25}, // position of singles
         [B_POSITION_PLAYER_RIGHT] = {216, 96},
         [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
-    },
+    },*/
 };
 
 static const struct OamData sTypeIconOAM =
@@ -3772,18 +3773,18 @@ void TryLoadTypeIcons(void)
 {
 	if (!(gBattleTypeFlags & BATTLE_TYPE_LINK) && TRUE && IndexOfSpritePaletteTag(TYPE_ICON_TAG) == 0xFF)
 	{
-        u8 position, battleType= IsDoubleBattle();
+        u8 position;
         LoadSpritePalette(&sTypeIconPalTemplate);
 
-        if (gBattleTypeFlags & BATTLE_TYPE_RAID)
-            battleType = 2;
+        /*if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;*/
         
 		for (position = 0; position < gBattlersCount; ++position)
 		{
             u8 typeNum, monNumTypes = 2;
 			u8 type1, type2;
             struct Pokemon *illusionMon = GetIllusionMonPtr(GetBattlerAtPosition(position));
-    
+            u8 battleType = WhichBattleCoords(GetBattlerAtPosition(position));
 
             if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
@@ -3836,12 +3837,12 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
 {
 	u8 position = sprite->data[0];
 	u8 activeBattler = sprite->data[1];
-    u8 battleType = IsDoubleBattle();
+    u8 battleType = WhichBattleCoords(GetBattlerAtPosition(position));
     s16 originalY;
 	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
-            battleType = 2;
+    /*if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;*/
 
 	if (sprite->data[2] == ICON_MOVE_X + 2 - 2 * sprite->data[4])
 	{
