@@ -820,7 +820,7 @@
 #define TRAINER_CORY_2                      816
 #define TRAINER_CORY_3                      817
 #define TRAINER_CORY_4                      818
-#define TRAINER_CORY_5                      819
+#define TRAINER_WALLY_PETALBURG                      819
 #define TRAINER_PABLO_2                     820
 #define TRAINER_PABLO_3                     821
 #define TRAINER_PABLO_4                     822

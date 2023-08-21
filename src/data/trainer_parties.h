@@ -15014,21 +15014,11 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Cory4[] = {
     }
 };
 
-static const struct TrainerMonNoItemDefaultMoves sParty_Cory5[] = {
+static const struct TrainerMonNoItemDefaultMoves sParty_WallyPetalburg[] = {
     {
-    .iv = 40,
-    .lvl = 36,
-    .species = SPECIES_PELIPPER,
-    },
-    {
-    .iv = 40,
-    .lvl = 36,
-    .species = SPECIES_MACHOKE,
-    },
-    {
-    .iv = 40,
-    .lvl = 36,
-    .species = SPECIES_TENTACRUEL,
+    .iv = 50,
+    .lvl = 8,
+    .species = SPECIES_RALTS,
     }
 };
 

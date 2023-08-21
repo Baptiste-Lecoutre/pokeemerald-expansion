@@ -80,7 +80,12 @@ PetalburgCity_Gym_OnFrame:
 PetalburgCity_Gym_EventScript_ReturnFromWallyTutorial::
 	lockall
 	msgbox PetalburgCity_Gym_Text_DadSoDidItWorkOut, MSGBOX_DEFAULT
-	msgbox PetalburgCity_Gym_Text_WallyThankYouBye, MSGBOX_DEFAULT
+	msgbox PetalburgCity_Gym_Text_WallyThankYou, MSGBOX_DEFAULT
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	applymovement LOCALID_WALLY, Common_Movement_FacePlayer
+	msgbox PetalburgCity_Gym_Text_WallyBeforeBattle, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_WALLY_PETALBURG, PetalburgCity_Gym_Text_WallyDefeat
+	msgbox PetalburgCity_Gym_Text_WallyAfterBattle, MSGBOX_DEFAULT
 	closemessage
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
 	applymovement LOCALID_WALLY, PetalburgCity_Gym_Movement_WallyExitGym
@@ -317,6 +322,11 @@ PetalburgCity_Gym_EventScript_NormanThreeBadges::
 	end
 
 PetalburgCity_Gym_EventScript_NormanFaceDoorSouth::
+	return
+
+PetalburgCity_Gym_EventScript_PlayerFaceWally::
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
 	return
 
 @ For all other NormanFaceDoorX, Norman is already facing the door from NormanAddressWallyX
@@ -1203,7 +1213,7 @@ PetalburgCity_Gym_Text_WouldYouReallyComeWithMe:
 PetalburgCity_Gym_Text_DadSoDidItWorkOut:
 	.string "Dad: So, did it work out?$"
 
-PetalburgCity_Gym_Text_WallyThankYouBye:
+PetalburgCity_Gym_Text_WallyThankYou:
 	.string "Wally: Thank you, yes, it did.\n"
 	.string "Here's your Pokémon back.\p"
 	.string "{PLAYER}, thank you for coming along\n"
@@ -1211,10 +1221,23 @@ PetalburgCity_Gym_Text_WallyThankYouBye:
 	.string "You two are why I was able to catch\n"
 	.string "my Pokémon.\p"
 	.string "I promise I'll take really good\n"
-	.string "care of it.\p"
+	.string "care of it.$"
+
+PetalburgCity_Gym_Text_WallyBeforeBattle:
+	.string "{PLAYER}, since you're here,\n"
+	.string "why don't the two of us have a\l"
+	.string "Pokémon battle?\p"
+	.string "I want to know what it's like to\n"
+	.string "be a Pokémon Trainer!$"
+
+PetalburgCity_Gym_Text_WallyAfterBattle:
 	.string "Oh! My mom's waiting for me,\n"
 	.string "so I have to go!\p"
 	.string "Bye, {PLAYER}!$"
+
+PetalburgCity_Gym_Text_WallyDefeat:
+	.string "………………\p"
+	.string "So this is a Pokémon battle…$"
 
 PetalburgCity_Gym_Text_DadGoCollectBadges:
 	.string "Dad: Now…\p"

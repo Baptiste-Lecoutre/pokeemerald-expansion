@@ -9853,16 +9853,16 @@ const struct Trainer gTrainers[] = {
         .party = NO_ITEM_DEFAULT_MOVES(sParty_Cory4),
     },
 
-    [TRAINER_CORY_5] =
+    [TRAINER_WALLY_PETALBURG] =
     {
-        .trainerClass = TRAINER_CLASS_SAILOR,
+        .trainerClass = TRAINER_CLASS_RIVAL,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
-        .trainerPic = TRAINER_PIC_SAILOR,
-        .trainerName = _("Cory"),
+        .trainerPic = TRAINER_PIC_WALLY,
+        .trainerName = _("Wally"),
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE,
-        .party = NO_ITEM_DEFAULT_MOVES(sParty_Cory5),
+        .party = NO_ITEM_DEFAULT_MOVES(sParty_WallyPetalburg),
     },
 
     [TRAINER_PABLO_2] =
