@@ -350,6 +350,7 @@ SECTIONS {
         src/expansion_intro.o(.text);
 		src/dexnav.o(.text);
         src/soar.o(.text);
+        src/pinball.o(.text);
     } =0
 
     script_data :
@@ -720,6 +721,7 @@ SECTIONS {
         src/expansion_intro.o(.rodata);
 		src/dexnav.o(.rodata);
         src/soar.o(.rodata);
+        src/pinball.o(.rodata);
     } =0
 
     song_data :
