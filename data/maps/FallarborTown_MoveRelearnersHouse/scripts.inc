@@ -267,9 +267,9 @@ FallarborTown_DoSuperTraining::
 	buffernumberstring 2, VAR_0x8009
 	msgbox SuperTraining_ShowPrice, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, 0, FallarborTown_WontPay
-	checkmoney VAR_0x8009, 0
+	checkmoney VAR_0x8009
 	goto_if_eq VAR_RESULT, 0, FallarborTown_CantAfford
-	removemoney VAR_0x8009, 0
+	removemoney VAR_0x8009
 	updatemoneybox
 	special IncreaseChosenMonEVs
 	bufferpartymonnick 0, VAR_0x8004
