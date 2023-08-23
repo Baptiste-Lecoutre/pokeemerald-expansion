@@ -254,7 +254,10 @@ bool32 InitRaidData(void)
         raidBossLevel = (randomNum % ((max + 1) - min)) + min;
 
     // determine raid species
-    species = randomNum % FORMS_START + 1;
+    do
+    {
+        species = randomNum % FORMS_START + 1;
+    } while (gSpeciesInfo[species].flags & (SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_MYTHICAL | SPECIES_FLAG_ULTRA_BEAST));
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
     preEvoSpecies = GetPreEvolution(species);
