@@ -1344,7 +1344,7 @@ static const struct TrainerMon sParty_RedRoute121[] = {
     .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
     .lvl = 65,
     .heldItem = ITEM_LIGHT_BALL,
-    .species = SPECIES_PIKACHU_PH_D,//FLYING,
+    .species = SPECIES_PIKACHU_FLYING,
     .moves = {MOVE_THUNDERBOLT, MOVE_AERIAL_ACE, MOVE_THUNDER_WAVE, MOVE_BODY_SLAM},
     },
     {
