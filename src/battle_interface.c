@@ -3823,7 +3823,7 @@ static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
 };
 
 #define MOVE_INFO_WIN_X 20
-#define MOVE_INFO_WIN_Y_0 127
+#define MOVE_INFO_WIN_Y_0 144
 #define MOVE_INFO_WIN_Y_F (MOVE_INFO_WIN_Y_0 - 10)
 
 void TryLoadMoveInfoWindow(void)
