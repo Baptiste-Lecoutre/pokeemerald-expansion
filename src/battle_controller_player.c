@@ -338,9 +338,22 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(B_LAST_USED_BALL_BUTTON))
     {
-        sAckBallUseBtn = TRUE;
-        sBallSwapped = FALSE;
-        ArrowsChangeColorLastBallCycle(TRUE);
+        if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+        {
+            PlaySE(SE_SELECT);
+            TryHideLastUsedBall();
+            gBattleAnimAttacker = gActiveBattler;
+            UpdateOamPriorityInAllHealthboxes(0, TRUE);
+            ChangeBattlerSpritesInvisibilities(TRUE);
+            DisplayInBattleTeamPreview();
+            gBattlerControllerFuncs[gActiveBattler] = HandleInputTeamPreview;
+        }
+        else
+        {
+            sAckBallUseBtn = TRUE;
+            sBallSwapped = FALSE;
+            ArrowsChangeColorLastBallCycle(TRUE);
+        }
     }
     if (sAckBallUseBtn)
     {

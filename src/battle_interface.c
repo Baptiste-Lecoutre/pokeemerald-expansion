@@ -3318,10 +3318,9 @@ void TryAddLastUsedBallItemSprites(void)
     // ball
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {
-        //gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, (CanThrowLastUsedBall() ? gLastThrownBall : ITEM_SCANNER));
-        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, gBallToDisplay);
+        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, (CanThrowLastUsedBall() ? gBallToDisplay : ITEM_SCANNER));
         gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_0;
-        gSprites[gBattleStruct->ballSpriteIds[0]].y = LAST_USED_BALL_Y;
+        gSprites[gBattleStruct->ballSpriteIds[0]].y = LAST_USED_BALL_Y + 2*!CanThrowLastUsedBall();
         gSprites[gBattleStruct->ballSpriteIds[0]].sHide = FALSE;   // restore
         gLastUsedBallMenuPresent = TRUE;
         gSprites[gBattleStruct->ballSpriteIds[0]].callback = SpriteCB_LastUsedBall;
@@ -3411,26 +3410,6 @@ static void SpriteCB_LastUsedBall(struct Sprite *sprite)
     }
 }
 
-/*static void SpriteCB_LastUsedBallBounce(struct Sprite *sprite)
-{
-    if (sprite->sHide)
-    {
-        sprite->y--;
-        if (sprite->y < LAST_USED_BALL_Y -2)
-        {
-            DestroyLastUsedBallGfx(sprite);
-            CreateLastUsedBallGfx();
-        }
-    }
-    else
-    {
-        if (sprite->y != LAST_USED_BALL_Y)
-            sprite->y++;
-        else
-            sprite->callback = SpriteCB_LastUsedBall;
-    }
-}*/
-
 static void TryHideOrRestoreLastUsedBall(u8 caseId)
 {
 #if B_LAST_USED_BALL == TRUE
@@ -3477,35 +3456,9 @@ void TryRestoreLastUsedBall(void)
 #endif
 }
 
-/*void TryChangeLastUsedBall(bool8 increase)
-{
-    if (increase)
-    {
-        do
-        {
-            gLastThrownBall++;
-            if (gLastThrownBall > LAST_BALL)
-                gLastThrownBall = FIRST_BALL;
-        } while (!CheckBagHasItem(gLastThrownBall, 1));
-        
-    }
-    else
-    {
-        do
-        {
-            if (gLastThrownBall == FIRST_BALL)
-                gLastThrownBall = LAST_BALL;
-            else
-                gLastThrownBall--;
-        } while (!CheckBagHasItem(gLastThrownBall, 1));
-    }
-    gSprites[gBattleStruct->ballSpriteIds[0]].callback = SpriteCB_LastUsedBallBounce;
-    gSprites[gBattleStruct->ballSpriteIds[0]].sHide = TRUE;
-}*/
-
 static void SpriteCB_LastUsedBallBounce(struct Sprite *sprite)
 {
-    if ((sprite->sTimer++ % 4) != 0)  // Change the image every 4 frame
+    if ((sprite->sTimer++ % 2) != 0)  // Change the image every 2 frame
         return;
     if (sprite->sBounce)
     {
@@ -3840,7 +3793,7 @@ static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
 };
 
 #define MOVE_INFO_WIN_X 20
-#define MOVE_INFO_WIN_Y_0 144
+#define MOVE_INFO_WIN_Y_0 143
 #define MOVE_INFO_WIN_Y_F (MOVE_INFO_WIN_Y_0 - 10)
 
 void TryLoadMoveInfoWindow(void)
