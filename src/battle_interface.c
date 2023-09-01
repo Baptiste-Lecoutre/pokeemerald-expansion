@@ -4008,7 +4008,7 @@ static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
 #define MOVE_INFO_WIN_Y_0 144
 #define MOVE_INFO_WIN_Y_F (MOVE_INFO_WIN_Y_0 - 10)
 
-void TryLoadMoveInfoWindow(void)
+void TryLoadMoveInfoWindow(u32 battler)
 {
     u8 spriteId;
 
@@ -4021,7 +4021,7 @@ void TryLoadMoveInfoWindow(void)
     if (spriteId != MAX_SPRITES)
 	{
 		struct Sprite* sprite = &gSprites[spriteId];
-		sprite->data[1] = gActiveBattler;
+		sprite->data[1] = battler;
     }
 }
 

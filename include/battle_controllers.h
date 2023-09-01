@@ -314,11 +314,11 @@ void ActionSelectionDestroyCursorAt(u8 cursorPos);
 void InitMoveSelectionsVarsAndStrings(u32 battler);
 void MoveSelectionCreateCursorAt(u8 cursorPos, u8 arg1);
 void MoveSelectionDestroyCursorAt(u8 cursorPosition);
-void PlayerHandleChooseMove(void);
-void HandleChooseMoveAfterDma3(void);
-void HandleMoveSwitching(void);
-void HandleInputChooseTarget(void);
-void HandleInputChooseMove(void);
+void PlayerHandleChooseMove(u32 battler);
+void HandleChooseMoveAfterDma3(u32 battler);
+void HandleMoveSwitching(u32 battler);
+void HandleInputChooseTarget(u32 battler);
+void HandleInputChooseMove(u32 battler);
 
 // recorded player controller
 void SetControllerToRecordedPlayer(u32 battler);
