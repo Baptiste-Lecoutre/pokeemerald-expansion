@@ -332,7 +332,7 @@ Route104_EventScript_Boy2::
 	checkitem ITEM_TM09
 	goto_if_eq VAR_RESULT, TRUE, Route104_EventScript_ReceivedBulletSeed
 	msgbox Route104_Text_LikeFillingMouthWithSeedsTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_TM09
+	giveitem ITEM_TM09_BULLET_SEED
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	release
 	end
