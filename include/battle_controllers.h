@@ -100,7 +100,7 @@ enum {
 #define RET_VALUE_LEVELED_UP   11
 #define RET_MEGA_EVOLUTION 0x80
 #define RET_DYNAMAX        0x40
-#define RET_ULTRA_BURST 0x70
+#define RET_ULTRA_BURST 0x10
 
 struct UnusedControllerStruct
 {
