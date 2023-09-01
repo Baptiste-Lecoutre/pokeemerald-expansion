@@ -1774,8 +1774,10 @@ bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
 {
     u8 i;
     u16 moveId = ScriptReadHalfword(ctx);
+    u16 itemId = ITEM_NONE;
 
     gSpecialVar_Result = PARTY_SIZE;
+
     for (i = 0; i < PARTY_SIZE; i++)
     {
         u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
@@ -1788,7 +1790,39 @@ bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
             break;
         }
     }
-    if (gSpecialVar_Result == PARTY_SIZE && CheckBagHasItem(MoveToHM(moveId), 1))
+
+    switch (moveId)
+    {
+        case MOVE_SECRET_POWER:
+            itemId = ITEM_TM43_SECRET_POWER;
+            break;
+        case MOVE_CUT:
+            itemId = ITEM_HM01_CUT;
+            break;
+        case MOVE_FLY:
+            itemId = ITEM_HM02;
+            break;
+        case MOVE_SURF:
+            itemId = ITEM_HM03;
+            break;
+        case MOVE_STRENGTH:
+            itemId = ITEM_HM04;
+            break;
+        case MOVE_FLASH:
+            itemId = ITEM_HM05;
+            break;
+        case MOVE_ROCK_SMASH:
+            itemId = ITEM_HM06;
+            break;
+        case MOVE_WATERFALL:
+            itemId = ITEM_HM07;
+            break;
+        case MOVE_DIVE:
+            itemId = ITEM_HM08;
+            break;
+    }
+
+    if (gSpecialVar_Result == PARTY_SIZE && CheckBagHasItem(itemId, 1))
     {
         for (i = 0; i < PARTY_SIZE; i++)
         {

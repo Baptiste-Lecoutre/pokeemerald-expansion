@@ -112,9 +112,10 @@ bool32 CanThrowLastUsedBall(void);
 void TryHideLastUsedBall(void);
 void TryRestoreLastUsedBall(void);
 void TryAddLastUsedBallItemSprites(void);
-void TryChangeLastUsedBall(bool8 increase);
+void SwapBallToDisplay(bool32 sameBall);
+void ArrowsChangeColorLastBallCycle(bool32 showArrows);
 void UpdateAbilityPopup(u8 battlerId);
 void TryLoadTypeIcons(void);
-void TryLoadMoveInfoWindow(void);
+void TryLoadMoveInfoWindow(u32 battler);
 
 #endif // GUARD_BATTLE_INTERFACE_H
