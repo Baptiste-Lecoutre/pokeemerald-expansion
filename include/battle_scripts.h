@@ -10,7 +10,7 @@ extern const u8 BattleScript_MakeMoveMissed[];
 extern const u8 BattleScript_PrintMoveMissed[];
 extern const u8 BattleScript_MoveMissedPause[];
 extern const u8 BattleScript_MoveMissed[];
-extern const u8 BattleScript_ButItFailedAtkStringPpReduce[];
+extern const u8 BattleScript_FailedFromAtkString[];
 extern const u8 BattleScript_ButItFailed[];
 extern const u8 BattleScript_StatUp[];
 extern const u8 BattleScript_StatDown[];
@@ -472,6 +472,7 @@ extern const u8 BattleScript_SpikesActivates[];
 extern const u8 BattleScript_BerserkGeneRet[];
 extern const u8 BattleScript_TargetFormChangeWithStringNoPopup[];
 extern const u8 BattleScript_DefDown[];
+extern const u8 BattleScript_UltraBurst[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];

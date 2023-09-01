@@ -249,7 +249,7 @@ DewfordTown_Hall_EventScript_SludgeBombMan::
 	checkitem ITEM_TM36
 	goto_if_eq VAR_RESULT, TRUE, DewfordTown_Hall_EventScript_ReceivedSludgeBomb
 	msgbox DewfordTown_Hall_Text_GiveYouSludgeBomb, MSGBOX_DEFAULT
-	giveitem ITEM_TM36
+	giveitem ITEM_TM36_SLUDGE_BOMB
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	release
 	end
