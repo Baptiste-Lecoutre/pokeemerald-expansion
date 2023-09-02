@@ -192,6 +192,16 @@ static const u16 sRaidBattleDropItems_RaidRank2[MAX_RAID_DROPS] = {
     ITEM_BIG_PEARL
     ITEM_STARDUST
     ITEM_COMET_SHARD*/
+
+    /*FIRST_BERRY_INDEX berry
+    ITEM_LONELY_MINT min
+    ITEM_HELIX_FOSSIL fossil
+    ITEM_BUG_TERA_SHARD tera shard
+    ITEM_HEALTH_FEATHER EV feather
+    ITEM_HP_UP energy drink
+    ITEM_FIRE_STONE evo item
+    ITEM_SILK_SCARF held item
+    ITEM_STRANGE_SOUVENIR treasure*/
 };
 
 static const u16 *const sRaidBattleDropItems[] = 
@@ -780,29 +790,46 @@ void ClearAllRaidBattleFlags(void)
 
 u16 GetRaidRewardAmount(u16 item)
 {
-	if (GetPocketByItemId(item) == POCKET_POKE_BALLS)
-		return Random() % 11 + 5; //5 - 15
+    u32 randomNum = GetRaidRandomNumber();
+
+	if (item == ITEM_MASTER_BALL)
+        return 1;
+    else if (GetPocketByItemId(item) == POCKET_POKE_BALLS)
+		return randomNum % 11 + 5; //5 - 15
 
 	if (GetPocketByItemId(item) == POCKET_BERRIES)
-		return Random() % 11 + 5; //5 - 15
+		return randomNum % 11 + 5; //5 - 15
 
     if (item >= ITEM_RARE_CANDY && item <= ITEM_EXP_CANDY_XL)
-        return Random() % 9 + gRaidData.rank;
+        return randomNum % 9 + gRaidData.rank;
 
-	/*switch (gItemsByType[item]) {
-	case ITEM_TYPE_HEALTH_RECOVERY:
-	case ITEM_TYPE_STATUS_RECOVERY:
-		return Random() % 5 + 1; //1 - 5
-	case ITEM_TYPE_PP_RECOVERY:
-	case ITEM_TYPE_STAT_BOOST_DRINK:
-		return Random() % 3 + 1; //1 - 3
-	case ITEM_TYPE_STAT_BOOST_WING:
-		return Random() % 21 + 10; //10 - 30
-	case ITEM_TYPE_SHARD:
-		return Random() % 10 + 1; //1 - 10
-	default:*/
-		return 1;
-	//}
+    if (item >= ITEM_HELIX_FOSSIL && item <= ITEM_FOSSILIZED_DINO)
+        return 1;
+
+    if (item >= ITEM_BOTTLE_CAP && item <= ITEM_STRANGE_SOUVENIR)
+        return randomNum % 3 + gRaidData.rank;
+
+    if (item >= ITEM_LONELY_MINT && item <= ITEM_SERIOUS_MINT)
+        return randomNum % 3;
+
+    if (item >= ITEM_HEALTH_FEATHER && item <= ITEM_SWIFT_FEATHER)
+        return randomNum % 21 + 10;
+
+    if (item >= ITEM_HP_UP && item <= ITEM_PP_MAX)
+        return randomNum % 3 + 1;
+
+    if (item >= ITEM_FIRE_STONE && item <= ITEM_RIBBON_SWEET)
+        return 1;
+
+    if (item >= ITEM_SILK_SCARF && item <= ITEM_METAL_COAT)
+        return 1;
+
+    if (item >= ITEM_BUG_TERA_SHARD && item <= ITEM_WATER_TERA_SHARD)
+        return randomNum % 21 + 10;
+
+	// default
+	return 1;
+
 }
 
 static u8 TryAlterRaidItemDropRate(u16 item, u8 rate)
@@ -832,6 +859,44 @@ static u8 TryAlterRaidItemDropRate(u16 item, u8 rate)
 	return rate;
 }
 
+static u16 TryAlterRaidDropItem(u16 item)
+{
+    u32 randomNum = GetRaidRandomNumber();
+
+    if (item == ITEM_NONE) // don't change anything if no item
+        return ITEM_NONE;
+
+    if (item == FIRST_BERRY_INDEX) // random berry
+        return randomNum % (LAST_BERRY_INDEX - FIRST_BERRY_INDEX) + FIRST_BERRY_INDEX;
+
+    if (item == ITEM_MASTER_BALL && gRaidData.rank < RAID_RANK_6) // random ball is master ball for low rank raids
+        return randomNum % (LAST_BALL - FIRST_BALL + 1) + FIRST_BALL;
+
+    if (item == ITEM_LONELY_MINT) // random mint
+        return randomNum % (ITEM_SERIOUS_MINT - ITEM_LONELY_MINT + 1) + ITEM_LONELY_MINT;
+
+    if (item == ITEM_HELIX_FOSSIL) // random fossil
+        return randomNum % (ITEM_FOSSILIZED_DINO - ITEM_HELIX_FOSSIL + 1) + ITEM_HELIX_FOSSIL;
+    
+    if (item == ITEM_BUG_TERA_SHARD) // random tera shard
+        return randomNum % (ITEM_WATER_TERA_SHARD - ITEM_BUG_TERA_SHARD + 1) + ITEM_BUG_TERA_SHARD;
+
+    if (item == ITEM_HEALTH_FEATHER) // EV feather
+        return randomNum % (ITEM_SWIFT_FEATHER - ITEM_HEALTH_FEATHER + 1) + ITEM_HEALTH_FEATHER;
+    
+    if (item == ITEM_HP_UP) // random energy drink
+        return randomNum % (ITEM_PP_MAX - ITEM_HP_UP + 1) + ITEM_HP_UP;
+    
+    if (item == ITEM_FIRE_STONE) // random evolution item
+        return randomNum % (ITEM_RIBBON_SWEET - ITEM_FIRE_STONE + 1) + ITEM_FIRE_STONE;
+    
+    if (item == ITEM_SILK_SCARF) // random held item
+        return randomNum % (ITEM_METAL_COAT - ITEM_SILK_SCARF + 1) + ITEM_SILK_SCARF;
+
+    if (item == ITEM_STRANGE_SOUVENIR) // random treasure
+        return randomNum % (ITEM_STRANGE_SOUVENIR - ITEM_BOTTLE_CAP + 1) + ITEM_BOTTLE_CAP;
+}
+
 void GiveRaidBattleRewards(void)
 {
     u32 i;
@@ -845,9 +910,10 @@ void GiveRaidBattleRewards(void)
         VarSet(VAR_TEMP_A, i+1);
 
         dropRate = TryAlterRaidItemDropRate(dropItem, dropRate);
+        dropItem = TryAlterRaidDropItem(dropItem);
 
 		if (dropItem != ITEM_NONE
-			&& (Random() % 100 < dropRate))
+			&& (GetRaidRandomNumber() % 100 < dropRate))
 	    {
 			gSpecialVar_LastTalked = 0xFD; //So no event objects disappear
 			gSpecialVar_0x8000 = dropItem;//raid->data[i].drops[(*(GetVarPointer(VAR_TEMP_B)))++];//dropItem;
