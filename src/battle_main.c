@@ -253,11 +253,9 @@ void (*gPreBattleCallback1)(void);
 void (*gBattleMainFunc)(void);
 struct BattleResults gBattleResults;
 u8 gLeveledUpInBattle;
-void (*gBattlerControllerFuncs[MAX_BATTLERS_COUNT])(void);
 u8 gHealthboxSpriteIds[MAX_BATTLERS_COUNT];
 u8 gMultiUsePlayerCursor;
 u8 gNumberOfMovesToChoose;
-u8 gBattleControllerData[MAX_BATTLERS_COUNT]; // Used by the battle controllers to store misc sprite/task IDs for each battler
 
 static const struct ScanlineEffectParams sIntroScanlineParams16Bit =
 {
@@ -605,19 +603,16 @@ static void CB2_InitBattleInternal(void)
         gBattle_WIN0V = WIN_RANGE(DISPLAY_HEIGHT / 2, DISPLAY_HEIGHT / 2 + 1);
         ScanlineEffect_Clear();
 
-        i = 0;
-        while (i < 80)
+        for (i = 0; i < DISPLAY_HEIGHT / 2; i++)
         {
             gScanlineEffectRegBuffers[0][i] = 0xF0;
             gScanlineEffectRegBuffers[1][i] = 0xF0;
-            i++;
         }
 
-        while (i < 160)
+        for (; i < DISPLAY_HEIGHT; i++)
         {
             gScanlineEffectRegBuffers[0][i] = 0xFF10;
             gScanlineEffectRegBuffers[1][i] = 0xFF10;
-            i++;
         }
 
         ScanlineEffect_SetParams(sIntroScanlineParams16Bit);
@@ -633,13 +628,12 @@ static void CB2_InitBattleInternal(void)
     gBattle_BG3_X = 0;
     gBattle_BG3_Y = 0;
 
-#if DEBUG_OVERWORLD_MENU == FALSE 
-    
-    gBattleTerrain = BattleSetup_GetTerrainId();
-#else
+#if DEBUG_OVERWORLD_MENU == TRUE
     if (!gIsDebugBattle)
-        gBattleTerrain = BattleSetup_GetTerrainId();
 #endif
+    {
+        gBattleTerrain = BattleSetup_GetTerrainId();
+    }
     if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
         gBattleTerrain = BATTLE_TERRAIN_BUILDING;
 
@@ -662,27 +656,19 @@ static void CB2_InitBattleInternal(void)
     else
         SetMainCallback2(CB2_HandleStartBattle);
 
-#if DEBUG_OVERWORLD_MENU == FALSE 
-    if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED)))
-    {
-        CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
-        if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS && !BATTLE_TWO_VS_ONE_OPPONENT)
-            CreateNPCTrainerParty(&gEnemyParty[PARTY_SIZE / 2], gTrainerBattleOpponent_B, FALSE);
-        SetWildMonHeldItem();
-        CalculateEnemyPartyCount();
-    }
-#else
+#if DEBUG_OVERWORLD_MENU == TRUE
     if (!gIsDebugBattle)
+#endif
     {
         if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED)))
         {
             CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
-            if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+            if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS && !BATTLE_TWO_VS_ONE_OPPONENT)
                 CreateNPCTrainerParty(&gEnemyParty[PARTY_SIZE / 2], gTrainerBattleOpponent_B, FALSE);
             SetWildMonHeldItem();
+            CalculateEnemyPartyCount();
         }
     }
-#endif
 
     gMain.inBattle = TRUE;
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
@@ -2161,6 +2147,15 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
     return retVal;
 }
 
+void CreateTrainerPartyForPlayer(void)
+{
+    struct Trainer trainer;
+    ZeroPlayerPartyMons();
+    gPartnerTrainerId = gSpecialVar_0x8004;
+    trainer = gTrainers[gSpecialVar_0x8004];
+    CreateNPCTrainerPartyFromTrainer(gPlayerParty, &trainer, TRUE, BATTLE_TYPE_TRAINER);
+}
+
 void VBlankCB_Battle(void)
 {
     // Change gRngSeed every vblank unless the battle could be recorded.
@@ -2846,8 +2841,6 @@ void SpriteCB_FaintOpponentMon(struct Sprite *sprite)
     else
         species = sprite->sSpeciesId;
 
-    GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_PERSONALITY);  // Unused return value.
-
     if (species == SPECIES_UNOWN)
     {
         species = GetUnownSpeciesId(personality);
@@ -3137,7 +3130,7 @@ static void BattleMainCB1(void)
     gBattleMainFunc();
     ++gBattleStruct->battleTimer;
     for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
-        gBattlerControllerFuncs[gActiveBattler]();
+        gBattlerControllerFuncs[gActiveBattler](gActiveBattler);
 }
 
 static bool8 IsMajorBattle(void)
@@ -4039,7 +4032,7 @@ static void TryDoEventsBeforeFirstTurn(void)
         if (!BattlerHasAi(i))
             gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
         //Add to team preview
-        if (GetBattlerSide(i) == B_SIDE_OPPONENT)
+        if (GetBattlerSide(i) == B_SIDE_OPPONENT && IsBattlerAlive(i))
             gBattleStruct->revealedEnemyMons |= gBitTable[gBattlerPartyIndexes[i]];
     }
     TurnValuesCleanUp(FALSE);

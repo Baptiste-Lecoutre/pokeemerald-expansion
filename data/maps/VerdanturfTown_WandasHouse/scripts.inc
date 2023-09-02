@@ -49,13 +49,13 @@ VerdanturfTown_WandasHouse_EventScript_Wanda::
 
 VerdanturfTown_WandasHouse_EventScript_MeetWanda::
 	msgbox VerdanturfTown_WandasHouse_Text_MeetWanda, MSGBOX_DEFAULT
-	goto_if_set FLAG_RECEIVED_HM04, VerdanturfTown_WandasHouse_EventScript_WandaGardevoirite
+	goto_if_set FLAG_RECEIVED_HM_STRENGTH, VerdanturfTown_WandasHouse_EventScript_WandaGardevoirite
 	release
 	end
 
 VerdanturfTown_WandasHouse_EventScript_WandaDontWorry::
 	msgbox VerdanturfTown_WandasHouse_Text_DontWorryAboutWally, MSGBOX_DEFAULT
-	goto_if_set FLAG_RECEIVED_HM04, VerdanturfTown_WandasHouse_EventScript_WandaGardevoirite
+	goto_if_set FLAG_RECEIVED_HM_STRENGTH, VerdanturfTown_WandasHouse_EventScript_WandaGardevoirite
 	release
 	end
 

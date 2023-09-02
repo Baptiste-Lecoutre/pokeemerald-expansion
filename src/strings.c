@@ -2030,6 +2030,13 @@ const u8 gText_UsedPokeVial[] = _("{PLAYER} used the Poké Vial.\nAll Pokémon w
 
 const u8 gStartMenu_TimeBoxClock[] = _("{STR_VAR_1}:{STR_VAR_2}:{STR_VAR_3}");
 
+// Nature changer
+const u8 gText_FlavourRed[] = _("Red:{CLEAR_TO 0x32}Attack");
+const u8 gText_FlavourYellow[] = _("Yellow:{CLEAR_TO 0x32}Defense");
+const u8 gText_FlavourPink[] = _("Pink:{CLEAR_TO 0x32}Speed");
+const u8 gText_FlavourBlue[] = _("Blue:{CLEAR_TO 0x32}Sp. Atk");
+const u8 gText_FlavourGreen[] = _("Green:{CLEAR_TO 0x32}Sp. Def");
+
 // EV/IV changers
 const u8 gText_View[] = _("View");
 const u8 gText_Modify[] = _("Add EVs");

@@ -32,6 +32,7 @@
 #include "pokeblock.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
+#include "pokemon_summary_screen.h"
 #include "random.h"
 #include "rayquaza_scene.h"
 #include "region_map.h"
@@ -59,7 +60,6 @@
 #include "constants/heal_locations.h"
 #include "constants/map_types.h"
 #include "constants/mystery_gift.h"
-#include "constants/script_menu.h"
 #include "constants/slot_machine.h"
 #include "constants/songs.h"
 #include "constants/moves.h"
@@ -4014,6 +4014,7 @@ void ScrollableMultichoice_ClosePersistentMenu(void)
 #undef tTaskId
 
 #define DEOXYS_ROCK_LEVELS 11
+#define ROCK_PAL_ID 10
 
 void DoDeoxysRockInteraction(void)
 {
@@ -4093,7 +4094,7 @@ static void Task_DeoxysRockInteraction(u8 taskId)
 static void ChangeDeoxysRockLevel(u8 rockLevel)
 {
     u8 objectEventId;
-    LoadPalette(&sDeoxysRockPalettes[rockLevel], OBJ_PLTT_ID(10), PLTT_SIZEOF(4));
+    LoadPalette(&sDeoxysRockPalettes[rockLevel], OBJ_PLTT_ID(ROCK_PAL_ID), PLTT_SIZEOF(4));
     TryGetObjectEventIdByLocalIdAndMap(LOCALID_BIRTH_ISLAND_EXTERIOR_ROCK, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, &objectEventId);
 
     if (rockLevel == 0)
@@ -4130,21 +4131,20 @@ static void WaitForDeoxysRockMovement(u8 taskId)
 
 void IncrementBirthIslandRockStepCount(void)
 {
-    u16 var = VarGet(VAR_DEOXYS_ROCK_STEP_COUNT);
+    u16 stepCount = VarGet(VAR_DEOXYS_ROCK_STEP_COUNT);
     if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(BIRTH_ISLAND_EXTERIOR) && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(BIRTH_ISLAND_EXTERIOR))
     {
-        var++;
-        if (var > 99)
+        if (++stepCount > 99)
             VarSet(VAR_DEOXYS_ROCK_STEP_COUNT, 0);
         else
-            VarSet(VAR_DEOXYS_ROCK_STEP_COUNT, var);
+            VarSet(VAR_DEOXYS_ROCK_STEP_COUNT, stepCount);
     }
 }
 
 void SetDeoxysRockPalette(void)
 {
-    LoadPalette(&sDeoxysRockPalettes[(u8)VarGet(VAR_DEOXYS_ROCK_LEVEL)], OBJ_PLTT_ID(10), PLTT_SIZEOF(4));
-    BlendPalettes(0x04000000, 16, 0);
+    LoadPalette(&sDeoxysRockPalettes[(u8)VarGet(VAR_DEOXYS_ROCK_LEVEL)], OBJ_PLTT_ID(ROCK_PAL_ID), PLTT_SIZEOF(4));
+    BlendPalettes(1 << (ROCK_PAL_ID + 16), 16, 0);
 }
 
 void SetPCBoxToSendMon(u8 boxId)
@@ -4713,16 +4713,15 @@ bool8 InPokemonCenter(void)
 
 #define FANCLUB_BITFIELD (gSaveBlock1Ptr->vars[VAR_FANCLUB_FAN_COUNTER - VARS_START])
 #define FANCLUB_COUNTER    0x007F
-#define FANCLUB_FAN_FLAGS  0xFF80
 
 #define GET_TRAINER_FAN_CLUB_FLAG(flag) (FANCLUB_BITFIELD >> (flag) & 1)
 #define SET_TRAINER_FAN_CLUB_FLAG(flag) (FANCLUB_BITFIELD |= 1 << (flag))
 #define FLIP_TRAINER_FAN_CLUB_FLAG(flag)(FANCLUB_BITFIELD ^= 1 << (flag))
 
 #define GET_TRAINER_FAN_CLUB_COUNTER        (FANCLUB_BITFIELD & FANCLUB_COUNTER)
-#define SET_TRAINER_FAN_CLUB_COUNTER(count) (FANCLUB_BITFIELD = (FANCLUB_BITFIELD & FANCLUB_FAN_FLAGS) | (count))
+#define SET_TRAINER_FAN_CLUB_COUNTER(count) (FANCLUB_BITFIELD = (FANCLUB_BITFIELD & ~FANCLUB_COUNTER) | (count))
 #define INCR_TRAINER_FAN_CLUB_COUNTER(count)(FANCLUB_BITFIELD += (count))
-#define CLEAR_TRAINER_FAN_CLUB_COUNTER      (FANCLUB_BITFIELD &= ~(FANCLUB_COUNTER))
+#define CLEAR_TRAINER_FAN_CLUB_COUNTER      (FANCLUB_BITFIELD &= ~FANCLUB_COUNTER)
 
 void ResetFanClub(void)
 {
@@ -5617,4 +5616,26 @@ bool8 CheckSpeciesInParty (void)
         return TRUE;
     }
     return FALSE;
+}
+
+// Buffers the nature of a Pokemon chosen by the player.
+// gSpecialVar_0x8004 must be set to the party slot of the chosen Pokemon
+void BufferChosenMonNature (void)
+{
+    u8 nature = 0;
+
+    nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE);
+    StringCopy (gStringVar2, gNatureNamePointers[nature]);
+}
+
+// Changes the selected Pokemon's nature.
+// gSpecialVar_0x8004 must be set to the party slot of the Pokemon whose nature should be changed
+// Set gSpecialVar_0x8005 to the stat to icrease, and gSpecialVar_0x8006 to the stat to decrease
+void ChangePokemonNature (void)
+{
+    u8 newNature = 0;
+
+    newNature = (gSpecialVar_0x8005 * (NUM_STATS - 1)) + gSpecialVar_0x8006;
+	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
+    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }

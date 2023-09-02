@@ -581,3 +581,5 @@ gSpecials::
 	def_special BufferNextLevelCap
 	def_special IncreasePartyLevelToMaxLevel
 	def_special CheckSpeciesInParty
+	def_special ChangePokemonNature
+	def_special BufferChosenMonNature

@@ -4031,7 +4031,7 @@ static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
 #define MOVE_INFO_WIN_Y_0 143
 #define MOVE_INFO_WIN_Y_F (MOVE_INFO_WIN_Y_0 - 10)
 
-void TryLoadMoveInfoWindow(void)
+void TryLoadMoveInfoWindow(u32 battler)
 {
     u8 spriteId;
 
@@ -4044,7 +4044,7 @@ void TryLoadMoveInfoWindow(void)
     if (spriteId != MAX_SPRITES)
 	{
 		struct Sprite* sprite = &gSprites[spriteId];
-		sprite->data[1] = gActiveBattler;
+		sprite->data[1] = battler;
     }
 }
 
@@ -4324,7 +4324,10 @@ void HideInBattleTeamPreview(void)
 	u8 pal0 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 0); 
 	u8 pal1 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 1);
 	u8 pal2 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 2);
-    u8 pal3 = IndexOfSpritePaletteTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON); //Fainted palette
+    u8 pal3 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 3); 
+	u8 pal4 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 4);
+	u8 pal5 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 5);
+    u8 pal6 = IndexOfSpritePaletteTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON); //Fainted palette
 
     //Hide BG
 	gBattle_BG0_Y = 160; //Show action selection
@@ -4342,7 +4345,10 @@ void HideInBattleTeamPreview(void)
 			else if (gSprites[i].oam.paletteNum == pal0
 			|| gSprites[i].oam.paletteNum == pal1
 			|| gSprites[i].oam.paletteNum == pal2
-			|| gSprites[i].oam.paletteNum == pal3)
+			|| gSprites[i].oam.paletteNum == pal3
+            || gSprites[i].oam.paletteNum == pal4
+			|| gSprites[i].oam.paletteNum == pal5
+			|| gSprites[i].oam.paletteNum == pal6)
 				FreeAndDestroyMonIconSprite(&gSprites[i]);
 		}
 	}

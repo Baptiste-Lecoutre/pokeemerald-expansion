@@ -3223,6 +3223,13 @@ extern const u8 gStartMenu_TimeBoxClock[];
 extern const u8 gText_ExpShareOn[];
 extern const u8 gText_ExpShareOff[];
 
+// Nature changer multichoice
+extern const u8 gText_FlavourRed[];
+extern const u8 gText_FlavourYellow[];
+extern const u8 gText_FlavourPink[];
+extern const u8 gText_FlavourBlue[];
+extern const u8 gText_FlavourGreen[];
+
 // Super/Hyper Training strings
 extern const u8 gText_View[];
 extern const u8 gText_Modify[];
