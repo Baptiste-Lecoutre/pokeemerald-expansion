@@ -111,7 +111,7 @@ SlateportCity_NameRatersHouse_Text_ThatIsMerelyAnEgg:
 SlateportCity_NameRatersHouse_NatureChanger::
 	lockall
 	faceplayer
-	call SlateportCity_NameRatersHouse_NatureChangerIntro
+	call_if_unset FLAG_TEMP_1, SlateportCity_NameRatersHouse_NatureChangerIntro
 	msgbox NatureChanger_Text_ChoosePokemon, MSGBOX_DEFAULT
 	special ChoosePartyMon
 	waitstate
@@ -127,6 +127,7 @@ SlateportCity_NameRatersHouse_NatureChanger::
 	goto NatureChanger_2
 
 SlateportCity_NameRatersHouse_NatureChangerIntro::
+	setflag FLAG_TEMP_1
 	msgbox NatureChanger_Text_Intro
 	return
 
