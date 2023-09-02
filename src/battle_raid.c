@@ -256,8 +256,8 @@ bool32 InitRaidData(void)
     // determine raid species
     do
     {
-        species = randomNum % FORMS_START + 1;
-    } while (gSpeciesInfo[species].flags & (SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_MYTHICAL | SPECIES_FLAG_ULTRA_BEAST));
+        species = (randomNum + species) % FORMS_START + 1;
+    } while (species == SPECIES_NONE || gSpeciesInfo[species].flags & (SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_MYTHICAL | SPECIES_FLAG_ULTRA_BEAST));
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
     preEvoSpecies = GetPreEvolution(species);

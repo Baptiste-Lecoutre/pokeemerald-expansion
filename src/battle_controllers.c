@@ -2849,7 +2849,8 @@ bool32 TwoOpponentIntroMons(u32 battler) // Double battle with both opponent pok
 {
     return (IsDoubleBattle()
             && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[battler]])
-            && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]));
+            && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]])
+            && !(gBattleTypeFlags & BATTLE_TYPE_RAID));
 }
 
 // Task data for Task_StartSendOutAnim

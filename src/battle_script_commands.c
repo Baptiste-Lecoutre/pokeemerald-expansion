@@ -1488,7 +1488,7 @@ static void Cmd_attackcanceler(void)
         && gBattleMoves[gCurrentMove].split & SPLIT_STATUS)
     {
         gHitMarker |= HITMARKER_UNABLE_TO_USE_MOVE;
-        gBattlescriptCurrInstr = BattleScript_ButItFailedAtkStringPpReduce;
+        gBattlescriptCurrInstr = BattleScript_FailedFromAtkString;
         return;
     }
 

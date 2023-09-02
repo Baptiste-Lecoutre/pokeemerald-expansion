@@ -3215,7 +3215,7 @@ static void BattleStartClearSetData(void)
         gHitMarker |= HITMARKER_NO_ANIMATIONS;
     }
 
-    if(IsMajorBattle() && (gBattleTypeFlags & BATTLE_TYPE_TRAINER))
+    if((IsMajorBattle() && gBattleTypeFlags & BATTLE_TYPE_TRAINER) || gBattleTypeFlags & BATTLE_TYPE_RAID)
     {
         gBattleScripting.battleStyle = OPTIONS_BATTLE_STYLE_SET;
         
