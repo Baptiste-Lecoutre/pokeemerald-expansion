@@ -5119,6 +5119,9 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
                     | (substruct3->worldRibbon << 26);
             }
             break;
+        case MON_DATA_NATURE:
+            retVal = boxMon->personality % NUM_NATURES;
+            break;
         default:
             break;
         }
@@ -5204,9 +5207,6 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
             break;
         case MON_DATA_ENCRYPT_SEPARATOR:
             retVal = boxMon->unknown;
-            break;
-        case MON_DATA_NATURE:
-            retVal = boxMon->personality % 25;
             break;
         default:
             break;
@@ -5495,7 +5495,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         {
             u32 pid = boxMon->personality;
             u32 otId = boxMon->otId;
-            s8 diff = (data[0] % 25) - (pid % 25); // difference between new nature and current nature, [-24,24]
+            s8 diff = (data[0] % NUM_NATURES) - (pid % NUM_NATURES); // difference between new nature and current nature, [-24,24]
             bool8 preserveShiny = FALSE;
             bool8 preserveLetter = FALSE;
             u16 shinyValue = HIHALF(pid) ^ LOHALF(pid);
