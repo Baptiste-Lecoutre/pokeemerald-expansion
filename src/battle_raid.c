@@ -128,92 +128,145 @@ static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
 };
 
 static const u16 sRaidBattleDropItems_NoRaid[MAX_RAID_DROPS] = {
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE,
-    ITEM_NONE
+    ITEM_NONE, //100
+    ITEM_NONE, //80
+    ITEM_NONE, //80
+    ITEM_NONE, //50
+    ITEM_NONE, //50
+    ITEM_NONE, //30
+    ITEM_NONE, //30
+    ITEM_NONE, //25
+    ITEM_NONE, //25
+    ITEM_NONE, //5
+    ITEM_NONE, //4
+    ITEM_NONE //1
 };
 
 static const u16 sRaidBattleDropItems_RaidRank1[MAX_RAID_DROPS] = {
-    ITEM_EXP_CANDY_XS,
-    ITEM_NONE,
-    ITEM_STARDUST,
-    ITEM_NONE,
-    ITEM_PEARL,
-    ITEM_EXP_CANDY_XS,
-    ITEM_NONE,
-    ITEM_EXP_CANDY_S,
-    ITEM_RARE_CANDY,
-    ITEM_NUGGET,
-    ITEM_NONE,
-    ITEM_NONE
+    ITEM_EXP_CANDY_XS, //100
+    ITEM_EXP_CANDY_S, //80
+    ITEM_EXP_CANDY_XS, //80
+    FIRST_BERRY_INDEX, //50
+    ITEM_MASTER_BALL, //50
+    ITEM_HEALTH_FEATHER, //30
+    ITEM_EXP_CANDY_XS, //30
+    ITEM_STRANGE_SOUVENIR, //25
+    ITEM_RARE_CANDY, //25
+    ITEM_WISHING_PIECE, //5
+    ITEM_WISHING_PIECE, //4
+    ITEM_WISHING_PIECE //1
 };
 
 static const u16 sRaidBattleDropItems_RaidRank2[MAX_RAID_DROPS] = {
-    ITEM_MASTER_BALL,
-    ITEM_NUGGET,
-	ITEM_BOTTLE_CAP,
-	ITEM_PEARL,
-	ITEM_BIG_PEARL,
-	ITEM_WISHING_PIECE,
-	ITEM_STARDUST,
-	ITEM_COMET_SHARD,
-	ITEM_THUNDER_STONE,
-	ITEM_WATER_STONE,
-	ITEM_LEAF_STONE,
-	ITEM_NONE,//
-
-    /*ITEM_WISHING_PIECE
-    
-    ITEM_EXP_CANDY_XS
-    ITEM_EXP_CANDY_S
-    ITEM_EXP_CANDY_M
-    ITEM_EXP_CANDY_L
-    ITEM_EXP_CANDY_XL
-    ITEM_RARE_CANDY
-
-    ITEM_ABILITY_CAPSULE
-    ITEM_ABILITY_PATCH
-
-    ITEM_BOTTLE_CAP
-    ITEM_GOLD_BOTTLE_CAP
-
-    ITEM_NUGGET
-    ITEM_BIG_NUGGET
-    ITEM_PEARL
-    ITEM_BIG_PEARL
-    ITEM_STARDUST
-    ITEM_COMET_SHARD*/
-
-    /*FIRST_BERRY_INDEX berry
-    ITEM_LONELY_MINT min
-    ITEM_HELIX_FOSSIL fossil
-    ITEM_BUG_TERA_SHARD tera shard
-    ITEM_HEALTH_FEATHER EV feather
-    ITEM_HP_UP energy drink
-    ITEM_FIRE_STONE evo item
-    ITEM_SILK_SCARF held item
-    ITEM_STRANGE_SOUVENIR treasure*/
+    ITEM_EXP_CANDY_S, //100
+    ITEM_EXP_CANDY_M, //80
+	ITEM_HEALTH_FEATHER, //80
+	FIRST_BERRY_INDEX, //50
+	ITEM_MASTER_BALL, //50
+	ITEM_HEALTH_FEATHER, //30
+	ITEM_STRANGE_SOUVENIR, //30
+	ITEM_ABILITY_CAPSULE, //25
+	ITEM_RARE_CANDY, //25
+	ITEM_WISHING_PIECE, //5
+	ITEM_WISHING_PIECE, //4
+	ITEM_WISHING_PIECE, //1
 };
+
+static const u16 sRaidBattleDropItems_RaidRank3[MAX_RAID_DROPS] = {
+    ITEM_EXP_CANDY_M, //100
+    ITEM_EXP_CANDY_L, //80
+	ITEM_HEALTH_FEATHER, //80
+	FIRST_BERRY_INDEX, //50
+	ITEM_MASTER_BALL, //50
+	ITEM_HEALTH_FEATHER, //30
+	ITEM_STRANGE_SOUVENIR, //30
+	ITEM_LONELY_MINT, //25
+	ITEM_ABILITY_CAPSULE, //25
+	ITEM_HP_UP, //5
+	ITEM_HP_UP, //4
+	ITEM_HP_UP, //1
+};
+
+static const u16 sRaidBattleDropItems_RaidRank4[MAX_RAID_DROPS] = {
+    ITEM_EXP_CANDY_L, //100
+    FIRST_BERRY_INDEX, //80
+	ITEM_HEALTH_FEATHER, //80
+	ITEM_ABILITY_CAPSULE, //50
+	ITEM_LONELY_MINT, //50
+	ITEM_BOTTLE_CAP, //30
+	ITEM_FIRE_STONE, //30
+	ITEM_SILK_SCARF, //25
+	ITEM_ABILITY_PATCH, //25
+	ITEM_HP_UP, //5
+	ITEM_HP_UP, //4
+	ITEM_HP_UP, //1
+};
+
+static const u16 sRaidBattleDropItems_RaidRank5[MAX_RAID_DROPS] = {
+    ITEM_EXP_CANDY_L, //100
+    ITEM_BOTTLE_CAP, //80
+	ITEM_EXP_CANDY_XL, //80
+	ITEM_SILK_SCARF, //50
+	ITEM_LONELY_MINT, //50
+	ITEM_ABILITY_PATCH, //30
+	ITEM_FIRE_STONE, //30
+	ITEM_HP_UP, //25
+	ITEM_HELIX_FOSSIL, //25
+	ITEM_WISHING_PIECE, //5
+	ITEM_WISHING_PIECE, //4
+	ITEM_WISHING_PIECE, //1
+};
+
+static const u16 sRaidBattleDropItems_RaidRank6[MAX_RAID_DROPS] = {
+    ITEM_EXP_CANDY_XL, //100
+    ITEM_ABILITY_PATCH, //80
+	ITEM_LONELY_MINT, //80
+	ITEM_GOLD_BOTTLE_CAP, //50
+	ITEM_BOTTLE_CAP, //50
+	ITEM_ABILITY_CAPSULE, //30
+	ITEM_HELIX_FOSSIL, //30
+	ITEM_HP_UP, //25
+	ITEM_MASTER_BALL, //25
+	ITEM_WISHING_PIECE, //5
+	ITEM_WISHING_PIECE, //4
+	ITEM_WISHING_PIECE, //1
+};
+
+static const u16 sRaidBattleDropItems_RaidRank7[MAX_RAID_DROPS] = {
+    ITEM_EXP_CANDY_XL, //100
+    ITEM_ABILITY_PATCH, //80
+	ITEM_MASTER_BALL, //80
+	ITEM_GOLD_BOTTLE_CAP, //50
+	ITEM_STRANGE_SOUVENIR, //50
+	ITEM_ABILITY_CAPSULE, //30
+	ITEM_HELIX_FOSSIL, //30
+	ITEM_HP_UP, //25
+	ITEM_LONELY_MINT, //25
+	ITEM_WISHING_PIECE, //5
+	ITEM_WISHING_PIECE, //4
+	ITEM_WISHING_PIECE, //1
+};
+    /*Here is the list of items to refer into the drops list:
+    FIRST_BERRY_INDEX - random berry
+    ITEM_LONELY_MINT - random mint
+    ITEM_HELIX_FOSSIL - random fossil
+    ITEM_BUG_TERA_SHARD - random tera shard - unused
+    ITEM_HEALTH_FEATHER - random EV feather
+    ITEM_HP_UP - random energy drink
+    ITEM_FIRE_STONE - random evo item
+    ITEM_SILK_SCARF - random held item
+    ITEM_STRANGE_SOUVENIR - random treasure*/
 
 static const u16 *const sRaidBattleDropItems[] = 
 {
-    sRaidBattleDropItems_NoRaid, 
-    sRaidBattleDropItems_RaidRank1,
-    sRaidBattleDropItems_RaidRank2,
-    sRaidBattleDropItems_RaidRank2,
-    sRaidBattleDropItems_RaidRank2,
-    sRaidBattleDropItems_RaidRank2,
-    sRaidBattleDropItems_RaidRank2,
-    sRaidBattleDropItems_RaidRank2
+    [NO_RAID] = sRaidBattleDropItems_NoRaid, 
+    [RAID_RANK_1] = sRaidBattleDropItems_RaidRank1,
+    [RAID_RANK_2] = sRaidBattleDropItems_RaidRank2,
+    [RAID_RANK_3] = sRaidBattleDropItems_RaidRank3,
+    [RAID_RANK_4] = sRaidBattleDropItems_RaidRank4,
+    [RAID_RANK_5] = sRaidBattleDropItems_RaidRank5,
+    [RAID_RANK_6] = sRaidBattleDropItems_RaidRank6,
+    [RAID_RANK_7] = sRaidBattleDropItems_RaidRank7
 };
 
 extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
