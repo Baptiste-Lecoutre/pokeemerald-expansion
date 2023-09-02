@@ -109,7 +109,7 @@ LilycoveCity_MoveDeletersHouse_Text_CantForgetSurf:
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ EGG MOVE TUTOR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 LilycoveCity_EggMoveTutorsHouse_EventScript_EggMoveTutor::
 	lockall
-	applymovement LOCALID_MOVE_RELEARNER, Common_Movement_FacePlayer
+	applymovement LOCALID_MOVE_DELETER, Common_Movement_FacePlayer
 	waitmovement 0
 	goto_if_set FLAG_TEMP_1, LilycoveCity_EggMoveTutorsHouse_EventScript_AskTeachMove
 	msgbox LilycoveCity_EggMoveTutorsHouse_Text_ImTheMoveTutor, MSGBOX_DEFAULT
