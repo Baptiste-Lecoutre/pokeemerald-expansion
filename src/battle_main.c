@@ -3893,7 +3893,7 @@ static void TryDoEventsBeforeFirstTurn(void)
         if (!BattlerHasAi(i))
             gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
         //Add to team preview
-        if (GetBattlerSide(i) == B_SIDE_OPPONENT)
+        if (GetBattlerSide(i) == B_SIDE_OPPONENT && IsBattlerAlive(i))
             gBattleStruct->revealedEnemyMons |= gBitTable[gBattlerPartyIndexes[i]];
     }
     TurnValuesCleanUp(FALSE);

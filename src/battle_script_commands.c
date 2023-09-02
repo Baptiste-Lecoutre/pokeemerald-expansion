@@ -7046,7 +7046,7 @@ static void Cmd_switchineffects(void)
     if (!BattlerHasAi(gActiveBattler))
         gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[gActiveBattler]];
     
-    if (GetBattlerSide(gActiveBattler) == B_SIDE_OPPONENT)
+    if (GetBattlerSide(gActiveBattler) == B_SIDE_OPPONENT && IsBattlerAlive(gActiveBattler))
         gBattleStruct->revealedEnemyMons |= gBitTable[gBattlerPartyIndexes[gActiveBattler]]; //Add to team preview
 
     // Neutralizing Gas announces itself before hazards
