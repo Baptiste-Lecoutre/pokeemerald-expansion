@@ -1128,16 +1128,7 @@ static bool8 CanStopSurfing(s16 x, s16 y, u8 direction)
 
 static bool8 ShouldJumpLedge(s16 x, s16 y, u8 direction)
 {
-    s16 x2 = x;
-    s16 y2 = y;
-
-    MoveCoords(direction, &x2, &y2);
-
     if (GetLedgeJumpDirection(x, y, direction) != DIR_NONE)
-        return TRUE;
-    
-    // player can jump over 1 tile of water
-    if (MapGridGetElevationAt(x,y) == 1 && MapGridGetElevationAt(x2,y2) != 1 && !MapGridGetCollisionAt(x2,y2))
         return TRUE;
     else
         return FALSE;
