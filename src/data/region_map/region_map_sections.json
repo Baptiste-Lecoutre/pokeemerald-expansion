@@ -1766,6 +1766,30 @@
       "y": 7,
       "width": 1,
       "height": 1
+    },
+    {
+      "map_section": "MAPSEC_DRACO_CHAMBER",
+      "name": "DRACO CHAMBER",
+      "x": 0,
+      "y": 3,
+      "width": 1,
+      "height": 1
+    },
+    {
+      "map_section": "MAPSEC_CAVE_OF_SHOCK",
+      "name": "ROUTE 110 EAST",
+      "x": 9,
+      "y": 7,
+      "width": 1,
+      "height": 1
+    },
+    {
+      "map_section": "MAPSEC_CAVE_OF_SHOCK2",
+      "name": "CAVE OF SHOCK",
+      "x": 9,
+      "y": 7,
+      "width": 1,
+      "height": 1
     }
   ]
 }

@@ -27,6 +27,16 @@
       "map": "MAP_ROUTE103",
       "offset": 60,
       "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE110_CAVE_OF_SHOCK",
+      "offset": 0,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_ROUTE118",
+      "offset": 40,
+      "direction": "up"
     }
   ],
   "object_events": [

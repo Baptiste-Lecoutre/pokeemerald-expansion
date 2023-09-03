@@ -1160,3 +1160,9 @@ gText_OneDayImGoingToFightYou:
 
 	.include "data/scripts/furfrou.inc"
 	.include "data/scripts/rotom.inc"
+
+	.include "data/maps/Route110_CaveOfShock/scripts.inc"
+
+	.include "data/maps/CaveOfShock/scripts.inc"
+
+	.include "data/maps/Underwater_MeteorFalls_B1F_2R/scripts.inc"

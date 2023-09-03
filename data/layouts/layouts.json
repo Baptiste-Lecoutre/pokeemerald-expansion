@@ -4650,6 +4650,36 @@
       "secondary_tileset": "gTileset_Mossdeep",
       "border_filepath": "data/layouts/Route125_MirageIsland/border.bin",
       "blockdata_filepath": "data/layouts/Route125_MirageIsland/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE110_CAVE_OF_SHOCK",
+      "name": "Route110_CaveOfShock_Layout",
+      "width": 23,
+      "height": 40,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Mauville",
+      "border_filepath": "data/layouts/Route110_CaveOfShock/border.bin",
+      "blockdata_filepath": "data/layouts/Route110_CaveOfShock/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_OF_SHOCK",
+      "name": "CaveOfShock_Layout",
+      "width": 17,
+      "height": 33,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveOfShock/border.bin",
+      "blockdata_filepath": "data/layouts/CaveOfShock/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_METEOR_FALLS_B1F_2R",
+      "name": "Underwater_MeteorFalls_B1F_2R_Layout",
+      "width": 11,
+      "height": 18,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Underwater",
+      "border_filepath": "data/layouts/Underwater_MeteorFalls_B1F_2R/border.bin",
+      "blockdata_filepath": "data/layouts/Underwater_MeteorFalls_B1F_2R/map.bin"
     }
   ]
 }
