@@ -65,6 +65,7 @@ enum WindowIds
 {
     WINDOW_INFO,
     WINDOW_REGISTERED,
+    WINDOW_MESSAGE,
     WINDOW_COUNT,
 };
 
@@ -75,6 +76,13 @@ enum Statuses
     STATUS_LOCKED,
     STATUS_NO_DATA,
     STATUS_INCORRECT_AREA,
+};
+
+enum MessageIds
+{
+    MESSAGE_CHOOSE_MON,
+    MESSAGE_REGISTERED,
+    MESSAGE_NO_DATA,
 };
 
 struct DexNavSearch
@@ -135,6 +143,7 @@ EWRAM_DATA bool8 gDexnavBattle = FALSE;
 static void Task_DexNavWaitFadeIn(u8 taskId);
 static void Task_DexNavMain(u8 taskId);
 static void PrintCurrentSpeciesInfo(void);
+static void PrintDexNavMessage(u8 messageId);
 // SEARCH
 static bool8 TryStartHiddenMonFieldEffect(u8 environment, u8 xSize, u8 ySize, bool8 smallScan);
 static void DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel, u16* moveDst);
@@ -158,10 +167,6 @@ static void DrawHiddenSearchWindow(u8 width);
 
 //// Const Data
 // gui image data
-//static const u32 sDexNavGuiTiles[] = INCBIN_U32("graphics/dexnav/gui_tiles.4bpp.lz");
-//static const u32 sDexNavGuiTilemap[] = INCBIN_U32("graphics/dexnav/gui_tilemap.bin.lz");
-//static const u32 sDexNavGuiPal[] = INCBIN_U32("graphics/dexnav/gui.gbapal");
-
 static const u32 sSelectionCursorGfx[] = INCBIN_U32("graphics/dexnav/cursor.4bpp.lz");
 static const u16 sSelectionCursorPal[] = INCBIN_U16("graphics/dexnav/cursor.gbapal");
 static const u32 sCapturedAllMonsTiles[] = INCBIN_U32("graphics/dexnav/captured_all.4bpp.lz");  //uses selection cursor pal
@@ -170,7 +175,6 @@ static const u32 sNoDataGfx[] = INCBIN_U32("graphics/dexnav/no_data.4bpp.lz");
 
 // searching image data
 static const u32 sPotentialStarGfx[] = INCBIN_U32("graphics/dexnav/star.4bpp.lz");
-//static const u32 sEyeGfx[] = INCBIN_U32("graphics/dexnav/vision.4bpp.lz");
 static const u32 sHiddenSearchIconGfx[] = INCBIN_U32("graphics/dexnav/hidden_search.4bpp.lz");
 static const u32 sOwnedIconGfx[] = INCBIN_U32("graphics/dexnav/owned_icon.4bpp.lz");
 static const u32 sHiddenMonIconGfx[] = INCBIN_U32("graphics/dexnav/hidden.4bpp.lz");
@@ -178,7 +182,7 @@ static const u32 sHiddenMonIconGfx[] = INCBIN_U32("graphics/dexnav/hidden.4bpp.l
 // strings
 static const u8 sText_DexNav_NoInfo[] = _("--------");
 static const u8 sText_DexNav_CaptureToSee[] = _("Capture first!");
-static const u8 sText_DexNav_PressRToRegister[] = _("R TO REGISTER!");
+static const u8 sText_DexNav_PressRToRegister[] = _("R to Register!");
 static const u8 sText_DexNav_SearchForRegisteredSpecies[] = _("Search {STR_VAR_1}");
 static const u8 sText_DexNav_NotFoundHere[] = _("This Pokémon cannot be found here!");
 static const u8 sText_ThreeQmarks[] = _("???");
@@ -189,6 +193,9 @@ static const u8 sText_HeldItem[] = _("{STR_VAR_1}");
 static const u8 sText_StartExit[] = _("{START_BUTTON} EXIT");
 static const u8 sText_DexNavChain[] = _("{NO} {STR_VAR_1}");
 static const u8 sText_DexNavChainLong[] = _("{NO}{STR_VAR_1}");
+static const u8 sText_DexNav_ChooseMon[] = _("Choose a Pokémon.");
+static const u8 sText_DexNav_Registered[] = _("Species registered!");
+static const u8 sText_DexNav_NoDataForSlot[] = _("No data in this slot.");
 
 static const u8 sText_ArrowLeft[] = _("{LEFT_ARROW}");
 static const u8 sText_ArrowRight[] = _("{RIGHT_ARROW}");
@@ -216,6 +223,16 @@ static const struct WindowTemplate sDexNavGuiWindowTemplates[] =
         .height = 3,
         .paletteNum = 15,
         .baseBlock = 200,
+    },
+    [WINDOW_MESSAGE] = 
+    {
+        .bg = 0,
+        .tilemapLeft = 0,
+        .tilemapTop = 17,
+        .width = 27,
+        .height = 3,
+        .paletteNum = 15,
+        .baseBlock = 300,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -1668,700 +1685,6 @@ static bool8 DexNav_InitBgs(void)
     return TRUE;
 }
 
-void LoadDexnavBg()
-{
-    u8 i = GetCurrentRegionMapSectionId();
-
-    switch(i)
-    {
-        case MAPSEC_ROUTE_101:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route101_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_102:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route102_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_103:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route103_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_104:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route104_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_105:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route105_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_106:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route106_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_107:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route107_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_108:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route108_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_109:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route109_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_110:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route110_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_111:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route111_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_112:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route112_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_113:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route113_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_114:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route114_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_115:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route115_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_116:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route116_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_117:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route117_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_118:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route118_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_119:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route119_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_120:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route120_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_121:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route121_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_122:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route122_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_123:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route123_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_124:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route124_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_125:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route125_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_126:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route126_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_127:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route127_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_128:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route128_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_129:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route129_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_130:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route130_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_131:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route131_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_132:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route132_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_133:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route133_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ROUTE_134:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Route134_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_DEWFORD_TOWN:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Dewford_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_PACIFIDLOG_TOWN:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Pacifidlog_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_PETALBURG_CITY:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Petalburg_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_SLATEPORT_CITY:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Slateport_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_LILYCOVE_CITY:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Lilycove_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_MOSSDEEP_CITY:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Mossdeep_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_SOOTOPOLIS_CITY:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Sootopolis_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_EVER_GRANDE_CITY:
-            DecompressAndCopyTileDataToVram(2, gDexNav_EverGrande_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_UNDERWATER_124:
-        case MAPSEC_UNDERWATER_126:
-        case MAPSEC_UNDERWATER_127:
-        case MAPSEC_UNDERWATER_128:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Underwater_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_GRANITE_CAVE:
-            DecompressAndCopyTileDataToVram(2, gDexNav_GraniteCave_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_BATTLE_FRONTIER:
-            DecompressAndCopyTileDataToVram(2, gDexNav_BattleFrontier_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_PETALBURG_WOODS:
-            DecompressAndCopyTileDataToVram(2, gDexNav_PetalburgWoods_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_RUSTURF_TUNNEL:
-            DecompressAndCopyTileDataToVram(2, gDexNav_RusturfTunnel_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ABANDONED_SHIP:
-            DecompressAndCopyTileDataToVram(2, gDexNav_AbandonedShip_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_NEW_MAUVILLE:
-            DecompressAndCopyTileDataToVram(2, gDexNav_NewMauville_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_METEOR_FALLS:
-        case MAPSEC_METEOR_FALLS2:
-            DecompressAndCopyTileDataToVram(2, gDexNav_MeteorFalls_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_MT_PYRE:
-            DecompressAndCopyTileDataToVram(2, gDexNav_MtPyreInside_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_SHOAL_CAVE:
-            DecompressAndCopyTileDataToVram(2, gDexNav_ShoalCaveLow_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_SEAFLOOR_CAVERN:
-            DecompressAndCopyTileDataToVram(2, gDexNav_SeafloorCavern_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_VICTORY_ROAD:
-            DecompressAndCopyTileDataToVram(2, gDexNav_VictoryRoad_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_MIRAGE_ISLAND:
-            DecompressAndCopyTileDataToVram(2, gDexNav_MirageIsland_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_FIERY_PATH:
-        case MAPSEC_FIERY_PATH2:
-            DecompressAndCopyTileDataToVram(2, gDexNav_FieryPath_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_JAGGED_PASS:
-        case MAPSEC_JAGGED_PASS2:
-            DecompressAndCopyTileDataToVram(2, gDexNav_JaggedPass_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_SKY_PILLAR:
-            DecompressAndCopyTileDataToVram(2, gDexNav_SkyPillar_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_AQUA_HIDEOUT:
-            DecompressAndCopyTileDataToVram(2, gDexNav_AquaHideout_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_MAGMA_HIDEOUT:
-            DecompressAndCopyTileDataToVram(2, gDexNav_MagmaHideout_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_MIRAGE_TOWER:
-            DecompressAndCopyTileDataToVram(2, gDexNav_MirageTower_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ARTISAN_CAVE:
-            DecompressAndCopyTileDataToVram(2, gDexNav_ArtisanCave_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_DESERT_UNDERPASS:
-            DecompressAndCopyTileDataToVram(2, gDexNav_DesertUnderpass_Gfx, 0, 0, 0);
-            break;
-        case MAPSEC_ALTERING_CAVE:
-            DecompressAndCopyTileDataToVram(2, gDexNav_AlteringCave_Gfx, 0, 0, 0);
-            break;
-        default:
-            DecompressAndCopyTileDataToVram(2, gDexNav_Default_Gfx, 0, 0, 0);
-    }
-}
-
-void LoadDexnavBgTilemap()
-{
-    u8 i = GetCurrentRegionMapSectionId();
-
-    switch(i)
-    {
-        case MAPSEC_ROUTE_101:
-            LZDecompressWram(gDexNav_Route101_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_102:
-            LZDecompressWram(gDexNav_Route102_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_103:
-            LZDecompressWram(gDexNav_Route103_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_104:
-            LZDecompressWram(gDexNav_Route104_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_105:
-            LZDecompressWram(gDexNav_Route105_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_106:
-            LZDecompressWram(gDexNav_Route106_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_107:
-            LZDecompressWram(gDexNav_Route107_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_108:
-            LZDecompressWram(gDexNav_Route108_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_109:
-            LZDecompressWram(gDexNav_Route109_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_110:
-            LZDecompressWram(gDexNav_Route110_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_111:
-            LZDecompressWram(gDexNav_Route111_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_112:
-            LZDecompressWram(gDexNav_Route112_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_113:
-            LZDecompressWram(gDexNav_Route113_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_114:
-            LZDecompressWram(gDexNav_Route114_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_115:
-            LZDecompressWram(gDexNav_Route115_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_116:
-            LZDecompressWram(gDexNav_Route116_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_117:
-            LZDecompressWram(gDexNav_Route117_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_118:
-            LZDecompressWram(gDexNav_Route118_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_119:
-            LZDecompressWram(gDexNav_Route119_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_120:
-            LZDecompressWram(gDexNav_Route120_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_121:
-            LZDecompressWram(gDexNav_Route121_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_122:
-            LZDecompressWram(gDexNav_Route122_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_123:
-            LZDecompressWram(gDexNav_Route123_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_124:
-            LZDecompressWram(gDexNav_Route124_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_125:
-            LZDecompressWram(gDexNav_Route125_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_126:
-            LZDecompressWram(gDexNav_Route126_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_127:
-            LZDecompressWram(gDexNav_Route127_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_128:
-            LZDecompressWram(gDexNav_Route128_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_129:
-            LZDecompressWram(gDexNav_Route129_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_130:
-            LZDecompressWram(gDexNav_Route130_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_131:
-            LZDecompressWram(gDexNav_Route131_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_132:
-            LZDecompressWram(gDexNav_Route132_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_133:
-            LZDecompressWram(gDexNav_Route133_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ROUTE_134:
-            LZDecompressWram(gDexNav_Route134_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_DEWFORD_TOWN:
-            LZDecompressWram(gDexNav_Dewford_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_PACIFIDLOG_TOWN:
-            LZDecompressWram(gDexNav_Pacifidlog_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_PETALBURG_CITY:
-            LZDecompressWram(gDexNav_Petalburg_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_SLATEPORT_CITY:
-            LZDecompressWram(gDexNav_Slateport_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_LILYCOVE_CITY:
-            LZDecompressWram(gDexNav_Lilycove_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_MOSSDEEP_CITY:
-            LZDecompressWram(gDexNav_Mossdeep_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_SOOTOPOLIS_CITY:
-            LZDecompressWram(gDexNav_Sootopolis_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_EVER_GRANDE_CITY:
-            LZDecompressWram(gDexNav_EverGrande_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_UNDERWATER_124:
-        case MAPSEC_UNDERWATER_126:
-        case MAPSEC_UNDERWATER_127:
-        case MAPSEC_UNDERWATER_128:
-            LZDecompressWram(gDexNav_Underwater_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_GRANITE_CAVE:
-            LZDecompressWram(gDexNav_GraniteCave_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_BATTLE_FRONTIER:
-            LZDecompressWram(gDexNav_BattleFrontier_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_PETALBURG_WOODS:
-            LZDecompressWram(gDexNav_PetalburgWoods_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_RUSTURF_TUNNEL:
-            LZDecompressWram(gDexNav_RusturfTunnel_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ABANDONED_SHIP:
-            LZDecompressWram(gDexNav_AbandonedShip_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_NEW_MAUVILLE:
-            LZDecompressWram(gDexNav_NewMauville_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_METEOR_FALLS:
-        case MAPSEC_METEOR_FALLS2:
-            LZDecompressWram(gDexNav_MeteorFalls_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_MT_PYRE:
-            LZDecompressWram(gDexNav_MtPyreInside_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_SHOAL_CAVE:
-            LZDecompressWram(gDexNav_ShoalCaveLow_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_SEAFLOOR_CAVERN:
-            LZDecompressWram(gDexNav_SeafloorCavern_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_VICTORY_ROAD:
-            LZDecompressWram(gDexNav_VictoryRoad_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_MIRAGE_ISLAND:
-            LZDecompressWram(gDexNav_MirageIsland_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_FIERY_PATH:
-        case MAPSEC_FIERY_PATH2:
-            LZDecompressWram(gDexNav_FieryPath_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_JAGGED_PASS:
-        case MAPSEC_JAGGED_PASS2:
-            LZDecompressWram(gDexNav_JaggedPass_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_SKY_PILLAR:
-            LZDecompressWram(gDexNav_SkyPillar_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_AQUA_HIDEOUT:
-            LZDecompressWram(gDexNav_AquaHideout_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_MAGMA_HIDEOUT:
-            LZDecompressWram(gDexNav_MagmaHideout_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_MIRAGE_TOWER:
-            LZDecompressWram(gDexNav_MirageTower_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ARTISAN_CAVE:
-            LZDecompressWram(gDexNav_ArtisanCave_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_DESERT_UNDERPASS:
-            LZDecompressWram(gDexNav_DesertUnderpass_Tilemap, sBg2TilemapBuffer);
-            break;
-        case MAPSEC_ALTERING_CAVE:
-            LZDecompressWram(gDexNav_AlteringCave_Tilemap, sBg2TilemapBuffer);
-            break;
-        default:
-            LZDecompressWram(gDexNav_Default_Tilemap, sBg2TilemapBuffer);
-    }
-}
-
-void LoadDexnavBgPal()
-{
-    u8 i = GetCurrentRegionMapSectionId();
-    u16 count;
-
-    switch(i)
-    {
-        case MAPSEC_ROUTE_101:
-            count = 32;
-            LoadPalette(gDexNav_Route101_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_102:
-            count = 64;
-            LoadPalette(gDexNav_Route102_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_103:
-            count = 96;
-            LoadPalette(gDexNav_Route103_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_104:
-            count = 96;
-            LoadPalette(gDexNav_Route104_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_105:
-            count = 128;
-            LoadPalette(gDexNav_Route105_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_106:
-            count = 96;
-            LoadPalette(gDexNav_Route106_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_107:
-            count = 160;
-            LoadPalette(gDexNav_Route107_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_108:
-            count = 128;
-            LoadPalette(gDexNav_Route108_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_109:
-            count = 64;
-            LoadPalette(gDexNav_Route109_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_110:
-            count = 160;
-            LoadPalette(gDexNav_Route110_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_111:
-            count = 96;
-            LoadPalette(gDexNav_Route111_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_112:
-            count = 64;
-            LoadPalette(gDexNav_Route112_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_113:
-            count = 96;
-            LoadPalette(gDexNav_Route113_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_114:
-            count = 32;
-            LoadPalette(gDexNav_Route114_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_115:
-            count = 64;
-            LoadPalette(gDexNav_Route115_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_116:
-            count = 64;
-            LoadPalette(gDexNav_Route116_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_117:
-            count = 128;
-            LoadPalette(gDexNav_Route117_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_118:
-            count = 128;
-            LoadPalette(gDexNav_Route118_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_119:
-            count = 128;
-            LoadPalette(gDexNav_Route119_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_120:
-            count = 64;
-            LoadPalette(gDexNav_Route120_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_121:
-            count = 32;
-            LoadPalette(gDexNav_Route121_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_122:
-            count = 160;
-            LoadPalette(gDexNav_Route122_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_123:
-            count = 64;
-            LoadPalette(gDexNav_Route123_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_124:
-            count = 64;
-            LoadPalette(gDexNav_Route124_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_125:
-            count = 32;
-            LoadPalette(gDexNav_Route125_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_126:
-            count = 64;
-            LoadPalette(gDexNav_Route126_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_127:
-            count = 64;
-            LoadPalette(gDexNav_Route127_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_128:
-            count = 32;
-            LoadPalette(gDexNav_Route128_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_129:
-            count = 64;
-            LoadPalette(gDexNav_Route129_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_130:
-            count = 64;
-            LoadPalette(gDexNav_Route130_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_131:
-            count = 64;
-            LoadPalette(gDexNav_Route131_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_132:
-            count = 64;
-            LoadPalette(gDexNav_Route132_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_133:
-            count = 64;
-            LoadPalette(gDexNav_Route133_Pal, 16, count);
-            break;
-        case MAPSEC_ROUTE_134:
-            count = 32;
-            LoadPalette(gDexNav_Route134_Pal, 16, count);
-            break;
-        case MAPSEC_DEWFORD_TOWN:
-            count = 160;
-            LoadPalette(gDexNav_Dewford_Pal, 16, count);
-            break;
-        case MAPSEC_PACIFIDLOG_TOWN:
-            count = 160;
-            LoadPalette(gDexNav_Pacifidlog_Pal, 16, count);
-            break;
-        case MAPSEC_PETALBURG_CITY:
-            count = 160;
-            LoadPalette(gDexNav_Petalburg_Pal, 16, count);
-            break;
-        case MAPSEC_SLATEPORT_CITY:
-            count = 96;
-            LoadPalette(gDexNav_Slateport_Pal, 16, count);
-            break;
-        case MAPSEC_LILYCOVE_CITY:
-            count = 128;
-            LoadPalette(gDexNav_Lilycove_Pal, 16, count);
-            break;
-        case MAPSEC_MOSSDEEP_CITY:
-            count = 64;
-            LoadPalette(gDexNav_Mossdeep_Pal, 16, count);
-            break;
-        case MAPSEC_SOOTOPOLIS_CITY:
-            count = 64;
-            LoadPalette(gDexNav_Sootopolis_Pal, 16, count);
-            break;
-        case MAPSEC_EVER_GRANDE_CITY:
-            count = 160;
-            LoadPalette(gDexNav_EverGrande_Pal, 16, count);
-            break;
-        case MAPSEC_UNDERWATER_124:
-        case MAPSEC_UNDERWATER_126:
-        case MAPSEC_UNDERWATER_127:
-        case MAPSEC_UNDERWATER_128:
-            count = 32;
-            LoadPalette(gDexNav_Underwater_Pal, 16, count);
-            break;
-        case MAPSEC_GRANITE_CAVE:
-            count = 32;
-            LoadPalette(gDexNav_GraniteCave_Pal, 16, count);
-            break;
-        case MAPSEC_BATTLE_FRONTIER:
-            count = 96;
-            LoadPalette(gDexNav_BattleFrontier_Pal, 16, count);
-            break;
-        case MAPSEC_PETALBURG_WOODS:
-            count = 32;
-            LoadPalette(gDexNav_PetalburgWoods_Pal, 16, count);
-            break;
-        case MAPSEC_RUSTURF_TUNNEL:
-            count = 32;
-            LoadPalette(gDexNav_RusturfTunnel_Pal, 16, count);
-            break;
-        case MAPSEC_ABANDONED_SHIP:
-            count = 160;
-            LoadPalette(gDexNav_AbandonedShip_Pal, 16, count);
-            break;
-        case MAPSEC_NEW_MAUVILLE:
-            count = 96;
-            LoadPalette(gDexNav_NewMauville_Pal, 16, count);
-            break;
-        case MAPSEC_METEOR_FALLS:
-        case MAPSEC_METEOR_FALLS2:
-            count = 96;
-            LoadPalette(gDexNav_MeteorFalls_Pal, 16, count);
-            break;
-        case MAPSEC_MT_PYRE:
-            count = 32;
-            LoadPalette(gDexNav_MtPyreInside_Pal, 16, count);
-            break;
-        case MAPSEC_SHOAL_CAVE:
-            count = 32;
-            LoadPalette(gDexNav_ShoalCaveLow_Pal, 16, count);
-            break;
-        case MAPSEC_SEAFLOOR_CAVERN:
-            count = 64;
-            LoadPalette(gDexNav_SeafloorCavern_Pal, 16, count);
-            break;
-        case MAPSEC_VICTORY_ROAD:
-            count = 64;
-            LoadPalette(gDexNav_VictoryRoad_Pal, 16, count);
-            break;
-        case MAPSEC_MIRAGE_ISLAND:
-            count = 32;
-            LoadPalette(gDexNav_MirageIsland_Pal, 16, count);
-            break;
-        case MAPSEC_FIERY_PATH:
-        case MAPSEC_FIERY_PATH2:
-            count = 32;
-            LoadPalette(gDexNav_FieryPath_Pal, 16, count);
-            break;
-        case MAPSEC_JAGGED_PASS:
-        case MAPSEC_JAGGED_PASS2:
-            count = 64;
-            LoadPalette(gDexNav_JaggedPass_Pal, 16, count);
-            break;
-        case MAPSEC_SKY_PILLAR:
-            count = 32;
-            LoadPalette(gDexNav_SkyPillar_Pal, 16, count);
-            break;
-        case MAPSEC_AQUA_HIDEOUT:
-            count = 96;
-            LoadPalette(gDexNav_AquaHideout_Pal, 16, count);
-            break;
-        case MAPSEC_MAGMA_HIDEOUT:
-            count = 32;
-            LoadPalette(gDexNav_MagmaHideout_Pal, 16, count);
-            break;
-        case MAPSEC_MIRAGE_TOWER:
-            count = 32;
-            LoadPalette(gDexNav_MirageTower_Pal, 16, count);
-            break;
-        case MAPSEC_ARTISAN_CAVE:
-            count = 32;
-            LoadPalette(gDexNav_ArtisanCave_Pal, 16, count);
-            break;
-        case MAPSEC_DESERT_UNDERPASS:
-            count = 32;
-            LoadPalette(gDexNav_DesertUnderpass_Pal, 16, count);
-            break;
-        case MAPSEC_ALTERING_CAVE:
-            count = 32;
-            LoadPalette(gDexNav_AlteringCave_Pal, 16, count);
-            break;
-        default:
-            count = 32;
-            LoadPalette(gDexNav_Default_Pal, 16, count);
-    }
-    TintPalette_CustomTone_Blend(&gPlttBufferUnfaded[16], count, Q_8_8(0.6), Q_8_8(0.6), Q_8_8(0.6));
-}
-
 static bool8 DexNav_LoadGraphics(void)
 {
     switch (sDexNavUiDataPtr->state)
@@ -2369,20 +1692,17 @@ static bool8 DexNav_LoadGraphics(void)
     case 0:
         ResetTempTileDataBuffers();
         DecompressAndCopyTileDataToVram(1, gDexNav_Gui_Gfx, 0, 0, 0);
-        LoadDexnavBg();
         sDexNavUiDataPtr->state++;
         break;
     case 1:
         if (FreeTempTileDataBuffersIfPossible() != TRUE)
         {
             LZDecompressWram(gDexNav_Gui_Tilemap, sBg1TilemapBuffer);
-            LoadDexnavBgTilemap();
             sDexNavUiDataPtr->state++;
         }
         break;
     case 2:
         LoadPalette(gDexNav_Gui_Pal, 0, 32);
-        LoadDexnavBgPal();
         sDexNavUiDataPtr->state++;
         break;
     default:
@@ -2414,11 +1734,11 @@ static void UpdateCursorPosition(void)
         y = ROW_LAND_BOT_ICON_Y;
         //sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_LAND;
         break;
-    case ROW_HIDDEN:
+    /*case ROW_HIDDEN:
         x = ROW_HIDDEN_ICON_X + (24 * sDexNavUiDataPtr->cursorCol);
         y = ROW_HIDDEN_ICON_Y;
         //sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_HIDDEN;
-        break;
+        break;*/
     default:
         return;
     }
@@ -2446,6 +1766,7 @@ static void CreateSelectionCursor(void)
     
     sDexNavUiDataPtr->cursorSpriteId = spriteId;
     UpdateCursorPosition();
+    PrintDexNavMessage(MESSAGE_CHOOSE_MON);
 }
 
 static void CreateNoDataIcon(s16 x, s16 y)
@@ -2828,7 +2149,7 @@ static void TryDrawIconInSlot(u16 species, s16 x, s16 y)
 static void DrawSpeciesIcons(void)
 {
     s16 x, y;
-    u32 i, j;
+    u32 i;
     u16 species;
     
     TintPalette_GrayScale2(&gPlttBufferUnfaded[0x160],16);
@@ -2837,36 +2158,29 @@ static void DrawSpeciesIcons(void)
     TintPalette_GrayScale2(&gPlttBufferUnfaded[0x190],16);
 	TintPalette_GrayScale2(&gPlttBufferUnfaded[0x1A0],16);
 	TintPalette_GrayScale2(&gPlttBufferUnfaded[0x1B0],16);
-	
-	i=0;
-	j=0;
+
     LoadCompressedSpriteSheetUsingHeap(&sNoDataIconSpriteSheet);
-    while(i < LAND_WILD_COUNT)
+    for (i = 0; i < LAND_WILD_COUNT; i++)
     {
         species = sDexNavUiDataPtr->landSpecies[i];
         if(species==SPECIES_NONE)
-			break;
-        x = 20 + (24 * (i % 6));
-        y = ROW_WATER_ICON_Y + (i > 5 ? 28 : 0);
+			continue;
+        x = ROW_LAND_ICON_X + (24 * (i % 6));
+        y = ROW_LAND_TOP_ICON_Y + (i > 5 ? 24 : 0);
         TryDrawIconInSlot(species, x, y);
-		i++;
     }
 	
-	while(j < WATER_WILD_COUNT)
+	for (i = 0; i < WATER_WILD_COUNT; i++)
     {
-        species = sDexNavUiDataPtr->waterSpecies[j];
+        species = sDexNavUiDataPtr->waterSpecies[i];
         if(species==SPECIES_NONE)
-			break;
-        x = 20 + (24 * (i % 6));
-        y = ROW_WATER_ICON_Y + (i > 5 ? 28 : 0);
+			continue;
+        x = ROW_WATER_ICON_X + 24 * i;
+        y = ROW_WATER_ICON_Y;
         TryDrawIconInSlot(species, x, y);
-		i++;
-		j++;
     }
 	
-	j=0;
-	
-	while(j < HIDDEN_WILD_COUNT)
+	/*while(j < HIDDEN_WILD_COUNT)
     {
         species = sDexNavUiDataPtr->hiddenSpecies[j];
         if(species==SPECIES_NONE)
@@ -2877,49 +2191,33 @@ static void DrawSpeciesIcons(void)
             TryDrawIconInSlot(species, x, y);
 		i++;
 		j++;
-	}
+	}*/
 }
 
 static u16 DexNavGetSpecies(void)
 {
-    u16 species = SPECIES_NONE;
-   	u8 xypos;
-	u8 landcount = 0;
-	u8 watercount = 0;
-    u8 hiddencount = 0;
-	u32 i;
+    u16 species;
 
-	xypos = sDexNavUiDataPtr->cursorCol + (6*sDexNavUiDataPtr->cursorRow);
-
-    for(i=0; i<LAND_WILD_COUNT; i++){
-        if(sDexNavUiDataPtr->landSpecies[i] != SPECIES_NONE)
-            landcount++;
+    switch (sDexNavUiDataPtr->cursorRow)
+    {
+    case ROW_WATER:
+        species = sDexNavUiDataPtr->waterSpecies[sDexNavUiDataPtr->cursorCol];
+        break;
+    case ROW_LAND_TOP:
+        species = sDexNavUiDataPtr->landSpecies[sDexNavUiDataPtr->cursorCol];
+        break;
+    case ROW_LAND_BOT:
+        species = sDexNavUiDataPtr->landSpecies[sDexNavUiDataPtr->cursorCol + COL_LAND_COUNT];
+        break;
+    case ROW_HIDDEN:
+        if (!FlagGet(FLAG_SYS_DETECTOR_MODE))
+            species = SPECIES_NONE;
+        else
+            species = sDexNavUiDataPtr->hiddenSpecies[sDexNavUiDataPtr->cursorCol];
+        break;
+    default:
+        return SPECIES_NONE;
     }
-    for(i=0; i<WATER_WILD_COUNT; i++){
-        if(sDexNavUiDataPtr->waterSpecies[i] != SPECIES_NONE)
-            watercount++;
-    }
-    for(i=0; i<HIDDEN_WILD_COUNT; i++){
-        if(sDexNavUiDataPtr->hiddenSpecies[i] != SPECIES_NONE)
-            hiddencount++;
-    }
-
-    if (xypos>=(landcount+watercount+hiddencount)){
-		return SPECIES_NONE;
-	}
-
-	if (xypos>=(landcount+watercount)){
-		species = sDexNavUiDataPtr->hiddenSpecies[xypos-landcount-watercount];
-		sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_HIDDEN;
-	}
-	else if (xypos>=landcount){
-		species = sDexNavUiDataPtr->waterSpecies[xypos-landcount];
-		sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_WATER;
-	}
-	else {
-		species = sDexNavUiDataPtr->landSpecies[xypos];
-		sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_LAND;
-	}
     
     if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
         return SPECIES_NONE;
@@ -2972,6 +2270,41 @@ static void SetTypeIconPosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId)
     SetSpriteInvisibility(spriteArrayId, FALSE);
 }
 
+static const u8 gText_DexNav_ChooseMon[] = _("Choose a Pokémon.");
+static const u8 gText_DexNav_Registered[] = _("Registered!");
+
+static void PrintDexNavMessage(u8 messageId)
+{
+	const u8* text;
+
+	switch (messageId)
+	{
+		/*case MESSAGE_INVALID:
+			text = gText_DexNav_Invalid;
+			break;*/
+		case MESSAGE_CHOOSE_MON:
+			text = sText_DexNav_ChooseMon;
+			break;
+		case MESSAGE_REGISTERED:
+			text = sText_DexNav_Registered;
+			break;
+		case MESSAGE_NO_DATA:
+			text = sText_DexNav_NoDataForSlot;
+			break;
+		/*case MESSAGE_TOO_DARK:
+			text = gText_DexNav_TooDark;
+			break;*/
+		default:
+			text = NULL;
+			break;
+	}
+
+	FillWindowPixelBuffer(WINDOW_MESSAGE, PIXEL_FILL(TEXT_COLOR_TRANSPARENT));
+	AddTextPrinterParameterized3(WINDOW_MESSAGE, 1, 2, 8, sFontColor_White, 0, text);
+	CopyWindowToVram(WINDOW_MESSAGE, 3);
+    PutWindowTilemap(WINDOW_MESSAGE);
+}
+
 static void PrintCurrentSpeciesInfo(void)
 {
     u8 searchLevelBonus = 0;
@@ -2988,9 +2321,9 @@ static void PrintCurrentSpeciesInfo(void)
     
     //species name
     if (species == SPECIES_NONE)
-        AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, SPECIES_INFO_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
+        AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, SPECIES_INFO_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
     else
-        AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, SPECIES_INFO_Y, sFontColor_Black, 0, gSpeciesNames[species]);
+        AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, SPECIES_INFO_Y, sFontColor_Black, 0, gSpeciesNames[species]);
     
     //type icon(s)
     type1 = gSpeciesInfo[species].types[0];
@@ -3000,51 +2333,51 @@ static void PrintCurrentSpeciesInfo(void)
     
     if (type1 == type2)
     {
-        SetTypeIconPosAndPal(type1, 178, 54, 0);
+        SetTypeIconPosAndPal(type1, 185, 50, 0);
         SetSpriteInvisibility(1, TRUE);
     }
     else
     {
-        SetTypeIconPosAndPal(type1, 162, 54, 0);
-        SetTypeIconPosAndPal(type2, 162 + 33, 54, 1);
+        SetTypeIconPosAndPal(type1, 166, 50, 0);
+        SetTypeIconPosAndPal(type2, 166 + 35, 50, 1);
     }
     
     //search level
     if (species == SPECIES_NONE)
     {
-        AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, SEARCH_LEVEL_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
+        AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, SEARCH_LEVEL_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
     }
     else
     {
         ConvertIntToDecimalStringN(gStringVar4, gSaveBlock1Ptr->dexNavChain, 0, 4);
-        AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, SEARCH_LEVEL_Y, sFontColor_Black, 0, gStringVar4);
+        AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, SEARCH_LEVEL_Y, sFontColor_Black, 0, gStringVar4);
     }
     
     //hidden ability
     if (species == SPECIES_NONE)
     {
-        AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, HA_INFO_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
+        AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, HA_INFO_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
     }
     else if (GetSetPokedexFlag(dexNum, FLAG_GET_CAUGHT))
     {
         #ifdef BATTLE_ENGINE
         if (gSpeciesInfo[species].abilities[2] != ABILITY_NONE)
-            AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gSpeciesInfo[species].abilities[2]]);
+            AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gSpeciesInfo[species].abilities[2]]);
         #else
         if (gSpeciesInfo[species].abilityHidden != ABILITY_NONE)           
-            AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gSpeciesInfo[species].abilityHidden]);
+            AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gSpeciesInfo[species].abilityHidden]);
         #endif
         else
-            AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, HA_INFO_Y, sFontColor_Black, 0, gText_None);
+            AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, HA_INFO_Y, sFontColor_Black, 0, gText_None);
     }
     else
     {
-        AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, HA_INFO_Y, sFontColor_Black, 0, sText_DexNav_CaptureToSee);
+        AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, HA_INFO_Y, sFontColor_Black, 0, sText_DexNav_CaptureToSee);
     }
     
     //current chain
     ConvertIntToDecimalStringN(gStringVar1, gSaveBlock1Ptr->dexNavChain, STR_CONV_MODE_LEFT_ALIGN, 3);
-    AddTextPrinterParameterized3(WINDOW_INFO, 0, 2, CHAIN_BONUS_Y, sFontColor_Black, 0, gStringVar1);
+    AddTextPrinterParameterized3(WINDOW_INFO, 0, 6, CHAIN_BONUS_Y, sFontColor_Black, 0, gStringVar1);
     
     CopyWindowToVram(WINDOW_INFO, 3);
     PutWindowTilemap(WINDOW_INFO);
@@ -3055,7 +2388,7 @@ static void PrintMapName(void)
     GetMapName(gStringVar3, GetCurrentRegionMapSectionId(), 0);
     //AddTextPrinterParameterized3(WINDOW_REGISTERED, 1, 108 +
     //  GetStringRightAlignXOffset(1, gStringVar3, MAP_NAME_LENGTH * GetFontAttribute(1, FONTATTR_MAX_LETTER_WIDTH)), 0, sFontColor_White, 0, gStringVar3);
-    AddTextPrinterParameterized3(WINDOW_REGISTERED, 1, 104, 6, sFontColor_White, 0, gStringVar3);
+    AddTextPrinterParameterized3(WINDOW_REGISTERED, 1, 104, 7, sFontColor_White, 0, gStringVar3);
     CopyWindowToVram(WINDOW_REGISTERED, 3);
 }
 
@@ -3254,9 +2587,9 @@ static void Task_DexNavMain(u8 taskId)
         {
             if (sDexNavUiDataPtr->cursorRow == ROW_WATER)
             {
-                sDexNavUiDataPtr->cursorRow = ROW_HIDDEN;
-                if (sDexNavUiDataPtr->cursorCol >= COL_HIDDEN_COUNT)
-                    sDexNavUiDataPtr->cursorCol = COL_HIDDEN_MAX;
+                sDexNavUiDataPtr->cursorRow = ROW_LAND_BOT;
+                /*if (sDexNavUiDataPtr->cursorCol >= COL_HIDDEN_COUNT)
+                    sDexNavUiDataPtr->cursorCol = COL_HIDDEN_MAX;*/
             }
             else
             {
@@ -3268,20 +2601,23 @@ static void Task_DexNavMain(u8 taskId)
             
             PlaySE(SE_RG_BAG_CURSOR);
             UpdateCursorPosition();
+            PrintDexNavMessage(MESSAGE_CHOOSE_MON);
         }
         else if (JOY_NEW(DPAD_DOWN))
         {
-            if (sDexNavUiDataPtr->cursorRow == ROW_HIDDEN)
+            if (sDexNavUiDataPtr->cursorRow == ROW_LAND_BOT)
             {
                 sDexNavUiDataPtr->cursorRow = ROW_WATER;
+                if (sDexNavUiDataPtr->cursorCol >= COL_WATER_COUNT)
+                    sDexNavUiDataPtr->cursorCol = COL_WATER_MAX;
             }
-            else if (sDexNavUiDataPtr->cursorRow == ROW_LAND_BOT)
+            /*else if (sDexNavUiDataPtr->cursorRow == ROW_LAND_BOT)
             {
                 if (sDexNavUiDataPtr->cursorCol >= COL_HIDDEN_COUNT)
                     sDexNavUiDataPtr->cursorCol = COL_HIDDEN_MAX;
                 
                 sDexNavUiDataPtr->cursorRow++;
-            }
+            }*/
             else
             {
                 sDexNavUiDataPtr->cursorRow++;
@@ -3289,6 +2625,7 @@ static void Task_DexNavMain(u8 taskId)
             
             PlaySE(SE_RG_BAG_CURSOR);
             UpdateCursorPosition();
+            PrintDexNavMessage(MESSAGE_CHOOSE_MON);
         }
         else if (JOY_NEW(DPAD_LEFT))
         {
@@ -3314,6 +2651,7 @@ static void Task_DexNavMain(u8 taskId)
             
             PlaySE(SE_RG_BAG_CURSOR);
             UpdateCursorPosition();
+            PrintDexNavMessage(MESSAGE_CHOOSE_MON);
         }
         else if (JOY_NEW(DPAD_RIGHT))
         {
@@ -3341,6 +2679,7 @@ static void Task_DexNavMain(u8 taskId)
             
             PlaySE(SE_RG_BAG_CURSOR);
             UpdateCursorPosition();
+            PrintDexNavMessage(MESSAGE_CHOOSE_MON);
         }
         else if (JOY_NEW(R_BUTTON))
         {
@@ -3355,10 +2694,12 @@ static void Task_DexNavMain(u8 taskId)
                 
                 // create value to store in a var
                 VarSet(VAR_DEXNAV_SPECIES, ((sDexNavUiDataPtr->environment << 14) | species));
+                PrintDexNavMessage(MESSAGE_REGISTERED);
             }
             else
             {
                 PlaySE(SE_FAILURE);
+                PrintDexNavMessage(MESSAGE_NO_DATA);
             }
         }
         else if (JOY_NEW(A_BUTTON))
@@ -3367,6 +2708,7 @@ static void Task_DexNavMain(u8 taskId)
             if (species == SPECIES_NONE)
             {
                 PlaySE(SE_FAILURE);
+                PrintDexNavMessage(MESSAGE_NO_DATA);
             }
             else
             {
