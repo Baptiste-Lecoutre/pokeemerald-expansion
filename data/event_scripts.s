@@ -1166,3 +1166,7 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/CaveOfShock/scripts.inc"
 
 	.include "data/maps/Underwater_MeteorFalls_B1F_2R/scripts.inc"
+
+	.include "data/maps/MeteorFalls_DracoChamber/scripts.inc"
+
+	.include "data/maps/Underwater_MeteorFalls_DracoChamber/scripts.inc"

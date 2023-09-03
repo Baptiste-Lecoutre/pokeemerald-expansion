@@ -4680,6 +4680,26 @@
       "secondary_tileset": "gTileset_Underwater",
       "border_filepath": "data/layouts/Underwater_MeteorFalls_B1F_2R/border.bin",
       "blockdata_filepath": "data/layouts/Underwater_MeteorFalls_B1F_2R/map.bin"
+    },
+    {
+      "id": "LAYOUT_METEOR_FALLS_DRACO_CHAMBER",
+      "name": "MeteorFalls_DracoChamber_Layout",
+      "width": 17,
+      "height": 33,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/MeteorFalls_DracoChamber/border.bin",
+      "blockdata_filepath": "data/layouts/MeteorFalls_DracoChamber/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_METEOR_FALLS_DRACO_CHAMBER",
+      "name": "Underwater_MeteorFalls_DracoChamber_Layout",
+      "width": 17,
+      "height": 33,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Underwater",
+      "border_filepath": "data/layouts/Underwater_MeteorFalls_DracoChamber/border.bin",
+      "blockdata_filepath": "data/layouts/Underwater_MeteorFalls_DracoChamber/map.bin"
     }
   ]
 }

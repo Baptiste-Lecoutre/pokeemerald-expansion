@@ -647,6 +647,8 @@
     "Route124_DivingTreasureHuntersHouse"
   ],
   "gMapGroup_Dungeons2": [
-    "Underwater_MeteorFalls_B1F_2R"
+    "Underwater_MeteorFalls_B1F_2R",
+    "MeteorFalls_DracoChamber",
+    "Underwater_MeteorFalls_DracoChamber"
   ]
 }
