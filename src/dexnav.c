@@ -135,7 +135,6 @@ struct DexNavGUI
 EWRAM_DATA static struct DexNavSearch *sDexNavSearchDataPtr = NULL;
 EWRAM_DATA static struct DexNavGUI *sDexNavUiDataPtr = NULL;
 EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
-EWRAM_DATA static u8 *sBg2TilemapBuffer = NULL;
 EWRAM_DATA bool8 gDexnavBattle = FALSE;
 
 //// Function Declarations
@@ -1622,7 +1621,7 @@ static u8 GetEncounterLevelFromMapData(u16 species, u8 environment)
 ///////////
 /// GUI ///
 ///////////
-static const struct BgTemplate sDexNavMenuBgTemplates[3] =
+static const struct BgTemplate sDexNavMenuBgTemplates[2] =
 {
     {
         .bg = 0,
@@ -1634,12 +1633,6 @@ static const struct BgTemplate sDexNavMenuBgTemplates[3] =
         .bg = 1,
         .charBaseIndex = 3,
         .mapBaseIndex = 30,
-        .priority = 1
-    }, 
-    {
-        .bg = 2,
-        .charBaseIndex = 6,
-        .mapBaseIndex = 29,
         .priority = 1
     }
 };
@@ -1665,23 +1658,18 @@ static bool8 DexNav_InitBgs(void)
     ResetVramOamAndBgCntRegs();
     ResetAllBgsCoordinates();
     sBg1TilemapBuffer = Alloc(0x800);
-    sBg2TilemapBuffer = Alloc(0x800);
-    if (sBg1TilemapBuffer == NULL || sBg2TilemapBuffer == NULL)
+    if (sBg1TilemapBuffer == NULL)
         return FALSE;
     
     memset(sBg1TilemapBuffer, 0, 0x800);
-    memset(sBg2TilemapBuffer, 0, 0x800);
     ResetBgsAndClearDma3BusyFlags(0);
     InitBgsFromTemplates(0, sDexNavMenuBgTemplates, NELEMS(sDexNavMenuBgTemplates));
     SetBgTilemapBuffer(1, sBg1TilemapBuffer);
-    SetBgTilemapBuffer(2, sBg2TilemapBuffer);
     ScheduleBgCopyTilemapToVram(1);
-    ScheduleBgCopyTilemapToVram(2);
     SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_1D_MAP | DISPCNT_OBJ_ON);
     SetGpuReg(REG_OFFSET_BLDCNT , 0);
     ShowBg(0);
     ShowBg(1);
-    ShowBg(2);
     return TRUE;
 }
 
@@ -1722,17 +1710,17 @@ static void UpdateCursorPosition(void)
     case ROW_WATER:
         x = ROW_WATER_ICON_X + (24 * sDexNavUiDataPtr->cursorCol);
         y = ROW_WATER_ICON_Y;
-        //sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_WATER;
+        sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_WATER;
         break;
     case ROW_LAND_TOP: //land 1
         x = ROW_LAND_ICON_X + (24 * sDexNavUiDataPtr->cursorCol);
         y = ROW_LAND_TOP_ICON_Y;
-        //sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_LAND;
+        sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_LAND;
         break;
     case ROW_LAND_BOT: //land 2
         x = ROW_LAND_ICON_X + (24 * sDexNavUiDataPtr->cursorCol);
         y = ROW_LAND_BOT_ICON_Y;
-        //sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_LAND;
+        sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_LAND;
         break;
     /*case ROW_HIDDEN:
         x = ROW_HIDDEN_ICON_X + (24 * sDexNavUiDataPtr->cursorCol);
@@ -1989,7 +1977,6 @@ static void DexNavGuiFreeResources(void)
 {
     Free(sDexNavUiDataPtr);
     Free(sBg1TilemapBuffer);
-    Free(sBg2TilemapBuffer);
     FreeAllWindowBuffers();
 }
 
@@ -2014,6 +2001,7 @@ static void CB1_DexNavSearchCallback(void)
 static void Task_DexNavExitAndSearch(u8 taskId)
 {
     DexNavGuiFreeResources();
+    FreePokenavResources();
     DestroyTask(taskId);
     SetMainCallback1(CB1_DexNavSearchCallback);
     SetMainCallback2(CB2_ReturnToField);

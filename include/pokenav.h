@@ -389,6 +389,7 @@ u32 PokenavMainMenuLoopedTaskIsActive(void);
 bool32 WaitForPokenavShutdownFade(void);
 void SetActiveMenuLoopTasks(void *func1, void *func2);
 void ShutdownPokenav(void);
+void FreePokenavResources(void);
 
 // pokenav_menu_handler.c
 bool32 PokenavCallback_Init_MainMenuCursorOnMap(void);
