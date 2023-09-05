@@ -9,6 +9,7 @@
 #include "field_screen_effect.h"
 #include "field_weather.h"
 #include "gpu_regs.h"
+#include "graphics.h"
 #include "international_string_util.h"
 #include "item_menu.h"
 #include "sound.h"
@@ -18,6 +19,7 @@
 #include "random.h"
 #include "palette.h"
 #include "pokemon_icon.h"
+#include "pokemon_summary_screen.h"
 #include "save.h"
 #include "scanline_effect.h"
 #include "script.h"
@@ -67,6 +69,7 @@ struct RaidBattleIntro
 	u8 selectedTeam;
 	u16 monSpriteId;
 	u8 outlinedSprite;
+	u8 typeIconSpriteIds[2];
 };
 
 // const rom data
@@ -511,15 +514,68 @@ static void ShowRaidPokemonSprite(void)
     CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
 }
 
+// different from pokemon_summary_screen
+#define TYPE_ICON_PAL_NUM_0     13
+#define TYPE_ICON_PAL_NUM_1     14
+#define TYPE_ICON_PAL_NUM_2     15
+static const u8 sMoveTypeToOamPaletteNum[NUMBER_OF_MON_TYPES] =
+{
+    [TYPE_NORMAL] = TYPE_ICON_PAL_NUM_0,
+    [TYPE_FIGHTING] = TYPE_ICON_PAL_NUM_0,
+    [TYPE_FLYING] = TYPE_ICON_PAL_NUM_1,
+    [TYPE_POISON] = TYPE_ICON_PAL_NUM_1,
+    [TYPE_GROUND] = TYPE_ICON_PAL_NUM_0,
+    [TYPE_ROCK] = TYPE_ICON_PAL_NUM_0,
+    [TYPE_BUG] = TYPE_ICON_PAL_NUM_2,
+    [TYPE_GHOST] = TYPE_ICON_PAL_NUM_1,
+    [TYPE_STEEL] = TYPE_ICON_PAL_NUM_0,
+    [TYPE_MYSTERY] = TYPE_ICON_PAL_NUM_2,
+    [TYPE_FIRE] = TYPE_ICON_PAL_NUM_0,
+    [TYPE_WATER] = TYPE_ICON_PAL_NUM_1,
+    [TYPE_GRASS] = TYPE_ICON_PAL_NUM_2,
+    [TYPE_ELECTRIC] = TYPE_ICON_PAL_NUM_0,
+    [TYPE_PSYCHIC] = TYPE_ICON_PAL_NUM_1,
+    [TYPE_ICE] = TYPE_ICON_PAL_NUM_1,
+    [TYPE_DRAGON] = TYPE_ICON_PAL_NUM_2,
+    [TYPE_DARK] = TYPE_ICON_PAL_NUM_0,
+    #ifdef TYPE_FAIRY
+    [TYPE_FAIRY] = TYPE_ICON_PAL_NUM_1, //based on battle_engine
+    #endif
+};
+
 static void ShowRaidPokemonTypes(void)
 {
 	u16 species = sRaidBattleIntro->species;
 	u8 type1 = gSpeciesInfo[species].types[0];
 	u8 type2 = gSpeciesInfo[species].types[1];
+	struct Sprite *sprite;
 
-	BlitMenuInfoIcon(WIN_TYPE_1, type1 + 1, 0, 2);
+	/*BlitMenuInfoIcon(WIN_TYPE_1, type1 + 1, 0, 2);
 	if (type1 != type2)
-		BlitMenuInfoIcon(WIN_TYPE_2, type2 + 1, 0, 2);
+		BlitMenuInfoIcon(WIN_TYPE_2, type2 + 1, 0, 2);*/
+
+
+
+    LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
+    LoadCompressedPalette(gMoveTypes_Pal, 0x1D0, 0x60);
+
+    if (sRaidBattleIntro->typeIconSpriteIds[0] == 0xFF)
+    {
+		sRaidBattleIntro->typeIconSpriteIds[0] = CreateSprite(&sSpriteTemplate_MoveTypes, 80, 7, 0);
+
+		sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[0]];
+		StartSpriteAnim(sprite, type1);
+		sprite->oam.paletteNum = sMoveTypeToOamPaletteNum[type1];
+    }
+
+	if (sRaidBattleIntro->typeIconSpriteIds[1] == 0xFF && type2 != type1)
+    {
+		sRaidBattleIntro->typeIconSpriteIds[1] = CreateSprite(&sSpriteTemplate_MoveTypes, 112, 7, 0);
+
+		sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[1]];
+		StartSpriteAnim(sprite, type2);
+		sprite->oam.paletteNum = sMoveTypeToOamPaletteNum[type2];
+    }
 }
 
 static void ShowPartnerTeams(void)
@@ -582,6 +638,8 @@ static void InitRaidBattleIntro(void)
 	ShowStars();
     ShowRaidCursor();
     PrintInstructions();
+	sRaidBattleIntro->typeIconSpriteIds[0] = 0xFF;
+	sRaidBattleIntro->typeIconSpriteIds[1] = 0xFF;
 	ShowRaidPokemonTypes();
 	ShowPartnerTeams();
 	ShowRaidPokemonSprite();
