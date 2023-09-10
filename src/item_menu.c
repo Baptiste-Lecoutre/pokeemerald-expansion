@@ -3186,7 +3186,8 @@ static void TintPartyMonIcons(u16 itemId)
     
     for (i = 0; i < gPlayerPartyCount; i++)
     {
-        if (!CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), ItemIdToBattleMoveId(itemId)))
+        if (!CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), ItemIdToBattleMoveId(itemId))
+            || !(itemId >= ITEM_HM01 && itemId <= ITEM_HM08))
             gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
         else
             gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
