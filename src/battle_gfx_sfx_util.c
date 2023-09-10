@@ -633,7 +633,7 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battler)
     }
 
     // dynamax tint
-    if (IsDynamaxed(battlerId))
+    if (IsDynamaxed(battler))
     {
         BlendPalette(paletteOffset, 16, 4, RGB(31, 0, 12));
         CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
