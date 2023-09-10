@@ -121,7 +121,7 @@ void TryAddLastUsedBallItemSprites(void);
 void SwapBallToDisplay(bool32 sameBall);
 void ArrowsChangeColorLastBallCycle(bool32 showArrows);
 void UpdateAbilityPopup(u8 battlerId);
-void TryLoadTypeIcons(void);
+void TryLoadTypeIcons(u8 activeBattler);
 void TryLoadMoveInfoWindow(u32 battler);
 void ChangeBattlerSpritesInvisibilities(bool8 invisible);
 void DisplayInBattleTeamPreview(void);
