@@ -117,16 +117,11 @@ AncientTomb_Braille_ShineInTheMiddle:
 	.braille "IN THE MIDDLE.$"
 
 SealedChamber_InnerRoom_Braille_Regigigas:
-	.byte 3
-	.byte 0
-	.byte 25
-	.byte 19
-	.byte 6
-	.byte 3
-	.braille "A BODY OF ROCK.\n"
-	.braille "A BODY OF ICE.\n"
-	.braille "A BODY OF STEEL.\n"
-	.braille "WHEN GATHERS\n"
-	.braille "THE THREE, THE\n"
-	.braille "KING SHALL\n"
-	.braille "APPEAR.$"
+	brailleformat 3, 0, 25, 19, 6, 3
+	.braille "A BODY OF ROCK\n"
+	.braille "A BODY OF COLD\n"
+	.braille "A BODY OF IRON\n"
+	.braille "A BODY OF ELEC\n"
+	.braille "A BODY OF JAWS\n"
+	.braille "FIVE ELEMENTAL\n"
+	.braille "FOR THEIR KING$"
