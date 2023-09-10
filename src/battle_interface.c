@@ -3864,7 +3864,7 @@ static const struct SpriteTemplate sTypeIconSpriteTemplate =
     .callback = SpriteCB_TypeIcon,
 };
 
-void TryLoadTypeIcons(void)
+void TryLoadTypeIcons(u8 activeBattler)
 {
 	if (!(gBattleTypeFlags & BATTLE_TYPE_LINK) && TRUE && IndexOfSpritePaletteTag(TYPE_ICON_TAG) == 0xFF)
 	{
@@ -3897,7 +3897,7 @@ void TryLoadTypeIcons(void)
 				{
 					struct Sprite* sprite = &gSprites[spriteId];
 					sprite->data[0] = position;
-					sprite->data[1] = gActiveBattler;
+					sprite->data[1] = activeBattler;
 					sprite->data[3] = y; //Save original y-value for bouncing
                     sprite->data[4] = typeNum; // save if type1 or type2 in sprite data
 
