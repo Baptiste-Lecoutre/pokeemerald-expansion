@@ -6150,11 +6150,7 @@ const struct Item gItems[] =
         .price = 3000,
         .holdEffect = HOLD_EFFECT_EXP_SHARE,
         .description = sExpShareDesc,
-    #if I_EXP_SHARE_ITEM >= GEN_6
-        .pocket = POCKET_KEY_ITEMS,
-    #else
-        .pocket = POCKET_ITEMS,
-    #endif
+        .pocket = I_EXP_SHARE_ITEM >= GEN_6 ? POCKET_KEY_ITEMS : POCKET_ITEMS,
         .type = ITEM_USE_FIELD,
         .fieldUseFunc = ItemUseOutOfBattle_ExpShare,
         .flingPower = 30,
