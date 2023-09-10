@@ -4521,38 +4521,24 @@ void DeleteFirstMoveAndGiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move)
     SetBoxMonData(boxMon, MON_DATA_PP_BONUSES, &ppBonuses);
 }
 
-u8 CountAliveMonsInBattle(u8 caseId)
+u8 CountAliveMonsInBattle(u8 caseId, u32 battler)
 {
     s32 i;
     u8 retVal = 0;
 
     switch (caseId)
     {
-    case BATTLE_ALIVE_EXCEPT_ACTIVE:
+    case BATTLE_ALIVE_EXCEPT_BATTLER:
         for (i = 0; i < MAX_BATTLERS_COUNT; i++)
         {
-            if (i != gActiveBattler && !(gAbsentBattlerFlags & gBitTable[i]))
+            if (i != battler && !(gAbsentBattlerFlags & gBitTable[i]))
                 retVal++;
         }
         break;
-    case BATTLE_ALIVE_ATK_SIDE:
+    case BATTLE_ALIVE_SIDE:
         for (i = 0; i < MAX_BATTLERS_COUNT; i++)
         {
-            if (GetBattlerSide(i) == GetBattlerSide(gBattlerAttacker) && !(gAbsentBattlerFlags & gBitTable[i]))
-                retVal++;
-        }
-        break;
-    case BATTLE_ALIVE_DEF_SIDE:
-        for (i = 0; i < MAX_BATTLERS_COUNT; i++)
-        {
-            if (GetBattlerSide(i) == GetBattlerSide(gBattlerTarget) && !(gAbsentBattlerFlags & gBitTable[i]))
-                retVal++;
-        }
-        break;
-    case BATTLE_ALIVE_EXCEPT_ATTACKER:
-        for (i = 0; i < MAX_BATTLERS_COUNT; i++)
-        {
-            if (i != gBattlerAttacker && !(gAbsentBattlerFlags & gBitTable[i]))
+            if (GetBattlerSide(i) == GetBattlerSide(battler) && !(gAbsentBattlerFlags & gBitTable[i]))
                 retVal++;
         }
         break;
@@ -4567,7 +4553,7 @@ u8 GetDefaultMoveTarget(u8 battlerId)
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
         return GetBattlerAtPosition(opposing);
-    if (CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_ACTIVE) > 1)
+    if (CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_BATTLER, battlerId) > 1)
     {
         u8 position;
 
@@ -5715,7 +5701,7 @@ u8 CalculatePartyCount(struct Pokemon *party)
     {
         partyCount++;
     }
-    
+
     return partyCount;
 }
 
@@ -6457,7 +6443,7 @@ bool8 HealStatusConditions(struct Pokemon *mon, u32 battlePartyId, u32 healMask,
     }
 }
 
-u8 GetItemEffectParamOffset(u16 itemId, u8 effectByte, u8 effectBit)
+u8 GetItemEffectParamOffset(u32 battler, u16 itemId, u8 effectByte, u8 effectBit)
 {
     const u8 *temp;
     const u8 *itemEffect;
@@ -6475,7 +6461,7 @@ u8 GetItemEffectParamOffset(u16 itemId, u8 effectByte, u8 effectBit)
 
     if (itemId == ITEM_ENIGMA_BERRY_E_READER)
     {
-        temp = gEnigmaBerries[gActiveBattler].itemEffect;
+        temp = gEnigmaBerries[battler].itemEffect;
     }
 
     itemEffect = temp;
