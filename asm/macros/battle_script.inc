@@ -1388,6 +1388,51 @@
 	.4byte \ptr
 	.endm
 
+	.macro handlemegaevo battler:req, case:req
+	callnative BS_HandleMegaEvolution
+	.byte \battler
+	.byte \case
+	.endm
+
+	.macro handleprimalreversion battler:req, case:req
+	callnative BS_HandlePrimalReversion
+	.byte \battler
+	.byte \case
+	.endm
+
+	.macro handleultraburst battler:req, case:req
+	callnative BS_HandleUltraBurst
+	.byte \battler
+	.byte \case
+	.endm
+
+	.macro jumpifshelltrap battler:req, jumpInstr:req
+	callnative BS_JumpIfShellTrap
+	.byte \battler
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifemergencyexited battler:req, jumpInstr:req
+	callnative BS_JumpIfEmergencyExited
+	.byte \battler
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifrodaffected battler:req, jumpInstr:req
+	callnative BS_JumpIfRod
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifabsorbaffected battler:req, jumpInstr:req
+	callnative BS_JumpIfAbsorb
+	.4byte \jumpInstr
+	.endm
+
+	.macro jumpifmotoraffected battler:req, jumpInstr:req
+	callnative BS_JumpIfMotor
+	.4byte \jumpInstr
+	.endm
+
 	@ Used to active a different Max Move effects.
 	.macro setmaxmoveeffect
 	callnative BS_SetMaxMoveEffect
@@ -1674,21 +1719,6 @@
 	.macro trysoak failInstr:req
 	various BS_ATTACKER, VARIOUS_TRY_SOAK
 	.4byte \failInstr
-	.endm
-
-	.macro handlemegaevo battler:req, case:req
-	various \battler, VARIOUS_HANDLE_MEGA_EVO
-	.byte \case
-	.endm
-
-	.macro handleprimalreversion battler:req, case:req
-	various \battler, VARIOUS_HANDLE_PRIMAL_REVERSION
-	.byte \case
-	.endm
-
-	.macro handleultraburst battler:req, case:req
-	various \battler, VARIOUS_HANDLE_ULTRA_BURST
-	.byte \case
 	.endm
 
 	.macro handleformchange battler:req, case:req
@@ -2063,21 +2093,6 @@
 	various BS_ATTACKER, VARIOUS_SHELL_SIDE_ARM_CHECK
 	.endm
 
-	.macro jumpifrodaffected battler:req, jumpInstr:req
-	various \battler, VARIOUS_JUMP_IF_ROD
-	.4byte \jumpInstr
-	.endm
-
-	.macro jumpifabsorbaffected battler:req, jumpInstr:req
-	various \battler, VARIOUS_JUMP_IF_ABSORB
-	.4byte \jumpInstr
-	.endm
-
-	.macro jumpifmotoraffected battler:req, jumpInstr:req
-	various \battler, VARIOUS_JUMP_IF_MOTOR
-	.4byte \jumpInstr
-	.endm
-
 	.macro jumpifteanoberry jumpInstr:req
 	various BS_ATTACKER, VARIOUS_TEATIME_TARGETS
 	.4byte \jumpInstr
@@ -2361,16 +2376,6 @@
 		.endif
 	.endif
 	waitmessage B_WAIT_TIME_LONG
-	.endm
-
-	.macro jumpifemergencyexited battler:req, jumpInstr:req
-	various \battler, VARIOUS_JUMP_IF_EMERGENCY_EXITED
-	.4byte \jumpInstr
-	.endm
-
-	.macro jumpifshelltrap battler:req, ptr:req
-	various \battler, VARIOUS_JUMP_IF_SHELL_TRAP
-	.4byte \ptr
 	.endm
 
 	.macro hitswitchtargetfailed
