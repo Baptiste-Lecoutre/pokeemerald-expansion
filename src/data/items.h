@@ -9683,7 +9683,6 @@ const struct Item gItems[] =
     [ITEM_POKE_VIAL] =
     {
         .name = _("Poke Vial"),
-        .itemId = ITEM_POKE_VIAL,
         .price = 0,
         .description = sPokeVialDesc,
         .importance = 1,
@@ -9707,7 +9706,6 @@ const struct Item gItems[] =
     [ITEM_EON_FLUTE] = 
     {
         .name = _("Eon Flute"),
-        .itemId = ITEM_EON_FLUTE,
         .price = 0,
         .description = sEonFluteDesc,
         .importance = 1,
