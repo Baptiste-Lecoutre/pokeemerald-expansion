@@ -4240,7 +4240,7 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
         LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenMaxFriendshipIconSpriteSheet);
 		LoadSpritePalette(&sSummaryScreenMaxFriendshipIconSpritePalette);
 
-		sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] = CreateSprite(&sSummaryScreenMaxFriendshipIconTemplate, 8, 137, 0); // 70 93
+		sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] = CreateSprite(&sSummaryScreenMaxFriendshipIconTemplate, 9, 39, 0); // 8 137
 		if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] < MAX_SPRITES)
 		{
 			u16 imageNum = 0;
