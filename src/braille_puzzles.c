@@ -1,8 +1,10 @@
 #include "global.h"
 #include "event_data.h"
+#include "event_object_lock.h"
 #include "event_object_movement.h"
 #include "field_camera.h"
 #include "field_effect.h"
+#include "menu.h"
 #include "script.h"
 #include "sound.h"
 #include "task.h"
@@ -55,9 +57,24 @@ static const u8 sRegicePathCoords[][2] =
     {4,  22},
 };
 
+static const u8 sRegidragoFacingDirections[] = 
+{
+    DIR_NORTH,
+    DIR_EAST,
+    DIR_SOUTH,
+    DIR_WEST,
+    DIR_NORTH,
+    DIR_EAST,
+    DIR_SOUTH,
+    DIR_WEST,
+    DIR_NORTH,
+};
+
 static void Task_SealedChamberShakingEffect(u8);
 static void DoBrailleRegirockEffect(void);
 static void DoBrailleRegisteelEffect(void);
+static void Task_RegielekiPuzzle_Wait(u8 taskId);
+static bool32 RegielekiPuzzle_CheckButtonPress(void);
 
 bool8 ShouldDoBrailleDigEffect(void)
 {
@@ -258,11 +275,6 @@ static void DoBrailleRegisteelEffect(void)
     UnfreezeObjectEvents();
 }
 
-// theory: another commented out DoBrailleWait and Task_BrailleWait.
-static void DoBrailleWait(void)
-{
-}
-
 // this used to be FldEff_UseFlyAncientTomb . why did GF merge the 2 functions?
 bool8 FldEff_UsePuzzleEffect(void)
 {
@@ -344,3 +356,106 @@ bool8 ShouldDoBrailleRegicePuzzle(void)
 
     return FALSE;
 }
+
+/*bool8 ShouldDoBrailleRegidragoPuzzle(void)
+{
+    u8 i;
+    u16 val = VarGet(VAR_REGIDRAGO_DIRECTIONS);
+
+    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(DRACO_CHAMBER)
+        && gSaveBlock1Ptr->location.mapNum == MAP_NUM(DRACO_CHAMBER))
+    {
+        // check completion by flags
+
+        if (gSaveBlock1Ptr->pos.x != 8 || gSaveBlock1Ptr->pos.y != 21) // check if player moved
+            return FALSE; //and clear flags
+
+        for (i = 0; i < ARRAY_COUNT(sRegidragoFacingDirections); i++)
+        {
+            if (val >> i) // already did this step
+                continue;
+
+            if (VarGet(VAR_FACING) == sRegidragoFacingDirections[i])
+            {
+                val |= 1 << i,
+                VarSet(VAR_REGIDRAGO_DIRECTIONS, val);
+            }
+            
+            if (val == 511) // completion (511 = 2^9 - 1)
+                return TRUE;
+            else
+                return FALSE;
+        }
+    }
+
+    return FALSE;
+}
+
+void DoRegielekiPuzzle(void)
+{
+    if (TRUE) // do condition
+        CreateTask(Task_RegielekiPuzzle_Wait, 0x50);
+}
+
+static void Task_RegielekiPuzzle_Wait(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    switch (data[0])
+    {
+    case 0:
+        data[1] = 7200;
+        data[0] = 1;
+        break;
+    case 1:
+        if (RegielekiPuzzle_CheckButtonPress() != FALSE)
+        {
+            ClearDialogWindowAndFrame(0, FALSE);
+            PlaySE(SE_SELECT);
+            data[0] = 2;
+        }
+        else
+        {
+            data[1]--;
+            if (data[1] == 0)
+            {
+                ClearDialogWindowAndFrame(0, FALSE);
+                data[0] = 3;
+                data[1] = 30;
+            }
+        }
+        break;
+    case 2:
+        if (RegielekiPuzzle_CheckButtonPress() != FALSE)
+        {
+            data[1]--;
+            if (data[1] == 0)
+                data[0] = 4;
+            break;
+        }
+        ScriptUnfreezeObjectEvents();
+        DestroyTask(taskId);
+        UnlockPlayerFieldControls();
+        break;
+    case 3:
+        data[1]--;
+        if (data[1] == 0)
+            data[0] = 4;
+        break;
+    case 4:
+        ScriptUnfreezeObjectEvents();
+        DoBrailleRegisteelEffect(); //DoBrailleRegielekiEffect();
+        DestroyTask(taskId);
+        break;
+    }
+}
+
+static bool32 RegielekiPuzzle_CheckButtonPress(void)
+{
+    u16 keyMask = A_BUTTON | B_BUTTON | START_BUTTON | SELECT_BUTTON | DPAD_ANY | R_BUTTON | L_BUTTON;
+
+    if (JOY_NEW(keyMask))
+        return TRUE;
+    else
+        return FALSE;
+}*/
