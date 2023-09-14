@@ -617,9 +617,10 @@ static u8 GetLastTextColor(u8 colorType)
     }
 }
 
-inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, u32 i, u32 *glyphPixels, s32 width, s32 height)
+inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, s64 i, u32 *glyphPixels, s32 width, s32 height)
 {
-    u32 xAdd, yAdd, pixelData, bits, toOrr, dummyX;
+    u32 xAdd, pixelData, bits, toOrr, dummyX, dummyY;
+    s64 yAdd;
     u8 *dst;
 
     xAdd = j + width;
@@ -632,7 +633,8 @@ inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, u32 i, u3
         {
             if ((toOrr = pixelData & 0xF))
             {
-                dst = windowTiles + ((j / 8) * 32) + ((j % 8) / 2) + ((i / 8) * widthOffset) + ((i % 8) * 4);
+                if (i >= 0)
+                    dst = windowTiles + ((j / 8) * 32) + ((j % 8) / 2) + ((i / 8) * widthOffset) + ((i % 8) * 4);
                 bits = ((j & 1) * 4);
                 *dst = (toOrr << bits) | (*dst & (0xF0 >> bits));
             }
@@ -646,8 +648,9 @@ void CopyGlyphToWindow(struct TextPrinter *textPrinter)
     struct Window *window;
     struct WindowTemplate *template;
     u32 *glyphPixels;
-    u32 currX, currY, widthOffset;
+    u32 currX, widthOffset;
     s32 glyphWidth, glyphHeight;
+    s64 currY;
     u8 *windowTiles;
 
     window = &gWindows[textPrinter->printerTemplate.windowId];
@@ -660,7 +663,10 @@ void CopyGlyphToWindow(struct TextPrinter *textPrinter)
         glyphHeight = gCurGlyph.height;
 
     currX = textPrinter->printerTemplate.currentX;
-    currY = textPrinter->printerTemplate.currentY;
+    if (textPrinter->printerTemplate.unk)
+        currY = textPrinter->printerTemplate.currentY - (textPrinter->printerTemplate.y * 2);
+    else
+        currY = textPrinter->printerTemplate.currentY;
     glyphPixels = gCurGlyph.gfxBufferTop;
     windowTiles = window->tileData;
     widthOffset = template->width * 32;
@@ -848,7 +854,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
             FillWindowPixelRect(
                 textPrinter->printerTemplate.windowId,
                 textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-                textPrinter->printerTemplate.currentX,
+                textPrinter->printerTemplate.currentX + 2,
                 textPrinter->printerTemplate.currentY,
                 8,
                 16);
@@ -860,7 +866,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
                 arrowTiles = sDownArrowTiles;
                 break;
             case TRUE:
-                arrowTiles = sDarkDownArrowTiles;
+                arrowTiles = sDownArrowTiles; //sDarkDownArrowTiles;
                 break;
             }
 
@@ -871,7 +877,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
                 sDownArrowYCoords[subStruct->downArrowYPosIdx],
                 8,
                 16,
-                textPrinter->printerTemplate.currentX,
+                textPrinter->printerTemplate.currentX + 2,
                 textPrinter->printerTemplate.currentY,
                 8,
                 16);
@@ -888,7 +894,7 @@ void TextPrinterClearDownArrow(struct TextPrinter *textPrinter)
     FillWindowPixelRect(
         textPrinter->printerTemplate.windowId,
         textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-        textPrinter->printerTemplate.currentX,
+        textPrinter->printerTemplate.currentX + 2,
         textPrinter->printerTemplate.currentY,
         8,
         16);
@@ -967,7 +973,7 @@ void DrawDownArrow(u8 windowId, u16 x, u16 y, u8 bgColor, bool8 drawArrow, u8 *c
                 arrowTiles = sDownArrowTiles;
                 break;
             case TRUE:
-                arrowTiles = sDarkDownArrowTiles;
+                arrowTiles = sDownArrowTiles; //sDarkDownArrowTiles;
                 break;
             }
 

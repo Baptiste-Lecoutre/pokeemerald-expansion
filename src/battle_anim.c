@@ -275,6 +275,7 @@ void LaunchBattleAnimation(u32 animType, u32 animId)
         case B_ANIM_WISH_HEAL:
         case B_ANIM_MEGA_EVOLUTION:
         case B_ANIM_PRIMAL_REVERSION:
+        case B_ANIM_ULTRA_BURST:
         case B_ANIM_GULP_MISSILE:
             sAnimHideHpBoxes = TRUE;
             break;
@@ -434,32 +435,27 @@ static void Cmd_unloadspritegfx(void)
 
 static u8 GetBattleAnimMoveTargets(u8 battlerArgIndex, u8 *targets)
 {
-    u8 numTargets = 1;
+    u8 numTargets = 0;
+    int idx = 0;
+    u32 battler = gBattleAnimArgs[battlerArgIndex];
     switch (GetBattlerMoveTargetType(gBattleAnimAttacker, gAnimMoveIndex))
     {
-    case MOVE_TARGET_BOTH:
-        targets[0] = gBattleAnimArgs[battlerArgIndex];
-        numTargets = 1;
-        if (IsBattlerAlive(BATTLE_PARTNER(targets[0])))
-        {
-            targets[1] = BATTLE_PARTNER(targets[0]);
-            numTargets = 2;
-        }
-        break;
     case MOVE_TARGET_FOES_AND_ALLY:
-        targets[0] = gBattleAnimArgs[battlerArgIndex];
-        numTargets = 1;
-        if (IsBattlerAlive(BATTLE_PARTNER(targets[0])))
-        {
-            targets[1] = BATTLE_PARTNER(targets[0]);
+        if (IS_ALIVE_AND_PRESENT(BATTLE_PARTNER(BATTLE_OPPOSITE(battler)))) {
+            targets[idx++] = BATTLE_PARTNER(BATTLE_OPPOSITE(battler)); 
             numTargets++;
         }
-
-        if (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(targets[0]))))
-        {
-            targets[2] = BATTLE_PARTNER(BATTLE_OPPOSITE(targets[0]));
+        // fallthrough
+    case MOVE_TARGET_BOTH:
+        if (IS_ALIVE_AND_PRESENT(battler)) {
+            targets[idx++] = battler;
             numTargets++;
         }
+        battler = BATTLE_PARTNER(battler);
+        if (IS_ALIVE_AND_PRESENT(battler)) {
+            targets[idx++] = battler;
+            numTargets++;
+        }       
         break;
     default:
         targets[0] = gBattleAnimArgs[battlerArgIndex]; // original
@@ -550,7 +546,9 @@ static void CreateSpriteOnTargets(const struct SpriteTemplate *template, u8 argV
     subpriority = GetSubpriorityForMoveAnim(argVar);
 
     ntargets = GetBattleAnimMoveTargets(battlerArgIndex, targets);
-
+    if (ntargets == 0)
+        return;
+    
     for (i = 0; i < ntargets; i++) {
 
         if (overwriteAnimTgt)
@@ -675,7 +673,9 @@ static void Cmd_createvisualtaskontargets(void)
     }
 
     numArgs = GetBattleAnimMoveTargets(battlerArgIndex, targets);
-
+    if (numArgs == 0)
+        return;
+    
     for (i = 0; i < numArgs; i++)
     {
         gBattleAnimArgs[battlerArgIndex] = targets[i];
@@ -913,6 +913,8 @@ bool8 IsBattlerSpriteVisible(u8 battlerId)
         else
             return FALSE;
     }
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_RIGHT)
+        return FALSE;
     if (!IsBattlerSpritePresent(battlerId))
         return FALSE;
     if (IsContest())

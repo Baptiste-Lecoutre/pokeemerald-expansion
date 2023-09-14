@@ -184,12 +184,12 @@ static const struct SpritePalette sPokenavOptionsSpritePalettes[] =
 // Tile number, palette tag offset
 static const u16 sOptionsLabelGfx_RegionMap[] = {0x000, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
 static const u16 sOptionsLabelGfx_DexNav[]    = {0x020, PALTAG_OPTIONS_CYAN - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Condition[] = {0x040, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_MatchCall[] = {0x060, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Ribbons[]   = {0x080, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_AccessPC[]  = {0x040, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Condition[] = {0x060, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_MatchCall[] = {0x080, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
 static const u16 sOptionsLabelGfx_SwitchOff[] = {0x0A0, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_AccessPC[]  = {0x0C0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Party[]     = {0x0E0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Party[]     = {0x0C0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Ribbons[]   = {0x0E0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
 static const u16 sOptionsLabelGfx_Search[]    = {0x100, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
 static const u16 sOptionsLabelGfx_Cool[]      = {0x120, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
 static const u16 sOptionsLabelGfx_Beauty[]    = {0x140, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
@@ -212,7 +212,7 @@ struct
         .gfx = {
             sOptionsLabelGfx_RegionMap,
             sOptionsLabelGfx_DexNav,
-            sOptionsLabelGfx_Condition,
+            sOptionsLabelGfx_AccessPC,
             sOptionsLabelGfx_SwitchOff
         }
     },
@@ -223,7 +223,7 @@ struct
         .gfx = {
             sOptionsLabelGfx_RegionMap,
             sOptionsLabelGfx_DexNav,
-            sOptionsLabelGfx_Condition,
+            sOptionsLabelGfx_AccessPC,
             sOptionsLabelGfx_MatchCall,
             sOptionsLabelGfx_SwitchOff
         }
@@ -235,9 +235,9 @@ struct
         .gfx = {
             sOptionsLabelGfx_RegionMap,
             sOptionsLabelGfx_DexNav,
+            sOptionsLabelGfx_AccessPC,
             sOptionsLabelGfx_Condition,
             sOptionsLabelGfx_MatchCall,
-            sOptionsLabelGfx_Ribbons,
             sOptionsLabelGfx_SwitchOff
         }
     },
@@ -246,8 +246,8 @@ struct
         .yStart = 49,
         .deltaY = 20,
         .gfx = {
-            sOptionsLabelGfx_AccessPC,
             sOptionsLabelGfx_Party,
+            sOptionsLabelGfx_Ribbons,
             sOptionsLabelGfx_Search,
             sOptionsLabelGfx_Cancel
         }
@@ -282,12 +282,14 @@ static const u8 *const sPageDescriptions[] =
 {
     [POKENAV_MENUITEM_MAP]                     = gText_CheckMapOfHoenn,
     [POKENAV_MENUITEM_DEXNAV]                  = gText_DexNavDescription,
+    [POKENAV_MENUITEM_ACCESS_PC]               = gText_Pokenav_Access_PC,
     [POKENAV_MENUITEM_CONDITION]               = gText_CheckPokemonInDetail,
     [POKENAV_MENUITEM_MATCH_CALL]              = gText_CallRegisteredTrainer,
     [POKENAV_MENUITEM_RIBBONS]                 = gText_CheckObtainedRibbons,
     [POKENAV_MENUITEM_SWITCH_OFF]              = gText_PutAwayPokenav,
-    [POKENAV_MENUITEM_CONDITION_ACCESS_PC]     = gText_Pokenav_Access_PC,
+//    [POKENAV_MENUITEM_CONDITION_ACCESS_PC]     = gText_Pokenav_Access_PC,
     [POKENAV_MENUITEM_CONDITION_PARTY]         = gText_CheckPartyPokemonInDetail,
+    [POKENAV_MENUITEM_CONDITION_RIBBONS]       = gText_CheckObtainedRibbons,
     [POKENAV_MENUITEM_CONDITION_SEARCH]        = gText_CheckAllPokemonInDetail,
     [POKENAV_MENUITEM_CONDITION_CANCEL]        = gText_ReturnToPokenavMenu,
     [POKENAV_MENUITEM_CONDITION_SEARCH_COOL]   = gText_FindCoolPokemon,
@@ -529,7 +531,7 @@ static u32 LoopedTask_OpenMenu(s32 state)
         switch (GetPokenavMenuType())
         {
         case POKENAV_MENU_TYPE_CONDITION_SEARCH:
-            LoadLeftHeaderGfxForIndex(7);
+            LoadLeftHeaderGfxForIndex(POKENAV_GFX_SEARCH_MENU);
             // fallthrough
         case POKENAV_MENU_TYPE_CONDITION:
             LoadLeftHeaderGfxForIndex(1);
@@ -545,7 +547,7 @@ static u32 LoopedTask_OpenMenu(s32 state)
         switch (GetPokenavMenuType())
         {
         case POKENAV_MENU_TYPE_CONDITION_SEARCH:
-            ShowLeftHeaderGfx(7, FALSE, FALSE);
+            ShowLeftHeaderGfx(POKENAV_GFX_SEARCH_MENU, FALSE, FALSE);
             // fallthrough
         case POKENAV_MENU_TYPE_CONDITION:
             ShowLeftHeaderGfx(1, FALSE, FALSE);
@@ -676,12 +678,12 @@ static u32 LoopedTask_OpenConditionSearchMenu(s32 state)
     case 1:
         if (AreMenuOptionSpritesMoving())
             return LT_PAUSE;
-        LoadLeftHeaderGfxForIndex(7);
+        LoadLeftHeaderGfxForIndex(POKENAV_GFX_SEARCH_MENU);
         DrawCurrentMenuOptionLabels();
         return LT_INC_AND_PAUSE;
     case 2:
         StartOptionAnimations_Enter();
-        ShowLeftHeaderGfx(7, FALSE, FALSE);
+        ShowLeftHeaderGfx(POKENAV_GFX_SEARCH_MENU, FALSE, FALSE);
         PrintCurrentOptionDescription();
         return LT_INC_AND_PAUSE;
     case 3:

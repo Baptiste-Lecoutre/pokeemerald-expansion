@@ -142,7 +142,7 @@ static const u8 sText_TenDashes2[] = _("----------");
 
 #define SCROLLING_MON_X 146
 #define HGSS_DECAPPED 0 //0 false, 1 true
-#define HGSS_DARK_MODE 0 //0 false, 1 true
+#define HGSS_DARK_MODE 1 //0 false, 1 true
 #define HGSS_HIDE_UNSEEN_EVOLUTION_NAMES 0 //0 false, 1 true
 
 
@@ -5275,36 +5275,12 @@ static bool8 CalculateMoves(void)
         movesTotal++;
     }
 
-    #ifndef BATTLE_ENGINE
-    //TMHM moves
-    for (j = 0; j < NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES; j++)
-    {
-        if (CanSpeciesLearnTMHM(species, j))
-        {
-            sStatsMoves[movesTotal] = ItemIdToBattleMoveId(ITEM_TM01_FOCUS_PUNCH + j);
-            movesTotal++;
-            sStatsMovesTMHM_ID[numTMHMMoves] = (ITEM_TM01_FOCUS_PUNCH + j);
-            numTMHMMoves++;
-        }
-    }
-
-    //Tutor moves
-    for (i=0; i < TUTOR_MOVE_COUNT; i++)
-    {
-        if (CanLearnTutorMove(species, i)) //if (sTutorLearnsets[species] & (1 << i))
-        {
-            sStatsMoves[movesTotal] = gTutorMoves[i];
-            numTutorMoves++;
-            movesTotal++;
-        }
-    }
-    #else
     for (i = 0; gTeachableLearnsets[species][i] != MOVE_UNAVAILABLE; i++)
     {
         move = gTeachableLearnsets[species][i];
         for (j = 0; j < NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES; j++)
         {
-            if (GetTMHMMoves(j) == move)
+            if (gItems[j + ITEM_TM01].secondaryId == move)
             {
                 sStatsMovesTMHM_ID[numTMHMMoves] = (ITEM_TM01_FOCUS_PUNCH + j);
                 numTMHMMoves++;
@@ -5317,8 +5293,6 @@ static bool8 CalculateMoves(void)
         sStatsMoves[movesTotal] = move;
         movesTotal++;
     }
-
-    #endif
 
     sPokedexView->numEggMoves = numEggMoves;
     sPokedexView->numLevelUpMoves = numLevelUpMoves;

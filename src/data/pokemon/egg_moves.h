@@ -25,7 +25,7 @@ const u16 gEggMoves[] = {
         MOVE_ANCIENT_POWER,
         MOVE_BITE,
         MOVE_OUTRAGE,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_DRAGON_DANCE,
         MOVE_CRUNCH,
         MOVE_DRAGON_RUSH,
@@ -95,7 +95,7 @@ const u16 gEggMoves[] = {
         MOVE_PURSUIT,
         MOVE_SLAM,
         MOVE_SPITE,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_POISON_FANG,
         MOVE_SCARY_FACE,
         MOVE_POISON_TAIL,
@@ -126,7 +126,7 @@ const u16 gEggMoves[] = {
         MOVE_FOCUS_ENERGY,
         MOVE_CHARM,
         MOVE_COUNTER,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_PURSUIT,
         MOVE_SKULL_BASH,
         MOVE_IRON_TAIL,
@@ -142,7 +142,7 @@ const u16 gEggMoves[] = {
         MOVE_TAKE_DOWN,
         MOVE_AMNESIA,
         MOVE_CONFUSION,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_SUCKER_PUNCH,
         MOVE_HEAD_SMASH,
         MOVE_IRON_TAIL,
@@ -233,7 +233,7 @@ const u16 gEggMoves[] = {
         MOVE_SCREECH,
         MOVE_ANCIENT_POWER,
         MOVE_PURSUIT,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_UPROAR,
         MOVE_MUD_BOMB,
         MOVE_ASTONISH,
@@ -280,7 +280,7 @@ const u16 gEggMoves[] = {
         MOVE_MEDITATE,
         MOVE_COUNTER,
         MOVE_REVERSAL,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_REVENGE,
         MOVE_SMELLING_SALTS,
         MOVE_CLOSE_COMBAT,
@@ -1112,7 +1112,7 @@ const u16 gEggMoves[] = {
         MOVE_SPITE,
         MOVE_SLAM,
         MOVE_DOUBLE_SLAP,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_FAKE_OUT,
         MOVE_COVET,
         MOVE_BOUNCE,
@@ -1205,7 +1205,7 @@ const u16 gEggMoves[] = {
         MOVE_AMNESIA,
         MOVE_FORESIGHT,
         MOVE_FUTURE_SIGHT,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_WISH,
         MOVE_MAGIC_COAT,
         MOVE_DOUBLE_KICK,
@@ -1459,7 +1459,7 @@ const u16 gEggMoves[] = {
         MOVE_COUNTER,
         MOVE_SPITE,
         MOVE_REVERSAL,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_FIRE_FANG,
         MOVE_THUNDER_FANG,
         MOVE_NASTY_PLOT,
@@ -1681,7 +1681,7 @@ const u16 gEggMoves[] = {
         MOVE_POWER_SWAP,
         MOVE_DEFOG,
         MOVE_FOUL_PLAY,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_BULLET_SEED,
         MOVE_GRASSY_TERRAIN),
 
@@ -3133,7 +3133,7 @@ const u16 gEggMoves[] = {
         MOVE_FAKE_TEARS,
         MOVE_GRASS_WHISTLE,
         MOVE_MEMENTO,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_SWITCHEROO,
         MOVE_WORRY_SEED,
         MOVE_CAPTIVATE,
@@ -3170,7 +3170,7 @@ const u16 gEggMoves[] = {
         MOVE_UPROAR,
         MOVE_FIRE_FANG,
         MOVE_THUNDER_FANG,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_FOCUS_ENERGY,
         MOVE_COUNTER,
         MOVE_MEAN_LOOK,
@@ -4285,7 +4285,7 @@ const u16 gEggMoves[] = {
 
     egg_moves(DIGLETT_ALOLAN,
         MOVE_ANCIENT_POWER,
-        MOVE_BEAT_UP,
+        //MOVE_BEAT_UP, // broken
         MOVE_ENDURE,
         MOVE_FEINT_ATTACK,
         MOVE_FINAL_GAMBIT,

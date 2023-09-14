@@ -40,7 +40,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
-      "x": 11,
+      "x": 10,
       "y": 9,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
@@ -170,30 +170,48 @@
   "coord_events": [
     {
       "type": "trigger",
-      "x": 7,
-      "y": 8,
+      "x": 12,
+      "y": 10,
       "elevation": 0,
       "var": "VAR_TEMP_E",
       "var_value": "0",
-      "script": "FallarborTown_EventScript_RedSceneWest"
+      "script": "FallarborTown_EventScript_RedScene3"
     },
     {
       "type": "trigger",
-      "x": 8,
+      "x": 12,
       "y": 9,
       "elevation": 0,
       "var": "VAR_TEMP_E",
       "var_value": "0",
-      "script": "FallarborTown_EventScript_RedSceneSouth"
+      "script": "FallarborTown_EventScript_RedScene2"
     },
     {
       "type": "trigger",
-      "x": 9,
+      "x": 12,
       "y": 8,
       "elevation": 0,
       "var": "VAR_TEMP_E",
       "var_value": "0",
-      "script": "FallarborTown_EventScript_RedSceneEast"
+      "script": "FallarborTown_EventScript_RedScene1"
+    },
+    {
+      "type": "trigger",
+      "x": 12,
+      "y": 11,
+      "elevation": 0,
+      "var": "VAR_TEMP_E",
+      "var_value": "0",
+      "script": "FallarborTown_EventScript_RedScene4"
+    },
+    {
+      "type": "trigger",
+      "x": 13,
+      "y": 12,
+      "elevation": 0,
+      "var": "VAR_TEMP_E",
+      "var_value": "0",
+      "script": "FallarborTown_EventScript_RedScene5"
     }
   ],
   "bg_events": [

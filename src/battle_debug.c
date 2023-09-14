@@ -137,7 +137,6 @@ enum
     VAR_IN_LOVE,
     VAR_U16_4_ENTRIES,
     VAL_S8,
-    VAL_ITEM,
     VAL_ALL_STAT_STAGES,
 };
 
@@ -154,6 +153,7 @@ enum
     LIST_SIDE_STEALTH_ROCK,
     LIST_SIDE_TOXIC_SPIKES,
     LIST_SIDE_STICKY_WEB,
+    LIST_SIDE_STEELSURGE,
 };
 
 enum
@@ -229,6 +229,7 @@ static const u8 sText_PP[] = _("PP");
 static const u8 sText_StealthRock[] = _("Stealth Rock");
 static const u8 sText_ToxicSpikes[] = _("Toxic Spikes");
 static const u8 sText_StickyWeb[] = _("Sticky Web");
+static const u8 sText_Steelsurge[] = _("Steelsurge");
 static const u8 sText_AI[] = _("AI");
 static const u8 sText_NoBadMoves[] = _("No Bad Moves");
 static const u8 sText_Viability[] = _("Viability");
@@ -246,7 +247,6 @@ static const u8 sText_InLove[] = _("In Love");
 static const u8 sText_AIMovePts[] = _("AI Pts/Dmg");
 static const u8 sText_AiKnowledge[] = _("AI Info");
 static const u8 sText_AiParty[] = _("AI Party");
-static const u8 sText_EffectOverride[] = _("Effect Override");
 
 static const u8 sText_EmptyString[] = _("");
 
@@ -457,6 +457,7 @@ static const struct ListMenuItem sSideStatusListItems[] =
     {sText_StealthRock, LIST_SIDE_STEALTH_ROCK},
     {sText_ToxicSpikes, LIST_SIDE_TOXIC_SPIKES},
     {sText_StickyWeb, LIST_SIDE_STICKY_WEB},
+    {sText_Steelsurge, LIST_SIDE_STEELSURGE},
 };
 
 static const struct ListMenuItem sSecondaryListItems[] =
@@ -1302,7 +1303,7 @@ static void CreateSecondaryListMenu(struct BattleDebugMenu *data)
         itemsCount = 1;
         break;
     case LIST_ITEM_HELD_ITEM:
-        itemsCount = 2;
+        itemsCount = 1;
         break;
     case LIST_ITEM_TYPES:
         itemsCount = 3;
@@ -1439,11 +1440,6 @@ static void PrintSecondaryEntries(struct BattleDebugMenu *data)
     case LIST_ITEM_HELD_ITEM:
         PadString(ItemId_GetName(gBattleMons[data->battlerId].item), text);
         printer.currentY = printer.y = sSecondaryListTemplate.upText_Y;
-        AddTextPrinter(&printer, 0, NULL);
-
-        PadString(sText_EffectOverride, text);
-        printer.fontId = 0;
-        printer.currentY = printer.y = sSecondaryListTemplate.upText_Y + yMultiplier;
         AddTextPrinter(&printer, 0, NULL);
         break;
     case LIST_ITEM_TYPES:
@@ -1585,12 +1581,6 @@ static void UpdateBattlerValue(struct BattleDebugMenu *data)
         {
             gBattleMons[data->battlerId].status2 &= ~STATUS2_INFATUATION;
         }
-        break;
-    case VAL_ITEM:
-        if (data->currentSecondaryListItemId == 0)
-            *(u16 *)(data->modifyArrows.modifiedValPtr) = data->modifyArrows.currValue;
-        else if (data->currentSecondaryListItemId == 1)
-            gBattleStruct->debugHoldEffects[data->battlerId] = data->modifyArrows.currValue;
         break;
     }
     data->battlerWasChanged[data->battlerId] = TRUE;
@@ -1749,6 +1739,15 @@ static u8 *GetSideStatusValue(struct BattleDebugMenu *data, bool32 changeStatus,
                 *(u32 *)(data->modifyArrows.modifiedValPtr) &= ~SIDE_STATUS_STICKY_WEB;
         }
         return &sideTimer->stickyWebAmount;
+    case LIST_SIDE_STEELSURGE:
+        if (changeStatus)
+        {
+            if (statusTrue)
+                *(u32 *)(data->modifyArrows.modifiedValPtr) |= SIDE_STATUS_STEELSURGE;
+            else
+                *(u32 *)(data->modifyArrows.modifiedValPtr) &= ~SIDE_STATUS_STEELSURGE;
+        }
+        return &sideTimer->steelsurgeAmount;
     default:
         return NULL;
     }
@@ -1800,11 +1799,8 @@ static void SetUpModifyArrows(struct BattleDebugMenu *data)
         data->modifyArrows.maxValue = ITEMS_COUNT - 1;
         data->modifyArrows.maxDigits = 3;
         data->modifyArrows.modifiedValPtr = &gBattleMons[data->battlerId].item;
-        data->modifyArrows.typeOfVal = VAL_ITEM;
-        if (data->currentSecondaryListItemId == 0)
-            data->modifyArrows.currValue = gBattleMons[data->battlerId].item;
-        else
-            data->modifyArrows.currValue = gBattleStruct->debugHoldEffects[data->battlerId];
+        data->modifyArrows.typeOfVal = VAL_U16;
+        data->modifyArrows.currValue = gBattleMons[data->battlerId].item;
         break;
     case LIST_ITEM_TYPES:
         data->modifyArrows.minValue = 0;

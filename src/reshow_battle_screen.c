@@ -36,6 +36,8 @@ static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] =
     [DAWN_COSTUME]              = {TRAINER_BACK_PIC_DAWN, TRAINER_BACK_PIC_DAWN},
     [LUCAS_PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_LUCAS_PLATINUM},
     [DAWN_PLATINUM_COSTUME]     = {TRAINER_BACK_PIC_DAWN_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
+    [CHASE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_CHASE},
+    [ELAINE_COSTUME]            = {TRAINER_BACK_PIC_ELAINE, TRAINER_BACK_PIC_ELAINE},
 };
 
 void ReshowBattleScreenDummy(void)
@@ -202,7 +204,7 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
             if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
-                BattleLoadOpponentMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
+                BattleLoadMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
             else
                 BattleLoadSubstituteOrMonSpriteGfx(battler, FALSE);
         }
@@ -211,7 +213,7 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
         else if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL && battler == B_POSITION_PLAYER_LEFT) // Should be checking position, not battler.
             DecompressTrainerBackPic(TRAINER_BACK_PIC_WALLY, battler);
         else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
-            BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
+            BattleLoadMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
         else
             BattleLoadSubstituteOrMonSpriteGfx(battler, FALSE);
 
@@ -235,7 +237,10 @@ static void CreateBattlerSprite(u8 battler)
 
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
+            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0
+                && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+                return;
+            if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
                 return;
             if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
                 return;
@@ -273,9 +278,7 @@ static void CreateBattlerSprite(u8 battler)
         }
         else
         {
-            if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
-                return;
-            if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_IS_EGG))
+            if (!IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[battler]]))
                 return;
 
             SetMultiuseSpriteTemplateToPokemon(GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES), GetBattlerPosition(battler));
@@ -306,6 +309,9 @@ static void CreateHealthboxSprite(u8 battler)
             healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
 
         gHealthboxSpriteIds[battler] = healthboxSpriteId;
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+            return;
+
         InitBattlerHealthboxCoords(battler);
         SetHealthboxSpriteVisible(healthboxSpriteId);
 
@@ -328,8 +334,13 @@ static void CreateHealthboxSprite(u8 battler)
         }
         else if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
         {
-            if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0 || GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_IS_EGG))
+            if (!IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[battler]]))
                 SetHealthboxSpriteInvisible(healthboxSpriteId);
+        }
+        // Hide healthboxes when catching a Raid boss.
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+        {
+            SetHealthboxSpriteInvisible(healthboxSpriteId);
         }
     }
 }

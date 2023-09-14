@@ -52,10 +52,10 @@ Route114_EventScript_ReceivedBerry::
 Route114_EventScript_RoarGentleman::
 	lock
 	faceplayer
-	checkitem ITEM_TM05
+	checkitem ITEM_TM05_ROAR
 	goto_if_eq VAR_RESULT, TRUE, Route114_EventScript_ReceivedRoar
 	msgbox Route114_Text_AllMyMonDoesIsRoarTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_TM05
+	giveitem ITEM_TM05_ROAR
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox Route114_Text_ExplainRoar, MSGBOX_DEFAULT
 	release

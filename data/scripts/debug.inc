@@ -1,14 +1,15 @@
 .if DEBUG_OVERWORLD_MENU == TRUE
-
-Debug_ShowFieldMessageStringVar4::
-	special ShowFieldMessageStringVar4
+Debug_MessageEnd:
 	waitmessage
 	waitbuttonpress
 	releaseall
 	end
 
+Debug_ShowFieldMessageStringVar4::
+	special ShowFieldMessageStringVar4
+	goto Debug_MessageEnd
+
 Debug_CheatStart::
-	lockall
 	setflag FLAG_SYS_POKEMON_GET
 	setflag FLAG_RESCUED_BIRCH
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_ZIGZAGOON_BATTLE
@@ -17,9 +18,11 @@ Debug_CheatStart::
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG
 	setvar VAR_BIRCH_LAB_STATE, 2
 	setvar VAR_ROUTE101_STATE, 3
-	givemon SPECIES_TREECKO, 20, ITEM_NONE
-	givemon SPECIES_TORCHIC, 20, ITEM_NONE
-	givemon SPECIES_MUDKIP, 20, ITEM_NONE
+	givemon SPECIES_RAYQUAZA, 90, ITEM_NONE
+	givemon SPECIES_SALAMENCE, 90, ITEM_NONE
+	givemon SPECIES_NECROZMA_DAWN_WINGS, 90, ITEM_ULTRANECROZIUM_Z
+	givemon SPECIES_LATIOS, 90, ITEM_LATIOSITE
+	givemon SPECIES_MEW, 1, ITEM_NONE
 	setflag FLAG_SYS_POKEDEX_GET
 	special SetUnlockedPokedexFlags
 	setflag FLAG_RECEIVED_POKEDEX_FROM_BIRCH
@@ -35,6 +38,10 @@ Debug_CheatStart::
 	setvar VAR_LITTLEROOT_RIVAL_STATE, 4 @ 4: Received Pokedex
 	setflag FLAG_RECEIVED_BIKE
 	additem ITEM_ACRO_BIKE
+	additem ITEM_MEGA_RING
+	additem ITEM_Z_POWER_RING
+	additem ITEM_DYNAMAX_BAND
+	additem ITEM_EXP_SHARE
 	setvar VAR_BRINEY_HOUSE_STATE, 1
 	setvar VAR_ROUTE116_STATE, 2
 	setflag FLAG_HIDE_ROUTE_116_MR_BRINEY
@@ -44,12 +51,8 @@ Debug_CheatStart::
 	end
 
 Debug_FlagsNotSetOverworldConfigMessage::
-	lockall
 	message Debug_FlagsNotSetOverworldConfigMessage_Text
-	waitmessage
-	waitbuttonpress
-	releaseall
-	end
+	goto Debug_MessageEnd
 
 Debug_FlagsNotSetOverworldConfigMessage_Text:
 	.string "Feature unavailable!\n"
@@ -57,17 +60,20 @@ Debug_FlagsNotSetOverworldConfigMessage_Text:
 	.string "'include/config/overworld.h'!$"
 
 Debug_FlagsNotSetBattleConfigMessage::
-	lockall
 	message Debug_FlagsNotSetBattleConfigMessage_Text
-	waitmessage
-	waitbuttonpress
-	releaseall
-	end
+	goto Debug_MessageEnd
 
 Debug_FlagsNotSetBattleConfigMessage_Text:
 	.string "Feature unavailable!\n"
 	.string "Please define a usable flag in:\l"
 	.string "'include/config/battle.h'!$"
+
+Debug_BoxFilledMessage::
+	message Debug_BoxFilledMessage_Text
+	goto Debug_MessageEnd
+
+Debug_BoxFilledMessage_Text:
+	.string "Storage boxes filled!$"
 
 Debug_Script_1::
 	goto EventScript_DoWonderTrade
@@ -88,12 +94,33 @@ Debug_Script_4::
 	end
 
 Debug_Script_5::
+	lockall
+@	preparefixedraid 0, 5, SPECIES_SALAMENCE, 30
+	special InitRaidIntro
+	waitstate
+	goto_if_eq VAR_RESULT, TRUE, Debug_DoFixedRaid
+	releaseall
+	end
+
+Debug_DoFixedRaid:
+	doraidbattle
 	end
 
 Debug_Script_6::
+	goto PKMN_Center_MinimalGrinding
 	end
 
 Debug_Script_7::
+	setvar VAR_SOOTOPOLIS_CITY_STATE, 4
+	setvar VAR_SKY_PILLAR_STATE, 1
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_RESIDENTS
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	setflag FLAG_HIDE_SOOTOPOLIS_CITY_MAN_1
+	setflag FLAG_LEGENDARIES_IN_SOOTOPOLIS
 	end
 
 Debug_Script_8::
@@ -117,5 +144,36 @@ Debug_SaveBlock2Size::
 
 Debug_PokemonStorageSize::
 	.string "{PKMN}Storage size: {STR_VAR_1}/{STR_VAR_2}.$"
+
+Debug_HatchAnEgg::
+	lockall
+	getpartysize
+	goto_if_eq VAR_RESULT, 0, Debug_HatchAnEgg_NoPokemon
+	special ChoosePartyMon
+	waitstate
+	goto_if_ge VAR_0x8004, PARTY_SIZE, Debug_HatchAnEgg_End
+	specialvar VAR_RESULT, ScriptGetPartyMonSpecies
+	goto_if_ne VAR_RESULT, SPECIES_EGG, DebugScript_HatchAnEgg_CantForceHatch
+	special EggHatch
+	waitstate
+Debug_HatchAnEgg_End::
+	releaseall
+	end
+
+Debug_HatchAnEgg_NoPokemon::
+	msgbox DebugScript_HatchAnEgg_Text_EmptyParty, MSGBOX_DEFAULT
+	releaseall
+	end
+
+DebugScript_HatchAnEgg_CantForceHatch::
+	msgbox DebugScript_HatchAnEgg_Text_NotAnEgg, MSGBOX_DEFAULT
+	releaseall
+	end
+
+DebugScript_HatchAnEgg_Text_EmptyParty::
+	.string "You have no Pokémon nor Eggs.$"
+
+DebugScript_HatchAnEgg_Text_NotAnEgg::
+	.string "That's not a Pokémon Egg.$"
 
 .endif

@@ -1761,6 +1761,31 @@
   .4byte \func
   .endm
 
+@ Prepares to start a wild battle against a 'species' at 'level' holding 'item'.
+	@ If 'species2' is something other than SPECIES_NONE, then the battle is a double battle
+	@ that is also against 'species2' at 'level2' holding 'item2'.
+	@ Running this command will not affect normal wild battles. You start the prepared battle with multi_wild.
+	@ If the player only has one Pokemon, a scripted double battle will be buggy.
+	.macro setsootopolisbattle species:req, level:req, item=ITEM_NONE, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE
+	.byte 0xe6
+	.2byte \species
+	.byte \level
+	.2byte \item
+	.2byte \species2
+	.byte \level2
+	.2byte \item2
+	.endm
+
+	.macro checkPartyHasSpecies species:req
+	.byte 0xe7
+	.2byte \species
+	.endm
+
+	.macro isChosenMonSpecies species:req
+	.byte 0xe8
+	.2byte \species
+	.endm
+
 @ Supplementary
 
 	.macro goto_if_unset flag:req, dest:req
@@ -2042,4 +2067,21 @@
 	setvar VAR_0x8001, \canStopEvo
 	setvar VAR_0x8002, \tryMultiple
 	special TrySpecialOverworldEvo
+	.endm
+
+	@ Sets up a Raid Battle with fixed data.
+	@ This is designed for testing, but can be used to create event raids too!
+	.macro preparefixedraid type:req, rank:req, species:req, level:req;
+	setvar VAR_0x8000, TRUE
+	setvar VAR_0x8001, \type
+	setvar VAR_0x8002, \rank
+	setvar VAR_0x8003, \species
+	setvar VAR_0x8007, \level
+	.endm
+	
+	.macro ai_vs_ai_battle trainer1:req, trainer2:req
+	setflag B_FLAG_AI_VS_AI_BATTLE
+	setvar VAR_0x8004, \trainer1
+	callnative CreateTrainerPartyForPlayer
+	trainerbattle_no_intro \trainer2, NULL
 	.endm

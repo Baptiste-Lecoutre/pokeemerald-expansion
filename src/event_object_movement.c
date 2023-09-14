@@ -506,6 +506,9 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_DAWN                    0x1139
 #define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113A
 #define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
+#define OBJ_EVENT_PAL_TAG_CHASE                   0x113C
+#define OBJ_EVENT_PAL_TAG_ELAINE                  0x113D
+#define OBJ_EVENT_PAL_TAG_WALLY                   0x113E
 
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
@@ -581,6 +584,9 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Dawn,                  OBJ_EVENT_PAL_TAG_DAWN},
     {gObjectEventPal_LucasPlatinum,         OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM},
     {gObjectEventPal_DawnPlatinum,          OBJ_EVENT_PAL_TAG_DAWN_PLATINUM},
+    {gObjectEventPal_Chase,                 OBJ_EVENT_PAL_TAG_CHASE},
+    {gObjectEventPal_Elaine,                OBJ_EVENT_PAL_TAG_ELAINE},
+    {gObjectEventPal_Wally,                 OBJ_EVENT_PAL_TAG_WALLY},
     {gObjectEventPaletteLight,              OBJ_EVENT_PAL_TAG_LIGHT},
     {gObjectEventPaletteLight2,             OBJ_EVENT_PAL_TAG_LIGHT_2},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
@@ -693,6 +699,13 @@ static const u16 sReflectionPaletteTags_RedLeaf[] = {
     OBJ_EVENT_PAL_TAG_RED_LEAF,
 };
 
+static const u16 sReflectionPaletteTags_Wally[] = {
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+};
+
 static const struct PairedPalettes sSpecialObjectReflectionPaletteSets[] = {
     {OBJ_EVENT_PAL_TAG_BRENDAN,          sReflectionPaletteTags_Brendan},
     {OBJ_EVENT_PAL_TAG_MAY,              sReflectionPaletteTags_May},
@@ -707,6 +720,7 @@ static const struct PairedPalettes sSpecialObjectReflectionPaletteSets[] = {
     {OBJ_EVENT_PAL_TAG_NPC_3,            sReflectionPaletteTags_Npc3},
     {OBJ_EVENT_PAL_TAG_SUBMARINE_SHADOW, sReflectionPaletteTags_SubmarineShadow},
     {OBJ_EVENT_PAL_TAG_RED_LEAF,         sReflectionPaletteTags_RedLeaf},
+    {OBJ_EVENT_PAL_TAG_WALLY,            sReflectionPaletteTags_Wally},
     {OBJ_EVENT_PAL_TAG_NONE,             NULL},
 };
 
@@ -1947,7 +1961,7 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
   bool8 shiny;
   u8 form;
   // Avoid spawning large (64x64) follower pokemon inside buildings //optionsShowFollowerPokemon
-  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER)) {
+  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER) && FALSE) {
     if (objEvent == NULL) { // Spawn follower
       struct ObjectEventTemplate template = {
         .localId = OBJ_EVENT_ID_FOLLOWER,
@@ -2272,7 +2286,7 @@ void UpdateLightSprite(struct Sprite *sprite) {
         DestroySprite(sprite);
         FieldEffectFreeTilesIfUnused(sheetTileStart);
         FieldEffectFreePaletteIfUnused(paletteNum);
-        Weather_SetBlendCoeffs(12, 12); // TODO: Restore original blend coeffs at dawn //7, 12
+        Weather_SetBlendCoeffs(7, 12); // TODO: Restore original blend coeffs at dawn //7, 12
         return;
     }
 
@@ -2284,10 +2298,10 @@ void UpdateLightSprite(struct Sprite *sprite) {
     switch (sprite->data[5]) { // lightType
     case 0:
         if (gPaletteFade.active) { // if palette fade is active, don't flicker since the timer won't be updated
-            Weather_SetBlendCoeffs(12, 12); //7, 12
+            Weather_SetBlendCoeffs(7, 12); //7, 12
             sprite->invisible = FALSE;
         } else if (gPlayerAvatar.tileTransitionState) {
-            Weather_SetBlendCoeffs(12, 12); // As long as the second coefficient stays 12, shadows will not change //7, 12
+            Weather_SetBlendCoeffs(7, 12); // As long as the second coefficient stays 12, shadows will not change //7, 12
             sprite->invisible = FALSE;
             if (GetSpritePaletteTagByPaletteNum(sprite->oam.paletteNum) == OBJ_EVENT_PAL_TAG_LIGHT_2)
                 LoadSpritePaletteInSlot(&sObjectEventSpritePalettes[FindObjectEventPaletteIndexByTag(OBJ_EVENT_PAL_TAG_LIGHT)], sprite->oam.paletteNum);
@@ -2298,7 +2312,7 @@ void UpdateLightSprite(struct Sprite *sprite) {
         }*/
         break;
     case 1 ... 2:
-        Weather_SetBlendCoeffs(12, 12);
+        Weather_SetBlendCoeffs(7, 12);
         sprite->invisible = FALSE;
         break;
     }
@@ -9493,7 +9507,7 @@ static void DoGroundEffects_OnSpawn(struct ObjectEvent *objEvent, struct Sprite 
 {
     u32 flags;
 
-    if (objEvent->triggerGroundEffectsOnMove)
+    if (objEvent->triggerGroundEffectsOnMove && objEvent->localId != OBJ_EVENT_ID_CAMERA)
     {
         flags = 0;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
@@ -9509,7 +9523,7 @@ static void DoGroundEffects_OnBeginStep(struct ObjectEvent *objEvent, struct Spr
 {
     u32 flags;
 
-    if (objEvent->triggerGroundEffectsOnMove)
+    if (objEvent->triggerGroundEffectsOnMove && objEvent->localId != OBJ_EVENT_ID_CAMERA)
     {
         flags = 0;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
@@ -9526,7 +9540,7 @@ static void DoGroundEffects_OnFinishStep(struct ObjectEvent *objEvent, struct Sp
 {
     u32 flags;
 
-    if (objEvent->triggerGroundEffectsOnStop)
+    if (objEvent->triggerGroundEffectsOnStop && objEvent->localId != OBJ_EVENT_ID_CAMERA)
     {
         flags = 0;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);

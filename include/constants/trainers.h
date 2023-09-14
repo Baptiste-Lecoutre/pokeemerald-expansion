@@ -129,6 +129,9 @@
 #define TRAINER_PIC_DAWN                  109
 #define TRAINER_PIC_LUCAS_PLATINUM        110
 #define TRAINER_PIC_DAWN_PLATINUM         111
+#define TRAINER_PIC_MAGMA_ADMIN_F         112
+#define TRAINER_PIC_CHASE                 113
+#define TRAINER_PIC_ELAINE                114
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0
@@ -146,6 +149,8 @@
 #define TRAINER_BACK_PIC_DAWN                   12
 #define TRAINER_BACK_PIC_LUCAS_PLATINUM         13
 #define TRAINER_BACK_PIC_DAWN_PLATINUM          14
+#define TRAINER_BACK_PIC_CHASE                  15
+#define TRAINER_BACK_PIC_ELAINE                 16
 
 #define FACILITY_CLASS_HIKER                 0x0
 #define FACILITY_CLASS_AQUA_GRUNT_M          0x1
@@ -406,13 +411,6 @@
 #define TRAINER_ENCOUNTER_MUSIC_RICH        13 // Rich Boys and Gentlemen
 
 #define F_TRAINER_FEMALE (1 << 7)
-
-// All trainer parties specify the IV, level, and species for each Pokémon in the
-// party. Some trainer parties also specify held items and custom moves for each
-// Pokémon.
-#define F_TRAINER_PARTY_CUSTOM_MOVESET        (1 << 0)
-#define F_TRAINER_PARTY_HELD_ITEM             (1 << 1)
-#define F_TRAINER_PARTY_EVERYTHING_CUSTOMIZED (1 << 3)
 
 // Trainer party defines
 #define TRAINER_MON_MALE    1

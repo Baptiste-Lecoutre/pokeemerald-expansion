@@ -62,13 +62,15 @@ enum
 
 #define MAX_SMOKE 10
 
+typedef u8 ALIGNED(4) TilemapBuffer[BG_SCREEN_SIZE];
+
 struct RayquazaScene
 {
     MainCallback exitCallback;
-    u8 tilemapBuffers[4][BG_SCREEN_SIZE];
+    TilemapBuffer tilemapBuffers[4];
     u16 unk; // never read
     u8 animId;
-    bool8 endEarly;
+    u8 endEarly;
     s16 revealedLightLine;
     s16 revealedLightTimer;
     u8 unused[12];
@@ -1285,7 +1287,7 @@ static const struct BgTemplate sBgTemplates_ChasesAway[] =
     }
 };
 
-void DoRayquazaScene(u8 animId, bool8 endEarly, void (*exitCallback)(void))
+void DoRayquazaScene(u8 animId, u8 endEarly, void (*exitCallback)(void))
 {
     sRayScene = AllocZeroed(sizeof(*sRayScene));
     sRayScene->animId = animId;
@@ -1344,13 +1346,15 @@ static void Task_SetNextAnim(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
-        if (sRayScene->endEarly == TRUE)
+        if (sRayScene->endEarly == 1)
         {
             gTasks[taskId].func = Task_EndAfterFadeScreen;
         }
         else
         {
             sRayScene->animId++;
+            if (sRayScene->animId == RAY_ANIM_CHASES_AWAY)
+                sRayScene->animId++;
             sRayScene->unk = 0;
             gTasks[taskId].func = sTasksForAnimations[sRayScene->animId];
         }

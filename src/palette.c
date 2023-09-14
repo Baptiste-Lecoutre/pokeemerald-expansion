@@ -66,7 +66,7 @@ static EWRAM_DATA struct PaletteStruct sPaletteStructs[NUM_PALETTE_STRUCTS] = {0
 EWRAM_DATA struct PaletteFadeControl gPaletteFade = {0};
 static EWRAM_DATA u32 sFiller = 0;
 static EWRAM_DATA u32 sPlttBufferTransferPending = 0;
-EWRAM_DATA u8 gPaletteDecompressionBuffer[PLTT_SIZE] = {0};
+EWRAM_DATA u8 ALIGNED(2) gPaletteDecompressionBuffer[PLTT_SIZE] = {0};
 
 static const struct PaletteStructTemplate sDummyPaletteStructTemplate = {
     .id = 0xFFFF,
@@ -612,7 +612,7 @@ static u8 UpdateNormalPaletteFade(void)
         else
         {
             selectedPalettes = gPaletteFade_selectedPalettes >> 16;
-            paletteOffset = 256;
+            paletteOffset = OBJ_PLTT_OFFSET;
         }
 
         while (selectedPalettes)
@@ -1332,6 +1332,34 @@ void TintPalette_CustomTone(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 b
         r = (u16)((rTone * gray)) >> 8;
         g = (u16)((gTone * gray)) >> 8;
         b = (u16)((bTone * gray)) >> 8;
+
+        if (r > 31)
+            r = 31;
+        if (g > 31)
+            g = 31;
+        if (b > 31)
+            b = 31;
+
+        *palette++ = RGB2(r, g, b);
+    }
+}
+
+void TintPalette_CustomTone_Blend(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 bTone)
+{
+    s32 r, g, b, i;
+    u32 gray;
+
+    for (i = 0; i < count; i++)
+    {
+        r = GET_R(*palette);
+        g = GET_G(*palette);
+        b = GET_B(*palette);
+
+        gray = (r * Q_8_8(0.3) + g * Q_8_8(0.59) + b * Q_8_8(0.1133)) >> 8;
+
+        r = (u16)((rTone * r)) >> 8;
+        g = (u16)((gTone * g)) >> 8;
+        b = (u16)((bTone * b)) >> 8;
 
         if (r > 31)
             r = 31;

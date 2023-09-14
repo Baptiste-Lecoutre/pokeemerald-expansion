@@ -1,0 +1,47 @@
+{
+  "id": "MAP_METEOR_FALLS_DRACO_CHAMBER",
+  "name": "MeteorFalls_DracoChamber",
+  "layout": "LAYOUT_METEOR_FALLS_DRACO_CHAMBER",
+  "music": "MUS_CAVE_OF_ORIGIN",
+  "region_map_section": "MAPSEC_DRACO_CHAMBER",
+  "requires_flash": false,
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_cycling": true,
+  "allow_escaping": true,
+  "allow_running": true,
+  "show_map_name": true,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": [
+    {
+      "map": "MAP_UNDERWATER_METEOR_FALLS_DRACO_CHAMBER",
+      "offset": 0,
+      "direction": "dive"
+    }
+  ],
+  "object_events": [
+
+  ],
+  "warp_events": [
+    {
+      "x": 8,
+      "y": 20,
+      "elevation": 0,
+      "dest_map": "MAP_METEOR_FALLS_DRACO_CHAMBER",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 8,
+      "y": 11,
+      "elevation": 0,
+      "dest_map": "MAP_METEOR_FALLS_DRACO_CHAMBER",
+      "dest_warp_id": "0"
+    }
+  ],
+  "coord_events": [
+
+  ],
+  "bg_events": [
+
+  ]
+}

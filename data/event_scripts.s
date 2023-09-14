@@ -657,6 +657,7 @@ EventScript_SetBrineyLocation_Route109::
 	.include "data/scripts/record_mix.inc"
 	.include "data/scripts/pc.inc"
 	.include "data/scripts/pkmn_center_move_tutor.inc"
+	.include "data/scripts/poke_mart.inc"
 
 @ scripts/notices.inc? signs.inc? See comment about text/notices.inc
 Common_EventScript_ShowPokemartSign::
@@ -831,6 +832,16 @@ Common_EventScript_PlayerHandedOverTheItem::
 	removeitem VAR_0x8004
 	return
 
+Common_EventScript_RemoveOverworldAfterBattle:
+	call_if_set FLAG_SYS_CTRL_OBJ_DELETE, Common_EventScript_TryRemoveMon
+	end
+
+Common_EventScript_TryRemoveMon::
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_ne VAR_RESULT, B_OUTCOME_CAUGHT, Common_EventScript_NopReturn
+	removeobject VAR_LAST_TALKED
+	return
+
 	.include "data/scripts/elite_four.inc"
 	.include "data/scripts/movement.inc"
 	.include "data/scripts/check_furniture.inc"
@@ -863,7 +874,7 @@ gText_SandstormIsVicious::
 	.string "It's impossible to keep going.$"
 
 gText_SelectWithoutRegisteredItem::
-	.string "An item in the Bag can be\n"
+	.string "Up to four items in the Bag can be\n"
 	.string "registered for easy use.$"
 
 gText_PokemonTrainerSchoolEmail::
@@ -1012,17 +1023,16 @@ Common_EventScript_LegendaryFlewAway::
 EventScript_DoWonderTrade::
 	special ChoosePartyMon
 	waitstate
-	compare VAR_0x8004, PARTY_SIZE
-	goto_if_ge EventScript_End
+	goto_if_ge VAR_0x8004, PARTY_SIZE, EventScript_End
 	copyvar VAR_0x8005, VAR_0x8004
 	special CreateWonderTradePokemon
 	special DoInGameTradeScene
 	waitstate
 	msgbox EventScript_DoWonderTrade_Text_WannaDoAnotherWonderTrade, MSGBOX_YESNO
-	compare VAR_RESULT, YES
-	goto_if_eq EventScript_DoWonderTrade
+	goto_if_eq VAR_RESULT, YES, EventScript_DoWonderTrade
 	msgbox EventScript_DoWonderTrade_Text_Done, MSGBOX_DEFAULT
 	closemessage
+	releaseall
 EventScript_End:
 	end
 
@@ -1090,6 +1100,7 @@ EventScript_DoWonderTrade_Text_Done:
 	.include "data/text/birch_speech.inc"
     .include "data/scripts/dexnav.inc"
 	.include "data/scripts/costume_swap.inc"
+	.include "data/scripts/raid_battle.inc"
     
 
 	.include "data/maps/PetalburgWoods_2/scripts.inc"
@@ -1146,3 +1157,16 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/LilycoveCity_MirageMountain/scripts.inc"
 
 	.include "data/maps/Route123_MirageCave/scripts.inc"
+
+	.include "data/scripts/furfrou.inc"
+	.include "data/scripts/rotom.inc"
+
+	.include "data/maps/Route110_CaveOfShock/scripts.inc"
+
+	.include "data/maps/CaveOfShock/scripts.inc"
+
+	.include "data/maps/Underwater_MeteorFalls_B1F_2R/scripts.inc"
+
+	.include "data/maps/MeteorFalls_DracoChamber/scripts.inc"
+
+	.include "data/maps/Underwater_MeteorFalls_DracoChamber/scripts.inc"

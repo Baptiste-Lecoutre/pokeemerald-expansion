@@ -184,6 +184,7 @@ extern const u8 gText_EmptyString2[];
 extern const u8 gText_Confirm3[];
 extern const u8 gText_Cancel4[];
 extern const u8 gText_IsThisTheCorrectTime[];
+extern const u8 gText_TimeCanBeChangedAgain[];
 extern const u8 gText_PkmnFainted_FldPsn[];
 extern const u8 gText_Coins[];
 extern const u8 gText_Silver[];
@@ -475,6 +476,7 @@ extern const u8 gText_Var1IsSelected[];
 extern const u8 gText_TossHowManyVar1s[];
 extern const u8 gText_ConfirmTossItems[];
 extern const u8 gText_ThrewAwayVar2Var1s[];
+extern const u8 gText_PressAnyDpadKey[];
 extern const u8 gText_CantWriteMail[];
 extern const u8 gText_NoPokemon[];
 extern const u8 gText_Var1CantBeHeld[];
@@ -539,6 +541,7 @@ extern const u8 gText_PkmnFriendlyBaseVar2Fell[];
 extern const u8 gText_PkmnFriendlyBaseVar2CantFall[];
 extern const u8 gText_PkmnAdoresBaseVar2Fell[];
 extern const u8 gText_PkmnAlreadyKnows[];
+extern const u8 gText_PkmnFriendshipNotHighEnough[];
 extern const u8 gText_PkmnCantLearnMove[];
 extern const u8 gText_PkmnNeedsToReplaceMove[];
 extern const u8 gText_PkmnLearnedMove3[];
@@ -1143,6 +1146,8 @@ extern const u8 gText_XNatureFatefulEncounter[];
 extern const u8 gText_XNatureProbablyMetAt[];
 extern const u8 gText_XNatureObtainedInTrade[];
 extern const u8 gText_EmptyString5[];
+extern const u8 gText_PkmnIV[];
+extern const u8 gText_PkmnEV[];
 extern const u8 gText_EggWillTakeALongTime[];
 extern const u8 gText_EggAboutToHatch[];
 extern const u8 gText_EggWillHatchSoon[];
@@ -3218,6 +3223,13 @@ extern const u8 gStartMenu_TimeBoxClock[];
 extern const u8 gText_ExpShareOn[];
 extern const u8 gText_ExpShareOff[];
 
+// Nature changer multichoice
+extern const u8 gText_FlavourRed[];
+extern const u8 gText_FlavourYellow[];
+extern const u8 gText_FlavourPink[];
+extern const u8 gText_FlavourBlue[];
+extern const u8 gText_FlavourGreen[];
+
 // Super/Hyper Training strings
 extern const u8 gText_View[];
 extern const u8 gText_Modify[];
@@ -3589,11 +3601,14 @@ extern const u8 gText_LucasCostume[];
 extern const u8 gText_DawnCostume[];
 extern const u8 gText_LucasPlatinumCostume[];
 extern const u8 gText_DawnPlatinumCostume[];
+extern const u8 gText_ChaseCostume[];
+extern const u8 gText_ElaineCostume[];
 
 extern const u8 gText_FirstDrawer[];
 extern const u8 gText_SecondDrawer[];
 extern const u8 gText_ThirdDrawer[];
 extern const u8 gText_FourthDrawer[];
+extern const u8 gText_FifthDrawer[];
 
 extern const u8 gText_RoamerEntei[];
 extern const u8 gText_RoamerSuicune[];
@@ -3610,5 +3625,35 @@ extern const u8 gText_RoamerGZapdos[];
 extern const u8 gText_RoamerGArticuno[];
 extern const u8 gText_RoamerZacian[];
 extern const u8 gText_RoamerZamazenta[];
+
+extern const u8 gText_HeartTrim[];
+extern const u8 gText_StarTrim[];
+extern const u8 gText_DiamondTrim[];
+extern const u8 gText_DebutanteTrim[];
+extern const u8 gText_MatronTrim[];
+extern const u8 gText_DandyTrim[]; 
+extern const u8 gText_LaReineTrim[];
+extern const u8 gText_KabukiTrim[];
+extern const u8 gText_PharaohTrim[];
+extern const u8 gText_BackToNatural[];
+
+extern const u8 gText_MicrowaveOven[];
+extern const u8 gText_WashingMachine[];
+extern const u8 gText_Refrigerator[];
+extern const u8 gText_ElectricFan[];
+extern const u8 gText_Lawnmower[];
+extern const u8 gText_Recall[];
+
+extern const u8 gText_GrassPledge[];
+extern const u8 gText_FirePledge[];
+extern const u8 gText_WaterPledge[];
+extern const u8 gText_FrenzyPlant[];
+extern const u8 gText_BlastBurn[];
+extern const u8 gText_HydroCannon[];
+
+extern const u8 gText_TeamPreviewSingleDoubleText[];
+extern const u8 gText_TeamPreviewMultiText[];
+extern const u8 gText_TeamPreviewMultiLinkText[];
+extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
 
 #endif // GUARD_STRINGS_H

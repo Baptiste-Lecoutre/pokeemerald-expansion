@@ -149,6 +149,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - All Pokemon Centers now have a NPC for movetutor/relearner/deleter & more
 - Mon that can mega evolve are displayed as such in HoF
 - Add bobbing effect for follower pokemon
+- added Dynamax and dynamax raids
 - More to be added
 
 ## TODO
@@ -159,7 +160,7 @@ A Discord-based ROM hacking community that has many members who hack using the d
 - Add Z crystals
 - Give access to islands:
     - Eon ticket given by rematching the rival in route 103 in IE (southern island, lati@s)
-    - Old sea map is found in abandonned ship (faraway island, mew)
+    X Old sea map is found in abandonned ship (faraway island, mew)
     - mystic ticket is given by cynthia in mosdeep (navel rock, hooh lugia)
     - aurora ticket is given by steven in meteorfalls (birth island, deoxys)
 
@@ -216,3 +217,4 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - healthboxes & mega-zmoves triggers
     - bag sprites
     - make magma bright during the night -> change the DNS from Merpp to Sierra? 
+    - dexnav interface

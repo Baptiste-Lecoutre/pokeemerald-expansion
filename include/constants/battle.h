@@ -57,9 +57,9 @@
 #define BATTLE_TYPE_WALLY_TUTORIAL     (1 << 9) // Used in pokefirered as BATTLE_TYPE_OLD_MAN_TUTORIAL.
 #define BATTLE_TYPE_ROAMER             (1 << 10)
 #define BATTLE_TYPE_EREADER_TRAINER    (1 << 11)
-#define BATTLE_TYPE_KYOGRE_GROUDON     (1 << 12)
+#define BATTLE_TYPE_RAID               (1 << 12)
 #define BATTLE_TYPE_LEGENDARY          (1 << 13)
-#define BATTLE_TYPE_REGI               (1 << 14)
+#define BATTLE_TYPE_14                 (1 << 14)
 #define BATTLE_TYPE_TWO_OPPONENTS      (1 << 15) // Used in pokefirered as BATTLE_TYPE_GHOST.
 #define BATTLE_TYPE_DOME               (1 << 16) // Used in pokefirered as BATTLE_TYPE_POKEDUDE.
 #define BATTLE_TYPE_PALACE             (1 << 17) // Used in pokefirered as BATTLE_TYPE_WILD_SCRIPTED.
@@ -73,17 +73,16 @@
 #define BATTLE_TYPE_RECORDED_LINK      (1 << 25)
 #define BATTLE_TYPE_TRAINER_HILL       (1 << 26)
 #define BATTLE_TYPE_SECRET_BASE        (1 << 27)
-#define BATTLE_TYPE_GROUDON            (1 << 28)
-#define BATTLE_TYPE_KYOGRE             (1 << 29)
-#define BATTLE_TYPE_RAYQUAZA           (1 << 30)
+#define BATTLE_TYPE_28                 (1 << 28)
+#define BATTLE_TYPE_29                 (1 << 29)
+#define BATTLE_TYPE_30                 (1 << 30)
 #define BATTLE_TYPE_RECORDED_IS_MASTER (1 << 31)
 #define BATTLE_TYPE_FRONTIER                (BATTLE_TYPE_BATTLE_TOWER | BATTLE_TYPE_DOME | BATTLE_TYPE_PALACE | BATTLE_TYPE_ARENA | BATTLE_TYPE_FACTORY | BATTLE_TYPE_PIKE | BATTLE_TYPE_PYRAMID)
 #define BATTLE_TYPE_FRONTIER_NO_PYRAMID     (BATTLE_TYPE_BATTLE_TOWER | BATTLE_TYPE_DOME | BATTLE_TYPE_PALACE | BATTLE_TYPE_ARENA | BATTLE_TYPE_FACTORY | BATTLE_TYPE_PIKE)
 #define BATTLE_TYPE_RECORDED_INVALID        ((BATTLE_TYPE_LINK | BATTLE_TYPE_SAFARI | BATTLE_TYPE_FIRST_BATTLE                  \
                                              | BATTLE_TYPE_WALLY_TUTORIAL | BATTLE_TYPE_ROAMER | BATTLE_TYPE_EREADER_TRAINER    \
-                                             | BATTLE_TYPE_KYOGRE_GROUDON | BATTLE_TYPE_LEGENDARY | BATTLE_TYPE_REGI            \
-                                             | BATTLE_TYPE_RECORDED | BATTLE_TYPE_TRAINER_HILL | BATTLE_TYPE_SECRET_BASE        \
-                                             | BATTLE_TYPE_GROUDON | BATTLE_TYPE_KYOGRE | BATTLE_TYPE_RAYQUAZA))
+                                             | BATTLE_TYPE_LEGENDARY                                                            \
+                                             | BATTLE_TYPE_RECORDED | BATTLE_TYPE_TRAINER_HILL | BATTLE_TYPE_SECRET_BASE))
 
 #define WILD_DOUBLE_BATTLE ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE && !(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_TRAINER))))
 #define BATTLE_TWO_VS_ONE_OPPONENT ((gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && gTrainerBattleOpponent_B == 0xFFFF))
@@ -236,8 +235,11 @@
 #define SIDE_STATUS_WIDE_GUARD              (1 << 19)
 #define SIDE_STATUS_CRAFTY_SHIELD           (1 << 20)
 #define SIDE_STATUS_MAT_BLOCK               (1 << 21)
+#define SIDE_STATUS_STEELSURGE              (1 << 22)
+#define SIDE_STATUS_STEELSURGE_DAMAGED      (1 << 23)
+#define SIDE_STATUS_DAMAGE_NON_TYPES         (1 << 24)
 
-#define SIDE_STATUS_HAZARDS_ANY    (SIDE_STATUS_SPIKES | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_STEALTH_ROCK)
+#define SIDE_STATUS_HAZARDS_ANY    (SIDE_STATUS_SPIKES | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STEELSURGE)
 #define SIDE_STATUS_SCREEN_ANY     (SIDE_STATUS_REFLECT | SIDE_STATUS_LIGHTSCREEN | SIDE_STATUS_AURORA_VEIL)
 
 // Field affecting statuses.
@@ -321,21 +323,21 @@
 #define MOVE_EFFECT_PAYDAY              12
 #define MOVE_EFFECT_CHARGING            13
 #define MOVE_EFFECT_WRAP                14
-#define MOVE_EFFECT_BURN_UP             15 // MOVE_EFFECT_BURN_UP replaces unused MOVE_EFFECT_RECOIL_25 so that stat change animations don't break
-#define MOVE_EFFECT_ATK_PLUS_1          16
-#define MOVE_EFFECT_DEF_PLUS_1          17
-#define MOVE_EFFECT_SPD_PLUS_1          18
-#define MOVE_EFFECT_SP_ATK_PLUS_1       19
-#define MOVE_EFFECT_SP_DEF_PLUS_1       20
-#define MOVE_EFFECT_ACC_PLUS_1          21
-#define MOVE_EFFECT_EVS_PLUS_1          22
-#define MOVE_EFFECT_ATK_MINUS_1         23
-#define MOVE_EFFECT_DEF_MINUS_1         24
-#define MOVE_EFFECT_SPD_MINUS_1         25
-#define MOVE_EFFECT_SP_ATK_MINUS_1      26
-#define MOVE_EFFECT_SP_DEF_MINUS_1      27
-#define MOVE_EFFECT_ACC_MINUS_1         28
-#define MOVE_EFFECT_EVS_MINUS_1         29
+#define MOVE_EFFECT_ATK_PLUS_1          15
+#define MOVE_EFFECT_DEF_PLUS_1          16
+#define MOVE_EFFECT_SPD_PLUS_1          17
+#define MOVE_EFFECT_SP_ATK_PLUS_1       18
+#define MOVE_EFFECT_SP_DEF_PLUS_1       19
+#define MOVE_EFFECT_ACC_PLUS_1          20
+#define MOVE_EFFECT_EVS_PLUS_1          21
+#define MOVE_EFFECT_ATK_MINUS_1         22
+#define MOVE_EFFECT_DEF_MINUS_1         23
+#define MOVE_EFFECT_SPD_MINUS_1         24
+#define MOVE_EFFECT_SP_ATK_MINUS_1      25
+#define MOVE_EFFECT_SP_DEF_MINUS_1      26
+#define MOVE_EFFECT_ACC_MINUS_1         27
+#define MOVE_EFFECT_EVS_MINUS_1         28
+#define MOVE_EFFECT_BURN_UP             29
 #define MOVE_EFFECT_RECHARGE            30
 #define MOVE_EFFECT_RAGE                31
 #define MOVE_EFFECT_STEAL_ITEM          32
@@ -345,21 +347,21 @@
 #define MOVE_EFFECT_RAPIDSPIN           36
 #define MOVE_EFFECT_REMOVE_STATUS       37
 #define MOVE_EFFECT_ATK_DEF_DOWN        38
-#define MOVE_EFFECT_SCALE_SHOT          39 // MOVE_EFFECT_SCALE_SHOT replaces unused MOVE_EFFECT_RECOIL_33 so that stat change animations don't break
-#define MOVE_EFFECT_ATK_PLUS_2          40
-#define MOVE_EFFECT_DEF_PLUS_2          41
-#define MOVE_EFFECT_SPD_PLUS_2          42
-#define MOVE_EFFECT_SP_ATK_PLUS_2       43
-#define MOVE_EFFECT_SP_DEF_PLUS_2       44
-#define MOVE_EFFECT_ACC_PLUS_2          45
-#define MOVE_EFFECT_EVS_PLUS_2          46
-#define MOVE_EFFECT_ATK_MINUS_2         47
-#define MOVE_EFFECT_DEF_MINUS_2         48
-#define MOVE_EFFECT_SPD_MINUS_2         49
-#define MOVE_EFFECT_SP_ATK_MINUS_2      50
-#define MOVE_EFFECT_SP_DEF_MINUS_2      51
-#define MOVE_EFFECT_ACC_MINUS_2         52
-#define MOVE_EFFECT_EVS_MINUS_2         53
+#define MOVE_EFFECT_ATK_PLUS_2          39
+#define MOVE_EFFECT_DEF_PLUS_2          40
+#define MOVE_EFFECT_SPD_PLUS_2          41
+#define MOVE_EFFECT_SP_ATK_PLUS_2       42
+#define MOVE_EFFECT_SP_DEF_PLUS_2       43
+#define MOVE_EFFECT_ACC_PLUS_2          44
+#define MOVE_EFFECT_EVS_PLUS_2          45
+#define MOVE_EFFECT_ATK_MINUS_2         46
+#define MOVE_EFFECT_DEF_MINUS_2         47
+#define MOVE_EFFECT_SPD_MINUS_2         48
+#define MOVE_EFFECT_SP_ATK_MINUS_2      49
+#define MOVE_EFFECT_SP_DEF_MINUS_2      50
+#define MOVE_EFFECT_ACC_MINUS_2         51
+#define MOVE_EFFECT_EVS_MINUS_2         52
+#define MOVE_EFFECT_SCALE_SHOT          53
 #define MOVE_EFFECT_THRASH              54
 #define MOVE_EFFECT_KNOCK_OFF           55
 #define MOVE_EFFECT_DEF_SPDEF_DOWN      56
@@ -498,5 +500,13 @@
 #define PARENTAL_BOND_1ST_HIT 2
 #define PARENTAL_BOND_2ND_HIT 1
 #define PARENTAL_BOND_OFF     0
+
+// Constants for Torment
+#define PERMANENT_TORMENT   0xF
+
+// Constants for if HandleScriptMegaPrimalBurst should handle Mega Evolution, Primal Reversion, or Ultra Burst.
+#define HANDLE_TYPE_MEGA_EVOLUTION 0
+#define HANDLE_TYPE_PRIMAL_REVERSION 1
+#define HANDLE_TYPE_ULTRA_BURST 2
 
 #endif // GUARD_CONSTANTS_BATTLE_H

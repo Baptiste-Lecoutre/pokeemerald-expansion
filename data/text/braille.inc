@@ -115,3 +115,13 @@ AncientTomb_Braille_ShineInTheMiddle:
 	.braille "INHERIT OUR\n"
 	.braille "WILL, SHINE\n"
 	.braille "IN THE MIDDLE.$"
+
+SealedChamber_InnerRoom_Braille_Regigigas:
+	brailleformat 3, 0, 25, 19, 6, 3
+	.braille "A BODY OF ROCK\n"
+	.braille "A BODY OF COLD\n"
+	.braille "A BODY OF IRON\n"
+	.braille "A BODY OF ELEC\n"
+	.braille "A BODY OF JAWS\n"
+	.braille "FIVE ELEMENTAL\n"
+	.braille "FOR THEIR KING$"

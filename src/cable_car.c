@@ -238,7 +238,7 @@ void CableCar(void)
 {
     LockPlayerFieldControls();
     CreateTask(Task_LoadCableCar, 1);
-    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB(0, 0, 0));
+    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
 }
 
 static void CB2_LoadCableCar(void)
@@ -342,7 +342,7 @@ static void CB2_LoadCableCar(void)
         gMain.state++;
         break;
     case 8:
-        BeginNormalPaletteFade(PALETTES_ALL, 3, 16, 0, RGB(0, 0, 0));
+        BeginNormalPaletteFade(PALETTES_ALL, 3, 16, 0, RGB_BLACK);
         FadeInNewBGM(MUS_CABLE_CAR, 1);
         SetBgRegs(TRUE);
         gMain.state++;
@@ -460,7 +460,7 @@ static void Task_CableCar(u8 taskId)
         if (sCableCar->timer == 570)
         {
             sCableCar->state = 3;
-            BeginNormalPaletteFade(PALETTES_ALL, 3, 0, 16, RGB(0, 0, 0));
+            BeginNormalPaletteFade(PALETTES_ALL, 3, 0, 16, RGB_BLACK);
             FadeOutBGM(4);
         }
         break;

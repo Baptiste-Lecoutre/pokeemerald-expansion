@@ -265,10 +265,6 @@ const u32 gBattleAnimSpritePal_SteelBeam[] = INCBIN_U32("graphics/battle_anims/s
 const u32 gBattleAnimSpriteGfx_StraightBeam[] = INCBIN_U32("graphics/battle_anims/sprites/straight_beam.4bpp.lz");
 const u32 gBattleAnimSpritePal_StraightBeam[] = INCBIN_U32("graphics/battle_anims/sprites/straight_beam.gbapal.lz");
 
-const u32 gBattleAnimSpriteGfx_SubstituteBack[] = INCBIN_U32("graphics/battle_anims/sprites/substitute_back_new.4bpp.lz");
-const u32 gBattleAnimSpriteGfx_NewSubstituteFront[] = INCBIN_U32("graphics/battle_anims/sprites/substitute_new.4bpp.lz");
-const u32 gBattleAnimSpritePal_NewSubstituteFront[] = INCBIN_U32("graphics/battle_anims/sprites/substitute_new.gbapal.lz");
-
 const u32 gBattleAnimSpritePal_NewSurf[] = INCBIN_U32("graphics/battle_anims/sprites/surf_new.gbapal.lz");
 
 const u32 gBattleAnimSpriteGfx_NewSword[] = INCBIN_U32("graphics/battle_anims/sprites/sword_new.4bpp.lz");
@@ -448,6 +444,9 @@ const u32 gBattleAnimSpritePal_PoisonJab[] = INCBIN_U32("graphics/battle_anims/s
 const u32 gBattleAnimSpriteGfx_SpinningBall[] = INCBIN_U32("graphics/battle_anims/unused/spinning_ball.4bpp.lz");
 const u32 gBattleAnimSpritePal_SpinningBall[] = INCBIN_U32("graphics/battle_anims/unused/spinning_ball.gbapal.lz");
 const u32 gBattleAnimSpritePal_SpinningBall2[] = INCBIN_U32("graphics/battle_anims/unused/spinning_ball_2.gbapal.lz");
+
+const u32 gBattleAnimSpriteGfx_WoodHammerHammer[] = INCBIN_U32("graphics/battle_anims/sprites/wood_hammer_hammer.4bpp.lz");
+const u32 gBattleAnimSpritePal_WoodHammerHammer[] = INCBIN_U32("graphics/battle_anims/sprites/wood_hammer_hammer.gbapal.lz");
 
 // old battle interface data, unused
 
@@ -1171,9 +1170,9 @@ const u32 gBattleAnimSpritePal_HandsAndFeet[] = INCBIN_U32("graphics/battle_anim
 const u32 gBattleAnimSpriteGfx_Confetti[] = INCBIN_U32("graphics/battle_anims/sprites/confetti.4bpp.lz");
 const u32 gBattleAnimSpritePal_Confetti[] = INCBIN_U32("graphics/battle_anims/sprites/confetti.gbapal.lz");
 
-const u32 gSubstituteDollPal[] = INCBIN_U32("graphics/battle_anims/sprites/substitute.gbapal.lz");
-const u32 gSubstituteDollFrontGfx[] = INCBIN_U32("graphics/battle_anims/sprites/substitute.4bpp.lz");
-const u32 gSubstituteDollBackGfx[] = INCBIN_U32("graphics/battle_anims/sprites/substitute_back.4bpp.lz");
+const u32 gBattleAnimSpriteGfx_Substitute[] = INCBIN_U32("graphics/battle_anims/sprites/substitute.4bpp.lz");
+const u32 gBattleAnimSpriteGfx_SubstituteBack[] = INCBIN_U32("graphics/battle_anims/sprites/substitute_back.4bpp.lz");
+const u32 gBattleAnimSpritePal_Substitute[] = INCBIN_U32("graphics/battle_anims/sprites/substitute.gbapal.lz");
 
 const u32 gBattleAnimSpriteGfx_GreenStar[] = INCBIN_U32("graphics/battle_anims/sprites/green_star.4bpp.lz");
 const u32 gBattleAnimSpritePal_GreenStar[] = INCBIN_U32("graphics/battle_anims/sprites/green_star.gbapal.lz");
@@ -1187,18 +1186,17 @@ const u32 gBattleAnimSpritePal_PinkCloud[] = INCBIN_U32("graphics/battle_anims/s
 const u32 gBattleAnimSpriteGfx_SweatDrop[] = INCBIN_U32("graphics/battle_anims/sprites/sweat_drop.4bpp.lz");
 const u32 gBattleAnimSpritePal_SweatDrop[] = INCBIN_U32("graphics/battle_anims/sprites/sweat_drop.gbapal.lz");
 
-const u32 gBattleStatMask_Gfx[] = INCBIN_U32("graphics/battle_anims/masks/stat.4bpp.lz");
-const u32 gBattleStatMask1_Tilemap[] = INCBIN_U32("graphics/battle_anims/masks/stat_tilemap_1.bin.lz");
-const u32 gBattleStatMask2_Tilemap[] = INCBIN_U32("graphics/battle_anims/masks/stat_tilemap_2.bin.lz");
-
-const u32 gBattleStatMask1_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat1.gbapal.lz");
-const u32 gBattleStatMask2_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat2.gbapal.lz");
-const u32 gBattleStatMask3_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat3.gbapal.lz");
-const u32 gBattleStatMask4_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat4.gbapal.lz");
-const u32 gBattleStatMask5_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat5.gbapal.lz");
-const u32 gBattleStatMask6_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat6.gbapal.lz");
-const u32 gBattleStatMask7_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat7.gbapal.lz");
-const u32 gBattleStatMask8_Pal[] = INCBIN_U32("graphics/battle_anims/masks/stat8.gbapal.lz");
+const u32 gStatAnim_Gfx[]              = INCBIN_U32("graphics/battle_anims/stat_change/tiles.4bpp.lz");
+const u32 gStatAnim_Increase_Tilemap[] = INCBIN_U32("graphics/battle_anims/stat_change/increase.bin.lz");
+const u32 gStatAnim_Decrease_Tilemap[] = INCBIN_U32("graphics/battle_anims/stat_change/decrease.bin.lz");
+const u32 gStatAnim_Defense_Pal[]      = INCBIN_U32("graphics/battle_anims/stat_change/defense.gbapal.lz");
+const u32 gStatAnim_Attack_Pal[]       = INCBIN_U32("graphics/battle_anims/stat_change/attack.gbapal.lz");
+const u32 gStatAnim_Accuracy_Pal[]     = INCBIN_U32("graphics/battle_anims/stat_change/accuracy.gbapal.lz");
+const u32 gStatAnim_Speed_Pal[]        = INCBIN_U32("graphics/battle_anims/stat_change/speed.gbapal.lz");
+const u32 gStatAnim_Multiple_Pal[]     = INCBIN_U32("graphics/battle_anims/stat_change/multiple.gbapal.lz");
+const u32 gStatAnim_Evasion_Pal[]      = INCBIN_U32("graphics/battle_anims/stat_change/evasion.gbapal.lz");
+const u32 gStatAnim_SpAttack_Pal[]     = INCBIN_U32("graphics/battle_anims/stat_change/sp_attack.gbapal.lz");
+const u32 gStatAnim_SpDefense_Pal[]    = INCBIN_U32("graphics/battle_anims/stat_change/sp_defense.gbapal.lz");
 
 const u32 gCureBubblesGfx[] = INCBIN_U32("graphics/battle_anims/masks/cure_bubbles.4bpp.lz");
 const u32 gCureBubblesPal[] = INCBIN_U32("graphics/battle_anims/masks/cure_bubbles.gbapal.lz");
@@ -1274,7 +1272,7 @@ const u32 gDomeTourneyInfoCard_Gfx[] = INCBIN_U32("graphics/battle_frontier/tour
 const u32 gDomeTourneyInfoCard_Tilemap[] = INCBIN_U32("graphics/battle_frontier/tourney_info_card_tilemap.bin.lz");
 const u32 gDomeTourneyInfoCardBg_Tilemap[] = INCBIN_U32("graphics/battle_frontier/tourney_info_card_bg.bin.lz");
 const u32 gDomeTourneyTreeButtons_Gfx[] = INCBIN_U32("graphics/battle_frontier/tourney_buttons.4bpp.lz"); // exit/cancel and pokeball buttons
-const u32 gDomeTourneyTree_Pal[] = INCBIN_U32("graphics/battle_frontier/tourney.gbapal.lz");
+const u32 gDomeTourneyTree_Pal[] = INCBIN_U32("graphics/battle_frontier/tourney_tree.gbapal.lz");
 const u32 gDomeTourneyTreeButtons_Pal[] = INCBIN_U32("graphics/battle_frontier/tourney_buttons.gbapal.lz");
 const u32 gDomeTourneyMatchCardBg_Pal[] = INCBIN_U32("graphics/battle_frontier/tourney_match_card_bg.gbapal.lz");
 
@@ -1707,13 +1705,9 @@ const u32 gRouletteMultiplier_Gfx[] = INCBIN_U32("graphics/roulette/multiplier.4
 
 #include "data/graphics/mail.h"
 
-const u16 gFrontierFactorySelectMenu_Pal[] = INCBIN_U16("graphics/battle_frontier/factory_menu1.gbapal");
-const u16 gFrontierFactorySelectMenu_Pal2[] = INCBIN_U16("graphics/battle_frontier/factory_menu2.gbapal");
-
-const u8 gFrontierFactorySelectMenu_Gfx[] = INCBIN_U8("graphics/battle_frontier/factory_menu1.4bpp");
-const u8 gFrontierFactorySelectMenu_Gfx2[] = INCBIN_U8("graphics/battle_frontier/factory_menu2.4bpp");
-
-const u16 gFrontierFactorySelectMenu_Tilemap[] = INCBIN_U16("graphics/battle_frontier/factory_menu.bin");
+const u16 gFrontierFactoryMenu_Pal[] = INCBIN_U16("graphics/battle_frontier/factory_screen/menu.gbapal");
+const u16 gFrontierFactoryMenu_Gfx[] = INCBIN_U16("graphics/battle_frontier/factory_screen/menu.4bpp");
+const u16 gFrontierFactoryMenu_Tilemap[] = INCBIN_U16("graphics/battle_frontier/factory_screen/menu.bin");
 
 const u32 gFrontierPassMedals_Gfx[] = INCBIN_U32("graphics/frontier_pass/medals.4bpp.lz");
 
@@ -2062,214 +2056,53 @@ const u32 gBerryCrush_Crusher_Gfx[] = INCBIN_U32("graphics/berry_crush/crusher.4
 const u32 gBerryCrush_TextWindows_Tilemap[] = INCBIN_U32("graphics/berry_crush/text_windows.bin.lz");
 
 // Type icons in battle
-const u8 TypeIconsTiles[] = INCBIN_U8("graphics/types/TypeIcons_Healthbox.4bpp");
-const u16 TypeIconsPal[] = INCBIN_U16("graphics/types/TypeIcons_Healthbox.gbapal");
+const u8 gTypeIconsTiles[] = INCBIN_U8("graphics/types/TypeIcons_Healthbox.4bpp");
+const u16 gTypeIconsPal[] = INCBIN_U16("graphics/types/TypeIcons_Healthbox.gbapal");
 
 // DexNav
-const u16 gDexNav_Gui_Pal[] = INCBIN_U16("graphics/dexnav/gui.gbapal");
-const u32 gDexNav_Gui_Gfx[] = INCBIN_U32("graphics/dexnav/gui_tiles.4bpp.lz");
-const u32 gDexNav_Gui_Tilemap[] = INCBIN_U32("graphics/dexnav/gui_tilemap.bin.lz");
-const u16 gDexNav_Default_Pal[] = INCBIN_U16("graphics/dexnav/default_pal.gbapal");
-const u32 gDexNav_Default_Gfx[] = INCBIN_U32("graphics/dexnav/default_tiles.4bpp.lz");
-const u32 gDexNav_Default_Tilemap[] = INCBIN_U32("graphics/dexnav/default_tilemap.bin.lz");
-const u16 gDexNav_Route101_Pal[] = INCBIN_U16("graphics/dexnav/bg.gbapal");
-const u32 gDexNav_Route101_Gfx[] = INCBIN_U32("graphics/dexnav/bg_tiles.4bpp.lz");
-const u32 gDexNav_Route101_Tilemap[] = INCBIN_U32("graphics/dexnav/bg_tilemap.bin.lz");
-const u16 gDexNav_Route102_Pal[] = INCBIN_U16("graphics/dexnav/Route102_tiles.gbapal");
-const u32 gDexNav_Route102_Gfx[] = INCBIN_U32("graphics/dexnav/Route102_tiles.4bpp.lz");
-const u32 gDexNav_Route102_Tilemap[] = INCBIN_U32("graphics/dexnav/Route102_tiles.bin.lz");
-const u16 gDexNav_Route103_Pal[] = INCBIN_U16("graphics/dexnav/Route103_tiles.gbapal");
-const u32 gDexNav_Route103_Gfx[] = INCBIN_U32("graphics/dexnav/Route103_tiles.4bpp.lz");
-const u32 gDexNav_Route103_Tilemap[] = INCBIN_U32("graphics/dexnav/Route103_tiles.bin.lz");
-const u16 gDexNav_Route104_Pal[] = INCBIN_U16("graphics/dexnav/Route104_tiles.gbapal");
-const u32 gDexNav_Route104_Gfx[] = INCBIN_U32("graphics/dexnav/Route104_tiles.4bpp.lz");
-const u32 gDexNav_Route104_Tilemap[] = INCBIN_U32("graphics/dexnav/Route104_tiles.bin.lz");
-const u16 gDexNav_Route105_Pal[] = INCBIN_U16("graphics/dexnav/Route105_tiles.gbapal");
-const u32 gDexNav_Route105_Gfx[] = INCBIN_U32("graphics/dexnav/Route105_tiles.4bpp.lz");
-const u32 gDexNav_Route105_Tilemap[] = INCBIN_U32("graphics/dexnav/Route105_tiles.bin.lz");
-const u16 gDexNav_Route106_Pal[] = INCBIN_U16("graphics/dexnav/Route106_tiles.gbapal");
-const u32 gDexNav_Route106_Gfx[] = INCBIN_U32("graphics/dexnav/Route106_tiles.4bpp.lz");
-const u32 gDexNav_Route106_Tilemap[] = INCBIN_U32("graphics/dexnav/Route106_tiles.bin.lz");
-const u16 gDexNav_Route107_Pal[] = INCBIN_U16("graphics/dexnav/Route107_tiles.gbapal");
-const u32 gDexNav_Route107_Gfx[] = INCBIN_U32("graphics/dexnav/Route107_tiles.4bpp.lz");
-const u32 gDexNav_Route107_Tilemap[] = INCBIN_U32("graphics/dexnav/Route107_tiles.bin.lz");
-const u16 gDexNav_Route108_Pal[] = INCBIN_U16("graphics/dexnav/Route108_tiles.gbapal");
-const u32 gDexNav_Route108_Gfx[] = INCBIN_U32("graphics/dexnav/Route108_tiles.4bpp.lz");
-const u32 gDexNav_Route108_Tilemap[] = INCBIN_U32("graphics/dexnav/Route108_tiles.bin.lz");
-const u16 gDexNav_Route109_Pal[] = INCBIN_U16("graphics/dexnav/Route109_tiles.gbapal");
-const u32 gDexNav_Route109_Gfx[] = INCBIN_U32("graphics/dexnav/Route109_tiles.4bpp.lz");
-const u32 gDexNav_Route109_Tilemap[] = INCBIN_U32("graphics/dexnav/Route109_tiles.bin.lz");
-const u16 gDexNav_Route110_Pal[] = INCBIN_U16("graphics/dexnav/Route110_tiles.gbapal");
-const u32 gDexNav_Route110_Gfx[] = INCBIN_U32("graphics/dexnav/Route110_tiles.4bpp.lz");
-const u32 gDexNav_Route110_Tilemap[] = INCBIN_U32("graphics/dexnav/Route110_tiles.bin.lz");
-const u16 gDexNav_Route111_Pal[] = INCBIN_U16("graphics/dexnav/Route111_tiles.gbapal");
-const u32 gDexNav_Route111_Gfx[] = INCBIN_U32("graphics/dexnav/Route111_tiles.4bpp.lz");
-const u32 gDexNav_Route111_Tilemap[] = INCBIN_U32("graphics/dexnav/Route111_tiles.bin.lz");
-const u16 gDexNav_Route112_Pal[] = INCBIN_U16("graphics/dexnav/Route112_tiles.gbapal");
-const u32 gDexNav_Route112_Gfx[] = INCBIN_U32("graphics/dexnav/Route112_tiles.4bpp.lz");
-const u32 gDexNav_Route112_Tilemap[] = INCBIN_U32("graphics/dexnav/Route112_tiles.bin.lz");
-const u16 gDexNav_Route113_Pal[] = INCBIN_U16("graphics/dexnav/Route113_tiles.gbapal");
-const u32 gDexNav_Route113_Gfx[] = INCBIN_U32("graphics/dexnav/Route113_tiles.4bpp.lz");
-const u32 gDexNav_Route113_Tilemap[] = INCBIN_U32("graphics/dexnav/Route113_tiles.bin.lz");
-const u16 gDexNav_Route114_Pal[] = INCBIN_U16("graphics/dexnav/Route114_tiles.gbapal");
-const u32 gDexNav_Route114_Gfx[] = INCBIN_U32("graphics/dexnav/Route114_tiles.4bpp.lz");
-const u32 gDexNav_Route114_Tilemap[] = INCBIN_U32("graphics/dexnav/Route114_tiles.bin.lz");
-const u16 gDexNav_Route115_Pal[] = INCBIN_U16("graphics/dexnav/Route115_tiles.gbapal");
-const u32 gDexNav_Route115_Gfx[] = INCBIN_U32("graphics/dexnav/Route115_tiles.4bpp.lz");
-const u32 gDexNav_Route115_Tilemap[] = INCBIN_U32("graphics/dexnav/Route115_tiles.bin.lz");
-const u16 gDexNav_Route116_Pal[] = INCBIN_U16("graphics/dexnav/Route116_tiles.gbapal");
-const u32 gDexNav_Route116_Gfx[] = INCBIN_U32("graphics/dexnav/Route116_tiles.4bpp.lz");
-const u32 gDexNav_Route116_Tilemap[] = INCBIN_U32("graphics/dexnav/Route116_tiles.bin.lz");
-const u16 gDexNav_Route117_Pal[] = INCBIN_U16("graphics/dexnav/Route117_tiles.gbapal");
-const u32 gDexNav_Route117_Gfx[] = INCBIN_U32("graphics/dexnav/Route117_tiles.4bpp.lz");
-const u32 gDexNav_Route117_Tilemap[] = INCBIN_U32("graphics/dexnav/Route117_tiles.bin.lz");
-const u16 gDexNav_Route118_Pal[] = INCBIN_U16("graphics/dexnav/Route118_tiles.gbapal");
-const u32 gDexNav_Route118_Gfx[] = INCBIN_U32("graphics/dexnav/Route118_tiles.4bpp.lz");
-const u32 gDexNav_Route118_Tilemap[] = INCBIN_U32("graphics/dexnav/Route118_tiles.bin.lz");
-const u16 gDexNav_Route119_Pal[] = INCBIN_U16("graphics/dexnav/Route119_tiles.gbapal");
-const u32 gDexNav_Route119_Gfx[] = INCBIN_U32("graphics/dexnav/Route119_tiles.4bpp.lz");
-const u32 gDexNav_Route119_Tilemap[] = INCBIN_U32("graphics/dexnav/Route119_tiles.bin.lz");
-const u16 gDexNav_Route120_Pal[] = INCBIN_U16("graphics/dexnav/Route120_tiles.gbapal");
-const u32 gDexNav_Route120_Gfx[] = INCBIN_U32("graphics/dexnav/Route120_tiles.4bpp.lz");
-const u32 gDexNav_Route120_Tilemap[] = INCBIN_U32("graphics/dexnav/Route120_tiles.bin.lz");
-const u16 gDexNav_Route121_Pal[] = INCBIN_U16("graphics/dexnav/Route121_tiles.gbapal");
-const u32 gDexNav_Route121_Gfx[] = INCBIN_U32("graphics/dexnav/Route121_tiles.4bpp.lz");
-const u32 gDexNav_Route121_Tilemap[] = INCBIN_U32("graphics/dexnav/Route121_tiles.bin.lz");
-const u16 gDexNav_Route122_Pal[] = INCBIN_U16("graphics/dexnav/Route122_tiles.gbapal");
-const u32 gDexNav_Route122_Gfx[] = INCBIN_U32("graphics/dexnav/Route122_tiles.4bpp.lz");
-const u32 gDexNav_Route122_Tilemap[] = INCBIN_U32("graphics/dexnav/Route122_tiles.bin.lz");
-const u16 gDexNav_Route123_Pal[] = INCBIN_U16("graphics/dexnav/Route123_tiles.gbapal");
-const u32 gDexNav_Route123_Gfx[] = INCBIN_U32("graphics/dexnav/Route123_tiles.4bpp.lz");
-const u32 gDexNav_Route123_Tilemap[] = INCBIN_U32("graphics/dexnav/Route123_tiles.bin.lz");
-const u16 gDexNav_Route124_Pal[] = INCBIN_U16("graphics/dexnav/Route124_tiles.gbapal");
-const u32 gDexNav_Route124_Gfx[] = INCBIN_U32("graphics/dexnav/Route124_tiles.4bpp.lz");
-const u32 gDexNav_Route124_Tilemap[] = INCBIN_U32("graphics/dexnav/Route124_tiles.bin.lz");
-const u16 gDexNav_Route125_Pal[] = INCBIN_U16("graphics/dexnav/Route125_tiles.gbapal");
-const u32 gDexNav_Route125_Gfx[] = INCBIN_U32("graphics/dexnav/Route125_tiles.4bpp.lz");
-const u32 gDexNav_Route125_Tilemap[] = INCBIN_U32("graphics/dexnav/Route125_tiles.bin.lz");
-const u16 gDexNav_Route126_Pal[] = INCBIN_U16("graphics/dexnav/Route126_tiles.gbapal");
-const u32 gDexNav_Route126_Gfx[] = INCBIN_U32("graphics/dexnav/Route126_tiles.4bpp.lz");
-const u32 gDexNav_Route126_Tilemap[] = INCBIN_U32("graphics/dexnav/Route126_tiles.bin.lz");
-const u16 gDexNav_Route127_Pal[] = INCBIN_U16("graphics/dexnav/Route127_tiles.gbapal");
-const u32 gDexNav_Route127_Gfx[] = INCBIN_U32("graphics/dexnav/Route127_tiles.4bpp.lz");
-const u32 gDexNav_Route127_Tilemap[] = INCBIN_U32("graphics/dexnav/Route127_tiles.bin.lz");
-const u16 gDexNav_Route128_Pal[] = INCBIN_U16("graphics/dexnav/Route128_tiles.gbapal");
-const u32 gDexNav_Route128_Gfx[] = INCBIN_U32("graphics/dexnav/Route128_tiles.4bpp.lz");
-const u32 gDexNav_Route128_Tilemap[] = INCBIN_U32("graphics/dexnav/Route128_tiles.bin.lz");
-const u16 gDexNav_Route129_Pal[] = INCBIN_U16("graphics/dexnav/Route129_tiles.gbapal");
-const u32 gDexNav_Route129_Gfx[] = INCBIN_U32("graphics/dexnav/Route129_tiles.4bpp.lz");
-const u32 gDexNav_Route129_Tilemap[] = INCBIN_U32("graphics/dexnav/Route129_tiles.bin.lz");
-const u16 gDexNav_Route130_Pal[] = INCBIN_U16("graphics/dexnav/Route130_tiles.gbapal");
-const u32 gDexNav_Route130_Gfx[] = INCBIN_U32("graphics/dexnav/Route130_tiles.4bpp.lz");
-const u32 gDexNav_Route130_Tilemap[] = INCBIN_U32("graphics/dexnav/Route130_tiles.bin.lz");
-const u16 gDexNav_Route131_Pal[] = INCBIN_U16("graphics/dexnav/Route131_tiles.gbapal");
-const u32 gDexNav_Route131_Gfx[] = INCBIN_U32("graphics/dexnav/Route131_tiles.4bpp.lz");
-const u32 gDexNav_Route131_Tilemap[] = INCBIN_U32("graphics/dexnav/Route131_tiles.bin.lz");
-const u16 gDexNav_Route132_Pal[] = INCBIN_U16("graphics/dexnav/Route132_tiles.gbapal");
-const u32 gDexNav_Route132_Gfx[] = INCBIN_U32("graphics/dexnav/Route132_tiles.4bpp.lz");
-const u32 gDexNav_Route132_Tilemap[] = INCBIN_U32("graphics/dexnav/Route132_tiles.bin.lz");
-const u16 gDexNav_Route133_Pal[] = INCBIN_U16("graphics/dexnav/Route133_tiles.gbapal");
-const u32 gDexNav_Route133_Gfx[] = INCBIN_U32("graphics/dexnav/Route133_tiles.4bpp.lz");
-const u32 gDexNav_Route133_Tilemap[] = INCBIN_U32("graphics/dexnav/Route133_tiles.bin.lz");
-const u16 gDexNav_Route134_Pal[] = INCBIN_U16("graphics/dexnav/Route134_tiles.gbapal");
-const u32 gDexNav_Route134_Gfx[] = INCBIN_U32("graphics/dexnav/Route134_tiles.4bpp.lz");
-const u32 gDexNav_Route134_Tilemap[] = INCBIN_U32("graphics/dexnav/Route134_tiles.bin.lz");
-const u16 gDexNav_Dewford_Pal[] = INCBIN_U16("graphics/dexnav/Dewford_tiles.gbapal");
-const u32 gDexNav_Dewford_Gfx[] = INCBIN_U32("graphics/dexnav/Dewford_tiles.4bpp.lz");
-const u32 gDexNav_Dewford_Tilemap[] = INCBIN_U32("graphics/dexnav/Dewford_tiles.bin.lz");
-const u16 gDexNav_Pacifidlog_Pal[] = INCBIN_U16("graphics/dexnav/Pacifidlog_tiles.gbapal");
-const u32 gDexNav_Pacifidlog_Gfx[] = INCBIN_U32("graphics/dexnav/Pacifidlog_tiles.4bpp.lz");
-const u32 gDexNav_Pacifidlog_Tilemap[] = INCBIN_U32("graphics/dexnav/Pacifidlog_tiles.bin.lz");
-const u16 gDexNav_Petalburg_Pal[] = INCBIN_U16("graphics/dexnav/Petalburg_tiles.gbapal");
-const u32 gDexNav_Petalburg_Gfx[] = INCBIN_U32("graphics/dexnav/Petalburg_tiles.4bpp.lz");
-const u32 gDexNav_Petalburg_Tilemap[] = INCBIN_U32("graphics/dexnav/Petalburg_tiles.bin.lz");
-const u16 gDexNav_Slateport_Pal[] = INCBIN_U16("graphics/dexnav/Slateport_tiles.gbapal");
-const u32 gDexNav_Slateport_Gfx[] = INCBIN_U32("graphics/dexnav/Slateport_tiles.4bpp.lz");
-const u32 gDexNav_Slateport_Tilemap[] = INCBIN_U32("graphics/dexnav/Slateport_tiles.bin.lz");
-const u16 gDexNav_Lilycove_Pal[] = INCBIN_U16("graphics/dexnav/Lilycove_tiles.gbapal");
-const u32 gDexNav_Lilycove_Gfx[] = INCBIN_U32("graphics/dexnav/Lilycove_tiles.4bpp.lz");
-const u32 gDexNav_Lilycove_Tilemap[] = INCBIN_U32("graphics/dexnav/Lilycove_tiles.bin.lz");
-const u16 gDexNav_Mossdeep_Pal[] = INCBIN_U16("graphics/dexnav/Mossdeep_tiles.gbapal");
-const u32 gDexNav_Mossdeep_Gfx[] = INCBIN_U32("graphics/dexnav/Mossdeep_tiles.4bpp.lz");
-const u32 gDexNav_Mossdeep_Tilemap[] = INCBIN_U32("graphics/dexnav/Mossdeep_tiles.bin.lz");
-const u16 gDexNav_Sootopolis_Pal[] = INCBIN_U16("graphics/dexnav/Sootopolis_tiles.gbapal");
-const u32 gDexNav_Sootopolis_Gfx[] = INCBIN_U32("graphics/dexnav/Sootopolis_tiles.4bpp.lz");
-const u32 gDexNav_Sootopolis_Tilemap[] = INCBIN_U32("graphics/dexnav/Sootopolis_tiles.bin.lz");
-const u16 gDexNav_EverGrande_Pal[] = INCBIN_U16("graphics/dexnav/EverGrande_tiles.gbapal");
-const u32 gDexNav_EverGrande_Gfx[] = INCBIN_U32("graphics/dexnav/EverGrande_tiles.4bpp.lz");
-const u32 gDexNav_EverGrande_Tilemap[] = INCBIN_U32("graphics/dexnav/EverGrande_tiles.bin.lz");
-const u16 gDexNav_Underwater_Pal[] = INCBIN_U16("graphics/dexnav/Underwater_tiles.gbapal");
-const u32 gDexNav_Underwater_Gfx[] = INCBIN_U32("graphics/dexnav/Underwater_tiles.4bpp.lz");
-const u32 gDexNav_Underwater_Tilemap[] = INCBIN_U32("graphics/dexnav/Underwater_tiles.bin.lz");
-const u16 gDexNav_GraniteCave_Pal[] = INCBIN_U16("graphics/dexnav/GraniteCave_tiles.gbapal");
-const u32 gDexNav_GraniteCave_Gfx[] = INCBIN_U32("graphics/dexnav/GraniteCave_tiles.4bpp.lz");
-const u32 gDexNav_GraniteCave_Tilemap[] = INCBIN_U32("graphics/dexnav/GraniteCave_tiles.bin.lz");
-const u16 gDexNav_BattleFrontier_Pal[] = INCBIN_U16("graphics/dexnav/BattleFrontier_tiles.gbapal");
-const u32 gDexNav_BattleFrontier_Gfx[] = INCBIN_U32("graphics/dexnav/BattleFrontier_tiles.4bpp.lz");
-const u32 gDexNav_BattleFrontier_Tilemap[] = INCBIN_U32("graphics/dexnav/BattleFrontier_tiles.bin.lz");
-const u16 gDexNav_PetalburgWoods_Pal[] = INCBIN_U16("graphics/dexnav/PetalburgWoods_tiles.gbapal");
-const u32 gDexNav_PetalburgWoods_Gfx[] = INCBIN_U32("graphics/dexnav/PetalburgWoods_tiles.4bpp.lz");
-const u32 gDexNav_PetalburgWoods_Tilemap[] = INCBIN_U32("graphics/dexnav/PetalburgWoods_tiles.bin.lz");
-const u16 gDexNav_RusturfTunnel_Pal[] = INCBIN_U16("graphics/dexnav/RusturfTunnel_tiles.gbapal");
-const u32 gDexNav_RusturfTunnel_Gfx[] = INCBIN_U32("graphics/dexnav/RusturfTunnel_tiles.4bpp.lz");
-const u32 gDexNav_RusturfTunnel_Tilemap[] = INCBIN_U32("graphics/dexnav/RusturfTunnel_tiles.bin.lz");
-const u16 gDexNav_AbandonedShip_Pal[] = INCBIN_U16("graphics/dexnav/AbandonedShip_tiles.gbapal");
-const u32 gDexNav_AbandonedShip_Gfx[] = INCBIN_U32("graphics/dexnav/AbandonedShip_tiles.4bpp.lz");
-const u32 gDexNav_AbandonedShip_Tilemap[] = INCBIN_U32("graphics/dexnav/AbandonedShip_tiles.bin.lz");
-const u16 gDexNav_NewMauville_Pal[] = INCBIN_U16("graphics/dexnav/NewMauville_tiles.gbapal");
-const u32 gDexNav_NewMauville_Gfx[] = INCBIN_U32("graphics/dexnav/NewMauville_tiles.4bpp.lz");
-const u32 gDexNav_NewMauville_Tilemap[] = INCBIN_U32("graphics/dexnav/NewMauville_tiles.bin.lz");
-const u16 gDexNav_MeteorFalls_Pal[] = INCBIN_U16("graphics/dexnav/MeteorFalls_tiles.gbapal");
-const u32 gDexNav_MeteorFalls_Gfx[] = INCBIN_U32("graphics/dexnav/MeteorFalls_tiles.4bpp.lz");
-const u32 gDexNav_MeteorFalls_Tilemap[] = INCBIN_U32("graphics/dexnav/MeteorFalls_tiles.bin.lz");
-const u16 gDexNav_MtPyreInside_Pal[] = INCBIN_U16("graphics/dexnav/MtPyre-Inner_tiles.gbapal");
-const u32 gDexNav_MtPyreInside_Gfx[] = INCBIN_U32("graphics/dexnav/MtPyre-Inner_tiles.4bpp.lz");
-const u32 gDexNav_MtPyreInside_Tilemap[] = INCBIN_U32("graphics/dexnav/MtPyre-Inner_tiles.bin.lz");
-const u16 gDexNav_MtPyreOutside_Pal[] = INCBIN_U16("graphics/dexnav/MtPyre-Outer_tiles.gbapal");
-const u32 gDexNav_MtPyreOutside_Gfx[] = INCBIN_U32("graphics/dexnav/MtPyre-Outer_tiles.4bpp.lz");
-const u32 gDexNav_MtPyreOutside_Tilemap[] = INCBIN_U32("graphics/dexnav/MtPyre-Outer_tiles.bin.lz");
-const u16 gDexNav_ShoalCaveLow_Pal[] = INCBIN_U16("graphics/dexnav/ShoalCaveLow_tiles.gbapal");
-const u32 gDexNav_ShoalCaveLow_Gfx[] = INCBIN_U32("graphics/dexnav/ShoalCaveLow_tiles.4bpp.lz");
-const u32 gDexNav_ShoalCaveLow_Tilemap[] = INCBIN_U32("graphics/dexnav/ShoalCaveLow_tiles.bin.lz");
-const u16 gDexNav_ShoalCaveHigh_Pal[] = INCBIN_U16("graphics/dexnav/ShoalCaveHigh_tiles.gbapal");
-const u32 gDexNav_ShoalCaveHigh_Gfx[] = INCBIN_U32("graphics/dexnav/ShoalCaveHigh_tiles.4bpp.lz");
-const u32 gDexNav_ShoalCaveHigh_Tilemap[] = INCBIN_U32("graphics/dexnav/ShoalCaveHigh_tiles.bin.lz");
-const u16 gDexNav_ShoalCaveIce_Pal[] = INCBIN_U16("graphics/dexnav/ShoalCaveIce_tiles.gbapal");
-const u32 gDexNav_ShoalCaveIce_Gfx[] = INCBIN_U32("graphics/dexnav/ShoalCaveIce_tiles.4bpp.lz");
-const u32 gDexNav_ShoalCaveIce_Tilemap[] = INCBIN_U32("graphics/dexnav/ShoalCaveIce_tiles.bin.lz");
-const u16 gDexNav_SeafloorCavern_Pal[] = INCBIN_U16("graphics/dexnav/ShoalCaveIce_tiles.gbapal");
-const u32 gDexNav_SeafloorCavern_Gfx[] = INCBIN_U32("graphics/dexnav/ShoalCaveIce_tiles.4bpp.lz");
-const u32 gDexNav_SeafloorCavern_Tilemap[] = INCBIN_U32("graphics/dexnav/ShoalCaveIce_tiles.bin.lz");
-const u16 gDexNav_VictoryRoad_Pal[] = INCBIN_U16("graphics/dexnav/VictoryRoad_tiles.gbapal");
-const u32 gDexNav_VictoryRoad_Gfx[] = INCBIN_U32("graphics/dexnav/VictoryRoad_tiles.4bpp.lz");
-const u32 gDexNav_VictoryRoad_Tilemap[] = INCBIN_U32("graphics/dexnav/VictoryRoad_tiles.bin.lz");
-const u16 gDexNav_MirageIsland_Pal[] = INCBIN_U16("graphics/dexnav/MirageIsland_tiles.gbapal");
-const u32 gDexNav_MirageIsland_Gfx[] = INCBIN_U32("graphics/dexnav/MirageIsland_tiles.4bpp.lz");
-const u32 gDexNav_MirageIsland_Tilemap[] = INCBIN_U32("graphics/dexnav/MirageIsland_tiles.bin.lz");
-const u16 gDexNav_FieryPath_Pal[] = INCBIN_U16("graphics/dexnav/FieryPath_tiles.gbapal");
-const u32 gDexNav_FieryPath_Gfx[] = INCBIN_U32("graphics/dexnav/FieryPath_tiles.4bpp.lz");
-const u32 gDexNav_FieryPath_Tilemap[] = INCBIN_U32("graphics/dexnav/FieryPath_tiles.bin.lz");
-const u16 gDexNav_JaggedPass_Pal[] = INCBIN_U16("graphics/dexnav/JaggedPass_tiles.gbapal");
-const u32 gDexNav_JaggedPass_Gfx[] = INCBIN_U32("graphics/dexnav/JaggedPass_tiles.4bpp.lz");
-const u32 gDexNav_JaggedPass_Tilemap[] = INCBIN_U32("graphics/dexnav/JaggedPass_tiles.bin.lz");
-const u16 gDexNav_SkyPillar_Pal[] = INCBIN_U16("graphics/dexnav/SkyPillar_tiles.gbapal");
-const u32 gDexNav_SkyPillar_Gfx[] = INCBIN_U32("graphics/dexnav/SkyPillar_tiles.4bpp.lz");
-const u32 gDexNav_SkyPillar_Tilemap[] = INCBIN_U32("graphics/dexnav/SkyPillar_tiles.bin.lz");
-const u16 gDexNav_AquaHideout_Pal[] = INCBIN_U16("graphics/dexnav/AquaHideout_tiles.gbapal");
-const u32 gDexNav_AquaHideout_Gfx[] = INCBIN_U32("graphics/dexnav/AquaHideout_tiles.4bpp.lz");
-const u32 gDexNav_AquaHideout_Tilemap[] = INCBIN_U32("graphics/dexnav/AquaHideout_tiles.bin.lz");
-const u16 gDexNav_MagmaHideout_Pal[] = INCBIN_U16("graphics/dexnav/MagmaHideout_tiles.gbapal");
-const u32 gDexNav_MagmaHideout_Gfx[] = INCBIN_U32("graphics/dexnav/MagmaHideout_tiles.4bpp.lz");
-const u32 gDexNav_MagmaHideout_Tilemap[] = INCBIN_U32("graphics/dexnav/MagmaHideout_tiles.bin.lz");
-const u16 gDexNav_MirageTower_Pal[] = INCBIN_U16("graphics/dexnav/MirageTower_tiles.gbapal");
-const u32 gDexNav_MirageTower_Gfx[] = INCBIN_U32("graphics/dexnav/MirageTower_tiles.4bpp.lz");
-const u32 gDexNav_MirageTower_Tilemap[] = INCBIN_U32("graphics/dexnav/MirageTower_tiles.bin.lz");
-const u16 gDexNav_ArtisanCave_Pal[] = INCBIN_U16("graphics/dexnav/ArtisanCave_tiles.gbapal");
-const u32 gDexNav_ArtisanCave_Gfx[] = INCBIN_U32("graphics/dexnav/ArtisanCave_tiles.4bpp.lz");
-const u32 gDexNav_ArtisanCave_Tilemap[] = INCBIN_U32("graphics/dexnav/ArtisanCave_tiles.bin.lz");
-const u16 gDexNav_DesertUnderpass_Pal[] = INCBIN_U16("graphics/dexnav/DesertUnderpass_tiles.gbapal");
-const u32 gDexNav_DesertUnderpass_Gfx[] = INCBIN_U32("graphics/dexnav/DesertUnderpass_tiles.4bpp.lz");
-const u32 gDexNav_DesertUnderpass_Tilemap[] = INCBIN_U32("graphics/dexnav/DesertUnderpass_tiles.bin.lz");
-const u16 gDexNav_AlteringCave_Pal[] = INCBIN_U16("graphics/dexnav/AlteringCave_tiles.gbapal");
-const u32 gDexNav_AlteringCave_Gfx[] = INCBIN_U32("graphics/dexnav/AlteringCave_tiles.4bpp.lz");
-const u32 gDexNav_AlteringCave_Tilemap[] = INCBIN_U32("graphics/dexnav/AlteringCave_tiles.bin.lz");
+const u16 gDexNav_Gui_Pal[] = INCBIN_U16("graphics/dexnav/dexnav_gui.gbapal");
+const u32 gDexNav_Gui_Gfx[] = INCBIN_U32("graphics/dexnav/dexnav_gui.4bpp.lz");
+const u32 gDexNav_Gui_Tilemap[] = INCBIN_U32("graphics/dexnav/dexnav_gui.bin.lz");
+
+const u8 gPopUpWindowBorder_Tiles[] = INCBIN_U8("graphics/interface/window_popup_tiles.4bpp");\
+const u16 gPopUpWindowBorder_Palette[] = INCBIN_U16("graphics/interface/map_popup_palette.gbapal");
+
+const u32 gBattleTeamPreview_TileSet[] = INCBIN_U32("graphics/battle_interface/teamPreview.4bpp.lz");
+const u32 gBattleTeamPreview_TileMap[] = INCBIN_U32("graphics/battle_interface/teamPreview.bin.lz");
+const u32 gBattleTeamPreview_Palette[] = INCBIN_U32("graphics/battle_interface/teamPreview.gbapal.lz");
+
+// random garbage at the end.
+static const u8 sEmpty3[0x54BAC] = {0};
+static const u8 sUnused1[]       = {0x0D, 0x00, 0x58, 0x02};
+static const u8 sEmpty4[0x1145]  = {0};
+static const u8 sUnused2[]       = {0x02};
+static const u8 sEmpty5[0x3242]  = {0};
+static const u8 sUnused3[]       = {0x40};
+static const u8 sEmpty6[0x13]    = {0};
+
+// Summary Screen
+const u32 gSummaryScreenTiles[] = INCBIN_U32("graphics/summary_screen/tiles.4bpp.lz");
+const u32 gSummaryScreenBackgroundTilemap[] = INCBIN_U32("graphics/summary_screen/background.bin.lz");
+const u32 gSummaryScreenPalette[] = INCBIN_U32("graphics/summary_screen/palette.gbapal.lz");
+// 1 - Info
+const u32 gSummaryScreenPageInfoTilemap[] = INCBIN_U32("graphics/summary_screen/page_info.bin.lz");
+// 2 - Memo
+const u32 gSummaryScreenPageMemoTilemap[] = INCBIN_U32("graphics/summary_screen/page_memo.bin.lz");
+// 3 - Skills
+const u32 gSummaryScreenPageSkillsTilemap[] = INCBIN_U32("graphics/summary_screen/page_skills.bin.lz");
+// 4 - Battle Moves
+const u32 gSummaryScreenPageMovesTilemap[] = INCBIN_U32("graphics/summary_screen/page_moves.bin.lz");
+const u32 gSummaryScreenPageMoveDetailsTilemap[] = INCBIN_U32("graphics/summary_screen/page_moves_selected.bin.lz");
+const u32 gSummaryScreenPageNewMoveTilemap[] = INCBIN_U32("graphics/summary_screen/page_new_move.bin.lz");
+// 5 - Contest Moves
+const u32 gSummaryScreenPageContestMovesTilemap[] = INCBIN_U32("graphics/summary_screen/page_moves_contest.bin.lz");
+const u32 gSummaryScreenPageContestMoveDetailsTilemap[] = INCBIN_U32("graphics/summary_screen/page_moves_contest_selected.bin.lz");
+const u32 gSummaryScreenPageContestNewMoveTilemap[] = INCBIN_U32("graphics/summary_screen/page_new_move_contest.bin.lz");
+// 6 - Condition
+const u32 gSummaryScreenPageConditionTilemap[] = INCBIN_U32("graphics/summary_screen/page_condition.bin.lz");
+// 7 - Ribbons
+
+// Sprites
+const u32 gSummaryExpBar_Tiles[] = INCBIN_U32("graphics/summary_screen/exp_bar.4bpp.lz");
+const u32 gSummaryHealthBar_Tiles[] = INCBIN_U32("graphics/summary_screen/hp_bar.4bpp.lz");
+const u16 gExpBarHealthBarGreenPal[] = INCBIN_U16("graphics/summary_screen/hp-exp_bar.gbapal");

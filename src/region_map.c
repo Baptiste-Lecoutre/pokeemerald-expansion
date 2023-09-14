@@ -139,6 +139,10 @@ static const u16 sRegionMapPlayerIcon_LucasPal[] = INCBIN_U16("graphics/pokenav/
 static const u8 sRegionMapPlayerIcon_LucasGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/lucas_icon.4bpp");
 static const u16 sRegionMapPlayerIcon_DawnPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/dawn_icon.gbapal");
 static const u8 sRegionMapPlayerIcon_DawnGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/dawn_icon.4bpp");
+static const u16 sRegionMapPlayerIcon_ChasePal[] = INCBIN_U16("graphics/pokenav/region_map/icons/chase_icon.gbapal");
+static const u8 sRegionMapPlayerIcon_ChaseGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/chase_icon.4bpp");
+static const u16 sRegionMapPlayerIcon_ElainePal[] = INCBIN_U16("graphics/pokenav/region_map/icons/elaine_icon.gbapal");
+static const u8 sRegionMapPlayerIcon_ElaineGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/elaine_icon.4bpp");
 
 #include "data/region_map/region_map_layout.h"
 #include "data/region_map/region_map_entries.h"
@@ -1441,7 +1445,7 @@ void CreateRegionMapCursor(u16 tileTag, u16 paletteTag)
             sRegionMap->cursorSprite->y = 8 * sRegionMap->cursorPosY + 4;
         }
         sRegionMap->cursorSprite->data[1] = 2;
-        sRegionMap->cursorSprite->data[2] = (IndexOfSpritePaletteTag(paletteTag) << 4) + 0x101;
+        sRegionMap->cursorSprite->data[2] = OBJ_PLTT_ID(IndexOfSpritePaletteTag(paletteTag)) + 1;
         sRegionMap->cursorSprite->data[3] = TRUE;
     }
 }
@@ -1514,6 +1518,14 @@ void CreateRegionMapPlayerIcon(u16 tileTag, u16 paletteTag)
     case DAWN_PLATINUM_COSTUME:
         sheet.data = sRegionMapPlayerIcon_DawnGfx;
         palette.data = sRegionMapPlayerIcon_DawnPal;
+        break;
+    case CHASE_COSTUME:
+        sheet.data = sRegionMapPlayerIcon_ChaseGfx;
+        palette.data = sRegionMapPlayerIcon_ChasePal;
+        break;
+    case ELAINE_COSTUME:
+        sheet.data = sRegionMapPlayerIcon_ElaineGfx;
+        palette.data = sRegionMapPlayerIcon_ElainePal;
         break;
     }
     

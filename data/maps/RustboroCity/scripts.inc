@@ -835,7 +835,6 @@ RustboroCity_EventScript_RivalEncounter::
 RustboroCity_EventScript_MayEncounter::
 	goto_if_set FLAG_DEFEATED_RIVAL_RUSTBORO, RustboroCity_EventScript_MayBrineyHint
 	goto_if_set FLAG_MET_RIVAL_RUSTBORO, RustboroCity_EventScript_MayAskToBattle
-	setflag FLAG_MET_RIVAL_RUSTBORO
 	msgbox RustboroCity_Text_MayHiLetsRegister, MSGBOX_DEFAULT
 	closemessage
 	delay 30
@@ -845,7 +844,6 @@ RustboroCity_EventScript_MayEncounter::
 	closemessage
 	delay 30
 	setflag FLAG_ENABLE_RIVAL_MATCH_CALL
-	setvar VAR_RUSTBORO_CITY_STATE, 8
 	setvar VAR_ROUTE104_STATE, 2
 	setvar VAR_0x8008, 0
 @	msgbox RustboroCity_Text_MayPassedBrineyWantToBattle, MSGBOX_YESNO
@@ -908,7 +906,6 @@ RustboroCity_EventScript_BattleMayMudkip::
 RustboroCity_EventScript_BrendanEncounter::
 	goto_if_set FLAG_DEFEATED_RIVAL_RUSTBORO, RustboroCity_EventScript_BrendanBrineyHint
 	goto_if_set FLAG_MET_RIVAL_RUSTBORO, RustboroCity_EventScript_BrendanAskToBattle
-	setflag FLAG_MET_RIVAL_RUSTBORO
 	msgbox RustboroCity_Text_BrendanHiLetsRegister, MSGBOX_DEFAULT
 	closemessage
 	delay 30
@@ -918,7 +915,6 @@ RustboroCity_EventScript_BrendanEncounter::
 	closemessage
 	delay 30
 	setflag FLAG_ENABLE_RIVAL_MATCH_CALL
-	setvar VAR_RUSTBORO_CITY_STATE, 8
 	setvar VAR_ROUTE104_STATE, 2
 @	msgbox RustboroCity_Text_BrendanPassedBrineyWantToBattle, MSGBOX_YESNO
 @	goto_if_eq VAR_RESULT, YES, RustboroCity_EventScript_BattleBrendan
@@ -975,6 +971,8 @@ RustboroCity_EventScript_GiveDynamaxBand::
 	msgbox RustboroCity_Text_GiveDynamaxBand, MSGBOX_DEFAULT
 	giveitem ITEM_DYNAMAX_BAND, 1
 	msgbox RustboroCity_Text_WithThisYourPokemonWillGrowLarger, MSGBOX_DEFAULT
+	setflag FLAG_MET_RIVAL_RUSTBORO
+	setvar VAR_RUSTBORO_CITY_STATE, 8
 	return
 
 RustboroCity_Movement_RivalApproachPlayer0:
@@ -1321,7 +1319,12 @@ RustboroCity_Text_GiveDynamaxBand:
 
 RustboroCity_Text_WithThisYourPokemonWillGrowLarger:
 	.string "During some heated battles, your\n"
-	.string "Pokémon will grow giant and\l"
-	.string "unleash trendemous energy!\p"
-	.string "This gigantification is called\n"
-	.string "Dynamax. Use it wisely!$"
+	.string "Pokémon will grow giant for three turns\l"
+	.string "and unleash trendemous energy!\p"
+	.string "This Dynamax Band will allow your Pokémon\n"
+	.string "to use this gigantification if you press\l"
+	.string "START before choosing a move.\p"
+	.string "Your attacks will be much stronger and\n"
+	.string "will affect the pace of the battle!\p"
+	.string "Dynamax can only be used once per battle,\n"
+	.string "make to use it wisely!$"

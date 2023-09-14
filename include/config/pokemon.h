@@ -33,6 +33,7 @@
 // Eg: Replace with FLAG_UNUSED_0x264 so you can use that flag to toggle the feature.
 #define P_FLAG_FORCE_SHINY      FLAG_SHINY_CREATION     // If this flag is set, all wild and gift Pokémon will forced into being Shiny.
 #define P_FLAG_FORCE_NO_SHINY   0     // If this flag is set, all wild and gift Pokémon will forced into NOT being Shiny.
+#define P_FLAG_FORCE_HIDDEN_ABILITY     FLAG_HIDDEN_ABILITY_CREATION // if this flag is set, all wild and gift Pokémon will forced into having their HA
 
 // Modifying the latest generation WILL change the saveblock due to Dex flags and will require a new save file.
 // Forms are kept based on the base species, Eg: Meowth and Persian will keep all of their forms, but Perrserker will not be available if P_GEN_8_POKEMON is set to FALSE.

@@ -1,9 +1,12 @@
 #ifndef GUARD_POKEMON_ICON_H
 #define GUARD_POKEMON_ICON_H
 
+#define POKE_ICON_BASE_PAL_TAG 56000
+
 extern const u8 gMonIconPaletteIndices[];
 extern const u8 gMonIconPaletteIndicesFemale[];
-extern const u8 *const gMonIconTable[];
+extern const u8 *const gMonIconTable[NUM_SPECIES + 1];
+extern const u8 *const gMonIconTableFemale[NUM_SPECIES + 1];
 extern const struct SpritePalette gMonIconPaletteTable[];
 
 const u8 *GetMonIconTiles(u16 species, u32 personality);

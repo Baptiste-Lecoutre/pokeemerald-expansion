@@ -90,6 +90,7 @@ SootopolisCity_EventScript_SetLayout::
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_SetLegendariesLayout
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_SetLegendariesLayout
 	goto_if_le VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_SetLegendariesLayout
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_SetLegendariesLayout
 	return
 
 SootopolisCity_EventScript_SetNormalLayout::
@@ -104,7 +105,9 @@ SootopolisCity_EventScript_SetWeather::
 	goto_if_ge VAR_SOOTOPOLIS_CITY_STATE, 6, SootopolisCity_EventScript_SetNormalWeather
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_SetDownpour
 	goto_if_eq VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_SetDownpour
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_SetDownpour
 	goto_if_le VAR_SKY_PILLAR_STATE, 1, Common_EventScript_SetAbnormalWeather
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, Common_EventScript_SetAbnormalWeather
 	return
 
 SootopolisCity_EventScript_SetNormalWeather::
@@ -127,7 +130,12 @@ SootopolisCity_EventScript_SetExitCaveOfOriginObjPos::
 	setobjectxyperm LOCALID_EXPERT, 30, 18
 	setobjectxyperm LOCALID_WALLACE, 31, 18
 	setobjectxyperm LOCALID_STEVEN, 32, 18
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_SetRayquazaAwakenObjPos
 	end
+
+SootopolisCity_EventScript_SetRayquazaAwakenObjPos::
+	setobjectxyperm LOCALID_STEVEN, 20, 36
+	return
 
 SootopolisCity_EventScript_SetOutsideGymObjPos::
 	setobjectxyperm LOCALID_EXPERT, 31, 18
@@ -204,7 +212,7 @@ SootopolisCity_EventScript_LegendariesSceneFromPokeCenter::
 	fadescreenspeed FADE_TO_BLACK, 8
 	setweather WEATHER_ABNORMAL
 	doweather
-	setvar VAR_0x8004, FALSE @ Just do Groudon/Kyogre fight scene
+	setvar VAR_0x8004, 0 @ Just do Groudon/Kyogre fight scene
 	special Script_DoRayquazaScene
 	waitstate
 	applymovement LOCALID_KYOGRE, Common_Movement_WalkInPlaceFasterLeft
@@ -304,7 +312,7 @@ SootopolisCity_EventScript_LegendariesSceneFromDive::
 	fadescreenspeed FADE_TO_BLACK, 8
 	setweather WEATHER_ABNORMAL
 	doweather
-	setvar VAR_0x8004, FALSE @ Just do Groudon/Kyogre fight scene
+	setvar VAR_0x8004, 0 @ Just do Groudon/Kyogre fight scene
 	special Script_DoRayquazaScene
 	waitstate
 	applymovement LOCALID_KYOGRE, Common_Movement_WalkInPlaceFasterLeft
@@ -491,12 +499,38 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	special RemoveCameraObject
 	delay 60
 	fadescreenspeed FADE_TO_BLACK, 8
+@	call SootopolisCity_EventScript_SetRoughWater
+@	removeobject LOCALID_GROUDON
+@	removeobject LOCALID_KYOGRE
+	addobject LOCALID_RAYQUAZA
+  hideobjectat LOCALID_RAYQUAZA, MAP_SOOTOPOLIS_CITY
+	setvar VAR_0x8004, 1
+	special Script_DoRayquazaScene
+	waitstate
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_RAYQUAZA
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	setvar VAR_SKY_PILLAR_STATE, 5
+	delay 120
+	clearflag FLAG_HIDE_MAP_NAME_POPUP
+	warpwhitefade MAP_SOOTOPOLIS_CITY, 43, 32
+	waitstate
+	end
+
+SootopolisCity_EventScript_RayquazaFight::
+	msgbox SootopolisCity_Text_HelpRayquaza, MSGBOX_DEFAULT
+	choose_mons
+	call_if_eq VAR_RESULT, 0, SootopolisCity_EventScript_ChooseMons
+	setsootopolisbattle SPECIES_KYOGRE, 70, ITEM_NONE, SPECIES_GROUDON, 70, ITEM_NONE
+	multi_sootopolis PARTNER_RAYQUAZA, TRAINER_BACK_PIC_MAY
+	setflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	setflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	clearflag FLAG_SOOTOPOLIS_BATTLE
 	call SootopolisCity_EventScript_SetRoughWater
 	removeobject LOCALID_GROUDON
 	removeobject LOCALID_KYOGRE
-	addobject LOCALID_RAYQUAZA
-  hideobjectat LOCALID_RAYQUAZA, MAP_SOOTOPOLIS_CITY
-	setvar VAR_0x8004, TRUE
+	setvar VAR_SOOTOPOLIS_CITY_STATE, 5
+	setvar VAR_0x8004, 2
 	special Script_DoRayquazaScene
 	waitstate
 	playse SE_THUNDER
@@ -533,8 +567,13 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 	fadenewbgm MUS_SOOTOPOLIS
 	delay 120
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
-	warpwhitefade MAP_SOOTOPOLIS_CITY, 43, 32
+	warpwhitefade MAP_SOOTOPOLIS_CITY, 31, 36
 	waitstate
+	end
+
+SootopolisCity_EventScript_ChooseMons::
+	msgbox SootopolisCity_Text_YouNeedToHelpRayquaza, MSGBOX_DEFAULT
+	releaseall
 	end
 
 SootopolisCity_EventScript_RayquazaSceneFromDive::
@@ -545,13 +584,24 @@ SootopolisCity_EventScript_RayquazaSceneFromDive::
 	special RemoveCameraObject
 	delay 60
 	fadescreenspeed FADE_TO_BLACK, 8
-	call SootopolisCity_EventScript_SetRoughWater
-	removeobject LOCALID_GROUDON
-	removeobject LOCALID_KYOGRE
+@	call SootopolisCity_EventScript_SetRoughWater
+@	removeobject LOCALID_GROUDON
+@	removeobject LOCALID_KYOGRE
 	addobject LOCALID_RAYQUAZA
-	setvar VAR_0x8004, TRUE
+	setvar VAR_0x8004, 1
 	special Script_DoRayquazaScene
 	waitstate
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_RAYQUAZA
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	setvar VAR_SKY_PILLAR_STATE, 4
+	delay 120
+	clearflag FLAG_HIDE_MAP_NAME_POPUP
+	warpwhitefade MAP_SOOTOPOLIS_CITY, 29, 53
+	waitstate
+	end
+
+Toto::
 	special SpawnCameraObject
 	applymovement OBJ_EVENT_ID_CAMERA, SootopolisCity_Movement_PanUp
 	applymovement OBJ_EVENT_ID_PLAYER, SootopolisCity_Movement_PlayerApproachLegendaries
@@ -903,7 +953,13 @@ SootopolisCity_EventScript_Steven::
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_StevenHelpedWallace
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_StevenHelpedWallace
 	goto_if_set FLAG_SOOTOPOLIS_ARCHIE_MAXIE_LEAVE, SootopolisCity_EventScript_StevenMaxieArchieLeft
+	goto_if_ge VAR_SKY_PILLAR_STATE, 4, SootopolisCity_EventScript_StevenFightScene
 	msgbox SootopolisCity_Text_SoThatsRayquaza, MSGBOX_DEFAULT
+	releaseall
+	end
+
+SootopolisCity_EventScript_StevenFightScene::
+	msgbox SootopolisCity_Text_SoThatsRayquazaShort, MSGBOX_DEFAULT
 	releaseall
 	end
 
@@ -1615,7 +1671,7 @@ SootopolisCity_Text_AfterAllOurScheming:
 
 SootopolisCity_Text_KyogreCalmDown:
 	.string "Archie: Kyogre! What's wrong?!\n"
-	.string "Look over here! It's the Red Orb!\l"
+	.string "Look over here! It's the Blue Orb!\l"
 	.string "Calm down! Kyogre!\p"
 	.string "… … … … … …\n"
 	.string "… … … … … …\p"
@@ -1678,6 +1734,9 @@ SootopolisCity_Text_SoThatsRayquaza:
 	.string "It's incredible how the two rampaging\n"
 	.string "Pokémon would flee from it in fear…$"
 
+SootopolisCity_Text_SoThatsRayquazaShort:
+	.string "Steven: So that's Rayquaza…$"
+
 SootopolisCity_Text_MaxieArchieLeft:
 	.string "Steven: It looks like both Maxie and\n"
 	.string "Archie have gone away somewhere.\p"
@@ -1725,3 +1784,10 @@ SootopolisCity_Text_DazzledByMentor:
 	.string "Wallace: I'm sure that you will be\n"
 	.string "dazzled by my mentor's breathtakingly\l"
 	.string "elegant battle style.$"
+
+SootopolisCity_Text_HelpRayquaza:
+	.string "Help Rayquaza calm the ancient Pokémon!$"
+
+SootopolisCity_Text_YouNeedToHelpRayquaza:
+	.string "You need to help Rayquaza calm the\n"
+	.string "ancient Pokémon. Better be prepared!$"

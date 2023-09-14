@@ -568,12 +568,9 @@ static void InitMapView(void)
     InitTilesetAnimations();
 }
 
-const struct MapLayout *GetMapLayout(void)
+const struct MapLayout *GetMapLayout(u16 mapLayoutId)
 {
-    u16 mapLayoutId = gSaveBlock1Ptr->mapLayoutId;
-    if (mapLayoutId)
-        return gMapLayouts[mapLayoutId - 1];
-    return NULL;
+    return gMapLayouts[mapLayoutId - 1];
 }
 
 void ApplyCurrentWarp(void)
@@ -630,13 +627,13 @@ static void LoadCurrentMapData(void)
     sLastMapSectionId = gMapHeader.regionMapSectionId;
     gMapHeader = *Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
     gSaveBlock1Ptr->mapLayoutId = gMapHeader.mapLayoutId;
-    gMapHeader.mapLayout = GetMapLayout();
+    gMapHeader.mapLayout = GetMapLayout(gMapHeader.mapLayoutId);
 }
 
 static void LoadSaveblockMapHeader(void)
 {
     gMapHeader = *Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
-    gMapHeader.mapLayout = GetMapLayout();
+    gMapHeader.mapLayout = GetMapLayout(gMapHeader.mapLayoutId);
 }
 
 static void SetPlayerCoordsFromWarp(void)
@@ -1034,7 +1031,7 @@ u8 GetFlashLevel(void)
 void SetCurrentMapLayout(u16 mapLayoutId)
 {
     gSaveBlock1Ptr->mapLayoutId = mapLayoutId;
-    gMapHeader.mapLayout = GetMapLayout();
+    gMapHeader.mapLayout = GetMapLayout(mapLayoutId);
 }
 
 void SetObjectEventLoadFlag(u8 flag)
@@ -1083,7 +1080,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
 
 static bool16 NoMusicInSotopolisWithLegendaries(struct WarpData *warp)
 {
-    if (VarGet(VAR_SKY_PILLAR_STATE) != 1)
+    if (VarGet(VAR_SKY_PILLAR_STATE) != 1 && VarGet(VAR_SKY_PILLAR_STATE) != 4 && VarGet(VAR_SKY_PILLAR_STATE) != 5)
         return FALSE;
     else if (warp->mapGroup != MAP_GROUP(SOOTOPOLIS_CITY))
         return FALSE;
@@ -2157,7 +2154,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_Fly) //optionsShowFollowerPokemon
+        if (gFieldCallback == FieldCallback_Fly || TRUE) //optionsShowFollowerPokemon
           RemoveFollowingPokemon();
         else
           UpdateFollowingPokemon();

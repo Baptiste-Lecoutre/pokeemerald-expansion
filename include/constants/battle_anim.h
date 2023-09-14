@@ -397,6 +397,7 @@
 #define ANIM_TAG_STEEL_BEAM                 (ANIM_SPRITES_START + 383)
 #define ANIM_TAG_POLTERGEIST                (ANIM_SPRITES_START + 384)
 #define ANIM_TAG_TEAPOT                     (ANIM_SPRITES_START + 385)
+#define ANIM_TAG_WOOD_HAMMER_HAMMER         (ANIM_SPRITES_START + 386)
 
 
 // battlers
@@ -547,6 +548,15 @@
 #define B_ANIM_ZMOVE_ACTIVATE           34 // Using Z Moves
 #define B_ANIM_AFFECTION_HANGED_ON      35
 #define B_ANIM_SNOW_CONTINUES           36
+#define B_ANIM_DYNAMAX_GROWTH           37
+#define B_ANIM_MAX_SET_WEATHER          38
+#define B_ANIM_RAID_STORM_BREWS         39
+#define B_ANIM_RAID_SHIELD_APPEARED     40
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  41
+#define B_ANIM_RAID_BARRIER_BROKEN      42
+#define B_ANIM_RAID_SHOCKWAVE           43
+#define B_ANIM_RAID_BOSS_EXPLOSION      44
+#define B_ANIM_ULTRA_BURST              45
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

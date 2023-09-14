@@ -336,8 +336,6 @@ static bool16 IsMonAllowedInPokemonJump(struct Pokemon *);
 static bool16 IsMonAllowedInDodrioBerryPicking(struct Pokemon *);
 static void Task_CancelParticipationYesNo(u8);
 static void Task_HandleCancelParticipationYesNoInput(u8);
-// static bool8 CanLearnTutorMove(u16, u8);
-static u16 GetTutorMove(u8);
 static bool8 ShouldUseChooseMonText(void);
 static void SetPartyMonFieldSelectionActions(struct Pokemon *, u8);
 static u8 GetPartyMenuActionsTypeInBattle(struct Pokemon *);
@@ -2182,19 +2180,6 @@ static u8 CanTeachMove(struct Pokemon *mon, u16 move)
         return CAN_LEARN_MOVE;
 }
 
-static u16 GetTutorMove(u8 tutor)
-{
-    return FALSE;//gTutorMoves[tutor];
-}
-
-bool8 CanLearnTutorMove(u16 species, u8 tutor)
-{
-    /*if (sTutorLearnsets[species] & (1 << tutor))
-        return TRUE;
-    else*/
-        return FALSE;
-}
-
 static void InitPartyMenuWindows(u8 layout)
 {
     u8 i;
@@ -2485,7 +2470,7 @@ static void DisplayPartyPokemonGender(u8 gender, u16 species, u8 *nickname, stru
 
     if (species == SPECIES_NONE)
         return;
-    if ((species == SPECIES_NIDORAN_M || species == SPECIES_NIDORAN_F) && StringCompare(nickname, gSpeciesNames[species]) == 0)
+    if ((species == SPECIES_NIDORAN_M || species == SPECIES_NIDORAN_F) && StringCompare(nickname, GetSpeciesName(species)) == 0)
         return;
     switch (gender)
     {
@@ -4274,7 +4259,7 @@ static void ShowOrHideHeldItemSprite(u16 item, struct PartyMenuBox *menuBox)
 void LoadHeldItemIcons(void)
 {
     LoadSpriteSheet(&gSpriteSheet_HeldItem);
-    LoadSpritePalette(&sSpritePalette_HeldItem);
+    LoadSpritePalette(&gSpritePalette_HeldItem);
 }
 
 void DrawHeldItemIconsForTrade(u8 *partyCounts, u8 *partySpriteIds, u8 whichParty)
@@ -5203,60 +5188,7 @@ void ItemUseCB_PPUp(u8 taskId, TaskFunc task)
 
 u16 ItemIdToBattleMoveId(u16 item)
 {
-    u16 tmNumber = item - ITEM_TM01;
-    return sTMHMMoves[tmNumber];
-}
-
-u16 MoveToHM(u16 move)
-{
-    u8 i;
-    u16 item;
-    switch (move)
-    {
-    case MOVE_SECRET_POWER:
-        item = ITEM_TM43;
-        break;
-    case MOVE_CUT:
-        item = ITEM_HM01;
-        break;
-    case MOVE_FLY:
-        item = ITEM_HM02;
-        break;
-    case MOVE_SURF:
-        item = ITEM_HM03;
-        break;
-    case MOVE_STRENGTH:
-        item = ITEM_HM04;
-        break;
-    case MOVE_FLASH:
-        item = ITEM_HM05;
-        break;
-    case MOVE_ROCK_SMASH:
-        item = ITEM_HM06;
-        break;
-    case MOVE_WATERFALL:
-        item = ITEM_HM07;
-        break;
-    case MOVE_DIVE:
-        item = ITEM_HM08;
-        break;
-    default:
-        item = 0;
-        break;
-    }
-    return item;
-}
-
-bool8 IsMoveHm(u16 move)
-{
-    u8 i;
-
-    for (i = 0; i < NUM_HIDDEN_MACHINES; i++)
-    {
-        if (sTMHMMoves[i + NUM_TECHNICAL_MACHINES] == move)
-            return TRUE;
-    }
-    return FALSE;
+    return (ItemId_GetPocket(item) == POCKET_TM_HM) ? gItems[item].secondaryId : MOVE_NONE;
 }
 
 bool8 MonKnowsMove(struct Pokemon *mon, u16 move)
@@ -5558,10 +5490,20 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     s16 *arrayPtr = ptr->data;
     u16 *itemPtr = &gSpecialVar_ItemId;
     bool8 cannotUseEffect;
-    u8 holdEffectParam = ItemId_GetHoldEffectParam(*itemPtr);
+    u8 lvlCap = MAX_LEVEL, holdEffectParam = ItemId_GetHoldEffectParam(*itemPtr);
+    u32 i;
+
+    for (i = 0; i < NUM_SOFT_CAPS; i++)
+    {
+        if (!FlagGet(gLevelCapFlags[i]))
+        {
+            lvlCap = gLevelCaps[i];
+            break;
+        }
+    }
 
     sInitialLevel = GetMonData(mon, MON_DATA_LEVEL);
-    if (sInitialLevel != MAX_LEVEL)
+    if (sInitialLevel < lvlCap)
     {
         BufferMonStatsToTaskData(mon, arrayPtr);
         cannotUseEffect = ExecuteTableBasedItemEffect(mon, *itemPtr, gPartyMenu.slotId, 0);
@@ -6150,6 +6092,7 @@ static void TryTutorSelectedMon(u8 taskId)
 {
     struct Pokemon *mon;
     s16 *move;
+    u8 friendship;
 
     if (!gPaletteFade.active)
     {
@@ -6159,6 +6102,15 @@ static void TryTutorSelectedMon(u8 taskId)
         gPartyMenu.data1 = gSpecialVar_0x8005;
         StringCopy(gStringVar2, gMoveNames[gPartyMenu.data1]);
         move[1] = 2;
+        if (gPartyMenu.data1 == MOVE_DRACO_METEOR)
+        {
+            friendship = 255;
+        }
+        else
+        {
+            friendship = 200;
+        }
+
         switch (CanTeachMove(mon, gPartyMenu.data1))
         {
         case CANNOT_LEARN_MOVE:
@@ -6168,6 +6120,14 @@ static void TryTutorSelectedMon(u8 taskId)
             DisplayLearnMoveMessageAndClose(taskId, gText_PkmnAlreadyKnows);
             return;
         default:
+            if (gSpecialVar_0x8008 == TRUE) // Move has a minimum friendship requirement
+            {
+                if (GetMonData(mon, MON_DATA_FRIENDSHIP) < friendship)
+                {
+                    DisplayLearnMoveMessageAndClose(taskId, gText_PkmnFriendshipNotHighEnough);
+                    return;
+                }
+            }
             if (GiveMoveToMon(mon, gPartyMenu.data1) != MON_HAS_MAX_MOVES)
             {
                 Task_LearnedMove(taskId);
@@ -7260,11 +7220,6 @@ void IsLastMonThatKnowsSurf(void)
         if (AnyStorageMonWithMove(move) != TRUE)
             gSpecialVar_Result = TRUE;
     }
-}
-
-u16 GetTMHMMoves(u16 position)
-{
-    return sTMHMMoves[position];
 }
 
 void CursorCb_MoveItemCallback(u8 taskId)

@@ -158,6 +158,77 @@ SlateportCity_Pokemart_EnergyGuru:
 	release
 	end
 
+SlateportCity_EventScript_PowerItems::
+	lock
+	faceplayer
+	message SlateportCity_Text_PowerItemsSellWhatYouNeed
+	waitmessage
+	pokemart SlateportCity_Pokemart_PowerItems
+	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
+	release
+	end
+
+	.align 2
+SlateportCity_Pokemart_PowerItems::
+	.2byte ITEM_POWER_BRACER
+	.2byte ITEM_POWER_BELT
+	.2byte ITEM_POWER_LENS
+	.2byte ITEM_POWER_BAND
+	.2byte ITEM_POWER_ANKLET
+	.2byte ITEM_POWER_WEIGHT
+	.2byte ITEM_NONE
+	release
+	end
+
+SlateportCity_EventScript_IncenseStand::
+	lock
+	faceplayer
+	message SlateportCity_Text_IncenseStand
+	waitmessage
+	pokemart SlateportCity_Pokemart_Incense
+	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
+	release
+	end
+
+	.align 2
+SlateportCity_Pokemart_Incense::
+	.2byte ITEM_SEA_INCENSE
+	.2byte ITEM_LAX_INCENSE
+	.2byte ITEM_ROSE_INCENSE
+	.2byte ITEM_PURE_INCENSE
+	.2byte ITEM_ROCK_INCENSE
+	.2byte ITEM_ODD_INCENSE
+	.2byte ITEM_LUCK_INCENSE
+	.2byte ITEM_FULL_INCENSE
+	.2byte ITEM_WAVE_INCENSE
+	.2byte ITEM_NONE
+	release
+	end
+
+SlateportCity_EventScript_EvoStonesStand::
+	lock
+	faceplayer
+	message SlateportCity_Text_EvoStonesStand
+	waitmessage
+	pokemart SlateportCity_PokeMart_EvoStones
+	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
+	release
+	end
+
+	.align 2
+SlateportCity_PokeMart_EvoStones::
+	.2byte ITEM_FIRE_STONE
+	.2byte ITEM_WATER_STONE
+	.2byte ITEM_LEAF_STONE
+	.2byte ITEM_THUNDER_STONE
+	.2byte ITEM_ICE_STONE
+	.2byte ITEM_MOON_STONE
+	.2byte ITEM_SUN_STONE
+	.2byte ITEM_OVAL_STONE
+	.2byte ITEM_NONE
+	release
+	end
+
 SlateportCity_EventScript_EffortRibbonWoman::
 	lock
 	faceplayer
@@ -958,6 +1029,19 @@ SlateportCity_Text_EnergyGuruSellWhatYouNeed:
 	.string "I'm the Energy Guru! I'll go for it and\n"
 	.string "sell you what you need!$"
 
+SlateportCity_Text_PowerItemsSellWhatYouNeed:
+	.string "Need to boost your Pokémon's\n"
+	.string "training?\p"
+	.string "Give these a try!$"
+
+SlateportCity_Text_IncenseStand:
+	.string "Wouldn't you like some fragrant\n"
+	.string "incense?$"
+
+SlateportCity_Text_EvoStonesStand:
+	.string "Can't make your Pokémon evolve?\n"
+	.string "Look at these stones!$"
+
 SlateportCity_Text_OhYourPokemon:
 	.string "Oh?\n"
 	.string "Your {STR_VAR_1}…$"
@@ -1284,8 +1368,8 @@ SlateportCity_Text_HarborSign:
 	.string "the ferry S.S. Tidal.”$"
 
 SlateportCity_Text_NameRatersHouseSign:
-	.string "Name Rater's House\n"
-	.string "“Pokémon nicknames rated.”$"
+	.string "Pokémon Chef's House\n"
+	.string "“Change your Pokémon's Nature!”$"
 
 SlateportCity_Text_ExplainBerries:
 	.string "If a wild Pokémon gets hurt, it heals\n"

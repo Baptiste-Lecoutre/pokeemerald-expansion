@@ -58,7 +58,7 @@
 #define BAG_ITEMS_COUNT 40
 #define BAG_KEYITEMS_COUNT 30
 #define BAG_POKEBALLS_COUNT 16
-#define BAG_TMHM_COUNT 64
+#define BAG_TMHM_COUNT 108//64
 #define BAG_BERRIES_COUNT 46
 #define BAG_MEDICINE_COUNT 34
 #define BAG_BATTLEITEMS_COUNT 47
@@ -76,6 +76,7 @@
 #define GIFT_RIBBONS_COUNT 11
 #define SAVED_TRENDS_COUNT 5
 #define PYRAMID_BAG_ITEMS_COUNT 10
+#define MAX_REGISTERED_ITEMS 4
 
 // Number of facilities for Ranking Hall.
 // 7 facilities for single mode + tower double mode + tower multi mode.
@@ -92,6 +93,7 @@
 
 #define TRAINER_ID_LENGTH 4
 #define MAX_MON_MOVES 4
+#define ALL_MOVES_MASK ((1 << MAX_MON_MOVES) - 1)
 
 #define CONTESTANT_COUNT 4
 #define CONTEST_CATEGORY_COOL     0
@@ -104,6 +106,7 @@
 // string lengths
 #define ITEM_NAME_LENGTH 14
 #define POKEMON_NAME_LENGTH 10
+#define POKEMON_NAME_BUFFER_SIZE max(20, POKEMON_NAME_LENGTH + 1) // Frequently used buffer size. Larger than necessary
 #define PLAYER_NAME_LENGTH 7
 #define MAIL_WORDS_COUNT 9
 #define EASY_CHAT_BATTLE_WORDS_COUNT 6
@@ -183,6 +186,8 @@
 #define	DAWN_COSTUME				8
 #define	LUCAS_PLATINUM_COSTUME		9
 #define	DAWN_PLATINUM_COSTUME		10
-#define COSTUME_COUNT   			11
+#define CHASE_COSTUME               11
+#define ELAINE_COSTUME              12
+#define COSTUME_COUNT   			13
 
 #endif // GUARD_CONSTANTS_GLOBAL_H

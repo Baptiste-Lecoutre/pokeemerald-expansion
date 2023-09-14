@@ -1,6 +1,7 @@
 #include "global.h"
 #include "pokemon.h"
 #include "strings.h"
+#include "string_util.h"
 #include "random.h"
 #include "text.h"
 #include "event_data.h"
@@ -649,7 +650,7 @@ void CreateWonderTradePokemon(u8 whichPlayerMon)
         CreateMon(pokemon, species, level, 0, FALSE, 0, TRUE, (Random() << 16) | Random());
     }
 
-    GetSpeciesName(name, species);
+    StringCopy(name,GetSpeciesName(species));
 
     // 10% chance of having the generated Wonder Traded 'mon carry an item.
     if ((Random() % 99) < 10)
@@ -683,11 +684,11 @@ void CreateWonderTradePokemon(u8 whichPlayerMon)
 #ifdef POKEMON_EXPANSION
     // 10% chance of giving the in coming Pokémon their HA, if they have one
     // Uncomment if your copy of the pokemon_expansion is up-to-date.
-    //if (gSpeciesInfo[species].abilities[2] != ABILITY_NONE && (Random() % 99) < 10)
-    //{
-    //    abilityNum = 2;
-    //    SetMonData(pokemon, MON_DATA_ABILITY_NUM, &abilityNum);
-    //}
+    if (gSpeciesInfo[species].abilities[2] != ABILITY_NONE && (Random() % 99) < 10)
+    {
+        abilityNum = 2;
+        SetMonData(pokemon, MON_DATA_ABILITY_NUM, &abilityNum);
+    }
 
     // Uncomment if your copy of the pokemon_expansion is not up-to-date.
     //if (gSpeciesInfo[species].abilityHidden != ABILITY_NONE && (Random() % 99) < 10)
