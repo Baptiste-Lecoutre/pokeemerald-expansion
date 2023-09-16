@@ -2897,7 +2897,7 @@ void SetMoveEffect(bool32 primary, u32 certain)
         INCREMENT_RESET_RETURN
     }
 
-    if (gSideStatuses[GET_BATTLER_SIDE(gEffectBattler)] & SIDE_STATUS_SAFEGUARD && !(gHitMarker & HITMARKER_IGNORE_SAFEGUARD)
+    if (gSideStatuses[GetBattlerSide(gEffectBattler)] & SIDE_STATUS_SAFEGUARD && !(gHitMarker & HITMARKER_IGNORE_SAFEGUARD)
         && !primary && gBattleScripting.moveEffect <= MOVE_EFFECT_CONFUSION)
         INCREMENT_RESET_RETURN
 
@@ -3235,7 +3235,7 @@ void SetMoveEffect(bool32 primary, u32 certain)
                 break;
             case MOVE_EFFECT_PAYDAY:
                 // Don't scatter coins on the second hit of Parental Bond
-                if (GET_BATTLER_SIDE(gBattlerAttacker) == B_SIDE_PLAYER && gSpecialStatuses[gBattlerAttacker].parentalBondState!= PARENTAL_BOND_2ND_HIT)
+                if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER && gSpecialStatuses[gBattlerAttacker].parentalBondState!= PARENTAL_BOND_2ND_HIT)
                 {
                     u16 payday = gPaydayMoney;
                     gPaydayMoney += (gBattleMons[gBattlerAttacker].level * 5);
@@ -3251,7 +3251,7 @@ void SetMoveEffect(bool32 primary, u32 certain)
                 }
                 break;
             case MOVE_EFFECT_HAPPY_HOUR:
-                if (GET_BATTLER_SIDE(gBattlerAttacker) == B_SIDE_PLAYER && !gBattleStruct->moneyMultiplierMove)
+                if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER && !gBattleStruct->moneyMultiplierMove)
                 {
                     gBattleStruct->moneyMultiplier *= 2;
                     gBattleStruct->moneyMultiplierMove = 1;
@@ -4067,16 +4067,10 @@ static void Cmd_jumpifsideaffecting(void)
 {
     CMD_ARGS(u8 battler, u32 flags, const u8 *jumpInstr);
 
-    u8 side;
-    u32 flags;
-    const u8 *jumpInstr;
+    u32 side = GetBattlerSide(GetBattlerForBattleScript(cmd->battler));
 
-    side = GET_BATTLER_SIDE(GetBattlerForBattleScript(cmd->battler));
-    flags = cmd->flags;
-    jumpInstr = cmd->jumpInstr;
-
-    if (gSideStatuses[side] & flags)
-        gBattlescriptCurrInstr = jumpInstr;
+    if (gSideStatuses[side] & cmd->flags)
+        gBattlescriptCurrInstr = cmd->jumpInstr;
     else
         gBattlescriptCurrInstr = cmd->nextInstr;
 }
@@ -4305,6 +4299,9 @@ static void Cmd_getexp(void)
                 calculatedExp = gSpeciesInfo[gBattleMons[gBattlerFainted].species].expYield * gBattleMons[gBattlerFainted].level / 7;
             #endif
 
+            if (B_TRAINER_EXP_MULTIPLIER <= GEN_7 && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+                calculatedExp = (calculatedExp * 150) / 100;
+
             #if B_SPLIT_EXP < GEN_6
                 if (viaExpShare) // at least one mon is getting exp via exp share
                 {
@@ -4398,14 +4395,9 @@ static void Cmd_getexp(void)
                     {
                         // check if the pokemon doesn't belong to the player
                         if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && gBattleStruct->expGetterMonId >= 3)
-                        {
                             i = STRINGID_EMPTYSTRING4;
-                        }
                         else
-                        {
-                            gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                             i = STRINGID_ABOOSTED;
-                        }
                     }
                     else
                     {
@@ -5299,7 +5291,7 @@ static void Cmd_playstatchangeanimation(void)
                         changeableStatsCount++;
                     }
                 }
-                else if (!gSideTimers[GET_BATTLER_SIDE(battler)].mistTimer
+                else if (!gSideTimers[GetBattlerSide(battler)].mistTimer
                         && GetBattlerHoldEffect(battler, TRUE) != HOLD_EFFECT_CLEAR_AMULET
                         && ability != ABILITY_CLEAR_BODY
                         && ability != ABILITY_FULL_METAL_BODY
@@ -8701,7 +8693,7 @@ static void HandleScriptMegaPrimalBurst(u32 caseId, u32 battler, u32 type)
     struct Pokemon *party = GetBattlerParty(battler);
     struct Pokemon *mon = &party[gBattlerPartyIndexes[battler]];
     u32 position = GetBattlerPosition(battler);
-    u32 side = GET_BATTLER_SIDE(battler);
+    u32 side = GetBattlerSide(battler);
 
     // Change species.
     if (caseId == 0)
@@ -8910,7 +8902,7 @@ static void Cmd_various(void)
         while (gBattleStruct->friskedBattler < gBattlersCount)
         {
             gBattlerTarget = gBattleStruct->friskedBattler++;
-            if (GET_BATTLER_SIDE2(battler) != GET_BATTLER_SIDE2(gBattlerTarget)
+            if (GetBattlerSide(battler) != GetBattlerSide(gBattlerTarget)
                 && IsBattlerAlive(gBattlerTarget)
                 && gBattleMons[gBattlerTarget].item != ITEM_NONE)
             {
@@ -9544,11 +9536,11 @@ static void Cmd_various(void)
     case VARIOUS_SET_LUCKY_CHANT:
     {
         VARIOUS_ARGS(const u8 *failInstr);
-        if (!(gSideStatuses[GET_BATTLER_SIDE(battler)] & SIDE_STATUS_LUCKY_CHANT))
+        if (!(gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_LUCKY_CHANT))
         {
-            gSideStatuses[GET_BATTLER_SIDE(battler)] |= SIDE_STATUS_LUCKY_CHANT;
-            gSideTimers[GET_BATTLER_SIDE(battler)].luckyChantBattlerId = battler;
-            gSideTimers[GET_BATTLER_SIDE(battler)].luckyChantTimer = 5;
+            gSideStatuses[GetBattlerSide(battler)] |= SIDE_STATUS_LUCKY_CHANT;
+            gSideTimers[GetBattlerSide(battler)].luckyChantBattlerId = battler;
+            gSideTimers[GetBattlerSide(battler)].luckyChantTimer = 5;
             gBattlescriptCurrInstr = cmd->nextInstr;
         }
         else
@@ -10141,7 +10133,7 @@ static void Cmd_various(void)
     case VARIOUS_SET_AURORA_VEIL:
     {
         VARIOUS_ARGS();
-        if (gSideStatuses[GET_BATTLER_SIDE(battler)] & SIDE_STATUS_AURORA_VEIL
+        if (gSideStatuses[GetBattlerSide(battler)] & SIDE_STATUS_AURORA_VEIL
             || !(WEATHER_HAS_EFFECT && gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW)))
         {
             gMoveResultFlags |= MOVE_RESULT_MISSED;
@@ -10149,12 +10141,12 @@ static void Cmd_various(void)
         }
         else
         {
-            gSideStatuses[GET_BATTLER_SIDE(battler)] |= SIDE_STATUS_AURORA_VEIL;
+            gSideStatuses[GetBattlerSide(battler)] |= SIDE_STATUS_AURORA_VEIL;
             if (GetBattlerHoldEffect(battler, TRUE) == HOLD_EFFECT_LIGHT_CLAY)
-                gSideTimers[GET_BATTLER_SIDE(battler)].auroraVeilTimer = 8;
+                gSideTimers[GetBattlerSide(battler)].auroraVeilTimer = 8;
             else
-                gSideTimers[GET_BATTLER_SIDE(battler)].auroraVeilTimer = 5;
-            gSideTimers[GET_BATTLER_SIDE(battler)].auroraVeilBattlerId = battler;
+                gSideTimers[GetBattlerSide(battler)].auroraVeilTimer = 5;
+            gSideTimers[GetBattlerSide(battler)].auroraVeilBattlerId = battler;
 
             if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && CountAliveMonsInBattle(BATTLE_ALIVE_SIDE, gBattlerAttacker) == 2)
                 gBattleCommunication[MULTISTRING_CHOOSER] = 5;
@@ -10554,11 +10546,11 @@ static void Cmd_various(void)
         if (gBattleMons[gBattlerAttacker].species == SPECIES_GRENINJA_BATTLE_BOND
             && HasAttackerFaintedTarget()
             && CalculateBattlerPartyCount(gBattlerTarget) > 1
-            && !(gBattleStruct->battleBondTransformed[GET_BATTLER_SIDE2(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
+            && !(gBattleStruct->battleBondTransformed[GetBattlerSide(gBattlerAttacker)] & gBitTable[gBattlerPartyIndexes[gBattlerAttacker]]))
         {
-            gBattleStruct->battleBondTransformed[GET_BATTLER_SIDE2(gBattlerAttacker)] |= gBitTable[gBattlerPartyIndexes[gBattlerAttacker]];
+            gBattleStruct->battleBondTransformed[GetBattlerSide(gBattlerAttacker)] |= gBitTable[gBattlerPartyIndexes[gBattlerAttacker]];
             PREPARE_SPECIES_BUFFER(gBattleTextBuff1, gBattleMons[gBattlerAttacker].species);
-            gBattleStruct->changedSpecies[GET_BATTLER_SIDE2(gBattlerAttacker)][gBattlerPartyIndexes[gBattlerAttacker]] = gBattleMons[gBattlerAttacker].species;
+            gBattleStruct->changedSpecies[GetBattlerSide(gBattlerAttacker)][gBattlerPartyIndexes[gBattlerAttacker]] = gBattleMons[gBattlerAttacker].species;
             gBattleMons[gBattlerAttacker].species = SPECIES_GRENINJA_ASH;
             BattleScriptPushCursor();
             gBattlescriptCurrInstr = BattleScript_BattleBondActivatesOnMoveEndAttacker;
@@ -11417,19 +11409,19 @@ static void Cmd_setreflect(void)
 {
     CMD_ARGS();
 
-    if (gSideStatuses[GET_BATTLER_SIDE(gBattlerAttacker)] & SIDE_STATUS_REFLECT)
+    if (gSideStatuses[GetBattlerSide(gBattlerAttacker)] & SIDE_STATUS_REFLECT)
     {
         gMoveResultFlags |= MOVE_RESULT_MISSED;
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SIDE_STATUS_FAILED;
     }
     else
     {
-        gSideStatuses[GET_BATTLER_SIDE(gBattlerAttacker)] |= SIDE_STATUS_REFLECT;
+        gSideStatuses[GetBattlerSide(gBattlerAttacker)] |= SIDE_STATUS_REFLECT;
         if (GetBattlerHoldEffect(gBattlerAttacker, TRUE) == HOLD_EFFECT_LIGHT_CLAY)
-            gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].reflectTimer = 8;
+            gSideTimers[GetBattlerSide(gBattlerAttacker)].reflectTimer = 8;
         else
-            gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].reflectTimer = 5;
-        gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].reflectBattlerId = gBattlerAttacker;
+            gSideTimers[GetBattlerSide(gBattlerAttacker)].reflectTimer = 5;
+        gSideTimers[GetBattlerSide(gBattlerAttacker)].reflectBattlerId = gBattlerAttacker;
 
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && CountAliveMonsInBattle(BATTLE_ALIVE_SIDE, gBattlerAttacker) == 2)
             gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SET_REFLECT_DOUBLE;
@@ -11833,7 +11825,7 @@ static u32 ChangeStatBuffs(s8 statValue, u32 statId, u32 flags, const u8 *BS_ptr
 
     if (statValue <= -1) // Stat decrease.
     {
-        if (gSideTimers[GET_BATTLER_SIDE(battler)].mistTimer
+        if (gSideTimers[GetBattlerSide(battler)].mistTimer
             && !certain && gCurrentMove != MOVE_CURSE
             && !(battler == gBattlerTarget && GetBattlerAbility(gBattlerAttacker) == ABILITY_INFILTRATOR))
         {
@@ -12475,19 +12467,19 @@ static void Cmd_setlightscreen(void)
 {
     CMD_ARGS();
 
-    if (gSideStatuses[GET_BATTLER_SIDE(gBattlerAttacker)] & SIDE_STATUS_LIGHTSCREEN)
+    if (gSideStatuses[GetBattlerSide(gBattlerAttacker)] & SIDE_STATUS_LIGHTSCREEN)
     {
         gMoveResultFlags |= MOVE_RESULT_MISSED;
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SIDE_STATUS_FAILED;
     }
     else
     {
-        gSideStatuses[GET_BATTLER_SIDE(gBattlerAttacker)] |= SIDE_STATUS_LIGHTSCREEN;
+        gSideStatuses[GetBattlerSide(gBattlerAttacker)] |= SIDE_STATUS_LIGHTSCREEN;
         if (GetBattlerHoldEffect(gBattlerAttacker, TRUE) == HOLD_EFFECT_LIGHT_CLAY)
-            gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].lightscreenTimer = 8;
+            gSideTimers[GetBattlerSide(gBattlerAttacker)].lightscreenTimer = 8;
         else
-            gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].lightscreenTimer = 5;
-        gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].lightscreenBattlerId = gBattlerAttacker;
+            gSideTimers[GetBattlerSide(gBattlerAttacker)].lightscreenTimer = 5;
+        gSideTimers[GetBattlerSide(gBattlerAttacker)].lightscreenBattlerId = gBattlerAttacker;
 
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && CountAliveMonsInBattle(BATTLE_ALIVE_SIDE, gBattlerAttacker) == 2)
             gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SET_LIGHTSCREEN_DOUBLE;
@@ -12764,16 +12756,16 @@ static void Cmd_setmist(void)
 {
     CMD_ARGS();
 
-    if (gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].mistTimer)
+    if (gSideTimers[GetBattlerSide(gBattlerAttacker)].mistTimer)
     {
         gMoveResultFlags |= MOVE_RESULT_FAILED;
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_MIST_FAILED;
     }
     else
     {
-        gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].mistTimer = 5;
-        gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].mistBattlerId = gBattlerAttacker;
-        gSideStatuses[GET_BATTLER_SIDE(gBattlerAttacker)] |= SIDE_STATUS_MIST;
+        gSideTimers[GetBattlerSide(gBattlerAttacker)].mistTimer = 5;
+        gSideTimers[GetBattlerSide(gBattlerAttacker)].mistBattlerId = gBattlerAttacker;
+        gSideStatuses[GetBattlerSide(gBattlerAttacker)] |= SIDE_STATUS_MIST;
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SET_MIST;
     }
     gBattlescriptCurrInstr = cmd->nextInstr;
@@ -13747,16 +13739,16 @@ static void Cmd_setsafeguard(void)
 {
     CMD_ARGS();
 
-    if (gSideStatuses[GET_BATTLER_SIDE(gBattlerAttacker)] & SIDE_STATUS_SAFEGUARD)
+    if (gSideStatuses[GetBattlerSide(gBattlerAttacker)] & SIDE_STATUS_SAFEGUARD)
     {
         gMoveResultFlags |= MOVE_RESULT_MISSED;
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SIDE_STATUS_FAILED;
     }
     else
     {
-        gSideStatuses[GET_BATTLER_SIDE(gBattlerAttacker)] |= SIDE_STATUS_SAFEGUARD;
-        gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].safeguardTimer = 5;
-        gSideTimers[GET_BATTLER_SIDE(gBattlerAttacker)].safeguardBattlerId = gBattlerAttacker;
+        gSideStatuses[GetBattlerSide(gBattlerAttacker)] |= SIDE_STATUS_SAFEGUARD;
+        gSideTimers[GetBattlerSide(gBattlerAttacker)].safeguardTimer = 5;
+        gSideTimers[GetBattlerSide(gBattlerAttacker)].safeguardBattlerId = gBattlerAttacker;
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SET_SAFEGUARD;
     }
 
@@ -14074,7 +14066,7 @@ static void Cmd_trysetfutureattack(void)
     }
     else
     {
-        gSideStatuses[GET_BATTLER_SIDE(gBattlerTarget)] |= SIDE_STATUS_FUTUREATTACK;
+        gSideStatuses[GetBattlerSide(gBattlerTarget)] |= SIDE_STATUS_FUTUREATTACK;
         gWishFutureKnock.futureSightMove[gBattlerTarget] = gCurrentMove;
         gWishFutureKnock.futureSightAttacker[gBattlerTarget] = gBattlerAttacker;
         gWishFutureKnock.futureSightCounter[gBattlerTarget] = 3;
@@ -16462,13 +16454,15 @@ void ApplyExperienceMultipliers(s32 *expAmount, u8 expGetterMonId, u8 faintedBat
     else
         holdEffect = ItemId_GetHoldEffect(item);
 
+    if (IsTradedMon(&gPlayerParty[expGetterMonId]))
+        *expAmount = (*expAmount * 150) / 100;
     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
         *expAmount = (*expAmount * 150) / 100;
-    if (B_TRAINER_EXP_MULTIPLIER <= GEN_7 && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-        *expAmount = (*expAmount * 150) / 100;
+    if (B_UNEVOLVED_EXP_MULTIPLIER >= GEN_6 && IsMonPastEvolutionLevel(&gPlayerParty[expGetterMonId]))
+        *expAmount = (*expAmount * 4915) / 4096;
     if (B_AFFECTION_MECHANICS == TRUE && GetBattlerFriendshipScore(expGetterMonId) >= FRIENDSHIP_50_TO_99)
-        *expAmount = (*expAmount * 120) / 100;
-    if (IsTradedMon(&gPlayerParty[expGetterMonId]))
+        *expAmount = (*expAmount * 4915) / 4096;
+    if (CheckBagHasItem(ITEM_EXP_CHARM, 1)) //is also for other exp boosting Powers if/when implemented
         *expAmount = (*expAmount * 150) / 100;
 
     if (B_SCALED_EXP >= GEN_5 && B_SCALED_EXP != GEN_6)
@@ -16743,4 +16737,13 @@ void BS_JumpIfMotor(void)
         gBattlescriptCurrInstr = cmd->jumpInstr;
     else
         gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_ApplySaltCure(void)
+{
+    NATIVE_ARGS(u8 battler);
+
+    u8 battler = GetBattlerForBattleScript(cmd->battler);
+    gStatuses4[battler] |= STATUS4_SALT_CURE;
+    gBattlescriptCurrInstr = cmd->nextInstr;
 }

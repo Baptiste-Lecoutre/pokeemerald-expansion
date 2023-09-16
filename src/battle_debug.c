@@ -858,7 +858,7 @@ static void PutAiInfoText(struct BattleDebugMenu *data)
     // items info
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (GET_BATTLER_SIDE(i) == B_SIDE_PLAYER && IsBattlerAlive(i))
+        if (GetBattlerSide(i) == B_SIDE_PLAYER && IsBattlerAlive(i))
         {
             u16 ability = AI_GetAbility(i);
             u16 holdEffect = AI_GetHoldEffect(i);
@@ -878,10 +878,10 @@ static void PutAiPartyText(struct BattleDebugMenu *data)
 {
     u32 i, j, count;
     u8 *text = Alloc(0x50), *txtPtr;
-    struct AiPartyMon *aiMons = AI_PARTY->mons[GET_BATTLER_SIDE(data->aiBattlerId)];
+    struct AiPartyMon *aiMons = AI_PARTY->mons[GetBattlerSide(data->aiBattlerId)];
 
     FillWindowPixelBuffer(data->aiMovesWindowId, 0x11);
-    count = AI_PARTY->count[GET_BATTLER_SIDE(data->aiBattlerId)];
+    count = AI_PARTY->count[GetBattlerSide(data->aiBattlerId)];
     for (i = 0; i < count; i++)
     {
         if (aiMons[i].wasSentInBattle)
@@ -944,7 +944,7 @@ static void Task_ShowAiKnowledge(u8 taskId)
         LoadMonIconPalettes();
         for (count = 0, i = 0; i < MAX_BATTLERS_COUNT; i++)
         {
-            if (GET_BATTLER_SIDE(i) == B_SIDE_PLAYER && IsBattlerAlive(i))
+            if (GetBattlerSide(i) == B_SIDE_PLAYER && IsBattlerAlive(i))
             {
                 data->spriteIds.aiIconSpriteIds[i] = CreateMonIcon(gBattleMons[i].species,
                                                          SpriteCallbackDummy,
@@ -1003,8 +1003,8 @@ static void Task_ShowAiParty(u8 taskId)
         LoadMonIconPalettes();
         LoadPartyMenuAilmentGfx();
         data->aiBattlerId = data->battlerId;
-        aiMons = AI_PARTY->mons[GET_BATTLER_SIDE(data->aiBattlerId)];
-        for (i = 0; i < AI_PARTY->count[GET_BATTLER_SIDE(data->aiBattlerId)]; i++)
+        aiMons = AI_PARTY->mons[GetBattlerSide(data->aiBattlerId)];
+        for (i = 0; i < AI_PARTY->count[GetBattlerSide(data->aiBattlerId)]; i++)
         {
             u16 species = SPECIES_NONE; // Question mark
             if (aiMons[i].wasSentInBattle && aiMons[i].species)
@@ -1629,7 +1629,7 @@ static void ValueToCharDigits(u8 *charDigits, u32 newValue, u8 maxDigits)
 
 static u8 *GetSideStatusValue(struct BattleDebugMenu *data, bool32 changeStatus, bool32 statusTrue)
 {
-    struct SideTimer *sideTimer = &gSideTimers[GET_BATTLER_SIDE(data->battlerId)];
+    struct SideTimer *sideTimer = &gSideTimers[GetBattlerSide(data->battlerId)];
 
     switch (data->currentSecondaryListItemId)
     {
@@ -1921,7 +1921,7 @@ static void SetUpModifyArrows(struct BattleDebugMenu *data)
             data->modifyArrows.maxValue = 9;
 
         data->modifyArrows.maxDigits = 2;
-        data->modifyArrows.modifiedValPtr = &gSideStatuses[GET_BATTLER_SIDE(data->battlerId)];
+        data->modifyArrows.modifiedValPtr = &gSideStatuses[GetBattlerSide(data->battlerId)];
         data->modifyArrows.typeOfVal = VAR_SIDE_STATUS;
         data->modifyArrows.currValue = *GetSideStatusValue(data, FALSE, FALSE);
         break;

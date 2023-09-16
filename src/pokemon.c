@@ -4594,7 +4594,7 @@ u8 CountAliveMonsInBattle(u8 caseId, u32 battler)
 
 u8 GetDefaultMoveTarget(u8 battlerId)
 {
-    u8 opposing = BATTLE_OPPOSITE(GET_BATTLER_SIDE(battlerId));
+    u8 opposing = BATTLE_OPPOSITE(GetBattlerSide(battlerId));
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
         return GetBattlerAtPosition(opposing);
@@ -7038,6 +7038,26 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
     }
 
     return targetSpecies;
+}
+
+bool8 IsMonPastEvolutionLevel(struct Pokemon *mon)
+{
+    int i;
+    u16 species = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u8 level = GetMonData(mon, MON_DATA_LEVEL, 0);
+    
+    for (i = 0; i < EVOS_PER_MON; i++)
+    {
+        switch (gEvolutionTable[species][i].method)
+        {
+        case EVO_LEVEL:
+            if (gEvolutionTable[species][i].param <= level)
+                return TRUE;
+            break;
+        }
+    }
+
+    return FALSE;
 }
 
 u16 HoennPokedexNumToSpecies(u16 hoennNum)
