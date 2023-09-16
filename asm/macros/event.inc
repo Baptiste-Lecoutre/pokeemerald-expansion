@@ -2072,7 +2072,7 @@
 	@ Sets up a Raid Battle with fixed data.
 	@ This is designed for testing, but can be used to create event raids too!
 	.macro preparefixedraid type:req, rank:req, species:req, level:req;
-	setvar VAR_0x8000, TRUE
+	setflag FLAG_SYS_SPECIAL_RAID_BATTLE
 	setvar VAR_0x8001, \type
 	setvar VAR_0x8002, \rank
 	setvar VAR_0x8003, \species

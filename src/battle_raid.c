@@ -284,7 +284,7 @@ u32 GetRaidRandomNumber(void);
 // Sets the data for the Raid being loaded from the map information.
 bool32 InitRaidData(void)
 {
-    u16 numBadges, min, max, species, preEvoSpecies, postEvoSpecies = SPECIES_NONE;
+    u16 numBadges, min, max, species = SPECIES_NONE, preEvoSpecies = SPECIES_NONE, postEvoSpecies = SPECIES_NONE;
 	u32 i, randomNum = GetRaidRandomNumber();
     u8 raidBossLevel, numPostEvoSpecies = 0;;
 
@@ -319,11 +319,11 @@ bool32 InitRaidData(void)
     // determine raid species
     do
     {
-        species = (randomNum + species) % FORMS_START + 1;
+        species = ((randomNum + species) % FORMS_START) + 1;
     } while (species == SPECIES_NONE || gSpeciesInfo[species].flags & (SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_MYTHICAL | SPECIES_FLAG_ULTRA_BEAST));
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
-    preEvoSpecies = GetPreEvolution(species);
+    /*preEvoSpecies = GetPreEvolution(species);
     postEvoSpecies = gEvolutionTable[species][0].targetSpecies;
 
     // if low rank raid and pre-evolution exists, go for it
@@ -359,7 +359,7 @@ bool32 InitRaidData(void)
             }
             species = gEvolutionTable[species][randomNum % numPostEvoSpecies].targetSpecies;
         }
-    }
+    }*/
     
     // create raid boss
     CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);

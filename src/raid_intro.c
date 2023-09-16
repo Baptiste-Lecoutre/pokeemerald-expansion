@@ -715,7 +715,7 @@ void InitRaidIntro(void)
 static bool32 GetRaidBattleData(void)
 {
 	bool32 success;
-	if (gSpecialVar_0x8000)
+	if (FlagGet(FLAG_SYS_SPECIAL_RAID_BATTLE))
 	{
 		if (InitCustomRaidData())
 			success = TRUE;
@@ -725,6 +725,8 @@ static bool32 GetRaidBattleData(void)
 	
 	if (success)
 	{
+		FlagClear(FLAG_SYS_SPECIAL_RAID_BATTLE);
+
 		sRaidBattleIntro->species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
 		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0], MON_DATA_PERSONALITY, NULL);
 
