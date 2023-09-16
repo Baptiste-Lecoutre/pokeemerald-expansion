@@ -573,6 +573,7 @@ extern const u8 EventScript_FieldPoison[];
 extern const u8 EventScript_EggHatch[];
 extern const u8 AbnormalWeather_EventScript_EndEventAndCleanup_1[];
 extern const u8 IslandCave_EventScript_OpenRegiEntrance[];
+extern u8 EventScript_OpenRegielekiChamber[];
 extern const u8 MauvilleCity_EventScript_RegisterWallyCall[];
 extern const u8 Route119_EventScript_ScottWonAtFortreeGymCall[];
 extern const u8 LittlerootTown_ProfessorBirchsLab_EventScript_ScottAboardSSTidalCall[];

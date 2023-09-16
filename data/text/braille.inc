@@ -123,6 +123,13 @@ CaveOfShock_Braille_Wait2Minutes:
 	.braille "FOR TIME TO\n"
 	.braille "PASS TWICE.$"
 
+MeteorFalls_DracoChamber_Braille_UseStrength:
+	brailleformat 3, 0, 25, 19, 6, 3
+	.braille "THOSE WHO\n"
+	.braille "INHERIT OUR\n"
+	.braille "BODY, STRENGTH\n"
+	.braille "IN THE MIDDLE.$"
+
 SealedChamber_InnerRoom_Braille_Regigigas:
 	brailleformat 3, 0, 25, 19, 6, 3
 	.braille "A BODY OF ROCK\n"

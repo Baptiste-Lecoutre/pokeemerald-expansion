@@ -3,7 +3,7 @@ CaveOfShock_MapScripts::
 	.byte 0
 
 CaveOfShock_OnLoad::
-	call_if_unset FLAG_SYS_BRAILLE_WAIT, CaveOfShock_EventScript_HideRegiEntrance
+	call_if_unset FLAG_SYS_REGIELEKI_PUZZLE_COMPLETED, CaveOfShock_EventScript_HideRegiEntrance
 	end
 
 CaveOfShock_EventScript_HideRegiEntrance::
@@ -24,12 +24,12 @@ EventScript_OpenRegielekiChamber::
 	setmetatile 9, 20, METATILE_Cave_SealedChamberEntrance_BottomRight, TRUE
 	special DrawWholeMapView
 	playse SE_BANG
-	setflag FLAG_SYS_BRAILLE_WAIT
+	setflag FLAG_SYS_REGIELEKI_PUZZLE_COMPLETED
 	end
 
 CaveOfShock_EventScript_CaveEntranceMiddle::
 	lockall
-	goto_if_set FLAG_SYS_BRAILLE_WAIT, CaveOfShock_EventScript_BigHoleInWall
+	goto_if_set FLAG_SYS_REGIELEKI_PUZZLE_COMPLETED, CaveOfShock_EventScript_BigHoleInWall
 	braillemsgbox CaveOfShock_Braille_Wait2Minutes
 	special DoRegielekiPuzzle
 	waitstate
@@ -44,7 +44,7 @@ CaveOfShock_EventScript_BigHoleInWall::
 CaveOfShock_EventScript_CaveEntranceSide::
 	lockall
 	braillemsgbox CaveOfShock_Braille_Wait2Minutes
-	goto_if_set FLAG_SYS_BRAILLE_WAIT, CaveOfShock_EventScript_Wait
+	goto_if_set FLAG_SYS_REGIELEKI_PUZZLE_COMPLETED, CaveOfShock_EventScript_Wait
 	special DoRegielekiPuzzle
 	waitstate
 	goto CaveOfShock_EventScript_Wait
@@ -52,6 +52,6 @@ CaveOfShock_EventScript_CaveEntranceSide::
 
 CaveOfShock_EventScript_Wait::
 	waitbuttonpress
-	erasebox 0, 0, 29, 19
+	closebraillemessage
 	releaseall
 	end
