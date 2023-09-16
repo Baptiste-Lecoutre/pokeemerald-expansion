@@ -1001,6 +1001,8 @@ gBattleAnims_General::
 	.4byte General_ZMoveActivate            @ B_ANIM_ZMOVE_ACTIVATE
 	.4byte General_AffectionHangedOn        @ B_ANIM_AFFECTION_HANGED_ON
 	.4byte General_Snow                     @ B_ANIM_SNOW_CONTINUES
+	.4byte General_UltraBurst               @ B_ANIM_ULTRA_BURST
+	.4byte General_SaltCureDamage           @ B_ANIM_SALT_CURE_DAMAGE
 	.4byte General_DynamaxGrowth			@ B_ANIM_DYNAMAX_GROWTH
 	.4byte General_SetWeather 				@ B_ANIM_MAX_SET_WEATHER
 	.4byte General_RaidStormBrews			@ B_ANIM_RAID_STORM_BREWS
@@ -1009,8 +1011,6 @@ gBattleAnims_General::
 	.4byte General_RaidShieldBroken			@ B_ANIM_RAID_SHIELD_BROKE
 	.4byte General_RaidShockwave			@ B_ANIM_RAID_SHOCKWAVE
 	.4byte General_RaidBossExplosion		@ B_ANIM_RAID_BOSS_EXPLOSION
-	.4byte General_UltraBurst               @ B_ANIM_ULTRA_BURST
-	.4byte General_SaltCureDamage           @ B_ANIM_SALT_CURE_DAMAGE
 
 	.align 2
 gBattleAnims_Special::
