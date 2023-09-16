@@ -15,9 +15,6 @@
 #include "pokeball.h"
 #include "battle_debug.h"
 
-#define GET_BATTLER_SIDE(battler)         (GetBattlerPosition(battler) & BIT_SIDE)
-#define GET_BATTLER_SIDE2(battler)        (gBattlerPositions[battler] & BIT_SIDE)
-
 // Used to exclude moves learned temporarily by Transform or Mimic
 #define MOVE_IS_PERMANENT(battler, moveSlot)                        \
    (!(gBattleMons[battler].status2 & STATUS2_TRANSFORMED)           \
@@ -679,6 +676,8 @@ struct BattleStruct
     bool8 trainerSlideMegaEvolutionMsgDone;
     bool8 trainerSlideZMoveMsgDone;
     bool8 trainerSlideBeforeFirstTurnMsgDone;
+    u32 aiDelayTimer; // Counts number of frames AI takes to choose an action.
+    u32 aiDelayFrames; // Number of frames it took to choose an action.
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -746,17 +745,6 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 
 #define SET_STATCHANGER(statId, stage, goesDown)(gBattleScripting.statChanger = (statId) + ((stage) << 3) + (goesDown << 7))
 #define SET_STATCHANGER2(dst, statId, stage, goesDown)(dst = (statId) + ((stage) << 3) + (goesDown << 7))
-
-static inline struct Pokemon *GetSideParty(u32 side)
-{
-    return side == B_SIDE_PLAYER ? gPlayerParty : gEnemyParty;
-}
-
-static inline struct Pokemon *GetBattlerParty(u32 battlerId)
-{
-    extern u8 GetBattlerSide(u8 battler);
-    return GetSideParty(GetBattlerSide(battlerId));
-}
 
 // NOTE: The members of this struct have hard-coded offsets
 //       in include/constants/battle_script_commands.h
@@ -1033,5 +1021,25 @@ extern bool8 gDescriptionSubmenu;
 #define NUM_SOFT_CAPS 9
 extern const u16 gLevelCapFlags[NUM_SOFT_CAPS];
 extern const u16 gLevelCaps[NUM_SOFT_CAPS];
+
+static inline u32 GetBattlerPosition(u32 battler)
+{
+    return gBattlerPositions[battler];
+}
+
+static inline u32 GetBattlerSide(u32 battler)
+{
+    return GetBattlerPosition(battler) & BIT_SIDE;
+}
+
+static inline struct Pokemon *GetSideParty(u32 side)
+{
+    return (side == B_SIDE_PLAYER) ? gPlayerParty : gEnemyParty;
+}
+
+static inline struct Pokemon *GetBattlerParty(u32 battler)
+{
+    return GetSideParty(GetBattlerSide(battler));
+}
 
 #endif // GUARD_BATTLE_H

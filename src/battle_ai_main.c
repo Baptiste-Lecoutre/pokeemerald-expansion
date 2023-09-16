@@ -1,4 +1,5 @@
 #include "global.h"
+#include "main.h"
 #include "malloc.h"
 #include "battle.h"
 #include "battle_anim.h"
@@ -328,14 +329,14 @@ void Ai_UpdateSwitchInData(u32 battler)
 
 void Ai_UpdateFaintData(u32 battler)
 {
-    struct AiPartyMon *aiMon = &AI_PARTY->mons[GET_BATTLER_SIDE(battler)][gBattlerPartyIndexes[battler]];
+    struct AiPartyMon *aiMon = &AI_PARTY->mons[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
     ClearBattlerMoveHistory(battler);
     ClearBattlerAbilityHistory(battler);
     ClearBattlerItemEffectHistory(battler);
     aiMon->isFainted = TRUE;
 }
 
-static void SetBattlerAiData(u8 battler)
+static void SetBattlerAiData(u32 battler)
 {
     AI_DATA->abilities[battler] = AI_GetAbility(battler);
     AI_DATA->items[battler] = gBattleMons[battler].item;
@@ -346,7 +347,7 @@ static void SetBattlerAiData(u8 battler)
     AI_DATA->moveLimitations[battler] = CheckMoveLimitations(battler, 0, MOVE_LIMITATIONS_ALL);
 }
 
-void GetAiLogicData(void)
+void SetAiLogicDataForTurn(void)
 {
     u32 battlerAtk, battlerDef, i, move;
     u8 effectiveness;
@@ -356,6 +357,8 @@ void GetAiLogicData(void)
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_HAS_AI) && !IsWildMonSmart())
         return;
+
+    gBattleStruct->aiDelayTimer = gMain.vblankCounter1;
 
     // get/assume all battler data
     for (i = 0; i < gBattlersCount; i++)
@@ -2584,7 +2587,7 @@ static s16 AI_CheckBadMove(u8 battlerAtk, u8 battlerDef, u16 move, s16 score)
                 score -= 10;
             break;
         case EFFECT_LUCKY_CHANT:
-            if (gSideTimers[GET_BATTLER_SIDE(battlerAtk)].luckyChantTimer != 0
+            if (gSideTimers[GetBattlerSide(battlerAtk)].luckyChantTimer != 0
               || PartnerMoveIsSameNoTarget(BATTLE_PARTNER(battlerAtk), move, AI_DATA->partnerMove))
                 score -= 10;
             break;
@@ -4954,6 +4957,10 @@ static s16 AI_CheckViability(u8 battlerAtk, u8 battlerDef, u16 move, s16 score)
          || gBattleMons[battlerAtk].status1 & STATUS1_ANY
          || gBattleMons[BATTLE_PARTNER(battlerAtk)].status1 & STATUS1_ANY)
             score += 3;
+        break;
+    case EFFECT_SALT_CURE:
+        if (IS_BATTLER_OF_TYPE(battlerDef, TYPE_WATER) || IS_BATTLER_OF_TYPE(battlerDef, TYPE_STEEL))
+            score += 2;
         break;
     } // move effect checks
 
