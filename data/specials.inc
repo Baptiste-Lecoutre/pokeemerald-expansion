@@ -583,3 +583,4 @@ gSpecials::
 	def_special CheckSpeciesInParty
 	def_special ChangePokemonNature
 	def_special BufferChosenMonNature
+	def_special DoRegielekiPuzzle

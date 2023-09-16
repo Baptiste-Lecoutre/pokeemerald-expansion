@@ -422,7 +422,6 @@
 #define MAP_DEWFORD_MEADOW                           (124 | (24 << 8))
 #define MAP_DEWFORD_MANOR_1F                         (125 | (24 << 8))
 #define MAP_SCORCHED_SLAB_REGIGIGAS_ROOM             (126 | (24 << 8))
-#define MAP_CAVE_OF_SHOCK                            (127 | (24 << 8))
 
 // gMapGroup_IndoorDynamic
 #define MAP_SECRET_BASE_RED_CAVE1    (0 | (25 << 8))
@@ -619,6 +618,7 @@
 #define MAP_UNDERWATER_METEOR_FALLS_B1F_2R        (0 | (34 << 8))
 #define MAP_METEOR_FALLS_DRACO_CHAMBER            (1 | (34 << 8))
 #define MAP_UNDERWATER_METEOR_FALLS_DRACO_CHAMBER (2 | (34 << 8))
+#define MAP_CAVE_OF_SHOCK                         (3 | (34 << 8))
 
 #define MAP_GROUPS_COUNT 35
 

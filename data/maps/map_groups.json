@@ -452,8 +452,7 @@
     "ScorchedSlab_B2F",
     "DewfordMeadow",
     "DewfordManor_1F",
-    "ScorchedSlab_RegigigasRoom",
-    "CaveOfShock"
+    "ScorchedSlab_RegigigasRoom"
   ],
   "gMapGroup_IndoorDynamic": [
     "SecretBase_RedCave1",
@@ -649,6 +648,7 @@
   "gMapGroup_Dungeons2": [
     "Underwater_MeteorFalls_B1F_2R",
     "MeteorFalls_DracoChamber",
-    "Underwater_MeteorFalls_DracoChamber"
+    "Underwater_MeteorFalls_DracoChamber",
+    "CaveOfShock"
   ]
 }

@@ -76,6 +76,8 @@ static void DoBrailleRegisteelEffect(void);
 static void Task_RegielekiPuzzle_Wait(u8 taskId);
 static bool32 RegielekiPuzzle_CheckButtonPress(void);
 
+extern u8 EventScript_OpenRegielekiChamber[];
+
 bool8 ShouldDoBrailleDigEffect(void)
 {
     if (!FlagGet(FLAG_SYS_BRAILLE_DIG)
@@ -389,11 +391,11 @@ bool8 ShouldDoBrailleRegicePuzzle(void)
     }
 
     return FALSE;
-}
+}*/
 
 void DoRegielekiPuzzle(void)
 {
-    if (TRUE) // do condition
+    if (!FlagGet(FLAG_SYS_BRAILLE_WAIT))
         CreateTask(Task_RegielekiPuzzle_Wait, 0x50);
 }
 
@@ -444,7 +446,7 @@ static void Task_RegielekiPuzzle_Wait(u8 taskId)
         break;
     case 4:
         ScriptUnfreezeObjectEvents();
-        DoBrailleRegisteelEffect(); //DoBrailleRegielekiEffect();
+        ScriptContext_SetupScript(EventScript_OpenRegielekiChamber);
         DestroyTask(taskId);
         break;
     }
@@ -458,4 +460,4 @@ static bool32 RegielekiPuzzle_CheckButtonPress(void)
         return TRUE;
     else
         return FALSE;
-}*/
+}

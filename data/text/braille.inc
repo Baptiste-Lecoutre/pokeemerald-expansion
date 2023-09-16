@@ -116,6 +116,13 @@ AncientTomb_Braille_ShineInTheMiddle:
 	.braille "WILL, SHINE\n"
 	.braille "IN THE MIDDLE.$"
 
+CaveOfShock_Braille_Wait2Minutes:
+	brailleformat 3, 0, 25, 19, 6, 3
+	.braille "STOP AND\n"
+	.braille "WAIT. WAIT\n"
+	.braille "FOR TIME TO\n"
+	.braille "PASS TWICE.$"
+
 SealedChamber_InnerRoom_Braille_Regigigas:
 	brailleformat 3, 0, 25, 19, 6, 3
 	.braille "A BODY OF ROCK\n"
