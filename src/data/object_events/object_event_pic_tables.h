@@ -1809,6 +1809,30 @@ static const struct SpriteFrameImage sPicTable_RegigigasOW[] = {
     obj_frame_tiles(gObjectEventPic_RegigigasOW),
 };
 
+static const struct SpriteFrameImage sPicTable_RegidragoOW[] = {
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+    obj_frame_tiles(gObjectEventPic_RegidragoOW),
+};
+
+static const struct SpriteFrameImage sPicTable_RegielekiOW[] = {
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+    obj_frame_tiles(gObjectEventPic_RegielekiOW),
+};
+
 static const struct SpriteFrameImage sPicTable_RayquazaStill[] = {
     obj_frame_tiles(gObjectEventPic_RayquazaStill),
     obj_frame_tiles(gObjectEventPic_RayquazaStill),

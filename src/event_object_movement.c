@@ -496,19 +496,21 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION        0x1130
 #define OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION        0x1131
 #define OBJ_EVENT_PAL_TAG_SNORLAX                 0x1132
+#define OBJ_EVENT_PAL_TAG_REGIDRAGO               0x1133
+#define OBJ_EVENT_PAL_TAG_REGIELEKI               0x1134
 
-#define OBJ_EVENT_PAL_TAG_RED                     0x1133
-#define OBJ_EVENT_PAL_TAG_LEAF                    0x1134
-#define OBJ_EVENT_PAL_TAG_ETHAN                   0x1135
-#define OBJ_EVENT_PAL_TAG_LYRA                    0x1136
-#define OBJ_EVENT_PAL_TAG_KRIS                    0x1137
-#define OBJ_EVENT_PAL_TAG_LUCAS                   0x1138
-#define OBJ_EVENT_PAL_TAG_DAWN                    0x1139
-#define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113A
-#define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
-#define OBJ_EVENT_PAL_TAG_CHASE                   0x113C
-#define OBJ_EVENT_PAL_TAG_ELAINE                  0x113D
-#define OBJ_EVENT_PAL_TAG_WALLY                   0x113E
+#define OBJ_EVENT_PAL_TAG_RED                     0x1135
+#define OBJ_EVENT_PAL_TAG_LEAF                    0x1136
+#define OBJ_EVENT_PAL_TAG_ETHAN                   0x1137
+#define OBJ_EVENT_PAL_TAG_LYRA                    0x1138
+#define OBJ_EVENT_PAL_TAG_KRIS                    0x1139
+#define OBJ_EVENT_PAL_TAG_LUCAS                   0x113A
+#define OBJ_EVENT_PAL_TAG_DAWN                    0x113B
+#define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113C
+#define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113D
+#define OBJ_EVENT_PAL_TAG_CHASE                   0x113E
+#define OBJ_EVENT_PAL_TAG_ELAINE                  0x113F
+#define OBJ_EVENT_PAL_TAG_WALLY                   0x1140
 
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
@@ -567,6 +569,8 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPaletteRegigigas,          OBJ_EVENT_PAL_TAG_REGIGIGAS},
     {gObjectEventPaletteCynthia,            OBJ_EVENT_PAL_TAG_CYNTHIA},
     {gObjectEventPal_Snorlax,               OBJ_EVENT_PAL_TAG_SNORLAX},
+    {gObjectEventPaletteRegidrago,          OBJ_EVENT_PAL_TAG_REGIDRAGO},
+    {gObjectEventPaletteRegieleki,          OBJ_EVENT_PAL_TAG_REGIELEKI},
     {gObjectEventPal_Npc5,                  OBJ_EVENT_PAL_TAG_NPC_5},
     {gObjectEventPal_Npc6,                  OBJ_EVENT_PAL_TAG_NPC_6},
     {gObjectEventPal_Npc7,                  OBJ_EVENT_PAL_TAG_NPC_7},
