@@ -1533,7 +1533,7 @@ void HideTriggerSprites(void)
 
 void DestroyMegaTriggerSprite(void)
 {
-    FreeSpritePaletteByTag(TAG_MEGA_TRIGGER_PAL);
+//    FreeSpritePaletteByTag(TAG_MEGA_TRIGGER_PAL); // don't free the palette because it is shared
     FreeSpriteTilesByTag(TAG_MEGA_TRIGGER_TILE);
     if (gBattleStruct->mega.triggerSpriteId != 0xFF)
         DestroySprite(&gSprites[gBattleStruct->mega.triggerSpriteId]);
