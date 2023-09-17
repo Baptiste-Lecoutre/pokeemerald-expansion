@@ -411,6 +411,8 @@ u8 GetRaidBattleTransition(void)
 {
     if (gRaidData.raidType == RAID_TYPE_TERA)
         return B_TRANSITION_TERA_RAID;
+    else if (gRaidData.raidType == RAID_TYPE_MEGA)
+        return B_TRANSITION_MEGA_RAID;
     else
         return B_TRANSITION_MAX_RAID;
 }

@@ -403,6 +403,7 @@ static const TaskFunc sTasks_Main[B_TRANSITION_COUNT] =
     [B_TRANSITION_ROCKET] = Task_Rocket,
     [B_TRANSITION_MAX_RAID] = Task_Raid,
     [B_TRANSITION_TERA_RAID] = Task_Swirl,
+    [B_TRANSITION_MEGA_RAID] = Task_Swirl,
 };
 
 static const TransitionStateFunc sTaskHandlers[] =
