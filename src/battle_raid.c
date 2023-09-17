@@ -276,6 +276,7 @@ EWRAM_DATA struct RaidData gRaidData = {0};
 // forward declarations
 static u8 GetRaidShieldThresholdTotalNumber(void);
 static u16 GetNextShieldThreshold(void);
+static u16 GetShieldAmount(void);
 static u32 CreateRaidBarrierSprite(u8 index);
 static void CreateAllRaidBarrierSprites(void);
 static void DestroyRaidBarrierSprite(u8 index);
@@ -645,6 +646,7 @@ bool32 UpdateRaidShield(void)
 
         if (gRaidData.raidType == RAID_TYPE_MEGA)
         {
+            gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - gBattleMons[gBattlerTarget].maxHP;
             gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
             gBattleCommunication[MULTIUSE_STATE] = RAID_TYPE_MEGA;
         }

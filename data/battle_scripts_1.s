@@ -10744,8 +10744,10 @@ BattleScript_RaidBarrierBroken::
 	return
 
 BattleScript_MegaRaidHealBarrier::
-	healthbarupdate BS_TARGET
+	healthbar_update BS_TARGET
 	datahpupdate BS_TARGET
+	printstring STRINGID_BARRIERRESTOREDENERGY
+	waitmessage B_WAIT_TIME_LONG
 	return
 
 BattleScript_RaidShockwave::
