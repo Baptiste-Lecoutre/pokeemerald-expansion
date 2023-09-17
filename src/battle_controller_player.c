@@ -473,13 +473,13 @@ static void HandleInputChooseAction(u32 battler)
         if (JOY_NEW(DPAD_RIGHT))
         {
             PlaySE(SE_SELECT);
-            TryChangeLastUsedBall(TRUE);
+//            TryChangeLastUsedBall(TRUE);
             sLastUsedBallHoldFrames = 0xFF;
         }
         else if (JOY_NEW(DPAD_LEFT))
         {
             PlaySE(SE_SELECT);
-            TryChangeLastUsedBall(FALSE);
+//            TryChangeLastUsedBall(FALSE);
             sLastUsedBallHoldFrames = 0xFF;
         }
     }
