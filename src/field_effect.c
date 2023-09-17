@@ -249,10 +249,6 @@ static bool8 RockClimb_WaitStopRockClimb(struct Task *task, struct ObjectEvent *
 static bool8 RockClimb_StopRockClimbInit(struct Task *task, struct ObjectEvent *objectEvent);
 // Static RAM declarations
 
-#if FOLLOW_ME_IMPLEMENTED
-static void TryAttachFollowerToPlayer(void);
-#endif
-
 static u8 sActiveList[32];
 
 // External declarations
@@ -1937,10 +1933,6 @@ static bool8 WaterfallFieldEffect_ContinueRideOrEnd(struct Task *task, struct Ob
 {
     if (!ObjectEventClearHeldMovementIfFinished(objectEvent))
         return FALSE;
-    
-    #if FOLLOW_ME_IMPLEMENTED
-        TryAttachFollowerToPlayer();
-    #endif
 
     if (MetatileBehavior_IsWaterfall(objectEvent->currentMetatileBehavior))
     {
@@ -4079,7 +4071,7 @@ static void Task_UseRockClimb(u8 taskId)
 
 static bool8 RockClimb_Init(struct Task *task, struct ObjectEvent *objectEvent)
 {
-    ScriptContext2_Enable();
+    LockPlayerFieldControls();
     FreezeObjectEvents();
     gPlayerAvatar.preventStep = TRUE;
     SetPlayerAvatarStateMask(PLAYER_AVATAR_FLAG_SURFING);
@@ -4204,10 +4196,6 @@ static bool8 RockClimb_ContinueRideOrEnd(struct Task *task, struct ObjectEvent *
     if (!ObjectEventClearHeldMovementIfFinished(objectEvent))
         return FALSE;
     
-    #if FOLLOW_ME_IMPLEMENTED
-        TryAttachFollowerToPlayer();
-    #endif
-    
     PlayerGetDestCoords(&task->tDestX, &task->tDestY);
     MoveCoords(objectEvent->movementDirection, &task->tDestX, &task->tDestY);
     if (MetatileBehavior_IsRockClimbable(MapGridGetMetatileBehaviorAt(task->tDestX, task->tDestY)))
@@ -4216,7 +4204,7 @@ static bool8 RockClimb_ContinueRideOrEnd(struct Task *task, struct ObjectEvent *
         return TRUE;
     }
 
-    ScriptContext2_Enable();
+    LockPlayerFieldControls();
     gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_SURFING;
     gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_ON_FOOT;
     task->tState++;
@@ -4246,7 +4234,7 @@ static bool8 RockClimb_WaitStopRockClimb(struct Task *task, struct ObjectEvent *
         ObjectEventSetHeldMovement(objectEvent, GetFaceDirectionMovementAction(objectEvent->facingDirection));
         gPlayerAvatar.preventStep = FALSE;
         UnfreezeObjectEvents();
-        ScriptContext2_Disable();
+        UnlockPlayerFieldControls();
         DestroySprite(&gSprites[objectEvent->fieldEffectSpriteId]);
         FieldEffectActiveListRemove(FLDEFF_USE_ROCK_CLIMB);
         objectEvent->triggerGroundEffectsOnMove = TRUE; // e.g. if dismount on grass
@@ -4263,20 +4251,6 @@ bool8 IsRockClimbActive(void)
     else
         return FALSE;
 }
-
-
-#if FOLLOW_ME_IMPLEMENTED
-static void TryAttachFollowerToPlayer(void)
-{
-    if (PlayerHasFollower())
-    {
-        //Keep the follow close by while its hidden to prevent it from going too far out of view
-        struct ObjectEvent* player = &gObjectEvents[gPlayerAvatar.objectEventId];
-        struct ObjectEvent* follower = &gObjectEvents[GetFollowerMapObjId()];
-        MoveObjectEventToMapCoords(follower, player->currentCoords.x, player->currentCoords.y);
-    }
-}
-#endif
 
 #undef tState
 #undef tSpriteId
