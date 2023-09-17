@@ -2918,8 +2918,8 @@ void SetMoveEffect(bool32 primary, u32 certain)
         INCREMENT_RESET_RETURN
     
     // Raid shields prevent secondary move effects.
-    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0)
-        INCREMENT_RESET_RETURN
+//    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0)
+//        INCREMENT_RESET_RETURN
 
     if (gBattleScripting.moveEffect <= PRIMARY_STATUS_MOVE_EFFECT) // status change
     {
