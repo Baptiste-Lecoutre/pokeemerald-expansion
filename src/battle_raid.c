@@ -381,7 +381,7 @@ bool32 InitCustomRaidData(void)
 // Sets up the RaidBattleData struct in gBattleStruct.
 void InitRaidBattleData(void)
 {
-    u8 i;
+    u32 i;
 
     gBattleStruct->raid.shieldsRemaining = GetRaidShieldThresholdTotalNumber();
     gBattleStruct->raid.nextShield = GetNextShieldThreshold();
@@ -398,6 +398,7 @@ void InitRaidBattleData(void)
     {
         gBattleStruct->raid.shield = GetShieldAmount();
         CreateAllRaidBarrierSprites();
+        RaidBarrier_SetVisibilities(gHealthboxSpriteIds[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)], TRUE);
     }
 
     // Update HP Multiplier.
