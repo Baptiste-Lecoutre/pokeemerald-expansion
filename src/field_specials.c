@@ -5639,3 +5639,9 @@ void ChangePokemonNature (void)
 	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }
+
+// Checks if Pokeball pocket is empty, to be called in scripts via "specialvar VAR_RESULT, IsPokeballPocketEmpty"
+bool8 IsPokeballPocketEmpty(void)
+{
+    return !IsBagPocketNonEmpty(POCKET_POKE_BALLS);
+}

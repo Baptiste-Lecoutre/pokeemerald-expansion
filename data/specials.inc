@@ -584,3 +584,4 @@ gSpecials::
 	def_special ChangePokemonNature
 	def_special BufferChosenMonNature
 	def_special DoRegielekiPuzzle
+	def_special IsPokeballPocketEmpty
