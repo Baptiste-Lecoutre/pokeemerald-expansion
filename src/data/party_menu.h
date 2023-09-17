@@ -933,7 +933,11 @@ static const u8 *const sUnionRoomTradeMessages[] =
 };
 
 static const u32 sHeldItemGfx[] = INCBIN_U32("graphics/party_menu/hold_icons.4bpp");
+static const u32 sMegaStoneGfx[] = INCBIN_U32("graphics/party_menu/icon_mega_stone.4bpp");
+static const u32 sZCrystalGfx[] = INCBIN_U32("graphics/party_menu/icon_z_crystal.4bpp");
 const u16 gHeldItemPalette[] = INCBIN_U16("graphics/party_menu/hold_icons.gbapal");
+const u16 gMegaStonePalette[] = INCBIN_U16("graphics/party_menu/icon_mega_stone.gbapal");
+const u16 gZCrystalPalette[] = INCBIN_U16("graphics/party_menu/icon_z_crystal.gbapal");
 
 static const struct OamData sOamData_HeldItem =
 {
@@ -986,6 +990,82 @@ const struct SpriteTemplate sSpriteTemplate_HeldItem =
     .paletteTag = TAG_HELD_ITEM,
     .oam = &sOamData_HeldItem,
     .anims = sSpriteAnimTable_HeldItem,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy
+};
+
+static const struct OamData sOamData_MegaStone =
+{
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = FALSE,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(16x16),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(16x16),
+    .tileNum = 0,
+    .priority = 1,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+const struct SpriteSheet gSpriteSheet_MegaStone =
+{
+    .data = sMegaStoneGfx, .size = sizeof(sMegaStoneGfx), .tag = TAG_MEGA_STONE
+};
+
+const struct SpritePalette gSpritePalette_MegaStone =
+{
+    .data = gMegaStonePalette, .tag = TAG_MEGA_STONE
+};
+
+const struct SpriteTemplate sSpriteTemplate_MegaStone =
+{
+    .tileTag = TAG_MEGA_STONE,
+    .paletteTag = TAG_MEGA_STONE,
+    .oam = &sOamData_MegaStone,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy
+};
+
+static const struct OamData sOamData_ZCrystal =
+{
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = FALSE,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(16x8),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(16x8),
+    .tileNum = 0,
+    .priority = 1,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+const struct SpriteSheet gSpriteSheet_ZCrystal =
+{
+    .data = sZCrystalGfx, .size = sizeof(sZCrystalGfx), .tag = TAG_Z_CRYSTAL
+};
+
+const struct SpritePalette gSpritePalette_ZCrystal =
+{
+    .data = gZCrystalPalette, .tag = TAG_Z_CRYSTAL
+};
+
+const struct SpriteTemplate sSpriteTemplate_ZCrystal =
+{
+    .tileTag = TAG_Z_CRYSTAL,
+    .paletteTag = TAG_Z_CRYSTAL,
+    .oam = &sOamData_ZCrystal,
+    .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCallbackDummy
