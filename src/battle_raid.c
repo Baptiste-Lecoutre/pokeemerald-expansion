@@ -392,9 +392,12 @@ void InitRaidBattleData(void)
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
         gBattleStruct->raid.barrierSpriteIds[i] = MAX_SPRITES;
 
-    // TODO: Some Raids start off with a shield at the beginning.
-    // if (should do shield)
-    //    do shield.
+    // Mega Raids start off with a shield at the beginning.
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    {
+        gBattleStruct->raid.shield = GetShieldAmount();
+        CreateAllRaidBarrierSprites();
+    }
 
     // Update HP Multiplier.
     RecalcBattlerStats(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &gEnemyParty[0]);
@@ -629,7 +632,7 @@ bool32 UpdateRaidShield(void)
         gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
         // Destroy an extra barrier with a Max Move.
         // TODO: Tera STAB moves will probably break 2 barriers, too.
-        if (IsMaxMove(gLastUsedMove) && gBattleStruct->raid.shield > 1)
+        if (IsMaxMove(gLastUsedMove) && gRaidData.raidType == RAID_TYPE_MAX && gBattleStruct->raid.shield > 1)
         {
             gBattleStruct->raid.shield--;
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
@@ -638,6 +641,12 @@ bool32 UpdateRaidShield(void)
         {
             gBattleStruct->raid.shield--;
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
+        }
+
+        if (gRaidData.raidType == RAID_TYPE_MEGA)
+        {
+            gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
+            gBattleCommunication[MULTIUSE_STATE] = RAID_TYPE_MEGA;
         }
 
         BattleScriptPushCursor();
