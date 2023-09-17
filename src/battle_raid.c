@@ -562,28 +562,53 @@ static u16 GetShieldAmount(void)
     u8 spDef = gSpeciesInfo[species].baseSpDefense;
     u8 retVal;
 
-    // Currently uses the sum of defenses to determine barrier count.
-    switch (hp + def + spDef)
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
     {
-        case 0 ... 199:
-            retVal = 3;
-            break;
-        case 200 ... 300:
-            retVal = 4;
-            break;
-        default: // > 300
-            retVal = MAX_BARRIER_COUNT;
-            break;
+        switch (gRaidData.rank)
+        {
+            case NO_RAID ... RAID_RANK_1:
+                retVal = 0;
+                break;
+            case RAID_RANK_2 ... RAID_RANK_3:
+                retVal = 1;
+                break;
+            case RAID_RANK_4 ... RAID_RANK_5:
+                retVal = 2;
+                break;
+            default: // 6 & 7 stars
+                retVal = 3;
+                break;
+        }
+    }
+    else
+    {
+        // Uses the sum of defenses to determine barrier count.
+        switch (hp + def + spDef)
+        {
+            case 0 ... 199:
+                retVal = 3;
+                break;
+            case 200 ... 300:
+                retVal = 4;
+                break;
+            default: // > 300
+                retVal = MAX_BARRIER_COUNT;
+                break;
+        }
+
+        if (gRaidData.rank < RAID_RANK_5)
+            retVal -= 1;
     }
 
-    if (gRaidData.rank < RAID_RANK_5)
-        retVal -= 1;
     return retVal;
     // only valid for dynamax raids atm
 }
 
 static u8 GetRaidShieldThresholdTotalNumber(void)
 {
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
+        return 0;
+
     switch (gRaidData.rank)
     {
         case RAID_RANK_7:
