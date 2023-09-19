@@ -534,6 +534,7 @@ struct SaveBlock2
               u16 optionsFishReeling:1;
               u16 optionsLowHealthMusic:1;
               u16 optionsShowTypeEffectiveness:1;
+              u16 optionsShowFollowerPokemon:1;
               u16 evolveOpponentsMons:1;
               u16 xpMulti:3;
               u16 xpTeamMod:1;
