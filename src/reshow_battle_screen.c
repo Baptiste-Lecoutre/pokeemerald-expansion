@@ -36,6 +36,8 @@ static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] =
     [DAWN_COSTUME]              = {TRAINER_BACK_PIC_DAWN, TRAINER_BACK_PIC_DAWN},
     [LUCAS_PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_LUCAS_PLATINUM},
     [DAWN_PLATINUM_COSTUME]     = {TRAINER_BACK_PIC_DAWN_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
+    [CHASE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_CHASE},
+    [ELAINE_COSTUME]            = {TRAINER_BACK_PIC_ELAINE, TRAINER_BACK_PIC_ELAINE},
 };
 
 void ReshowBattleScreenDummy(void)
@@ -203,7 +205,7 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
             if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
-                BattleLoadOpponentMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
+                BattleLoadMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
             else
                 BattleLoadSubstituteOrMonSpriteGfx(battler, FALSE);
         }
@@ -212,7 +214,7 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
         else if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL && GetBattlerPosition(battler) == B_POSITION_PLAYER_LEFT) 
             DecompressTrainerBackPic(TRAINER_BACK_PIC_WALLY, battler);
         else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
-            BattleLoadPlayerMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
+            BattleLoadMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
         else
             BattleLoadSubstituteOrMonSpriteGfx(battler, FALSE);
 
@@ -237,7 +239,10 @@ static void CreateBattlerSprite(u8 battler)
 
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
+            if (GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0
+                && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+                return;
+            if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
                 return;
             if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
                 return;
@@ -275,9 +280,7 @@ static void CreateBattlerSprite(u8 battler)
         }
         else
         {
-            if (GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
-                return;
-            if (GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_IS_EGG))
+            if (!IsValidForBattle(&party[gBattlerPartyIndexes[battler]]))
                 return;
 
             SetMultiuseSpriteTemplateToPokemon(GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES), GetBattlerPosition(battler));
@@ -310,6 +313,9 @@ static void CreateHealthboxSprite(u8 battler)
             healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
 
         gHealthboxSpriteIds[battler] = healthboxSpriteId;
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+            return;
+
         InitBattlerHealthboxCoords(battler);
         SetHealthboxSpriteVisible(healthboxSpriteId);
 
@@ -332,8 +338,13 @@ static void CreateHealthboxSprite(u8 battler)
         }
         else if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
         {
-            if (GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0 || GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_IS_EGG))
+            if (!IsValidForBattle(&party[gBattlerPartyIndexes[battler]]))
                 SetHealthboxSpriteInvisible(healthboxSpriteId);
+        }
+        // Hide healthboxes when catching a Raid boss.
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+        {
+            SetHealthboxSpriteInvisible(healthboxSpriteId);
         }
     }
 }

@@ -44,9 +44,10 @@ VerdanturfTown_Text_ShouldIGoIn:
 VerdanturfTown_Text_ImErika:
 	.string "Oh, hi. I'm Erika. I am a gym\n"
 	.string "leader from Kanto.\p"
-	.string "I heard Pokémon contest were\n"
-	.string "similar to regular battles.\p"
-	.string "Let's see if you are worth\n"
+	.string "I heard the Pokémon tournaments held\n"
+	.string "in these battle tents were similar\l"
+	.string "to regular battles.\p"
+	.string "Let me see if you are worth\n"
 	.string "entering!$"
 
 VerdanturfTown_Text_IConcedeDefeat:

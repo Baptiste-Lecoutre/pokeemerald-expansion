@@ -31,6 +31,7 @@
 #include "mystery_event_script.h"
 #include "palette.h"
 #include "party_menu.h"
+#include "pokemon.h"
 #include "pokemon_storage_system.h"
 #include "random.h"
 #include "overworld.h"
@@ -52,7 +53,7 @@
 #include "constants/event_objects.h"
 
 typedef u16 (*SpecialFunc)(void);
-typedef void (*NativeFunc)(void);
+typedef void (*NativeFunc)(struct ScriptContext *ctx);
 
 EWRAM_DATA const u8 *gRamScriptRetAddr = NULL;
 static EWRAM_DATA u32 sAddressOffset = 0; // For relative addressing in vgoto etc., used by saved scripts (e.g. Mystery Event)
@@ -139,8 +140,9 @@ bool8 ScrCmd_specialvar(struct ScriptContext *ctx)
 
 bool8 ScrCmd_callnative(struct ScriptContext *ctx)
 {
-    u32 func = ScriptReadWord(ctx);
-    ((NativeFunc) func)();
+    NativeFunc func = (NativeFunc)ScriptReadWord(ctx);
+
+    func(ctx);
     return FALSE;
 }
 
@@ -1602,7 +1604,7 @@ bool8 ScrCmd_bufferspeciesname(struct ScriptContext *ctx)
     u8 stringVarIndex = ScriptReadByte(ctx);
     u16 species = VarGet(ScriptReadHalfword(ctx)) & ((1 << 10) - 1); // ignore possible shiny / form bits
 
-    StringCopy(sScriptStringVars[stringVarIndex], gSpeciesNames[species]);
+    StringCopy(sScriptStringVars[stringVarIndex], GetSpeciesName(species));
     return FALSE;
 }
 
@@ -1613,7 +1615,7 @@ bool8 ScrCmd_bufferleadmonspeciesname(struct ScriptContext *ctx)
     u8 *dest = sScriptStringVars[stringVarIndex];
     u8 partyIndex = GetLeadMonIndex();
     u32 species = GetMonData(&gPlayerParty[partyIndex], MON_DATA_SPECIES, NULL);
-    StringCopy(dest, gSpeciesNames[species]);
+    StringCopy(dest, GetSpeciesName(species));
     return FALSE;
 }
 
@@ -1773,8 +1775,10 @@ bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
 {
     u8 i;
     u16 moveId = ScriptReadHalfword(ctx);
+    u16 itemId = ITEM_NONE;
 
     gSpecialVar_Result = PARTY_SIZE;
+
     for (i = 0; i < PARTY_SIZE; i++)
     {
         u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
@@ -1787,7 +1791,39 @@ bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
             break;
         }
     }
-    if (gSpecialVar_Result == PARTY_SIZE && CheckBagHasItem(MoveToHM(moveId), 1))
+
+    switch (moveId)
+    {
+        case MOVE_SECRET_POWER:
+            itemId = ITEM_TM43_SECRET_POWER;
+            break;
+        case MOVE_CUT:
+            itemId = ITEM_HM01_CUT;
+            break;
+        case MOVE_FLY:
+            itemId = ITEM_HM02;
+            break;
+        case MOVE_SURF:
+            itemId = ITEM_HM03;
+            break;
+        case MOVE_STRENGTH:
+            itemId = ITEM_HM04;
+            break;
+        case MOVE_FLASH:
+            itemId = ITEM_HM05;
+            break;
+        case MOVE_ROCK_SMASH:
+            itemId = ITEM_HM06;
+            break;
+        case MOVE_WATERFALL:
+            itemId = ITEM_HM07;
+            break;
+        case MOVE_DIVE:
+            itemId = ITEM_HM08;
+            break;
+    }
+
+    if (gSpecialVar_Result == PARTY_SIZE && CheckBagHasItem(itemId, 1))
     {
         for (i = 0; i < PARTY_SIZE; i++)
         {
@@ -2415,5 +2451,75 @@ bool8 ScrCmd_showitemdesc(struct ScriptContext *ctx)
 bool8 ScrCmd_hideitemdesc(struct ScriptContext *ctx)
 {
     HideHeaderBox();
+    return FALSE;
+}
+
+bool8 ScrCmd_setsootopolisbattle(struct ScriptContext *ctx)
+{
+    u16 species1 = ScriptReadHalfword(ctx);
+    u8 level1 = ScriptReadByte(ctx);
+    u16 item1 = ScriptReadHalfword(ctx);
+    u16 species2 = ScriptReadHalfword(ctx);
+    u8 level2 = ScriptReadByte(ctx);
+    u16 item2 = ScriptReadHalfword(ctx);
+
+    u8 heldItem1[2];
+    u8 heldItem2[2];
+
+    ZeroEnemyPartyMons();
+
+    CreateMon(&gEnemyParty[0], species1, level1, 32, 0, 0, OT_ID_PLAYER_ID, 0);
+    if (item1)
+    {
+        heldItem1[0] = item1;
+        heldItem1[1] = item1 >> 8;
+        SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, heldItem1);
+    }
+
+    CreateMon(&gEnemyParty[3], species2, level2, 32, 0, 0, OT_ID_PLAYER_ID, 0);
+    if (item2)
+    {
+        heldItem2[0] = item2;
+        heldItem2[1] = item2 >> 8;
+        SetMonData(&gEnemyParty[3], MON_DATA_HELD_ITEM, heldItem2);
+    }
+    
+    return FALSE;
+}
+
+// Checks if player's party contains a certain species OR one of its forms that
+// shares the same national dex number
+bool8 ScrCmd_checkPartyHasSpecies(struct ScriptContext *ctx)
+{
+    u16 wantedSpecies = ScriptReadHalfword(ctx);
+    u16 partySpecies;
+    int i = 0;
+    u8 partyCount = CalculatePlayerPartyCount();
+    
+    gSpecialVar_Result = FALSE;
+
+    for (i = 0; i < partyCount; i++)
+    {
+        partySpecies = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
+        if (gSpeciesToNationalPokedexNum[partySpecies - 1] == wantedSpecies)
+        {
+            gSpecialVar_Result = TRUE;
+        }
+    }
+    return FALSE;
+}
+
+// Checks if the species stored in gSpecialVar 0x8004 is a certain species OR one of its forms that
+// shares the same national dex number
+bool8 ScrCmd_isChosenMonSpecies(struct ScriptContext *ctx)
+{
+    u16 wantedSpecies = ScriptReadHalfword(ctx);
+    u16 chosenSpecies = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, NULL);
+
+    gSpecialVar_Result = FALSE;
+    if (gSpeciesToNationalPokedexNum[chosenSpecies - 1] == wantedSpecies)
+    {
+        gSpecialVar_Result = TRUE;
+    }
     return FALSE;
 }

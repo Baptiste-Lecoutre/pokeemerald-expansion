@@ -108,7 +108,7 @@ Route114_LanettesHouse_EventScript_Teleporter::
 	goto_if_eq VAR_RESULT, NO, Route114_LanettesHouse_EventScript_TeleporterEnd
 	special ChoosePartyMon
 	waitstate
-	goto_if_eq VAR_RESULT, PARTY_NOTHING_CHOSEN, Route114_LanettesHouse_EventScript_TeleporterEnd
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, Route114_LanettesHouse_EventScript_TeleporterEnd
 	call EventScript_TryRegionFormChange
 	releaseall
 	end

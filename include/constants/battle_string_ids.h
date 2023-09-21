@@ -664,11 +664,51 @@
 #define STRINGID_SNOWCONTINUES                        662
 #define STRINGID_SNOWSTOPPED                          663
 #define STRINGID_SNOWWARNINGSNOW                      664
-#define STRINGID_PKMNGAINEDEXPSHARE                   665
-#define STRINGID_PKMNDROPPEDITEM                      666
-#define STRINGID_BAGISFULL                            667
+#define STRINGID_PKMNITEMMELTED                       665
+#define STRINGID_ULTRABURSTREACTING                   666
+#define STRINGID_ULTRABURSTCOMPLETED                  667
+#define STRINGID_TEAMGAINEDEXP                        668
+#define STRINGID_CURRENTMOVECANTSELECT                669
+#define STRINGID_TARGETISBEINGSALTCURED               670
+#define STRINGID_TARGETISHURTBYSALTCURE               671
+#define STRINGID_SHARPSTEELFLOATS                     672
+#define STRINGID_SHARPSTEELDMG                        673
+#define STRINGID_PKMNBLEWAWAYSHARPSTEEL               674
+#define STRINGID_SHARPSTEELDISAPPEAREDFROMTEAM        675
+#define STRINGID_TEAMTRAPPEDWITHVINES                 676
+#define STRINGID_PKMNHURTBYVINES                      677
+#define STRINGID_TEAMCAUGHTINVORTEX                   678
+#define STRINGID_PKMNHURTBYVORTEX                     679
+#define STRINGID_TEAMSURROUNDEDBYFIRE                 680
+#define STRINGID_PKMNBURNINGUP                        681
+#define STRINGID_TEAMSURROUNDEDBYROCKS                682
+#define STRINGID_PKMNHURTBYROCKSTHROWN                683
+#define STRINGID_MOVEBLOCKEDBYDYNAMAX                 684
+#define STRINGID_PKMNAPPEARSMASSIVE                   685
+#define STRINGID_DYNAMAXENERGYGATHERED                686
+#define STRINGID_RAIDSHIELDAPPEARED                   687
+#define STRINGID_RAIDSHIELDDISAPPEARED                688
+#define STRINGID_CATCHRAIDMON                         689
+#define STRINGID_PKMNISTOOSTRONG                      690
+#define STRINGID_PKMNNULLIFIEDOTHERS                  691
+#define STRINGID_MOVEPREVENTEDBYDYNAMAX               692
+#define STRINGID_RAIDPKMNDISAPPEARED                  693
+#define STRINGID_STORMSTARTEDBREWING                  694
+#define STRINGID_STORMGETTINGSTRONGER                 695
+#define STRINGID_STORMGETTINGEVENSTRONGER             696
+#define STRINGID_STORMGETTINGTOOSTRONG                697
+#define STRINGID_BLOWNOUTOFDEN                        698
+#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           699
+#define STRINGID_ENERGYGATHEREDAROUNDPKMN             700
+#define STRINGID_PKMNBROKEITSSTANCE                   701
+#define STRINGID_RAIDNOTMUCHTIMELEFT                  702
+#define STRINGID_RAIDPKMNRELEASEDENERGY               703
+#define STRINGID_PKMNGAINEDEXPSHARE                   704
+#define STRINGID_PKMNDROPPEDITEM                      705
+#define STRINGID_BAGISFULL                            706
+#define STRINGID_NORUNNINGFROMTHISBATTLE              707
 
-#define BATTLESTRINGS_COUNT                           668
+#define BATTLESTRINGS_COUNT                           708
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -830,6 +870,10 @@
 #define B_MSG_SOMEONES_BOX_FULL 2
 #define B_MSG_LANETTES_BOX_FULL 3
 
+// gPrimalWeatherBlocksStringIds
+#define B_MSG_PRIMAL_WEATHER_FIZZLED_BY_RAIN    0
+#define B_MSG_PRIMAL_WEATHER_EVAPORATED_IN_SUN  1
+
 // gInobedientStringIds
 #define B_MSG_LOAFING            0
 #define B_MSG_WONT_OBEY          1
@@ -963,11 +1007,20 @@
 // gDmgHazardsStringIds
 #define B_MSG_PKMNHURTBYSPIKES   0
 #define B_MSG_STEALTHROCKDMG     1
-#define B_MSG_POINTEDSTONESFLOAT 2
-#define B_MSG_SPIKESSCATTERED    3
+#define B_MSG_SHARPSTEELDMG      2
+#define B_MSG_POINTEDSTONESFLOAT 3
+#define B_MSG_SPIKESSCATTERED    4
+#define B_MSG_SHARPSTEELFLOATS   5
 
 // gItemDroppedStringIds
 #define B_MSG_ITEM_DROPPED   0
 #define B_MSG_BAG_IS_FULL    1
+
+// gRaidStateStringIds
+#define B_MSG_RAID_STORM_STARTED        0
+#define B_MSG_GETTING_STRONGER          1
+#define B_MSG_GETTING_EVEN_STRONGER     2
+#define B_MSG_GETTING_TOO_STRONG        3
+#define B_MSG_PKMN_RELEASED_ENERGY      4
 
 #endif // GUARD_CONSTANTS_BATTLE_STRING_IDS_H

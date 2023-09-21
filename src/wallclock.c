@@ -26,6 +26,8 @@ static void Task_SetClock_WaitFadeIn(u8 taskId);
 static void Task_SetClock_HandleInput(u8 taskId);
 static void Task_SetClock_AskConfirm(u8 taskId);
 static void Task_SetClock_HandleConfirmInput(u8 taskId);
+static void Task_SetClock_AddStartToSetAgainText(u8 taskId);
+static void Task_SetClock_HandleStartToSetAgainInput(u8 taskId);
 static void Task_SetClock_Confirmed(u8 taskId);
 static void Task_SetClock_Exit(u8 taskId);
 static void Task_ViewClock_WaitFadeIn(u8 taskId);
@@ -687,18 +689,27 @@ void CB2_StartWallClock(void)
 {
     u8 taskId;
     u8 spriteId;
+    u8 angle1;
+    u8 angle2;
 
     LoadWallClockGraphics();
     LZ77UnCompVram(gWallClockStart_Tilemap, (u16 *)BG_SCREEN_ADDR(7));
 
     taskId = CreateTask(Task_SetClock_WaitFadeIn, 0);
-    gTasks[taskId].tHours = 10;
-    gTasks[taskId].tMinutes = 0;
+    InitClockWithRtc(taskId);
+    if (gTasks[taskId].tPeriod == PERIOD_AM)
+    {
+        angle1 = 45;
+        angle2 = 90;
+    }
+    else
+    {
+        angle1 = 90;
+        angle2 = 135;
+    }
+
     gTasks[taskId].tMoveDir = 0;
-    gTasks[taskId].tPeriod = 0;
     gTasks[taskId].tMoveSpeed = 0;
-    gTasks[taskId].tMinuteHandAngle = 0;
-    gTasks[taskId].tHourHandAngle = 300;
 
     spriteId = CreateSprite(&sSpriteTemplate_MinuteHand, 120, 80, 1);
     gSprites[spriteId].sTaskId = taskId;
@@ -712,11 +723,11 @@ void CB2_StartWallClock(void)
 
     spriteId = CreateSprite(&sSpriteTemplate_PM, 120, 80, 2);
     gSprites[spriteId].sTaskId = taskId;
-    gSprites[spriteId].data[1] = 45;
+    gSprites[spriteId].data[1] = angle1;
 
     spriteId = CreateSprite(&sSpriteTemplate_AM, 120, 80, 2);
     gSprites[spriteId].sTaskId = taskId;
-    gSprites[spriteId].data[1] = 90;
+    gSprites[spriteId].data[1] = angle2;
 
     WallClockInit();
 
@@ -846,7 +857,7 @@ static void Task_SetClock_HandleConfirmInput(u8 taskId)
     {
     case 0: // YES
         PlaySE(SE_SELECT);
-        gTasks[taskId].func = Task_SetClock_Confirmed;
+        gTasks[taskId].func = Task_SetClock_AddStartToSetAgainText;
         break;
     case 1: // NO
     case MENU_B_PRESSED:
@@ -855,6 +866,25 @@ static void Task_SetClock_HandleConfirmInput(u8 taskId)
         ClearWindowTilemap(WIN_MSG);
         gTasks[taskId].func = Task_SetClock_HandleInput;
         break;
+    }
+}
+
+static void Task_SetClock_AddStartToSetAgainText(u8 taskId)
+{
+    ClearStdWindowAndFrameToTransparent(WIN_MSG, FALSE);
+    ClearWindowTilemap(WIN_MSG);
+    DrawStdFrameWithCustomTileAndPalette(WIN_MSG, FALSE, 0x250, 0x0d);
+    AddTextPrinterParameterized(WIN_MSG, FONT_NORMAL, gText_TimeCanBeChangedAgain, 0, 1, 0, NULL);
+    PutWindowTilemap(WIN_MSG);
+    ScheduleBgCopyTilemapToVram(0);
+    gTasks[taskId].func = Task_SetClock_HandleStartToSetAgainInput;
+}
+
+static void Task_SetClock_HandleStartToSetAgainInput(u8 taskId)
+{
+    if (JOY_NEW(A_BUTTON))
+    {
+        gTasks[taskId].func = Task_SetClock_Confirmed;
     }
 }
 

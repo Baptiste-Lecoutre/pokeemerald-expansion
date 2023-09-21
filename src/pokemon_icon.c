@@ -7,8 +7,6 @@
 #include "sprite.h"
 #include "data.h"
 
-#define POKE_ICON_BASE_PAL_TAG 56000
-
 #define INVALID_ICON_SPECIES SPECIES_NONE // Oddly specific, used when an icon should be a ?. Any of the 'old unown' would work
 
 struct MonIconSpriteTemplate
@@ -24,7 +22,7 @@ struct MonIconSpriteTemplate
 static u8 CreateMonIconSprite(struct MonIconSpriteTemplate *, s16, s16, u8);
 static void FreeAndDestroyMonIconSprite_(struct Sprite *sprite);
 
-const u8 *const gMonIconTable[] =
+const u8 *const gMonIconTable[NUM_SPECIES + 1] =
 {
     [SPECIES_NONE] = gMonIcon_QuestionMark,
     [SPECIES_BULBASAUR] = gMonIcon_Bulbasaur,
@@ -1065,6 +1063,8 @@ const u8 *const gMonIconTable[] =
     [SPECIES_PIKACHU_POP_STAR] = gMonIcon_PikachuPopStar,
     [SPECIES_PIKACHU_PH_D] = gMonIcon_PikachuPhD,
     [SPECIES_PIKACHU_LIBRE] = gMonIcon_PikachuLibre,
+    [SPECIES_PIKACHU_SURFING] = gMonIcon_PikachuSurfing,
+    [SPECIES_PIKACHU_FLYING] = gMonIcon_PikachuFlying,
     [SPECIES_PIKACHU_ORIGINAL_CAP] = gMonIcon_PikachuOriginalCap,
     [SPECIES_PIKACHU_HOENN_CAP] = gMonIcon_PikachuHoennCap,
     [SPECIES_PIKACHU_SINNOH_CAP] = gMonIcon_PikachuSinnohCap,
@@ -1294,60 +1294,50 @@ const u8 *const gMonIconTable[] =
     [SPECIES_CALYREX_SHADOW_RIDER] = gMonIcon_CalyrexShadowRider,
     [SPECIES_ENAMORUS_THERIAN] = gMonIcon_EnamorusTherian,
     [SPECIES_BASCULEGION_FEMALE] = gMonIcon_BasculegionFemale,
+    // Gigantamax Forms
+    [SPECIES_VENUSAUR_GMAX] = gMonIcon_VenusaurGmax,
+    [SPECIES_CHARIZARD_GMAX] = gMonIcon_CharizardGmax,
+    [SPECIES_BLASTOISE_GMAX] = gMonIcon_BlastoiseGmax,
+    [SPECIES_BUTTERFREE_GMAX] = gMonIcon_ButterfreeGmax,
+    [SPECIES_PIKACHU_GMAX] = gMonIcon_PikachuGmax,
+    [SPECIES_MEOWTH_GMAX] = gMonIcon_MeowthGmax,
+    [SPECIES_MACHAMP_GMAX] = gMonIcon_MachampGmax,
+    [SPECIES_GENGAR_GMAX] = gMonIcon_GengarGmax,
+    [SPECIES_KINGLER_GMAX] = gMonIcon_KinglerGmax,
+    [SPECIES_LAPRAS_GMAX] = gMonIcon_LaprasGmax,
+    [SPECIES_EEVEE_GMAX] = gMonIcon_EeveeGmax,
+    [SPECIES_SNORLAX_GMAX] = gMonIcon_SnorlaxGmax,
+    [SPECIES_GARBODOR_GMAX] = gMonIcon_GarbodorGmax,
+    [SPECIES_MELMETAL_GMAX] = gMonIcon_MelmetalGmax,
+    [SPECIES_RILLABOOM_GMAX] = gMonIcon_RillaboomGmax,
+    [SPECIES_CINDERACE_GMAX] = gMonIcon_CinderaceGmax,
+    [SPECIES_INTELEON_GMAX] = gMonIcon_InteleonGmax,
+    [SPECIES_CORVIKNIGHT_GMAX] = gMonIcon_CorviknightGmax,
+    [SPECIES_ORBEETLE_GMAX] = gMonIcon_OrbeetleGmax,
+    [SPECIES_DREDNAW_GMAX] = gMonIcon_DrednawGmax,
+    [SPECIES_COALOSSAL_GMAX] = gMonIcon_CoalossalGmax,
+    [SPECIES_FLAPPLE_GMAX] = gMonIcon_FlappleGmax,
+    [SPECIES_APPLETUN_GMAX] = gMonIcon_AppletunGmax,
+    [SPECIES_SANDACONDA_GMAX] = gMonIcon_SandacondaGmax,
+    [SPECIES_TOXTRICITY_GMAX] = gMonIcon_ToxtricityGmax,
+    [SPECIES_CENTISKORCH_GMAX] = gMonIcon_CentiskorchGmax,
+    [SPECIES_HATTERENE_GMAX] = gMonIcon_HattereneGmax,
+    [SPECIES_GRIMMSNARL_GMAX] = gMonIcon_GrimmsnarlGmax,
+    [SPECIES_ALCREMIE_GMAX] = gMonIcon_AlcremieGmax,
+    [SPECIES_COPPERAJAH_GMAX] = gMonIcon_CopperajahGmax,
+    [SPECIES_DURALUDON_GMAX] = gMonIcon_DuraludonGmax,
+    [SPECIES_URSHIFU_GMAX] = gMonIcon_UrshifuGmax,
+    [SPECIES_URSHIFU_RAPID_STRIKE_STYLE_GMAX] = gMonIcon_UrshifuRapidStrikeGmax,
 #endif
     [SPECIES_EGG] = gMonIcon_Egg,
 };
 
-const u8 *const gMonIconTableFemale[] =
+// Female icon palette indexes still need to be defined in gMonIconPaletteIndicesFemale, even if they are the same as males.
+const u8 *const gMonIconTableFemale[NUM_SPECIES + 1] =
 {
-    [SPECIES_VENUSAUR] = gMonIcon_Venusaur,
-    [SPECIES_BUTTERFREE] = gMonIcon_Butterfree,
-    [SPECIES_RATTATA] = gMonIcon_Rattata,
-    [SPECIES_RATICATE] = gMonIcon_Raticate,
-    [SPECIES_PIKACHU] = gMonIcon_Pikachu,
-    [SPECIES_RAICHU] = gMonIcon_Raichu,
-    [SPECIES_ZUBAT] = gMonIcon_Zubat,
-    [SPECIES_GOLBAT] = gMonIcon_Golbat,
-    [SPECIES_GLOOM] = gMonIcon_Gloom,
-    [SPECIES_VILEPLUME] = gMonIcon_Vileplume,
-    [SPECIES_KADABRA] = gMonIcon_Kadabra,
-    [SPECIES_ALAKAZAM] = gMonIcon_Alakazam,
-    [SPECIES_DODUO] = gMonIcon_Doduo,
-    [SPECIES_DODRIO] = gMonIcon_Dodrio,
-    [SPECIES_HYPNO] = gMonIcon_Hypno,
-    [SPECIES_RHYHORN] = gMonIcon_Rhyhorn,
-    [SPECIES_RHYDON] = gMonIcon_Rhydon,
-    [SPECIES_GOLDEEN] = gMonIcon_Goldeen,
-    [SPECIES_SEAKING] = gMonIcon_Seaking,
-    [SPECIES_SCYTHER] = gMonIcon_Scyther,
-    [SPECIES_MAGIKARP] = gMonIcon_Magikarp,
-    [SPECIES_GYARADOS] = gMonIcon_Gyarados,
-    [SPECIES_EEVEE] = gMonIcon_Eevee,
-    [SPECIES_XATU] = gMonIcon_Xatu,
-    [SPECIES_POLITOED] = gMonIcon_Politoed,
-    [SPECIES_SCIZOR] = gMonIcon_Scizor,
-    [SPECIES_MEDITITE] = gMonIcon_Meditite,
-    [SPECIES_MEDICHAM] = gMonIcon_Medicham,
-#if P_GEN_4_POKEMON == TRUE
-    [SPECIES_STARLY] = gMonIcon_Starly,
-    [SPECIES_STARAVIA] = gMonIcon_Staravia,
-    [SPECIES_STARAPTOR] = gMonIcon_Staraptor,
-    [SPECIES_BIDOOF] = gMonIcon_Bidoof,
-    [SPECIES_KRICKETOT] = gMonIcon_Kricketot,
-    [SPECIES_KRICKETUNE] = gMonIcon_Kricketune,
-    [SPECIES_SHINX] = gMonIcon_Shinx,
-    [SPECIES_COMBEE] = gMonIcon_Combee,
-    [SPECIES_GIBLE] = gMonIcon_Gible,
-    [SPECIES_GABITE] = gMonIcon_Gabite,
-    [SPECIES_GARCHOMP] = gMonIcon_Garchomp,
-#if P_HIPPO_GENDER_DIFF_ICONS == TRUE
+#if P_GEN_4_POKEMON == TRUE && P_HIPPO_GENDER_DIFF_ICONS == TRUE
     [SPECIES_HIPPOPOTAS] = gMonIcon_HippopotasF,
     [SPECIES_HIPPOWDON] = gMonIcon_HippowdonF,
-#else
-    [SPECIES_HIPPOPOTAS] = gMonIcon_Hippopotas,
-    [SPECIES_HIPPOWDON] = gMonIcon_Hippowdon,
-#endif
-    [SPECIES_RHYPERIOR] = gMonIcon_Rhyperior,
 #endif
 #if P_GEN_5_POKEMON == TRUE
     [SPECIES_UNFEZANT] = gMonIcon_UnfezantF,
@@ -2266,7 +2256,7 @@ const u8 gMonIconPaletteIndices[] =
     [SPECIES_SNEASLER] = 2,
     [SPECIES_OVERQWIL] = 2,
     [SPECIES_ENAMORUS] = 1,
-    [SPECIES_VENUSAUR_MEGA] = 1,
+    [SPECIES_VENUSAUR_MEGA] = 4,
     [SPECIES_CHARIZARD_MEGA_X] = 0,
     [SPECIES_CHARIZARD_MEGA_Y] = 0,
     [SPECIES_BLASTOISE_MEGA] = 2,
@@ -2572,54 +2562,48 @@ const u8 gMonIconPaletteIndices[] =
     [SPECIES_CALYREX_SHADOW_RIDER] = 0,
     [SPECIES_ENAMORUS_THERIAN] = 1,
     [SPECIES_BASCULEGION_FEMALE] = 0,
+    [SPECIES_VENUSAUR_GMAX] = 0,
+    [SPECIES_CHARIZARD_GMAX] = 0,
+    [SPECIES_BLASTOISE_GMAX] = 0,
+    [SPECIES_BUTTERFREE_GMAX] = 0,
+    [SPECIES_PIKACHU_GMAX] = 2,
+    [SPECIES_MEOWTH_GMAX] = 1,
+    [SPECIES_MACHAMP_GMAX] = 0,
+    [SPECIES_GENGAR_GMAX] = 2,
+    [SPECIES_KINGLER_GMAX] = 0,
+    [SPECIES_LAPRAS_GMAX] = 2,
+    [SPECIES_EEVEE_GMAX] = 2,
+    [SPECIES_SNORLAX_GMAX] = 3,
+    [SPECIES_GARBODOR_GMAX] = 0,
+    [SPECIES_MELMETAL_GMAX] = 0,
+    [SPECIES_RILLABOOM_GMAX] = 1,
+    [SPECIES_CINDERACE_GMAX] = 0,
+    [SPECIES_INTELEON_GMAX] = 0,
+    [SPECIES_CORVIKNIGHT_GMAX] = 0,
+    [SPECIES_ORBEETLE_GMAX] = 0,
+    [SPECIES_DREDNAW_GMAX] = 0,
+    [SPECIES_COALOSSAL_GMAX] = 0,
+    [SPECIES_FLAPPLE_GMAX] = 1,
+    [SPECIES_APPLETUN_GMAX] = 1,
+    [SPECIES_SANDACONDA_GMAX] = 1,
+    [SPECIES_TOXTRICITY_GMAX] = 0,
+    [SPECIES_CENTISKORCH_GMAX] = 0,
+    [SPECIES_HATTERENE_GMAX] = 0,
+    [SPECIES_GRIMMSNARL_GMAX] = 0,
+    [SPECIES_ALCREMIE_GMAX] = 1,
+    [SPECIES_COPPERAJAH_GMAX] = 0,
+    [SPECIES_DURALUDON_GMAX] = 0,
+    [SPECIES_URSHIFU_GMAX] = 0,
+    [SPECIES_URSHIFU_RAPID_STRIKE_STYLE_GMAX] = 0,
 #endif
     [SPECIES_EGG] = 1,
 };
 
 const u8 gMonIconPaletteIndicesFemale[] =
 {
-    [SPECIES_VENUSAUR] = 4,
-    [SPECIES_BUTTERFREE] = 0,
-    [SPECIES_RATTATA] = 2,
-    [SPECIES_RATICATE] = 2,
-    [SPECIES_PIKACHU] = 2,
-    [SPECIES_RAICHU] = 0,
-    [SPECIES_ZUBAT] = 2,
-    [SPECIES_GOLBAT] = 2,
-    [SPECIES_GLOOM] = 0,
-    [SPECIES_VILEPLUME] = 0,
-    [SPECIES_KADABRA] = 2,
-    [SPECIES_ALAKAZAM] = 2,
-    [SPECIES_DODUO] = 2,
-    [SPECIES_DODRIO] = 2,
-    [SPECIES_HYPNO] = 2,
-    [SPECIES_RHYHORN] = 1,
-    [SPECIES_RHYDON] = 1,
-    [SPECIES_GOLDEEN] = 0,
-    [SPECIES_SEAKING] = 0,
-    [SPECIES_SCYTHER] = 1,
-    [SPECIES_MAGIKARP] = 0,
-    [SPECIES_GYARADOS] = 0,
-    [SPECIES_EEVEE] = 2,
-    [SPECIES_XATU] = 1,
-    [SPECIES_POLITOED] = 1,
-    [SPECIES_SCIZOR] = 0,
-    [SPECIES_MEDITITE] = 0,
-    [SPECIES_MEDICHAM] = 0,
 #if P_GEN_4_POKEMON == TRUE
-    [SPECIES_STARLY] = 0,
-    [SPECIES_STARAVIA] = 0,
-    [SPECIES_BIDOOF] = 2,
-    [SPECIES_KRICKETOT] = 2,
-    [SPECIES_KRICKETUNE] = 2,
-    [SPECIES_SHINX] = 0,
-    [SPECIES_COMBEE] = 0,
-    [SPECIES_GIBLE] = 0,
-    [SPECIES_GABITE] = 0,
-    [SPECIES_GARCHOMP] = 0,
     [SPECIES_HIPPOPOTAS] = 1,
     [SPECIES_HIPPOWDON] = 1,
-    [SPECIES_RHYPERIOR] = 0,
 #endif
 #if P_GEN_5_POKEMON == TRUE
     [SPECIES_UNFEZANT] = 1,
@@ -2628,9 +2612,6 @@ const u8 gMonIconPaletteIndicesFemale[] =
 #endif
 #if P_GEN_6_POKEMON == TRUE
     [SPECIES_PYROAR] = 2,
-#endif
-#if P_GEN_8_POKEMON == TRUE
-    [SPECIES_BASCULEGION] = 0,
 #endif
 };
 
@@ -2762,7 +2743,7 @@ u8 CreateMonIcon(u16 species, void (*callback)(struct Sprite *), s16 x, s16 y, u
 
     if (species > NUM_SPECIES)
         iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG;
-    else if (ShouldShowFemaleDifferences(species, personality))
+    else if (gMonIconTableFemale[species] && IsPersonalityFemale(species, personality))
         iconTemplate.paletteTag = POKE_ICON_BASE_PAL_TAG + gMonIconPaletteIndicesFemale[species];
 
     spriteId = CreateMonIconSprite(&iconTemplate, x, y, subpriority);
@@ -2877,7 +2858,7 @@ void LoadMonIconPalette(u16 species)
 void LoadMonIconPalettePersonality(u16 species, u32 personality)
 {
     u8 palIndex;
-    if (ShouldShowFemaleDifferences(species, personality))
+    if (gMonIconTableFemale[species] != NULL && IsPersonalityFemale(species, personality))
         palIndex = gMonIconPaletteIndicesFemale[species];
     else
         palIndex = gMonIconPaletteIndices[species];
@@ -2918,10 +2899,15 @@ const u8 *GetMonIconTiles(u16 species, u32 personality)
 {
     const u8 *iconSprite;
 
-    if (ShouldShowFemaleDifferences(species, personality))
+    if (species > NUM_SPECIES)
+        species = SPECIES_NONE;
+
+    if (gMonIconTableFemale[species] != NULL && IsPersonalityFemale(species, personality))
         iconSprite = gMonIconTableFemale[species];
-    else
+    else if (gMonIconTable[species] != NULL)
         iconSprite = gMonIconTable[species];
+    else
+        iconSprite = gMonIconTable[SPECIES_NONE];
 
     return iconSprite;
 }

@@ -1,4 +1,5 @@
 #include "global.h"
+#include "braille_puzzles.h"
 #include "event_data.h"
 #include "event_scripts.h"
 #include "field_effect.h"
@@ -17,7 +18,14 @@ static void StartStrengthFieldEffect(void);
 // text
 bool8 SetUpFieldMove_Strength(void)
 {
-    if (CheckObjectGraphicsInFrontOfPlayer(OBJ_EVENT_GFX_PUSHABLE_BOULDER) == TRUE)
+    if (ShouldDoBrailleRegidragoEffect())
+    {
+        gSpecialVar_Result = GetCursorSelectionMonId();
+        gFieldCallback2 = FieldCallback_PrepareFadeInFromMenu;
+        gPostMenuFieldCallback = SetUpPuzzleEffectRegidrago;
+        return TRUE;
+    }
+    else if (CheckObjectGraphicsInFrontOfPlayer(OBJ_EVENT_GFX_PUSHABLE_BOULDER) == TRUE)
     {
         gSpecialVar_Result = GetCursorSelectionMonId();
         gFieldCallback2 = FieldCallback_PrepareFadeInFromMenu;

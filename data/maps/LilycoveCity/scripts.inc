@@ -753,8 +753,8 @@ LilycoveCity_Text_DepartmentStoreSign:
 	.string "you need!”$"
 
 LilycoveCity_Text_MoveDeletersHouseSign:
-	.string "Move Deleter's House\p"
-	.string "“Unwanted Pokémon moves deleted.”$"
+	.string "Egg Move Tutor's House\p"
+	.string "“Hatched Pokémon moves reminded.”$"
 
 LilycoveCity_Text_DoYouKnowAboutBerryBlender:
 	.string "Do you know about the machine\n"

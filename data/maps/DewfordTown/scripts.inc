@@ -11,17 +11,26 @@
 .equ LOCALID_BRINEY_R104, 8
 
 DewfordTown_MapScripts::
+	map_script MAP_SCRIPT_ON_LOAD, DewfordTown_OnLoad
 	map_script MAP_SCRIPT_ON_TRANSITION, DewfordTown_OnTransition
 	.byte 0
+
+DewfordTown_OnLoad:
+	call_if_unset FLAG_DELIVERED_STEVEN_LETTER, DewfordTown_EventScript_LockGymDoor
+	end
 
 DewfordTown_OnTransition:
 	setflag FLAG_VISITED_DEWFORD_TOWN
 	end
 
+DewfordTown_EventScript_LockGymDoor::
+	setmetatile 8, 17, METATILE_Dewford_GymDoor_Closed, TRUE
+	return
+
 DewfordTown_EventScript_Briney::
 	lock
 	faceplayer
-	goto_if_unset FLAG_DELIVERED_STEVEN_LETTER, DewfordTown_EventScript_ReturnToPetalburgPrompt
+	goto_if_unset FLAG_BADGE02_GET, DewfordTown_EventScript_ReturnToPetalburgPrompt
 	message DewfordTown_Text_WhereAreWeBound
 	waitmessage
 	multichoicedefault 21, 6, MULTI_BRINEY_ON_DEWFORD, 2, FALSE
@@ -682,8 +691,8 @@ DewfordTown_Text_PetalburgWereSettingSail2:
 	.string "Peeko, we're setting sail, my darling!$"
 
 DewfordTown_Text_GoDeliverIllBeWaiting:
-	.string "Mr. Briney: Then you go on and deliver\n"
-	.string "the Letter. I'll be waiting.$"
+	.string "Mr. Briney: Then you go on and do what\n"
+	.string "you have to. I'll be waiting.$"
 
 DewfordTown_Text_BrineyLandedInDewford:
 	.string "Mr. Briney: Ahoy!\n"

@@ -21,7 +21,7 @@
 // the sprite's non-transparent pixels actually are.
 // .size is the dimensions of this drawn pixel area.
 // .y_offset is the number of pixels between the drawn pixel area and the bottom edge.
-const struct MonCoords gMonBackPicCoords[] =
+const struct MonCoords gMonBackPicCoords[NUM_SPECIES + 1] =
 {
     [SPECIES_NONE]                         = { .size = MON_COORDS_SIZE(40, 40), .y_offset = 12 },
     [SPECIES_BULBASAUR]                    = { .size = MON_COORDS_SIZE(56, 40), .y_offset = 13 },
@@ -480,7 +480,7 @@ const struct MonCoords gMonBackPicCoords[] =
     [SPECIES_CROAGUNK]                     = { .size = MON_COORDS_SIZE(56, 56), .y_offset =  6 },
     [SPECIES_TOXICROAK]                    = { .size = MON_COORDS_SIZE(56, 56), .y_offset =  6 },
     [SPECIES_CARNIVINE]                    = { .size = MON_COORDS_SIZE(64, 56), .y_offset =  6 },
-    [SPECIES_FINNEON]                      = { .size = MON_COORDS_SIZE(56, 40), .y_offset = 13 },
+    [SPECIES_FINNEON]                      = { .size = MON_COORDS_SIZE(56, 40), .y_offset = 12 },
     [SPECIES_LUMINEON]                     = { .size = MON_COORDS_SIZE(56, 64), .y_offset =  0 },
     [SPECIES_MANTYKE]                      = { .size = MON_COORDS_SIZE(64, 56), .y_offset =  6 },
     [SPECIES_SNOVER]                       = { .size = MON_COORDS_SIZE(64, 56), .y_offset =  6 },
@@ -1068,6 +1068,8 @@ const struct MonCoords gMonBackPicCoords[] =
     [SPECIES_PIKACHU_POP_STAR]             = PIKACHU_BACK_PIC_COORDS,
     [SPECIES_PIKACHU_PH_D]                 = PIKACHU_BACK_PIC_COORDS,
     [SPECIES_PIKACHU_LIBRE]                = PIKACHU_BACK_PIC_COORDS,
+    [SPECIES_PIKACHU_SURFING]              = PIKACHU_BACK_PIC_COORDS,
+    [SPECIES_PIKACHU_FLYING]               = { .size = MON_COORDS_SIZE(64, 56), .y_offset = 0 },
     // Cap Pikachu
     [SPECIES_PIKACHU_ORIGINAL_CAP]         = PIKACHU_BACK_PIC_COORDS,
     [SPECIES_PIKACHU_HOENN_CAP]            = PIKACHU_BACK_PIC_COORDS,
@@ -1358,6 +1360,40 @@ const struct MonCoords gMonBackPicCoords[] =
     [SPECIES_ENAMORUS_THERIAN]             = { .size = MON_COORDS_SIZE(64, 64), .y_offset =  2 },
     // Basculegion
     [SPECIES_BASCULEGION_FEMALE]           = { .size = MON_COORDS_SIZE(64, 64), .y_offset =  0 },
+    // Gigantamax Forms
+    [SPECIES_VENUSAUR_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 11 },
+    [SPECIES_CHARIZARD_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 1 },
+    [SPECIES_BLASTOISE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 5 },
+    [SPECIES_BUTTERFREE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 3 },
+    [SPECIES_PIKACHU_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 0 },
+    [SPECIES_MEOWTH_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 5 },
+    [SPECIES_MACHAMP_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 3 },
+    [SPECIES_GENGAR_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 6 },
+    [SPECIES_KINGLER_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 5 },
+    [SPECIES_LAPRAS_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 1 },
+    [SPECIES_EEVEE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 7 },
+    [SPECIES_SNORLAX_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 5 },
+    [SPECIES_GARBODOR_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 2 },
+    [SPECIES_MELMETAL_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 14 },
+    [SPECIES_RILLABOOM_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 4 },
+    [SPECIES_CINDERACE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 4 },
+    [SPECIES_INTELEON_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 4 },
+    [SPECIES_CORVIKNIGHT_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 3 },
+    [SPECIES_ORBEETLE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 6 },
+    [SPECIES_DREDNAW_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 12 },
+    [SPECIES_COALOSSAL_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 8 },
+    [SPECIES_FLAPPLE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 2 },
+    [SPECIES_APPLETUN_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 2 },
+    [SPECIES_SANDACONDA_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 5 },
+    [SPECIES_TOXTRICITY_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 0 },
+    [SPECIES_CENTISKORCH_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 1 },
+    [SPECIES_HATTERENE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 3 },
+    [SPECIES_GRIMMSNARL_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 10 },
+    [SPECIES_ALCREMIE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 8 },
+    [SPECIES_COPPERAJAH_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 7 },
+    [SPECIES_DURALUDON_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 0 },
+    [SPECIES_URSHIFU_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 4 },
+    [SPECIES_URSHIFU_RAPID_STRIKE_STYLE_GMAX] = { .size = MON_COORDS_SIZE(64, 64), .y_offset = 4 },
 #endif
     [SPECIES_EGG]                          = { .size = MON_COORDS_SIZE(24, 24), .y_offset = 20 },
 };

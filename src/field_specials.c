@@ -32,6 +32,7 @@
 #include "pokeblock.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
+#include "pokemon_summary_screen.h"
 #include "random.h"
 #include "rayquaza_scene.h"
 #include "region_map.h"
@@ -59,7 +60,6 @@
 #include "constants/heal_locations.h"
 #include "constants/map_types.h"
 #include "constants/mystery_gift.h"
-#include "constants/script_menu.h"
 #include "constants/slot_machine.h"
 #include "constants/songs.h"
 #include "constants/moves.h"
@@ -2483,6 +2483,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_FURFROU_TRIMS:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 11;
+        task->tLeft = 22;
+        task->tTop = 1;
+        task->tWidth = 12;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2671,7 +2681,8 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_LearnANewMove,
         gText_RateANickname,
         gText_DoWonderTrade,
-        gText_MysteryGift,
+        gText_TrainEXP,
+//        gText_MysteryGift,
 //        gText_ResetEvents,
         gText_Exit
     },
@@ -2892,6 +2903,20 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_RoamerGArticuno,
         gText_RoamerZacian,
         gText_RoamerZamazenta
+    },
+    [SCROLL_MULTI_FURFROU_TRIMS] = 
+    {
+        gText_HeartTrim,
+        gText_StarTrim,
+        gText_DiamondTrim,
+        gText_DebutanteTrim,
+        gText_MatronTrim,
+        gText_DandyTrim, 
+        gText_LaReineTrim,
+        gText_KabukiTrim,
+        gText_PharaohTrim,
+        gText_BackToNatural,
+        gText_Exit
     },
 };
 
@@ -3989,6 +4014,7 @@ void ScrollableMultichoice_ClosePersistentMenu(void)
 #undef tTaskId
 
 #define DEOXYS_ROCK_LEVELS 11
+#define ROCK_PAL_ID 10
 
 void DoDeoxysRockInteraction(void)
 {
@@ -4068,7 +4094,7 @@ static void Task_DeoxysRockInteraction(u8 taskId)
 static void ChangeDeoxysRockLevel(u8 rockLevel)
 {
     u8 objectEventId;
-    LoadPalette(&sDeoxysRockPalettes[rockLevel], OBJ_PLTT_ID(10), PLTT_SIZEOF(4));
+    LoadPalette(&sDeoxysRockPalettes[rockLevel], OBJ_PLTT_ID(ROCK_PAL_ID), PLTT_SIZEOF(4));
     TryGetObjectEventIdByLocalIdAndMap(LOCALID_BIRTH_ISLAND_EXTERIOR_ROCK, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, &objectEventId);
 
     if (rockLevel == 0)
@@ -4105,21 +4131,20 @@ static void WaitForDeoxysRockMovement(u8 taskId)
 
 void IncrementBirthIslandRockStepCount(void)
 {
-    u16 var = VarGet(VAR_DEOXYS_ROCK_STEP_COUNT);
+    u16 stepCount = VarGet(VAR_DEOXYS_ROCK_STEP_COUNT);
     if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(BIRTH_ISLAND_EXTERIOR) && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(BIRTH_ISLAND_EXTERIOR))
     {
-        var++;
-        if (var > 99)
+        if (++stepCount > 99)
             VarSet(VAR_DEOXYS_ROCK_STEP_COUNT, 0);
         else
-            VarSet(VAR_DEOXYS_ROCK_STEP_COUNT, var);
+            VarSet(VAR_DEOXYS_ROCK_STEP_COUNT, stepCount);
     }
 }
 
 void SetDeoxysRockPalette(void)
 {
-    LoadPalette(&sDeoxysRockPalettes[(u8)VarGet(VAR_DEOXYS_ROCK_LEVEL)], OBJ_PLTT_ID(10), PLTT_SIZEOF(4));
-    BlendPalettes(0x04000000, 16, 0);
+    LoadPalette(&sDeoxysRockPalettes[(u8)VarGet(VAR_DEOXYS_ROCK_LEVEL)], OBJ_PLTT_ID(ROCK_PAL_ID), PLTT_SIZEOF(4));
+    BlendPalettes(1 << (ROCK_PAL_ID + 16), 16, 0);
 }
 
 void SetPCBoxToSendMon(u8 boxId)
@@ -4514,16 +4539,18 @@ static void Task_LinkRetireStatusWithBattleTowerPartner(u8 taskId)
 
 void Script_DoRayquazaScene(void)
 {
-    if (!gSpecialVar_0x8004)
+    if (gSpecialVar_0x8004 == 0)
     {
         // Groudon/Kyogre fight scene
-        DoRayquazaScene(0, TRUE, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        DoRayquazaScene(0, 1, CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
-    else
+    else if (gSpecialVar_0x8004 == 1)
     {
         // Rayquaza arrives scene
-        DoRayquazaScene(1, FALSE, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        DoRayquazaScene(1, 0, CB2_ReturnToFieldContinueScript);
     }
+    else 
+        DoRayquazaScene(5, 2, CB2_ReturnToFieldContinueScriptPlayMapMusic);
 }
 
 #define playCount data[0]
@@ -4686,16 +4713,15 @@ bool8 InPokemonCenter(void)
 
 #define FANCLUB_BITFIELD (gSaveBlock1Ptr->vars[VAR_FANCLUB_FAN_COUNTER - VARS_START])
 #define FANCLUB_COUNTER    0x007F
-#define FANCLUB_FAN_FLAGS  0xFF80
 
 #define GET_TRAINER_FAN_CLUB_FLAG(flag) (FANCLUB_BITFIELD >> (flag) & 1)
 #define SET_TRAINER_FAN_CLUB_FLAG(flag) (FANCLUB_BITFIELD |= 1 << (flag))
 #define FLIP_TRAINER_FAN_CLUB_FLAG(flag)(FANCLUB_BITFIELD ^= 1 << (flag))
 
 #define GET_TRAINER_FAN_CLUB_COUNTER        (FANCLUB_BITFIELD & FANCLUB_COUNTER)
-#define SET_TRAINER_FAN_CLUB_COUNTER(count) (FANCLUB_BITFIELD = (FANCLUB_BITFIELD & FANCLUB_FAN_FLAGS) | (count))
+#define SET_TRAINER_FAN_CLUB_COUNTER(count) (FANCLUB_BITFIELD = (FANCLUB_BITFIELD & ~FANCLUB_COUNTER) | (count))
 #define INCR_TRAINER_FAN_CLUB_COUNTER(count)(FANCLUB_BITFIELD += (count))
-#define CLEAR_TRAINER_FAN_CLUB_COUNTER      (FANCLUB_BITFIELD &= ~(FANCLUB_COUNTER))
+#define CLEAR_TRAINER_FAN_CLUB_COUNTER      (FANCLUB_BITFIELD &= ~FANCLUB_COUNTER)
 
 void ResetFanClub(void)
 {
@@ -5383,4 +5409,233 @@ bool8 DoesPlayerHaveFossil (void)
         }
     }
     return FALSE;
+}
+
+// Changes the chosen party mon's species to the one stored in gSpecialVar_0x8005
+void ChangeMonSpecies (void)
+{
+    u16 newSpecies;
+    
+    newSpecies = gSpecialVar_0x8005;
+
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES, &newSpecies);
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, &newSpecies);
+    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
+}
+
+// Rotom form change specials
+// Vars used:
+// gSpecialVar_0x8004: set to the party slot of the chosen Rotom, or the first Rotom found if there's only one
+// gSpecialVar_0x8005: set to the form to change Rotom to (e.g. SPECIES_ROTOM_WASH)
+// gSpecialVar_0x8006: special move learned by Rotom after form change (set by GetRotomNewSpecialMove)
+// gSpecialVar_0x8007: Rotom's initial form
+// gSpecialVar_0x8008: Rotom's initial special move (set by RotomForgetSpecialMove)
+
+// Takes a Rotom form as input and returns its special move
+u16 RotomFormToMove (u16 species)
+{
+    u16 move;
+
+    switch (species)
+    {
+        case SPECIES_ROTOM_HEAT:
+            move = MOVE_OVERHEAT;
+            break;
+        case SPECIES_ROTOM_WASH:
+            move = MOVE_HYDRO_PUMP;
+            break;
+        case SPECIES_ROTOM_FROST:
+            move = MOVE_FREEZE_DRY;
+            break;
+        case SPECIES_ROTOM_FAN:
+            move = MOVE_HURRICANE;
+            break;
+        case SPECIES_ROTOM_MOW:
+            move = MOVE_LEAF_STORM;
+            break;
+        case SPECIES_ROTOM:
+            move = MOVE_THUNDER_SHOCK;
+            break;
+    }
+    return move;
+}
+
+// Stores the special move of the Rotom form in gSpecialVar_0x8005 in gSpecialVar_0x8006
+void GetRotomNewSpecialMove (void)
+{
+    gSpecialVar_0x8006 = RotomFormToMove(gSpecialVar_0x8005);
+}
+
+// Gets Rotom's current form and the matching move, stores them in gSpecialVar_0x8007 and gSpecialVar_0x8008
+void GetRotomState (void)
+{
+    gSpecialVar_0x8007 = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, NULL);
+    gSpecialVar_0x8008 = RotomFormToMove(gSpecialVar_0x8007);
+}
+
+// If Rotom is an appliance form, delete its special move
+// Rotom's initial form must be loaded into gSpecialVar_0x8007 before use.
+// Returns TRUE if the moove was forgotten, false if not
+void RotomForgetSpecialMove (void)
+{
+    u8 i, forgotSpecialMove = 0;
+    u16 currentMove;
+    u16 moveNone = MOVE_NONE;
+
+    currentMove = RotomFormToMove(gSpecialVar_0x8007);
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        if (GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_MOVE1 + i, NULL) == currentMove)
+        {
+            RemoveMonPPBonus(&gPlayerParty[gSpecialVar_0x8004], i);
+            SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_MOVE1 + i, &moveNone);
+            forgotSpecialMove = TRUE;
+            break;
+        }
+    }
+}
+
+// Teaches Rotom's forms their special moves
+// Rotom MUST have an empty moveslot first
+// Move to teach must be stored in gSpecialVar_0x8006
+void TeachRotomMove (void)
+{
+    GiveMoveToMon(&gPlayerParty[gSpecialVar_0x8004], gSpecialVar_0x8006);
+}
+
+// Checks if Rotom knows its special move
+bool8 DoesRotomKnowSpecialMove (void)
+{
+    u16 initialMove, initialSpecies;
+
+    initialSpecies = gSpecialVar_0x8007;
+    initialMove = RotomFormToMove(initialSpecies);
+    return MonKnowsMove(&gPlayerParty[gSpecialVar_0x8004], initialMove);
+}
+
+// Checks how many Rotom player has with them
+// Stores the party position of the last Rotom found in gSpecialVar_0x8004
+// (Useful if there's only one Rotom in the party)
+u8 CountRotomInParty (void)
+{
+    u8 partyCount, rotomCount = 0;
+    u16 i;
+    u32 species;
+
+    partyCount = CalculatePlayerPartyCount();
+    
+    for (i = 0; i < partyCount; i++)
+    {
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
+        if (gSpeciesToNationalPokedexNum[species - 1] == SPECIES_ROTOM)
+        {
+            gSpecialVar_0x8004 = i;
+            rotomCount++;
+        }
+    }
+    return rotomCount;
+}
+
+/////// minimal grinding option in pkmn center
+void BufferNextLevelCap(void)
+{
+    u8 lvlCap = MAX_LEVEL;
+    u32 i;
+
+    // get lvl cap
+    for (i = 0; i < NUM_SOFT_CAPS; i++)
+    {
+        if (!FlagGet(gLevelCapFlags[i]))
+        {
+            lvlCap = gLevelCaps[i];
+            if (!FlagGet(gLevelCapAreaFlags[i]) && i != 0)
+                lvlCap = gLevelCaps[i - 1];
+            break;
+        }
+    }
+
+    ConvertIntToDecimalStringN(gStringVar1, lvlCap, STR_CONV_MODE_LEFT_ALIGN, 3);
+}
+
+void IncreasePartyLevelToMaxLevel(void)
+{
+    u32 i, targetExp, currExp;
+    u8 highestLevel = GetHighestLevelInPlayerParty();
+    u16 species;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
+        if (species != SPECIES_NONE && species != SPECIES_EGG)
+        {
+            currExp = GetMonData(&gPlayerParty[i], MON_DATA_EXP);
+            targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][highestLevel];
+
+            if (currExp < targetExp)
+            {
+                SetMonData(&gPlayerParty[i], MON_DATA_EXP, &targetExp);
+                CalculateMonStats(&gPlayerParty[i]);
+            }
+        }
+    }
+}
+
+// Checks the player's party for up to three different Pokemon. Useful for Legendary events.
+// gSpecialVar_0x8004: set to first species to check for
+// gSpecialVar_0x8005: set to second species to check for
+// gSpecialVar_0x8006: set to third species to check for
+// gSpecialVar_0x8007: set to number of species to check for
+// Returns TRUE if all species are found, FALSE if not
+bool8 CheckSpeciesInParty (void)
+{
+    u16 species1 = gSpecialVar_0x8004;
+    u16 species2 = gSpecialVar_0x8005;
+    u16 species3 = gSpecialVar_0x8006;
+    u32 numSpecies = gSpecialVar_0x8007;
+    u32 i;
+    u32 speciesFound = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == species1)
+        {
+            speciesFound++;
+        }
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == species2)
+        {
+            speciesFound++;
+        }
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == species3)
+        {
+            speciesFound++;
+        }
+    }
+
+    if (speciesFound == numSpecies){
+        return TRUE;
+    }
+    return FALSE;
+}
+
+// Buffers the nature of a Pokemon chosen by the player.
+// gSpecialVar_0x8004 must be set to the party slot of the chosen Pokemon
+void BufferChosenMonNature (void)
+{
+    u8 nature = 0;
+
+    nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE);
+    StringCopy (gStringVar2, gNatureNamePointers[nature]);
+}
+
+// Changes the selected Pokemon's nature.
+// gSpecialVar_0x8004 must be set to the party slot of the Pokemon whose nature should be changed
+// Set gSpecialVar_0x8005 to the stat to icrease, and gSpecialVar_0x8006 to the stat to decrease
+void ChangePokemonNature (void)
+{
+    u8 newNature = 0;
+
+    newNature = (gSpecialVar_0x8005 * (NUM_STATS - 1)) + gSpecialVar_0x8006;
+	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
+    CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }

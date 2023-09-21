@@ -222,7 +222,8 @@ MauvilleCity_BikeShop_Text_ChoseAcroBike:
 
 MauvilleCity_BikeShop_Text_ComeBackToSwitchBikes:
 	.string "Rydel: If you get the urge to switch\n"
-	.string "Bikes, just come see me!$"
+	.string "Bikes, press L while riding!\p"
+	.string "Or you can come back to see me!$"
 
 MauvilleCity_BikeShop_Text_WantToSwitchBikes:
 	.string "Rydel: Oh? Were you thinking about\n"

@@ -17,6 +17,7 @@
 #include "trig.h"
 #include "gpu_regs.h"
 #include "overworld.h"
+#include "field_camera.h"
 
 #define DROUGHT_COLOR_INDEX(color) ((((color) >> 1) & 0xF) | (((color) >> 2) & 0xF0) | (((color) >> 3) & 0xF00))
 
@@ -62,7 +63,7 @@ static void None_Main(void);
 static u8 None_Finish(void);
 
 EWRAM_DATA struct Weather gWeather = {0};
-EWRAM_DATA static u8 sFieldEffectPaletteColorMapTypes[32] = {0};
+EWRAM_DATA static u8 ALIGNED(2) sFieldEffectPaletteColorMapTypes[32] = {0};
 
 static const u8 *sPaletteColorMapTypes;
 
@@ -100,6 +101,7 @@ static const struct WeatherCallbacks sWeatherFuncs[] =
     [WEATHER_DROUGHT]            = {Drought_InitVars,       Drought_Main,       Drought_InitAll,       Drought_Finish},
     [WEATHER_DOWNPOUR]           = {Downpour_InitVars,      Thunderstorm_Main,  Downpour_InitAll,      Thunderstorm_Finish},
     [WEATHER_UNDERWATER_BUBBLES] = {Bubbles_InitVars,       Bubbles_Main,       Bubbles_InitAll,       Bubbles_Finish},
+    [WEATHER_LEAVES]             = {Leaves_InitVars,        Leaves_Main,        Leaves_InitAll,        Leaves_Finish},
 };
 
 void (*const gWeatherPalStateFuncs[])(void) =
@@ -112,7 +114,7 @@ void (*const gWeatherPalStateFuncs[])(void) =
 
 // This table specifies which of the color maps should be
 // applied to each of the background and sprite palettes.
-static const u8 sBasePaletteColorMapTypes[32] =
+static const u8 ALIGNED(2) sBasePaletteColorMapTypes[32] =
 {
     // background palettes
     COLOR_MAP_DARK_CONTRAST,
@@ -150,7 +152,7 @@ static const u8 sBasePaletteColorMapTypes[32] =
     COLOR_MAP_DARK_CONTRAST,
 };
 
-const u16 gFogPalette[] = INCBIN_U16("graphics/weather/fog.gbapal");
+const u16 ALIGNED(4) gFogPalette[] = INCBIN_U16("graphics/weather/fog.gbapal");
 
 void StartWeather(void)
 {
@@ -170,6 +172,8 @@ void StartWeather(void)
         gWeatherPtr->fogDSpritesCreated = 0;
         gWeatherPtr->sandstormSpritesCreated = 0;
         gWeatherPtr->sandstormSwirlSpritesCreated = 0;
+        gWeatherPtr->leavesSpritesCreated = 0;
+        gWeatherPtr->leavesSwirlSpritesCreated = 0;
         gWeatherPtr->bubblesSpritesCreated = 0;
         gWeatherPtr->lightenedFogSpritePalsCount = 0;
         Weather_SetBlendCoeffs(16, 0);
@@ -220,6 +224,7 @@ static void Task_WeatherInit(u8 taskId)
     // When the screen fades in, this is set to TRUE.
     if (gWeatherPtr->readyForInit)
     {
+        UpdateCameraPanning();
         sWeatherFuncs[gWeatherPtr->currWeather].initAll();
         gTasks[taskId].func = Task_WeatherMain;
     }
@@ -383,7 +388,6 @@ static void FadeInScreenWithWeather(void)
     case WEATHER_RAIN:
     case WEATHER_RAIN_THUNDERSTORM:
     case WEATHER_DOWNPOUR:
-    case WEATHER_SNOW:
     case WEATHER_SHADE:
         if (FadeInScreen_RainShowShade() == FALSE)
         {
@@ -405,10 +409,12 @@ static void FadeInScreenWithWeather(void)
             gWeatherPtr->palProcessingState = WEATHER_PAL_STATE_IDLE;
         }
         break;
+    case WEATHER_SNOW:
     case WEATHER_VOLCANIC_ASH:
     case WEATHER_SANDSTORM:
     case WEATHER_FOG_DIAGONAL:
     case WEATHER_UNDERWATER:
+    case WEATHER_LEAVES:
     default:
         if (!gPaletteFade.active)
         {
@@ -775,7 +781,6 @@ void FadeScreen(u8 mode, s8 delay)
     case WEATHER_RAIN:
     case WEATHER_RAIN_THUNDERSTORM:
     case WEATHER_DOWNPOUR:
-    case WEATHER_SNOW:
     case WEATHER_FOG_HORIZONTAL:
     case WEATHER_SHADE:
     case WEATHER_DROUGHT:
@@ -1058,6 +1063,9 @@ static void SetFieldWeather(u8 weather)
         break;
     case COORD_EVENT_WEATHER_SANDSTORM:
         SetWeather(WEATHER_SANDSTORM);
+        break;
+    case COORD_EVENT_WEATHER_LEAVES:
+        SetWeather(WEATHER_LEAVES);
         break;
     case COORD_EVENT_WEATHER_SHADE:
         SetWeather(WEATHER_SHADE);

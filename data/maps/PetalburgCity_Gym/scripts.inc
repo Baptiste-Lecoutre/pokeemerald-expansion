@@ -80,7 +80,12 @@ PetalburgCity_Gym_OnFrame:
 PetalburgCity_Gym_EventScript_ReturnFromWallyTutorial::
 	lockall
 	msgbox PetalburgCity_Gym_Text_DadSoDidItWorkOut, MSGBOX_DEFAULT
-	msgbox PetalburgCity_Gym_Text_WallyThankYouBye, MSGBOX_DEFAULT
+	msgbox PetalburgCity_Gym_Text_WallyThankYou, MSGBOX_DEFAULT
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	applymovement LOCALID_WALLY, Common_Movement_FacePlayer
+	msgbox PetalburgCity_Gym_Text_WallyBeforeBattle, MSGBOX_DEFAULT
+	trainerbattle_no_intro TRAINER_WALLY_PETALBURG, PetalburgCity_Gym_Text_WallyDefeat
+	msgbox PetalburgCity_Gym_Text_WallyAfterBattle, MSGBOX_DEFAULT
 	closemessage
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
 	applymovement LOCALID_WALLY, PetalburgCity_Gym_Movement_WallyExitGym
@@ -92,6 +97,8 @@ PetalburgCity_Gym_EventScript_ReturnFromWallyTutorial::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox PetalburgCity_Gym_Text_DadGoCollectBadges, MSGBOX_DEFAULT
+	closemessage
+	giveitem ITEM_AMULET_COIN
 	setvar VAR_PETALBURG_GYM_STATE, 2
 	releaseall
 	end
@@ -317,6 +324,11 @@ PetalburgCity_Gym_EventScript_NormanThreeBadges::
 PetalburgCity_Gym_EventScript_NormanFaceDoorSouth::
 	return
 
+PetalburgCity_Gym_EventScript_PlayerFaceWally::
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	return
+
 @ For all other NormanFaceDoorX, Norman is already facing the door from NormanAddressWallyX
 PetalburgCity_Gym_EventScript_NormanFaceDoorNorth::
 	applymovement LOCALID_NORMAN, Common_Movement_WalkInPlaceFasterDown
@@ -332,7 +344,7 @@ PetalburgCity_Gym_EventScript_NormanFaceDoorEast::
 PetalburgCity_Gym_EventScript_NormanPostBattle::
 	call PetalburgCity_Gym_EventScript_ShouldGiveEnigmaBerry
 	goto_if_eq VAR_RESULT, TRUE, PetalburgCity_Gym_EventScript_GiveEnigmaBerry
-	goto_if_unset FLAG_RECEIVED_TM42, PetalburgCity_Gym_EventScript_GiveFacade2
+	goto_if_unset FLAG_RECEIVED_TM_FACADE, PetalburgCity_Gym_EventScript_GiveFacade2
 	goto_if_set FLAG_SYS_GAME_CLEAR, PetalburgCity_Gym_EventScript_NoAmountOfTrainingIsEnough
 	msgbox PetalburgCity_Gym_Text_DadGoingToKeepTraining, MSGBOX_DEFAULT
 	release
@@ -405,9 +417,9 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	end
 
 PetalburgCity_Gym_EventScript_GiveFacade::
-	giveitem ITEM_TM42
+	giveitem ITEM_TM_FACADE
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
-	setflag FLAG_RECEIVED_TM42
+	setflag FLAG_RECEIVED_TM_FACADE
 	msgbox PetalburgCity_Gym_Text_ExplainFacade, MSGBOX_DEFAULT
 	return
 
@@ -1201,7 +1213,7 @@ PetalburgCity_Gym_Text_WouldYouReallyComeWithMe:
 PetalburgCity_Gym_Text_DadSoDidItWorkOut:
 	.string "Dad: So, did it work out?$"
 
-PetalburgCity_Gym_Text_WallyThankYouBye:
+PetalburgCity_Gym_Text_WallyThankYou:
 	.string "Wally: Thank you, yes, it did.\n"
 	.string "Here's your Pokémon back.\p"
 	.string "{PLAYER}, thank you for coming along\n"
@@ -1209,10 +1221,23 @@ PetalburgCity_Gym_Text_WallyThankYouBye:
 	.string "You two are why I was able to catch\n"
 	.string "my Pokémon.\p"
 	.string "I promise I'll take really good\n"
-	.string "care of it.\p"
+	.string "care of it.$"
+
+PetalburgCity_Gym_Text_WallyBeforeBattle:
+	.string "{PLAYER}, since you're here,\n"
+	.string "why don't the two of us have a\l"
+	.string "Pokémon battle?\p"
+	.string "I want to know what it's like to\n"
+	.string "be a Pokémon Trainer!$"
+
+PetalburgCity_Gym_Text_WallyAfterBattle:
 	.string "Oh! My mom's waiting for me,\n"
 	.string "so I have to go!\p"
 	.string "Bye, {PLAYER}!$"
+
+PetalburgCity_Gym_Text_WallyDefeat:
+	.string "………………\p"
+	.string "So this is a Pokémon battle…$"
 
 PetalburgCity_Gym_Text_DadGoCollectBadges:
 	.string "Dad: Now…\p"
@@ -1229,7 +1254,8 @@ PetalburgCity_Gym_Text_DadGoCollectBadges:
 	.string "Of course, I'm a Gym Leader, too.\n"
 	.string "We'll battle one day, {PLAYER}.\p"
 	.string "But that's only after you become\n"
-	.string "stronger.$"
+	.string "stronger.\p"
+	.string "Here's something to wish you luck.$"
 
 PetalburgCity_Gym_Text_NormanGoToRustboro:
 	.string "Dad: Hm? Aren't you going to the\n"

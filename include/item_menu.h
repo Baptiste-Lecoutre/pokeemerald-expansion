@@ -17,6 +17,7 @@ enum {
     ITEMMENULOCATION_APPRENTICE,
     ITEMMENULOCATION_WALLY,
     ITEMMENULOCATION_PCBOX,
+    ITEMMENULOCATION_RAIDEND,
     ITEMMENULOCATION_LAST,
 };
 
@@ -68,7 +69,8 @@ struct BagMenu
     u8 itemIconSlot:2;
     u8 inhibitItemDescriptionPrint:1;
     u8 hideCloseBagText:1;
-    u8 unused1[2];
+    u8 typeIconSpriteId;
+    u8 unused1;
     u8 pocketScrollArrowsTask;
     u8 pocketSwitchArrowsTask;
     const u8 *contextMenuItemsPtr;
@@ -78,7 +80,7 @@ struct BagMenu
     u8 numShownItems[POCKETS_COUNT];
     s16 graphicsLoadState;
     u8 unused2[14];
-    u8 pocketNameBuffer[32][32];
+    u8 ALIGNED(4) pocketNameBuffer[32][32];
     u8 unused3[4];
 };
 
@@ -90,11 +92,12 @@ void FavorLadyOpenBagMenu(void);
 void QuizLadyOpenBagMenu(void);
 void ApprenticeOpenBagMenu(void);
 void CB2_BagMenuFromBattle(void);
+void CB2_ChooseBall(void);
 void UpdatePocketListPosition(u8 pocketId);
 void CB2_ReturnToBagMenuPocket(void);
 void CB2_BagMenuFromStartMenu(void);
 u8 GetItemListPosition(u8 pocketId);
-bool8 UseRegisteredKeyItemOnField(u8 button);
+bool8 UseRegisteredKeyItemOnField(void/*u8 button*/);
 void CB2_GoToSellMenu(void);
 void GoToBagMenu(u8 bagMenuType, u8 pocketId, void ( *exitCallback)());
 void DoWallyTutorialBagMenu(void);
@@ -111,5 +114,6 @@ void CloseItemMessage(u8 taskId);
 void DrawRegisteredQuickAccess(void);
 void DestroyItemIconSprites(void);
 bool8 PlayerHasOneRegisteredItem(void);
+s32 RegisteredItemIndex(u16 item);
 
 #endif //GUARD_ITEM_MENU_H

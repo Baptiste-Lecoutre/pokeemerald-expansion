@@ -150,6 +150,8 @@ enum {
 };
 
 #define TAG_HELD_ITEM 55120
+#define TAG_MEGA_STONE 55121
+#define TAG_Z_CRYSTAL 55122
 
 #define PARTY_PAL_SELECTED     (1 << 0)
 #define PARTY_PAL_FAINTED      (1 << 1)
@@ -216,6 +218,8 @@ struct PartyMenuBox
     u8 itemSpriteId;
     u8 pokeballSpriteId;
     u8 statusSpriteId;
+    u8 megaStoneSpriteId;
+    u8 zCrystalSpriteId;
 };
 
 // EWRAM vars
@@ -336,8 +340,6 @@ static bool16 IsMonAllowedInPokemonJump(struct Pokemon *);
 static bool16 IsMonAllowedInDodrioBerryPicking(struct Pokemon *);
 static void Task_CancelParticipationYesNo(u8);
 static void Task_HandleCancelParticipationYesNoInput(u8);
-// static bool8 CanLearnTutorMove(u16, u8);
-static u16 GetTutorMove(u8);
 static bool8 ShouldUseChooseMonText(void);
 static void SetPartyMonFieldSelectionActions(struct Pokemon *, u8);
 static u8 GetPartyMenuActionsTypeInBattle(struct Pokemon *);
@@ -631,6 +633,7 @@ static bool8 ShowPartyMenu(void)
         break;
     case 11:
         LoadHeldItemIcons();
+        LoadHeldStonesIcons();
         gMain.state++;
         break;
     case 12:
@@ -824,6 +827,8 @@ static void InitPartyMenuBoxes(u8 layout)
         sPartyMenuBoxes[i].itemSpriteId = SPRITE_NONE;
         sPartyMenuBoxes[i].pokeballSpriteId = SPRITE_NONE;
         sPartyMenuBoxes[i].statusSpriteId = SPRITE_NONE;
+        sPartyMenuBoxes[i].megaStoneSpriteId = SPRITE_NONE;
+        sPartyMenuBoxes[i].zCrystalSpriteId = SPRITE_NONE;
     }
     // The first party mon goes in the left column
     if (layout != PARTY_LAYOUT_SINGLE) //Custom party menu
@@ -2182,19 +2187,6 @@ static u8 CanTeachMove(struct Pokemon *mon, u16 move)
         return CAN_LEARN_MOVE;
 }
 
-static u16 GetTutorMove(u8 tutor)
-{
-    return FALSE;//gTutorMoves[tutor];
-}
-
-bool8 CanLearnTutorMove(u16 species, u8 tutor)
-{
-    /*if (sTutorLearnsets[species] & (1 << tutor))
-        return TRUE;
-    else*/
-        return FALSE;
-}
-
 static void InitPartyMenuWindows(u8 layout)
 {
     u8 i;
@@ -2485,7 +2477,7 @@ static void DisplayPartyPokemonGender(u8 gender, u16 species, u8 *nickname, stru
 
     if (species == SPECIES_NONE)
         return;
-    if ((species == SPECIES_NIDORAN_M || species == SPECIES_NIDORAN_F) && StringCompare(nickname, gSpeciesNames[species]) == 0)
+    if ((species == SPECIES_NIDORAN_M || species == SPECIES_NIDORAN_F) && StringCompare(nickname, GetSpeciesName(species)) == 0)
         return;
     switch (gender)
     {
@@ -3119,6 +3111,8 @@ static void MovePartyMenuBoxSprites(struct PartyMenuBox *menuBox, s16 offset)
     gSprites[menuBox->itemSpriteId].x2 += offset * 8;
     gSprites[menuBox->monSpriteId].x2 += offset * 8;
     gSprites[menuBox->statusSpriteId].x2 += offset * 8;
+    gSprites[menuBox->megaStoneSpriteId].x2 += offset * 8;
+    gSprites[menuBox->zCrystalSpriteId].x2 += offset * 8;
 }
 
 static void SlidePartyMenuBoxSpritesOneStep(u8 taskId)
@@ -3242,6 +3236,8 @@ static void SwitchPartyMon(void)
     SwitchMenuBoxSprites(&menuBoxes[0]->itemSpriteId, &menuBoxes[1]->itemSpriteId);
     SwitchMenuBoxSprites(&menuBoxes[0]->monSpriteId, &menuBoxes[1]->monSpriteId);
     SwitchMenuBoxSprites(&menuBoxes[0]->statusSpriteId, &menuBoxes[1]->statusSpriteId);
+    SwitchMenuBoxSprites(&menuBoxes[0]->megaStoneSpriteId, &menuBoxes[1]->megaStoneSpriteId);
+    SwitchMenuBoxSprites(&menuBoxes[0]->zCrystalSpriteId, &menuBoxes[1]->zCrystalSpriteId);
 }
 
 // Finish switching mons or using Softboiled
@@ -4236,6 +4232,8 @@ static void CreatePartyMonHeldItemSprite(struct Pokemon *mon, struct PartyMenuBo
     if (GetMonData(mon, MON_DATA_SPECIES) != SPECIES_NONE)
     {
         menuBox->itemSpriteId = CreateSprite(&sSpriteTemplate_HeldItem, menuBox->spriteCoords[2], menuBox->spriteCoords[3], 0);
+        menuBox->megaStoneSpriteId = CreateSprite(&sSpriteTemplate_MegaStone, menuBox->spriteCoords[2]+4, menuBox->spriteCoords[3]-2, 0);
+        menuBox->zCrystalSpriteId = CreateSprite(&sSpriteTemplate_ZCrystal, menuBox->spriteCoords[2]+4, menuBox->spriteCoords[3], 0);
         UpdatePartyMonHeldItemSprite(mon, menuBox);
     }
 }
@@ -4245,7 +4243,11 @@ static void CreatePartyMonHeldItemSpriteParameterized(u16 species, u16 item, str
     if (species != SPECIES_NONE)
     {
         menuBox->itemSpriteId = CreateSprite(&sSpriteTemplate_HeldItem, menuBox->spriteCoords[2], menuBox->spriteCoords[3], 0);
+        menuBox->megaStoneSpriteId = CreateSprite(&sSpriteTemplate_MegaStone, menuBox->spriteCoords[2]+4, menuBox->spriteCoords[3]-2, 0);
+        menuBox->zCrystalSpriteId = CreateSprite(&sSpriteTemplate_ZCrystal, menuBox->spriteCoords[2]+4, menuBox->spriteCoords[3], 0);
         gSprites[menuBox->itemSpriteId].oam.priority = 0;
+        gSprites[menuBox->megaStoneSpriteId].oam.priority = 0;
+        gSprites[menuBox->zCrystalSpriteId].oam.priority = 0;
         ShowOrHideHeldItemSprite(item, menuBox);
     }
 }
@@ -4260,6 +4262,20 @@ static void ShowOrHideHeldItemSprite(u16 item, struct PartyMenuBox *menuBox)
     if (item == ITEM_NONE)
     {
         gSprites[menuBox->itemSpriteId].invisible = TRUE;
+        gSprites[menuBox->megaStoneSpriteId].invisible = TRUE;
+        gSprites[menuBox->zCrystalSpriteId].invisible = TRUE;
+    }
+    else if (item >= ITEM_RED_ORB && item <= ITEM_DIANCITE)
+    {
+        gSprites[menuBox->itemSpriteId].invisible = TRUE;
+        gSprites[menuBox->megaStoneSpriteId].invisible = FALSE;
+        gSprites[menuBox->zCrystalSpriteId].invisible = TRUE;
+    }
+    else if (item >= ITEM_NORMALIUM_Z && item <= ITEM_ULTRANECROZIUM_Z)
+    {
+        gSprites[menuBox->itemSpriteId].invisible = TRUE;
+        gSprites[menuBox->megaStoneSpriteId].invisible = TRUE;
+        gSprites[menuBox->zCrystalSpriteId].invisible = FALSE;
     }
     else
     {
@@ -4268,13 +4284,23 @@ static void ShowOrHideHeldItemSprite(u16 item, struct PartyMenuBox *menuBox)
         else
             StartSpriteAnim(&gSprites[menuBox->itemSpriteId], 0);
         gSprites[menuBox->itemSpriteId].invisible = FALSE;
+        gSprites[menuBox->megaStoneSpriteId].invisible = TRUE;
+        gSprites[menuBox->zCrystalSpriteId].invisible = TRUE;
     }
 }
 
 void LoadHeldItemIcons(void)
 {
     LoadSpriteSheet(&gSpriteSheet_HeldItem);
-    LoadSpritePalette(&sSpritePalette_HeldItem);
+    LoadSpritePalette(&gSpritePalette_HeldItem);
+}
+
+void LoadHeldStonesIcons(void)
+{
+    LoadSpriteSheet(&gSpriteSheet_MegaStone);
+    LoadSpriteSheet(&gSpriteSheet_ZCrystal);
+    LoadSpritePalette(&gSpritePalette_MegaStone);
+    LoadSpritePalette(&gSpritePalette_ZCrystal);
 }
 
 void DrawHeldItemIconsForTrade(u8 *partyCounts, u8 *partySpriteIds, u8 whichParty)
@@ -5203,60 +5229,7 @@ void ItemUseCB_PPUp(u8 taskId, TaskFunc task)
 
 u16 ItemIdToBattleMoveId(u16 item)
 {
-    u16 tmNumber = item - ITEM_TM01;
-    return sTMHMMoves[tmNumber];
-}
-
-u16 MoveToHM(u16 move)
-{
-    u8 i;
-    u16 item;
-    switch (move)
-    {
-    case MOVE_SECRET_POWER:
-        item = ITEM_TM43;
-        break;
-    case MOVE_CUT:
-        item = ITEM_HM01;
-        break;
-    case MOVE_FLY:
-        item = ITEM_HM02;
-        break;
-    case MOVE_SURF:
-        item = ITEM_HM03;
-        break;
-    case MOVE_STRENGTH:
-        item = ITEM_HM04;
-        break;
-    case MOVE_FLASH:
-        item = ITEM_HM05;
-        break;
-    case MOVE_ROCK_SMASH:
-        item = ITEM_HM06;
-        break;
-    case MOVE_WATERFALL:
-        item = ITEM_HM07;
-        break;
-    case MOVE_DIVE:
-        item = ITEM_HM08;
-        break;
-    default:
-        item = 0;
-        break;
-    }
-    return item;
-}
-
-bool8 IsMoveHm(u16 move)
-{
-    u8 i;
-
-    for (i = 0; i < NUM_HIDDEN_MACHINES; i++)
-    {
-        if (sTMHMMoves[i + NUM_TECHNICAL_MACHINES] == move)
-            return TRUE;
-    }
-    return FALSE;
+    return (ItemId_GetPocket(item) == POCKET_TM_HM) ? gItems[item].secondaryId : MOVE_NONE;
 }
 
 bool8 MonKnowsMove(struct Pokemon *mon, u16 move)
@@ -5558,10 +5531,20 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     s16 *arrayPtr = ptr->data;
     u16 *itemPtr = &gSpecialVar_ItemId;
     bool8 cannotUseEffect;
-    u8 holdEffectParam = ItemId_GetHoldEffectParam(*itemPtr);
+    u8 lvlCap = MAX_LEVEL, holdEffectParam = ItemId_GetHoldEffectParam(*itemPtr);
+    u32 i;
+
+    for (i = 0; i < NUM_SOFT_CAPS; i++)
+    {
+        if (!FlagGet(gLevelCapFlags[i]))
+        {
+            lvlCap = gLevelCaps[i];
+            break;
+        }
+    }
 
     sInitialLevel = GetMonData(mon, MON_DATA_LEVEL);
-    if (sInitialLevel != MAX_LEVEL)
+    if (sInitialLevel < lvlCap)
     {
         BufferMonStatsToTaskData(mon, arrayPtr);
         cannotUseEffect = ExecuteTableBasedItemEffect(mon, *itemPtr, gPartyMenu.slotId, 0);
@@ -6150,6 +6133,7 @@ static void TryTutorSelectedMon(u8 taskId)
 {
     struct Pokemon *mon;
     s16 *move;
+    u8 friendship;
 
     if (!gPaletteFade.active)
     {
@@ -6159,6 +6143,15 @@ static void TryTutorSelectedMon(u8 taskId)
         gPartyMenu.data1 = gSpecialVar_0x8005;
         StringCopy(gStringVar2, gMoveNames[gPartyMenu.data1]);
         move[1] = 2;
+        if (gPartyMenu.data1 == MOVE_DRACO_METEOR)
+        {
+            friendship = 255;
+        }
+        else
+        {
+            friendship = 200;
+        }
+
         switch (CanTeachMove(mon, gPartyMenu.data1))
         {
         case CANNOT_LEARN_MOVE:
@@ -6168,6 +6161,14 @@ static void TryTutorSelectedMon(u8 taskId)
             DisplayLearnMoveMessageAndClose(taskId, gText_PkmnAlreadyKnows);
             return;
         default:
+            if (gSpecialVar_0x8008 == TRUE) // Move has a minimum friendship requirement
+            {
+                if (GetMonData(mon, MON_DATA_FRIENDSHIP) < friendship)
+                {
+                    DisplayLearnMoveMessageAndClose(taskId, gText_PkmnFriendshipNotHighEnough);
+                    return;
+                }
+            }
             if (GiveMoveToMon(mon, gPartyMenu.data1) != MON_HAS_MAX_MOVES)
             {
                 Task_LearnedMove(taskId);
@@ -7061,6 +7062,8 @@ static void SlideMultiPartyMenuBoxSpritesOneStep(u8 taskId)
             MoveMultiPartyMenuBoxSprite(sPartyMenuBoxes[i].itemSpriteId, tXPos - 8);
             MoveMultiPartyMenuBoxSprite(sPartyMenuBoxes[i].pokeballSpriteId, tXPos - 8);
             MoveMultiPartyMenuBoxSprite(sPartyMenuBoxes[i].statusSpriteId, tXPos - 8);
+            MoveMultiPartyMenuBoxSprite(sPartyMenuBoxes[i].megaStoneSpriteId, tXPos - 8);
+            MoveMultiPartyMenuBoxSprite(sPartyMenuBoxes[i].zCrystalSpriteId, tXPos - 8);
         }
     }
     ChangeBgX(2, 0x800, BG_COORD_ADD);
@@ -7302,11 +7305,6 @@ void IsLastMonThatKnowsSurf(void)
         if (AnyStorageMonWithMove(move) != TRUE)
             gSpecialVar_Result = TRUE;
     }
-}
-
-u16 GetTMHMMoves(u16 position)
-{
-    return sTMHMMoves[position];
 }
 
 void CursorCb_MoveItemCallback(u8 taskId)

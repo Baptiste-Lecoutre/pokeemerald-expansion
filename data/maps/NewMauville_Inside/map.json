@@ -90,7 +90,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "NewMauville_Inside_EventScript_Voltorb1",
-      "flag": "FLAG_HIDE_NEW_MAUVILLE_VOLTORB_1"
+      "flag": "FLAG_HIDE_NEW_MAUVILLE_ELECTRODE_1"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -103,7 +103,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "NewMauville_Inside_EventScript_Voltorb2",
-      "flag": "FLAG_HIDE_NEW_MAUVILLE_VOLTORB_2"
+      "flag": "FLAG_HIDE_NEW_MAUVILLE_ELECTRODE_2"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -116,7 +116,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "NewMauville_Inside_EventScript_Voltorb3",
-      "flag": "FLAG_HIDE_NEW_MAUVILLE_VOLTORB_3"
+      "flag": "FLAG_HIDE_NEW_MAUVILLE_ELECTRODE_3"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_LT_SURGE",
@@ -141,8 +141,8 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "NULL",
-      "flag": "0"
+      "script": "NewMauville_Inside_EventScript_Zapdos",
+      "flag": "FLAG_DEFEATED_ZAPDOS"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GOLD_ITEM_BALL",
@@ -257,6 +257,96 @@
       "var": "VAR_NEW_MAUVILLE_STATE",
       "var_value": "1",
       "script": "NewMauville_Inside_EventScript_RedButton"
+    },
+    {
+      "type": "trigger",
+      "x": 32,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "2",
+      "script": "NewMauville_Inside_EventScript_Rotom"
+    },
+    {
+      "type": "trigger",
+      "x": 33,
+      "y": 7,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "2",
+      "script": "NewMauville_Inside_EventScript_Rotom"
+    },
+    {
+      "type": "trigger",
+      "x": 34,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "2",
+      "script": "NewMauville_Inside_EventScript_Rotom"
+    },
+    {
+      "type": "trigger",
+      "x": 33,
+      "y": 5,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "2",
+      "script": "NewMauville_Inside_EventScript_Rotom"
+    },
+    {
+      "type": "trigger",
+      "x": 34,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "4",
+      "script": "NewMauville_Inside_EventScript_Rotom2"
+    },
+    {
+      "type": "trigger",
+      "x": 33,
+      "y": 7,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "4",
+      "script": "NewMauville_Inside_EventScript_Rotom2"
+    },
+    {
+      "type": "trigger",
+      "x": 32,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "4",
+      "script": "NewMauville_Inside_EventScript_Rotom2"
+    },
+    {
+      "type": "trigger",
+      "x": 33,
+      "y": 5,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "4",
+      "script": "NewMauville_Inside_EventScript_Rotom2"
+    },
+    {
+      "type": "trigger",
+      "x": 33,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "5",
+      "script": "NewMauville_Inside_EventScript_RotomEncounter"
+    },
+    {
+      "type": "trigger",
+      "x": 33,
+      "y": 6,
+      "elevation": 0,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "3",
+      "script": "NewMauville_Inside_EventScript_RedButton2"
     }
   ],
   "bg_events": [

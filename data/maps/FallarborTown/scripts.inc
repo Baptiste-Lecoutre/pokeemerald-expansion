@@ -17,49 +17,7 @@ FallarborTown_EventScript_PreventDoingRedScene::
 	setvar VAR_TEMP_E, 1
 	return
 
-FallarborTown_EventScript_RedSceneSouth::
-	lockall
-	clearflag FLAG_TEMP_7
-	opendoor 8, 7
-	waitdooranim
-	addobject LOCALID_RED
-	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
-	waitmovement 0
-	closedoor 8, 7
-	waitdooranim
-	delay 10
-	applymovement LOCALID_RED, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
-	waitmovement 0
-	applymovement LOCALID_RED, Common_Movement_Delay48
-	waitmovement 0
-	goto FallarborTown_EventScriptRed
-	end
-
-FallarborTown_EventScript_RedSceneWest::
-	lockall
-	clearflag FLAG_TEMP_7
-	opendoor 8, 7
-	waitdooranim
-	addobject LOCALID_RED
-	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
-	waitmovement 0
-	closedoor 8, 7
-	waitdooranim
-	delay 10
-	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterLeft
-	waitmovement 0
-	applymovement LOCALID_RED, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
-	waitmovement 0
-	applymovement LOCALID_RED, Common_Movement_Delay48
-	waitmovement 0
-	goto FallarborTown_EventScriptRed
-	end
-
-FallarborTown_EventScript_RedSceneEast::
+FallarborTown_EventScript_RedScene2::
 	lockall
 	clearflag FLAG_TEMP_7
 	opendoor 8, 7
@@ -73,15 +31,112 @@ FallarborTown_EventScript_RedSceneEast::
 	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterRight
 	waitmovement 0
 	applymovement LOCALID_RED, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
 	waitmovement 0
 	applymovement LOCALID_RED, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_RED, FallarborTown_Movement_RedArrives2
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	goto FallarborTown_EventScriptRed
+	end
+
+FallarborTown_EventScript_RedScene3::
+	lockall
+	clearflag FLAG_TEMP_7
+	opendoor 8, 7
+	waitdooranim
+	addobject LOCALID_RED
+	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
+	waitmovement 0
+	closedoor 8, 7
+	waitdooranim
+	delay 10
+	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_RED, FallarborTown_Movement_RedArrives3
+	waitmovement 0
+	goto FallarborTown_EventScriptRed
+	end
+
+FallarborTown_EventScript_RedScene1::
+	lockall
+	clearflag FLAG_TEMP_7
+	opendoor 8, 7
+	waitdooranim
+	addobject LOCALID_RED
+	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
+	waitmovement 0
+	closedoor 8, 7
+	waitdooranim
+	delay 10
+	applymovement LOCALID_RED, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_RED, FallarborTown_Movement_RedArrives1
+	waitmovement 0
+	goto FallarborTown_EventScriptRed
+	end
+
+FallarborTown_EventScript_RedScene4::
+	lockall
+	clearflag FLAG_TEMP_7
+	opendoor 8, 7
+	waitdooranim
+	addobject LOCALID_RED
+	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
+	waitmovement 0
+	closedoor 8, 7
+	waitdooranim
+	delay 10
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	applymovement LOCALID_RED, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	applymovement LOCALID_RED, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_RED, FallarborTown_Movement_RedArrives4
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	goto FallarborTown_EventScriptRed
+	end
+
+FallarborTown_EventScript_RedScene5::
+	lockall
+	clearflag FLAG_TEMP_7
+	opendoor 8, 7
+	waitdooranim
+	addobject LOCALID_RED
+	applymovement LOCALID_RED, FallarborTown_Movement_RedStepDown
+	waitmovement 0
+	closedoor 8, 7
+	waitdooranim
+	delay 10
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_RED, FallarborTown_Movement_RedArrives5
 	waitmovement 0
 	goto FallarborTown_EventScriptRed
 	end
 
 FallarborTown_EventScriptRed::
+	setrespawn HEAL_LOCATION_FALLARBOR_TOWN
 	msgbox FallarborTown_Text_OhHeyPlayer, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_RED_FALLARBOR, FallarborTown_Text_Again
 	msgbox FallarborTown_Text_MyPokemonsAndI, MSGBOX_DEFAULT
@@ -94,11 +149,56 @@ FallarborTown_EventScriptRed::
 	releaseall
 	end
 
+FallarborTown_Movement_RedArrives1:
+	walk_right
+	walk_right
+	walk_right
+	step_end
+
+FallarborTown_Movement_RedArrives2:
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	face_down
+	step_end
+
+FallarborTown_Movement_RedArrives3:
+	walk_down
+	walk_down
+	walk_right
+	walk_right
+	walk_right
+	step_end
+
+FallarborTown_Movement_RedArrives4:
+	walk_down
+	walk_down
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	face_down
+	step_end
+
+FallarborTown_Movement_RedArrives5:
+	walk_down
+	walk_down
+	walk_right
+	walk_right
+	walk_right
+	walk_down
+	walk_down
+	walk_right
+	step_end
+
 FallarborTown_Text_OhHeyPlayer:
 	.string "Oh, hey {PLAYER}!\n"
-	.string "Have you tried these Pokemon contests?\p"
+	.string "Long time no see!\p"
+	.string "Did you try these Pokemon tournaments?\n"
+	.string "They are different in every city!\p"
 	.string "We don't have these in Kanto, maybe\n"
-	.string "I'll open a contest hall on my way back.\p"
+	.string "I'll open a facility on my way back.\p"
 	.string "Did you get any better since last time?\n"
 	.string "My Pokémons and I have grown stronger!$"
 

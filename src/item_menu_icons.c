@@ -55,69 +55,69 @@ static const struct OamData sBagOamData =
     .affineParam = 0
 };
 
-static const union AnimCmd sSpriteAnim_Bag_Closed[] =
+static const union AnimCmd sSpriteAnim_Bag_Closed[] = // frame 0
 {
     ANIMCMD_FRAME(0, 4),
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_Items[] =
+static const union AnimCmd sSpriteAnim_Bag_Items[] = // frame 1
 {
-    ANIMCMD_FRAME(64, 4),
+    ANIMCMD_FRAME(64, 4), // 64
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_Medicine[] =
+static const union AnimCmd sSpriteAnim_Bag_Medicine[] = // frame 2
 {
-    ANIMCMD_FRAME(192, 4),
+    ANIMCMD_FRAME(128, 4), //192
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_Pokeballs[] =
+static const union AnimCmd sSpriteAnim_Bag_Pokeballs[] = // frame 3
 {
-    ANIMCMD_FRAME(256, 4),
+    ANIMCMD_FRAME(192, 4), // 256
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_BattleItems[] =
+static const union AnimCmd sSpriteAnim_Bag_BattleItems[] = // frame 4
 {
-    ANIMCMD_FRAME(64, 4),
+    ANIMCMD_FRAME(256, 4), // 64
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_MegaStones[] =
+static const union AnimCmd sSpriteAnim_Bag_MegaStones[] = // frame 3
 {
-    ANIMCMD_FRAME(192, 4),
+    ANIMCMD_FRAME(192, 4), // 192
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_ZCrystals[] =
+static const union AnimCmd sSpriteAnim_Bag_ZCrystals[] = // frame 4
 {
-    ANIMCMD_FRAME(64, 4),
+    ANIMCMD_FRAME(256, 4), // 64
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_Berries[] =
+static const union AnimCmd sSpriteAnim_Bag_Berries[] = // frame 1
 {
-    ANIMCMD_FRAME(192, 4),
+    ANIMCMD_FRAME(64, 4), // 192
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_PowerUp[] =
+static const union AnimCmd sSpriteAnim_Bag_PowerUp[] = // frame 2
 {
-    ANIMCMD_FRAME(256, 4),
+    ANIMCMD_FRAME(128, 4), // 256
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_TMsHMs[] =
+static const union AnimCmd sSpriteAnim_Bag_TMsHMs[] = // frame 1
 {
-    ANIMCMD_FRAME(320, 4),
+    ANIMCMD_FRAME(64, 4), // 320
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_Bag_KeyItems[] =
+static const union AnimCmd sSpriteAnim_Bag_KeyItems[] = // frame 5
 {
-    ANIMCMD_FRAME(128, 4),
+    ANIMCMD_FRAME(320, 4), // 128
     ANIMCMD_END
 };
 

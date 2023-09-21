@@ -66,9 +66,9 @@ extern const struct BlendSettings gTimeOfDayBlend[];
 
 extern struct PaletteFadeControl gPaletteFade;
 extern u32 gPlttBufferTransferPending;
-extern u8 gPaletteDecompressionBuffer[];
-extern u16 gPlttBufferUnfaded[PLTT_BUFFER_SIZE];
-extern u16 gPlttBufferFaded[PLTT_BUFFER_SIZE];
+extern u8 ALIGNED(4) gPaletteDecompressionBuffer[];
+extern u16 ALIGNED(4) gPlttBufferUnfaded[PLTT_BUFFER_SIZE];
+extern u16 ALIGNED(4) gPlttBufferFaded[PLTT_BUFFER_SIZE];
 
 void LoadCompressedPalette(const u32 *src, u16 offset, u16 size);
 void LoadPalette(const void *src, u16 offset, u16 size);
@@ -98,6 +98,7 @@ void TintPalette_GrayScale(u16 *palette, u16 count);
 void TintPalette_GrayScale2(u16 *palette, u16 count);
 void TintPalette_SepiaTone(u16 *palette, u16 count);
 void TintPalette_CustomTone(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 bTone);
+void TintPalette_CustomTone_Blend(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 bTone);
 
 static inline void SetBackdropFromColor(u16 color)
 {

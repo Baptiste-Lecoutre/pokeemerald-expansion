@@ -7,6 +7,7 @@
 #include "event_data.h"
 #include "field_effect.h"
 #include "field_player_avatar.h"
+#include "field_weather.h"
 #include "item_menu.h"
 #include "load_save.h"
 #include "main.h"
@@ -28,6 +29,7 @@
 #include "trig.h"
 #include "window.h"
 #include "constants/field_effects.h"
+#include "constants/field_weather.h"
 #include "constants/species.h"
 
 #define NOCASH_BREAKPOINT asm("mov r11, r11")
@@ -182,7 +184,7 @@ void CB2_InitSoar(void)
 	switch (gMain.state)
 	{
 	case 0:
-		BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
+		FadeScreen(FADE_TO_BLACK, 0);
 		gMain.state++;
 		break;
 	case 1:
@@ -350,7 +352,7 @@ static void CB2_LoadSoarGraphics(void)
 			| BGCNT_WRAP;
 
 		// Start palette fade
-		BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, 0);
+		FadeScreen(FADE_FROM_BLACK, 0);
 		gMain.state++;
 		break;
 	case 3:
@@ -527,7 +529,7 @@ static void ExitSoar(void)
 	PlaySE(SE_PC_OFF);
 	ObjectEventTurn(&gObjectEvents[gPlayerAvatar.objectEventId], DIR_SOUTH);
 	gObjectEvents[gPlayerAvatar.objectEventId].invisible = FALSE;
-	BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
+	FadeScreen(FADE_TO_BLACK, 0);
 	SetMainCallback2(CB2_FadeOut);
 }
 
@@ -646,7 +648,7 @@ static void ProcessYesNoCB2(void)
 	switch (Menu_ProcessInputNoWrapClearOnChoose())
 	{
 	case 0:
-		BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, 0);
+		FadeScreen(FADE_TO_BLACK, 0);
 		ClearDialogWindowAndFrame(windid2, 1);
 		SetMainCallback2(WarpCB2);
 		break;

@@ -444,6 +444,8 @@ static const struct PokemonJumpMons sPokeJumpMons[] =
     { .species = SPECIES_PIKACHU_POP_STAR, .jumpType = JUMP_TYPE_NORMAL, },
     { .species = SPECIES_PIKACHU_PH_D, .jumpType = JUMP_TYPE_NORMAL, },
     { .species = SPECIES_PIKACHU_LIBRE, .jumpType = JUMP_TYPE_NORMAL, },
+    { .species = SPECIES_PIKACHU_SURFING, .jumpType = JUMP_TYPE_NORMAL, },
+    { .species = SPECIES_PIKACHU_FLYING, .jumpType = JUMP_TYPE_NORMAL, },
     { .species = SPECIES_PIKACHU_ORIGINAL_CAP, .jumpType = JUMP_TYPE_NORMAL, },
     { .species = SPECIES_PIKACHU_HOENN_CAP, .jumpType = JUMP_TYPE_NORMAL, },
     { .species = SPECIES_PIKACHU_SINNOH_CAP, .jumpType = JUMP_TYPE_NORMAL, },

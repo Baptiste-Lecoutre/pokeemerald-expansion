@@ -28,7 +28,7 @@ LD := $(PREFIX)ld
 # note: the makefile must be set up so MODERNCC is never called
 # if MODERN=0
 MODERNCC := $(PREFIX)gcc
-PATH_MODERNCC := PATH=$(TOOLCHAIN)/bin:PATH $(MODERNCC)
+PATH_MODERNCC := PATH="$(PATH)" $(MODERNCC)
 
 ifeq ($(OS),Windows_NT)
 EXE := .exe
@@ -42,6 +42,7 @@ MAKER_CODE  := 01
 REVISION    := 0
 MODERN      ?= 0
 TEST        ?= 0
+ANALYZE     ?= 0
 
 ifeq (modern,$(MAKECMDGOALS))
   MODERN := 1
@@ -118,7 +119,10 @@ LIBPATH := -L ../../tools/agbcc/lib
 LIB := $(LIBPATH) -lgcc -lc -L../../libagbsyscall -lagbsyscall
 else
 CC1              = $(shell $(PATH_MODERNCC) --print-prog-name=cc1) -quiet
-override CFLAGS += -mthumb -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast
+override CFLAGS += -mthumb -mthumb-interwork -O2 -mabi=apcs-gnu -mtune=arm7tdmi -march=armv4t -fno-toplevel-reorder -Wno-pointer-to-int-cast -std=gnu17
+ifeq ($(ANALYZE),1)
+override CFLAGS += -fanalyzer
+endif
 ROM := $(MODERN_ROM_NAME)
 OBJ_DIR := $(MODERN_OBJ_DIR_NAME)
 LIBPATH := -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libgcc.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libnosys.a))" -L "$(dir $(shell $(PATH_MODERNCC) -mthumb -print-file-name=libc.a))"
@@ -455,7 +459,7 @@ $(OBJ_DIR)/sym_ewram.ld: sym_ewram.txt
 
 # NOTE: Based on C_DEP above, but without NODEP and KEEP_TEMPS handling.
 define TEST_DEP
-$1: $2 $$(shell $(SCANINC) -I include -I tools/agbcc/include -I gflib -I test $2)
+$1: $2 $$(shell $(SCANINC) -I include -I tools/agbcc/include -I gflib $2)
 	@echo "$$(CC1) <flags> -o $$@ $$<"
 	@$$(CPP) $$(CPPFLAGS) $$< | $$(PREPROC) $$< charmap.txt -i | $$(CC1) $$(CFLAGS) -o - - | cat - <(echo -e ".text\n\t.align\t2, 0") | $$(AS) $$(ASFLAGS) -o $$@ -
 endef

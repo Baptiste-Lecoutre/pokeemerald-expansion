@@ -33,7 +33,7 @@ RustboroCity_Mart_Pokemart_Basic:
 	end
 
 RustboroCity_Mart_EventScript_PokemartExpanded::
-	pokemart RustboroCity_Mart_Pokemart_Expanded
+	pokemart 0 @ RustboroCity_Mart_Pokemart_Expanded
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end

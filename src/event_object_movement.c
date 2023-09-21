@@ -496,16 +496,21 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION        0x1130
 #define OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION        0x1131
 #define OBJ_EVENT_PAL_TAG_SNORLAX                 0x1132
+#define OBJ_EVENT_PAL_TAG_REGIDRAGO               0x1133
+#define OBJ_EVENT_PAL_TAG_REGIELEKI               0x1134
 
-#define OBJ_EVENT_PAL_TAG_RED                     0x1133
-#define OBJ_EVENT_PAL_TAG_LEAF                    0x1134
-#define OBJ_EVENT_PAL_TAG_ETHAN                   0x1135
-#define OBJ_EVENT_PAL_TAG_LYRA                    0x1136
-#define OBJ_EVENT_PAL_TAG_KRIS                    0x1137
-#define OBJ_EVENT_PAL_TAG_LUCAS                   0x1138
-#define OBJ_EVENT_PAL_TAG_DAWN                    0x1139
-#define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113A
-#define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
+#define OBJ_EVENT_PAL_TAG_RED                     0x1135
+#define OBJ_EVENT_PAL_TAG_LEAF                    0x1136
+#define OBJ_EVENT_PAL_TAG_ETHAN                   0x1137
+#define OBJ_EVENT_PAL_TAG_LYRA                    0x1138
+#define OBJ_EVENT_PAL_TAG_KRIS                    0x1139
+#define OBJ_EVENT_PAL_TAG_LUCAS                   0x113A
+#define OBJ_EVENT_PAL_TAG_DAWN                    0x113B
+#define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113C
+#define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113D
+#define OBJ_EVENT_PAL_TAG_CHASE                   0x113E
+#define OBJ_EVENT_PAL_TAG_ELAINE                  0x113F
+#define OBJ_EVENT_PAL_TAG_WALLY                   0x1140
 
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
@@ -564,6 +569,8 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPaletteRegigigas,          OBJ_EVENT_PAL_TAG_REGIGIGAS},
     {gObjectEventPaletteCynthia,            OBJ_EVENT_PAL_TAG_CYNTHIA},
     {gObjectEventPal_Snorlax,               OBJ_EVENT_PAL_TAG_SNORLAX},
+    {gObjectEventPaletteRegidrago,          OBJ_EVENT_PAL_TAG_REGIDRAGO},
+    {gObjectEventPaletteRegieleki,          OBJ_EVENT_PAL_TAG_REGIELEKI},
     {gObjectEventPal_Npc5,                  OBJ_EVENT_PAL_TAG_NPC_5},
     {gObjectEventPal_Npc6,                  OBJ_EVENT_PAL_TAG_NPC_6},
     {gObjectEventPal_Npc7,                  OBJ_EVENT_PAL_TAG_NPC_7},
@@ -581,6 +588,9 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Dawn,                  OBJ_EVENT_PAL_TAG_DAWN},
     {gObjectEventPal_LucasPlatinum,         OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM},
     {gObjectEventPal_DawnPlatinum,          OBJ_EVENT_PAL_TAG_DAWN_PLATINUM},
+    {gObjectEventPal_Chase,                 OBJ_EVENT_PAL_TAG_CHASE},
+    {gObjectEventPal_Elaine,                OBJ_EVENT_PAL_TAG_ELAINE},
+    {gObjectEventPal_Wally,                 OBJ_EVENT_PAL_TAG_WALLY},
     {gObjectEventPaletteLight,              OBJ_EVENT_PAL_TAG_LIGHT},
     {gObjectEventPaletteLight2,             OBJ_EVENT_PAL_TAG_LIGHT_2},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
@@ -693,6 +703,13 @@ static const u16 sReflectionPaletteTags_RedLeaf[] = {
     OBJ_EVENT_PAL_TAG_RED_LEAF,
 };
 
+static const u16 sReflectionPaletteTags_Wally[] = {
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+    OBJ_EVENT_PAL_TAG_WALLY,
+};
+
 static const struct PairedPalettes sSpecialObjectReflectionPaletteSets[] = {
     {OBJ_EVENT_PAL_TAG_BRENDAN,          sReflectionPaletteTags_Brendan},
     {OBJ_EVENT_PAL_TAG_MAY,              sReflectionPaletteTags_May},
@@ -707,6 +724,7 @@ static const struct PairedPalettes sSpecialObjectReflectionPaletteSets[] = {
     {OBJ_EVENT_PAL_TAG_NPC_3,            sReflectionPaletteTags_Npc3},
     {OBJ_EVENT_PAL_TAG_SUBMARINE_SHADOW, sReflectionPaletteTags_SubmarineShadow},
     {OBJ_EVENT_PAL_TAG_RED_LEAF,         sReflectionPaletteTags_RedLeaf},
+    {OBJ_EVENT_PAL_TAG_WALLY,            sReflectionPaletteTags_Wally},
     {OBJ_EVENT_PAL_TAG_NONE,             NULL},
 };
 
@@ -1802,9 +1820,6 @@ static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species,
       form %= NUM_UNOWN_FORMS;
       graphicsInfo = &gPokemonObjectGraphics[form ? SPECIES_UNOWN_B + form - 1 : species];
       break;
-    case SPECIES_CASTFORM: // Sunny, rainy, snowy forms stored separately
-      graphicsInfo = &gCastformObjectGraphics[form % NUM_CASTFORM_FORMS];
-      break;
     default:
       graphicsInfo = &gPokemonObjectGraphics[species];
       break;
@@ -1880,7 +1895,7 @@ static void RefreshFollowerGraphics(struct ObjectEvent *objEvent) {
 }
 
 // Like CastformDataTypeChange, but for overworld weather
-static u8 GetOverworldCastformForm(void) {
+/*static u8 GetOverworldCastformForm(void) {
     switch (GetCurrentWeather())
     {
     case WEATHER_SUNNY_CLOUDS:
@@ -1894,9 +1909,30 @@ static u8 GetOverworldCastformForm(void) {
         return CASTFORM_ICE;
     }
     return CASTFORM_NORMAL;
+}*/
+
+static u16 GetOverworldCastformSpecies(void)
+{
+    switch(GetCurrentWeather())
+    {
+        case WEATHER_SUNNY_CLOUDS:
+        case WEATHER_DROUGHT:
+            return SPECIES_CASTFORM_SUNNY;
+            break;
+        case WEATHER_RAIN:
+        case WEATHER_RAIN_THUNDERSTORM:
+        case WEATHER_DOWNPOUR:
+            return SPECIES_CASTFORM_RAINY;
+            break;
+        case WEATHER_SNOW:
+            return SPECIES_CASTFORM_SNOWY;
+            break;
+    }
+    return SPECIES_CASTFORM;
 }
 
 static bool8 GetMonInfo(struct Pokemon * mon, u16 *species, u8 *form, u8 *shiny) {
+    *form = 0; // default
     if (!mon) {
         *species = SPECIES_NONE;
         *form = 0;
@@ -1905,14 +1941,13 @@ static bool8 GetMonInfo(struct Pokemon * mon, u16 *species, u8 *form, u8 *shiny)
     }
     *species = GetMonData(mon, MON_DATA_SPECIES);
     *shiny = IsMonShiny(mon);
-    *form = 0; // default
     switch (*species)
     {
     case SPECIES_UNOWN:
         *form = GET_UNOWN_LETTER(mon->box.personality);
         break;
     case SPECIES_CASTFORM: // form is based on overworld weather
-        *form = GetOverworldCastformForm();
+        *species = GetOverworldCastformSpecies();
         break;
     }
     return TRUE;
@@ -1929,8 +1964,8 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
   u16 species;
   bool8 shiny;
   u8 form;
-  // Avoid spawning large (64x64) follower pokemon inside buildings //optionsShowFollowerPokemon
-  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER)) {
+  // Avoid spawning large (64x64) follower pokemon inside buildings
+  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER) && FALSE /*&& gSaveBlock2Ptr->optionsShowFollowerPokemon*/) {
     if (objEvent == NULL) { // Spawn follower
       struct ObjectEventTemplate template = {
         .localId = OBJ_EVENT_ID_FOLLOWER,
@@ -2255,7 +2290,7 @@ void UpdateLightSprite(struct Sprite *sprite) {
         DestroySprite(sprite);
         FieldEffectFreeTilesIfUnused(sheetTileStart);
         FieldEffectFreePaletteIfUnused(paletteNum);
-        Weather_SetBlendCoeffs(12, 12); // TODO: Restore original blend coeffs at dawn //7, 12
+        Weather_SetBlendCoeffs(7, 12); // TODO: Restore original blend coeffs at dawn //7, 12
         return;
     }
 
@@ -2267,10 +2302,10 @@ void UpdateLightSprite(struct Sprite *sprite) {
     switch (sprite->data[5]) { // lightType
     case 0:
         if (gPaletteFade.active) { // if palette fade is active, don't flicker since the timer won't be updated
-            Weather_SetBlendCoeffs(12, 12); //7, 12
+            Weather_SetBlendCoeffs(7, 12); //7, 12
             sprite->invisible = FALSE;
         } else if (gPlayerAvatar.tileTransitionState) {
-            Weather_SetBlendCoeffs(12, 12); // As long as the second coefficient stays 12, shadows will not change //7, 12
+            Weather_SetBlendCoeffs(7, 12); // As long as the second coefficient stays 12, shadows will not change //7, 12
             sprite->invisible = FALSE;
             if (GetSpritePaletteTagByPaletteNum(sprite->oam.paletteNum) == OBJ_EVENT_PAL_TAG_LIGHT_2)
                 LoadSpritePaletteInSlot(&sObjectEventSpritePalettes[FindObjectEventPaletteIndexByTag(OBJ_EVENT_PAL_TAG_LIGHT)], sprite->oam.paletteNum);
@@ -2281,7 +2316,7 @@ void UpdateLightSprite(struct Sprite *sprite) {
         }*/
         break;
     case 1 ... 2:
-        Weather_SetBlendCoeffs(12, 12);
+        Weather_SetBlendCoeffs(7, 12);
         sprite->invisible = FALSE;
         break;
     }
@@ -5119,10 +5154,9 @@ static bool8 EndFollowerTransformEffect(struct ObjectEvent *objectEvent, struct 
 
 static bool8 TryStartFollowerTransformEffect(struct ObjectEvent *objectEvent, struct Sprite *sprite) {
     u32 multi;
-    if (OW_SPECIES(objectEvent) == SPECIES_CASTFORM && OW_FORM(objectEvent) != (multi = GetOverworldCastformForm())) {
-        sprite->data[7] = TRANSFORM_TYPE_PERMANENT << 8;
-        objectEvent->graphicsId &= OBJ_EVENT_GFX_SPECIES_MASK;
-        objectEvent->graphicsId |= multi << OBJ_EVENT_GFX_SPECIES_BITS;
+    if (GET_BASE_SPECIES_ID(OW_SPECIES(objectEvent)) == SPECIES_CASTFORM
+        && OW_SPECIES(objectEvent) != GetOverworldCastformSpecies()) {
+        sprite->data[7] = TRANSFORM_TYPE_WEATHER << 8;
         return TRUE;
     } else if ((gRngValue >> 16) < 18 && GetLocalWildMon(FALSE)
             && (OW_SPECIES(objectEvent) == SPECIES_MEW || OW_SPECIES(objectEvent) == SPECIES_DITTO)) {
@@ -5152,6 +5186,17 @@ static bool8 UpdateFollowerTransformEffect(struct ObjectEvent *objectEvent, stru
         switch (type)
         {
         case TRANSFORM_TYPE_PERMANENT:
+            RefreshFollowerGraphics(objectEvent);
+            break;
+        case TRANSFORM_TYPE_WEATHER:
+            multi = objectEvent->graphicsId;
+            objectEvent->graphicsId = GetOverworldCastformSpecies();
+            if (!objectEvent->graphicsId)
+            {
+                objectEvent->graphicsId = multi;
+                break;
+            }
+            objectEvent->graphicsId += OBJ_EVENT_GFX_MON_BASE;
             RefreshFollowerGraphics(objectEvent);
             break;
         case TRANSFORM_TYPE_RANDOM_WILD:
@@ -9466,7 +9511,7 @@ static void DoGroundEffects_OnSpawn(struct ObjectEvent *objEvent, struct Sprite 
 {
     u32 flags;
 
-    if (objEvent->triggerGroundEffectsOnMove)
+    if (objEvent->triggerGroundEffectsOnMove && objEvent->localId != OBJ_EVENT_ID_CAMERA)
     {
         flags = 0;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
@@ -9482,7 +9527,7 @@ static void DoGroundEffects_OnBeginStep(struct ObjectEvent *objEvent, struct Spr
 {
     u32 flags;
 
-    if (objEvent->triggerGroundEffectsOnMove)
+    if (objEvent->triggerGroundEffectsOnMove && objEvent->localId != OBJ_EVENT_ID_CAMERA)
     {
         flags = 0;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
@@ -9499,7 +9544,7 @@ static void DoGroundEffects_OnFinishStep(struct ObjectEvent *objEvent, struct Sp
 {
     u32 flags;
 
-    if (objEvent->triggerGroundEffectsOnStop)
+    if (objEvent->triggerGroundEffectsOnStop && objEvent->localId != OBJ_EVENT_ID_CAMERA)
     {
         flags = 0;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);

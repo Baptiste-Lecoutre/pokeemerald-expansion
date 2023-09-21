@@ -834,23 +834,13 @@ bool32 InitSpritePosToAnimBattler(u32 animBattlerId, struct Sprite *sprite, bool
     return TRUE;
 }
 
-u8 GetBattlerSide(u8 battlerId)
-{
-    return GET_BATTLER_SIDE2(battlerId);
-}
-
-u8 GetBattlerPosition(u8 battlerId)
-{
-    return gBattlerPositions[battlerId];
-}
-
 u8 GetBattlerAtPosition(u8 position)
 {
     u8 i;
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (gBattlerPositions[i] == position)
+        if (GetBattlerPosition(i) == position)
             break;
     }
     return i;
@@ -869,7 +859,7 @@ bool8 IsBattlerSpritePresent(u8 battlerId)
     }
     else
     {
-        if (gBattlerPositions[battlerId] == 0xff)
+        if (GetBattlerPosition(battlerId) == 0xff)
             return FALSE;
 
         if (!gBattleStruct->spriteIgnore0Hp)

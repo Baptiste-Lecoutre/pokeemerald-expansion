@@ -95,7 +95,6 @@ void FieldClearPlayerInput(struct FieldInput *input)
     input->input_field_1_2 = FALSE;
     input->input_field_1_3 = FALSE;
     input->dpadDirection = 0;
-    input->dpadDirectionRegister = 4;
 }
 
 static u8 GetDirectionFromBitfield(u8 bitfield)
@@ -183,25 +182,8 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
             input->checkStandardWildEncounter = TRUE;
     }
 
-    if (!gSaveBlock2Ptr->showItemIconsWheel)
-    {
-        DestroyItemIconSprites();
-        SetDirectionFromHeldKeys(heldKeys);
-        input->dpadDirection = sCurrentDirection;
-    }
-    else
-    {
-        //sRegisteredKeyItem = 4;
-        if (newKeys & DPAD_UP || heldKeys & DPAD_UP)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 0;
-        else if (newKeys & DPAD_RIGHT || heldKeys & DPAD_RIGHT)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 1;
-        else if (newKeys & DPAD_DOWN || heldKeys & DPAD_DOWN)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 2;
-        else if (newKeys & DPAD_LEFT || heldKeys & DPAD_LEFT)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 3;
-            
-    }
+    SetDirectionFromHeldKeys(heldKeys);
+    input->dpadDirection = sCurrentDirection;
 
 #if DEBUG_OVERWORLD_MENU == TRUE && DEBUG_OVERWORLD_IN_MENU == FALSE
     if ((heldKeys & DEBUG_OVERWORLD_HELD_KEYS) && input->DEBUG_OVERWORLD_TRIGGER_EVENT)
@@ -261,44 +243,15 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     if (input->pressedAButton && TrySetupDiveDownScript() == TRUE)
         return TRUE;
 
-    if (gSaveBlock2Ptr->showItemIconsWheel && (input->pressedAButton || input->pressedBButton))
-    {
-        gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-        sRegisteredKeyItem = 4;
-        DestroyItemIconSprites();
-    }
-
     if (input->pressedStartButton)
     {
         PlaySE(SE_WIN_OPEN);
-        gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-        DestroyItemIconSprites();
         ShowStartMenu();
         return TRUE;
     }
 
-    if (input->pressedSelectButton && PlayerHasOneRegisteredItem())
-    {
-        gSaveBlock2Ptr->showItemIconsWheel = !gSaveBlock2Ptr->showItemIconsWheel;
-        sRegisteredKeyItem = 4;
-        if (gSaveBlock2Ptr->showItemIconsWheel)
-            DrawRegisteredQuickAccess();
-        else 
-            DestroyItemIconSprites();
-    }
-
-    if (gSaveBlock2Ptr->showItemIconsWheel && sRegisteredKeyItem != 4)
-    {
-        if (input->dpadDirectionRegister == 4)
-        {
-            if (UseRegisteredKeyItemOnField(sRegisteredKeyItem) == TRUE)
-            {
-                sRegisteredKeyItem = 4;
-                gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-                return TRUE;
-            }
-        }
-    }
+    if (input->pressedSelectButton && UseRegisteredKeyItemOnField() == TRUE)
+        return TRUE;
     
     if (input->tookStep && TryFindHiddenPokemon())
         return TRUE;

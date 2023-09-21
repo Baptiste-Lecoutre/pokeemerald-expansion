@@ -175,7 +175,7 @@ const u8 gText_IdNumberSlash[] = _("IDNo. /"); // Unused
 const u8 gText_Name[] = _("Name");
 const u8 gText_IDNumber[] = _("IDNo.");
 const u8 gText_BirchInTrouble[] = _("Prof. Birch is in trouble!\nRelease a Pokémon and rescue him!");
-const u8 gText_ConfirmStarterChoice[] = _("You can change pocket using {L_BUTTON}{R_BUTTON}.\nDo you choose this Pokémon?");
+const u8 gText_ConfirmStarterChoice[] = _("Do you choose this Pokémon?");
 const u8 gText_Pokemon4[] = _("Pokémon"); // Unused
 const u8 gText_FlyToWhere[] = _("Fly to where?");
 const u8 gMenuText_Use[] = _("Use");
@@ -233,6 +233,7 @@ const u8 gText_TooImportantToToss[] = _("That's much too\nimportant to toss\nout
 const u8 gText_TossHowManyVar1s[] = _("Toss out how many\n{STR_VAR_1}(s)?");
 const u8 gText_ThrewAwayVar2Var1s[] = _("Threw away {STR_VAR_2}\n{STR_VAR_1}(s).");
 const u8 gText_ConfirmTossItems[] = _("Is it okay to\nthrow away {STR_VAR_2}\n{STR_VAR_1}(s)?");
+const u8 gText_PressAnyDpadKey[] = _("Press any {DPAD_NONE} key\nto register item\nin that slot.");
 const u8 gText_DadsAdvice[] = _("Dad's advice…\n{PLAYER}, there's a time and place for\leverything!{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantDismountBike[] = _("You can't dismount your bike here.{PAUSE_UNTIL_PRESS}");
 const u8 gText_ItemFinderNearby[] = _("Huh?\nThe Itemfinder's responding!\pThere's an item buried around here!{PAUSE_UNTIL_PRESS}");
@@ -420,6 +421,7 @@ const u8 gText_MoveNotLearned[] = _("{STR_VAR_1} did not learn the\nmove {STR_VA
 const u8 gText_WhichMoveToForget[] = _("Which move should be forgotten?{PAUSE_UNTIL_PRESS}");
 const u8 gText_12PoofForgotMove[] = _("1, {PAUSE 15}2, and{PAUSE 15}… {PAUSE 15}… {PAUSE 15}… {PAUSE 15}{PLAY_SE SE_BALL_BOUNCE_1}Poof!\p{STR_VAR_1} forgot how to\nuse {STR_VAR_2}.\pAnd…{PAUSE_UNTIL_PRESS}");
 const u8 gText_PkmnAlreadyKnows[] = _("{STR_VAR_1} already knows\n{STR_VAR_2}.{PAUSE_UNTIL_PRESS}");
+const u8 gText_PkmnFriendshipNotHighEnough[] = _("Hmm… This Pokémon can learn this move.\pBut your bond of friendship is not yet\nstrong enough.\pThat means I cannot teach it this move.");
 const u8 gText_PkmnHPRestoredByVar2[] = _("{STR_VAR_1}'s HP was restored\nby {STR_VAR_2} point(s).{PAUSE_UNTIL_PRESS}");
 const u8 gText_PkmnCuredOfPoison[] = _("{STR_VAR_1} was cured of its\npoisoning.{PAUSE_UNTIL_PRESS}");
 const u8 gText_PkmnCuredOfParalysis[] = _("{STR_VAR_1} was cured of\nparalysis.{PAUSE_UNTIL_PRESS}");
@@ -528,6 +530,8 @@ const u8 gText_PkmnSkills[] = _("Pokémon skills");
 const u8 gText_BattleMoves[] = _("Battle moves");
 const u8 gText_ContestMoves[] = _("Contest moves");
 const u8 gText_Info[] = _("Info");
+const u8 gText_PkmnIV[] = _("IVs");
+const u8 gText_PkmnEV[] = _("EVs");
 const u8 gText_EggWillTakeALongTime[] = _("It looks like this Egg will\ntake a long time to hatch.");
 const u8 gText_EggWillTakeSomeTime[] = _("What will hatch from this?\nIt will take some time.");
 const u8 gText_EggWillHatchSoon[] = _("It moves occasionally.\nIt should hatch soon.");
@@ -1843,6 +1847,7 @@ const u8 gText_Anna[] = _("Anna");
 const u8 gText_ClearAllSaveData[] = _("Clear all save data areas?");
 const u8 gText_ClearingData[] = _("Clearing data…\nPlease wait.");
 const u8 gText_IsThisTheCorrectTime[] = _("Is this the correct time?");
+const u8 gText_TimeCanBeChangedAgain[] = _("Clock can be reset by pressing Start");
 const u8 gText_Confirm3[] = _("Confirm");
 const u8 gText_Cancel4[] = _("Cancel");
 const u8 gText_MrStoneMatchCallDesc[] = _("Devon Pres");
@@ -2024,6 +2029,13 @@ const u8 gText_PokeVialEmpty[] = _("The Poké Vial is empty.\nRefill it at a Pok
 const u8 gText_UsedPokeVial[] = _("{PLAYER} used the Poké Vial.\nAll Pokémon were fully restored!{PAUSE_UNTIL_PRESS}");
 
 const u8 gStartMenu_TimeBoxClock[] = _("{STR_VAR_1}:{STR_VAR_2}:{STR_VAR_3}");
+
+// Nature changer
+const u8 gText_FlavourRed[] = _("Red:{CLEAR_TO 0x32}Attack");
+const u8 gText_FlavourYellow[] = _("Yellow:{CLEAR_TO 0x32}Defense");
+const u8 gText_FlavourPink[] = _("Pink:{CLEAR_TO 0x32}Speed");
+const u8 gText_FlavourBlue[] = _("Blue:{CLEAR_TO 0x32}Sp. Atk");
+const u8 gText_FlavourGreen[] = _("Green:{CLEAR_TO 0x32}Sp. Def");
 
 // EV/IV changers
 const u8 gText_View[] = _("View");
@@ -2269,6 +2281,7 @@ const u8 gText_FirstDrawer[] = _("First");
 const u8 gText_SecondDrawer[] = _("Second");
 const u8 gText_ThirdDrawer[] = _("Third");
 const u8 gText_FourthDrawer[] = _("Fourth");
+const u8 gText_FifthDrawer[] = _("Fifth");
 
 const u8 gText_RedCostume[] = _("Red");
 const u8 gText_LeafCostume[] = _("Green");
@@ -2281,6 +2294,8 @@ const u8 gText_LucasCostume[] = _("Diamond");
 const u8 gText_DawnCostume[] = _("Pearl");
 const u8 gText_LucasPlatinumCostume[] = _("Platinum 1");
 const u8 gText_DawnPlatinumCostume[] = _("Platinum 2");
+const u8 gText_ChaseCostume[] = _("Partner 1");
+const u8 gText_ElaineCostume[] = _("Partner 2");
 
 const u8 gText_RoamerEntei[] = _("Red dog");
 const u8 gText_RoamerSuicune[] = _("Red dog");
@@ -2297,3 +2312,37 @@ const u8 gText_RoamerGZapdos[] = _("Orange bird");
 const u8 gText_RoamerGArticuno[] = _("Purple bird");
 const u8 gText_RoamerZacian[] = _("Sword");
 const u8 gText_RoamerZamazenta[] = _("Shield");
+
+// Fufrou forms
+const u8 gText_HeartTrim[] = _("Heart Trim");
+const u8 gText_StarTrim[] = _("Star Trim");
+const u8 gText_DiamondTrim[] = _("Diamond Trim");
+const u8 gText_DebutanteTrim[] = _("Debutante Trim");
+const u8 gText_MatronTrim[] = _("Matron Trim");
+const u8 gText_DandyTrim[] = _("Dandy Trim"); 
+const u8 gText_LaReineTrim[] = _("La Reine Trim");
+const u8 gText_KabukiTrim[] = _("Kabuki Trim");
+const u8 gText_PharaohTrim[] = _("Pharaoh Trim");
+const u8 gText_BackToNatural[] = _("Back to natural");
+
+// Rotom form options
+const u8 gText_MicrowaveOven[] = _("Microwave Oven");
+const u8 gText_WashingMachine[] = _("Washing Machine");
+const u8 gText_Refrigerator[] = _("Refrigerator");
+const u8 gText_ElectricFan[] = _("Electric Fan");
+const u8 gText_Lawnmower[] = _("Lawnmower");
+const u8 gText_Recall[] = _("Recall");
+
+// Starter Tutor Moves
+const u8 gText_GrassPledge[] = _("Grass Pledge");
+const u8 gText_FirePledge[] = _("Fire Pledge");
+const u8 gText_WaterPledge[] = _("Water Pledge");
+const u8 gText_FrenzyPlant[] = _("Frenzy Plant");
+const u8 gText_BlastBurn[] = _("Blast Burn");
+const u8 gText_HydroCannon[] = _("Hydro Cannon");
+
+// Battle Team Preview
+const u8 gText_TeamPreviewSingleDoubleText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}'s Party");
+const u8 gText_TeamPreviewMultiText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}'s Party\n{B_TRAINER2_CLASS} {B_TRAINER2_NAME}'s Party");
+const u8 gText_TeamPreviewMultiLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party");
+const u8 gText_TeamPreviewSingleDoubleLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party\n {B_LINK_OPPONENT2_NAME}'s Party");
