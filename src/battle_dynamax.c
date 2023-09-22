@@ -571,7 +571,7 @@ void BS_UpdateDynamax(void)
 {
     NATIVE_ARGS();
     u16 battler = gBattleScripting.battler;
-    struct Pokemon *mon = &GetSideParty(GetBattlerSide(battler))[gBattlerPartyIndexes[battler]];
+    struct Pokemon *mon = &GetBattlerParty(battler)[gBattlerPartyIndexes[battler]];
 
     if (!IsGigantamaxed(battler)) // RecalcBattlerStats will get called on form change.
         RecalcBattlerStats(battler, mon);
