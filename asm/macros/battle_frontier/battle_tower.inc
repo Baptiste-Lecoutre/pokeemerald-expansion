@@ -136,7 +136,7 @@
 	.macro multi_sootopolis partnerId:req, partnerPicId:req
 	special SavePlayerParty
 	setflag FLAG_SOOTOPOLIS_BATTLE
-	multi_do MULTI_BATTLE_SOOTOPOLIS, \partnerId, \partnerPicId
+	multi_do_fixed MULTI_BATTLE_SOOTOPOLIS, \partnerId, \partnerPicId
 	.endm
 
 	.macro multi_do_fixed type:req, partnerId:req, partnerPicId:req

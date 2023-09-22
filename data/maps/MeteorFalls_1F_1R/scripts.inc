@@ -176,8 +176,8 @@ MeteorFalls_1F_1R_EventScript_MultiMay::
 	applymovement LOCALID_MAGMA_GRUNT_2, Common_Movement_WalkInPlaceRight
 	waitmovement 0
 	msgbox MeteorFalls_1F_1R_Text_CourtneyLetsBattle, MSGBOX_DEFAULT
-	choose_mons
-    call_if_eq VAR_RESULT, 0, MeteorFalls_1F_1R_EventScript_ChooseMons
+@	choose_mons
+@    call_if_eq VAR_RESULT, 0, MeteorFalls_1F_1R_EventScript_ChooseMons
 	switch VAR_STARTER_MON
 	case 0, MeteorFalls_1F_1R_EventScript_MayBattleTreecko
 	case 1, MeteorFalls_1F_1R_EventScript_MayBattleTorchic
@@ -193,8 +193,8 @@ MeteorFalls_1F_1R_EventScript_MultiBrendan::
 	applymovement LOCALID_MAGMA_GRUNT_2, Common_Movement_WalkInPlaceRight
 	waitmovement 0
 	msgbox MeteorFalls_1F_1R_Text_CourtneyLetsBattle, MSGBOX_DEFAULT
-	choose_mons
-    call_if_eq VAR_RESULT, 0, MeteorFalls_1F_1R_EventScript_ChooseMons
+@	choose_mons
+@    call_if_eq VAR_RESULT, 0, MeteorFalls_1F_1R_EventScript_ChooseMons
 	switch VAR_STARTER_MON
 	case 0, MeteorFalls_1F_1R_EventScript_BrendanBattleTreecko
 	case 1, MeteorFalls_1F_1R_EventScript_BrendanBattleTorchic

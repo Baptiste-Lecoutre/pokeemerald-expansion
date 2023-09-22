@@ -231,19 +231,19 @@ VictoryRoad_1F_EventScript_MayLaunchBattle2::
 	end
 
 VictoryRoad_1F_EventScript_BattleMayTorchic2::
-	choose_mons
+@	choose_mons
 	multi_fixed_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TORCHIC, TRAINER_BACK_PIC_MAY
 	goto VictoryRoad_1F_EventScript_EndMayBattle2
 	end
 
 VictoryRoad_1F_EventScript_BattleMayTreecko2::
-	choose_mons
+@	choose_mons
 	multi_fixed_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TREECKO, TRAINER_BACK_PIC_MAY
 	goto VictoryRoad_1F_EventScript_EndMayBattle2
 	end
 
 VictoryRoad_1F_EventScript_BattleMayMudkip2::
-	choose_mons
+@	choose_mons
 	multi_fixed_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_MUDKIP, TRAINER_BACK_PIC_MAY
 	goto VictoryRoad_1F_EventScript_EndMayBattle2
 	end
@@ -284,19 +284,19 @@ VictoryRoad_1F_EventScript_BrendanLaunchBattle2::
 	end
 
 VictoryRoad_1F_EventScript_BattleBrendanTreecko2::
-	choose_mons
+@	choose_mons
 	multi_fixed_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TREECKO, TRAINER_BACK_PIC_BRENDAN
 	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
 	end
 
 VictoryRoad_1F_EventScript_BattleBrendanTorchic2::
-	choose_mons
+@	choose_mons
 	multi_fixed_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC, TRAINER_BACK_PIC_BRENDAN
 	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
 	end
 
 VictoryRoad_1F_EventScript_BattleBrendanMudkip2::
-	choose_mons
+@	choose_mons
 	multi_fixed_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP, TRAINER_BACK_PIC_BRENDAN
 	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
 	end
