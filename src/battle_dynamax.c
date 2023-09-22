@@ -133,10 +133,10 @@ bool32 CanDynamax(u16 battlerId)
     if (holdEffect == HOLD_EFFECT_MEGA_STONE || holdEffect == HOLD_EFFECT_Z_CRYSTAL)
         return FALSE;
 
-    // Cannot Dynamax if your side has already or will Dynamax.
-    if (gBattleStruct->dynamax.alreadyDynamaxed[GetBattlerSide(battlerId)]
-        || gBattleStruct->dynamax.dynamaxed[BATTLE_PARTNER(battlerId)]
-        || gBattleStruct->dynamax.toDynamax & gBitTable[BATTLE_PARTNER(battlerId)])
+    // Cannot Dynamax if already has.
+    if (gBattleStruct->dynamax.alreadyDynamaxed[battlerId]
+        /*|| gBattleStruct->dynamax.dynamaxed[BATTLE_PARTNER(battlerId)]
+        || gBattleStruct->dynamax.toDynamax & gBitTable[BATTLE_PARTNER(battlerId)]*/)
         return FALSE;
 
     // TODO: Cannot Dynamax in a Max Raid if you don't have Dynamax Energy.
@@ -202,10 +202,9 @@ u16 GetNonDynamaxMaxHP(u16 battlerId)
 // Sets flags used for Dynamaxing and checks Gigantamax forms.
 void PrepareBattlerForDynamax(u16 battlerId)
 {
-    u8 side = GetBattlerSide(battlerId);
     u16 newSpecies;
 
-    gBattleStruct->dynamax.alreadyDynamaxed[side] = TRUE;
+    gBattleStruct->dynamax.alreadyDynamaxed[battlerId] = TRUE;
     gBattleStruct->dynamax.dynamaxed[battlerId] = TRUE;
     gBattleStruct->dynamax.dynamaxTurns[battlerId] = DYNAMAX_TURNS_COUNT;
 
@@ -230,7 +229,8 @@ void UndoDynamax(u16 battlerId)
     // Revert HP if battler is still Dynamaxed.
     if (IsDynamaxed(battlerId))
     {
-        struct Pokemon *mon = (side == B_SIDE_PLAYER) ? &gPlayerParty[monId] : &gEnemyParty[monId];
+        struct Pokemon *party = GetBattlerParty(battlerId);
+        struct Pokemon *mon = &party[monId];
         u16 mult = UQ_4_12(1.0/1.5); // placeholder
         gBattleMons[battlerId].hp = UQ_4_12_TO_INT((GetMonData(mon, MON_DATA_HP) * mult + 1) + UQ_4_12_ROUND); // round up
         SetMonData(mon, MON_DATA_HP, &gBattleMons[battlerId].hp);

@@ -537,7 +537,7 @@ struct DynamaxData
     u8 triggerSpriteId;
     u8 indicatorSpriteId[MAX_BATTLERS_COUNT];
     u8 toDynamax; // flags using gBitTable
-    bool8 alreadyDynamaxed[NUM_BATTLE_SIDES];
+    bool8 alreadyDynamaxed[MAX_BATTLERS_COUNT];
     bool8 dynamaxed[MAX_BATTLERS_COUNT];
     u8 dynamaxTurns[MAX_BATTLERS_COUNT];
     u8 usingMaxMove[MAX_BATTLERS_COUNT];
