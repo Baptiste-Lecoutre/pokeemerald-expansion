@@ -1543,8 +1543,11 @@ void ResetSentPokesToOpponentValue(void)
     gSentPokesToOpponent[0] = 0;
     gSentPokesToOpponent[1] = 0;
 
-    for (i = 0; i < gBattlersCount; i += 2)
-        bits |= gBitTable[gBattlerPartyIndexes[i]];
+    /*for (i = 0; i < gBattlersCount; i += 2)
+        bits |= gBitTable[gBattlerPartyIndexes[i]];*/
+    bits |= gBitTable[gBattlerPartyIndexes[0]];
+    if (gBattlersCount > 2 && GetBattlerPosition(2) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+        bits |= gBitTable[gBattlerPartyIndexes[2]];
 
     for (i = 1; i < gBattlersCount; i += 2)
         gSentPokesToOpponent[(i & BIT_FLANK) >> 1] = bits;
@@ -1560,11 +1563,15 @@ void OpponentSwitchInResetSentPokesToOpponentValue(u8 battler)
         u8 flank = ((battler & BIT_FLANK) >> 1);
         gSentPokesToOpponent[flank] = 0;
 
-        for (i = 0; i < gBattlersCount; i += 2)
+        /*for (i = 0; i < gBattlersCount; i += 2)
         {
             if (!(gAbsentBattlerFlags & gBitTable[i]))
                 bits |= gBitTable[gBattlerPartyIndexes[i]];
-        }
+        }*/
+        if (!(gAbsentBattlerFlags & gBitTable[0]))
+            bits |= gBitTable[gBattlerPartyIndexes[0]];
+        if (!(gAbsentBattlerFlags & gBitTable[2]) && gBattlersCount > 2 && GetBattlerPosition(2) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+            bits |= gBitTable[gBattlerPartyIndexes[2]];
         gSentPokesToOpponent[flank] = bits;
     }
 }
@@ -1575,7 +1582,7 @@ void UpdateSentPokesToOpponentValue(u8 battler)
     {
         OpponentSwitchInResetSentPokesToOpponentValue(battler);
     }
-    else
+    else if (GetBattlerPosition(battler) == B_POSITION_PLAYER_LEFT || (GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)))
     {
         s32 i;
         for (i = 1; i < gBattlersCount; i++)
