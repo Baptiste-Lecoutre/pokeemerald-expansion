@@ -8986,10 +8986,8 @@ static void Cmd_various(void)
     case VARIOUS_UPDATE_NICK:
     {
         VARIOUS_ARGS();
-        if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-            mon = &gPlayerParty[gBattlerPartyIndexes[battler]];
-        else
-            mon = &gEnemyParty[gBattlerPartyIndexes[battler]];
+        struct Pokemon *party = GetBattlerParty(battler);
+        mon = &party[gBattlerPartyIndexes[battler]];
         UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], mon, HEALTHBOX_NICK);
         break;
     }
