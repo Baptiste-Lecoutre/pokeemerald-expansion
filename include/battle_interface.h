@@ -126,5 +126,6 @@ void TryLoadMoveInfoWindow(u32 battler);
 void ChangeBattlerSpritesInvisibilities(bool8 invisible);
 void DisplayInBattleTeamPreview(void);
 void HideInBattleTeamPreview(void);
+void UpdateInBattleTeamPreview(void);
 
 #endif // GUARD_BATTLE_INTERFACE_H

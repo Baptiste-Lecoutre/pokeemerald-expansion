@@ -2551,7 +2551,7 @@ static void PlayerHandleBattleDebug(u32 battler)
 
 static void HandleInputTeamPreview(u32 battler)
 {
-	if (JOY_NEW(A_BUTTON | B_BUTTON | L_BUTTON | DPAD_ANY))
+	if (JOY_NEW(A_BUTTON | B_BUTTON))
 	{
 		PlaySE(SE_SELECT);
 		TryRestoreLastUsedBall();
@@ -2561,4 +2561,11 @@ static void HandleInputTeamPreview(u32 battler)
 		HideInBattleTeamPreview();
 		gBattlerControllerFuncs[battler] = HandleInputChooseAction;
 	}
+    else if (JOY_NEW(L_BUTTON | R_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+//        HideInBattleTeamPreview();
+//        DisplayInBattleTeamPreview();
+        UpdateInBattleTeamPreview();
+    }
 }

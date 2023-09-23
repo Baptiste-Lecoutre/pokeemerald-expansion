@@ -4336,30 +4336,11 @@ void ChangeBattlerSpritesInvisibilities(bool8 invisible)
 	}
 }
 
-static void Task_DisplayInBattleTeamPreview(u8 taskId)
+static void DisplayInBattleTeamPreviewSprites(void)
 {
     u32 i;
     u8 spriteId;
 	s16 x, y;
-    const u8* string;
-
-    //Update Background
-	gBattle_BG0_Y = 0; //Hide action selection - must go before creating icons! Causes sprite bugs otherwise
-	gBattle_BG1_X = 0; //Fix bg offsets if necessary (gets messed up by some battle anims)
-	gBattle_BG1_Y = 0;
-
-    LZDecompressVram(gBattleTeamPreview_TileSet, (void *)(BG_CHAR_ADDR(1)));
-    LZDecompressVram(gBattleTeamPreview_TileMap, (void *)(BG_SCREEN_ADDR(28)));
-    LoadCompressedPalette(gBattleTeamPreview_Palette, BG_PLTT_ID(11), PLTT_SIZE_4BPP);
-
-    REG_BG1CNT |= BGCNT_CHARBASE(1); //Original char base that isn't getting used for some reason
-	REG_DISPCNT |= DISPCNT_BG1_ON; //Can't use ShowBg because that resets the charbase
-
-    LoadSpriteSheet(&gSpriteSheet_HeldItem);
-    LoadSpritePalette(&gSpritePalette_HeldItem);
-    LoadSpriteSheet(&sTeamPreviewFaintedMonIconSpriteSheet);
-    LoadCompressedSpriteSheet(&sTeamPreviewStatusIconsSpriteSheet);
-    LoadMonIconPalette(SPECIES_NONE); //Used for status icon sprites
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -4437,6 +4418,43 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
             }
         }
     }
+}
+
+static void HideInBattleTeamPreviewSprites(void)
+{
+    u32 i;
+    u8 pal0 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 0); 
+	u8 pal1 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 1);
+	u8 pal2 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 2);
+    u8 pal3 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 3); 
+	u8 pal4 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 4);
+	u8 pal5 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 5);
+    u8 pal6 = IndexOfSpritePaletteTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON); //Fainted palette
+
+    //Destroy Sprites
+	for (i = 0; i < MAX_SPRITES; ++i)
+	{
+		if (gSprites[i].inUse)
+		{
+			if (gSprites[i].template->tileTag == GFX_TAG_TEAM_PREVIEW_STATUS_ICON
+			|| gSprites[i].template->tileTag == GFX_TAG_FAINTED_TEAM_PREVIEW_ICON
+			|| gSprites[i].template->tileTag == HELD_ITEM_TAG)
+				DestroySprite(&gSprites[i]);
+			else if (gSprites[i].oam.paletteNum == pal0
+			|| gSprites[i].oam.paletteNum == pal1
+			|| gSprites[i].oam.paletteNum == pal2
+			|| gSprites[i].oam.paletteNum == pal3
+            || gSprites[i].oam.paletteNum == pal4
+			|| gSprites[i].oam.paletteNum == pal5
+			|| gSprites[i].oam.paletteNum == pal6)
+				FreeAndDestroyMonIconSprite(&gSprites[i]);
+		}
+	}
+}
+
+static void DisplayInBattleTeamPreviewText(void)
+{
+    const u8* string;
 
     //Update Textbox
 	if (gBattleTypeFlags & BATTLE_TYPE_LINK)
@@ -4461,6 +4479,36 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
 
     BattleStringExpandPlaceholdersToDisplayedString(string);
 	BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MSG);
+}
+
+static void HideInBattleTeamPreviewText(void)
+{
+    //Clear Textbox
+	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
+}
+
+static void Task_DisplayInBattleTeamPreview(u8 taskId)
+{
+    //Update Background
+	gBattle_BG0_Y = 0; //Hide action selection - must go before creating icons! Causes sprite bugs otherwise
+	gBattle_BG1_X = 0; //Fix bg offsets if necessary (gets messed up by some battle anims)
+	gBattle_BG1_Y = 0;
+
+    LZDecompressVram(gBattleTeamPreview_TileSet, (void *)(BG_CHAR_ADDR(1)));
+    LZDecompressVram(gBattleTeamPreview_TileMap, (void *)(BG_SCREEN_ADDR(28)));
+    LoadCompressedPalette(gBattleTeamPreview_Palette, BG_PLTT_ID(11), PLTT_SIZE_4BPP);
+
+    REG_BG1CNT |= BGCNT_CHARBASE(1); //Original char base that isn't getting used for some reason
+	REG_DISPCNT |= DISPCNT_BG1_ON; //Can't use ShowBg because that resets the charbase
+
+    LoadSpriteSheet(&gSpriteSheet_HeldItem);
+    LoadSpritePalette(&gSpritePalette_HeldItem);
+    LoadSpriteSheet(&sTeamPreviewFaintedMonIconSpriteSheet);
+    LoadCompressedSpriteSheet(&sTeamPreviewStatusIconsSpriteSheet);
+    LoadMonIconPalette(SPECIES_NONE); //Used for status icon sprites
+
+    DisplayInBattleTeamPreviewSprites();
+    DisplayInBattleTeamPreviewText();
 	DestroyTask(taskId);
 }
 
@@ -4471,38 +4519,11 @@ void DisplayInBattleTeamPreview(void)
 
 void HideInBattleTeamPreview(void)
 {
-    u32 i;
-	u8 pal0 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 0); 
-	u8 pal1 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 1);
-	u8 pal2 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 2);
-    u8 pal3 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 3); 
-	u8 pal4 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 4);
-	u8 pal5 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 5);
-    u8 pal6 = IndexOfSpritePaletteTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON); //Fainted palette
-
     //Hide BG
 	gBattle_BG0_Y = 160; //Show action selection
 	RequestDma3Fill(0, (void*)(BG_SCREEN_ADDR(28)), 0x1000, 1); //Wipe tilemap (tiles don't need to be wiped)
 
-    //Destroy Sprites
-	for (i = 0; i < MAX_SPRITES; ++i)
-	{
-		if (gSprites[i].inUse)
-		{
-			if (gSprites[i].template->tileTag == GFX_TAG_TEAM_PREVIEW_STATUS_ICON
-			|| gSprites[i].template->tileTag == GFX_TAG_FAINTED_TEAM_PREVIEW_ICON
-			|| gSprites[i].template->tileTag == HELD_ITEM_TAG)
-				DestroySprite(&gSprites[i]);
-			else if (gSprites[i].oam.paletteNum == pal0
-			|| gSprites[i].oam.paletteNum == pal1
-			|| gSprites[i].oam.paletteNum == pal2
-			|| gSprites[i].oam.paletteNum == pal3
-            || gSprites[i].oam.paletteNum == pal4
-			|| gSprites[i].oam.paletteNum == pal5
-			|| gSprites[i].oam.paletteNum == pal6)
-				FreeAndDestroyMonIconSprite(&gSprites[i]);
-		}
-	}
+    HideInBattleTeamPreviewSprites();
 
 	//Free Palettes
 	FreeSpriteTilesByTag(HELD_ITEM_TAG);
@@ -4512,6 +4533,13 @@ void HideInBattleTeamPreview(void)
 	FreeSpritePaletteByTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON);
 	FreeMonIconPalettes();
 
-	//Clear Textbox
-	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
+	HideInBattleTeamPreviewText();
+}
+
+void UpdateInBattleTeamPreview(void)
+{
+    HideInBattleTeamPreviewSprites();
+    HideInBattleTeamPreviewText();
+    DisplayInBattleTeamPreviewSprites();
+    DisplayInBattleTeamPreviewText();
 }
