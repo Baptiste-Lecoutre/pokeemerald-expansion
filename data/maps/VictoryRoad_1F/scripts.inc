@@ -9,7 +9,7 @@ VictoryRoad_1F_MapScripts::
 VictoryRoad_1F_OnTransition:
 	call Common_EventScript_SetupRivalGfxId
 	call VictoryRoad_1F_EventScript_HideRival
-	call_if_defeated TRAINER_WALLY_VR_1, VictoryRoad_1F_EventScript_HideRed
+	call_if_set FLAG_DEFEATED_WALLY_VICTORY_ROAD, VictoryRoad_1F_EventScript_HideRed
 	call_if_eq VAR_VICTORY_ROAD_1F_STATE, 1, VictoryRoad_1F_EventScript_SetEntranceWallyPos1
 	call_if_eq VAR_VICTORY_ROAD_1F_STATE, 2, VictoryRoad_1F_EventScript_SetEntranceWallyPos2
 	end
