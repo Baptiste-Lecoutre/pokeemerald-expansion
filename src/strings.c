@@ -1547,6 +1547,7 @@ const u8 gText_FishReeling[] = _("Fish reeling");
 const u8 gText_FastEggHatch[] = _("Fast egg hatch");
 const u8 gText_FastEvoScene[] = _("Fast evo scene");
 const u8 gText_PokemonAnim[] = _("Pokemon anim");
+const u8 gText_FollowerPokemon[] = _("Follower Pokemon");
 const u8 gText_ExpTeamMod[] = _("Exp. modulation");
 const u8 gText_ExpMultiplier[] = _("Exp. multiplier");
 const u8 gText_PreventEvolution[] = _("Prevent evolution");
