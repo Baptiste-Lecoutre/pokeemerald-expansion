@@ -6716,7 +6716,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
         }
         return;
     }
-    else if (IsDoubleBattle() == FALSE)
+    else /*if (IsDoubleBattle() == FALSE)*/
     {
         j = 1;
         partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
@@ -6729,7 +6729,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
             }
         }
     }
-    else
+    /*else
     {
         j = 2;
         partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
@@ -6742,7 +6742,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
                 j++;
             }
         }
-    }
+    }*/
     for (i = 0; i < (int)ARRAY_COUNT(gBattlePartyCurrentOrder); i++)
         partyBattleOrder[i] = (partyIds[0 + (i * 2)] << 4) | partyIds[1 + (i * 2)];
 }
@@ -6816,10 +6816,36 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, u8 ba
             }
         }
     }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT && (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
+    }
     else if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_RIGHT && (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
     {
         j = 1;
         partyIndexes[0] = gBattlerPartyIndexes[rightBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
+    }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT && (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
         for (i = 0; i < PARTY_SIZE; i++)
         {
             if (i != partyIndexes[0])

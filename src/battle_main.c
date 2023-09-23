@@ -4245,7 +4245,7 @@ void SwitchPartyOrder(u8 battler)
     partyId2 = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + battler));
     SwitchPartyMonSlots(partyId1, partyId2);
 
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
     {
         for (i = 0; i < (int)ARRAY_COUNT(gBattlePartyCurrentOrder); i++)
         {

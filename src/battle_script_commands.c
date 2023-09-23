@@ -6971,10 +6971,10 @@ static void Cmd_switchhandleorder(void)
             *((BATTLE_PARTNER(battler)) * 3 + (u8 *)(gBattleStruct->battlerPartyOrders) + 0) |= (gBattleResources->bufferB[battler][2] & 0xF0) >> 4;
             *((BATTLE_PARTNER(battler)) * 3 + (u8 *)(gBattleStruct->battlerPartyOrders) + 2) = gBattleResources->bufferB[battler][3];
         }
-        else if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
+        /*else if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
         {
             SwitchPartyOrderInGameMulti(battler, *(gBattleStruct->monToSwitchIntoId + battler));
-        }
+        }*/
         else
         {
             SwitchPartyOrder(battler);
