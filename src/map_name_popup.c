@@ -440,6 +440,7 @@ static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute)
 {
     dest = ConvertIntToDecimalStringN(dest, hour, STR_CONV_MODE_LEADING_ZEROS, 2);
     *dest++ = CHAR_COLON;
+    *dest++ = CHAR_SPACE;
     dest = ConvertIntToDecimalStringN(dest, minute, STR_CONV_MODE_LEADING_ZEROS, 2);
     *dest = EOS;
 }
