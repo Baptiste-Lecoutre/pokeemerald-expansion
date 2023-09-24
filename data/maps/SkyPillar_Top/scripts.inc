@@ -48,7 +48,7 @@ SkyPillar_Top_EventScript_Rayquaza::
 	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_RayquazaPrepareRaid
 	additem ITEM_POKE_BALL
 SkyPillar_Top_EventScript_RayquazaPrepareRaid:
-	preparefixedraid 2, 7, SPECIES_RAYQUAZA, 70
+	preparefixedraid 2, 7, SPECIES_RAYQUAZA, 70, ITEM_NONE
 	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
 	special InitRaidIntro
 	waitstate

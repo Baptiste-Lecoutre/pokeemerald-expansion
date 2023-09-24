@@ -371,10 +371,13 @@ bool32 InitRaidData(void)
 // Sets the data for the Raid being loaded from set variables.
 bool32 InitCustomRaidData(void)
 {
+    u16 item = gSpecialVar_0x8008;
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
     CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, gSpecialVar_0x8007, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
+    if (item != ITEM_NONE)
+        SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &item);
     return TRUE;
 }
 
@@ -399,6 +402,9 @@ void InitRaidBattleData(void)
         gBattleStruct->raid.shield = GetShieldAmount();
         CreateAllRaidBarrierSprites();
         RaidBarrier_SetVisibilities(gHealthboxSpriteIds[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)], TRUE);
+
+        if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
+            gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].moves[3] = MOVE_DRAGON_ASCENT;
     }
 
     // Update HP Multiplier.

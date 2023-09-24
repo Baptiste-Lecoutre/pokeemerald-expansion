@@ -11123,6 +11123,7 @@ static void Cmd_various(void)
 
             BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_3_SHAKES_SUCCESS);
             MarkBattlerForControllerExec(gBattlerAttacker);
+            TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
             // UndoFormChange(gBattlerPartyIndexes[gBattlerTarget], GET_BATTLER_SIDE(gBattlerTarget), FALSE);
             gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
             SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);

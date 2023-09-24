@@ -2071,12 +2071,13 @@
 
 	@ Sets up a Raid Battle with fixed data.
 	@ This is designed for testing, but can be used to create event raids too!
-	.macro preparefixedraid type:req, rank:req, species:req, level:req;
+	.macro preparefixedraid type:req, rank:req, species:req, level:req, item=ITEM_NONE
 	setflag FLAG_SYS_SPECIAL_RAID_BATTLE
 	setvar VAR_0x8001, \type
 	setvar VAR_0x8002, \rank
 	setvar VAR_0x8003, \species
 	setvar VAR_0x8007, \level
+	setvar VAR_0x8008, \item
 	.endm
 	
 	.macro ai_vs_ai_battle trainer1:req, trainer2:req
