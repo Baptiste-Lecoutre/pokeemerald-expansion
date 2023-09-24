@@ -3640,15 +3640,6 @@ static void DoBattleIntro(void)
             switch (GetBattlerPosition(battler))
             {
             case B_POSITION_PLAYER_LEFT: // player sprite
-                if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && gTrainerBattleOpponent_A == TRAINER_WALLY_PETALBURG) // make it so that you can't lose the battle unless you REALLY want to
-                {
-                    gBattleMons[battler].statStages[STAT_ATK] = MAX_STAT_STAGE;
-                    gBattleMons[battler].statStages[STAT_SPATK] = MAX_STAT_STAGE;
-                    gBattleMons[battler].statStages[STAT_DEF] = MAX_STAT_STAGE;
-                    gBattleMons[battler].statStages[STAT_SPDEF] = MAX_STAT_STAGE;
-                    gBattleMons[battler].statStages[STAT_SPEED] = MAX_STAT_STAGE;
-                    gBattleMons[battler].statStages[STAT_ACC] = MAX_STAT_STAGE;
-                }
                 BtlController_EmitDrawTrainerPic(battler, BUFFER_A);
                 MarkBattlerForControllerExec(battler);
                 break;
