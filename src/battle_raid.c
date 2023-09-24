@@ -672,8 +672,18 @@ bool32 UpdateRaidShield(void)
 
         if (gRaidData.raidType == RAID_TYPE_MEGA)
         {
+            u32 i;
             gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - gBattleMons[gBattlerTarget].maxHP;
             gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
+
+            if (gRaidData.rank > RAID_RANK_5)
+            {
+                for (i = STAT_ATK; i < NUM_STATS; i++)
+                {
+                    if (gBattleMons[gBattlerTarget].statStages[i] < MAX_STAT_STAGE)
+                        ++gBattleMons[gBattlerTarget].statStages[i];
+                }
+            }
             gBattleCommunication[MULTIUSE_STATE] = RAID_TYPE_MEGA;
         }
 
