@@ -44,6 +44,10 @@ SkyPillar_Top_EventScript_RayquazaFaceDown::
 
 SkyPillar_Top_EventScript_Rayquaza::
 	lockall
+	specialvar VAR_RESULT, IsPokeballPocketEmpty
+	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_RayquazaPrepareRaid
+	additem ITEM_POKE_BALL
+SkyPillar_Top_EventScript_RayquazaPrepareRaid:
 	preparefixedraid 2, 7, SPECIES_RAYQUAZA, 70
 	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
 	special InitRaidIntro
