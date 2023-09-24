@@ -4357,7 +4357,7 @@ static void DisplayInBattleTeamPreviewSprites(void)
 
             if (!CanShowEnemyMon(flankId, i))
                 continue;//species = SPECIES_NONE;
-            /*else if (GetMonAbility(&party[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
+            else if (GetMonAbility(&party[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
             {
                 u8 battler;
 
@@ -4365,7 +4365,7 @@ static void DisplayInBattleTeamPreviewSprites(void)
                     species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
                 else if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)])
                     species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
-            }*/
+            }
 
             x = (64 + (32 / 2)) + (40 * (i % 3));
 			y = (20 + (32 / 2)) + (40 * (i / 3));
