@@ -478,7 +478,7 @@ static void ShowStars(void)
     LoadSpriteSheet(&sRaidBattleStarSpriteSheet);
 	LoadSpritePalette(&sRaidBattleStarSpritePalette);
 	for (i = 0; i < gRaidData.rank; i++)
-		CreateSprite(&sRaidBattleStarSpriteTemplate, 10 + (9 * i), 8, 0);
+		CreateSprite(&sRaidBattleStarSpriteTemplate, (gRaidData.rank == RAID_RANK_7 ? 5 : 10) + (9 * i), 8, 0);
 }
 
 static void ShowRaidPokemonSprite(void)

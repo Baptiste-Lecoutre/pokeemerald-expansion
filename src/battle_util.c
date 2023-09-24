@@ -10443,7 +10443,8 @@ bool32 IsBattlerMegaEvolved(u8 battler)
     // While Transform does copy stats and visuals, it shouldn't be counted as true Mega Evolution.
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
-    return (gSpeciesInfo[gBattleMons[battler].species].flags & SPECIES_FLAG_MEGA_EVOLUTION);
+    return ((gSpeciesInfo[gBattleMons[battler].species].flags & SPECIES_FLAG_MEGA_EVOLUTION)
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_MEGA));
 }
 
 bool32 IsBattlerPrimalReverted(u8 battler)
