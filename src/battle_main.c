@@ -3283,7 +3283,8 @@ static void BattleStartClearSetData(void)
         gSideTimers[i].stickyWebBattlerId = 0xFF;
     }
     gBattleStruct->appearedInBattle = 0;
-    gBattleStruct->revealedEnemyMons = 0;
+    gBattleStruct->revealedEnemyMons[0] = 0;
+    gBattleStruct->revealedEnemyMons[1] = 0;
     gBattleStruct->beatUpSlot = 0;
 
     for (i = 0; i < PARTY_SIZE; i++)
@@ -4034,7 +4035,7 @@ static void TryDoEventsBeforeFirstTurn(void)
             gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
         //Add to team preview
         if (GetBattlerSide(i) == B_SIDE_OPPONENT && IsBattlerAlive(i))
-            gBattleStruct->revealedEnemyMons |= gBitTable[gBattlerPartyIndexes[i]];
+            gBattleStruct->revealedEnemyMons[(i & BIT_FLANK) >> 1] |= gBitTable[gBattlerPartyIndexes[i]];
     }
     TurnValuesCleanUp(FALSE);
     SpecialStatusesClear();

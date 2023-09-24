@@ -308,6 +308,7 @@ static void HandleInputChooseAction(u32 battler)
             gBattleAnimAttacker = battler;
             UpdateOamPriorityInAllHealthboxes(0, TRUE);
             ChangeBattlerSpritesInvisibilities(TRUE);
+            gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             DisplayInBattleTeamPreview();
             gBattlerControllerFuncs[battler] = HandleInputTeamPreview;
         }
@@ -507,6 +508,7 @@ static void HandleInputChooseAction(u32 battler)
                 gBattleAnimAttacker = battler;
                 UpdateOamPriorityInAllHealthboxes(0, TRUE);
                 ChangeBattlerSpritesInvisibilities(TRUE);
+                gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
                 DisplayInBattleTeamPreview();
                 gBattlerControllerFuncs[battler] = HandleInputTeamPreview;
             }
@@ -2559,6 +2561,7 @@ static void HandleInputTeamPreview(u32 battler)
 		UpdateOamPriorityInAllHealthboxes(1, TRUE);
 		ChangeBattlerSpritesInvisibilities(FALSE);
 		HideInBattleTeamPreview();
+//        gMultiUsePlayerCursor = 0;
 		gBattlerControllerFuncs[battler] = HandleInputChooseAction;
 	}
     else if (JOY_NEW(L_BUTTON | R_BUTTON))
@@ -2566,6 +2569,7 @@ static void HandleInputTeamPreview(u32 battler)
         PlaySE(SE_SELECT);
 //        HideInBattleTeamPreview();
 //        DisplayInBattleTeamPreview();
+        gMultiUsePlayerCursor ^= BIT_FLANK;
         UpdateInBattleTeamPreview();
     }
 }

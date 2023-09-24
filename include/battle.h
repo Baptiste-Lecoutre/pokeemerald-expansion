@@ -717,7 +717,7 @@ struct BattleStruct
     bool8 trainerSlideZMoveMsgDone;
     bool8 trainerSlideBeforeFirstTurnMsgDone;
     u32 battleTimer; // frame counter to measure battle time length
-    u8 revealedEnemyMons;
+    u8 revealedEnemyMons[2];
     u32 aiDelayTimer; // Counts number of frames AI takes to choose an action.
     u32 aiDelayFrames; // Number of frames it took to choose an action.
 };

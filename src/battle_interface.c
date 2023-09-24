@@ -4300,22 +4300,24 @@ static const struct CompressedSpriteSheet sTeamPreviewStatusIconsSpriteSheet =
     sTeamPreviewStatusIconsTiles, (8 * 8 * 6) / 2, GFX_TAG_TEAM_PREVIEW_STATUS_ICON
 };
 
-static bool8 CanShowEnemyMon(u8 monId)
+static bool8 CanShowEnemyMon(u8 flankId, u8 monId)
 {
-    return (gBattleStruct->revealedEnemyMons & gBitTable[monId]) != 0;
+    return (gBattleStruct->revealedEnemyMons[flankId] & gBitTable[monId]) != 0;
 }
 
 static bool8 EntireEnemyPartyRevealed(void)
 {
 	u32 i;
+    struct Pokemon *party = GetBattlerParty(gMultiUsePlayerCursor);
+    u8 flankId = (gMultiUsePlayerCursor & BIT_FLANK) >> 1;
 
 	for (i = 0; i < PARTY_SIZE; ++i)
 	{
-		u16 species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG, NULL);
+		u16 species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG, NULL);
 
 		if (species != SPECIES_NONE && species != SPECIES_EGG)
 		{
-			if (!CanShowEnemyMon(i))
+			if (!CanShowEnemyMon(flankId, i))
 				return FALSE;
 		}
 	}
@@ -4341,19 +4343,21 @@ static void DisplayInBattleTeamPreviewSprites(void)
     u32 i;
     u8 spriteId;
 	s16 x, y;
+    struct Pokemon *party = GetBattlerParty(gMultiUsePlayerCursor);
+    u8 flankId = (gMultiUsePlayerCursor & BIT_FLANK) >> 1;
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        u16 species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG);
+        u16 species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
 
         if (species != SPECIES_NONE && species != SPECIES_EGG)
         {
-            u16 hp = GetMonData(&gEnemyParty[i], MON_DATA_HP);
+            u16 hp = GetMonData(&party[i], MON_DATA_HP);
             void* callback = hp == 0 ? SpriteCallbackDummy : SpriteCB_MonIcon; //Don't animate when fainted
 
-            if (!CanShowEnemyMon(i))
+            if (!CanShowEnemyMon(flankId, i))
                 continue;//species = SPECIES_NONE;
-            else if (GetMonAbility(&gEnemyParty[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
+            /*else if (GetMonAbility(&party[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
             {
                 u8 battler;
 
@@ -4361,13 +4365,13 @@ static void DisplayInBattleTeamPreviewSprites(void)
                     species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
                 else if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)])
                     species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
-            }
+            }*/
 
             x = (64 + (32 / 2)) + (40 * (i % 3));
 			y = (20 + (32 / 2)) + (40 * (i / 3));
 
             LoadMonIconPalette(species);
-            spriteId = CreateMonIcon(species, callback, x, y, 1, GetMonData(&gEnemyParty[i], MON_DATA_PERSONALITY));
+            spriteId = CreateMonIcon(species, callback, x, y, 1, GetMonData(&party[i], MON_DATA_PERSONALITY));
 
             if (spriteId < MAX_SPRITES)
             {
@@ -4378,9 +4382,9 @@ static void DisplayInBattleTeamPreviewSprites(void)
                 {
                     if (hp > 0)
                     {
-                        u32 status = GetMonData(&gEnemyParty[i], MON_DATA_STATUS, NULL);
+                        u32 status = GetMonData(&party[i], MON_DATA_STATUS, NULL);
 
-                        if (GetMonData(&gEnemyParty[i], MON_DATA_HELD_ITEM) != ITEM_NONE)
+                        if (GetMonData(&party[i], MON_DATA_HELD_ITEM) != ITEM_NONE)
                         {
                             x = (80 + (8 / 2)) + (40 * (i % 3)); //Based on the item icon positions on the summary screen
 							y = (44 + (8 / 2)) + (40 * (i / 3));
@@ -4472,7 +4476,13 @@ static void DisplayInBattleTeamPreviewText(void)
 	else
 	{
 		if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
-			string = gText_TeamPreviewMultiText;
+        {
+            if (gMultiUsePlayerCursor == GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT))
+                string = gText_TeamPreviewSingleDoubleText2;
+            else
+                string = gText_TeamPreviewSingleDoubleText;
+        }
+//			string = gText_TeamPreviewMultiText;
 		else
 			string = gText_TeamPreviewSingleDoubleText;
 	}
