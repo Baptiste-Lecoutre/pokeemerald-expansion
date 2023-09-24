@@ -2195,8 +2195,19 @@ void DoSpecialTrainerBattle(void)
         FillPartnerParty(gPartnerTrainerId);*/
 
         CreateTask(Task_StartBattleAfterTransition, 1);
-        PlayMapChosenOrBattleBGM(0);
-        BattleTransition_StartOnField(GetRaidBattleTransition());
+        
+        switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
+        {
+            case SPECIES_RAYQUAZA:
+                PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
+                BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);
+                break;
+            default:
+                PlayMapChosenOrBattleBGM(0);
+                BattleTransition_StartOnField(GetRaidBattleTransition());
+                break;
+        }
+        
         break;
     }
 }
