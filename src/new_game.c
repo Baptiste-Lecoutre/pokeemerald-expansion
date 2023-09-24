@@ -106,7 +106,7 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->optionsFishReeling = FALSE;
     gSaveBlock2Ptr->optionsLowHealthMusic = FALSE;
     gSaveBlock2Ptr->optionsShowTypeEffectiveness = FALSE;
-    gSaveBlock2Ptr->optionsShowFollowerPokemon = FALSE;
+    gSaveBlock2Ptr->optionsShowFollowerPokemon = TRUE;
     gSaveBlock2Ptr->optionsSurfBikeMusic = 1;
     gSaveBlock2Ptr->optionsPokemonAnim = TRUE;
     gSaveBlock2Ptr->autoRun = TRUE;

@@ -44,7 +44,8 @@ enum // standard options
     MENUITEM_FASTEGGHATCH,
     MENUITEM_FASTEVOSCENE,
     MENUITEM_POKEMONANIM,
-    MENUITEM_BUTTONMODE,
+    MENUITEM_POKEMONFOLLOWER,
+//    MENUITEM_BUTTONMODE,
     MENUITEM_FRAMETYPE,
     MENUITEM_CANCEL,
     MENUITEM_COUNT,
@@ -156,7 +157,8 @@ struct
     [MENUITEM_FASTEGGHATCH] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTEVOSCENE] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_POKEMONANIM] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
-    [MENUITEM_BUTTONMODE] = {ButtonMode_DrawChoices, ThreeOptions_ProcessInput},
+    [MENUITEM_POKEMONFOLLOWER] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
+//    [MENUITEM_BUTTONMODE] = {ButtonMode_DrawChoices, ThreeOptions_ProcessInput},
     [MENUITEM_FRAMETYPE] = {FrameType_DrawChoices, FrameType_ProcessInput},
     [MENUITEM_CANCEL] = {NULL, NULL},
 };
@@ -248,7 +250,8 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_FASTEGGHATCH] = gText_FastEggHatch,
     [MENUITEM_FASTEVOSCENE] = gText_FastEvoScene,
     [MENUITEM_POKEMONANIM] = gText_PokemonAnim,
-    [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
+    [MENUITEM_POKEMONFOLLOWER] = gText_FollowerPokemon,
+//    [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
 };
@@ -488,7 +491,8 @@ void CB2_InitOptionMenu(void)
         sOptions->sel[MENUITEM_FASTEGGHATCH] = gSaveBlock2Ptr->optionsFastEggHatch;
         sOptions->sel[MENUITEM_FASTEVOSCENE] = gSaveBlock2Ptr->optionsFastEvolution;
         sOptions->sel[MENUITEM_POKEMONANIM] = gSaveBlock2Ptr->optionsPokemonAnim;
-        sOptions->sel[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
+        sOptions->sel[MENUITEM_POKEMONFOLLOWER] = gSaveBlock2Ptr->optionsShowFollowerPokemon;
+//        sOptions->sel[MENUITEM_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
         sOptions->sel[MENUITEM_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
 
         sOptions->selKey[MENUITEM_KEY_LVLCAP] = gSaveBlock2Ptr->optionsLevelCap;
@@ -781,7 +785,8 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsFastEggHatch = sOptions->sel[MENUITEM_FASTEGGHATCH];
     gSaveBlock2Ptr->optionsFastEvolution = sOptions->sel[MENUITEM_FASTEVOSCENE];
     gSaveBlock2Ptr->optionsPokemonAnim = sOptions->sel[MENUITEM_POKEMONANIM];
-    gSaveBlock2Ptr->optionsButtonMode = OPTIONS_BUTTON_MODE_NORMAL; //sOptions->sel[MENUITEM_BUTTONMODE];
+    gSaveBlock2Ptr->optionsShowFollowerPokemon = sOptions->sel[MENUITEM_POKEMONFOLLOWER];
+//    gSaveBlock2Ptr->optionsButtonMode = OPTIONS_BUTTON_MODE_NORMAL; //sOptions->sel[MENUITEM_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = sOptions->sel[MENUITEM_FRAMETYPE];
 
     gSaveBlock2Ptr->optionsLevelCap = 1; //sOptions->selKey[MENUITEM_KEY_LVLCAP];
