@@ -534,6 +534,7 @@ struct SaveBlock2
               u16 optionsFishReeling:1;
               u16 optionsLowHealthMusic:1;
               u16 optionsShowTypeEffectiveness:1;
+              u16 optionsShowFollowerPokemon:1;
               u16 evolveOpponentsMons:1;
               u16 xpMulti:3;
               u16 xpTeamMod:1;
@@ -1071,7 +1072,7 @@ struct SaveBlock1
     /*0x2B93*/ u8 outbreakLocationMapGroup;
     /*0x2B94*/ u8 outbreakPokemonLevel;
     /*0x2B95*/ u8 outbreakUnused1;
-    /*0x2B96*/ u16 outbreakUnused2;
+    /*0x2B96*/ u16 outbreakPokemonItem;
     /*0x2B98*/ u16 outbreakPokemonMoves[MAX_MON_MOVES];
     /*0x2BA0*/ u8 outbreakUnused3;
     /*0x2BA1*/ u8 outbreakPokemonProbability;
