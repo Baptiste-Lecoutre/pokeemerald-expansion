@@ -3964,10 +3964,10 @@ static void Cmd_cleareffectsonfaint(void)
 
         if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerSide(battler) == B_SIDE_PLAYER && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
         {
-            if (gCurrentMove != MOVE_STRUGGLE && (Random() % 100) <= GetRaidRepeatedAttackChance())
+            if (gCurrentMove != MOVE_STRUGGLE) // don't apply repeated attack probability twice
                 gBattleStruct->raid.movedTwice = FALSE;
 
-            if ((Random() & 1) == 0)
+            if (!gBattleStruct->raid.statIncreased) // always increase stats on kill
             {
                 u8 statId, increase;
                 increase = GetRaidBossKOStatIncrease(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
@@ -3986,12 +3986,15 @@ static void Cmd_cleareffectsonfaint(void)
 
                     if (ChangeStatBuffs(GET_STAT_BUFF_VALUE_WITH_SIGN(gBattleScripting.statChanger), statId, MOVE_EFFECT_CERTAIN | MOVE_EFFECT_AFFECTS_USER, NULL) == STAT_CHANGE_WORKED)
                     {
+                        gBattleStruct->raid.statIncreased = TRUE;
                         BattleScriptPushCursor();
                         gBattlescriptCurrInstr = BattleScript_StatUpMsg; 
+                        return;
                     }
                 }
             }
         }
+        gBattleStruct->raid.statIncreased = FALSE;
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
 }

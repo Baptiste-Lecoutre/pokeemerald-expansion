@@ -5205,6 +5205,13 @@ static void TurnValuesCleanUp(bool8 var0)
     gSideStatuses[B_SIDE_OPPONENT] &= ~(SIDE_STATUS_QUICK_GUARD | SIDE_STATUS_WIDE_GUARD | SIDE_STATUS_CRAFTY_SHIELD | SIDE_STATUS_MAT_BLOCK);
     gSideTimers[B_SIDE_PLAYER].followmeTimer = 0;
     gSideTimers[B_SIDE_OPPONENT].followmeTimer = 0;
+
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+    {
+        gBattleStruct->raid.movedTwice = FALSE;
+        gBattleStruct->raid.statIncreased = FALSE;
+        gBattleStruct->raid.usedShockwave = FALSE;
+    }
 }
 
 void SpecialStatusesClear(void)

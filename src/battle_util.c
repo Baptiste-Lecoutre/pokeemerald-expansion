@@ -865,8 +865,8 @@ void HandleAction_ActionFinished(void)
     if (IsRaidBoss(gBattlerAttacker) && IsBattlerAlive(gBattlerAttacker)
         && !gBattleStruct->raid.movedTwice
         && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_RECHARGE)
-        && (((IS_MOVE_STATUS(gLastLandedMoves[gBattlerAttacker]) || IsMaxMove(gLastLandedMoves[gBattlerAttacker]))
-                && (Random() % 100 <= GetRaidRepeatedAttackChance()))
+        && ((gRaidData.raidType == RAID_TYPE_MAX && (IS_MOVE_STATUS(gLastLandedMoves[gBattlerAttacker]) || IsMaxMove(gLastLandedMoves[gBattlerAttacker])) && (Random() % 100 <= GetRaidRepeatedAttackChance()))
+            || (gRaidData.raidType == RAID_TYPE_MEGA && (Random() % 100 <= GetRaidRepeatedAttackChance()))
             || (IsBattlerAlive(BATTLE_OPPOSITE(gBattlerAttacker)) && gChosenActionByBattler[BATTLE_OPPOSITE(gBattlerAttacker)] == B_ACTION_USE_ITEM)
             || (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))) && gChosenActionByBattler[BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))] == B_ACTION_USE_ITEM)))
     {

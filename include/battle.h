@@ -557,6 +557,7 @@ struct RaidBattleData
     u8 energy;            // stores Dynamax Energy position or Tera Orb charge
     bool8 usedShockwave:1;
     bool8 movedTwice:1;
+    bool8 statIncreased:1;
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for Gen 8-style shields
 };
 
