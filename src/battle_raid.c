@@ -531,14 +531,15 @@ u8 GetRaidShockwaveChance(void)
 
     switch (numStars)
     {
-		case NO_RAID ... RAID_RANK_3:
+		case NO_RAID ... RAID_RANK_2:
 			return 0; //Never
-		case RAID_RANK_4:
-			return 20; //20 % chance before each attack
+		case RAID_RANK_3:
+        case RAID_RANK_4:
+			return 15; //~20 % chance before each attack
 		case RAID_RANK_5:
-			return 35; //35 % chance before each attack
+			return 25; //~35 % chance before each attack: less probable to do 2 attacks 
 		default:
-			return 50; //50 % chance before each attack
+			return 25; //~50 % chance before each turn: probably do 2 attacks during the turn
 	}
 }
 
