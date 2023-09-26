@@ -538,7 +538,7 @@ MeteorFalls_1F_1R_Text_StevenGiveMegaRing:
 	.string "These people are dangerous, someone\n"
 	.string "needs to stop them.\p"
 	.string "Here, let me heal your Pokémon after\n"
-	.string "the battle you just fought.\p
+	.string "the battle you just fought.\p"
 	.string "And since you have made it there,\n"
 	.string "I should also give this Mega Ring,\l"
 	.string "it'll help you in upcoming battles.$"
