@@ -5645,3 +5645,11 @@ bool8 IsPokeballPocketEmpty(void)
 {
     return !IsBagPocketNonEmpty(POCKET_POKE_BALLS);
 }
+
+void SetFollowerPokemonOption(void)
+{
+    gSaveBlock2Ptr->optionsShowFollowerPokemon = VarGet(VAR_RESULT);
+
+    if (!gSaveBlock2Ptr->optionsShowFollowerPokemon)
+        RemoveFollowingPokemon();
+}
