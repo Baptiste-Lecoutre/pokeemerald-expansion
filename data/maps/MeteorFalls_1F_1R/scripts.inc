@@ -105,6 +105,7 @@ MeteorFalls_1F_1R_EventScript_MagmaAfterBattle::
 	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox MeteorFalls_1F_1R_Text_StevenGiveMegaRing, MSGBOX_DEFAULT
+	special HealPlayerParty
 	giveitem ITEM_MEGA_RING, 1
 	msgbox MeteorFalls_1F_1R_Text_StevenExplainMegaRing, MSGBOX_DEFAULT
 	giveitem ITEM_SCEPTILITE
@@ -536,9 +537,11 @@ MeteorFalls_1F_1R_Text_StevenGiveMegaRing:
 	.string "grunts of Team Aqua and Team Magma.\p"
 	.string "These people are dangerous, someone\n"
 	.string "needs to stop them.\p"
-	.string "Since you have made it until here,\n"
-	.string "I should give this Mega Ring, it\l"
-	.string "will help you in upcoming battles.$"
+	.string "Here, let me heal your Pokémon after\n"
+	.string "the battle you just fought.\p
+	.string "And since you have made it there,\n"
+	.string "I should also give this Mega Ring,\l"
+	.string "it'll help you in upcoming battles.$"
 
 MeteorFalls_1F_1R_Text_StevenExplainMegaRing:
 	.string "This Mega Ring will allow certain\n"
