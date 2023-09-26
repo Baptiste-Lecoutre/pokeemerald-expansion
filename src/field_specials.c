@@ -5639,3 +5639,11 @@ void ChangePokemonNature (void)
 	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }
+
+void SetFollowerPokemonOption(void)
+{
+    gSaveBlock2Ptr->optionsShowFollowerPokemon = VarGet(VAR_RESULT);
+
+    if (!gSaveBlock2Ptr->optionsShowFollowerPokemon)
+        RemoveFollowingPokemon();
+}
