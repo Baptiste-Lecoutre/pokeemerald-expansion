@@ -1438,6 +1438,24 @@
 	.4byte \jumpInstr
 	.endm
 
+	.macro jumpifargument argument:req, jumpInstr:req
+	callnative BS_JumpIfArgument
+	.byte \argument
+	.4byte \jumpInstr
+	.endm
+
+	.macro setremoveterrain failInstr:req
+	callnative BS_SetRemoveTerrain
+	.4byte \failInstr
+	.endm
+
+	.macro jumpifterrainaffected battler:req, terrainFlags:req, jumpInstr:req
+	callnative BS_JumpIfTerrainAffected
+	.byte \battler
+	.4byte \terrainFlags
+	.4byte \jumpInstr
+	.endm
+
 	@ Used to active a different Max Move effects.
 	.macro setmaxmoveeffect
 	callnative BS_SetMaxMoveEffect
@@ -1694,11 +1712,6 @@
 
 	.macro invertstatstages battler:req
 	various \battler, VARIOUS_INVERT_STAT_STAGES
-	.endm
-
-	.macro setterrain failInstr:req
-	various BS_ATTACKER, VARIOUS_SET_TERRAIN
-	.4byte \failInstr
 	.endm
 
 	.macro trymefirst failInstr:req
@@ -1981,12 +1994,6 @@
 	.macro tryroomservice battler:req, failInstr:req
 	various \battler, VARIOUS_ROOM_SERVICE
 	.4byte \failInstr
-	.endm
-
-	.macro jumpifterrainaffected battler:req, terrainFlags:req, jumpInstr:req
-	various \battler, VARIOUS_JUMP_IF_TERRAIN_AFFECTED
-	.4byte \terrainFlags
-	.4byte \jumpInstr
 	.endm
 
 	.macro jumpifpranksterblocked battler:req, jumpInstr:req
