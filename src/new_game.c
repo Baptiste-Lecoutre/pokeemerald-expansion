@@ -244,7 +244,6 @@ void NewGameInitData(void)
     ResetContestLinkResults();
     gSaveBlock1Ptr->dexNavChain = 0;
     gSaveBlock2Ptr->autoRun = TRUE;
-    gSaveBlock2Ptr->costumeId = 5;
 }
 
 static void ResetMiniGamesRecords(void)
