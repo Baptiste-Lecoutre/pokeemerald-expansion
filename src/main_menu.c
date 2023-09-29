@@ -1278,6 +1278,7 @@ static void HighlightSelectedMainMenuItem(u8 menuType, u8 selectedMenuItem, s16 
 #define tBrendanSpriteId data[10]
 #define tMaySpriteId data[11]
 #define tCostumeId data[12]
+#define tChangeCostume data[13]
 
 static void Task_NewGameBirchSpeech_Init(u8 taskId)
 {
@@ -1544,6 +1545,7 @@ static void Task_NewGameBirchSpeech_ChooseGender(u8 taskId)
     if (JOY_NEW(R_BUTTON))
     {
         PlaySE(SE_SELECT);
+        gTasks[taskId].tChangeCostume = TRUE;
         if (costumeId < COSTUME_COUNT - 1)
             costumeId++;
         else
@@ -1552,6 +1554,7 @@ static void Task_NewGameBirchSpeech_ChooseGender(u8 taskId)
     else if (JOY_NEW(L_BUTTON))
     {
         PlaySE(SE_SELECT);
+        gTasks[taskId].tChangeCostume = TRUE;
         if (costumeId > 0)
             costumeId--;
         else
@@ -1581,7 +1584,11 @@ static void Task_NewGameBirchSpeech_SlideOutOldGenderSprite(u8 taskId)
     {
         gSprites[spriteId].invisible = TRUE;
 
-        UpdateBirchSpeechObjects(taskId);
+        if (gTasks[taskId].tChangeCostume)
+        {
+            gTasks[taskId].tChangeCostume = FALSE;
+            UpdateBirchSpeechObjects(taskId);
+        }
 
         if (gTasks[taskId].tPlayerGender != MALE)
             spriteId = gTasks[taskId].tMaySpriteId;
@@ -2019,8 +2026,6 @@ static void UpdateBirchSpeechObjects(u8 taskId)
             break;
     }
 
-    FreeSpriteOamMatrix(&gSprites[gTasks[taskId].tBrendanSpriteId]);
-    FreeSpriteOamMatrix(&gSprites[gTasks[taskId].tMaySpriteId]);
     DestroySpriteAndFreeResources(&gSprites[gTasks[taskId].tBrendanSpriteId]);
     DestroySpriteAndFreeResources(&gSprites[gTasks[taskId].tMaySpriteId]);
 
@@ -2044,6 +2049,7 @@ static void UpdateBirchSpeechObjects(u8 taskId)
 #undef tBrendanSpriteId
 #undef tMaySpriteId
 #undef tCostumeId
+#undef tChangeCostume
 
 #define tMainTask data[0]
 #define tAlphaCoeff1 data[1]
