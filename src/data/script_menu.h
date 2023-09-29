@@ -832,6 +832,7 @@ static const struct MenuAction MultichoiceList_DresserDrawers[] =
     {gText_ThirdDrawer},
     {gText_FourthDrawer},
     {gText_FifthDrawer},
+    {gText_SixthDrawer},
     {gText_Exit},
 };
 

@@ -1,24 +1,19 @@
 EventScript_Dresser::
 	lockall
-	msgbox Text_ChangeClothes, MSGBOX_SIGN @MSGBOX_YESNO
-	releaseall
-@	goto_if_eq VAR_RESULT, NO, EventScript_CloseDresser
-@	message Text_ChooseRegionStyle
-@	waitmessage
-@	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 6, FALSE
-@	switch VAR_RESULT
-@	case 0, EventScript_KantoCostumes
-@	case 1, EventScript_JohtoCostumes
-@	case 2, EventScript_HoennCostumes
-@	case 3, EventScript_SinnohCostumes
-@	case 4, EventScript_LGPECostumes
-@	case 5, EventScript_Dresser_Exit
-@	case MULTI_B_PRESSED, EventScript_Dresser_Exit
+	msgbox Text_ChangeClothes, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, EventScript_CloseDresser
+	message Text_ChooseRegionStyle
+	waitmessage
+	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 7, FALSE
+	switch VAR_RESULT
+	case 6, EventScript_Dresser_Exit
+	case MULTI_B_PRESSED, EventScript_Dresser_Exit
+	goto EventScript_ChangeCostume
 	end
 
 Text_ChangeClothes:
-	.string "It's full of clean clothes!$" @\p
-@	.string "Would you like to change?$"
+	.string "It's full of clean clothes!\p"
+	.string "Would you like to change?$"
 
 Text_ChooseRegionStyle:
 	.string "Which drawer do you want to\n"
@@ -27,6 +22,15 @@ Text_ChooseRegionStyle:
 EventScript_CloseDresser::
 	closemessage
 	releaseall
+	end
+
+EventScript_ChangeCostume::
+	lockall
+	fadescreen FADE_TO_BLACK
+	copyvar VAR_TEMP_1, VAR_RESULT
+	special SwapPlayersCostume
+	fadescreen FADE_FROM_BLACK
+	goto EventScript_Dresser_Finish
 	end
 
 EventScript_Dresser_Exit::
@@ -43,14 +47,11 @@ Text_ChangeClothes_Cancel:
 EventScript_Dresser_Loop::
 	message Text_ChooseRegionStyle
 	waitmessage
-	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 4, FALSE
+	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 7, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_KantoCostumes
-	case 1, EventScript_JohtoCostumes
-	case 2, EventScript_HoennCostumes
-	case 3, EventScript_SinnohCostumes
-	case 4, EventScript_LGPECostumes
+	case 6, EventScript_Dresser_Exit
 	case MULTI_B_PRESSED, EventScript_Dresser_Exit
+	goto EventScript_ChangeCostume
 	end
 
 Text_ChooseOutfit:
