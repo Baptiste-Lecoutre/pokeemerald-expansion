@@ -1291,7 +1291,7 @@ static void Task_NewGameBirchSpeech_Init(u8 taskId)
     SetGpuReg(REG_OFFSET_BLDALPHA, 0);
     SetGpuReg(REG_OFFSET_BLDY, 0);
 
-    gTasks[taskId].tCostumeId = 5;
+    gTasks[taskId].tCostumeId = 1;
 
     LZ77UnCompVram(sBirchSpeechShadowGfx, (void *)VRAM);
     LZ77UnCompVram(sBirchSpeechBgMap, (void *)(BG_SCREEN_ADDR(7)));
@@ -1540,7 +1540,7 @@ static void Task_NewGameBirchSpeech_ChooseGender(u8 taskId)
             break;
     }
 
-    if (JOY_NEW(L_BUTTON))
+    if (JOY_NEW(R_BUTTON))
     {
         PlaySE(SE_SELECT);
         if (costumeId < COSTUME_COUNT - 1)
@@ -1548,7 +1548,7 @@ static void Task_NewGameBirchSpeech_ChooseGender(u8 taskId)
         else
             costumeId = 0;
     }
-    else if (JOY_NEW(R_BUTTON))
+    else if (JOY_NEW(L_BUTTON))
     {
         PlaySE(SE_SELECT);
         if (costumeId > 0)
