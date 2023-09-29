@@ -2278,8 +2278,8 @@ const u8 gText_TutorMoveSet6[] = _("Feather Badge");
 const u8 gText_TutorMoveSet7[] = _("Mind Badge");
 
 // Costumes
-const u8 gText_FirstDrawer[] = _("Kanto");
-const u8 gText_SecondDrawer[] = _("Hoenn");
+const u8 gText_FirstDrawer[] = _("Hoenn");
+const u8 gText_SecondDrawer[] = _("Kanto");
 const u8 gText_ThirdDrawer[] = _("Johto");
 const u8 gText_FourthDrawer[] = _("Sinnoh");
 const u8 gText_FifthDrawer[] = _("Hisui");

@@ -190,8 +190,8 @@
 #define ELAINE_COSTUME              12
 /*#define COSTUME_COUNT   			13*/
 
-#define FRLG_COSTUME 0
-#define RSE_COSTUME 1
+#define RSE_COSTUME 0
+#define FRLG_COSTUME 1
 #define HGSS_COSTUME 2
 #define DPEARL_COSTUME 3
 #define PLATINUM_COSTUME 4
