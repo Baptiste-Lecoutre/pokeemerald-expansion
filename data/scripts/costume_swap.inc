@@ -4,7 +4,11 @@ EventScript_Dresser::
 	goto_if_eq VAR_RESULT, NO, EventScript_CloseDresser
 	message Text_ChooseRegionStyle
 	waitmessage
-	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 7, FALSE
+@	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 7, FALSE
+@	switch VAR_RESULT
+	setvar VAR_0x8004, SCROLL_MULTI_COSTUME
+	special ShowScrollableMultichoice
+	waitstate
 	switch VAR_RESULT
 	case 6, EventScript_Dresser_Exit
 	case MULTI_B_PRESSED, EventScript_Dresser_Exit
@@ -47,7 +51,10 @@ Text_ChangeClothes_Cancel:
 EventScript_Dresser_Loop::
 	message Text_ChooseRegionStyle
 	waitmessage
-	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 7, FALSE
+@	multichoicedefault 0, 0, MULTI_DRESSER_DRAWERS, 7, FALSE
+	setvar VAR_0x8004, SCROLL_MULTI_COSTUME
+	special ShowScrollableMultichoice
+	waitstate
 	switch VAR_RESULT
 	case 6, EventScript_Dresser_Exit
 	case MULTI_B_PRESSED, EventScript_Dresser_Exit
