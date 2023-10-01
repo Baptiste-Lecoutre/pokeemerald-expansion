@@ -11068,6 +11068,7 @@ static void Cmd_various(void)
         }
         else if (gSpecialVar_ItemId != ITEM_NONE) // do catch sequence if ball selected
         {
+            u16 bossHeldItem = ITEM_NONE;
             gBattleStruct->throwingPokeBall = TRUE;
             gLastUsedItem = gSpecialVar_ItemId; // selected ball
             gBattleSpritesDataPtr->animationData->isCriticalCapture = 0;
@@ -11091,6 +11092,7 @@ static void Cmd_various(void)
             RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
             gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
             SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp);
+            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HELD_ITEM, &bossHeldItem);
         }
         else // no item selected
         {
