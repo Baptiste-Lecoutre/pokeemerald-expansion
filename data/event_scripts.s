@@ -1170,3 +1170,5 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/MeteorFalls_DracoChamber/scripts.inc"
 
 	.include "data/maps/Underwater_MeteorFalls_DracoChamber/scripts.inc"
+
+	.include "data/maps/HauntedManor/scripts.inc"

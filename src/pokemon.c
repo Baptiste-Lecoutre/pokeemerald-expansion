@@ -3616,7 +3616,7 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         {
             u32 totalRerolls = 0;
             if (CheckBagHasItem(ITEM_SHINY_CHARM, 1))
-                totalRerolls += I_SHINY_CHARM_REROLLS;
+                totalRerolls += I_SHINY_CHARM_ADDITIONAL_ROLLS;
             if (LURE_STEP_COUNT != 0)
                 totalRerolls += 1;
 
@@ -9204,7 +9204,7 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
 
     switch (costumeId)
     {
-        case BRENDAN_COSTUME:
+        /*case BRENDAN_COSTUME:
             trainerPic = TRAINER_PIC_BRENDAN;
             break;
         case MAY_COSTUME:
@@ -9242,6 +9242,24 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
             break;
         case ELAINE_COSTUME:
             trainerPic = TRAINER_PIC_ELAINE;
+            break;*/
+        case FRLG_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_RED : TRAINER_PIC_LEAF;
+            break;
+        case RSE_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN : TRAINER_PIC_MAY;
+            break;
+        case HGSS_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_ETHAN : TRAINER_PIC_LYRA;
+            break;
+        case DPEARL_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_LUCAS : TRAINER_PIC_DAWN;
+            break;
+        case PLATINUM_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_LUCAS_PLATINUM : TRAINER_PIC_DAWN_PLATINUM;
+            break;
+        case LGPE_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_CHASE : TRAINER_PIC_ELAINE;
             break;
     }
 

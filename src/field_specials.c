@@ -2493,6 +2493,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_COSTUME:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 7;
+        task->tLeft = 22;
+        task->tTop = 1;
+        task->tWidth = 12;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2916,6 +2926,16 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_KabukiTrim,
         gText_PharaohTrim,
         gText_BackToNatural,
+        gText_Exit
+    },
+    [SCROLL_MULTI_COSTUME] = 
+    {
+        gText_FirstDrawer,
+        gText_SecondDrawer,
+        gText_ThirdDrawer,
+        gText_FourthDrawer,
+        gText_FifthDrawer,
+        gText_SixthDrawer,
         gText_Exit
     },
 };

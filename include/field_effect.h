@@ -53,5 +53,6 @@ void FieldEff_CaveDust(void);
 void Fldeff_FlyLand(void);
 u8 FldEff_NPCFlyOut(void);
 void Task_EonFlute(u8 taskId);
+bool8 IsRockClimbActive(void);
 
 #endif // GUARD_FIELD_EFFECTS_H

@@ -175,6 +175,7 @@ static const u8 sRegionMapSectionId_To_PopUpThemeIdMapping[] =
     [MAPSEC_DRACO_CHAMBER] = MAPPOPUP_THEME_STONE,
     [MAPSEC_CAVE_OF_SHOCK] = MAPPOPUP_THEME_STONE,
     [MAPSEC_CAVE_OF_SHOCK2] = MAPPOPUP_THEME_STONE,
+    [MAPSEC_HAUNTED_MANOR] = MAPPOPUP_THEME_STONE,
     [MAPSEC_SECRET_BASE] = MAPPOPUP_THEME_STONE,
     [MAPSEC_DYNAMIC] = MAPPOPUP_THEME_MARBLE,
     [MAPSEC_AQUA_HIDEOUT - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_STONE,
@@ -440,6 +441,7 @@ static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute)
 {
     dest = ConvertIntToDecimalStringN(dest, hour, STR_CONV_MODE_LEADING_ZEROS, 2);
     *dest++ = CHAR_COLON;
+    *dest++ = CHAR_SPACE;
     dest = ConvertIntToDecimalStringN(dest, minute, STR_CONV_MODE_LEADING_ZEROS, 2);
     *dest = EOS;
 }

@@ -4445,7 +4445,7 @@
       "id": "LAYOUT_ASHEN_WOODS",
       "name": "AshenWoods_Layout",
       "width": 36,
-      "height": 46,
+      "height": 52,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Lavaridge",
       "border_filepath": "data/layouts/AshenWoods/border.bin",
@@ -4700,6 +4700,16 @@
       "secondary_tileset": "gTileset_Underwater",
       "border_filepath": "data/layouts/Underwater_MeteorFalls_DracoChamber/border.bin",
       "blockdata_filepath": "data/layouts/Underwater_MeteorFalls_DracoChamber/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANOR",
+      "name": "HauntedManor_Layout",
+      "width": 28,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Rustboro",
+      "border_filepath": "data/layouts/HauntedManor/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedManor/map.bin"
     }
   ]
 }

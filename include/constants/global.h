@@ -188,6 +188,14 @@
 #define	DAWN_PLATINUM_COSTUME		10
 #define CHASE_COSTUME               11
 #define ELAINE_COSTUME              12
-#define COSTUME_COUNT   			13
+/*#define COSTUME_COUNT   			13*/
+
+#define RSE_COSTUME 0
+#define FRLG_COSTUME 1
+#define HGSS_COSTUME 2
+#define DPEARL_COSTUME 3
+#define PLATINUM_COSTUME 4
+#define LGPE_COSTUME 5
+#define COSTUME_COUNT 6
 
 #endif // GUARD_CONSTANTS_GLOBAL_H

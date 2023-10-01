@@ -69,10 +69,13 @@
 #define FLDEFF_RAYQUAZA_SPOTLIGHT        64
 #define FLDEFF_DESTROY_DEOXYS_ROCK       65
 #define FLDEFF_MOVE_DEOXYS_ROCK          66
-#define FLDEFF_CAVE_DUST                 67
-#define FLDEFF_TRACKS_SLITHER            68
-#define FLDEFF_TRACKS_SPOT               69
-#define FLDEFF_TRACKS_BUG                70
+#define FLDEFF_USE_ROCK_CLIMB            67
+#define FLDEFF_ROCK_CLIMB_DUST           68
+#define FLDEFF_CAVE_DUST                 69
+#define FLDEFF_TRACKS_SLITHER            70
+#define FLDEFF_TRACKS_SPOT               71
+#define FLDEFF_TRACKS_BUG                72
+
 
 #define FLDEFFOBJ_SHADOW_S              0
 #define FLDEFFOBJ_SHADOW_M              1
@@ -111,11 +114,13 @@
 #define FLDEFFOBJ_BUBBLES               34
 #define FLDEFFOBJ_SMALL_SPARKLE         35
 #define FLDEFFOBJ_RAYQUAZA              36
-#define FLDEFFOBJ_CAVE_DUST             37
+#define FLDEFFOBJ_ROCK_CLIMB_BLOB       37
+#define FLDEFFOBJ_ROCK_CLIMB_DUST       38
+#define FLDEFFOBJ_CAVE_DUST             39
 
-#define FLDEFFOBJ_TRACKS_SLITHER        38
-#define FLDEFFOBJ_TRACKS_SPOT           39
-#define FLDEFFOBJ_TRACKS_BUG            40
+#define FLDEFFOBJ_TRACKS_SLITHER        40
+#define FLDEFFOBJ_TRACKS_SPOT           41
+#define FLDEFFOBJ_TRACKS_BUG            42
 
 #define FLDEFF_PAL_TAG_CUT_GRASS          0x1000
 #define FLDEFF_PAL_TAG_SECRET_POWER_TREE  0x1003
@@ -130,6 +135,7 @@
 #define FLDEFF_PAL_TAG_HOF_MONITOR        0x1010
 #define FLDEFF_PAL_TAG_UNKNOWN            0x1011
 #define FLDEFF_PAL_TAG_CAVE_DUST          0x1012
+#define FLDEFF_PAL_TAG_DUST_CLOUD         0x1013
 #define FLDEFF_PAL_TAG_FIELD_MOVE_MON     0x8400
 
 // tile tags, for field effects that may have many copies on screen at once

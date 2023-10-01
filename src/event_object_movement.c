@@ -802,10 +802,10 @@ static const u8 sFaceDirectionAnimNums[] = {
     [DIR_NORTH] = ANIM_STD_FACE_NORTH,
     [DIR_WEST] = ANIM_STD_FACE_WEST,
     [DIR_EAST] = ANIM_STD_FACE_EAST,
-    [DIR_SOUTHWEST] = ANIM_STD_FACE_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_STD_FACE_SOUTH,
-    [DIR_NORTHWEST] = ANIM_STD_FACE_NORTH,
-    [DIR_NORTHEAST] = ANIM_STD_FACE_NORTH,
+    [DIR_SOUTHWEST] = ANIM_STD_FACE_WEST,
+    [DIR_SOUTHEAST] = ANIM_STD_FACE_EAST,
+    [DIR_NORTHWEST] = ANIM_STD_FACE_WEST,
+    [DIR_NORTHEAST] = ANIM_STD_FACE_EAST,
 };
 static const u8 sMoveDirectionAnimNums[] = {
     [DIR_NONE] = ANIM_STD_GO_SOUTH,
@@ -813,10 +813,10 @@ static const u8 sMoveDirectionAnimNums[] = {
     [DIR_NORTH] = ANIM_STD_GO_NORTH,
     [DIR_WEST] = ANIM_STD_GO_WEST,
     [DIR_EAST] = ANIM_STD_GO_EAST,
-    [DIR_SOUTHWEST] = ANIM_STD_GO_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_STD_GO_SOUTH,
-    [DIR_NORTHWEST] = ANIM_STD_GO_NORTH,
-    [DIR_NORTHEAST] = ANIM_STD_GO_NORTH,
+    [DIR_SOUTHWEST] = ANIM_STD_GO_WEST,
+    [DIR_SOUTHEAST] = ANIM_STD_GO_EAST,
+    [DIR_NORTHWEST] = ANIM_STD_GO_WEST,
+    [DIR_NORTHEAST] = ANIM_STD_GO_EAST,
 };
 static const u8 sMoveDirectionFastAnimNums[] = {
     [DIR_NONE] = ANIM_STD_GO_FAST_SOUTH,
@@ -824,10 +824,10 @@ static const u8 sMoveDirectionFastAnimNums[] = {
     [DIR_NORTH] = ANIM_STD_GO_FAST_NORTH,
     [DIR_WEST] = ANIM_STD_GO_FAST_WEST,
     [DIR_EAST] = ANIM_STD_GO_FAST_EAST,
-    [DIR_SOUTHWEST] = ANIM_STD_GO_FAST_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_STD_GO_FAST_SOUTH,
-    [DIR_NORTHWEST] = ANIM_STD_GO_FAST_NORTH,
-    [DIR_NORTHEAST] = ANIM_STD_GO_FAST_NORTH,
+    [DIR_SOUTHWEST] = ANIM_STD_GO_FAST_WEST,
+    [DIR_SOUTHEAST] = ANIM_STD_GO_FAST_EAST,
+    [DIR_NORTHWEST] = ANIM_STD_GO_FAST_WEST,
+    [DIR_NORTHEAST] = ANIM_STD_GO_FAST_EAST,
 };
 static const u8 sMoveDirectionFasterAnimNums[] = {
     [DIR_NONE] = ANIM_STD_GO_FASTER_SOUTH,
@@ -857,10 +857,10 @@ static const u8 sJumpSpecialDirectionAnimNums[] = { // used for jumping onto sur
     [DIR_NORTH] = ANIM_GET_ON_OFF_POKEMON_NORTH,
     [DIR_WEST] = ANIM_GET_ON_OFF_POKEMON_WEST,
     [DIR_EAST] = ANIM_GET_ON_OFF_POKEMON_EAST,
-    [DIR_SOUTHWEST] = ANIM_GET_ON_OFF_POKEMON_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_GET_ON_OFF_POKEMON_SOUTH,
-    [DIR_NORTHWEST] = ANIM_GET_ON_OFF_POKEMON_NORTH,
-    [DIR_NORTHEAST] = ANIM_GET_ON_OFF_POKEMON_NORTH,
+    [DIR_SOUTHWEST] = ANIM_GET_ON_OFF_POKEMON_WEST,
+    [DIR_SOUTHEAST] = ANIM_GET_ON_OFF_POKEMON_EAST,
+    [DIR_NORTHWEST] = ANIM_GET_ON_OFF_POKEMON_WEST,
+    [DIR_NORTHEAST] = ANIM_GET_ON_OFF_POKEMON_EAST,
 };
 static const u8 sAcroWheelieDirectionAnimNums[] = {
     [DIR_NONE] = ANIM_BUNNY_HOP_BACK_WHEEL_SOUTH,
@@ -894,6 +894,17 @@ static const u8 sAcroEndWheelieDirectionAnimNums[] = {
     [DIR_SOUTHEAST] = ANIM_STANDING_WHEELIE_BACK_WHEEL_SOUTH,
     [DIR_NORTHWEST] = ANIM_STANDING_WHEELIE_BACK_WHEEL_NORTH,
     [DIR_NORTHEAST] = ANIM_STANDING_WHEELIE_BACK_WHEEL_NORTH,
+};
+static const u8 sSpinDirectionAnimNums[] = {
+    [DIR_NONE] = ANIM_SPIN_SOUTH,
+    [DIR_SOUTH] = ANIM_SPIN_SOUTH,
+    [DIR_NORTH] = ANIM_SPIN_NORTH,
+    [DIR_WEST] = ANIM_SPIN_WEST,
+    [DIR_EAST] = ANIM_SPIN_EAST,
+    [DIR_SOUTHWEST] = ANIM_SPIN_SOUTH,
+    [DIR_SOUTHEAST] = ANIM_SPIN_NORTH,
+    [DIR_NORTHWEST] = ANIM_SPIN_WEST,
+    [DIR_NORTHEAST] = ANIM_SPIN_EAST,
 };
 static const u8 sAcroUnusedActionDirectionAnimNums[] = {
     [DIR_NONE] = ANIM_STANDING_WHEELIE_FRONT_WHEEL_SOUTH,
@@ -1056,6 +1067,13 @@ const u8 gPlayerRunMovementActions[] = {
     MOVEMENT_ACTION_PLAYER_RUN_LEFT,
     MOVEMENT_ACTION_PLAYER_RUN_RIGHT,
 };
+const u8 gSpinMovementActions[] = {
+    MOVEMENT_ACTION_SPIN_DOWN,
+    MOVEMENT_ACTION_SPIN_DOWN,
+    MOVEMENT_ACTION_SPIN_UP,
+    MOVEMENT_ACTION_SPIN_LEFT,
+    MOVEMENT_ACTION_SPIN_RIGHT,
+};
 const u8 gJump2MovementActions[] = {
     MOVEMENT_ACTION_JUMP_2_DOWN,
     MOVEMENT_ACTION_JUMP_2_DOWN,
@@ -1088,6 +1106,10 @@ const u8 gJumpSpecialMovementActions[] = {
     MOVEMENT_ACTION_JUMP_SPECIAL_DOWN,
     MOVEMENT_ACTION_JUMP_SPECIAL_DOWN,
     MOVEMENT_ACTION_JUMP_SPECIAL_UP,
+    MOVEMENT_ACTION_JUMP_SPECIAL_LEFT,
+    MOVEMENT_ACTION_JUMP_SPECIAL_RIGHT,
+    MOVEMENT_ACTION_JUMP_SPECIAL_LEFT,
+    MOVEMENT_ACTION_JUMP_SPECIAL_RIGHT,
     MOVEMENT_ACTION_JUMP_SPECIAL_LEFT,
     MOVEMENT_ACTION_JUMP_SPECIAL_RIGHT,
 };
@@ -6168,6 +6190,7 @@ dirn_to_anim(GetRideWaterCurrentMovementAction, gRideWaterCurrentMovementActions
 dirn_to_anim(GetWalkFasterMovementAction, gWalkFasterMovementActions);
 dirn_to_anim(GetSlideMovementAction, gSlideMovementActions);
 dirn_to_anim(GetPlayerRunMovementAction, gPlayerRunMovementActions);
+dirn_to_anim(GetSpinMovementAction, gSpinMovementActions);
 dirn_to_anim(GetJump2MovementAction, gJump2MovementActions);
 dirn_to_anim(GetJumpInPlaceMovementAction, gJumpInPlaceMovementActions);
 dirn_to_anim(GetJumpInPlaceTurnAroundMovementAction, gJumpInPlaceTurnAroundMovementActions);
@@ -8649,6 +8672,34 @@ bool8 MovementAction_AcroEndWheelieMoveRight_Step1(struct ObjectEvent *objectEve
     return FALSE;
 }
 
+static bool8 InitSpin(struct ObjectEvent *objectEvent, struct Sprite *sprite, u8 direction)
+{
+    InitNpcForMovement(objectEvent, sprite, direction, MOVE_SPEED_FAST_1);
+    SetStepAnimHandleAlternation(objectEvent, sprite, sSpinDirectionAnimNums[objectEvent->facingDirection]);
+    SeekSpriteAnim(sprite, 0);
+    return MovementAction_WalkNormalDiagonalUpLeft_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_SpinDown_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    return InitSpin(objectEvent, sprite, DIR_SOUTH);
+}
+
+bool8 MovementAction_SpinUp_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    return InitSpin(objectEvent, sprite, DIR_NORTH);
+}
+
+bool8 MovementAction_SpinLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    return InitSpin(objectEvent, sprite, DIR_WEST);
+}
+
+bool8 MovementAction_SpinRight_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    return InitSpin(objectEvent, sprite, DIR_EAST);
+}
+
 bool8 MovementAction_Levitate_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
     CreateLevitateMovementTask(objectEvent);
@@ -10433,3 +10484,40 @@ bool8 ScrFunc_getdaycaregfx(struct ScriptContext *ctx) {
     gSpecialVar_Result = i;
     return FALSE;
 }
+
+// fast diagonal
+bool8 MovementAction_WalkFastDiagonalUpLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_NORTHWEST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonalUpRight_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_NORTHEAST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonalDownLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_SOUTHWEST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonalDownRight_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_SOUTHEAST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonal_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    if (UpdateMovementNormal(objectEvent, sprite))
+    {
+        sprite->data[2] = 2;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+

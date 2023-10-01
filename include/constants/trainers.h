@@ -242,8 +242,10 @@
 #define FACILITY_CLASS_DAWN                  0x57
 #define FACILITY_CLASS_LUCAS_PLATINUM        0x58
 #define FACILITY_CLASS_DAWN_PLATINUM         0x59
+#define FACILITY_CLASS_CHASE                 0x5a
+#define FACILITY_CLASS_ELAINE                0x5b
 
-#define FACILITY_CLASSES_COUNT               0x5a
+#define FACILITY_CLASSES_COUNT               0x5c
 
 #define RS_FACILITY_CLASS_AQUA_LEADER_ARCHIE    0x0
 #define RS_FACILITY_CLASS_AQUA_GRUNT_M          0x1

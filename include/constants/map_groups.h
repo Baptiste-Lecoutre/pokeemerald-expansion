@@ -619,6 +619,7 @@
 #define MAP_METEOR_FALLS_DRACO_CHAMBER            (1 | (34 << 8))
 #define MAP_UNDERWATER_METEOR_FALLS_DRACO_CHAMBER (2 | (34 << 8))
 #define MAP_CAVE_OF_SHOCK                         (3 | (34 << 8))
+#define MAP_HAUNTED_MANOR                         (4 | (34 << 8))
 
 #define MAP_GROUPS_COUNT 35
 
