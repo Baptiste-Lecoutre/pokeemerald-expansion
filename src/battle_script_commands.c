@@ -11029,7 +11029,9 @@ static void Cmd_various(void)
         {
             gLastUsedItem = gBattleResources->battleHistory->heldItems[battlers[i]];
             gBattleResources->battleHistory->heldItems[battlers[i]] = ITEM_NONE;
-            if (gLastUsedItem && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_WALLY_TUTORIAL)))
+            if (gLastUsedItem && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_WALLY_TUTORIAL))
+                && !(gLastUsedItem >= ITEM_RED_ORB && gLastUsedItem <= ITEM_DIANCITE)
+                && !(gLastUsedItem >= ITEM_NORMALIUM_Z && gLastUsedItem <= ITEM_ULTRANECROZIUM_Z))
             {
                 if(AddBagItem(gLastUsedItem, 1))
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ITEM_DROPPED;
