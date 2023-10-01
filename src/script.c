@@ -189,7 +189,7 @@ void UnlockPlayerFieldControls(void)
     sLockFieldControls = FALSE;
 }
 
-bool8 ArePlayerFieldControlsLocked(void)
+bool8 ArePlayerFieldControlsLocked(void) // ScriptContext2_IsEnabled
 {
     return sLockFieldControls;
 }
@@ -490,3 +490,11 @@ u8 GetNumberOfBadges(void)
     
     return count;
 }
+
+u8* ReadWord(u8 index)
+{
+    struct ScriptContext *ctx = &sGlobalScriptContext;
+    
+    return (T1_READ_PTR(&ctx->data[index]));
+}
+
