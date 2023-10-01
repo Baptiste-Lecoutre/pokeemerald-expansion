@@ -29,6 +29,7 @@
 #include "sound.h"
 #include "string_util.h"
 #include "task.h"
+#include "test_runner.h"
 #include "text.h"
 #include "util.h"
 #include "window.h"
@@ -49,7 +50,6 @@ static void PlayerHandleTrainerSlide(u32 battler);
 static void PlayerHandleTrainerSlideBack(u32 battler);
 static void PlayerHandlePaletteFade(u32 battler);
 static void PlayerHandleSuccessBallThrowAnim(u32 battler);
-static void PlayerHandleBallThrowAnim(u32 battler);
 static void PlayerHandlePause(u32 battler);
 static void PlayerHandleMoveAnimation(u32 battler);
 static void PlayerHandlePrintString(u32 battler);
@@ -1555,6 +1555,7 @@ static void Task_PrepareToGiveExpWithExpBar(u8 taskId)
     exp -= currLvlExp;
     expToNextLvl = gExperienceTables[gSpeciesInfo[species].growthRate][level + 1] - currLvlExp;
     SetBattleBarStruct(battler, gHealthboxSpriteIds[battler], expToNextLvl, exp, -gainedExp);
+    TestRunner_Battle_RecordExp(battler, exp, -gainedExp);
     PlaySE(SE_EXP);
     gTasks[taskId].func = Task_GiveExpWithExpBar;
 }
@@ -1777,7 +1778,7 @@ static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u32 battler, 
         return B_WIN_MOVE_TYPE;
     else
     {
-        u16 typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gBattleMoves[selectedMove].type, battler, targetId, FALSE);
+        uq4_12_t typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gBattleMoves[selectedMove].type, battler, targetId, GetBattlerAbility(targetId), FALSE);
 
         if (typeEffectiveness == UQ_4_12(0.0))
             return B_WIN_NO_EFFECT;
@@ -2038,7 +2039,7 @@ static void PlayerHandleSuccessBallThrowAnim(u32 battler)
     BtlController_HandleSuccessBallThrowAnim(battler, gBattlerTarget, B_ANIM_BALL_THROW, TRUE);
 }
 
-static void PlayerHandleBallThrowAnim(u32 battler)
+void PlayerHandleBallThrowAnim(u32 battler)
 {
     BtlController_HandleBallThrowAnim(battler, gBattlerTarget, B_ANIM_BALL_THROW, TRUE);
 }
