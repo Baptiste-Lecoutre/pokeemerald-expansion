@@ -37,6 +37,8 @@ Known Issues:
 */
 
 // Defines
+#define PLAYER_AVATAR_FLAG_BIKE    PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE
+
 struct FollowerSpriteGraphics
 {
     u16 normalId;
@@ -231,7 +233,7 @@ void FollowMe(struct ObjectEvent* npc, u8 state, bool8 ignoreScriptActive)
         return;
     else if (!gSaveBlock2Ptr->follower.inProgress)
         return;
-    else if (ArePlayerFieldControlsLocked() && !ignoreScriptActive)
+    else if (ScriptContext2_IsEnabled() && !ignoreScriptActive)
         return; //Don't follow during a script
                 
     
