@@ -152,5 +152,6 @@ bool8 MetatileBehavior_IsSpinRight(u8);
 bool8 MetatileBehavior_IsSpinLeft(u8);
 bool8 MetatileBehavior_IsSpinUp(u8);
 bool8 MetatileBehavior_IsSpinDown(u8);
+bool8 MetatileBehavior_IsRockClimbable(u8 metatileBehavior);
 
 #endif // GUARD_METATILE_BEHAVIOR_H

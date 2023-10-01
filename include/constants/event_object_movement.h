@@ -247,8 +247,13 @@
 #define MOVEMENT_ACTION_FIGURE_8                        0x9F
 #define MOVEMENT_ACTION_FLY_UP                          0xA0
 #define MOVEMENT_ACTION_FLY_DOWN                        0xA1
-#define MOVEMENT_ACTION_EXIT_POKEBALL                   0xA2
-#define MOVEMENT_ACTION_ENTER_POKEBALL                  0xA3
+//fast diagonal movement
+#define MOVEMENT_ACTION_WALK_FAST_DIAGONAL_UP_LEFT      0xA2
+#define MOVEMENT_ACTION_WALK_FAST_DIAGONAL_UP_RIGHT     0xA3
+#define MOVEMENT_ACTION_WALK_FAST_DIAGONAL_DOWN_LEFT    0xA4
+#define MOVEMENT_ACTION_WALK_FAST_DIAGONAL_DOWN_RIGHT   0xA5
+#define MOVEMENT_ACTION_EXIT_POKEBALL                   0xA6
+#define MOVEMENT_ACTION_ENTER_POKEBALL                  0xA7
 
 #define MOVEMENT_ACTION_STEP_END 0xFE
 #define MOVEMENT_ACTION_NONE     0xFF
