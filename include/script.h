@@ -63,7 +63,4 @@ u8 GetNumberOfBadges(void);
 // srccmd.h
 void SetMovingNpcId(u16 npcId);
 
-// NEW
-u8* ReadWord(u8 index);
-
 #endif // GUARD_SCRIPT_H
