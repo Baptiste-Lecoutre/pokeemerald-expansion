@@ -56,14 +56,14 @@
       "x": 16,
       "y": 28,
       "elevation": 0,
-      "weather": "COORD_EVENT_WEATHER_SHADE"
+      "weather": "COORD_EVENT_WEATHER_FOG_HORIZONTAL"
     },
     {
       "type": "weather",
       "x": 17,
       "y": 28,
       "elevation": 0,
-      "weather": "COORD_EVENT_WEATHER_SHADE"
+      "weather": "COORD_EVENT_WEATHER_FOG_HORIZONTAL"
     },
     {
       "type": "weather",

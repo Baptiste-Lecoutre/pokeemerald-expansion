@@ -4445,7 +4445,7 @@
       "id": "LAYOUT_ASHEN_WOODS",
       "name": "AshenWoods_Layout",
       "width": 36,
-      "height": 46,
+      "height": 52,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Lavaridge",
       "border_filepath": "data/layouts/AshenWoods/border.bin",
