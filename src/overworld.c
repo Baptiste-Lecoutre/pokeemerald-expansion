@@ -2162,7 +2162,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_Fly || !gSaveBlock2Ptr->optionsShowFollowerPokemon)
+        if (gFieldCallback == FieldCallback_Fly || !gSaveBlock2Ptr->optionsShowFollowerPokemon || PlayerHasFollower())
           RemoveFollowingPokemon();
         else
           UpdateFollowingPokemon();
