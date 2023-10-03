@@ -1898,6 +1898,7 @@ const u8 gText_ExpShareOn[] = _("Turned on the Exp. Share.\pParty will now gain 
 const u8 gText_ExpShareOff[] = _("Turned off the Exp. Share.\pParty will no longer gain a portion\nof any Experience Points.{PAUSE_UNTIL_PRESS}");
 
 //HGSS_Ui PokedexPlus
+#if POKEDEX_PLUS_HGSS == TRUE
 const u8 gText_Stats_Buttons[]  = _("{A_BUTTON}Toggle   {DPAD_UPDOWN}MOVES");
 const u8 gText_Stats_Buttons_Decapped[]  = _("{A_BUTTON}Toggle   {DPAD_UPDOWN}Moves");
 const u8 gText_Stats_HP[]       = _("HP");
@@ -2013,6 +2014,7 @@ const u8 gText_FORMS_Buttons_Decapped_PE[]          = _("{START_BUTTON}Evos");
 const u8 gText_FORMS_Buttons_Submenu_PE[]           = _("{DPAD_NONE}Forms {A_BUTTON}Check {START_BUTTON}Evos");
 const u8 gText_FORMS_Buttons_Submenu_Decapped_PE[]  = _("{START_BUTTON}Evos");
 const u8 gText_FORMS_NONE[]                         = _("{STR_VAR_1} has no alternate forms.");
+#endif
 
 const u8 gText_AshQty[] = _("Ash qty:\n{STR_VAR_1}{PAUSE_UNTIL_PRESS}");
 

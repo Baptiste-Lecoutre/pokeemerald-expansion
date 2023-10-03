@@ -797,7 +797,7 @@ static const TransitionStateFunc sTransitionIntroFuncs[] =
 
 static const struct SpriteFrameImage sSpriteImage_Pokeball[] =
 {
-    sPokeball_Gfx, sizeof(sPokeball_Gfx)
+    {sPokeball_Gfx, sizeof(sPokeball_Gfx)}
 };
 
 static const union AnimCmd sSpriteAnim_Pokeball[] =
@@ -859,12 +859,12 @@ static const struct OamData sOam_UnusedBrendanLass =
 
 static const struct SpriteFrameImage sImageTable_UnusedBrendan[] =
 {
-    sUnusedBrendan_Gfx, sizeof(sUnusedBrendan_Gfx)
+    {sUnusedBrendan_Gfx, sizeof(sUnusedBrendan_Gfx)}
 };
 
 static const struct SpriteFrameImage sImageTable_UnusedLass[] =
 {
-    sUnusedLass_Gfx, sizeof(sUnusedLass_Gfx)
+    {sUnusedLass_Gfx, sizeof(sUnusedLass_Gfx)}
 };
 
 static const union AnimCmd sSpriteAnim_UnusedBrendanLass[] =
@@ -1035,8 +1035,7 @@ static void CB2_TestBattleTransition(void)
     UpdatePaletteFade();
 }
 
-// Unused
-static void TestBattleTransition(u8 transitionId)
+static void UNUSED TestBattleTransition(u8 transitionId)
 {
     sTestingTransitionId = transitionId;
     SetMainCallback2(CB2_TestBattleTransition);
