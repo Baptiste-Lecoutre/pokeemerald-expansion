@@ -3078,7 +3078,7 @@ static void PrintTMHMMoveData(u16 itemId)
     }
     else
     {
-        LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
+        LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
         LoadCompressedPalette(gMoveTypes_Pal, 0x1C0, 0x60);
 
         moveId = ItemIdToBattleMoveId(itemId);
@@ -3086,7 +3086,7 @@ static void PrintTMHMMoveData(u16 itemId)
 
         if (gBagMenu->typeIconSpriteId == 0xFF)
         {
-		    gBagMenu->typeIconSpriteId = CreateSpriteAtEnd(&sSpriteTemplate_MoveTypes, 72, 109, 0);
+		    gBagMenu->typeIconSpriteId = CreateSpriteAtEnd(&gSpriteTemplate_MoveTypes, 72, 109, 0);
 
 		    sprite = &gSprites[gBagMenu->typeIconSpriteId];
 		    StartSpriteAnim(sprite, gBattleMoves[moveId].type);
