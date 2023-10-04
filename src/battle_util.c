@@ -1336,8 +1336,7 @@ void PressurePPLoseOnUsingPerishSong(u8 attacker)
     }
 }
 
-// Unused
-static void MarkAllBattlersForControllerExec(void)
+static void UNUSED MarkAllBattlersForControllerExec(void)
 {
     int i;
 
