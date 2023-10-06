@@ -4099,7 +4099,12 @@ static bool8 RockClimb_Init(struct Task *task, struct ObjectEvent *objectEvent)
 
 static bool8 RockClimb_FieldMovePose(struct Task *task, struct ObjectEvent *objectEvent)
 {
-    if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
+    if (gSaveBlock2Ptr->optionsFastFieldMove)
+    {
+        ObjectEventClearHeldMovementIfActive(objectEvent);
+        task->tState = task->tState + 2;
+    }
+    else if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         SetPlayerAvatarFieldMove();
         ObjectEventSetHeldMovement(objectEvent, MOVEMENT_ACTION_START_ANIM_IN_DIRECTION);
