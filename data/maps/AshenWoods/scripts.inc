@@ -19,6 +19,6 @@ AshenWoods_EventScript_SetWeatherAsh::
 	return
 
 AshenWoods_EventScript_SetWeatherFog::
-	setweather WEATHER_FOG_HORIZONTAL
+	setweather WEATHER_SHADE
 	doweather
 	end
