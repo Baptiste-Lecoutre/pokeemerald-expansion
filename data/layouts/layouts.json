@@ -4710,6 +4710,36 @@
       "secondary_tileset": "gTileset_Rustboro",
       "border_filepath": "data/layouts/HauntedManor/border.bin",
       "blockdata_filepath": "data/layouts/HauntedManor/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANSION_1F",
+      "name": "HauntedMansion_1F_Layout",
+      "width": 21,
+      "height": 14,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_InsideShip",
+      "border_filepath": "data/layouts/HauntedMansion_1F/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedMansion_1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANSION_2F",
+      "name": "HauntedMansion_2F_Layout",
+      "width": 21,
+      "height": 14,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_InsideShip",
+      "border_filepath": "data/layouts/HauntedMansion_2F/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedMansion_2F/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANSION_3F",
+      "name": "HauntedMansion_3F_Layout",
+      "width": 13,
+      "height": 14,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_InsideShip",
+      "border_filepath": "data/layouts/HauntedMansion_3F/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedMansion_3F/map.bin"
     }
   ]
 }

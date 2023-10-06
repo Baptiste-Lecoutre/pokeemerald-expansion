@@ -30,6 +30,20 @@
       "elevation": 0,
       "dest_map": "MAP_ASHEN_WOODS",
       "dest_warp_id": "2"
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "elevation": 0,
+      "dest_map": "MAP_HAUNTED_MANSION_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "elevation": 0,
+      "dest_map": "MAP_HAUNTED_MANSION_1F",
+      "dest_warp_id": "1"
     }
   ],
   "coord_events": [
