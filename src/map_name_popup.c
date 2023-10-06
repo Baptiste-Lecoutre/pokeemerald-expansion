@@ -226,7 +226,7 @@ static bool8 UNUSED StartMenu_ShowMapNamePopup(void)
 
 void ShowMapNamePopup(void)
 {
-    if (FlagGet(FLAG_HIDE_MAP_NAME_POPUP) != TRUE)
+    if (FlagGet(FLAG_HIDE_MAP_NAME_POPUP) != TRUE && !gSaveBlock1Ptr->flashLevel)
     {
         if (!FuncIsActiveTask(Task_MapNamePopUpWindow))
         {
