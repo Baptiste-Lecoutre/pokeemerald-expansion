@@ -125,6 +125,7 @@ void GetBattleAnimBg1Data(struct BattleAnimBgData *);
 void GetBattleAnimBgData(struct BattleAnimBgData *, u32 bgId);
 u8 GetBattlerSpriteSubpriority(u8 battlerId);
 bool8 TranslateAnimHorizontalArc(struct Sprite *sprite);
+bool8 TranslateAnimVerticalArc(struct Sprite *sprite);
 void TranslateSpriteLinearByIdFixedPoint(struct Sprite *sprite);
 void ResetSpriteRotScale(u8 spriteId);
 void SetSpriteRotScale(u8 spriteId, s16 xScale, s16 yScale, u16 rotation);

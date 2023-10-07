@@ -846,9 +846,15 @@ static const u8 sText_TeamGainedEXP[] = _("The rest of your team gained EXP.\nPo
 static const u8 sText_CurrentMoveCantSelect[] = _("{B_BUFF1} cannot be used!\p");
 static const u8 sText_TargetIsBeingSaltCured[] = _("{B_DEF_NAME_WITH_PREFIX} is being salt cured!");
 static const u8 sText_TargetIsHurtBySaltCure[] = _("{B_DEF_NAME_WITH_PREFIX} is hurt by {B_BUFF1}!");
+static const u8 sText_GhostAppearedCantId[] = _("The Ghost appeared!\pDarn!\nThe Ghost can't be ID'd!\p");
+static const u8 sText_TheGhostAppeared[] = _("The Ghost appeared!\p");
+static const u8 sText_TooScaredToMove[] = _("{B_ATK_NAME_WITH_PREFIX} is too scared to move!");
+static const u8 sText_GetOutGetOut[] = _("Ghost: Get out…… Get out……");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
+    [STRINGID_MONTOOSCAREDTOMOVE - BATTLESTRINGS_TABLE_START] = sText_TooScaredToMove,
+    [STRINGID_GHOSTGETOUTGETOUT - BATTLESTRINGS_TABLE_START] = sText_GetOutGetOut,
     [STRINGID_NORUNNINGFROMTHISBATTLE - BATTLESTRINGS_TABLE_START] = sText_NoRunningFromThisBattle,
     [STRINGID_BAGISFULL - BATTLESTRINGS_TABLE_START] = sText_BagIsFull,
     [STRINGID_PKMNDROPPEDITEM - BATTLESTRINGS_TABLE_START] = sText_PkmnDroppedItem,
@@ -2853,7 +2859,14 @@ void BufferStringBattle(u16 stringID, u32 battler)
             }
             else
             {
-                if (BATTLE_TWO_VS_ONE_OPPONENT)
+                if (gBattleTypeFlags & BATTLE_TYPE_GHOST)
+                {
+                    if (CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+                        stringPtr = sText_TheGhostAppeared;
+                    else
+                        stringPtr = sText_GhostAppearedCantId;
+                }
+                else if (BATTLE_TWO_VS_ONE_OPPONENT)
                     stringPtr = sText_Trainer1WantsToBattle;
                 else if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER))
                     stringPtr = sText_TwoTrainersWantToBattle;

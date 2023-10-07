@@ -531,4 +531,9 @@ extern const u8 BattleScript_RaidDefeat[];
 extern const u8 BattleScript_TeraRaidTimerLow[];
 extern const u8 BattleScript_RaidBallBlock[];
 
+// ghosts
+extern const u8 BattleScript_GhostBallDodge[];
+extern const u8 BattleScript_GhostGetOutGetOut[];
+extern const u8 BattleScript_TooScaredToMove[];
+
 #endif // GUARD_BATTLE_SCRIPTS_H

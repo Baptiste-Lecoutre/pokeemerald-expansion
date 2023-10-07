@@ -6478,7 +6478,8 @@ static void Cmd_switchinanim(void)
                                  | BATTLE_TYPE_EREADER_TRAINER
                                  | BATTLE_TYPE_RECORDED_LINK
                                  | BATTLE_TYPE_TRAINER_HILL
-                                 | BATTLE_TYPE_FRONTIER)))
+                                 | BATTLE_TYPE_FRONTIER
+                                 | BATTLE_TYPE_GHOST)))
         HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[battler].species), FLAG_SET_SEEN, gBattleMons[battler].personality);
 
     gAbsentBattlerFlags &= ~(gBitTable[battler]);
@@ -12588,6 +12589,14 @@ static void Cmd_weatherdamage(void)
 
     u32 ability = GetBattlerAbility(gBattlerAttacker);
 
+    if ((gBattleTypeFlags & BATTLE_TYPE_GHOST) && !CheckBagHasItem(ITEM_GO_GOGGLES, 1)
+     && (GetBattlerSide(gBattlerAttacker) == B_SIDE_OPPONENT))
+    {
+        gBattleMoveDamage = 0;
+        ++gBattlescriptCurrInstr;
+        return;
+    }
+
     gBattleMoveDamage = 0;
     if (IsBattlerAlive(gBattlerAttacker) && WEATHER_HAS_EFFECT && ability != ABILITY_MAGIC_GUARD)
     {
@@ -15331,7 +15340,13 @@ static void Cmd_handleballthrow(void)
 
     gBattlerTarget = GetCatchingBattler();
 
-    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST)
+    {
+        BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_GHOST_DODGE);
+        MarkBattlerForControllerExec(gBattlerAttacker);
+        gBattlescriptCurrInstr = BattleScript_GhostBallDodge;
+    }
+    else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
         BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_TRAINER_BLOCK);
         MarkBattlerForControllerExec(gBattlerAttacker);

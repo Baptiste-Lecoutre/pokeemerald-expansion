@@ -3668,4 +3668,6 @@ extern const u8 gText_TeamPreviewMultiText[];
 extern const u8 gText_TeamPreviewMultiLinkText[];
 extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
 
+extern const u8 gText_Ghost[];
+
 #endif // GUARD_STRINGS_H

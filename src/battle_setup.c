@@ -37,6 +37,7 @@
 #include "mirage_tower.h"
 #include "field_screen_effect.h"
 #include "data.h"
+#include "item.h"
 #include "constants/battle_frontier.h"
 #include "constants/battle_setup.h"
 #include "constants/game_stat.h"
@@ -73,6 +74,7 @@ struct TrainerBattleParameter
 // this file's functions
 static void DoBattlePikeWildBattle(void);
 static void DoSafariBattle(void);
+static void DoGhostBattle(void);
 static void DoStandardWildBattle(bool32 isDouble);
 static void CB2_EndWildBattle(void);
 static void CB2_EndScriptedWildBattle(void);
@@ -418,10 +420,22 @@ static void CreateBattleStartTask_Debug(u8 transition, u16 song)
 #undef tState
 #undef tTransition
 
+static bool8 CheckGoGogglesInHauntedMansion(u16 mapGroup, u16 mapNum)
+{
+    if (mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
+     && ((u16)(mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
+     && !(CheckBagHasItem(ITEM_GO_GOGGLES, 1)))
+        return TRUE;
+    else
+        return FALSE;
+}
+
 void BattleSetup_StartWildBattle(void)
 {
     if (GetSafariZoneFlag())
         DoSafariBattle();
+    else if (CheckGoGogglesInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
+        DoGhostBattle();
     else
         DoStandardWildBattle(FALSE);
 }
@@ -498,6 +512,19 @@ static void DoSafariBattle(void)
     gMain.savedCallback = CB2_EndSafariBattle;
     gBattleTypeFlags = BATTLE_TYPE_SAFARI;
     CreateBattleStartTask(GetWildBattleTransition(), 0);
+}
+
+static void DoGhostBattle(void)
+{
+    LockPlayerFieldControls();
+    FreezeObjectEvents();
+    StopPlayerAvatar();
+    gMain.savedCallback = CB2_EndWildBattle;
+    gBattleTypeFlags = BATTLE_TYPE_GHOST;
+    CreateBattleStartTask(GetWildBattleTransition(), 0);
+    SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, gText_Ghost);
+    IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
+    IncrementGameStat(GAME_STAT_WILD_BATTLES);
 }
 
 static void DoBattlePikeWildBattle(void)
