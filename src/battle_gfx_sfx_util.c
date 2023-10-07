@@ -644,6 +644,18 @@ void BattleGfxSfxDummy2(u16 species)
 {
 }
 
+void DecompressGhostFrontPic(struct Pokemon *unused, u8 battler)
+{
+    u16 paletteOffset;
+    u8 position = GetBattlerPosition(battler);
+
+    LZ77UnCompWram(gGhostFrontPic, gMonSpritesGfxPtr->sprites.ptr[position]);
+    paletteOffset = OBJ_PLTT_ID(battler);
+    LZDecompressWram(gGhostPalette, gDecompressionBuffer);
+    LoadPalette(gDecompressionBuffer, paletteOffset, PLTT_SIZE_4BPP);
+    LoadPalette(gDecompressionBuffer, BG_PLTT_ID(8) + BG_PLTT_ID(battler), PLTT_SIZE_4BPP);
+}
+
 void DecompressTrainerFrontPic(u16 frontPicId, u8 battler)
 {
     u8 position = GetBattlerPosition(battler);

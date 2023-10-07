@@ -1013,6 +1013,7 @@ gBattleAnims_General::
 	.4byte General_RaidBossExplosion		@ B_ANIM_RAID_BOSS_EXPLOSION
 	.4byte General_MonScared 				@ B_ANIM_MON_SCARED
 	.4byte General_GhostGetOut 				@ B_ANIM_GHOST_GET_OUT
+	.4byte General_GoGoggled 				@ B_ANIM_GO_GOGGLED
 
 	.align 2
 gBattleAnims_Special::
@@ -33313,4 +33314,14 @@ General_GhostGetOut::
 	waitforvisualfinish
 	restorebg
 	waitbgfadein
+	end
+
+General_GoGoggled:: @ 81D637B
+	monbg ANIM_ATTACKER
+	playsewithpan SE_M_TELEPORT, 192
+	waitplaysewithpan SE_M_MINIMIZE, 192, 48
+	createvisualtask AnimTask_TransformMon, 2, 255
+	waitsound
+	waitforvisualfinish
+	clearmonbg ANIM_ATTACKER
 	end

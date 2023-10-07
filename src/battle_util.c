@@ -615,6 +615,11 @@ bool32 TryRunFromBattle(u32 battler)
     {
         effect++;
     }
+    else if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+    {
+        if (GetBattlerSide(battler) == B_SIDE_PLAYER)
+            ++effect;
+    }
     else
     {
         u8 runningFromBattler = BATTLE_OPPOSITE(battler);
@@ -4297,6 +4302,10 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
         move = gCurrentMove;
 
     GET_MOVE_TYPE(move, moveType);
+
+    if ((gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+     && (gLastUsedAbility == ABILITY_INTIMIDATE || gLastUsedAbility == ABILITY_TRACE))
+        return effect;
 
     switch (caseID)
     {

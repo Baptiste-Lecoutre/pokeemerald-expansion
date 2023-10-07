@@ -708,8 +708,10 @@
 #define STRINGID_NORUNNINGFROMTHISBATTLE              706
 #define STRINGID_MONTOOSCAREDTOMOVE                   707
 #define STRINGID_GHOSTGETOUTGETOUT                    708
+#define STRINGID_GOGOGGLESUNVEILED                    709
+#define STRINGID_GHOSTWASMAROWAK                      710
 
-#define BATTLESTRINGS_COUNT                           709
+#define BATTLESTRINGS_COUNT                           711
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

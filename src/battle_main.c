@@ -3758,6 +3758,11 @@ static void DoBattleIntro(void)
         if (!IsBattlerMarkedForControllerExec(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)))
         {
             PrepareStringBattle(STRINGID_INTROMSG, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT));
+            if ((gBattleTypeFlags & BATTLE_TYPE_GHOST) && CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+            {
+                gBattleScripting.battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+                BattleScriptExecute(BattleScript_GoGogglesUnveiled);
+            }
             (*state)++;
         }
         break;
@@ -3894,7 +3899,8 @@ static void DoBattleIntro(void)
                                           | BATTLE_TYPE_FRONTIER
                                           | BATTLE_TYPE_LINK
                                           | BATTLE_TYPE_RECORDED_LINK
-                                          | BATTLE_TYPE_TRAINER_HILL)))
+                                          | BATTLE_TYPE_TRAINER_HILL
+                                          | BATTLE_TYPE_GHOST)))
                 {
                     HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[battler].species), FLAG_SET_SEEN, gBattleMons[battler].personality);
                 }

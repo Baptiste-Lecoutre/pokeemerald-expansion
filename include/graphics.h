@@ -11034,4 +11034,7 @@ extern const u32 gSummaryScreenPageContestMoveDetailsTilemap[];
 extern const u32 gSummaryScreenPageContestNewMoveTilemap[];
 extern const u32 gSummaryScreenPageConditionTilemap[];
 
+extern const u32 gGhostPalette[];
+extern const u32 gGhostFrontPic[];
+
 #endif //GUARD_GRAPHICS_H

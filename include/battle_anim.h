@@ -202,6 +202,7 @@ void StoreSpriteCallbackInData6(struct Sprite *sprite, void (*spriteCallback)(st
 void SetSpritePrimaryCoordsFromSecondaryCoords(struct Sprite *sprite);
 u8 GetBattlerSpriteDefault_Y(u8 battlerId);
 u8 GetSubstituteSpriteDefault_Y(u8 battlerId);
+u8 GetGhostSpriteDefault_Y(u8 battlerId);
 
 // battle_anim_status_effects.c
 #define STAT_ANIM_PLUS1  MOVE_EFFECT_ATK_PLUS_1 - 1
