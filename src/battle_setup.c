@@ -422,10 +422,9 @@ static void CreateBattleStartTask_Debug(u8 transition, u16 song)
 
 static bool8 CheckGoGogglesInHauntedMansion(u16 mapGroup, u16 mapNum)
 {
-    return TRUE;
     if (mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
      && ((u16)(mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
-     && !(CheckBagHasItem(ITEM_GO_GOGGLES, 1)))
+     /*&& !(CheckBagHasItem(ITEM_GO_GOGGLES, 1))*/)
         return TRUE;
     else
         return FALSE;

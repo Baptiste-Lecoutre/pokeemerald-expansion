@@ -851,7 +851,7 @@ static const u8 sText_TheGhostAppeared[] = _("The Ghost appeared!\p");
 static const u8 sText_TooScaredToMove[] = _("{B_ATK_NAME_WITH_PREFIX} is too scared to move!");
 static const u8 sText_GetOutGetOut[] = _("Ghost: Get out…… Get out……");
 static const u8 sText_GoGogglesUnveil[] = _("Go Goggles unveiled the Ghost's\nidentity!");
-static const u8 sText_TheGhostWas[] = _("The Ghost was Marowak!\p\n");
+static const u8 sText_TheGhostWas[] = _("The Ghost was {B_OPPONENT_MON1_NAME}!\p\n");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
@@ -2863,14 +2863,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
             }
             else
             {
-                if (gBattleTypeFlags & BATTLE_TYPE_GHOST)
-                {
-                    if (CheckBagHasItem(ITEM_GO_GOGGLES, 1))
-                        stringPtr = sText_TheGhostAppeared;
-                    else
-                        stringPtr = sText_GhostAppearedCantId;
-                }
-                else if (BATTLE_TWO_VS_ONE_OPPONENT)
+                if (BATTLE_TWO_VS_ONE_OPPONENT)
                     stringPtr = sText_Trainer1WantsToBattle;
                 else if (gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER))
                     stringPtr = sText_TwoTrainersWantToBattle;
@@ -2882,7 +2875,14 @@ void BufferStringBattle(u16 stringID, u32 battler)
         }
         else
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST)
+            {
+                if (CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+                    stringPtr = sText_TheGhostAppeared;
+                else
+                    stringPtr = sText_GhostAppearedCantId;
+            }
+            else if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
                 stringPtr = sText_LegendaryPkmnAppeared;
             else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)]]))
                 stringPtr = sText_TwoWildPkmnAppeared;

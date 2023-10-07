@@ -2308,7 +2308,7 @@ static void SpriteCB_StatusSummaryBalls_OnSwitchout(struct Sprite *sprite)
     sprite->y2 = gSprites[barSpriteId].y2;
 }
 
-static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
+void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
 {
     u8 nickname[POKEMON_NAME_LENGTH + 1];
     void *ptr;
@@ -2371,7 +2371,7 @@ static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
     RemoveWindowOnHealthbox(windowId);
 }
 
-static void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
+void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
 {
     u8 battlerId, healthBarSpriteId;
 
@@ -3896,6 +3896,8 @@ void TryLoadTypeIcons(u8 activeBattler)
 
             if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && GetBattlerSide(GetBattlerAtPosition(position)) == B_SIDE_OPPONENT)
+                continue;
 
             if (illusionMon != NULL)
             {
