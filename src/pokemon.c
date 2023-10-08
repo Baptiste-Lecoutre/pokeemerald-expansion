@@ -9276,3 +9276,17 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
 
     return trainerPic;
 }
+
+bool8 CheckBattleTypeGhost(struct Pokemon *mon, u8 battlerId)
+{
+    u8 buffer[12];
+
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && GetBattlerSide(battlerId) != B_SIDE_PLAYER)
+    {
+        GetMonData(mon, MON_DATA_NICKNAME, buffer);
+        StringGet_Nickname(buffer);
+        if (!StringCompare(buffer, gText_Ghost))
+            return TRUE;
+    }
+    return FALSE;
+}

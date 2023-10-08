@@ -10849,3 +10849,25 @@ BattleScript_TeraRaidDefeatAnim:
 	playanimation BS_OPPONENT1, B_ANIM_RAID_SHOCKWAVE @placeholder
 	waitanimation
 	goto BattleScript_BlownOutMsg
+
+@ Ghosts
+BattleScript_GhostGetOutGetOut::
+	printstring STRINGID_GHOSTGETOUTGETOUT
+	playanimation BS_ATTACKER, B_ANIM_GHOST_GET_OUT, NULL
+	goto BattleScript_MoveEnd
+
+BattleScript_TooScaredToMove::
+	printstring STRINGID_MONTOOSCAREDTOMOVE
+	waitmessage B_WAIT_TIME_LONG
+	playanimation BS_ATTACKER, B_ANIM_MON_SCARED, NULL
+	goto BattleScript_MoveEnd
+
+BattleScript_GoGogglesUnveiled::
+	pause 0x20
+	printstring STRINGID_GOGOGGLESUNVEILED
+	waitstate
+	playanimation BS_OPPONENT1, B_ANIM_GO_GOGGLED, NULL
+	pause 0x20
+	printstring STRINGID_GHOSTWASMAROWAK
+	waitmessage 0x40
+	end2

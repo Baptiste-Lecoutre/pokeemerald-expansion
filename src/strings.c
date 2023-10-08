@@ -2359,3 +2359,6 @@ const u8 gText_TeamPreviewSingleDoubleText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1
 const u8 gText_TeamPreviewMultiText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}'s Party\n{B_TRAINER2_CLASS} {B_TRAINER2_NAME}'s Party");
 const u8 gText_TeamPreviewMultiLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party");
 const u8 gText_TeamPreviewSingleDoubleLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party\n {B_LINK_OPPONENT2_NAME}'s Party");
+
+// Ghost battle
+ALIGNED(4) const u8 gText_Ghost[] = _("Ghost");

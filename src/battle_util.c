@@ -615,6 +615,11 @@ bool32 TryRunFromBattle(u32 battler)
     {
         effect++;
     }
+    else if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+    {
+        if (GetBattlerSide(battler) == B_SIDE_PLAYER)
+            ++effect;
+    }
     else
     {
         u8 runningFromBattler = BATTLE_OPPOSITE(battler);
@@ -3680,6 +3685,18 @@ u8 AtkCanceller_UnableToUseMove(u32 moveType)
             }
             gBattleStruct->atkCancellerTracker++;
             break;
+        case CANCELLER_GHOST: // Ghost in haunted mansion
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+            {
+                if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER)
+                    gBattlescriptCurrInstr = BattleScript_TooScaredToMove;
+                else
+                    gBattlescriptCurrInstr = BattleScript_GhostGetOutGetOut;
+                gBattleCommunication[MULTISTRING_CHOOSER] = 0;
+                effect = 1;
+            }
+            gBattleStruct->atkCancellerTracker++;
+            break;
         case CANCELLER_IN_LOVE: // infatuation
             if (!gBattleStruct->isAtkCancelerForCalledMove && gBattleMons[gBattlerAttacker].status2 & STATUS2_INFATUATION)
             {
@@ -4281,6 +4298,10 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
         move = gCurrentMove;
 
     GET_MOVE_TYPE(move, moveType);
+
+    if ((gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+     && (gLastUsedAbility == ABILITY_INTIMIDATE || gLastUsedAbility == ABILITY_TRACE))
+        return effect;
 
     switch (caseID)
     {

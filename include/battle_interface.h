@@ -108,6 +108,8 @@ void MegaIndicator_LoadSpritesGfx(void);
 u8 CreatePartyStatusSummarySprites(u8 battler, struct HpAndStatus *partyInfo, bool8 skipPlayer, bool8 isBattleStart);
 void Task_HidePartyStatusSummary(u8 taskId);
 void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elementId);
+void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon);
+void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus);
 s32 MoveBattleBar(u8 battler, u8 healthboxSpriteId, u8 whichBar, u8 unused);
 u8 GetScaledHPFraction(s16 hp, s16 maxhp, u8 scale);
 u8 GetHPBarLevel(s16 hp, s16 maxhp);

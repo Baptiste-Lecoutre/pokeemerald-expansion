@@ -22,6 +22,7 @@
 #include "data.h"
 #include "palette.h"
 #include "contest.h"
+#include "item.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
 #include "constants/battle_palace.h"
@@ -644,6 +645,18 @@ void BattleGfxSfxDummy2(u16 species)
 {
 }
 
+void DecompressGhostFrontPic(struct Pokemon *unused, u8 battler)
+{
+    u16 paletteOffset;
+    u8 position = GetBattlerPosition(battler);
+
+    LZ77UnCompWram(gGhostFrontPic, gMonSpritesGfxPtr->sprites.ptr[position]);
+    paletteOffset = OBJ_PLTT_ID(battler);
+    LZDecompressWram(gGhostPalette, gDecompressionBuffer);
+    LoadPalette(gDecompressionBuffer, paletteOffset, PLTT_SIZE_4BPP);
+    LoadPalette(gDecompressionBuffer, BG_PLTT_ID(8) + BG_PLTT_ID(battler), PLTT_SIZE_4BPP);
+}
+
 void DecompressTrainerFrontPic(u16 frontPicId, u8 battler)
 {
     u8 position = GetBattlerPosition(battler);
@@ -955,6 +968,13 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
 
     gSprites[gBattlerSpriteIds[battlerAtk]].y = GetBattlerSpriteDefault_Y(battlerAtk);
     StartSpriteAnim(&gSprites[gBattlerSpriteIds[battlerAtk]], 0);
+    
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+    {
+        SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesNames[targetSpecies]);
+        UpdateNickInHealthbox(gHealthboxSpriteIds[battlerAtk], &gEnemyParty[gBattlerPartyIndexes[battlerAtk]]);
+        TryAddPokeballIconToHealthbox(gHealthboxSpriteIds[battlerAtk], TRUE);
+    }
 }
 
 void BattleLoadSubstituteOrMonSpriteGfx(u8 battler, bool8 loadMonSprite)

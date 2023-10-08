@@ -1011,6 +1011,9 @@ gBattleAnims_General::
 	.4byte General_RaidShieldBroken			@ B_ANIM_RAID_SHIELD_BROKE
 	.4byte General_RaidShockwave			@ B_ANIM_RAID_SHOCKWAVE
 	.4byte General_RaidBossExplosion		@ B_ANIM_RAID_BOSS_EXPLOSION
+	.4byte General_MonScared 				@ B_ANIM_MON_SCARED
+	.4byte General_GhostGetOut 				@ B_ANIM_GHOST_GET_OUT
+	.4byte General_GoGoggled 				@ B_ANIM_GO_GOGGLED
 
 	.align 2
 gBattleAnims_Special::
@@ -27264,6 +27267,7 @@ Special_BallThrow:
 	createvisualtask AnimTask_ThrowBall, 2
 	createvisualtask AnimTask_IsBallBlockedByTrainer, 2
 	jumpreteq -1, BallThrowTrainerBlock
+	jumpreteq -2, BallThrowGhostDodged
 BallThrowEnd:
 	waitforvisualfinish
 	createvisualtask AnimTask_FreeBallGfx, 2
@@ -27279,6 +27283,13 @@ BallThrowTrainerBlock:
 	waitforvisualfinish
 	clearmonbg ANIM_DEF_PARTNER
 	blendoff
+	goto BallThrowEnd
+BallThrowGhostDodged:
+	delay 16
+	createvisualtask AnimTask_WindUpLunge, 2, 1, 48, 6, 16, 48, -48, 16
+	playsewithpan SE_M_TAKE_DOWN, 63
+	waitplaysewithpan SE_M_TAKE_DOWN, 63, 48
+	waitforvisualfinish
 	goto BallThrowEnd
 
 Special_BallThrowWithTrainer:
@@ -27304,6 +27315,7 @@ Special_CriticalCaptureBallThrow:
 	createvisualtask AnimTask_ThrowBall, 2
 	createvisualtask AnimTask_IsBallBlockedByTrainer, 2
 	jumpreteq -1, BallThrowTrainerBlock
+	jumpreteq -2, BallThrowGhostDodged
 	goto BallThrowEnd
 
 @@@@@@@@@@ Z MOVES @@@@@@@@@@
@@ -33260,3 +33272,56 @@ Explosion2:
 	createsprite gExplosionSpriteTemplate, ANIM_TARGET, 3, 16, 16, 0, 1
 	delay 6
 	return
+
+@ Ghosts
+General_MonScared::
+	createvisualtask AnimTask_SetAttackerTargetLeftPos, 2, 1
+	waitforvisualfinish
+	loadspritegfx ANIM_TAG_SWEAT_BEAD
+	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 0, 4, 2, 0, 10, 26336
+	createvisualtask AnimTask_ShakeMon2, 2, 1, 2, 0, 10, 1
+	delay 20
+	createsprite gSprayWaterDropletSpriteTemplate, ANIM_TARGET, 5, 0, 1
+	playsewithpan SE_M_SKETCH, 63
+	createsprite gSprayWaterDropletSpriteTemplate, ANIM_TARGET, 5, 1, 1
+	createvisualtask AnimTask_ShakeMon2, 2, 1, 4, 0, 5, 1
+	createvisualtask AnimTask_StretchTargetUp, 3, 
+	waitforvisualfinish
+	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 0, 4, 2, 10, 0, 26336
+	waitforvisualfinish
+	end
+
+General_GhostGetOut::
+	createvisualtask AnimTask_SetAttackerTargetLeftPos, 2, 1
+	waitforvisualfinish
+	fadetobg 2
+	waitbgfadeout
+	monbg_static ANIM_ATTACKER
+	createvisualtask AnimTask_GhostGetOut, 2, 
+	waitbgfadein
+	loopsewithpan SE_M_PSYBEAM, 63, 20, 3
+	waitforvisualfinish
+	clearmonbg_static ANIM_ATTACKER
+	delay 1
+	loadspritegfx ANIM_TAG_SWEAT_BEAD
+	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 0, 4, -1, 0, 6, 27349
+	createsprite gSprayWaterDropletSpriteTemplate, ANIM_TARGET, 5, 0, 1
+	createsprite gSprayWaterDropletSpriteTemplate, ANIM_TARGET, 5, 1, 1
+	createvisualtask AnimTask_ShakeMon2, 2, 1, 4, 0, 5, 1
+	createvisualtask AnimTask_StretchTargetUp, 3, 
+	waitforvisualfinish
+	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 0, 4, -1, 6, 0, 27349
+	waitforvisualfinish
+	restorebg
+	waitbgfadein
+	end
+
+General_GoGoggled:: @ 81D637B
+	monbg ANIM_ATTACKER
+	playsewithpan SE_M_TELEPORT, 192
+	waitplaysewithpan SE_M_MINIMIZE, 192, 48
+	createvisualtask AnimTask_TransformMon, 2, 255
+	waitsound
+	waitforvisualfinish
+	clearmonbg ANIM_ATTACKER
+	end
