@@ -20,9 +20,9 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	playmoncry SPECIES_GENGAR, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceDown
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_FaceDown
-	applymovement LOCALID_GIRL, Common_Movement_FaceDown
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_WalkInPlaceFasterDown
+	applymovement LOCALID_GIRL, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	playse SE_PIN
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
@@ -41,6 +41,18 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	doraidbattle
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_LOST, HauntedMansion_3F_EventScript_LostGengarBattle
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
+	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_WalkInPlaceFasterLeft
+	applymovement LOCALID_GIRL, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	msgbox HauntedMansion_3F_Text_TheGhostIsItGone, MSGBOX_DEFAULT
+	closemessage
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, HauntedMansion_3F_EventScript_MayGoBack
+	call_if_eq VAR_RESULT, FEMALE, HauntedMansion_3F_EventScript_BrendanGoBack
+	setvar VAR_POKE_VIAL_MAX_CHARGES, 2
 	setvar VAR_LAVARIDGE_TOWN_STATE, 3
 	fadescreenswapbuffers FADE_TO_BLACK
 	destroyfollower
@@ -50,6 +62,14 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	callnative UpdateFollowingPokemon
 	releaseall
 	end
+
+HauntedMansion_3F_EventScript_MayGoBack::
+	msgbox HauntedMansion_3F_Text_MayGoNorman, MSGBOX_NPC
+	return
+
+HauntedMansion_3F_EventScript_BrendanGoBack::
+	msgbox HauntedMansion_3F_Text_BrendanGoNorman, MSGBOX_NPC
+	return
 
 HauntedMansion_3F_EventScript_LostGengarBattle::
 	fadescreen FADE_TO_BLACK
@@ -68,3 +88,31 @@ HauntedMansion_3F_Text_WhoAreYou:
 HauntedMansion_3F_Text_WhatWasThatNoise:
 	.string "Kid: That noise! It's the ghost!\n"
 	.string "It's coming back! Aaaaah!$"
+
+HauntedMansion_3F_Text_TheGhostIsItGone:
+	.string "Kid: The ghost…\n"
+	.string "Is it gone?$"
+
+HauntedMansion_3F_Text_MayGoNorman:
+	.string "May: Yes!\n"
+	.string "I'll escort you back to Lavarige Town.\p"
+	.string "{PLAYER}{KUN}, I can see\n"
+	.string "you're trying hard because you don't\l"
+	.string "want to lose to me, I bet!\p"
+	.string "You should take one of my Pokévial\n"
+	.string "charges for the trip back.\p"
+	.string "{PLAYER}{KUN}, I think I should challenge\n"
+	.string "your dad in Petalburg Gym.\p"
+	.string "See you again!$"
+
+HauntedMansion_3F_Text_BrendanGoNorman:
+	.string "Brendan: Yup!\n"
+	.string "I'll escort you back to Lavarige Town.\p"
+	.string "Here {PLAYER}, take one of my Pokévial\n"
+	.string "charges for the trip back.\p"
+	.string "As for me…\n"
+	.string "I'm considering challenging Norman,\l"
+	.string "the Gym Leader of Petalburg.\p"
+	.string "Unlike you, {PLAYER}, your dad looks like\n"
+	.string "he really is tough.\p"
+	.string "See you around!$"

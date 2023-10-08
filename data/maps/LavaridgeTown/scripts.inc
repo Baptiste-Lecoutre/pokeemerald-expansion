@@ -18,6 +18,7 @@ LavaridgeTown_OnTransition:
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_HideMapNamePopup
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_CheckSetOldWomanPos
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_RemoveLittleGirl
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_RemoveLittleGirl
 	end
 
 LavaridgeTown_EventScript_ClearLavaridgeWhiteOut::
@@ -292,7 +293,12 @@ LavaridgeTown_EventScript_HotSpringsOldWoman2::
 	end
 
 LavaridgeTown_EventScript_ExpertF::
+	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
 	msgbox LavaridgeTown_Text_OhYouLikeHotSprings, MSGBOX_NPC
+	end
+
+LavaridgeTown_EventScript_ExpertFGrandDaughterMissing::
+	msgbox LavaridgeTown_Text_PleaseFindMyGrandDaughter, MSGBOX_NPC
 	end
 
 LavaridgeTown_EventScript_EggWoman::
@@ -470,6 +476,10 @@ LavaridgeTown_Text_MyGrandDaughterDisappeared:
 	.string "She was playing in the Ashen Woods\l"
 	.string "before she stopped giving any sign…\p"
 	.string "Please… You look trustworthy…\n"
+	.string "Please find her and save her…$"
+
+LavaridgeTown_Text_PleaseFindMyGrandDaughter:
+	.string "My grand-daughter… She disappeared…\n"
 	.string "Please find her and save her…$"
 
 LavaridgeTown_Text_MayIheardThatLetsGo:
