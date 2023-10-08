@@ -50,9 +50,10 @@ SkyPillar_Top_EventScript_Rayquaza::
 SkyPillar_Top_EventScript_RayquazaPrepareRaid:
 	preparefixedraid 2, 7, SPECIES_RAYQUAZA, 70, ITEM_NONE
 	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
-	special InitRaidIntro
-	waitstate
-	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_ReleaseEnd
+	special InitStoryRaid
+@	special InitRaidIntro
+@	waitstate
+@	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_ReleaseEnd
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry

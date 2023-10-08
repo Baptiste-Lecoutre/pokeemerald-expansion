@@ -712,6 +712,15 @@ void InitRaidIntro(void)
 	}
 }
 
+void InitStoryRaid(void)
+{
+	if (InitCustomRaidData())
+	{
+		FlagClear(FLAG_SYS_SPECIAL_RAID_BATTLE);
+		gSpecialVar_Result = TRUE;
+	}
+}
+
 static bool32 GetRaidBattleData(void)
 {
 	bool32 success;

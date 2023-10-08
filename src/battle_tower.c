@@ -2189,7 +2189,14 @@ void DoSpecialTrainerBattle(void)
     // TODO: Does this belong with all the other multi battles?
     case SPECIAL_BATTLE_RAID:
         gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;// | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
-	
+
+        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
+             && (u16)(gSaveBlock1Ptr->location.mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
+        {
+            gBattleTypeFlags |= BATTLE_TYPE_GHOST;
+            SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, gText_Ghost);
+        }
+        
         // TODO: Get Partner properly.
         /*gPartnerSpriteId = TRAINER_BACK_PIC_WALLY;
         gPartnerTrainerId = TRAINER_WALLY_VR_2 + TRAINER_CUSTOM_PARTNER;

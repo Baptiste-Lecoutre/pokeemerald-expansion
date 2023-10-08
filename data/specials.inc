@@ -585,3 +585,4 @@ gSpecials::
 	def_special DoRegielekiPuzzle
 	def_special IsPokeballPocketEmpty
  	def_special SetFollowerPokemonOption
+	def_special InitStoryRaid

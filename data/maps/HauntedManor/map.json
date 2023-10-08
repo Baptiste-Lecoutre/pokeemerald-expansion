@@ -2,7 +2,7 @@
   "id": "MAP_HAUNTED_MANOR",
   "name": "HauntedManor",
   "layout": "LAYOUT_HAUNTED_MANOR",
-  "music": "MUS_MT_PYRE_EXTERIOR",
+  "music": "MUS_PETALBURG_WOODS",
   "region_map_section": "MAPSEC_HAUNTED_MANOR",
   "requires_flash": false,
   "weather": "WEATHER_SHADE",
