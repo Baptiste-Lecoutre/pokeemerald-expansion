@@ -230,6 +230,15 @@
       "var": "VAR_JAGGED_PASS_STATE",
       "var_value": "1",
       "script": "JaggedPass_EventScript_OpenMagmaHideout"
+    },
+    {
+      "type": "trigger",
+      "x": 12,
+      "y": 29,
+      "elevation": 0,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "JaggedPass_EventScript_AshenWoodsNotThisWay"
     }
   ],
   "bg_events": [
