@@ -441,9 +441,10 @@
 #define OBJ_KIND_CLONE  255 // Exclusive to FRLG
 
 // Special object event local ids
+#define OBJ_EVENT_ID_FOLLOWER_NPC 0xFC
 #define OBJ_EVENT_ID_PLAYER 0xFF
-#define OBJ_EVENT_ID_CAMERA 0x7F
 #define OBJ_EVENT_ID_FOLLOWER 0xFE
+#define OBJ_EVENT_ID_CAMERA 0x7F
 
 // Object event local ids referenced in C files
 #define LOCALID_ROUTE111_PLAYER_FALLING 45

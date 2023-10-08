@@ -650,6 +650,9 @@
     "MeteorFalls_DracoChamber",
     "Underwater_MeteorFalls_DracoChamber",
     "CaveOfShock",
-    "HauntedManor"
+    "HauntedManor",
+    "HauntedMansion_1F",
+    "HauntedMansion_2F",
+    "HauntedMansion_3F"
   ]
 }

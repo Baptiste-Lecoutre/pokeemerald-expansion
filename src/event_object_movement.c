@@ -34,6 +34,7 @@
 #include "trainer_hill.h"
 #include "util.h"
 #include "wild_encounter.h"
+#include "follow_me.h"
 #include "constants/event_object_movement.h"
 #include "constants/abilities.h"
 #include "constants/battle.h"
@@ -49,6 +50,7 @@
 #include "constants/trainer_types.h"
 #include "constants/union_room.h"
 #include "constants/weather.h"
+#include "constants/metatile_behaviors.h"
 
 // this file was known as evobjmv.c in Game Freak's original source
 
@@ -156,7 +158,6 @@ static u16 GetObjectEventFlagIdByObjectEventId(u8);
 static void UpdateObjectEventVisibility(struct ObjectEvent *, struct Sprite *);
 static void MakeSpriteTemplateFromObjectEventTemplate(const struct ObjectEventTemplate *, struct SpriteTemplate *, const struct SubspriteTable **);
 static void GetObjectEventMovingCameraOffset(s16 *, s16 *);
-static struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8, u8, u8);
 static void RemoveObjectEventIfOutsideView(struct ObjectEvent *);
 static void SpawnObjectEventOnReturnToField(u8, s16, s16);
 static void SetPlayerAvatarObjectEventIdAndObjectId(u8, u8);
@@ -192,7 +193,7 @@ static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny);
 static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species, u8 form);
 static bool8 NpcTakeStep(struct Sprite *);
 static bool8 AreElevationsCompatible(u8, u8);
-static u16 PackGraphicsId(const struct ObjectEventTemplate *template);
+static u16 PackGraphicsId(struct ObjectEventTemplate *template);
 static void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
 
 static const struct SpriteFrameImage sPicTable_PechaBerryTree[];
@@ -1339,7 +1340,9 @@ u8 GetFirstInactiveObjectEventId(void)
 
 u8 GetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId)
 {
-    if (localId < OBJ_EVENT_ID_FOLLOWER)
+    if (localId == OBJ_EVENT_ID_FOLLOWER_NPC)
+        return GetFollowerObjectId();
+    else if (localId < OBJ_EVENT_ID_FOLLOWER)
         return GetObjectEventIdByLocalIdAndMapInternal(localId, mapNum, mapGroupId);
 
     return GetObjectEventIdByLocalId(localId);
@@ -1390,7 +1393,7 @@ static u8 GetObjectEventIdByLocalId(u8 localId)
     return OBJECT_EVENTS_COUNT;
 }
 
-static u8 InitObjectEventStateFromTemplate(const struct ObjectEventTemplate *template, u8 mapNum, u8 mapGroup)
+static u8 InitObjectEventStateFromTemplate(struct ObjectEventTemplate *template, u8 mapNum, u8 mapGroup)
 {
     struct ObjectEvent *objectEvent;
     u8 objectEventId;
@@ -1405,6 +1408,7 @@ static u8 InitObjectEventStateFromTemplate(const struct ObjectEventTemplate *tem
     y = template->y + MAP_OFFSET;
     objectEvent->active = TRUE;
     objectEvent->triggerGroundEffectsOnMove = TRUE;
+    //objectEvent->graphicsId = template->graphicsId;
     objectEvent->graphicsId = PackGraphicsId(template);
     SetObjectEventDynamicGraphicsId(objectEvent);
     if (objectEvent->graphicsId >= OBJ_EVENT_GFX_MON_BASE) {
@@ -1492,7 +1496,7 @@ static bool8 GetAvailableObjectEventId(u16 localId, u8 mapNum, u8 mapGroup, u8 *
     return FALSE;
 }
 
-static void RemoveObjectEvent(struct ObjectEvent *objectEvent)
+void RemoveObjectEvent(struct ObjectEvent *objectEvent)
 {
     objectEvent->active = FALSE;
     RemoveObjectEventInternal(objectEvent);
@@ -1540,7 +1544,7 @@ void RemoveAllObjectEventsExceptPlayer(void)
     }
 }
 
-static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEventTemplate, struct SpriteTemplate *spriteTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
+static u8 TrySetupObjectEventSprite(struct ObjectEventTemplate *objectEventTemplate, struct SpriteTemplate *spriteTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
 {
     u8 spriteId;
     u8 objectEventId;
@@ -1591,7 +1595,7 @@ static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEven
 }
 
 // Pack pokemon form info into a graphicsId, from a template's script
-static u16 PackGraphicsId(const struct ObjectEventTemplate *template) {
+static u16 PackGraphicsId(struct ObjectEventTemplate *template) {
     u16 graphicsId = template->graphicsId;
     u32 form = 0;
     // set form based on template's script,
@@ -1608,8 +1612,7 @@ static u16 PackGraphicsId(const struct ObjectEventTemplate *template) {
     return graphicsId;
 }
 
-static u8
-TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplate,
+u8 TrySpawnObjectEventTemplate(struct ObjectEventTemplate *objectEventTemplate,
                             u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY) {
   u8 objectEventId;
   u16 graphicsId = PackGraphicsId(objectEventTemplate);
@@ -1622,6 +1625,8 @@ TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplat
   bool8 shiny = FALSE;
 
   graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
+  //graphicsInfo = GetObjectEventGraphicsInfo(objectEventTemplate->graphicsId);
+  //CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(objectEventTemplate->graphicsId, objectEventTemplate->movementType, &spriteTemplate, &subspriteTables);
   CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(graphicsId, objectEventTemplate->movementType, &spriteTemplate, &subspriteTables);
   spriteFrameImage.size = graphicsInfo->size;
   spriteTemplate.images = &spriteFrameImage;
@@ -1667,7 +1672,7 @@ u8 SpawnSpecialObjectEventParameterized(u16 graphicsId, u8 movementBehavior, u8 
 
 u8 TrySpawnObjectEvent(u8 localId, u8 mapNum, u8 mapGroup)
 {
-    const struct ObjectEventTemplate *objectEventTemplate;
+    struct ObjectEventTemplate *objectEventTemplate;
     s16 cameraX, cameraY;
 
     objectEventTemplate = GetObjectEventTemplateByLocalIdAndMap(localId, mapNum, mapGroup);
@@ -1987,7 +1992,7 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
   bool8 shiny;
   u8 form;
   // Avoid spawning large (64x64) follower pokemon inside buildings
-  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER) && gSaveBlock2Ptr->optionsShowFollowerPokemon) {
+  if (GetFollowerInfo(&species, &form, &shiny) && !(gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->height == 64) && !FlagGet(FLAG_TEMP_HIDE_FOLLOWER) && gSaveBlock2Ptr->optionsShowFollowerPokemon && !PlayerHasFollower()) {
     if (objEvent == NULL) { // Spawn follower
       struct ObjectEventTemplate template = {
         .localId = OBJ_EVENT_ID_FOLLOWER,
@@ -2468,7 +2473,7 @@ void RemoveObjectEventsOutsideView(void)
 
             // Followers should not go OOB, or their sprites may be freed early during a cross-map scripting event,
             // such as Wally's Ralts catch sequence
-            if (objectEvent->active && !objectEvent->isPlayer && objectEvent->localId != OBJ_EVENT_ID_FOLLOWER)
+            if (objectEvent->active && !objectEvent->isPlayer && objectEvent->localId != OBJ_EVENT_ID_FOLLOWER && i != GetFollowerObjectId())
                 RemoveObjectEventIfOutsideView(objectEvent);
         }
     }
@@ -2828,8 +2833,7 @@ u8 LoadObjectEventPalette(u16 paletteTag)
     return LoadSpritePaletteIfTagExists(&sObjectEventSpritePalettes[i]);
 }
 
-// Unused
-static void LoadObjectEventPaletteSet(u16 *paletteTags)
+static void UNUSED LoadObjectEventPaletteSet(u16 *paletteTags)
 {
     u8 i;
 
@@ -2915,8 +2919,7 @@ static void _PatchObjectPalette(u16 tag, u8 slot)
     PatchObjectPalette(tag, slot);
 }
 
-// Unused
-static void IncrementObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
+static void UNUSED IncrementObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
 {
     objectEvent->previousCoords.x = objectEvent->currentCoords.x;
     objectEvent->previousCoords.y = objectEvent->currentCoords.y;
@@ -3115,8 +3118,7 @@ void CameraObjectSetFollowedSpriteId(u8 spriteId)
     }
 }
 
-// Unused
-static u8 CameraObjectGetFollowedSpriteId(void)
+static u8 UNUSED CameraObjectGetFollowedSpriteId(void)
 {
     struct Sprite *camera;
 
@@ -3216,8 +3218,7 @@ static u16 GetObjectEventFlagIdByObjectEventId(u8 objectEventId)
     return GetObjectEventFlagIdByLocalIdAndMap(gObjectEvents[objectEventId].localId, gObjectEvents[objectEventId].mapNum, gObjectEvents[objectEventId].mapGroup);
 }
 
-// Unused
-static u8 GetObjectTrainerTypeByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
+static u8 UNUSED GetObjectTrainerTypeByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
 {
     u8 objectEventId;
 
@@ -3227,8 +3228,7 @@ static u8 GetObjectTrainerTypeByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup
     return gObjectEvents[objectEventId].trainerType;
 }
 
-// Unused
-static u8 GetObjectTrainerTypeByObjectEventId(u8 objectEventId)
+static u8 UNUSED GetObjectTrainerTypeByObjectEventId(u8 objectEventId)
 {
     return gObjectEvents[objectEventId].trainerType;
 }
@@ -3249,7 +3249,7 @@ u8 GetObjectEventBerryTreeId(u8 objectEventId)
     return gObjectEvents[objectEventId].trainerRange_berryTreeId;
 }
 
-static struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
+struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
 {
     struct ObjectEventTemplate *templates;
     const struct MapHeader *mapHeader;
@@ -5956,8 +5956,9 @@ static bool8 DoesObjectCollideWithObjectAt(struct ObjectEvent *objectEvent, s16 
     for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
     {
         curObject = &gObjectEvents[i];
-        if (curObject->active && (curObject->movementType != MOVEMENT_TYPE_FOLLOW_PLAYER || objectEvent != &gObjectEvents[gPlayerAvatar.objectEventId]) && curObject != objectEvent)
+        if (curObject->active && (curObject->movementType != MOVEMENT_TYPE_FOLLOW_PLAYER || objectEvent != &gObjectEvents[gPlayerAvatar.objectEventId]) && curObject != objectEvent  && !FollowMe_IsCollisionExempt(curObject, objectEvent))
         {
+            // check for collision if curObject is active, not the object in question, and not exempt from collisions
             if ((curObject->currentCoords.x == x && curObject->currentCoords.y == y) || (curObject->previousCoords.x == x && curObject->previousCoords.y == y))
             {
                 if (AreElevationsCompatible(objectEvent->currentElevation, curObject->currentElevation))
@@ -5996,8 +5997,7 @@ void MoveCoords(u8 direction, s16 *x, s16 *y)
     *y += sDirectionToVectors[direction].y;
 }
 
-// Unused
-static void MoveCoordsInMapCoordIncrement(u8 direction, s16 *x, s16 *y)
+static void UNUSED MoveCoordsInMapCoordIncrement(u8 direction, s16 *x, s16 *y)
 {
     *x += sDirectionToVectors[direction].x << 4;
     *y += sDirectionToVectors[direction].y << 4;
@@ -6105,6 +6105,7 @@ bool8 ObjectEventSetHeldMovement(struct ObjectEvent *objectEvent, u8 movementAct
     objectEvent->heldMovementActive = TRUE;
     objectEvent->heldMovementFinished = FALSE;
     gSprites[objectEvent->spriteId].sActionFuncId = 0;
+    FollowMe(objectEvent, movementActionId, FALSE);
     return FALSE;
 }
 
@@ -9361,10 +9362,10 @@ static void DoTracksGroundEffect_BikeTireTracks(struct ObjectEvent *objEvent, st
     //  each byte in that row is for the next direction of the bike in the order
     //  of down, up, left, right.
     static const u8 bikeTireTracks_Transitions[4][4] = {
-        1, 2, 7, 8,
-        1, 2, 6, 5,
-        5, 8, 3, 4,
-        6, 7, 3, 4,
+        {1, 2, 7, 8},
+        {1, 2, 6, 5},
+        {5, 8, 3, 4},
+        {6, 7, 3, 4},
     };
 
     if (objEvent->currentCoords.x != objEvent->previousCoords.x || objEvent->currentCoords.y != objEvent->previousCoords.y)
@@ -10075,8 +10076,7 @@ static void SpriteCB_VirtualObject(struct Sprite *sprite)
     UpdateObjectEventSpriteInvisibility(sprite, sprite->sInvisible);
 }
 
-// Unused
-static void DestroyVirtualObjects(void)
+static void UNUSED DestroyVirtualObjects(void)
 {
     int i;
 
@@ -10520,4 +10520,29 @@ bool8 MovementAction_WalkFastDiagonal_Step1(struct ObjectEvent *objectEvent, str
     return FALSE;
 }
 
+
+// NEW
+u16 GetMiniStepCount(u8 speed)
+{
+    return (u16)sStepTimes[speed];
+}
+
+void RunMiniStep(struct Sprite *sprite, u8 speed, u8 currentFrame)
+{
+    sNpcStepFuncTables[speed][currentFrame](sprite, sprite->data[3]);
+}
+
+bool8 PlayerIsUnderWaterfall(struct ObjectEvent *objectEvent)
+{
+    s16 x;
+    s16 y;
+
+    x = objectEvent->currentCoords.x;
+    y = objectEvent->currentCoords.y;
+    MoveCoordsInDirection(DIR_NORTH, &x, &y, 0, 1);
+    if (MetatileBehavior_IsWaterfall(MapGridGetMetatileBehaviorAt(x, y)))
+        return TRUE;
+    
+    return FALSE;
+}
 

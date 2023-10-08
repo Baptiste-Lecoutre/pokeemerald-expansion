@@ -556,12 +556,12 @@ static void ShowRaidPokemonTypes(void)
 
 
 
-    LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
+    LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
     LoadCompressedPalette(gMoveTypes_Pal, 0x1D0, 0x60);
 
     if (sRaidBattleIntro->typeIconSpriteIds[0] == 0xFF)
     {
-		sRaidBattleIntro->typeIconSpriteIds[0] = CreateSprite(&sSpriteTemplate_MoveTypes, 80, 7, 0);
+		sRaidBattleIntro->typeIconSpriteIds[0] = CreateSprite(&gSpriteTemplate_MoveTypes, 80, 7, 0);
 
 		sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[0]];
 		StartSpriteAnim(sprite, type1);
@@ -570,7 +570,7 @@ static void ShowRaidPokemonTypes(void)
 
 	if (sRaidBattleIntro->typeIconSpriteIds[1] == 0xFF && type2 != type1)
     {
-		sRaidBattleIntro->typeIconSpriteIds[1] = CreateSprite(&sSpriteTemplate_MoveTypes, 112, 7, 0);
+		sRaidBattleIntro->typeIconSpriteIds[1] = CreateSprite(&gSpriteTemplate_MoveTypes, 112, 7, 0);
 
 		sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[1]];
 		StartSpriteAnim(sprite, type2);

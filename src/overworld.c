@@ -62,6 +62,7 @@
 #include "scanline_effect.h"
 #include "wild_encounter.h"
 #include "frontier_util.h"
+#include "follow_me.h"
 #include "constants/abilities.h"
 #include "constants/layouts.h"
 #include "constants/map_types.h"
@@ -70,6 +71,7 @@
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
 #include "constants/weather.h"
+#include "constants/event_object_movement.h"
 
 struct CableClubPlayer
 {
@@ -138,14 +140,11 @@ static void CreateLinkPlayerSprite(u8, u8);
 static void GetLinkPlayerCoords(u8, u16 *, u16 *);
 static u8 GetLinkPlayerFacingDirection(u8);
 static u8 GetLinkPlayerElevation(u8);
-static s32 GetLinkPlayerObjectStepTimer(u8);
 static u8 GetLinkPlayerIdAt(s16, s16);
 static void SetPlayerFacingDirection(u8, u8);
 static void ZeroObjectEvent(struct ObjectEvent *);
 static void SpawnLinkPlayerObjectEvent(u8, s16, s16, u8);
 static void InitLinkPlayerObjectEventPos(struct ObjectEvent *, s16, s16);
-static void SetLinkPlayerObjectRange(u8, u8);
-static void DestroyLinkPlayerObject(u8);
 static u8 GetSpriteForLinkedPlayer(u8);
 static void RunTerminateLinkScript(void);
 static u32 GetLinkSendQueueLength(void);
@@ -450,6 +449,8 @@ static void Overworld_ResetStateAfterWhiteOut(void)
         VarSet(VAR_SHOULD_END_ABNORMAL_WEATHER, 0);
         VarSet(VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_NONE);
     }
+    
+    FollowMe_TryRemoveFollowerOnWhiteOut();
 }
 
 static void UpdateMiscOverworldStates(void)
@@ -1006,7 +1007,7 @@ bool32 Overworld_IsBikingAllowed(void)
 // Flash level of 8 is fully black
 void SetDefaultFlashLevel(void)
 {
-    if (CheckBagHasItem(ITEM_HM05_FLASH ,1) && CanLearnFlashInParty())
+    if (CheckBagHasItem(ITEM_HM05_FLASH ,1) && CanLearnFlashInParty() && FlagGet(FLAG_BADGE02_GET))
         FlagSet(FLAG_SYS_USE_FLASH);
     if (!gMapHeader.cave)
         gSaveBlock1Ptr->flashLevel = 0;
@@ -1039,8 +1040,8 @@ void SetObjectEventLoadFlag(u8 flag)
     sObjectEventLoadFlag = flag;
 }
 
-// Unused, sObjectEventLoadFlag is read directly
-static u8 GetObjectEventLoadFlag(void)
+// sObjectEventLoadFlag is read directly
+static u8 UNUSED GetObjectEventLoadFlag(void)
 {
     return sObjectEventLoadFlag;
 }
@@ -1503,6 +1504,10 @@ static void DoCB1_Overworld(u16 newKeys, u16 heldKeys)
             PlayerStep(inputStruct.dpadDirection, newKeys, heldKeys);
         }
     }
+    
+    // if stop running but keep holding B -> fix follower frame
+    if (PlayerHasFollower() && IsPlayerOnFoot() && IsPlayerStandingStill())
+        ObjectEventSetHeldMovement(&gObjectEvents[GetFollowerObjectId()], GetFaceDirectionAnimNum(gObjectEvents[GetFollowerObjectId()].facingDirection));
 }
 
 void CB1_Overworld(void)
@@ -2154,7 +2159,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_Fly || !gSaveBlock2Ptr->optionsShowFollowerPokemon)
+        if (gFieldCallback == FieldCallback_Fly || !gSaveBlock2Ptr->optionsShowFollowerPokemon || PlayerHasFollower())
           RemoveFollowingPokemon();
         else
           UpdateFollowingPokemon();
@@ -2164,6 +2169,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
     case 1:
         InitViewGraphics();
         TryLoadTrainerHillEReaderPalette();
+        FollowMe_BindToSurbBlobOnReloadScreen();
         (*state)++;
         break;
     case 2:
@@ -2349,7 +2355,7 @@ static void InitObjectEventsLink(void)
 
 static void InitObjectEventsLocal(void)
 {
-    s16 x, y;
+    u16 x, y;
     struct InitialPlayerAvatarState *player;
 
     gTotalCameraPixelOffsetX = 0;
@@ -2363,6 +2369,8 @@ static void InitObjectEventsLocal(void)
     TrySpawnObjectEvents(0, 0);
     UpdateFollowingPokemon();
     TryRunOnWarpIntoMapScript();
+    
+    FollowMe_HandleSprite();
 }
 
 static void InitObjectEventsReturnToField(void)
@@ -2846,8 +2854,7 @@ u32 GetCableClubPartnersReady(void)
     return CABLE_SEAT_WAITING;
 }
 
-// Unused
-static bool32 IsAnyPlayerExitingCableClub(void)
+static bool32 UNUSED IsAnyPlayerExitingCableClub(void)
 {
     return IsAnyPlayerInLinkState(PLAYER_LINK_STATE_EXITING_ROOM);
 }
@@ -3155,7 +3162,7 @@ static void InitLinkPlayerObjectEventPos(struct ObjectEvent *objEvent, s16 x, s1
     ObjectEventUpdateElevation(objEvent);
 }
 
-static void SetLinkPlayerObjectRange(u8 linkPlayerId, u8 dir)
+static void UNUSED SetLinkPlayerObjectRange(u8 linkPlayerId, u8 dir)
 {
     if (gLinkPlayerObjectEvents[linkPlayerId].active)
     {
@@ -3165,7 +3172,7 @@ static void SetLinkPlayerObjectRange(u8 linkPlayerId, u8 dir)
     }
 }
 
-static void DestroyLinkPlayerObject(u8 linkPlayerId)
+static void UNUSED DestroyLinkPlayerObject(u8 linkPlayerId)
 {
     struct LinkPlayerObjectEvent *linkPlayerObjEvent = &gLinkPlayerObjectEvents[linkPlayerId];
     u8 objEventId = linkPlayerObjEvent->objEventId;
@@ -3206,7 +3213,7 @@ static u8 GetLinkPlayerElevation(u8 linkPlayerId)
     return objEvent->currentElevation;
 }
 
-static s32 GetLinkPlayerObjectStepTimer(u8 linkPlayerId)
+static s32 UNUSED GetLinkPlayerObjectStepTimer(u8 linkPlayerId)
 {
     u8 objEventId = gLinkPlayerObjectEvents[linkPlayerId].objEventId;
     struct ObjectEvent *objEvent = &gObjectEvents[objEventId];

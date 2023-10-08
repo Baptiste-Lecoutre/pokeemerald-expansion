@@ -2944,8 +2944,7 @@ static void SpriteCB_BattleSpriteSlideLeft(struct Sprite *sprite)
     }
 }
 
-// Unused
-static void SetIdleSpriteCallback(struct Sprite *sprite)
+static void UNUSED SetIdleSpriteCallback(struct Sprite *sprite)
 {
     sprite->callback = SpriteCB_Idle;
 }
@@ -4598,6 +4597,11 @@ static void HandleTurnActionSelectionState(void)
                                 gBattleStruct->dynamax.usingMaxMove[battler] = TRUE;
                             }
                             gBattleCommunication[battler]++;
+
+                            if (gTestRunnerEnabled)
+                            {
+                                TestRunner_Battle_CheckChosenMove(battler, gChosenMoveByBattler[battler], gBattleStruct->moveTarget[battler]);
+                            }
                         }
                         break;
                     }
@@ -5823,6 +5827,12 @@ static void ReturnFromBattleToOverworld(void)
 
     m4aSongNumStop(SE_LOW_HEALTH);
     SetMainCallback2(gMain.savedCallback);
+    
+    // if you experience the follower de-syncing with the player after battle, set POST_BATTLE_FOLLOWER_FIX to TRUE in include/constants/global.h
+    #if POST_BATTLE_FOLLOWER_FIX
+        FollowMe_WarpSetEnd();
+        gObjectEvents[GetFollowerObjectId()].invisible = TRUE;
+    #endif
 }
 
 void RunBattleScriptCommands_PopCallbacksStack(void)

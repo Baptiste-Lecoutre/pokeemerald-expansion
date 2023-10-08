@@ -56,6 +56,7 @@
 #include "constants/vars.h"
 #include "constants/weather.h"
 #include "constants/mirage_locations.h"
+#include "constants/follow_me.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -1172,3 +1173,9 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/Underwater_MeteorFalls_DracoChamber/scripts.inc"
 
 	.include "data/maps/HauntedManor/scripts.inc"
+
+	.include "data/maps/HauntedMansion_1F/scripts.inc"
+
+	.include "data/maps/HauntedMansion_2F/scripts.inc"
+
+	.include "data/maps/HauntedMansion_3F/scripts.inc"

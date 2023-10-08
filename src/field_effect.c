@@ -28,6 +28,7 @@
 #include "trainer_pokemon_sprites.h"
 #include "trig.h"
 #include "util.h"
+#include "follow_me.h"
 #include "constants/field_effects.h"
 #include "constants/flags.h"
 #include "constants/event_objects.h"
@@ -922,8 +923,7 @@ u8 CreateTrainerSprite(u8 trainerSpriteID, s16 x, s16 y, u8 subpriority, u8 *buf
     return CreateSprite(&spriteTemplate, x, y, subpriority);
 }
 
-// Unused
-static void LoadTrainerGfx_TrainerCard(u8 gender, u16 palOffset, u8 *dest)
+static void UNUSED LoadTrainerGfx_TrainerCard(u8 gender, u16 palOffset, u8 *dest)
 {
     LZDecompressVram(gTrainerFrontPicTable[gender].data, dest);
     LoadCompressedPalette(gTrainerFrontPicPaletteTable[gender].data, palOffset, PLTT_SIZE_4BPP);
@@ -1582,6 +1582,9 @@ static bool8 FallWarpEffect_End(struct Task *task)
     UnfreezeObjectEvents();
     InstallCameraPanAheadCallback();
     DestroyTask(FindTaskIdByFunc(Task_FallWarpFieldEffect));
+    
+    FollowMe_WarpSetEnd();
+    
     return FALSE;
 }
 
@@ -1643,7 +1646,10 @@ static bool8 EscalatorWarpOut_WaitForPlayer(struct Task *task)
         task->tState++;
         task->data[2] = 0;
         task->data[3] = 0;
-        if ((u8)task->tGoingUp == FALSE)
+        
+        EscalatorMoveFollower(task->data[1]);
+        
+        if ((u8)task->data[1] == FALSE)
         {
             task->tState = 4; // jump to EscalatorWarpOut_Down_Ride
         }
@@ -1714,12 +1720,14 @@ static void RideDownEscalatorOut(struct Task *task)
     }
 }
 
+//Escalator_BeginFadeOutToNewMap
 static void FadeOutAtEndOfEscalator(void)
 {
     TryFadeOutOldMapMusic();
     WarpFadeOutScreen();
 }
 
+//Escalator_TransitionToWarpInEffect
 static void WarpAtEndOfEscalator(void)
 {
     if (!gPaletteFade.active && BGMusicStopped() == TRUE)
@@ -1735,6 +1743,7 @@ static void WarpAtEndOfEscalator(void)
 #undef tState
 #undef tGoingUp
 
+//FieldCB_EscalatorWarpIn
 static void FieldCallback_EscalatorWarpIn(void)
 {
     Overworld_PlaySpecialMapMusic();
@@ -1746,6 +1755,7 @@ static void FieldCallback_EscalatorWarpIn(void)
 
 #define tState data[0]
 
+//Task_EscalatorWarpInFieldEffect
 static void Task_EscalatorWarpIn(u8 taskId)
 {
     struct Task *task;
@@ -1753,6 +1763,7 @@ static void Task_EscalatorWarpIn(u8 taskId)
     while (sEscalatorWarpInFieldEffectFuncs[task->tState](task));
 }
 
+//EscalatorWarpInEffect_1
 static bool8 EscalatorWarpIn_Init(struct Task *task)
 {
     struct ObjectEvent *objectEvent;
@@ -1783,6 +1794,7 @@ static bool8 EscalatorWarpIn_Init(struct Task *task)
     return TRUE;
 }
 
+//EscalatorWarpInEffect_2
 static bool8 EscalatorWarpIn_Down_Init(struct Task *task)
 {
     struct Sprite *sprite;
@@ -1793,6 +1805,7 @@ static bool8 EscalatorWarpIn_Down_Init(struct Task *task)
     return FALSE;
 }
 
+//EscalatorWarpInEffect_3
 static bool8 EscalatorWarpIn_Down_Ride(struct Task *task)
 {
     struct Sprite *sprite;
@@ -2686,7 +2699,7 @@ static void FieldMoveShowMonOutdoorsEffect_Init(struct Task *task)
 {
     task->data[11] = REG_WININ;
     task->data[12] = REG_WINOUT;
-    StoreWordInTwoHalfwords(&task->data[13], (u32)gMain.vblankCallback);
+    StoreWordInTwoHalfwords((u16*) &task->data[13], (u32)gMain.vblankCallback);
     task->tWinHoriz = WIN_RANGE(DISPLAY_WIDTH, DISPLAY_WIDTH + 1);
     task->tWinVert = WIN_RANGE(DISPLAY_HEIGHT / 2, DISPLAY_HEIGHT / 2 + 1);
     task->tWinIn = WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN0_CLR;
@@ -3135,6 +3148,9 @@ static void SurfFieldEffect_JumpOnSurfBlob(struct Task *task)
         ObjectEventSetGraphicsId(objectEvent, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_SURFING));
         ObjectEventClearHeldMovementIfFinished(objectEvent);
         ObjectEventSetHeldMovement(objectEvent, GetJumpSpecialMovementAction(objectEvent->movementDirection));
+
+        FollowMe_FollowerToWater();
+        
         gFieldEffectArguments[0] = task->tDestX;
         gFieldEffectArguments[1] = task->tDestY;
         gFieldEffectArguments[2] = gPlayerAvatar.objectEventId;
@@ -4083,7 +4099,12 @@ static bool8 RockClimb_Init(struct Task *task, struct ObjectEvent *objectEvent)
 
 static bool8 RockClimb_FieldMovePose(struct Task *task, struct ObjectEvent *objectEvent)
 {
-    if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
+    if (gSaveBlock2Ptr->optionsFastFieldMove)
+    {
+        ObjectEventClearHeldMovementIfActive(objectEvent);
+        task->tState = task->tState + 2;
+    }
+    else if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         SetPlayerAvatarFieldMove();
         ObjectEventSetHeldMovement(objectEvent, MOVEMENT_ACTION_START_ANIM_IN_DIRECTION);

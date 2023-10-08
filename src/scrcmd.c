@@ -79,12 +79,12 @@ void * const gNullScriptPtr = NULL;
 static const u8 sScriptConditionTable[6][3] =
 {
 //  <  =  >
-    1, 0, 0, // <
-    0, 1, 0, // =
-    0, 0, 1, // >
-    1, 1, 0, // <=
-    0, 1, 1, // >=
-    1, 0, 1, // !=
+    {1, 0, 0}, // <
+    {0, 1, 0}, // =
+    {0, 0, 1}, // >
+    {1, 1, 0}, // <=
+    {0, 1, 1}, // >=
+    {1, 0, 1}, // !=
 };
 
 static u8 *const sScriptStringVars[] =
@@ -2523,3 +2523,33 @@ bool8 ScrCmd_isChosenMonSpecies(struct ScriptContext *ctx)
     }
     return FALSE;
 }
+
+// follow me script commands
+#include "follow_me.h"
+bool8 ScrCmd_setfollower(struct ScriptContext *ctx)
+{
+    u8 localId = ScriptReadByte(ctx);
+    u16 flags = ScriptReadHalfword(ctx);
+    
+    SetUpFollowerSprite(localId, flags);
+    return FALSE;
+}
+
+bool8 ScrCmd_destroyfollower(struct ScriptContext *ctx)
+{
+    DestroyFollower();
+    return FALSE;
+}
+
+bool8 ScrCmd_facefollower(struct ScriptContext *ctx)
+{
+    PlayerFaceFollowerSprite();
+    return FALSE;
+}
+
+bool8 ScrCmd_checkfollower(struct ScriptContext *ctx)
+{
+    CheckPlayerHasFollower();
+    return FALSE;
+}
+
