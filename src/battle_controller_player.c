@@ -29,6 +29,7 @@
 #include "sound.h"
 #include "string_util.h"
 #include "task.h"
+#include "test_runner.h"
 #include "text.h"
 #include "util.h"
 #include "window.h"
@@ -49,7 +50,6 @@ static void PlayerHandleTrainerSlide(u32 battler);
 static void PlayerHandleTrainerSlideBack(u32 battler);
 static void PlayerHandlePaletteFade(u32 battler);
 static void PlayerHandleSuccessBallThrowAnim(u32 battler);
-static void PlayerHandleBallThrowAnim(u32 battler);
 static void PlayerHandlePause(u32 battler);
 static void PlayerHandleMoveAnimation(u32 battler);
 static void PlayerHandlePrintString(u32 battler);
@@ -161,7 +161,7 @@ static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 
 static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] = 
 {
-    [RED_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_RED},
+    /*[RED_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_RED},
     [LEAF_COSTUME]              = {TRAINER_BACK_PIC_LEAF, TRAINER_BACK_PIC_LEAF},
     [BRENDAN_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_BRENDAN},
     [MAY_COSTUME]               = {TRAINER_BACK_PIC_MAY, TRAINER_BACK_PIC_MAY},
@@ -173,7 +173,13 @@ static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] =
     [LUCAS_PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_LUCAS_PLATINUM},
     [DAWN_PLATINUM_COSTUME]     = {TRAINER_BACK_PIC_DAWN_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
     [CHASE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_CHASE},
-    [ELAINE_COSTUME]            = {TRAINER_BACK_PIC_ELAINE, TRAINER_BACK_PIC_ELAINE},
+    [ELAINE_COSTUME]            = {TRAINER_BACK_PIC_ELAINE, TRAINER_BACK_PIC_ELAINE},*/
+    [FRLG_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_LEAF},
+    [RSE_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_MAY},
+    [HGSS_COSTUME]             = {TRAINER_BACK_PIC_ETHAN, TRAINER_BACK_PIC_KRIS},
+    [DPEARL_COSTUME]             = {TRAINER_BACK_PIC_LUCAS, TRAINER_BACK_PIC_DAWN},
+    [PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
+    [LGPE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_ELAINE},
 };
 
 EWRAM_DATA bool8 gDescriptionSubmenu = 0;
@@ -1054,7 +1060,7 @@ static void ReloadMoveNames(u32 battler)
     MoveSelectionDisplayMoveType(battler);
 }
 
-static u32 HandleMoveInputUnused(u32 battler)
+static u32 UNUSED HandleMoveInputUnused(u32 battler)
 {
     u32 var = 0;
 
@@ -1628,6 +1634,7 @@ static void Task_PrepareToGiveExpWithExpBar(u8 taskId)
     exp -= currLvlExp;
     expToNextLvl = gExperienceTables[gSpeciesInfo[species].growthRate][level + 1] - currLvlExp;
     SetBattleBarStruct(battler, gHealthboxSpriteIds[battler], expToNextLvl, exp, -gainedExp);
+    TestRunner_Battle_RecordExp(battler, exp, -gainedExp);
     PlaySE(SE_EXP);
     gTasks[taskId].func = Task_GiveExpWithExpBar;
 }
@@ -1884,7 +1891,7 @@ static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u32 battler, 
         return B_WIN_MOVE_TYPE;
     else
     {
-        u16 typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gBattleMoves[selectedMove].type, battler, targetId, FALSE);
+        uq4_12_t typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gBattleMoves[selectedMove].type, battler, targetId, GetBattlerAbility(targetId), FALSE);
 
         if (typeEffectiveness == UQ_4_12(0.0))
             return B_WIN_NO_EFFECT;
@@ -2150,7 +2157,7 @@ static void PlayerHandleSuccessBallThrowAnim(u32 battler)
     BtlController_HandleSuccessBallThrowAnim(battler, gBattlerTarget, B_ANIM_BALL_THROW, TRUE);
 }
 
-static void PlayerHandleBallThrowAnim(u32 battler)
+void PlayerHandleBallThrowAnim(u32 battler)
 {
     BtlController_HandleBallThrowAnim(battler, gBattlerTarget, B_ANIM_BALL_THROW, TRUE);
 }

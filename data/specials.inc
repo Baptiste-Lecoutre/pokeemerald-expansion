@@ -418,7 +418,6 @@ gSpecials::
 	def_special CallApprenticeFunction
 	def_special ShouldTryGetTrainerScript
 	def_special ShowMapNamePopup
-	def_special ShowMapNamePopup
 	def_special DoMirageTowerCeilingCrumble
 	def_special SetMirageTowerVisibility
 	def_special StartPlayerDescendMirageTower
@@ -584,3 +583,4 @@ gSpecials::
 	def_special ChangePokemonNature
 	def_special BufferChosenMonNature
 	def_special DoRegielekiPuzzle
+ 	def_special SetFollowerPokemonOption

@@ -224,7 +224,8 @@
 #define MAPSEC_DRACO_CHAMBER                0xDC
 #define MAPSEC_CAVE_OF_SHOCK                0xDD
 #define MAPSEC_CAVE_OF_SHOCK2               0xDE
-#define MAPSEC_NONE                         0xDF
+#define MAPSEC_HAUNTED_MANOR                0xDF
+#define MAPSEC_NONE                         0xE0
 
 #define METLOC_SPECIAL_EGG                  0xFD
 #define METLOC_IN_GAME_TRADE                0xFE

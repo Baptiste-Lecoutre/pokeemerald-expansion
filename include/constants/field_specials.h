@@ -55,6 +55,7 @@
 #define SCROLL_MULTI_GAMECORNER_WATER_STARTERS            25
 #define SCROLL_MULTI_ROAMERS                              26
 #define SCROLL_MULTI_FURFROU_TRIMS                        27
+#define SCROLL_MULTI_COSTUME                              28
 
 #define MAX_SCROLL_MULTI_ON_SCREEN 6
 #define MAX_SCROLL_MULTI_LENGTH 21

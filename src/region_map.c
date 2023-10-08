@@ -1460,14 +1460,12 @@ static void FreeRegionMapCursorSprite(void)
     }
 }
 
-// Unused
-static void SetUnkCursorSpriteData(void)
+static void UNUSED SetUnkCursorSpriteData(void)
 {
     sRegionMap->cursorSprite->data[3] = TRUE;
 }
 
-// Unused
-static void ClearUnkCursorSpriteData(void)
+static void UNUSED ClearUnkCursorSpriteData(void)
 {
     sRegionMap->cursorSprite->data[3] = FALSE;
 }
@@ -1481,7 +1479,7 @@ void CreateRegionMapPlayerIcon(u16 tileTag, u16 paletteTag)
 
     switch (gSaveBlock2Ptr->costumeId)
     {
-    case RED_COSTUME:
+    /*case RED_COSTUME:
         sheet.data = sRegionMapPlayerIcon_RedGfx;
         palette.data = sRegionMapPlayerIcon_RedPal;
         break;
@@ -1526,6 +1524,27 @@ void CreateRegionMapPlayerIcon(u16 tileTag, u16 paletteTag)
     case ELAINE_COSTUME:
         sheet.data = sRegionMapPlayerIcon_ElaineGfx;
         palette.data = sRegionMapPlayerIcon_ElainePal;
+        break;*/
+    case FRLG_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_RedGfx : sRegionMapPlayerIcon_LeafGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_RedPal : sRegionMapPlayerIcon_LeafPal;
+        break;
+    case RSE_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanGfx : sRegionMapPlayerIcon_MayGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanPal : sRegionMapPlayerIcon_MayPal;
+        break;
+    case HGSS_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_EthanGfx : sRegionMapPlayerIcon_KrisGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_EthanPal : sRegionMapPlayerIcon_KrisPal;
+        break;
+    case DPEARL_COSTUME:
+    case PLATINUM_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_LucasGfx : sRegionMapPlayerIcon_DawnGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_LucasPal : sRegionMapPlayerIcon_DawnPal;
+        break;
+    case LGPE_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_ChaseGfx : sRegionMapPlayerIcon_ElaineGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_ChasePal : sRegionMapPlayerIcon_ElainePal;
         break;
     }
     

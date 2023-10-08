@@ -175,6 +175,7 @@ static const u8 sRegionMapSectionId_To_PopUpThemeIdMapping[] =
     [MAPSEC_DRACO_CHAMBER] = MAPPOPUP_THEME_STONE,
     [MAPSEC_CAVE_OF_SHOCK] = MAPPOPUP_THEME_STONE,
     [MAPSEC_CAVE_OF_SHOCK2] = MAPPOPUP_THEME_STONE,
+    [MAPSEC_HAUNTED_MANOR] = MAPPOPUP_THEME_STONE,
     [MAPSEC_SECRET_BASE] = MAPPOPUP_THEME_STONE,
     [MAPSEC_DYNAMIC] = MAPPOPUP_THEME_MARBLE,
     [MAPSEC_AQUA_HIDEOUT - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_STONE,
@@ -216,8 +217,7 @@ static const u8 *const sBattlePyramid_MapHeaderStrings[FRONTIER_STAGES_PER_CHALL
     sText_Pyramid,
 };
 
-// Unused
-static bool8 StartMenu_ShowMapNamePopup(void)
+static bool8 UNUSED StartMenu_ShowMapNamePopup(void)
 {
     HideStartMenu();
     ShowMapNamePopup();
@@ -226,7 +226,7 @@ static bool8 StartMenu_ShowMapNamePopup(void)
 
 void ShowMapNamePopup(void)
 {
-    if (FlagGet(FLAG_HIDE_MAP_NAME_POPUP) != TRUE)
+    if (FlagGet(FLAG_HIDE_MAP_NAME_POPUP) != TRUE && !gSaveBlock1Ptr->flashLevel)
     {
         if (!FuncIsActiveTask(Task_MapNamePopUpWindow))
         {

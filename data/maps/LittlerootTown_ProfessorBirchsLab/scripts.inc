@@ -130,6 +130,9 @@ LittlerootTown_ProfessorBirchsLab_EventScript_NicknameStarter::
 	end
 
 LittlerootTown_ProfessorBirchsLab_EventScript_GoSeeRival::
+	msgbox LittlerootTown_ProfessorBirchsLab_Text_DoYouWantStarterToFollow, MSGBOX_YESNO
+	special SetFollowerPokemonOption
+	callnative UpdateFollowingPokemon
 	msgbox LittlerootTown_ProfessorBirchsLab_Text_MightBeGoodIdeaToGoSeeRival, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, LittlerootTown_ProfessorBirchsLab_EventScript_AgreeToSeeRival
 	goto_if_eq VAR_RESULT, NO, LittlerootTown_ProfessorBirchsLab_EventScript_DeclineSeeingRival
@@ -708,6 +711,10 @@ LittlerootTown_ProfessorBirchsLab_Text_LikeYouToHavePokemon:
 LittlerootTown_ProfessorBirchsLab_Text_WhyNotGiveNicknameToMon:
 	.string "Prof. Birch: While you're at it, why not\n"
 	.string "give a nickname to that {STR_VAR_1}?$"
+
+LittlerootTown_ProfessorBirchsLab_Text_DoYouWantStarterToFollow:
+	.string "Do you want {STR_VAR_1} to follow you\n"
+	.string "outside of its Pokéball?$"
 
 LittlerootTown_ProfessorBirchsLab_Text_MightBeGoodIdeaToGoSeeRival:
 	.string "Prof. Birch: If you work at Pokémon\n"

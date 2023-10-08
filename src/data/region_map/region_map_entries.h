@@ -213,6 +213,7 @@ static const u8 sMapName_VERDANT_GLADE[] = _("VERDANT GLADE");
 static const u8 sMapName_DRACO_CHAMBER[] = _("DRACO CHAMBER");
 static const u8 sMapName_ROUTE_110_EAST[] = _("ROUTE 110 EAST");
 static const u8 sMapName_CAVE_OF_SHOCK[] = _("CAVE OF SHOCK");
+static const u8 sMapName_HAUNTED_MANOR[] = _("HAUNTED MANOR");
 
 const struct RegionMapLocation gRegionMapEntries[] = {
     [MAPSEC_LITTLEROOT_TOWN] = { 4, 11, 1, 1, sMapName_LITTLEROOT_TOWN},
@@ -429,8 +430,8 @@ const struct RegionMapLocation gRegionMapEntries[] = {
     [MAPSEC_NAVEL_ROCK] = { 0, 0, 1, 1, sMapName_NAVEL_ROCK},
     [MAPSEC_TRAINER_HILL] = { 8, 4, 1, 1, sMapName_TRAINER_HILL},
     [MAPSEC_SEASPRAY_CAVE] = { 0, 4, 1, 1, sMapName_SEASPRAY_CAVE},
-    [MAPSEC_EMBER_PATH] = { 6, 3, 1, 1, sMapName_EMBER_PATH},
-    [MAPSEC_ASHEN_WOODS] = { 6, 3, 1, 1, sMapName_ASHEN_WOODS},
+    [MAPSEC_EMBER_PATH] = { 5, 2, 1, 1, sMapName_EMBER_PATH},
+    [MAPSEC_ASHEN_WOODS] = { 5, 2, 1, 1, sMapName_ASHEN_WOODS},
     [MAPSEC_SANDSTREWN_RUINS] = { 8, 2, 1, 1, sMapName_SANDSTREWN_RUINS},
     [MAPSEC_DEWFORD_MEADOW] = { 1, 14, 1, 1, sMapName_DEWFORD_MEADOW},
     [MAPSEC_DEWFORD_MANOR] = { 1, 14, 1, 1, sMapName_DEWFORD_MANOR},
@@ -438,6 +439,7 @@ const struct RegionMapLocation gRegionMapEntries[] = {
     [MAPSEC_DRACO_CHAMBER] = { 0, 3, 1, 1, sMapName_DRACO_CHAMBER},
     [MAPSEC_CAVE_OF_SHOCK] = { 9, 7, 1, 1, sMapName_ROUTE_110_EAST},
     [MAPSEC_CAVE_OF_SHOCK2] = { 9, 7, 1, 1, sMapName_CAVE_OF_SHOCK},
+    [MAPSEC_HAUNTED_MANOR] = { 5, 2, 1, 1, sMapName_HAUNTED_MANOR},
 };
 
 #endif // GUARD_DATA_REGION_MAP_REGION_MAP_ENTRIES_H

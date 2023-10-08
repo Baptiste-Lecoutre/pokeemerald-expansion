@@ -441,7 +441,7 @@ static u8 GetBattleAnimMoveTargets(u8 battlerArgIndex, u8 *targets)
     {
     case MOVE_TARGET_FOES_AND_ALLY:
         if (IS_ALIVE_AND_PRESENT(BATTLE_PARTNER(BATTLE_OPPOSITE(battler)))) {
-            targets[idx++] = BATTLE_PARTNER(BATTLE_OPPOSITE(battler)); 
+            targets[idx++] = BATTLE_PARTNER(BATTLE_OPPOSITE(battler));
             numTargets++;
         }
         // fallthrough
@@ -454,7 +454,7 @@ static u8 GetBattleAnimMoveTargets(u8 battlerArgIndex, u8 *targets)
         if (IS_ALIVE_AND_PRESENT(battler)) {
             targets[idx++] = battler;
             numTargets++;
-        }       
+        }
         break;
     default:
         targets[0] = gBattleAnimArgs[battlerArgIndex]; // original
@@ -547,7 +547,7 @@ static void CreateSpriteOnTargets(const struct SpriteTemplate *template, u8 argV
     ntargets = GetBattleAnimMoveTargets(battlerArgIndex, targets);
     if (ntargets == 0)
         return;
-    
+
     for (i = 0; i < ntargets; i++) {
 
         if (overwriteAnimTgt)
@@ -674,7 +674,7 @@ static void Cmd_createvisualtaskontargets(void)
     numArgs = GetBattleAnimMoveTargets(battlerArgIndex, targets);
     if (numArgs == 0)
         return;
-    
+
     for (i = 0; i < numArgs; i++)
     {
         gBattleAnimArgs[battlerArgIndex] = targets[i];

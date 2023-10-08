@@ -8,6 +8,7 @@
 #include "field_effect_helpers.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
+#include "m4a.h"
 #include "menu.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
@@ -20,17 +21,19 @@
 #include "strings.h"
 #include "task.h"
 #include "tv.h"
+#include "follow_me.h"
 #include "wild_encounter.h"
 #include "constants/abilities.h"
 #include "constants/event_objects.h"
 #include "constants/event_object_movement.h"
 #include "constants/field_effects.h"
 #include "constants/items.h"
+#include "constants/metatile_behaviors.h"
 #include "constants/moves.h"
 #include "constants/songs.h"
 #include "constants/trainer_types.h"
 
-#define NUM_FORCED_MOVEMENTS 18
+#define NUM_FORCED_MOVEMENTS 22
 #define NUM_ACRO_BIKE_COLLISIONS 5
 
 static EWRAM_DATA u8 sSpinStartFacingDir = 0;
@@ -40,6 +43,7 @@ EWRAM_DATA struct PlayerAvatar gPlayerAvatar = {};
 // static declarations
 
 static u8 ObjectEventCB2_NoMovement2();
+static bool8 TryUpdatePlayerSpinDirection(void);
 static bool8 TryInterruptObjectEventSpecialAnim(struct ObjectEvent *, u8);
 static void npc_clear_strange_bits(struct ObjectEvent *);
 static void MovePlayerAvatarUsingKeypadInput(u8, u16, u16);
@@ -53,6 +57,10 @@ static bool8 ForcedMovement_WalkSouth(void);
 static bool8 ForcedMovement_WalkNorth(void);
 static bool8 ForcedMovement_WalkWest(void);
 static bool8 ForcedMovement_WalkEast(void);
+static bool8 ForcedMovement_SpinRight(void);
+static bool8 ForcedMovement_SpinLeft(void);
+static bool8 ForcedMovement_SpinUp(void);
+static bool8 ForcedMovement_SpinDown(void);
 static bool8 ForcedMovement_PushedSouthByCurrent(void);
 static bool8 ForcedMovement_PushedNorthByCurrent(void);
 static bool8 ForcedMovement_PushedWestByCurrent(void);
@@ -92,6 +100,8 @@ static bool8 PlayerAnimIsMultiFrameStationaryAndStateNotTurning(void);
 static bool8 PlayerIsAnimActive(void);
 static bool8 PlayerCheckIfAnimFinishedOrInactive(void);
 
+static void PlayerGoSpin(u8);
+static void PlayerApplyTileForcedMovement(u8);
 static void PlayerRun(u8);
 static void PlayerNotOnBikeCollide(u8);
 static void PlayerNotOnBikeCollideWithFarawayIslandMew(u8);
@@ -157,6 +167,10 @@ static bool8 (*const sForcedMovementTestFuncs[NUM_FORCED_MOVEMENTS])(u8) =
     MetatileBehavior_IsNorthwardCurrent,
     MetatileBehavior_IsWestwardCurrent,
     MetatileBehavior_IsEastwardCurrent,
+    MetatileBehavior_IsSpinRight,
+    MetatileBehavior_IsSpinLeft,
+    MetatileBehavior_IsSpinUp,
+    MetatileBehavior_IsSpinDown,
     MetatileBehavior_IsSlideSouth,
     MetatileBehavior_IsSlideNorth,
     MetatileBehavior_IsSlideWest,
@@ -181,6 +195,10 @@ static bool8 (*const sForcedMovementFuncs[NUM_FORCED_MOVEMENTS + 1])(void) =
     ForcedMovement_PushedNorthByCurrent,
     ForcedMovement_PushedWestByCurrent,
     ForcedMovement_PushedEastByCurrent,
+    ForcedMovement_SpinRight,
+    ForcedMovement_SpinLeft,
+    ForcedMovement_SpinUp,
+    ForcedMovement_SpinDown,
     ForcedMovement_SlideSouth,
     ForcedMovement_SlideNorth,
     ForcedMovement_SlideWest,
@@ -229,7 +247,7 @@ static void (*const sPlayerAvatarTransitionFuncs[])(struct ObjectEvent *) =
 
 static const u16 sPlayerAvatarGfxIds[COSTUME_COUNT][PLAYER_AVATAR_STATE_COUNT][GENDER_COUNT] =
 {
-    [RED_COSTUME] =
+    /*[RED_COSTUME] =
     {
         {OBJ_EVENT_GFX_RED_NORMAL,     OBJ_EVENT_GFX_RED_NORMAL},
         {OBJ_EVENT_GFX_RED_MACH_BIKE,  OBJ_EVENT_GFX_RED_MACH_BIKE},
@@ -371,6 +389,72 @@ static const u16 sPlayerAvatarGfxIds[COSTUME_COUNT][PLAYER_AVATAR_STATE_COUNT][G
         {OBJ_EVENT_GFX_ELAINE_FIELD_MOVE, OBJ_EVENT_GFX_ELAINE_FIELD_MOVE},
         {OBJ_EVENT_GFX_ELAINE_FISHING,    OBJ_EVENT_GFX_ELAINE_FISHING},
         {OBJ_EVENT_GFX_ELAINE_WATERING,   OBJ_EVENT_GFX_ELAINE_WATERING},
+    },*/
+    [FRLG_COSTUME] =
+    {
+        {OBJ_EVENT_GFX_RED_NORMAL,     OBJ_EVENT_GFX_LEAF_NORMAL},
+        {OBJ_EVENT_GFX_RED_MACH_BIKE,  OBJ_EVENT_GFX_LEAF_MACH_BIKE},
+        {OBJ_EVENT_GFX_RED_ACRO_BIKE,  OBJ_EVENT_GFX_LEAF_ACRO_BIKE},
+        {OBJ_EVENT_GFX_RED_SURFING,    OBJ_EVENT_GFX_LEAF_SURFING},
+        {OBJ_EVENT_GFX_RED_UNDERWATER, OBJ_EVENT_GFX_LEAF_UNDERWATER},
+        {OBJ_EVENT_GFX_RED_FIELD_MOVE, OBJ_EVENT_GFX_LEAF_FIELD_MOVE},
+        {OBJ_EVENT_GFX_RED_FISHING,    OBJ_EVENT_GFX_LEAF_FISHING},
+        {OBJ_EVENT_GFX_RED_WATERING,   OBJ_EVENT_GFX_LEAF_WATERING},
+    },
+    [RSE_COSTUME] =
+    {
+        {OBJ_EVENT_GFX_BRENDAN_NORMAL,     OBJ_EVENT_GFX_MAY_NORMAL},
+        {OBJ_EVENT_GFX_BRENDAN_MACH_BIKE,  OBJ_EVENT_GFX_MAY_MACH_BIKE},
+        {OBJ_EVENT_GFX_BRENDAN_ACRO_BIKE,  OBJ_EVENT_GFX_MAY_ACRO_BIKE},
+        {OBJ_EVENT_GFX_BRENDAN_SURFING,    OBJ_EVENT_GFX_MAY_SURFING},
+        {OBJ_EVENT_GFX_BRENDAN_UNDERWATER, OBJ_EVENT_GFX_MAY_UNDERWATER},
+        {OBJ_EVENT_GFX_BRENDAN_FIELD_MOVE, OBJ_EVENT_GFX_MAY_FIELD_MOVE},
+        {OBJ_EVENT_GFX_BRENDAN_FISHING,    OBJ_EVENT_GFX_MAY_FISHING},
+        {OBJ_EVENT_GFX_BRENDAN_WATERING,   OBJ_EVENT_GFX_MAY_WATERING},
+    },
+    [HGSS_COSTUME] =
+    {
+        {OBJ_EVENT_GFX_ETHAN_NORMAL,     OBJ_EVENT_GFX_LYRA_NORMAL},
+        {OBJ_EVENT_GFX_ETHAN_MACH_BIKE,  OBJ_EVENT_GFX_LYRA_MACH_BIKE},
+        {OBJ_EVENT_GFX_ETHAN_ACRO_BIKE,  OBJ_EVENT_GFX_LYRA_ACRO_BIKE},
+        {OBJ_EVENT_GFX_ETHAN_SURFING,    OBJ_EVENT_GFX_LYRA_SURFING},
+        {OBJ_EVENT_GFX_ETHAN_UNDERWATER, OBJ_EVENT_GFX_LYRA_UNDERWATER},
+        {OBJ_EVENT_GFX_ETHAN_FIELD_MOVE, OBJ_EVENT_GFX_LYRA_FIELD_MOVE},
+        {OBJ_EVENT_GFX_ETHAN_FISHING,    OBJ_EVENT_GFX_LYRA_FISHING},
+        {OBJ_EVENT_GFX_ETHAN_WATERING,   OBJ_EVENT_GFX_LYRA_WATERING},
+    },
+    [DPEARL_COSTUME] =
+    {
+        {OBJ_EVENT_GFX_LUCAS_NORMAL,     OBJ_EVENT_GFX_DAWN_NORMAL},
+        {OBJ_EVENT_GFX_LUCAS_MACH_BIKE,  OBJ_EVENT_GFX_DAWN_MACH_BIKE},
+        {OBJ_EVENT_GFX_LUCAS_ACRO_BIKE,  OBJ_EVENT_GFX_DAWN_ACRO_BIKE},
+        {OBJ_EVENT_GFX_LUCAS_SURFING,    OBJ_EVENT_GFX_DAWN_SURFING},
+        {OBJ_EVENT_GFX_LUCAS_UNDERWATER, OBJ_EVENT_GFX_DAWN_UNDERWATER},
+        {OBJ_EVENT_GFX_LUCAS_FIELD_MOVE, OBJ_EVENT_GFX_DAWN_FIELD_MOVE},
+        {OBJ_EVENT_GFX_LUCAS_FISHING,    OBJ_EVENT_GFX_DAWN_FISHING},
+        {OBJ_EVENT_GFX_LUCAS_WATERING,   OBJ_EVENT_GFX_DAWN_WATERING},
+    },
+    [PLATINUM_COSTUME] =
+    {
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_NORMAL,     OBJ_EVENT_GFX_DAWN_PLATINUM_NORMAL},
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_MACH_BIKE,  OBJ_EVENT_GFX_DAWN_PLATINUM_MACH_BIKE},
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_ACRO_BIKE,  OBJ_EVENT_GFX_DAWN_PLATINUM_ACRO_BIKE},
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_SURFING,    OBJ_EVENT_GFX_DAWN_PLATINUM_SURFING},
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_UNDERWATER, OBJ_EVENT_GFX_DAWN_PLATINUM_UNDERWATER},
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_FIELD_MOVE, OBJ_EVENT_GFX_DAWN_PLATINUM_FIELD_MOVE},
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_FISHING,    OBJ_EVENT_GFX_DAWN_PLATINUM_FISHING},
+        {OBJ_EVENT_GFX_LUCAS_PLATINUM_WATERING,   OBJ_EVENT_GFX_DAWN_PLATINUM_WATERING},
+    },
+    [LGPE_COSTUME] =
+    {
+        {OBJ_EVENT_GFX_CHASE_NORMAL,     OBJ_EVENT_GFX_ELAINE_NORMAL},
+        {OBJ_EVENT_GFX_CHASE_MACH_BIKE,  OBJ_EVENT_GFX_ELAINE_MACH_BIKE},
+        {OBJ_EVENT_GFX_CHASE_ACRO_BIKE,  OBJ_EVENT_GFX_ELAINE_ACRO_BIKE},
+        {OBJ_EVENT_GFX_CHASE_SURFING,    OBJ_EVENT_GFX_ELAINE_SURFING},
+        {OBJ_EVENT_GFX_CHASE_UNDERWATER, OBJ_EVENT_GFX_ELAINE_UNDERWATER},
+        {OBJ_EVENT_GFX_CHASE_FIELD_MOVE, OBJ_EVENT_GFX_ELAINE_FIELD_MOVE},
+        {OBJ_EVENT_GFX_CHASE_FISHING,    OBJ_EVENT_GFX_ELAINE_FISHING},
+        {OBJ_EVENT_GFX_CHASE_WATERING,   OBJ_EVENT_GFX_ELAINE_WATERING},
     },
 };
 
@@ -408,7 +492,7 @@ static const u16 sRSAvatarGfxIds[GENDER_COUNT] =
 
 static const u16 sPlayerAvatarGfxToStateFlag[COSTUME_COUNT][GENDER_COUNT][5][2] =
 {
-    [RED_COSTUME] =
+    /*[RED_COSTUME] =
     {
         [MALE] =
         {
@@ -654,6 +738,120 @@ static const u16 sPlayerAvatarGfxToStateFlag[COSTUME_COUNT][GENDER_COUNT][5][2] 
             {OBJ_EVENT_GFX_ELAINE_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
             {OBJ_EVENT_GFX_ELAINE_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
         },
+    },*/
+    [FRLG_COSTUME] =
+    {
+        [MALE] =
+        {
+            {OBJ_EVENT_GFX_RED_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_RED_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_RED_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_RED_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_RED_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+        [FEMALE] =
+        {
+            {OBJ_EVENT_GFX_LEAF_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_LEAF_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_LEAF_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_LEAF_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_LEAF_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+    },
+    [RSE_COSTUME] =
+    {
+        [MALE] =
+        {
+            {OBJ_EVENT_GFX_BRENDAN_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_BRENDAN_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_BRENDAN_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_BRENDAN_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_BRENDAN_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+        [FEMALE] =
+        {
+            {OBJ_EVENT_GFX_MAY_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_MAY_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_MAY_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_MAY_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_MAY_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+    },
+    [HGSS_COSTUME] =
+    {
+        [MALE] =
+        {
+            {OBJ_EVENT_GFX_ETHAN_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_ETHAN_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_ETHAN_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_ETHAN_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_ETHAN_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+        [FEMALE] =
+        {
+            {OBJ_EVENT_GFX_LYRA_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_LYRA_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_LYRA_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_LYRA_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_LYRA_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+    },
+    [DPEARL_COSTUME] =
+    {
+        [MALE] =
+        {
+            {OBJ_EVENT_GFX_LUCAS_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_LUCAS_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_LUCAS_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_LUCAS_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_LUCAS_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+        [FEMALE] =
+        {
+            {OBJ_EVENT_GFX_DAWN_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_DAWN_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_DAWN_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_DAWN_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_DAWN_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+    },
+    [PLATINUM_COSTUME] =
+    {
+        [MALE] =
+        {
+            {OBJ_EVENT_GFX_LUCAS_PLATINUM_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_LUCAS_PLATINUM_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_LUCAS_PLATINUM_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_LUCAS_PLATINUM_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_LUCAS_PLATINUM_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+        [FEMALE] =
+        {
+            {OBJ_EVENT_GFX_DAWN_PLATINUM_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_DAWN_PLATINUM_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_DAWN_PLATINUM_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_DAWN_PLATINUM_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_DAWN_PLATINUM_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+    },
+    [LGPE_COSTUME] =
+    {
+        [MALE] =
+        {
+            {OBJ_EVENT_GFX_CHASE_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_CHASE_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_CHASE_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_CHASE_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_CHASE_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
+        [FEMALE] =
+        {
+            {OBJ_EVENT_GFX_ELAINE_NORMAL,     PLAYER_AVATAR_FLAG_ON_FOOT},
+            {OBJ_EVENT_GFX_ELAINE_MACH_BIKE,  PLAYER_AVATAR_FLAG_MACH_BIKE},
+            {OBJ_EVENT_GFX_ELAINE_ACRO_BIKE,  PLAYER_AVATAR_FLAG_ACRO_BIKE},
+            {OBJ_EVENT_GFX_ELAINE_SURFING,    PLAYER_AVATAR_FLAG_SURFING},
+            {OBJ_EVENT_GFX_ELAINE_UNDERWATER, PLAYER_AVATAR_FLAG_UNDERWATER},
+        },
     },
 };
 
@@ -715,7 +913,7 @@ void PlayerStep(u8 direction, u16 newKeys, u16 heldKeys)
     struct ObjectEvent *playerObjEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
 
     HideShowWarpArrow(playerObjEvent);
-    if (gPlayerAvatar.preventStep == FALSE)
+    if (gPlayerAvatar.preventStep == FALSE && TryUpdatePlayerSpinDirection() == FALSE)
     {
         Bike_TryAcroBikeHistoryUpdate(newKeys, heldKeys);
         if (TryInterruptObjectEventSpecialAnim(playerObjEvent, direction) == 0)
@@ -787,6 +985,26 @@ static void PlayerAllowForcedMovementIfMovingSameDirection(void)
         gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_CONTROLLABLE;
 }
 
+static bool8 TryUpdatePlayerSpinDirection(void)
+{
+    if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_FORCED_MOVE) && (gPlayerAvatar.lastSpinTile >= MB_SPIN_RIGHT && gPlayerAvatar.lastSpinTile <= MB_SPIN_DOWN))
+    {
+        struct ObjectEvent *playerObjEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
+        if (playerObjEvent->heldMovementFinished)
+        {
+            u32 playerMetatileBehavior = playerObjEvent->currentMetatileBehavior;
+            if (playerMetatileBehavior == MB_STOP_SPINNING)
+                return FALSE;
+            if (playerMetatileBehavior >= MB_SPIN_RIGHT && playerMetatileBehavior <= MB_SPIN_DOWN)
+                gPlayerAvatar.lastSpinTile = playerMetatileBehavior;
+            ObjectEventClearHeldMovement(playerObjEvent);
+            PlayerApplyTileForcedMovement(gPlayerAvatar.lastSpinTile);
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
 static bool8 TryDoMetatileBehaviorForcedMovement(void)
 {
     return sForcedMovementFuncs[GetForcedMovementByMetatileBehavior()]();
@@ -803,7 +1021,10 @@ static u8 GetForcedMovementByMetatileBehavior(void)
         for (i = 0; i < NUM_FORCED_MOVEMENTS; i++)
         {
             if (sForcedMovementTestFuncs[i](metatileBehavior))
+            {
+                gPlayerAvatar.lastSpinTile = metatileBehavior;
                 return i + 1;
+            }
         }
     }
     return 0;
@@ -884,6 +1105,26 @@ static bool8 ForcedMovement_WalkWest(void)
 static bool8 ForcedMovement_WalkEast(void)
 {
     return DoForcedMovement(DIR_EAST, PlayerWalkNormal);
+}
+
+static bool8 ForcedMovement_SpinRight(void)
+{
+    return DoForcedMovement(DIR_EAST, PlayerGoSpin);
+}
+
+static bool8 ForcedMovement_SpinLeft(void)
+{
+    return DoForcedMovement(DIR_WEST, PlayerGoSpin);
+}
+
+static bool8 ForcedMovement_SpinUp(void)
+{
+    return DoForcedMovement(DIR_NORTH, PlayerGoSpin);
+}
+
+static bool8 ForcedMovement_SpinDown(void)
+{
+    return DoForcedMovement(DIR_SOUTH, PlayerGoSpin);
 }
 
 static bool8 ForcedMovement_PushedSouthByCurrent(void)
@@ -1029,7 +1270,7 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
     }
 
     if (!(gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_UNDERWATER) && (heldKeys & B_BUTTON || gSaveBlock2Ptr->autoRun) /*&& FlagGet(FLAG_SYS_B_DASH)*/
-     && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0 && !FlagGet(FLAG_SYS_DEXNAV_SEARCH))
+     && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0 && !FlagGet(FLAG_SYS_DEXNAV_SEARCH) && !FollowerComingThroughDoor())
     {
         if (heldKeys & B_BUTTON && gSaveBlock2Ptr->autoRun == TRUE)
         {
@@ -1436,6 +1677,23 @@ void PlayerFreeze(void)
     }
 }
 
+static void PlayerGoSpin(u8 direction)
+{
+    m4aSongNumStart(SE_M_RAZOR_WIND2);
+    PlayerSetAnimId(GetSpinMovementAction(direction), COPY_MOVE_WALK_FAST);
+}
+
+static void PlayerApplyTileForcedMovement(u8 metatileBehavior)
+{
+    u32 i;
+
+    for (i = 0; i < NUM_FORCED_MOVEMENTS; i++)
+    {
+        if (sForcedMovementTestFuncs[i](metatileBehavior))
+            sForcedMovementFuncs[i + 1]();
+    }
+}
+
 // wheelie idle
 void PlayerIdleWheelie(u8 direction)
 {
@@ -1798,7 +2056,8 @@ void InitPlayerAvatar(s16 x, s16 y, u8 direction, u8 gender)
     gPlayerAvatar.objectEventId = objectEventId;
     gPlayerAvatar.spriteId = objectEvent->spriteId;
     gPlayerAvatar.gender = gender;
-    SetPlayerAvatarStateMask(PLAYER_AVATAR_FLAG_CONTROLLABLE | PLAYER_AVATAR_FLAG_ON_FOOT);
+    SetPlayerAvatarStateMask(PLAYER_AVATAR_FLAG_CONTROLLABLE | PLAYER_AVATAR_FLAG_ON_FOOT);    
+    CreateFollowerAvatar();
 }
 
 void SetPlayerInvisibility(bool8 invisible)
@@ -2042,12 +2301,14 @@ static void CreateStopSurfingTask(u8 direction)
     LockPlayerFieldControls();
     Overworld_ClearSavedMusic();
     Overworld_ChangeMusicToDefault();
-    gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_SURFING;
+    gPlayerAvatar.flags ^= PLAYER_AVATAR_FLAG_SURFING;
     gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_ON_FOOT;
     gPlayerAvatar.preventStep = TRUE;
     taskId = CreateTask(Task_StopSurfingInit, 0xFF);
     gTasks[taskId].data[0] = direction;
     Task_StopSurfingInit(taskId);
+    
+    PrepareFollowerDismountSurf();
 }
 
 static void Task_StopSurfingInit(u8 taskId)

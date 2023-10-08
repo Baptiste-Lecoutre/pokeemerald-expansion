@@ -48,6 +48,20 @@
       "elevation": 0,
       "dest_map": "MAP_EMBER_PATH",
       "dest_warp_id": "1"
+    },
+    {
+      "x": 26,
+      "y": 45,
+      "elevation": 0,
+      "dest_map": "MAP_HAUNTED_MANOR",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 27,
+      "y": 45,
+      "elevation": 0,
+      "dest_map": "MAP_HAUNTED_MANOR",
+      "dest_warp_id": "1"
     }
   ],
   "coord_events": [

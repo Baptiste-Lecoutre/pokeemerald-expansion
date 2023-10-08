@@ -8,6 +8,8 @@ AshenWoods_OnResume::
 	end
 
 AshenWoods_OnTransition::
+	special StorePlayerCoordsInVars
+	goto_if_gt VAR_0x8005, 27, AshenWoods_EventScript_SetWeatherFog
 	call_if_eq VAR_JAGGED_PASS_ASH_WEATHER, 1, AshenWoods_EventScript_SetWeatherAsh
 	end
 
@@ -15,3 +17,8 @@ AshenWoods_EventScript_SetWeatherAsh::
 	setweather WEATHER_VOLCANIC_ASH
 	doweather
 	return
+
+AshenWoods_EventScript_SetWeatherFog::
+	setweather WEATHER_SHADE
+	doweather
+	end
