@@ -13,6 +13,7 @@
 #define I_GEM_BOOST_POWER               GEN_LATEST  // In Gen5+, the Gem boost power was reduced from 50% to 30%.
 #define I_USE_EVO_HELD_ITEMS_FROM_BAG   FALSE       // If TRUE, items such as Razor Claw or Electirizer will be usable from the bag to evolve a Pokémon just like in LA.
 #define I_TYPE_BOOST_POWER              GEN_LATEST  // In Gen4+, all regular type boosting held items had their power increased from 10% to 20%. eg. Charcoal
+#define I_SELL_VALUE_FRACTION           GEN_LATEST  // In Gen9+, items sell for 1/4 of their value instead of 1/2.
 
 // Exp. Share config
 #define I_EXP_SHARE_FLAG        FLAG_SYS_EXP_SHARE           // If this flag is set, every Pokémon in the party will gain experience, regardless if they participated in the battle or not.

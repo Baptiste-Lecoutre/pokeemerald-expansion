@@ -4603,6 +4603,11 @@ static void HandleTurnActionSelectionState(void)
                                 gBattleStruct->dynamax.usingMaxMove[battler] = TRUE;
                             }
                             gBattleCommunication[battler]++;
+
+                            if (gTestRunnerEnabled)
+                            {
+                                TestRunner_Battle_CheckChosenMove(battler, gChosenMoveByBattler[battler], gBattleStruct->moveTarget[battler]);
+                            }
                         }
                         break;
                     }
