@@ -85,17 +85,17 @@ LavaridgeTown_EventScript_RivalGiveGoGoggles::
 
 LavaridgeTown_EventScript_MayGiveGoGoggles::
 	msgbox LavaridgeTown_Text_MayIheardThatLetsGo, MSGBOX_DEFAULT
-	giveitem ITEM_GO_GOGGLES
-	setflag FLAG_RECEIVED_GO_GOGGLES
-	msgbox LavaridgeTown_Text_MayExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
+@	giveitem ITEM_GO_GOGGLES
+@	setflag FLAG_RECEIVED_GO_GOGGLES
+@	msgbox LavaridgeTown_Text_MayExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
 	end
 
 LavaridgeTown_EventScript_BrendanGiveGoGoggles::
 	msgbox LavaridgeTown_Text_BrendanIheardThatLetsGo, MSGBOX_DEFAULT
-	giveitem ITEM_GO_GOGGLES
-	setflag FLAG_RECEIVED_GO_GOGGLES
-	msgbox LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
+@	giveitem ITEM_GO_GOGGLES
+@	setflag FLAG_RECEIVED_GO_GOGGLES
+@	msgbox LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
 	end
 
@@ -488,11 +488,12 @@ LavaridgeTown_Text_MayIheardThatLetsGo:
 	.string "help you look for this little girl!\p"
 	.string "Oh? While I visited the hot springs,\n"
 	.string "you got the Lavaridge Gym Badge.\p"
-	.string "You must have collected\n"
-	.string "good Pokémon…\l"
-	.string "No, I believe you raised some.\p"
-	.string "I guess it would be okay for you to\n"
-	.string "have this.$"
+	.string "Anyway, let's go save this little girl!$"
+@	.string "You must have collected\n"
+@	.string "good Pokémon…\l"
+@	.string "No, I believe you raised some.\p"
+@	.string "I guess it would be okay for you to\n"
+@	.string "have this.$"
 
 LavaridgeTown_Text_BrendanIheardThatLetsGo:
 	.string "Brendan: {PLAYER}, hey, it's been a while.\n"
@@ -501,5 +502,6 @@ LavaridgeTown_Text_BrendanIheardThatLetsGo:
 	.string "help you look for this little girl!\p"
 	.string "Oh?\n"
 	.string "That's a decent collection of Badges.\p"
-	.string "All right, then.\n"
-	.string "You may as well have this.$"
+	.string "Anyway, let's go save this little girl!$"
+@	.string "All right, then.\n"
+@	.string "You may as well have this.$"
