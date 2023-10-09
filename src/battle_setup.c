@@ -420,11 +420,10 @@ static void CreateBattleStartTask_Debug(u8 transition, u16 song)
 #undef tState
 #undef tTransition
 
-static bool8 CheckGoGogglesInHauntedMansion(u16 mapGroup, u16 mapNum)
+static bool8 CheckDevonScopeInHauntedMansion(u16 mapGroup, u16 mapNum)
 {
     if (mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
-     && ((u16)(mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
-     /*&& !(CheckBagHasItem(ITEM_GO_GOGGLES, 1))*/)
+     && (u16)(mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
         return TRUE;
     else
         return FALSE;
@@ -434,7 +433,7 @@ void BattleSetup_StartWildBattle(void)
 {
     if (GetSafariZoneFlag())
         DoSafariBattle();
-    else if (CheckGoGogglesInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
+    else if (CheckDevonScopeInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
         DoGhostBattle();
     else
         DoStandardWildBattle(FALSE);
@@ -576,6 +575,13 @@ void BattleSetup_StartScriptedWildBattle(void)
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_EndScriptedWildBattle;
     gBattleTypeFlags = 0;
+
+    if (CheckDevonScopeInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
+    {
+        gBattleTypeFlags = BATTLE_TYPE_GHOST;
+        SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, gText_Ghost);
+    }
+
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);

@@ -19,6 +19,7 @@ LavaridgeTown_OnTransition:
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_CheckSetOldWomanPos
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_RemoveLittleGirl
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_RemoveLittleGirl
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 3, LavaridgeTown_EventScript_RemoveLittleGirl
 	end
 
 LavaridgeTown_EventScript_ClearLavaridgeWhiteOut::
@@ -294,6 +295,7 @@ LavaridgeTown_EventScript_HotSpringsOldWoman2::
 
 LavaridgeTown_EventScript_ExpertF::
 	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
+	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 3, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
 	msgbox LavaridgeTown_Text_OhYouLikeHotSprings, MSGBOX_NPC
 	end
 

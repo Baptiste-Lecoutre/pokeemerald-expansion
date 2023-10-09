@@ -9295,7 +9295,7 @@ bool8 ShouldUnveilGhost(void)
 {
     if (CheckBagHasItem(ITEM_DEVON_SCOPE, 1))
         return TRUE;
-    else if (VarGet(VAR_LAVARIDGE_TOWN_STATE) == 2)
+    else if (VarGet(VAR_LAVARIDGE_TOWN_STATE) == 2 || VarGet(VAR_LAVARIDGE_TOWN_STATE) == 3)
         return TRUE;
     else
         return FALSE;
