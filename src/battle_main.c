@@ -3758,10 +3758,15 @@ static void DoBattleIntro(void)
         if (!IsBattlerMarkedForControllerExec(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)))
         {
             PrepareStringBattle(STRINGID_INTROMSG, GetBattlerAtPosition(B_POSITION_PLAYER_LEFT));
-            if ((gBattleTypeFlags & BATTLE_TYPE_GHOST) && CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+            if ((gBattleTypeFlags & BATTLE_TYPE_GHOST) && ShouldUnveilGhost())
             {
                 gBattleScripting.battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-                BattleScriptExecute(BattleScript_GoGogglesUnveiled);
+                if (CheckBagHasItem(ITEM_DEVON_SCOPE, 1))
+                    BattleScriptExecute(BattleScript_DevonScopeUnveiled);
+                else if (VarGet(VAR_LAVARIDGE_TOWN_STATE) == 2 && gSaveBlock2Ptr->playerGender == MALE)
+                    BattleScriptExecute(BattleScript_MayDevonScopeUnveiled);
+                else if (VarGet(VAR_LAVARIDGE_TOWN_STATE) == 2 && gSaveBlock2Ptr->playerGender != MALE)
+                    BattleScriptExecute(BattleScript_BrendanDevonScopeUnveiled);
             }
             (*state)++;
         }

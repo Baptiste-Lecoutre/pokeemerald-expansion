@@ -535,6 +535,8 @@ extern const u8 BattleScript_RaidBallBlock[];
 extern const u8 BattleScript_GhostBallDodge[];
 extern const u8 BattleScript_GhostGetOutGetOut[];
 extern const u8 BattleScript_TooScaredToMove[];
-extern const u8 BattleScript_GoGogglesUnveiled[];
+extern const u8 BattleScript_DevonScopeUnveiled[];
+extern const u8 BattleScript_MayDevonScopeUnveiled[];
+extern const u8 BattleScript_BrendanDevonScopeUnveiled[];
 
 #endif // GUARD_BATTLE_SCRIPTS_H

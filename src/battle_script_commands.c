@@ -12577,7 +12577,7 @@ static void Cmd_weatherdamage(void)
 
     u32 ability = GetBattlerAbility(gBattlerAttacker);
 
-    if ((gBattleTypeFlags & BATTLE_TYPE_GHOST) && !CheckBagHasItem(ITEM_GO_GOGGLES, 1)
+    if ((gBattleTypeFlags & BATTLE_TYPE_GHOST) && !ShouldUnveilGhost()
      && (GetBattlerSide(gBattlerAttacker) == B_SIDE_OPPONENT))
     {
         gBattleMoveDamage = 0;
@@ -15328,7 +15328,7 @@ static void Cmd_handleballthrow(void)
 
     gBattlerTarget = GetCatchingBattler();
 
-    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
     {
         BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_GHOST_DODGE);
         MarkBattlerForControllerExec(gBattlerAttacker);

@@ -210,7 +210,7 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
     {
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
                 DecompressGhostFrontPic(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
             else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
                 BattleLoadMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
@@ -239,7 +239,7 @@ static void CreateBattlerSprite(u8 battler)
     {
         u8 posY;
 
-        if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+        if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
             posY = GetGhostSpriteDefault_Y(battler);
         else if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
             posY = GetSubstituteSpriteDefault_Y(battler);

@@ -641,5 +641,6 @@ u8 CalculatePartyCount(struct Pokemon *party);
 u16 SanitizeSpeciesId(u16 species);
 bool32 IsSpeciesEnabled(u16 species);
 bool8 CheckBattleTypeGhost(struct Pokemon *mon, u8 bank);
+bool8 ShouldUnveilGhost(void);
 
 #endif // GUARD_POKEMON_H

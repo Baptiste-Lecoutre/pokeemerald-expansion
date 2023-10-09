@@ -10862,12 +10862,32 @@ BattleScript_TooScaredToMove::
 	playanimation BS_ATTACKER, B_ANIM_MON_SCARED, NULL
 	goto BattleScript_MoveEnd
 
-BattleScript_GoGogglesUnveiled::
+BattleScript_DevonScopeUnveiled::
 	pause 0x20
-	printstring STRINGID_GOGOGGLESUNVEILED
+	printstring STRINGID_DEVONSCOPEUNVEILED
 	waitstate
 	playanimation BS_OPPONENT1, B_ANIM_GO_GOGGLED, NULL
 	pause 0x20
-	printstring STRINGID_GHOSTWASMAROWAK
+	printstring STRINGID_GHOSTWASOPPONENT
+	waitmessage 0x40
+	end2
+
+BattleScript_MayDevonScopeUnveiled::
+	pause 0x20
+	printstring STRINGID_MAYDEVONSCOPEUNVEILED
+	waitstate
+	playanimation BS_OPPONENT1, B_ANIM_GO_GOGGLED, NULL
+	pause 0x20
+	printstring STRINGID_GHOSTWASOPPONENT
+	waitmessage 0x40
+	end2
+
+BattleScript_BrendanDevonScopeUnveiled::
+	pause 0x20
+	printstring STRINGID_BRENDANDEVONSCOPEUNVEILED
+	waitstate
+	playanimation BS_OPPONENT1, B_ANIM_GO_GOGGLED, NULL
+	pause 0x20
+	printstring STRINGID_GHOSTWASOPPONENT
 	waitmessage 0x40
 	end2

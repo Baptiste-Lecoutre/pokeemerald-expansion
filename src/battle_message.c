@@ -851,13 +851,17 @@ static const u8 sText_GhostAppearedCantId[] = _("The Ghost appeared!\pDarn!\nThe
 static const u8 sText_TheGhostAppeared[] = _("The Ghost appeared!\p");
 static const u8 sText_TooScaredToMove[] = _("{B_ATK_NAME_WITH_PREFIX} is too scared to move!");
 static const u8 sText_GetOutGetOut[] = _("Ghost: Get out…… Get out……");
-static const u8 sText_GoGogglesUnveil[] = _("Go Goggles unveiled the Ghost's\nidentity!");
+static const u8 sText_DevonScopeUnveil[] = _("Devon Scope unveiled the Ghost's\nidentity!");
+static const u8 sText_MayDevonScopeUnveil[] = _("May's Devon Scope unveiled\nthe Ghost's identity!");
+static const u8 sText_BrendanDevonScopeUnveil[] = _("Brendan's Devon Scope unveiled\nthe Ghost's identity!");
 static const u8 sText_TheGhostWas[] = _("The Ghost was {B_OPPONENT_MON1_NAME}!\p\n");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
-    [STRINGID_GOGOGGLESUNVEILED - BATTLESTRINGS_TABLE_START] = sText_GoGogglesUnveil,
-    [STRINGID_GHOSTWASMAROWAK - BATTLESTRINGS_TABLE_START] = sText_TheGhostWas,
+    [STRINGID_DEVONSCOPEUNVEILED - BATTLESTRINGS_TABLE_START] = sText_DevonScopeUnveil,
+    [STRINGID_MAYDEVONSCOPEUNVEILED - BATTLESTRINGS_TABLE_START] = sText_MayDevonScopeUnveil,
+    [STRINGID_BRENDANDEVONSCOPEUNVEILED - BATTLESTRINGS_TABLE_START] = sText_BrendanDevonScopeUnveil,
+    [STRINGID_GHOSTWASOPPONENT - BATTLESTRINGS_TABLE_START] = sText_TheGhostWas,
     [STRINGID_MONTOOSCAREDTOMOVE - BATTLESTRINGS_TABLE_START] = sText_TooScaredToMove,
     [STRINGID_GHOSTGETOUTGETOUT - BATTLESTRINGS_TABLE_START] = sText_GetOutGetOut,
     [STRINGID_NORUNNINGFROMTHISBATTLE - BATTLESTRINGS_TABLE_START] = sText_NoRunningFromThisBattle,
@@ -2879,7 +2883,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_GHOST)
             {
-                if (CheckBagHasItem(ITEM_GO_GOGGLES, 1))
+                if (ShouldUnveilGhost())
                     stringPtr = sText_TheGhostAppeared;
                 else
                     stringPtr = sText_GhostAppearedCantId;
