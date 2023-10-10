@@ -56,6 +56,8 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	call_if_eq VAR_RESULT, FEMALE, HauntedMansion_3F_EventScript_BrendanGoBack
 	setvar VAR_POKE_VIAL_MAX_CHARGES, 2
 	setvar VAR_LAVARIDGE_TOWN_STATE, 4
+	addvar VAR_PETALBURG_GYM_STATE, 1
+	call_if_eq VAR_PETALBURG_GYM_STATE, 7, Common_EventScript_ReadyPetalburgGymForBattle
 	fadescreenswapbuffers FADE_TO_BLACK
 	destroyfollower
 	removeobject LOCALID_GIRL
