@@ -2541,6 +2541,7 @@ enum
     ENDTURN_PLASMA_FISTS,
     ENDTURN_CUD_CHEW,
     ENDTURN_SALT_CURE,
+    ENDTURN_SYRUP_BOMB,
     ENDTURN_BATTLER_COUNT
 };
 
@@ -3112,6 +3113,30 @@ u8 DoBattlerEndTurnEffects(void)
                     gBattleMoveDamage = 1;
                 PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_SALT_CURE);
                 BattleScriptExecute(BattleScript_SaltCureExtraDamage);
+                effect++;
+            }
+            gBattleStruct->turnEffectsTracker++;
+            break;
+        case ENDTURN_SYRUP_BOMB:
+            if ((gStatuses4[battler] & STATUS4_SYRUP_BOMB) && (gBattleMons[battler].hp != 0))
+            {
+                u16 battlerAbility = GetBattlerAbility(battler);
+                u32 battlerHoldEffect = GetBattlerHoldEffect(battler, TRUE);
+
+                gDisableStructs[battler].syrupBombTimer--;
+                if (gDisableStructs[battler].syrupBombTimer == 0)
+                {
+                    gStatuses4[battler] &= ~STATUS4_SYRUP_BOMB;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_SYRUP_BOMB);
+                    gBattlescriptCurrInstr = BattleScript_WrapEnds;
+                }
+                else if (gDisableStructs[battler].syrupBombTimer != 0)
+                {
+                    gBattlerTarget = battler;
+                    PREPARE_MOVE_BUFFER(gBattleTextBuff1, MOVE_SYRUP_BOMB);
+                    gBattlescriptCurrInstr = BattleScript_SyrupBombEndTurn;
+                }
+                BattleScriptExecute(gBattlescriptCurrInstr);
                 effect++;
             }
             gBattleStruct->turnEffectsTracker++;
@@ -5789,6 +5814,27 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             break;
         }
         break;
+    case ABILITYEFFECT_OPPORTUNIST:
+        /* Similar to ABILITYEFFECT_IMMUNITY in that it loops through all battlers.
+         * Is called after ABILITYEFFECT_ON_SWITCHIN to copy any boosts
+         * from switch in abilities e.g. intrepid sword, as 
+         */
+        for (battler = 0; battler < gBattlersCount; battler++)
+        {
+            switch (GetBattlerAbility(battler))
+            {
+            case ABILITY_OPPORTUNIST:
+                if (gProtectStructs[battler].activateOpportunist == 2) {
+                    gBattleScripting.savedBattler = gBattlerAttacker;
+                    gBattleScripting.battler = gBattlerAttacker = gBattlerAbility = battler;
+                    gProtectStructs[battler].activateOpportunist--;
+                    BattleScriptPushCursorAndCallback(BattleScript_OpportunistCopyStatChange);
+                    effect = 1;
+                }
+                break;
+            }
+        }
+        break;
     case ABILITYEFFECT_IMMUNITY: // 5
         for (battler = 0; battler < gBattlersCount; battler++)
         {
@@ -5847,6 +5893,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     effect = 4;
                 break;
             }
+            
             if (effect != 0)
             {
                 switch (effect)
@@ -8924,9 +8971,9 @@ static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 
            modifier = uq4_12_multiply(modifier, UQ_4_12(1.3));
         break;
     case ABILITY_RIVALRY:
-        if (AreBattlersOfOppositeGender(battlerAtk, battlerDef))
+        if (AreBattlersOfSameGender(battlerAtk, battlerDef))
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.25));
-        else
+        else if (AreBattlersOfOppositeGender(battlerAtk, battlerDef))
             modifier = uq4_12_multiply(modifier, UQ_4_12(0.75));
         break;
     case ABILITY_ANALYTIC:
@@ -8983,7 +9030,11 @@ static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 
         break;
     case ABILITY_TRANSISTOR:
         if (moveType == TYPE_ELECTRIC)
+        #if B_TRANSISTOR_BOOST >= GEN_9
+            modifier = uq4_12_multiply(modifier, UQ_4_12(5325 / 4096));
+        #else
             modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
+        #endif
         break;
     case ABILITY_DRAGONS_MAW:
         if (moveType == TYPE_DRAGON)
@@ -11198,6 +11249,14 @@ bool32 AreBattlersOfOppositeGender(u32 battler1, u32 battler2)
     return (gender1 != MON_GENDERLESS && gender2 != MON_GENDERLESS && gender1 != gender2);
 }
 
+bool32 AreBattlersOfSameGender(u32 battler1, u32 battler2)
+{
+    u8 gender1 = GetBattlerGender(battler1);
+    u8 gender2 = GetBattlerGender(battler2);
+
+    return (gender1 != MON_GENDERLESS && gender2 != MON_GENDERLESS && gender1 == gender2);
+}
+
 u32 CalcSecondaryEffectChance(u32 battler, u8 secondaryEffectChance)
 {
     if (GetBattlerAbility(battler) == ABILITY_SERENE_GRACE)
@@ -11213,7 +11272,7 @@ bool32 IsAlly(u32 battlerAtk, u32 battlerDef)
 
 bool32 IsGen6ExpShareEnabled(void)
 {
-#if I_EXP_SHARE_ITEM < GEN_6
+#if I_EXP_SHARE_FLAG <= TEMP_FLAGS_END
     return FALSE;
 #else
     return FlagGet(I_EXP_SHARE_FLAG);
@@ -11222,7 +11281,7 @@ bool32 IsGen6ExpShareEnabled(void)
 
 
 u8 GetBattlerType(u32 battler, u8 typeIndex)
-{    
+{
     u16 types[3] = {0};
     types[0] = gBattleMons[battler].type1;
     types[1] = gBattleMons[battler].type2;

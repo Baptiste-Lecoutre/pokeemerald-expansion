@@ -3229,6 +3229,8 @@ extern const u8 gStartMenu_TimeBoxClock[];
 extern const u8 gText_ExpShareOn[];
 extern const u8 gText_ExpShareOff[];
 
+extern const u8 gText_BasePointsResetToZero[];
+
 // Nature changer multichoice
 extern const u8 gText_FlavourRed[];
 extern const u8 gText_FlavourYellow[];
