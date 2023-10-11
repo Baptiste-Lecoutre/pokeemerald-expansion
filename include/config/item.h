@@ -16,6 +16,8 @@
 #define I_SELL_VALUE_FRACTION           GEN_LATEST  // In Gen9+, items sell for 1/4 of their value instead of 1/2.
 
 // Exp. Share config
+// To use this feature, replace the 0 with the flag ID you're assigning it to.
+// Eg: Replace with FLAG_UNUSED_0x264 so you can use that flag to toggle the feature.
 #define I_EXP_SHARE_FLAG        FLAG_SYS_EXP_SHARE           // If this flag is set, every Pokémon in the party will gain experience, regardless if they participated in the battle or not.
 #define I_EXP_SHARE_ITEM        GEN_LATEST       // In Gen6+, the Exp. Share was changed from a held item to a Key item that toggles the effect described above. 
 
