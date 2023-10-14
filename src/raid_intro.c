@@ -593,7 +593,7 @@ static void ShowPartnerTeams(void)
 
 	for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 	{
-		AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
+		//AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
 		if (sRaidBattleIntro->partners[i].graphicsId != 0)
 		{
             u32 spriteId;
@@ -601,7 +601,7 @@ static void ShowPartnerTeams(void)
 			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, 126, 59 + (i * 33), 0);
             gSprites[spriteId].oam.priority = 0;
 
-			/*for (j = 0; j < MAX_TEAM_SIZE; ++j)
+			for (j = 0; j < MAX_TEAM_SIZE; ++j)
 			{
 				u16 species = sRaidBattleIntro->partners[i].team[j];
 				if (species != SPECIES_NONE)
@@ -609,7 +609,7 @@ static void ShowPartnerTeams(void)
 					LoadMonIconPalette(species);
 					CreateMonIcon(species, SpriteCB_MonIcon, 158 + (32 * j), 59 + (i * 33), 0, 0xFFFFFFFF);
 				}
-			}*/
+			}
 		}
 	}
 }
@@ -720,9 +720,30 @@ void InitRaidIntro(void)
 	}
 }
 
+const struct Partner gRaidPartners[]=
+{
+	{
+		.id = 0,
+		.graphicsId = OBJ_EVENT_GFX_STEVEN,
+		.team = {SPECIES_TYRANITAR,SPECIES_MAMOSWINE,SPECIES_METAGROSS},
+	},
+	{
+		.id = 1,
+		.graphicsId = OBJ_EVENT_GFX_MAY_NORMAL,
+		.team = {SPECIES_GOLURK,SPECIES_MAGNEZONE,SPECIES_SALAMENCE},
+	},
+	{
+		.id = 2,
+		.graphicsId = OBJ_EVENT_GFX_RED,
+		.team = {SPECIES_PIKACHU_ORIGINAL_CAP,SPECIES_SNORLAX,SPECIES_MEWTWO},
+	},
+};
+
 static bool32 GetRaidBattleData(void)
 {
 	bool32 success;
+	u32 i,j;
+
 	if (FlagGet(FLAG_SYS_SPECIAL_RAID_BATTLE))
 	{
 		if (InitCustomRaidData())
@@ -739,26 +760,18 @@ static bool32 GetRaidBattleData(void)
 		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0], MON_DATA_PERSONALITY, NULL);
 
 		// Placeholder Data
-		// TODO: Fill using gRaidData->partners.
-		sRaidBattleIntro->partners[0].graphicsId = OBJ_EVENT_GFX_STEVEN;
-		sRaidBattleIntro->partners[0].team[0] = SPECIES_TYRANITAR;
-		sRaidBattleIntro->partners[0].team[1] = SPECIES_MAMOSWINE;
-		sRaidBattleIntro->partners[0].team[2] = SPECIES_GRANBULL;
-		sRaidBattleIntro->partners[1].graphicsId = OBJ_EVENT_GFX_MAY_NORMAL;
-		sRaidBattleIntro->partners[1].team[0] = SPECIES_GOLURK;
-		sRaidBattleIntro->partners[1].team[1] = SPECIES_MAGNEZONE;
-		sRaidBattleIntro->partners[1].team[2] = SPECIES_SALAMENCE;
-		sRaidBattleIntro->partners[2].graphicsId = OBJ_EVENT_GFX_RED;
-		sRaidBattleIntro->partners[2].team[0] = SPECIES_PIKACHU_ORIGINAL_CAP;
-		sRaidBattleIntro->partners[2].team[1] = SPECIES_SNORLAX;
-		sRaidBattleIntro->partners[2].team[2] = SPECIES_MEWTWO;
-
-		/*for (i = 0; i < MAX_NUM_PARTNERS; i++)
+		// TODO: Select proper partners from gRaidPartners, based on rank + raid random number.
+		// TODO: Figure out how to encode things: difference between the gRaidPartners array index, 
+		// 		the gRaidPartners Id, the sRaidBattleIntro->partners index, the trainernum...
+		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->id = i;
-			partner->graphicsId = sPossiblePartnersObjEventGfx[RandomSeededModulo(GetRaidRandomNumber() + i, NELEMS(sPossiblePartnersObjEventGfx))];
-		}*/
+			partner->id = gRaidPartners[i].id;
+			partner->graphicsId = gRaidPartners[i].graphicsId;
+
+			for (j = 0; j < MAX_TEAM_SIZE; j++)
+				partner->team[j] = gRaidPartners[i].team[j];
+		}
 
 		return TRUE;
 	}
