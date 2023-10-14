@@ -1,6 +1,7 @@
 #ifndef GUARD_BATTLE_SCRIPTS_H
 #define GUARD_BATTLE_SCRIPTS_H
 
+extern const u8 BattleScript_OpportunistCopyStatChange[];
 extern const u8 BattleScript_MirrorHerbCopyStatChange[];
 extern const u8 BattleScript_MirrorHerbCopyStatChangeEnd2[];
 extern const u8 BattleScript_NotAffected[];
@@ -10,7 +11,8 @@ extern const u8 BattleScript_MakeMoveMissed[];
 extern const u8 BattleScript_PrintMoveMissed[];
 extern const u8 BattleScript_MoveMissedPause[];
 extern const u8 BattleScript_MoveMissed[];
-extern const u8 BattleScript_ButItFailedAtkStringPpReduce[];
+extern const u8 BattleScript_FlingFailConsumeItem[];
+extern const u8 BattleScript_FailedFromAtkString[];
 extern const u8 BattleScript_ButItFailed[];
 extern const u8 BattleScript_StatUp[];
 extern const u8 BattleScript_StatDown[];
@@ -213,6 +215,7 @@ extern const u8 BattleScript_WhiteHerbRet[];
 extern const u8 BattleScript_ItemHealHP_RemoveItemRet[];
 extern const u8 BattleScript_ItemHealHP_RemoveItemEnd2[];
 extern const u8 BattleScript_BerryPPHealEnd2[];
+extern const u8 BattleScript_BerryPPHealRet[];
 extern const u8 BattleScript_ItemHealHP_End2[];
 extern const u8 BattleScript_ItemHealHP_Ret[];
 extern const u8 BattleScript_SelectingNotAllowedMoveChoiceItem[];
@@ -472,6 +475,11 @@ extern const u8 BattleScript_SpikesActivates[];
 extern const u8 BattleScript_BerserkGeneRet[];
 extern const u8 BattleScript_TargetFormChangeWithStringNoPopup[];
 extern const u8 BattleScript_DefDown[];
+extern const u8 BattleScript_UltraBurst[];
+extern const u8 BattleScript_SelectingNotAllowedCurrentMove[];
+extern const u8 BattleScript_SelectingNotAllowedCurrentMoveInPalace[];
+extern const u8 BattleScript_SaltCureExtraDamage[];
+extern const u8 BattleScript_SyrupBombEndTurn[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];

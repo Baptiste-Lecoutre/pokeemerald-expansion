@@ -204,7 +204,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .bg = 0,
         .tilemapLeft = 2,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 16,    //for z effect descriptions
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0328,
@@ -216,7 +216,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .width = 8,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x0338,
+        .baseBlock = 0x0340,
     },
     [B_WIN_PP] = {
         .bg = 0,
@@ -721,9 +721,9 @@ const struct BattleBackground sBattleTerrainTable[] =
     },
 };
 
-static void CB2_UnusedBattleInit(void);
+static void UNUSED CB2_UnusedBattleInit(void);
 
-static void UnusedBattleInit(void)
+static void UNUSED UnusedBattleInit(void)
 {
     u8 spriteId;
 
@@ -733,7 +733,7 @@ static void UnusedBattleInit(void)
     SetMainCallback2(CB2_UnusedBattleInit);
 }
 
-static void CB2_UnusedBattleInit(void)
+static void UNUSED CB2_UnusedBattleInit(void)
 {
     AnimateSprites();
     BuildOamBuffer();

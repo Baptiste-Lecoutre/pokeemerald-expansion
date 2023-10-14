@@ -32,7 +32,6 @@ extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
 
 static void ClearDaycareMonMail(struct DaycareMail *mail);
 static void SetInitialEggData(struct Pokemon *mon, u16 species, struct DayCare *daycare);
-static u8 GetDaycareCompatibilityScore(struct DayCare *daycare);
 static void DaycarePrintMonInfo(u8 windowId, u32 daycareSlotId, u8 y);
 static u8 ModifyBreedingScoreForOvalCharm(u8 score);
 
@@ -99,16 +98,14 @@ static const u8 sJapaneseEggNickname[] = _("タマゴ"); // "tamago" ("egg" in J
 
 u8 *GetMonNickname2(struct Pokemon *mon, u8 *dest)
 {
-    u8 nickname[POKEMON_NAME_LENGTH * 2];
-
+    u8 nickname[POKEMON_NAME_BUFFER_SIZE];
     GetMonData(mon, MON_DATA_NICKNAME, nickname);
     return StringCopy_Nickname(dest, nickname);
 }
 
 u8 *GetBoxMonNickname(struct BoxPokemon *mon, u8 *dest)
 {
-    u8 nickname[POKEMON_NAME_LENGTH * 2];
-
+    u8 nickname[POKEMON_NAME_BUFFER_SIZE];
     GetBoxMonData(mon, MON_DATA_NICKNAME, nickname);
     return StringCopy_Nickname(dest, nickname);
 }
@@ -152,7 +149,7 @@ void InitDaycareMailRecordMixing(struct DayCare *daycare, struct RecordMixingDay
     mixMail->numDaycareMons = numDaycareMons;
 }
 
-static s8 Daycare_FindEmptySpot(struct DayCare *daycare)
+s8 Daycare_FindEmptySpot(struct DayCare *daycare)
 {
     u8 i;
 
@@ -194,7 +191,7 @@ static void TransferEggMoves(void)
             {
                 if (k == i || !GetBoxMonData(&gSaveBlock1Ptr->daycare.mons[k].mon, MON_DATA_SANITY_HAS_SPECIES))
                     continue;
-                
+
                 // Check if you can inherit from them
                 if (GetBoxMonData(&gSaveBlock1Ptr->daycare.mons[k].mon, MON_DATA_SPECIES) != GetBoxMonData(&gSaveBlock1Ptr->daycare.mons[i].mon, MON_DATA_SPECIES)
             #if P_EGG_MOVE_TRANSFER >= GEN_9
@@ -440,7 +437,7 @@ void GetDaycareCost(void)
     gSpecialVar_0x8005 = GetDaycareCostForMon(&gSaveBlock1Ptr->daycare, gSpecialVar_0x8004);
 }
 
-static void Debug_AddDaycareSteps(u16 numSteps)
+static void UNUSED Debug_AddDaycareSteps(u16 numSteps)
 {
     gSaveBlock1Ptr->daycare.mons[0].steps += numSteps;
     gSaveBlock1Ptr->daycare.mons[1].steps += numSteps;
@@ -473,7 +470,7 @@ static void ClearDaycareMon(struct DaycareMon *daycareMon)
     ClearDaycareMonMail(&daycareMon->mail);
 }
 
-static void ClearAllDaycareData(struct DayCare *daycare)
+static void UNUSED ClearAllDaycareData(struct DayCare *daycare)
 {
     u8 i;
 
@@ -487,7 +484,7 @@ static void ClearAllDaycareData(struct DayCare *daycare)
 // Determines what the species of an Egg would be based on the given species.
 // It determines this by working backwards through the evolution chain of the
 // given species.
-static u16 GetEggSpecies(u16 species)
+u16 GetEggSpecies(u16 species)
 {
     int i, j, k;
     bool8 found;
@@ -531,7 +528,7 @@ static s32 GetParentToInheritNature(struct DayCare *daycare)
         if (ItemId_GetHoldEffect(GetBoxMonData(&daycare->mons[i].mon, MON_DATA_HELD_ITEM)) == HOLD_EFFECT_PREVENT_EVOLVE
         #if P_NATURE_INHERITANCE == GEN_3
             && (GetBoxMonGender(&daycare->mons[i].mon) == MON_FEMALE || IS_DITTO(GetBoxMonData(&daycare->mons[i].mon, MON_DATA_SPECIES)))
-        #endif 
+        #endif
         ) {
             slot = i;
             numWithEverstone++;
@@ -593,8 +590,7 @@ void TriggerPendingDaycareEgg(void)
     _TriggerPendingDaycareEgg(&gSaveBlock1Ptr->daycare);
 }
 
-// Unused
-static void TriggerPendingDaycareMaleEgg(void)
+static void UNUSED TriggerPendingDaycareMaleEgg(void)
 {
     _TriggerPendingDaycareMaleEgg(&gSaveBlock1Ptr->daycare);
 }
@@ -641,7 +637,7 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     }
 
     start = 0;
-    if (ItemId_GetHoldEffect(motherItem) == HOLD_EFFECT_POWER_ITEM && 
+    if (ItemId_GetHoldEffect(motherItem) == HOLD_EFFECT_POWER_ITEM &&
         ItemId_GetHoldEffect(fatherItem) == HOLD_EFFECT_POWER_ITEM)
     {
         whichParents[0] = Random() % DAYCARE_MON_COUNT;
@@ -650,14 +646,14 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
         RemoveIVIndexFromList(availableIVs, selectedIvs[0]);
         start++;
     }
-    else if (ItemId_GetHoldEffect(motherItem) == HOLD_EFFECT_POWER_ITEM) 
+    else if (ItemId_GetHoldEffect(motherItem) == HOLD_EFFECT_POWER_ITEM)
     {
         whichParents[0] = 0;
         selectedIvs[0] = ItemId_GetSecondaryId(motherItem);
         RemoveIVIndexFromList(availableIVs, selectedIvs[0]);
         start++;
     }
-    else if (ItemId_GetHoldEffect(fatherItem) == HOLD_EFFECT_POWER_ITEM) 
+    else if (ItemId_GetHoldEffect(fatherItem) == HOLD_EFFECT_POWER_ITEM)
     {
         whichParents[0] = 1;
         selectedIvs[0] = ItemId_GetSecondaryId(fatherItem);
@@ -811,6 +807,7 @@ u8 GetEggMoves(struct Pokemon *pokemon, u16 *eggMoves)
 
     return numEggMoves;
 }
+
 u8 GetEggMovesSpecies(u16 species, u16 *eggMoves)
 {
     u16 eggMoveIdx;
@@ -842,6 +839,7 @@ u8 GetEggMovesSpecies(u16 species, u16 *eggMoves)
 
     return numEggMoves;
 }
+
 bool8 SpeciesCanLearnEggMove(u16 species, u16 move) //Move search PokedexPlus HGSS_Ui
 {
     u16 eggMoveIdx;
@@ -977,6 +975,12 @@ static void BuildEggMoveset(struct Pokemon *egg, struct BoxPokemon *father, stru
             }
         }
     }
+}
+
+// For egg move reminder in pokemon.c
+u16 GetEggMovesArraySize(void) 
+{
+	return ARRAY_COUNT(gEggMoves);
 }
 
 static void RemoveEggFromDayCare(struct DayCare *daycare)
@@ -1257,12 +1261,12 @@ static bool8 IsEggPending(struct DayCare *daycare)
 // gStringVar3 = first mon trainer's name
 static void _GetDaycareMonNicknames(struct DayCare *daycare)
 {
-    u8 text[12];
+    u8 otName[max(12, PLAYER_NAME_LENGTH + 1)];
     if (GetBoxMonData(&daycare->mons[0].mon, MON_DATA_SPECIES) != 0)
     {
         GetBoxMonNickname(&daycare->mons[0].mon, gStringVar1);
-        GetBoxMonData(&daycare->mons[0].mon, MON_DATA_OT_NAME, text);
-        StringCopy(gStringVar3, text);
+        GetBoxMonData(&daycare->mons[0].mon, MON_DATA_OT_NAME, otName);
+        StringCopy(gStringVar3, otName);
     }
 
     if (GetBoxMonData(&daycare->mons[1].mon, MON_DATA_SPECIES) != 0)
@@ -1299,7 +1303,7 @@ u8 GetDaycareState(void)
     return DAYCARE_NO_MONS;
 }
 
-static u8 GetDaycarePokemonCount(void)
+static u8 UNUSED GetDaycarePokemonCount(void)
 {
     u8 ret = CountPokemonInDaycare(&gSaveBlock1Ptr->daycare);
     if (ret)
@@ -1326,7 +1330,7 @@ static bool8 EggGroupsOverlap(u16 *eggGroups1, u16 *eggGroups2)
     return FALSE;
 }
 
-static u8 GetDaycareCompatibilityScore(struct DayCare *daycare)
+u8 GetDaycareCompatibilityScore(struct DayCare *daycare)
 {
     u32 i;
     u16 eggGroups[DAYCARE_MON_COUNT][EGG_GROUPS_PER_MON];
@@ -1457,9 +1461,9 @@ static u8 *AppendMonGenderSymbol(u8 *name, struct BoxPokemon *boxMon)
     return AppendGenderSymbol(name, GetBoxMonGender(boxMon));
 }
 
-static void GetDaycareLevelMenuText(struct DayCare *daycare, u8 *dest)
+static void UNUSED GetDaycareLevelMenuText(struct DayCare *daycare, u8 *dest)
 {
-    u8 monNames[DAYCARE_MON_COUNT][20];
+    u8 monNames[DAYCARE_MON_COUNT][POKEMON_NAME_BUFFER_SIZE];
     u8 i;
 
     *dest = EOS;
@@ -1476,7 +1480,7 @@ static void GetDaycareLevelMenuText(struct DayCare *daycare, u8 *dest)
     StringAppend(dest, gText_Exit4);
 }
 
-static void GetDaycareLevelMenuLevelText(struct DayCare *daycare, u8 *dest)
+static void UNUSED GetDaycareLevelMenuLevelText(struct DayCare *daycare, u8 *dest)
 {
     u8 i;
     u8 level;
@@ -1517,8 +1521,7 @@ static void DaycareAddTextPrinter(u8 windowId, const u8 *text, u32 x, u32 y)
 
 static void DaycarePrintMonNickname(struct DayCare *daycare, u8 windowId, u32 daycareSlotId, u32 y)
 {
-    u8 nickname[POKEMON_NAME_LENGTH * 2];
-
+    u8 nickname[POKEMON_NAME_BUFFER_SIZE];
     GetBoxMonNickname(&daycare->mons[daycareSlotId].mon, nickname);
     AppendMonGenderSymbol(nickname, &daycare->mons[daycareSlotId].mon);
     DaycareAddTextPrinter(windowId, nickname, 8, y);

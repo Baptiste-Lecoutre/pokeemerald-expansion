@@ -1896,8 +1896,10 @@ const u8 gText_Berry[] = _("Berry");
 const u8 gText_Berries[] = _("Berries");
 const u8 gText_ExpShareOn[] = _("Turned on the Exp. Share.\pParty will now gain a portion\nof the Experience Points.{PAUSE_UNTIL_PRESS}");
 const u8 gText_ExpShareOff[] = _("Turned off the Exp. Share.\pParty will no longer gain a portion\nof any Experience Points.{PAUSE_UNTIL_PRESS}");
+const u8 gText_BasePointsResetToZero[] = _("{STR_VAR_1}'s base points\nwere all reset to zero!{PAUSE_UNTIL_PRESS}");
 
 //HGSS_Ui PokedexPlus
+#if POKEDEX_PLUS_HGSS == TRUE
 const u8 gText_Stats_Buttons[]  = _("{A_BUTTON}Toggle   {DPAD_UPDOWN}MOVES");
 const u8 gText_Stats_Buttons_Decapped[]  = _("{A_BUTTON}Toggle   {DPAD_UPDOWN}Moves");
 const u8 gText_Stats_HP[]       = _("HP");
@@ -1966,53 +1968,63 @@ const u8 gText_Stats_eggGroup_UNDISCOVERED[]= _("---");
 const u8 gText_Dex_SEEN[]   = _("Seen");
 const u8 gText_Dex_OWN[]    = _("Own");
 
-const u8 gText_EVO_Buttons[]                        = _("{DPAD_UPDOWN}EVOs  {A_BUTTON}CHECK");
-const u8 gText_EVO_Buttons_Decapped[]               = _("{DPAD_UPDOWN}Evos  {A_BUTTON}Check");
-const u8 gText_EVO_Buttons_PE[]                     = _("{DPAD_UPDOWN}EVOs  {A_BUTTON}CHECK  {START_BUTTON}FORMs");
-const u8 gText_EVO_Buttons_Decapped_PE[]            = _("{DPAD_UPDOWN}Evos  {A_BUTTON}Check  {START_BUTTON}Froms");
-const u8 gText_EVO_Name[]                           = _("{STR_VAR_3}:");
-const u8 gText_EVO_PreEvo[]                         = _("{STR_VAR_1} evolves from {STR_VAR_2}");
-const u8 gText_EVO_PreEvo_PE_Mega[]                 = _("{STR_VAR_1} mega evolves with {STR_VAR_2}");
-const u8 gText_EVO_FRIENDSHIP[]                     = _("LvlUp, high friendship");
-const u8 gText_EVO_FRIENDSHIP_DAY[]                 = _("LvlUp, high friendship, day");
-const u8 gText_EVO_FRIENDSHIP_NIGHT[]               = _("Lvlup, high friendship, night");
-const u8 gText_EVO_LEVEL[]                          = _("LvlUp to {STR_VAR_2}");
-const u8 gText_EVO_TRADE[]                          = _("Trading");
-const u8 gText_EVO_TRADE_ITEM[]                     = _("Trading, holding {STR_VAR_2}");
-const u8 gText_EVO_ITEM[]                           = _("{STR_VAR_2} is used");
-const u8 gText_EVO_LEVEL_ATK_GT_DEF[]               = _("LvlUp to {STR_VAR_2}, Atk > Def");
-const u8 gText_EVO_LEVEL_ATK_EQ_DEF[]               = _("LvlUp to {STR_VAR_2}, Atk = Def");
-const u8 gText_EVO_LEVEL_ATK_LT_DEF[]               = _("LvlUp to {STR_VAR_2}, Atk < Def");
-const u8 gText_EVO_LEVEL_SILCOON[]                  = _("LvlUp to {STR_VAR_2}, Silcoon persona");
-const u8 gText_EVO_LEVEL_CASCOON[]                  = _("LvlUp to {STR_VAR_2}, Cascoon persona");
-const u8 gText_EVO_LEVEL_NINJASK[]                  = _("LvlUp to {STR_VAR_2}");
-const u8 gText_EVO_LEVEL_SHEDINJA[]                 = _("LvlUp to {STR_VAR_2}, party<6, 1x POKéBALL");
-const u8 gText_EVO_BEAUTY[]                         = _("LvlUp, high beauty");
-const u8 gText_EVO_LEVEL_FEMALE[]                   = _("LvlUp to {STR_VAR_2}, is female");
-const u8 gText_EVO_LEVEL_MALE[]                     = _("LvlUp to {STR_VAR_2}, is male");
-const u8 gText_EVO_LEVEL_NIGHT[]                    = _("LvlUp to {STR_VAR_2}, night");
-const u8 gText_EVO_LEVEL_DAY[]                      = _("LvlUp to {STR_VAR_2}, day");
-const u8 gText_EVO_LEVEL_DUSK[]                     = _("LvlUp to {STR_VAR_2}, dusk (5-6PM)");
-const u8 gText_EVO_ITEM_HOLD_DAY[]                  = _("LvlUp, holds {STR_VAR_2}, day");
-const u8 gText_EVO_ITEM_HOLD_NIGHT[]                = _("LvlUp, holds {STR_VAR_2}, night");
-const u8 gText_EVO_MOVE[]                           = _("LvlUp, knows {STR_VAR_2}");
-const u8 gText_EVO_FRIENDSHIP_MOVE_TYPE[]           = _("LvlUp, knows {STR_VAR_2} move");
-const u8 gText_EVO_MAPSEC[]                         = _("LvlUp on {STR_VAR_2}");
-const u8 gText_EVO_ITEM_MALE[]                      = _("{STR_VAR_2} used on male");
-const u8 gText_EVO_ITEM_FEMALE[]                    = _("{STR_VAR_2} used on female");
-const u8 gText_EVO_LEVEL_RAIN[]                     = _("LvlUp to {STR_VAR_2} while raining");
-const u8 gText_EVO_SPECIFIC_MON_IN_PARTY[]          = _("LvlUp with {STR_VAR_2} in party");
-const u8 gText_EVO_LEVEL_DARK_TYPE_MON_IN_PARTY[]   = _("LvlUp with dark type in party");
-const u8 gText_EVO_TRADE_SPECIFIC_MON[]             = _("Traded for {STR_VAR_2}");
-const u8 gText_EVO_SPECIFIC_MAP[]                   = _("LvlUp on {STR_VAR_2}");
-const u8 gText_EVO_UNKNOWN[]                        = _("Method unknown");
-const u8 gText_EVO_NONE[]                           = _("{STR_VAR_1} has no evolution.");
+const u8 gText_EVO_Buttons[] = _("{DPAD_UPDOWN}EVOs  {A_BUTTON}CHECK");
+const u8 gText_EVO_Buttons_Decapped[] = _("{DPAD_UPDOWN}Evos  {A_BUTTON}Check");
+const u8 gText_EVO_Buttons_PE[] = _("{DPAD_UPDOWN}EVOs  {A_BUTTON}CHECK  {START_BUTTON}FORMs");
+const u8 gText_EVO_Buttons_Decapped_PE[] = _("{DPAD_UPDOWN}Evos  {A_BUTTON}Check  {START_BUTTON}Froms");
+const u8 gText_EVO_Name[] = _("{STR_VAR_3}:");
+const u8 gText_EVO_PreEvo[] = _("{STR_VAR_1} evolves from {STR_VAR_2}");
+const u8 gText_EVO_PreEvo_PE_Mega[] = _("{STR_VAR_1} Mega Evolves with {STR_VAR_2}");
+const u8 gText_EVO_FRIENDSHIP[] = _("{LV}{UP_ARROW}, high friendship");
+const u8 gText_EVO_FRIENDSHIP_DAY[] = _("{LV}{UP_ARROW}, high friendship, day");
+const u8 gText_EVO_FRIENDSHIP_NIGHT[] = _("{LV}{UP_ARROW}, high friendship, night");
+const u8 gText_EVO_FRIENDSHIP_MOVE_TYPE[] = _("{LV}{UP_ARROW}, high friendship, {STR_VAR_2} move");
+const u8 gText_EVO_LEVEL[] = _("{LV}{UP_ARROW} to {STR_VAR_2}");
+const u8 gText_EVO_TRADE[] = _("Trading");
+const u8 gText_EVO_TRADE_ITEM[] = _("Trading, holding {STR_VAR_2}");
+const u8 gText_EVO_ITEM[] = _("{STR_VAR_2} is used");
+const u8 gText_EVO_LEVEL_ATK_GT_DEF[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, Atk > Def");
+const u8 gText_EVO_LEVEL_ATK_EQ_DEF[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, Atk = Def");
+const u8 gText_EVO_LEVEL_ATK_LT_DEF[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, Atk < Def");
+const u8 gText_EVO_LEVEL_SILCOON[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, Silcoon persona");
+const u8 gText_EVO_LEVEL_CASCOON[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, Cascoon persona");
+const u8 gText_EVO_LEVEL_NINJASK[] = _("{LV}{UP_ARROW} to {STR_VAR_2}");
+const u8 gText_EVO_LEVEL_SHEDINJA[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, party<6, 1x POKéBALL");
+const u8 gText_EVO_BEAUTY[] = _("{LV}{UP_ARROW}, high beauty");
+const u8 gText_EVO_LEVEL_FEMALE[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, is female");
+const u8 gText_EVO_LEVEL_MALE[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, is male");
+const u8 gText_EVO_LEVEL_NIGHT[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, night");
+const u8 gText_EVO_LEVEL_DAY[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, day");
+const u8 gText_EVO_LEVEL_DUSK[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, dusk (5-6PM)");
+const u8 gText_EVO_ITEM_HOLD_DAY[] = _("{LV}{UP_ARROW}, holds {STR_VAR_2}, day");
+const u8 gText_EVO_ITEM_HOLD_NIGHT[] = _("{LV}{UP_ARROW}, holds {STR_VAR_2}, night");
+const u8 gText_EVO_MOVE[] = _("{LV}{UP_ARROW}, knows {STR_VAR_2}");
+const u8 gText_EVO_MAPSEC[] = _("{LV}{UP_ARROW} on {STR_VAR_2}");
+const u8 gText_EVO_ITEM_MALE[] = _("{STR_VAR_2} used on male");
+const u8 gText_EVO_ITEM_FEMALE[] = _("{STR_VAR_2} used on female");
+const u8 gText_EVO_LEVEL_RAIN[] = _("{LV}{UP_ARROW} to {STR_VAR_2} while raining");
+const u8 gText_EVO_SPECIFIC_MON_IN_PARTY[] = _("{LV}{UP_ARROW} with {STR_VAR_2} in party");
+const u8 gText_EVO_LEVEL_DARK_TYPE_MON_IN_PARTY[] = _("{LV}{UP_ARROW} with dark type in party");
+const u8 gText_EVO_TRADE_SPECIFIC_MON[] = _("Traded for {STR_VAR_2}");
+const u8 gText_EVO_SPECIFIC_MAP[] = _("{LV}{UP_ARROW} on {STR_VAR_2}");
+const u8 gText_EVO_LEVEL_NATURE_AMPED[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, Amped natures");
+const u8 gText_EVO_LEVEL_NATURE_LOW_KEY[] = _("{LV}{UP_ARROW} to {STR_VAR_2}, Low Key natures");
+const u8 gText_EVO_CRITICAL_HITS[] = _("Land {STR_VAR_2} critical hits in\nsingle battle");
+const u8 gText_EVO_SCRIPT_TRIGGER_DMG[] = _("Takes at least {STR_VAR_2} HP in damage");
+const u8 gText_EVO_DARK_SCROLL[] = _("ScrllOfDrknss is used");
+const u8 gText_EVO_WATER_SCROLL[] = _("ScrollOfWatrs is used");
+const u8 gText_EVO_ITEM_NIGHT[] = _("{STR_VAR_2} is used, night");
+const u8 gText_EVO_ITEM_DAY[] = _("{STR_VAR_2} is used, day");
+const u8 gText_EVO_ITEM_HOLD[] = _("{LV}{UP_ARROW}, holds {STR_VAR_2}");
+const u8 gText_EVO_UNKNOWN[] = _("Method unknown");
+const u8 gText_EVO_NONE[] = _("{STR_VAR_1} has no evolution.");
 
 const u8 gText_FORMS_Buttons_PE[]                   = _("{A_BUTTON}Form mode  {START_BUTTON}Evos");
 const u8 gText_FORMS_Buttons_Decapped_PE[]          = _("{START_BUTTON}Evos");
 const u8 gText_FORMS_Buttons_Submenu_PE[]           = _("{DPAD_NONE}Forms {A_BUTTON}Check {START_BUTTON}Evos");
 const u8 gText_FORMS_Buttons_Submenu_Decapped_PE[]  = _("{START_BUTTON}Evos");
 const u8 gText_FORMS_NONE[]                         = _("{STR_VAR_1} has no alternate forms.");
+#endif
 
 const u8 gText_AshQty[] = _("Ash qty:\n{STR_VAR_1}{PAUSE_UNTIL_PRESS}");
 
@@ -2025,6 +2037,13 @@ const u8 gText_PokeVialEmpty[] = _("The Poké Vial is empty.\nRefill it at a Pok
 const u8 gText_UsedPokeVial[] = _("{PLAYER} used the Poké Vial.\nAll Pokémon were fully restored!{PAUSE_UNTIL_PRESS}");
 
 const u8 gStartMenu_TimeBoxClock[] = _("{STR_VAR_1}:{STR_VAR_2}:{STR_VAR_3}");
+
+// Nature changer
+const u8 gText_FlavourRed[] = _("Red:{CLEAR_TO 0x32}Attack");
+const u8 gText_FlavourYellow[] = _("Yellow:{CLEAR_TO 0x32}Defense");
+const u8 gText_FlavourPink[] = _("Pink:{CLEAR_TO 0x32}Speed");
+const u8 gText_FlavourBlue[] = _("Blue:{CLEAR_TO 0x32}Sp. Atk");
+const u8 gText_FlavourGreen[] = _("Green:{CLEAR_TO 0x32}Sp. Def");
 
 // EV/IV changers
 const u8 gText_View[] = _("View");

@@ -440,9 +440,8 @@ void TranslateSpriteInGrowingCircle(struct Sprite *sprite)
     }
 }
 
-// Unused
 // Exact shape depends on arguments. Can move in a figure-8-like pattern, or circular, etc.
-static void TranslateSpriteInLissajousCurve(struct Sprite *sprite)
+static void UNUSED TranslateSpriteInLissajousCurve(struct Sprite *sprite)
 {
     if (sprite->sDuration)
     {
@@ -594,8 +593,7 @@ static void TranslateSpriteLinearFixedPointIconFrame(struct Sprite *sprite)
     UpdateMonIconFrame(sprite);
 }
 
-// Unused
-static void TranslateSpriteToBattleTargetPos(struct Sprite *sprite)
+static void UNUSED TranslateSpriteToBattleTargetPos(struct Sprite *sprite)
 {
     sprite->sStartX = sprite->x + sprite->x2;
     sprite->sStartY = sprite->y + sprite->y2;
@@ -662,8 +660,7 @@ void DestroySpriteAndMatrix(struct Sprite *sprite)
     DestroyAnimSprite(sprite);
 }
 
-// Unused
-static void TranslateSpriteToBattleAttackerPos(struct Sprite *sprite)
+static void UNUSED TranslateSpriteToBattleAttackerPos(struct Sprite *sprite)
 {
     sprite->sStartX = sprite->x + sprite->x2;
     sprite->sStartY = sprite->y + sprite->y2;
@@ -678,8 +675,7 @@ static void TranslateSpriteToBattleAttackerPos(struct Sprite *sprite)
 #undef sStartY
 #undef sTargetY
 
-// Unused
-static void EndUnkPaletteAnim(struct Sprite *sprite)
+static void UNUSED EndUnkPaletteAnim(struct Sprite *sprite)
 {
     PaletteStruct_ResetById(sprite->data[5]);
     DestroySpriteAndMatrix(sprite);
@@ -845,23 +841,13 @@ bool32 InitSpritePosToAnimBattler(u32 animBattlerId, struct Sprite *sprite, bool
     return TRUE;
 }
 
-u8 GetBattlerSide(u8 battlerId)
-{
-    return GET_BATTLER_SIDE2(battlerId);
-}
-
-u8 GetBattlerPosition(u8 battlerId)
-{
-    return gBattlerPositions[battlerId];
-}
-
 u8 GetBattlerAtPosition(u8 position)
 {
     u8 i;
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (gBattlerPositions[i] == position)
+        if (GetBattlerPosition(i) == position)
             break;
     }
     return i;
@@ -880,7 +866,7 @@ bool8 IsBattlerSpritePresent(u8 battlerId)
     }
     else
     {
-        if (gBattlerPositions[battlerId] == 0xff)
+        if (GetBattlerPosition(battlerId) == 0xff)
             return FALSE;
 
         if (!gBattleStruct->spriteIgnore0Hp)
@@ -1100,8 +1086,7 @@ void StartAnimLinearTranslation(struct Sprite *sprite)
     sprite->callback(sprite);
 }
 
-// Unused
-static void StartAnimLinearTranslation_SetCornerVecX(struct Sprite *sprite)
+static void UNUSED StartAnimLinearTranslation_SetCornerVecX(struct Sprite *sprite)
 {
     sprite->data[1] = sprite->x;
     sprite->data[3] = sprite->y;
@@ -1509,8 +1494,7 @@ u8 GetSpritePalIdxByBattler(u8 battler)
     return battler;
 }
 
-// Unused
-static u8 GetSpritePalIdxByPosition(u8 position)
+static u8 UNUSED GetSpritePalIdxByPosition(u8 position)
 {
     return GetBattlerAtPosition(position);
 }
@@ -2007,8 +1991,7 @@ void AnimTask_GetFrustrationPowerLevel(u8 taskId)
     DestroyAnimVisualTask(taskId);
 }
 
-// Unused
-static void SetPriorityForVisibleBattlers(u8 priority)
+static void UNUSED SetPriorityForVisibleBattlers(u8 priority)
 {
     if (IsBattlerSpriteVisible(gBattleAnimTarget))
         gSprites[gBattlerSpriteIds[gBattleAnimTarget]].oam.priority = priority;

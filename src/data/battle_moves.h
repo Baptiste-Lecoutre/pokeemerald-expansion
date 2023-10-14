@@ -10687,7 +10687,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .priority = 0,
         .split = SPLIT_SPECIAL,
         .zMoveEffect = Z_EFFECT_NONE,
-        .ballisticMove = B_UPDATED_MOVE_FLAGS < GEN_9,
+        .ballisticMove = TRUE,
     },
 
     [MOVE_ANCHOR_SHOT] =
@@ -12122,7 +12122,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
 
     [MOVE_STEEL_ROLLER] =
     {
-        .effect = EFFECT_REMOVE_TERRAIN,
+        .effect = EFFECT_HIT_SET_REMOVE_TERRAIN,
         .power = 130,
         .type = TYPE_STEEL,
         .accuracy = 100,
@@ -12133,11 +12133,12 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .split = SPLIT_PHYSICAL,
         .zMoveEffect = Z_EFFECT_NONE,
         .makesContact = TRUE,
+        .argument = ARG_TRY_REMOVE_TERRAIN_FAIL, // Remove a field terrain if there is one and hit, otherwise fail.
     },
 
     [MOVE_SCALE_SHOT] =
     {
-        .effect = EFFECT_SCALE_SHOT,
+        .effect = EFFECT_MULTI_HIT,
         .power = 25,
         .type = TYPE_DRAGON,
         .accuracy = 90,
@@ -12147,6 +12148,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .priority = 0,
         .split = SPLIT_PHYSICAL,
         .zMoveEffect = Z_EFFECT_NONE,
+        .argument = MOVE_EFFECT_SCALE_SHOT,
     },
 
     [MOVE_METEOR_BEAM] =
@@ -12729,7 +12731,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         #else
             .power = 120,
         #endif
-        .effect = EFFECT_RECOIL_50,
+        .effect = EFFECT_STEEL_BEAM,
         .type = TYPE_GRASS,
         .accuracy = 95,
         .pp = 5,
@@ -13183,7 +13185,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .split = SPLIT_PHYSICAL,
         .zMoveEffect = Z_EFFECT_NONE,
         .makesContact = TRUE,
-        .argument = 1, // Remove the active field terrain if there is one.
+        .argument = ARG_TRY_REMOVE_TERRAIN_HIT, // Remove the active field terrain if there is one.
     },
 
     [MOVE_GLAIVE_RUSH] =
@@ -13217,7 +13219,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
 
     [MOVE_SALT_CURE] =
     {
-        .effect = EFFECT_PLACEHOLDER, // EFFECT_SALT_CURE
+        .effect = EFFECT_SALT_CURE,
         .power = 40,
         .type = TYPE_ROCK,
         .accuracy = 100,
@@ -13638,7 +13640,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
 
     [MOVE_GIGATON_HAMMER] =
     {
-        .effect = EFFECT_PLACEHOLDER, // EFFECT_GIGATON_HAMMER
+        .effect = EFFECT_GIGATON_HAMMER,
         .power = 160,
         .type = TYPE_STEEL,
         .accuracy = 100,
@@ -13809,6 +13811,68 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .priority = 0,
         .split = SPLIT_SPECIAL,
         .zMoveEffect = Z_EFFECT_NONE,
+    },
+
+    [MOVE_BLOOD_MOON] =
+    {
+        .effect = EFFECT_GIGATON_HAMMER,
+        .power = 140,
+        .type = TYPE_NORMAL,
+        .accuracy = 100,
+        .pp = 5,
+        .secondaryEffectChance = 0,
+        .target = MOVE_TARGET_SELECTED,
+        .priority = 0,
+        .split = SPLIT_SPECIAL,
+        .zMoveEffect = Z_EFFECT_NONE,
+    },
+
+    [MOVE_MATCHA_GOTCHA] =
+    {
+        .effect = EFFECT_MATCHA_GOTCHA,
+        .power = 80,
+        .type = TYPE_GRASS,
+        .accuracy = 90,
+        .pp = 15,
+        .secondaryEffectChance = 20,
+        .target = MOVE_TARGET_BOTH,
+        .priority = 0,
+        .split = SPLIT_SPECIAL,
+        .zMoveEffect = Z_EFFECT_NONE,
+        .thawsUser = TRUE,
+        .metronomeBanned = TRUE,
+    },
+
+    [MOVE_SYRUP_BOMB] =
+    {
+        .effect = EFFECT_SYRUP_BOMB,
+        .power = 60,
+        .type = TYPE_GRASS,
+        .accuracy = 85,
+        .pp = 10,
+        .secondaryEffectChance = 100, // syrup bomb volatile status
+        .target = MOVE_TARGET_SELECTED,
+        .priority = 0,
+        .split = SPLIT_SPECIAL,
+        .zMoveEffect = Z_EFFECT_NONE,
+        .ballisticMove = TRUE,
+        .metronomeBanned = TRUE,
+    },
+
+    [MOVE_IVY_CUDGEL] =
+    {
+        .effect = EFFECT_IVY_CUDGEL,
+        .power = 100,
+        .type = TYPE_GRASS,
+        .accuracy = 100,
+        .pp = 10,
+        .secondaryEffectChance = 0,
+        .target = MOVE_TARGET_SELECTED,
+        .priority = 0,
+        .split = SPLIT_PHYSICAL,
+        .zMoveEffect = Z_EFFECT_NONE,
+        .highCritRatio = TRUE,
+        .metronomeBanned = TRUE,
     },
 
     // Z-Moves
@@ -14123,7 +14187,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .split = SPLIT_SPECIAL,
-        .argument = 0, // Set Psychic Terrain. If there's a different field terrain active, overwrite it.
+        .argument = ARG_SET_PSYCHIC_TERRAIN, // Set Psychic Terrain. If there's a different field terrain active, overwrite it.
         .zMoveEffect = 0,
     },
     [MOVE_SINISTER_ARROW_RAID] =
@@ -14176,7 +14240,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .target = MOVE_TARGET_SELECTED,
         .priority = 0,
         .split = SPLIT_PHYSICAL,
-        .argument = 1,  // Remove the active field terrain if there is one.
+        .argument = ARG_TRY_REMOVE_TERRAIN_HIT,  // Remove the active field terrain if there is one.
         .zMoveEffect = 0,
     },
     [MOVE_LETS_SNUGGLE_FOREVER] =

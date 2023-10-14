@@ -7,7 +7,7 @@ LilycoveCity_House2_EventScript_FatMan::
 	checkitem ITEM_TM44
 	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_House2_EventScript_ReceivedRest
 	msgbox LilycoveCity_House2_Text_NotAwakeYetHaveThis, MSGBOX_DEFAULT
-	giveitem ITEM_TM44
+	giveitem ITEM_TM44_REST
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox LilycoveCity_House2_Text_SleepIsEssential, MSGBOX_DEFAULT
 	release

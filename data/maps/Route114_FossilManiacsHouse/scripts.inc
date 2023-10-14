@@ -12,7 +12,7 @@ Route114_FossilManiacsHouse_EventScript_FossilManiacsBrother::
 	checkitem ITEM_TM28
 	goto_if_eq VAR_RESULT, TRUE, Route114_FossilManiacsHouse_EventScript_ReceivedDig
 	msgbox Route114_FossilManiacsHouse_Text_HaveThisToDigLikeMyBrother, MSGBOX_DEFAULT
-	giveitem ITEM_TM28
+	giveitem ITEM_TM28_DIG
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	release
 	end

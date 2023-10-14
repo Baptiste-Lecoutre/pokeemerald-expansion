@@ -209,24 +209,23 @@ STATIC_ASSERT(I_EXP_SHARE_ITEM < GEN_6 || I_EXP_SHARE_FLAG > TEMP_FLAGS_END, You
 void ItemUseOutOfBattle_ExpShare(u8 taskId)
 {
 #if I_EXP_SHARE_ITEM >= GEN_6
-    if (!FlagGet(I_EXP_SHARE_FLAG))
+    if (IsGen6ExpShareEnabled())
     {
-        FlagSet(I_EXP_SHARE_FLAG);
-        PlaySE(SE_EXP_MAX);
-        if (!gTasks[taskId].data[2]) // to account for pressing select in the overworld
-            DisplayItemMessageOnField(taskId, gText_ExpShareOn, Task_CloseCantUseKeyItemMessage);
-        else
-            DisplayItemMessage(taskId, 1, gText_ExpShareOn, CloseItemMessage);
-    }
-    else
-    {
-        FlagClear(I_EXP_SHARE_FLAG);
         PlaySE(SE_PC_OFF);
         if (!gTasks[taskId].data[2]) // to account for pressing select in the overworld
             DisplayItemMessageOnField(taskId, gText_ExpShareOff, Task_CloseCantUseKeyItemMessage);
         else
-            DisplayItemMessage(taskId, 1, gText_ExpShareOff, CloseItemMessage);
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_ExpShareOff, CloseItemMessage);
     }
+    else
+    {
+        PlaySE(SE_EXP_MAX);
+        if (!gTasks[taskId].data[2]) // to account for pressing select in the overworld
+            DisplayItemMessageOnField(taskId, gText_ExpShareOn, Task_CloseCantUseKeyItemMessage);
+        else
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_ExpShareOn, CloseItemMessage);
+    }
+    FlagToggle(I_EXP_SHARE_FLAG);
 #else
     DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
 #endif
@@ -763,7 +762,7 @@ static void ItemUseOnFieldCB_WailmerPailBerry(u8 taskId)
 
 static bool8 TryToWaterSudowoodo(void)
 {
-    u16 x, y;
+    s16 x, y;
     u8 elevation;
     u8 objId;
     GetXYCoordsOneStepInFrontOfPlayer(&x, &y);
@@ -800,6 +799,12 @@ void ItemUseOutOfBattle_AbilityPatch(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
+void ItemUseOutOfBattle_ResetEVs(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_ResetEVs;
+    SetUpItemUseCallback(taskId);
+}
+
 void ItemUseOutOfBattle_ReduceEV(u8 taskId)
 {
     gItemUseCB = ItemUseCB_ReduceEV;
@@ -832,7 +837,7 @@ void ItemUseOutOfBattle_RareCandy(u8 taskId)
 
 void ItemUseOutOfBattle_TMHM(u8 taskId)
 {
-    if (gSpecialVar_ItemId >= ITEM_HM01_CUT)
+    if (gSpecialVar_ItemId >= ITEM_HM01)
         DisplayItemMessage(taskId, FONT_NORMAL, gText_BootedUpHM, BootUpSoundTMHM); // HM
     else
         DisplayItemMessage(taskId, FONT_NORMAL, gText_BootedUpTM, BootUpSoundTMHM); // TM
@@ -919,7 +924,7 @@ static void Task_UseRepel(u8 taskId)
             DisplayItemMessageInBattlePyramid(taskId, gStringVar4, Task_CloseBattlePyramidBagMessage);
     }
 }
-void HandleUseExpiredRepel(void)
+void HandleUseExpiredRepel(struct ScriptContext *ctx)
 {
 #if VAR_LAST_REPEL_LURE_USED != 0
     VarSet(VAR_REPEL_STEP_COUNT, ItemId_GetHoldEffectParam(VarGet(VAR_LAST_REPEL_LURE_USED)));
@@ -964,7 +969,7 @@ static void Task_UseLure(u8 taskId)
     }
 }
 
-void HandleUseExpiredLure(void)
+void HandleUseExpiredLure(struct ScriptContext *ctx)
 {
 #if VAR_LAST_REPEL_LURE_USED != 0
     VarSet(VAR_REPEL_STEP_COUNT, ItemId_GetHoldEffectParam(VarGet(VAR_LAST_REPEL_LURE_USED)) | REPEL_LURE_MASK);

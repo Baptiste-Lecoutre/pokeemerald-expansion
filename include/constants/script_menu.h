@@ -137,6 +137,7 @@
 #define MULTI_ROTOM_APPLIANCES             126
 #define MULTI_DEOXYS_FORMES                127
 #define MULTI_STARTER_MOVES                128
+#define MULTI_FLAVORS                      129
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

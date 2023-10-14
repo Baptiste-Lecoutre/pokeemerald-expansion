@@ -793,10 +793,10 @@ static const u8 sFaceDirectionAnimNums[] = {
     [DIR_NORTH] = ANIM_STD_FACE_NORTH,
     [DIR_WEST] = ANIM_STD_FACE_WEST,
     [DIR_EAST] = ANIM_STD_FACE_EAST,
-    [DIR_SOUTHWEST] = ANIM_STD_FACE_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_STD_FACE_SOUTH,
-    [DIR_NORTHWEST] = ANIM_STD_FACE_NORTH,
-    [DIR_NORTHEAST] = ANIM_STD_FACE_NORTH,
+    [DIR_SOUTHWEST] = ANIM_STD_FACE_WEST,
+    [DIR_SOUTHEAST] = ANIM_STD_FACE_EAST,
+    [DIR_NORTHWEST] = ANIM_STD_FACE_WEST,
+    [DIR_NORTHEAST] = ANIM_STD_FACE_EAST,
 };
 static const u8 sMoveDirectionAnimNums[] = {
     [DIR_NONE] = ANIM_STD_GO_SOUTH,
@@ -804,10 +804,10 @@ static const u8 sMoveDirectionAnimNums[] = {
     [DIR_NORTH] = ANIM_STD_GO_NORTH,
     [DIR_WEST] = ANIM_STD_GO_WEST,
     [DIR_EAST] = ANIM_STD_GO_EAST,
-    [DIR_SOUTHWEST] = ANIM_STD_GO_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_STD_GO_SOUTH,
-    [DIR_NORTHWEST] = ANIM_STD_GO_NORTH,
-    [DIR_NORTHEAST] = ANIM_STD_GO_NORTH,
+    [DIR_SOUTHWEST] = ANIM_STD_GO_WEST,
+    [DIR_SOUTHEAST] = ANIM_STD_GO_EAST,
+    [DIR_NORTHWEST] = ANIM_STD_GO_WEST,
+    [DIR_NORTHEAST] = ANIM_STD_GO_EAST,
 };
 static const u8 sMoveDirectionFastAnimNums[] = {
     [DIR_NONE] = ANIM_STD_GO_FAST_SOUTH,
@@ -815,10 +815,10 @@ static const u8 sMoveDirectionFastAnimNums[] = {
     [DIR_NORTH] = ANIM_STD_GO_FAST_NORTH,
     [DIR_WEST] = ANIM_STD_GO_FAST_WEST,
     [DIR_EAST] = ANIM_STD_GO_FAST_EAST,
-    [DIR_SOUTHWEST] = ANIM_STD_GO_FAST_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_STD_GO_FAST_SOUTH,
-    [DIR_NORTHWEST] = ANIM_STD_GO_FAST_NORTH,
-    [DIR_NORTHEAST] = ANIM_STD_GO_FAST_NORTH,
+    [DIR_SOUTHWEST] = ANIM_STD_GO_FAST_WEST,
+    [DIR_SOUTHEAST] = ANIM_STD_GO_FAST_EAST,
+    [DIR_NORTHWEST] = ANIM_STD_GO_FAST_WEST,
+    [DIR_NORTHEAST] = ANIM_STD_GO_FAST_EAST,
 };
 static const u8 sMoveDirectionFasterAnimNums[] = {
     [DIR_NONE] = ANIM_STD_GO_FASTER_SOUTH,
@@ -848,10 +848,10 @@ static const u8 sJumpSpecialDirectionAnimNums[] = { // used for jumping onto sur
     [DIR_NORTH] = ANIM_GET_ON_OFF_POKEMON_NORTH,
     [DIR_WEST] = ANIM_GET_ON_OFF_POKEMON_WEST,
     [DIR_EAST] = ANIM_GET_ON_OFF_POKEMON_EAST,
-    [DIR_SOUTHWEST] = ANIM_GET_ON_OFF_POKEMON_SOUTH,
-    [DIR_SOUTHEAST] = ANIM_GET_ON_OFF_POKEMON_SOUTH,
-    [DIR_NORTHWEST] = ANIM_GET_ON_OFF_POKEMON_NORTH,
-    [DIR_NORTHEAST] = ANIM_GET_ON_OFF_POKEMON_NORTH,
+    [DIR_SOUTHWEST] = ANIM_GET_ON_OFF_POKEMON_WEST,
+    [DIR_SOUTHEAST] = ANIM_GET_ON_OFF_POKEMON_EAST,
+    [DIR_NORTHWEST] = ANIM_GET_ON_OFF_POKEMON_WEST,
+    [DIR_NORTHEAST] = ANIM_GET_ON_OFF_POKEMON_EAST,
 };
 static const u8 sAcroWheelieDirectionAnimNums[] = {
     [DIR_NONE] = ANIM_BUNNY_HOP_BACK_WHEEL_SOUTH,
@@ -1079,6 +1079,10 @@ const u8 gJumpSpecialMovementActions[] = {
     MOVEMENT_ACTION_JUMP_SPECIAL_DOWN,
     MOVEMENT_ACTION_JUMP_SPECIAL_DOWN,
     MOVEMENT_ACTION_JUMP_SPECIAL_UP,
+    MOVEMENT_ACTION_JUMP_SPECIAL_LEFT,
+    MOVEMENT_ACTION_JUMP_SPECIAL_RIGHT,
+    MOVEMENT_ACTION_JUMP_SPECIAL_LEFT,
+    MOVEMENT_ACTION_JUMP_SPECIAL_RIGHT,
     MOVEMENT_ACTION_JUMP_SPECIAL_LEFT,
     MOVEMENT_ACTION_JUMP_SPECIAL_RIGHT,
 };
@@ -2799,8 +2803,7 @@ u8 LoadObjectEventPalette(u16 paletteTag)
     return LoadSpritePaletteIfTagExists(&sObjectEventSpritePalettes[i]);
 }
 
-// Unused
-static void LoadObjectEventPaletteSet(u16 *paletteTags)
+static void UNUSED LoadObjectEventPaletteSet(u16 *paletteTags)
 {
     u8 i;
 
@@ -2886,8 +2889,7 @@ static void _PatchObjectPalette(u16 tag, u8 slot)
     PatchObjectPalette(tag, slot);
 }
 
-// Unused
-static void IncrementObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
+static void UNUSED IncrementObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
 {
     objectEvent->previousCoords.x = objectEvent->currentCoords.x;
     objectEvent->previousCoords.y = objectEvent->currentCoords.y;
@@ -3086,8 +3088,7 @@ void CameraObjectSetFollowedSpriteId(u8 spriteId)
     }
 }
 
-// Unused
-static u8 CameraObjectGetFollowedSpriteId(void)
+static u8 UNUSED CameraObjectGetFollowedSpriteId(void)
 {
     struct Sprite *camera;
 
@@ -3187,8 +3188,7 @@ static u16 GetObjectEventFlagIdByObjectEventId(u8 objectEventId)
     return GetObjectEventFlagIdByLocalIdAndMap(gObjectEvents[objectEventId].localId, gObjectEvents[objectEventId].mapNum, gObjectEvents[objectEventId].mapGroup);
 }
 
-// Unused
-static u8 GetObjectTrainerTypeByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
+static u8 UNUSED GetObjectTrainerTypeByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
 {
     u8 objectEventId;
 
@@ -3198,8 +3198,7 @@ static u8 GetObjectTrainerTypeByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup
     return gObjectEvents[objectEventId].trainerType;
 }
 
-// Unused
-static u8 GetObjectTrainerTypeByObjectEventId(u8 objectEventId)
+static u8 UNUSED GetObjectTrainerTypeByObjectEventId(u8 objectEventId)
 {
     return gObjectEvents[objectEventId].trainerType;
 }
@@ -5967,8 +5966,7 @@ void MoveCoords(u8 direction, s16 *x, s16 *y)
     *y += sDirectionToVectors[direction].y;
 }
 
-// Unused
-static void MoveCoordsInMapCoordIncrement(u8 direction, s16 *x, s16 *y)
+static void UNUSED MoveCoordsInMapCoordIncrement(u8 direction, s16 *x, s16 *y)
 {
     *x += sDirectionToVectors[direction].x << 4;
     *y += sDirectionToVectors[direction].y << 4;
@@ -9303,10 +9301,10 @@ static void DoTracksGroundEffect_BikeTireTracks(struct ObjectEvent *objEvent, st
     //  each byte in that row is for the next direction of the bike in the order
     //  of down, up, left, right.
     static const u8 bikeTireTracks_Transitions[4][4] = {
-        1, 2, 7, 8,
-        1, 2, 6, 5,
-        5, 8, 3, 4,
-        6, 7, 3, 4,
+        {1, 2, 7, 8},
+        {1, 2, 6, 5},
+        {5, 8, 3, 4},
+        {6, 7, 3, 4},
     };
 
     if (objEvent->currentCoords.x != objEvent->previousCoords.x || objEvent->currentCoords.y != objEvent->previousCoords.y)
@@ -10017,8 +10015,7 @@ static void SpriteCB_VirtualObject(struct Sprite *sprite)
     UpdateObjectEventSpriteInvisibility(sprite, sprite->sInvisible);
 }
 
-// Unused
-static void DestroyVirtualObjects(void)
+static void UNUSED DestroyVirtualObjects(void)
 {
     int i;
 
@@ -10426,3 +10423,40 @@ bool8 ScrFunc_getdaycaregfx(struct ScriptContext *ctx) {
     gSpecialVar_Result = i;
     return FALSE;
 }
+
+// fast diagonal
+bool8 MovementAction_WalkFastDiagonalUpLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_NORTHWEST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonalUpRight_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_NORTHEAST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonalDownLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_SOUTHWEST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonalDownRight_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    InitMovementNormal(objectEvent, sprite, DIR_SOUTHEAST, 1);
+    return MovementAction_WalkFastDiagonal_Step1(objectEvent, sprite);
+}
+
+bool8 MovementAction_WalkFastDiagonal_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    if (UpdateMovementNormal(objectEvent, sprite))
+    {
+        sprite->data[2] = 2;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+

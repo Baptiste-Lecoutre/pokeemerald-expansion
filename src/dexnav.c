@@ -3010,12 +3010,12 @@ static void CreateTypeIconSprites(void)
 {
     u8 i;
 
-    LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
+    LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
     LoadCompressedPalette(gMoveTypes_Pal, 0x1D0, 0x60);
     for (i = 0; i < 2; i++)
     {
         if (sDexNavUiDataPtr->typeIconSpriteIds[i] == 0xFF)
-            sDexNavUiDataPtr->typeIconSpriteIds[i] = CreateSprite(&sSpriteTemplate_MoveTypes, 10, 10, 2);    
+            sDexNavUiDataPtr->typeIconSpriteIds[i] = CreateSprite(&gSpriteTemplate_MoveTypes, 10, 10, 2);    
     
         SetSpriteInvisibility(i, TRUE);
     }
