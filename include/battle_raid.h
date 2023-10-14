@@ -14,7 +14,7 @@ struct RaidData {
     u8 rank;
     u8 raidType;
 //    struct Trainer* partners;
-    u8 numPartners;
+    u8 partnerNum;
 };
 
 extern const struct RaidType gRaidTypes[NUM_RAID_TYPES];

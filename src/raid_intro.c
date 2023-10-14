@@ -82,7 +82,8 @@ static const u32 sRaidIntroBgPal[]      = INCBIN_U32("graphics/misc/raid_battle_
 static const u32 sRaidIntroBgMap[]      = INCBIN_U32("graphics/misc/raid_battle_intro_bg.bin.lz");
 
 static const u8 sText_RecommendedLevel[]        = _("Recommended Level: ");
-static const u8 sText_RaidIntroSelection[]      = _("{DPAD_UPDOWN}Pick {A_BUTTON}Choose {START_BUTTON}Random {B_BUTTON}Cancel");
+static const u8 sText_RaidIntroSelection[]      = _("{DPAD_UPDOWN}Pick {A_BUTTON}Choose {B_BUTTON}Cancel");
+static const u8 sText_RaidIntroSelection2[]      = _("{SELECT_BUTTON}Random {START_BUTTON}Solo");
 static const u8 sText_RaidBattleRules[]         = _("Battle ends if:\n 4 Pokemon faint\n 10 turns pass");
 static const u8 sText_RaidBattleChoosePartner[] = _("Available Partners");
 static const u8 sText_raidPartnerNotAvailable[] = _("Not available");
@@ -142,9 +143,9 @@ static const struct WindowTemplate sRaidBattleIntroWinTemplates[WINDOW_COUNT + 1
 	[WIN_INSTRUCTIONS] =
 	{
 		.bg = 1,
-		.tilemapLeft = 8,
+		.tilemapLeft = 0,
 		.tilemapTop = 18,
-		.width = 22,
+		.width = 30,
 		.height = 2,
 		.paletteNum = 15,
 		.baseBlock = 167,
@@ -379,10 +380,16 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 		BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
 		gTasks[taskId].func = Task_RaidBattleIntroFadeOut;
 	}
-	else if (gMain.newAndRepeatedKeys & START_BUTTON)
+	else if (gMain.newAndRepeatedKeys & SELECT_BUTTON)
 	{
 		// TODO:
         //  - Select a random team to partner with.
+		goto PRESSED_A;
+	}
+	else if (gMain.newAndRepeatedKeys & START_BUTTON)
+	{
+		// TODO:
+        //  - Go alone.
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_UP)
@@ -468,6 +475,7 @@ static void PrintInstructions(void)
 	AddTextPrinterParameterized3(WIN_RECOMMENDED_LEVEL, 0, 4, 0, colour, 0, gStringVar1);
 
 	AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 2, 4, colour, 0, sText_RaidIntroSelection);
+	AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 137, 4, colour, 0, sText_RaidIntroSelection2);
 
 	AddTextPrinterParameterized3(WIN_CHOOSE_PARTNER, 3, 1, 4, partnerColour, 0, sText_RaidBattleChoosePartner);
 }
@@ -744,6 +752,14 @@ static bool32 GetRaidBattleData(void)
 		sRaidBattleIntro->partners[2].team[0] = SPECIES_PIKACHU_ORIGINAL_CAP;
 		sRaidBattleIntro->partners[2].team[1] = SPECIES_SNORLAX;
 		sRaidBattleIntro->partners[2].team[2] = SPECIES_MEWTWO;
+
+		/*for (i = 0; i < MAX_NUM_PARTNERS; i++)
+		{
+			struct Partner* partner = &sRaidBattleIntro->partners[i];
+			partner->id = i;
+			partner->graphicsId = sPossiblePartnersObjEventGfx[RandomSeededModulo(GetRaidRandomNumber() + i, NELEMS(sPossiblePartnersObjEventGfx))];
+		}*/
+
 		return TRUE;
 	}
 	return FALSE;
