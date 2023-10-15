@@ -1256,6 +1256,23 @@ const u32 gObjectEventPic_darmanitan_galarian[] = INCBIN_U32("graphics/object_ev
 const u32 gObjectEventPic_yamask_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/yamask_galarian.4bpp");
 const u32 gObjectEventPic_stunfisk_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/stunfisk_galarian.4bpp");
 
+const u32 gObjectEventPic_growlithe_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/growlithe_hisuian.4bpp");
+const u32 gObjectEventPic_arcanine_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/arcanine_hisuian.4bpp");
+const u32 gObjectEventPic_voltorb_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/voltorb_hisuian.4bpp");
+const u32 gObjectEventPic_electrode_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/electrode_hisuian.4bpp");
+const u32 gObjectEventPic_typhlosion_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/typhlosion_hisuian.4bpp");
+const u32 gObjectEventPic_qwilfish_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/qwilfish_hisuian.4bpp");
+const u32 gObjectEventPic_snealsel_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/sneasel_hisuian.4bpp");
+const u32 gObjectEventPic_samurott_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/samurott_hisuian.4bpp");
+const u32 gObjectEventPic_lilligant_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/lilligant_hisuian.4bpp");
+const u32 gObjectEventPic_zorua_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/zorua_hisuian.4bpp");
+const u32 gObjectEventPic_zoroark_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/zoroark_hisuian.4bpp");
+const u32 gObjectEventPic_braviary_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/braviary_hisuian.4bpp");
+const u32 gObjectEventPic_sliggoo_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/sliggoo_hisuian.4bpp");
+const u32 gObjectEventPic_goodra_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/goodra_hisuian.4bpp");
+const u32 gObjectEventPic_avalugg_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/avalugg_hisuian.4bpp");
+const u32 gObjectEventPic_decidueye_hisuian[] = INCBIN_U32("graphics/object_events/pics/pokemon/decidueye_hisuian.4bpp");
+
 const u32 gObjectEventPic_DeoxysOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/deoxys_old.4bpp");
 const u32 gObjectEventPic_MewOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/mew_old.4bpp");
 const u32 gObjectEventPic_DusclopsOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/dusclops_old.4bpp");
