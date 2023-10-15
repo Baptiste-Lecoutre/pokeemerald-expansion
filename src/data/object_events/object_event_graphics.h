@@ -1236,6 +1236,26 @@ const u32 gObjectEventPic_muk_alolan[] = INCBIN_U32("graphics/object_events/pics
 const u32 gObjectEventPic_exeggutor_alolan[] = INCBIN_U32("graphics/object_events/pics/pokemon/alolan_exeggutor.4bpp");
 const u32 gObjectEventPic_marowak_alolan[] = INCBIN_U32("graphics/object_events/pics/pokemon/alolan_marowak.4bpp");
 
+const u32 gObjectEventPic_meowth_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/meowth_galarian.4bpp");
+const u32 gObjectEventPic_ponyta_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/ponyta_galarian.4bpp");
+const u32 gObjectEventPic_rapidash_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/rapidash_galarian.4bpp");
+const u32 gObjectEventPic_slowpoke_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/slowpoke_galarian.4bpp");
+const u32 gObjectEventPic_slowbro_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/slowbro_galarian.4bpp");
+const u32 gObjectEventPic_farfetchd_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/farfetchd_galarian.4bpp");
+const u32 gObjectEventPic_weezing_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/weezing_galarian.4bpp");
+const u32 gObjectEventPic_mrmime_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/mr_mime_galarian.4bpp");
+const u32 gObjectEventPic_articuno_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/articuno_galarian.4bpp");
+const u32 gObjectEventPic_zapdos_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/zapdos_galarian.4bpp");
+const u32 gObjectEventPic_moltres_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/moltres_galarian.4bpp");
+const u32 gObjectEventPic_slowking_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/slowking_galarian.4bpp");
+const u32 gObjectEventPic_corsola_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/corsola_galarian.4bpp");
+const u32 gObjectEventPic_zigzagoon_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/zigzagoon_galarian.4bpp");
+const u32 gObjectEventPic_linoone_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/linoone_galarian.4bpp");
+const u32 gObjectEventPic_darumaka_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/darumaka_galarian.4bpp");
+const u32 gObjectEventPic_darmanitan_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/darmanitan_galarian.4bpp");
+const u32 gObjectEventPic_yamask_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/yamask_galarian.4bpp");
+const u32 gObjectEventPic_stunfisk_galarian[] = INCBIN_U32("graphics/object_events/pics/pokemon/stunfisk_galarian.4bpp");
+
 const u32 gObjectEventPic_DeoxysOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/deoxys_old.4bpp");
 const u32 gObjectEventPic_MewOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/mew_old.4bpp");
 const u32 gObjectEventPic_DusclopsOld[] = INCBIN_U32("graphics/object_events/pics/pokemon/dusclops_old.4bpp");
