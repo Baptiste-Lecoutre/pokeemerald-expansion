@@ -739,11 +739,11 @@ static bool32 GetRaidBattleData(void)
 		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->id = gRaidPartners[i].id;
-			partner->graphicsId = gRaidPartners[i].graphicsId;
+			partner->id = gRaidPartners[i+1].id;
+			partner->graphicsId = gRaidPartners[i+1].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				partner->team[j] = gRaidPartners[i].team[j];
+				partner->team[j] = gRaidPartners[i+1].team[j];
 		}
 
 		return TRUE;
