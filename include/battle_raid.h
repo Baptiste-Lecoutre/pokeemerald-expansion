@@ -17,8 +17,17 @@ struct RaidData {
     u8 partnerNum;
 };
 
+struct Partner
+{
+	u16 id;
+	u16 graphicsId;
+	u16 team[MAX_TEAM_SIZE];
+};
+
+
 extern const struct RaidType gRaidTypes[NUM_RAID_TYPES];
 extern struct RaidData gRaidData;
+extern const struct Partner gRaidPartners[];
 
 // Functions
 bool32 InitRaidData(void);

@@ -45,6 +45,10 @@
 #define RAID_RANK_7     7
 #define MAX_RAID_RANK   RAID_RANK_7
 
+// Raid Partners
+#define MAX_NUM_PARTNERS 3
+#define MAX_TEAM_SIZE 3
+
 // Other Constants
 #define MAX_RAID_DROPS     12
 #define MAX_BARRIER_COUNT   5

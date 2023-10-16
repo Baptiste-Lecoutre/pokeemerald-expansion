@@ -32,8 +32,7 @@
 #include "constants/songs.h"
 #include "constants/trainers.h"
 
-#define MAX_NUM_PARTNERS 3
-#define MAX_TEAM_SIZE 3
+#include "data/raid_partners.h"
 
 enum Windows
 {
@@ -51,13 +50,6 @@ enum
 {
 	TAG_RAID_BATTLE_STAR = 10001,
 	TAG_RAID_BATTLE_CURSOR,
-};
-
-struct Partner
-{
-	u16 id;
-	u16 graphicsId;
-	u16 team[MAX_TEAM_SIZE];
 };
 
 struct RaidBattleIntro
@@ -719,25 +711,6 @@ void InitRaidIntro(void)
 		SetMainCallback2(CB2_RaidBattleIntro);
 	}
 }
-
-const struct Partner gRaidPartners[]=
-{
-	{
-		.id = 0,
-		.graphicsId = OBJ_EVENT_GFX_STEVEN,
-		.team = {SPECIES_TYRANITAR,SPECIES_MAMOSWINE,SPECIES_METAGROSS},
-	},
-	{
-		.id = 1,
-		.graphicsId = OBJ_EVENT_GFX_MAY_NORMAL,
-		.team = {SPECIES_GOLURK,SPECIES_MAGNEZONE,SPECIES_SALAMENCE},
-	},
-	{
-		.id = 2,
-		.graphicsId = OBJ_EVENT_GFX_RED,
-		.team = {SPECIES_PIKACHU_ORIGINAL_CAP,SPECIES_SNORLAX,SPECIES_MEWTWO},
-	},
-};
 
 static bool32 GetRaidBattleData(void)
 {
