@@ -368,15 +368,15 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
         // TODO:
         //  - Set Raid Partner information based on selected trainer.
 		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
+		gSpecialVar_Result = 1;
 		PRESSED_A:
 		PlaySE(SE_SUCCESS);
-		gSpecialVar_Result = TRUE;
 		gTasks[taskId].func = Task_RaidBattleIntroSetUpBattle;
 	}
 	else if (gMain.newKeys & B_BUTTON)
 	{
 		PlaySE(SE_FAILURE);
-		gSpecialVar_Result = FALSE;
+		gSpecialVar_Result = 0;
 		BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
 		gTasks[taskId].func = Task_RaidBattleIntroFadeOut;
 	}
@@ -385,6 +385,7 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 		// TODO:
         //  - Select a random team to partner with.
 		gRaidData.partnerNum = sRaidBattleIntro->partners[Random()%3].id;
+		gSpecialVar_Result = 1;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & START_BUTTON)
@@ -392,6 +393,7 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 		// TODO:
         //  - Go alone.
 		gRaidData.partnerNum = 0;
+		gSpecialVar_Result = 2;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_UP)
