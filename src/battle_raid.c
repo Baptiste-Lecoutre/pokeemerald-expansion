@@ -386,7 +386,7 @@ void InitRaidBattleData(void)
     gBattleStruct->raid.nextShield = GetNextShieldThreshold();
     gBattleStruct->raid.shield = 0;
     gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
-	gBattleStruct->raid.energy = B_POSITION_PLAYER_LEFT;
+	gBattleStruct->raid.energy = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
 
     // Zeroes sprite IDs for Gen 8-style shield.
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
@@ -435,6 +435,9 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 // Updates Raid Storm state and returns whether battle should end.
 bool32 ShouldRaidKickPlayer(void)
 {
+    if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
+        gBattleStruct->raid.energy ^= BIT_FLANK;
+
     // Gen 8-style raids are capped at 10 turns.
     if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
     {

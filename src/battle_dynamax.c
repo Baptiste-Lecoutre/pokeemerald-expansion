@@ -140,8 +140,8 @@ bool32 CanDynamax(u16 battlerId)
         return FALSE;
 
     // TODO: Cannot Dynamax in a Max Raid if you don't have Dynamax Energy.
-    // if (gBattleTypeFlags & BATTLE_TYPE_RAID && gBattleStruct->raid.dynamaxEnergy != battlerId)
-    //    return FALSE;
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gBattleStruct->raid.energy != battlerId)
+        return FALSE;
 
     // No checks failed, all set!
     return TRUE;
