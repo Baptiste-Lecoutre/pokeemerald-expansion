@@ -2189,11 +2189,14 @@ void DoSpecialTrainerBattle(void)
     // TODO: Does this belong with all the other multi battles?
     case SPECIAL_BATTLE_RAID:
         gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;// | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
-	
-        // TODO: Get Partner properly.
-        /*gPartnerSpriteId = TRAINER_BACK_PIC_WALLY;
-        gPartnerTrainerId = TRAINER_WALLY_VR_2 + TRAINER_CUSTOM_PARTNER;
-        FillPartnerParty(gPartnerTrainerId);*/
+
+        if (gRaidData.partnerNum != 0) // working as intended. I have to do something about the SavePlayerParty before this call, then the CallFrontierUtilFunc, and the LoadPlayerParty
+        {
+            gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
+            gPartnerSpriteId = gRaidPartners[gRaidData.partnerNum].trainerBackPic;
+            gPartnerTrainerId = gRaidPartners[gRaidData.partnerNum].trainerNum + TRAINER_CUSTOM_PARTNER;
+            FillPartnerParty(gPartnerTrainerId);
+        }
 
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);

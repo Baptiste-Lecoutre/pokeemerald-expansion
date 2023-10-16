@@ -52,6 +52,13 @@ enum
 	TAG_RAID_BATTLE_CURSOR,
 };
 
+struct Partner
+{
+	u16 id;
+	u16 graphicsId;
+	u16 team[MAX_TEAM_SIZE];
+};
+
 struct RaidBattleIntro
 {
 	u32* tilemapPtr;
@@ -360,6 +367,7 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	{
         // TODO:
         //  - Set Raid Partner information based on selected trainer.
+		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
 		PRESSED_A:
 		PlaySE(SE_SUCCESS);
 		gSpecialVar_Result = TRUE;
@@ -376,12 +384,14 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	{
 		// TODO:
         //  - Select a random team to partner with.
+		gRaidData.partnerNum = sRaidBattleIntro->partners[Random()%3].id;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & START_BUTTON)
 	{
 		// TODO:
         //  - Go alone.
+		gRaidData.partnerNum = 0;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_UP)
@@ -739,11 +749,11 @@ static bool32 GetRaidBattleData(void)
 		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->trainerNum = i+1;//gRaidPartners[i+1].id; // Not the actual trainerNum, but the entry of gRaidPartnerArray
-			partner->graphicsId = gRaidPartners[i+1].graphicsId;
+			partner->id = i+1;//gRaidPartners[i+1].id; // Not the actual trainerNum, but the entry of gRaidPartnerArray
+			partner->graphicsId = gRaidPartners[partner->id].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				partner->team[j] = gTrainers[gRaidPartners[i+1].trainerNum].party[j].species;
+				partner->team[j] = gTrainers[gRaidPartners[partner->id].trainerNum].party[j].species;
 		}
 
 		return TRUE;
