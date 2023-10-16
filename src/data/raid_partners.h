@@ -1,22 +1,22 @@
 const struct Partner gRaidPartners[]=
 {
 	{
-        .id = 0,
+        .trainerNum = TRAINER_NONE,
         .graphicsId = OBJ_EVENT_GFX_SNORLAX_SLEEPING,
         .team = {SPECIES_NONE, SPECIES_NONE, SPECIES_NONE},
     },
     {
-		.id = 1,
+		.trainerNum = TRAINER_STEVEN,
 		.graphicsId = OBJ_EVENT_GFX_STEVEN,
 		.team = {SPECIES_TYRANITAR,SPECIES_MAMOSWINE,SPECIES_METAGROSS},
 	},
 	{
-		.id = 2,
+		.trainerNum = TRAINER_MAY_LILYCOVE_MUDKIP,
 		.graphicsId = OBJ_EVENT_GFX_MAY_NORMAL,
 		.team = {SPECIES_GOLURK,SPECIES_MAGNEZONE,SPECIES_SALAMENCE},
 	},
 	{
-		.id = 3,
+		.trainerNum = TRAINER_RED_VICTORY_ROAD,
 		.graphicsId = OBJ_EVENT_GFX_RED,
 		.team = {SPECIES_PIKACHU_ORIGINAL_CAP,SPECIES_SNORLAX,SPECIES_MEWTWO},
 	},

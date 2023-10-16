@@ -19,7 +19,7 @@ struct RaidData {
 
 struct Partner
 {
-	u16 id;
+	u16 trainerNum;
 	u16 graphicsId;
 	u16 team[MAX_TEAM_SIZE];
 };
