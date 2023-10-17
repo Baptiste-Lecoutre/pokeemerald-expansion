@@ -3354,6 +3354,14 @@ $(OBJEVENTGFXDIR)/pokemon/hoopa.4bpp: %.4bpp: %.png
 $(OBJEVENTGFXDIR)/pokemon/volcanion.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
+
+$(OBJEVENTGFXDIR)/pokemon/sandygast.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 4 -mheight 4
+
+$(OBJEVENTGFXDIR)/pokemon/palossand.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 4 -mheight 4
+
+
 $(OBJEVENTGFXDIR)/pokemon/pichu_spiky_eared.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 

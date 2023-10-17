@@ -1134,6 +1134,10 @@ const u32 gObjectEventPic_zygarde[] = INCBIN_U32("graphics/object_events/pics/po
 const u32 gObjectEventPic_diancie[] = INCBIN_U32("graphics/object_events/pics/pokemon/diancie.4bpp");
 const u32 gObjectEventPic_hoopa[] = INCBIN_U32("graphics/object_events/pics/pokemon/hoopa.4bpp");
 const u32 gObjectEventPic_volcanion[] = INCBIN_U32("graphics/object_events/pics/pokemon/volcanion.4bpp");
+
+const u32 gObjectEventPic_sandygast[] = INCBIN_U32("graphics/object_events/pics/pokemon/sandygast.4bpp");
+const u32 gObjectEventPic_palossand[] = INCBIN_U32("graphics/object_events/pics/pokemon/palossand.4bpp");
+
 const u32 gObjectEventPic_pichu_spiky_eared[] = INCBIN_U32("graphics/object_events/pics/pokemon/pichu_spiky_eared.4bpp");
 const u32 gObjectEventPic_deoxys_attack[] = INCBIN_U32("graphics/object_events/pics/pokemon/deoxys_attack.4bpp");
 const u32 gObjectEventPic_deoxys_defense[] = INCBIN_U32("graphics/object_events/pics/pokemon/deoxys_defense.4bpp");

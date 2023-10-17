@@ -8136,6 +8136,24 @@ static const struct SpriteFrameImage sPicTable_volcanion[] = {
     overworld_frame(gObjectEventPic_volcanion, 4, 4, 4),
     overworld_frame(gObjectEventPic_volcanion, 4, 4, 5),
 };
+
+static const struct SpriteFrameImage sPicTable_sandygast[] = {
+    overworld_frame(gObjectEventPic_sandygast, 4, 4, 0),
+    overworld_frame(gObjectEventPic_sandygast, 4, 4, 1),
+    overworld_frame(gObjectEventPic_sandygast, 4, 4, 2),
+    overworld_frame(gObjectEventPic_sandygast, 4, 4, 3),
+    overworld_frame(gObjectEventPic_sandygast, 4, 4, 4),
+    overworld_frame(gObjectEventPic_sandygast, 4, 4, 5),
+};
+static const struct SpriteFrameImage sPicTable_palossand[] = {
+    overworld_frame(gObjectEventPic_palossand, 4, 4, 0),
+    overworld_frame(gObjectEventPic_palossand, 4, 4, 1),
+    overworld_frame(gObjectEventPic_palossand, 4, 4, 2),
+    overworld_frame(gObjectEventPic_palossand, 4, 4, 3),
+    overworld_frame(gObjectEventPic_palossand, 4, 4, 4),
+    overworld_frame(gObjectEventPic_palossand, 4, 4, 5),
+};
+
 static const struct SpriteFrameImage sPicTable_pichu_spiky_eared[] = {
     overworld_frame(gObjectEventPic_pichu_spiky_eared, 4, 4, 0),
     overworld_frame(gObjectEventPic_pichu_spiky_eared, 4, 4, 1),
