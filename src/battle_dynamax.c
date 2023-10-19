@@ -1293,15 +1293,6 @@ void DestroyDynamaxTriggerSprite(void)
 static const u8 ALIGNED(4) sDynamaxIndicatorGfx[] = INCBIN_U8("graphics/battle_interface/dynamax_indicator.4bpp");
 static const u16 sDynamaxIndicatorPal[] = INCBIN_U16("graphics/battle_interface/misc_indicator.gbapal");
 
-static const struct SpriteSheet sSpriteSheet_DynamaxIndicator =
-{
-    sDynamaxIndicatorGfx, sizeof(sDynamaxIndicatorGfx), TAG_DYNAMAX_INDICATOR_TILE
-};
-static const struct SpritePalette sSpritePalette_DynamaxIndicator =
-{
-    sDynamaxIndicatorPal, TAG_MISC_INDICATOR_PAL
-};
-
 static const struct SpriteSheet sDynamaxIndicator_SpriteSheet[] =
 {
     {sDynamaxIndicatorGfx, sizeof(sDynamaxIndicatorGfx), TAG_DYNAMAX_INDICATOR_TILE}
