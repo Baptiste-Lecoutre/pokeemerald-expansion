@@ -2197,10 +2197,13 @@ void DoSpecialTrainerBattle(void)
             SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, gText_Ghost);
         }
         
-        // TODO: Get Partner properly.
-        /*gPartnerSpriteId = TRAINER_BACK_PIC_WALLY;
-        gPartnerTrainerId = TRAINER_WALLY_VR_2 + TRAINER_CUSTOM_PARTNER;
-        FillPartnerParty(gPartnerTrainerId);*/
+        if (gRaidData.partnerNum != 0)
+        {
+            gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
+            gPartnerSpriteId = gRaidPartners[gRaidData.partnerNum].trainerBackPic;
+            gPartnerTrainerId = gRaidPartners[gRaidData.partnerNum].trainerNum + TRAINER_CUSTOM_PARTNER;
+            FillPartnerParty(gPartnerTrainerId);
+        }
 
         CreateTask(Task_StartBattleAfterTransition, 1);
         
@@ -3045,7 +3048,7 @@ void TryHideBattleTowerReporter(void)
 static void FillPartnerParty(u16 trainerId)
 {
     s32 i, j;
-    u32 ivs, level;
+    u32 ivs, level, personality;
     u32 friendship;
     u16 monId;
     u32 otID;
@@ -3097,22 +3100,22 @@ static void FillPartnerParty(u16 trainerId)
             u32 otIdType = OT_ID_RANDOM_NO_SHINY;
             do
             {
-                j = Random32();
-            } while (IsShinyOtIdPersonality(otID, j));
+                personality = Random32();
+            } while (IsShinyOtIdPersonality(otID, personality));
 
             if (partyData[i].gender == TRAINER_MON_MALE)
-                j = (j & 0xFFFFFF00) | GeneratePersonalityForGender(MON_MALE, partyData[i].species);
+                personality = (personality & 0xFFFFFF00) | GeneratePersonalityForGender(MON_MALE, partyData[i].species);
             else if (partyData[i].gender == TRAINER_MON_FEMALE)
-                j = (j & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[i].species);
+                personality = (personality & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[i].species);
             if (partyData[i].nature != 0)
-                ModifyPersonalityForNature(&j, partyData[i].nature - 1);
+                ModifyPersonalityForNature(&personality, partyData[i].nature - 1);
             if (partyData[i].isShiny)
             {
                 otIdType = OT_ID_PRESET;
-                otID = HIHALF(j) ^ LOHALF(j);
+                otID = HIHALF(personality) ^ LOHALF(personality);
             }
 
-            CreateMon(&gPlayerParty[i + 3], partyData[i].species, playerLevel, 0, TRUE, j, otIdType, otID);
+            CreateMon(&gPlayerParty[i + 3], partyData[i].species, playerLevel, 0, TRUE, personality, otIdType, otID);
             SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
             CustomTrainerPartyAssignMoves(&gPlayerParty[i+3], &partyData[i]);
 

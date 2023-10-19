@@ -237,8 +237,7 @@
 #define SIDE_STATUS_CRAFTY_SHIELD           (1 << 20)
 #define SIDE_STATUS_MAT_BLOCK               (1 << 21)
 #define SIDE_STATUS_STEELSURGE              (1 << 22)
-#define SIDE_STATUS_STEELSURGE_DAMAGED      (1 << 23)
-#define SIDE_STATUS_DAMAGE_NON_TYPES         (1 << 24)
+#define SIDE_STATUS_DAMAGE_NON_TYPES        (1 << 23)
 
 #define SIDE_STATUS_HAZARDS_ANY    (SIDE_STATUS_SPIKES | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STEELSURGE)
 #define SIDE_STATUS_SCREEN_ANY     (SIDE_STATUS_REFLECT | SIDE_STATUS_LIGHTSCREEN | SIDE_STATUS_AURORA_VEIL)
@@ -503,12 +502,12 @@
 #define PARENTAL_BOND_2ND_HIT 1
 #define PARENTAL_BOND_OFF     0
 
-// Constants for Torment
-#define PERMANENT_TORMENT   0xF
-
 // Constants for if HandleScriptMegaPrimalBurst should handle Mega Evolution, Primal Reversion, or Ultra Burst.
 #define HANDLE_TYPE_MEGA_EVOLUTION 0
 #define HANDLE_TYPE_PRIMAL_REVERSION 1
 #define HANDLE_TYPE_ULTRA_BURST 2
+
+// Constants for Torment
+#define PERMANENT_TORMENT   0xF
 
 #endif // GUARD_CONSTANTS_BATTLE_H

@@ -1024,6 +1024,18 @@
 #define B_MSG_SPIKESSCATTERED    4
 #define B_MSG_SHARPSTEELFLOATS   5
 
+// gDamageNonTypesStartStringIds
+#define B_MSG_TRAPPED_WITH_VINES  0
+#define B_MSG_CAUGHT_IN_VORTEX    1
+#define B_MSG_SURROUNDED_BY_FIRE  2
+#define B_MSG_SURROUNDED_BY_ROCKS 3
+
+// gDamageNonTypesDmgStringIds
+#define B_MSG_HURT_BY_VINES  0
+#define B_MSG_HURT_BY_VORTEX    1
+#define B_MSG_BURNING_UP  2
+#define B_MSG_HURT_BY_ROCKS_THROWN 3
+
 // gItemDroppedStringIds
 #define B_MSG_ITEM_DROPPED   0
 #define B_MSG_BAG_IS_FULL    1

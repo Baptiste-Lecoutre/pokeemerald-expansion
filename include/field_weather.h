@@ -146,7 +146,7 @@ struct Weather
     s16 droughtTimer;
     s16 droughtState;
     u8 droughtUnused[9];
-    s8 loadDroughtPalsIndex;
+    u8 loadDroughtPalsIndex;
     u8 loadDroughtPalsOffset;
 };
 

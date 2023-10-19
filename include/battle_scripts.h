@@ -492,7 +492,6 @@ extern const u8 BattleScript_StatUpZMove[];
 extern const u8 BattleScript_HealReplacementZMove[];
 extern const u8 BattleScript_EffectExtremeEvoboost[];
 
-extern const u8 BattleScript_ItemDropped[];
 // max moves
 extern const u8 BattleScript_EffectRaiseStatAllies[];
 extern const u8 BattleScript_EffectLowerStatFoes[];
@@ -540,5 +539,7 @@ extern const u8 BattleScript_TooScaredToMove[];
 extern const u8 BattleScript_DevonScopeUnveiled[];
 extern const u8 BattleScript_MayDevonScopeUnveiled[];
 extern const u8 BattleScript_BrendanDevonScopeUnveiled[];
+
+extern const u8 BattleScript_ItemDropped[];
 
 #endif // GUARD_BATTLE_SCRIPTS_H

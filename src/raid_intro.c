@@ -32,8 +32,7 @@
 #include "constants/songs.h"
 #include "constants/trainers.h"
 
-#define MAX_NUM_PARTNERS 3
-#define MAX_TEAM_SIZE 3
+#include "data/raid_partners.h"
 
 enum Windows
 {
@@ -82,7 +81,8 @@ static const u32 sRaidIntroBgPal[]      = INCBIN_U32("graphics/misc/raid_battle_
 static const u32 sRaidIntroBgMap[]      = INCBIN_U32("graphics/misc/raid_battle_intro_bg.bin.lz");
 
 static const u8 sText_RecommendedLevel[]        = _("Recommended Level: ");
-static const u8 sText_RaidIntroSelection[]      = _("{DPAD_UPDOWN}Pick {A_BUTTON}Choose {START_BUTTON}Random {B_BUTTON}Cancel");
+static const u8 sText_RaidIntroSelection[]      = _("{DPAD_UPDOWN}Pick {A_BUTTON}Choose {B_BUTTON}Cancel");
+static const u8 sText_RaidIntroSelection2[]      = _("{SELECT_BUTTON}Random {START_BUTTON}Solo");
 static const u8 sText_RaidBattleRules[]         = _("Battle ends if:\n 4 Pokemon faint\n 10 turns pass");
 static const u8 sText_RaidBattleChoosePartner[] = _("Available Partners");
 static const u8 sText_raidPartnerNotAvailable[] = _("Not available");
@@ -142,9 +142,9 @@ static const struct WindowTemplate sRaidBattleIntroWinTemplates[WINDOW_COUNT + 1
 	[WIN_INSTRUCTIONS] =
 	{
 		.bg = 1,
-		.tilemapLeft = 8,
+		.tilemapLeft = 0,
 		.tilemapTop = 18,
-		.width = 22,
+		.width = 30,
 		.height = 2,
 		.paletteNum = 15,
 		.baseBlock = 167,
@@ -367,22 +367,33 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	{
         // TODO:
         //  - Set Raid Partner information based on selected trainer.
+		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
+		gSpecialVar_Result = 1;
 		PRESSED_A:
 		PlaySE(SE_SUCCESS);
-		gSpecialVar_Result = TRUE;
 		gTasks[taskId].func = Task_RaidBattleIntroSetUpBattle;
 	}
 	else if (gMain.newKeys & B_BUTTON)
 	{
 		PlaySE(SE_FAILURE);
-		gSpecialVar_Result = FALSE;
+		gSpecialVar_Result = 0;
 		BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
 		gTasks[taskId].func = Task_RaidBattleIntroFadeOut;
+	}
+	else if (gMain.newAndRepeatedKeys & SELECT_BUTTON)
+	{
+		// TODO:
+        //  - Select a random team to partner with.
+		gRaidData.partnerNum = sRaidBattleIntro->partners[Random()%3].id;
+		gSpecialVar_Result = 1;
+		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & START_BUTTON)
 	{
 		// TODO:
-        //  - Select a random team to partner with.
+        //  - Go alone.
+		gRaidData.partnerNum = 0;
+		gSpecialVar_Result = 2;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_UP)
@@ -468,6 +479,7 @@ static void PrintInstructions(void)
 	AddTextPrinterParameterized3(WIN_RECOMMENDED_LEVEL, 0, 4, 0, colour, 0, gStringVar1);
 
 	AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 2, 4, colour, 0, sText_RaidIntroSelection);
+	AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 137, 4, colour, 0, sText_RaidIntroSelection2);
 
 	AddTextPrinterParameterized3(WIN_CHOOSE_PARTNER, 3, 1, 4, partnerColour, 0, sText_RaidBattleChoosePartner);
 }
@@ -585,7 +597,7 @@ static void ShowPartnerTeams(void)
 
 	for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 	{
-		AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
+		//AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
 		if (sRaidBattleIntro->partners[i].graphicsId != 0)
 		{
             u32 spriteId;
@@ -593,7 +605,7 @@ static void ShowPartnerTeams(void)
 			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, 126, 59 + (i * 33), 0);
             gSprites[spriteId].oam.priority = 0;
 
-			/*for (j = 0; j < MAX_TEAM_SIZE; ++j)
+			for (j = 0; j < MAX_TEAM_SIZE; ++j)
 			{
 				u16 species = sRaidBattleIntro->partners[i].team[j];
 				if (species != SPECIES_NONE)
@@ -601,7 +613,7 @@ static void ShowPartnerTeams(void)
 					LoadMonIconPalette(species);
 					CreateMonIcon(species, SpriteCB_MonIcon, 158 + (32 * j), 59 + (i * 33), 0, 0xFFFFFFFF);
 				}
-			}*/
+			}
 		}
 	}
 }
@@ -724,6 +736,8 @@ void InitStoryRaid(void)
 static bool32 GetRaidBattleData(void)
 {
 	bool32 success;
+	u32 i,j;
+
 	if (FlagGet(FLAG_SYS_SPECIAL_RAID_BATTLE))
 	{
 		if (InitCustomRaidData())
@@ -740,19 +754,19 @@ static bool32 GetRaidBattleData(void)
 		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0], MON_DATA_PERSONALITY, NULL);
 
 		// Placeholder Data
-		// TODO: Fill using gRaidData->partners.
-		sRaidBattleIntro->partners[0].graphicsId = OBJ_EVENT_GFX_STEVEN;
-		sRaidBattleIntro->partners[0].team[0] = SPECIES_TYRANITAR;
-		sRaidBattleIntro->partners[0].team[1] = SPECIES_MAMOSWINE;
-		sRaidBattleIntro->partners[0].team[2] = SPECIES_GRANBULL;
-		sRaidBattleIntro->partners[1].graphicsId = OBJ_EVENT_GFX_MAY_NORMAL;
-		sRaidBattleIntro->partners[1].team[0] = SPECIES_GOLURK;
-		sRaidBattleIntro->partners[1].team[1] = SPECIES_MAGNEZONE;
-		sRaidBattleIntro->partners[1].team[2] = SPECIES_SALAMENCE;
-		sRaidBattleIntro->partners[2].graphicsId = OBJ_EVENT_GFX_RED;
-		sRaidBattleIntro->partners[2].team[0] = SPECIES_PIKACHU_ORIGINAL_CAP;
-		sRaidBattleIntro->partners[2].team[1] = SPECIES_SNORLAX;
-		sRaidBattleIntro->partners[2].team[2] = SPECIES_MEWTWO;
+		// TODO: Select proper partners from gRaidPartners, based on rank + raid random number.
+		// TODO: Figure out how to encode things: difference between the gRaidPartners array index, 
+		// 		the gRaidPartners Id, the sRaidBattleIntro->partners index, the trainernum...
+		for (i = 0; i < MAX_NUM_PARTNERS; i++)
+		{
+			struct Partner* partner = &sRaidBattleIntro->partners[i];
+			partner->id = i+1;//gRaidPartners[i+1].id; // Not the actual trainerNum, but the entry of gRaidPartnerArray
+			partner->graphicsId = gRaidPartners[partner->id].graphicsId;
+
+			for (j = 0; j < MAX_TEAM_SIZE; j++)
+				partner->team[j] = gTrainers[gRaidPartners[partner->id].trainerNum].party[j].species;
+		}
+
 		return TRUE;
 	}
 	return FALSE;
