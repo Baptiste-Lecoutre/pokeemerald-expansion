@@ -560,10 +560,15 @@ static void OpponentHandleChooseMove(u32 battler)
                     }
                     if (ShouldUseZMove(battler, gBattlerTarget, chosenMove))
                         QueueZMove(battler, chosenMove);
-                    if (CanMegaEvolve(battler)) // If opponent can mega evolve, do it.
+                    // If opponent can Mega Evolve, do it.
+                    if (CanMegaEvolve(battler)) 
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_MEGA_EVOLUTION) | (gBattlerTarget << 8));
+                    // If opponent can Ultra Burst, do it.
                     else if (CanUltraBurst(battler))
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_ULTRA_BURST) | (gBattlerTarget << 8));
+                    // If opponent can Dynamax and is on final Pokemon, do it.
+                    else if (CanDynamax(battler) && CountAIAliveNonEggMonsExcept(gBattlerPartyIndexes[battler]) == 0) 
+                        BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_DYNAMAX) | (gBattlerTarget << 8));
                     else
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (gBattlerTarget << 8));
                 }
@@ -590,9 +595,8 @@ static void OpponentHandleChooseMove(u32 battler)
                 target = GetBattlerAtPosition(Random() & 2);
             } while (!CanTargetBattler(battler, target, move));
 
-        #if B_WILD_NATURAL_ENEMIES == TRUE
             // Don't bother to loop through table if the move can't attack ally
-            if (!(gBattleMoves[move].target & MOVE_TARGET_BOTH))
+            if (B_WILD_NATURAL_ENEMIES == TRUE && !(gBattleMoves[move].target & MOVE_TARGET_BOTH))
             {
                 u16 i, speciesAttacker, speciesTarget, isPartnerEnemy = FALSE;
                 static const u16 naturalEnemies[][2] =
@@ -622,8 +626,9 @@ static void OpponentHandleChooseMove(u32 battler)
                     BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (target << 8));
             }
             else
-        #endif
+            {
                 BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (target << 8));
+            }
         }
         else
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (GetBattlerAtPosition(B_POSITION_PLAYER_LEFT) << 8));

@@ -163,7 +163,7 @@
 
 #define LEVEL_UP_MOVE_ID   0x01FF
 #define LEVEL_UP_MOVE_LV   0xFE00
-#define LEVEL_UP_END       0xFFFF
+#define LEVEL_UP_MOVE_END  0xFFFF
 
 #define MAX_LEVEL_UP_MOVES       20
 #define MAX_LEVEL_DIFF_PRE_EV    5
@@ -286,7 +286,7 @@
 #define EVO_ITEM_HOLD                     41     // Pokémon levels up, holds specified item
 #define EVO_LEVEL_FOG                     42     // Pokémon reaches the specified level during fog in the overworld
 
-#define EVOS_PER_MON 10
+#define EVOS_PER_MON 11
 
 // Evolution 'modes,' for GetEvolutionTargetSpecies
 #define EVO_MODE_NORMAL            0
