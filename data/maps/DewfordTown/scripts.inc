@@ -10,6 +10,11 @@
 .equ LOCALID_BOAT_R104, 7
 .equ LOCALID_BRINEY_R104, 8
 
+.set LOCALID_DIGLETT_1, 7
+.set LOCALID_DIGLETT_1, 8
+.set LOCALID_DIGLETT_1, 9
+.set LOCALID_DIGLETT_1, 10
+
 DewfordTown_MapScripts::
 	map_script MAP_SCRIPT_ON_LOAD, DewfordTown_OnLoad
 	map_script MAP_SCRIPT_ON_TRANSITION, DewfordTown_OnTransition
@@ -26,6 +31,106 @@ DewfordTown_OnTransition:
 DewfordTown_EventScript_LockGymDoor::
 	setmetatile 8, 17, METATILE_Dewford_GymDoor_Closed, TRUE
 	return
+
+DewfordTown_EventScript_Diglett1::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_DIGLETT, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_DIGLETT, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveDiglett1
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveDiglett1
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveDiglett1
+	setflag FLAG_DEFEATED_DIGLETT_1_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveDiglett1::
+	setflag FLAG_DEFEATED_DIGLETT_1_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
+DewfordTown_EventScript_Diglett2::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_DIGLETT, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_DIGLETT, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveDiglett2
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveDiglett2
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveDiglett2
+	setflag FLAG_DEFEATED_DIGLETT_2_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveDiglett2::
+	setflag FLAG_DEFEATED_DIGLETT_2_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
+DewfordTown_EventScript_Diglett3::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_DIGLETT, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_DIGLETT, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveDiglett3
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveDiglett3
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveDiglett3
+	setflag FLAG_DEFEATED_DIGLETT_3_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveDiglett3::
+	setflag FLAG_DEFEATED_DIGLETT_3_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
+DewfordTown_EventScript_Diglett4::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_DIGLETT, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_DIGLETT, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveDiglett4
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveDiglett4
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveDiglett4
+	setflag FLAG_DEFEATED_DIGLETT_4_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveDiglett4::
+	setflag FLAG_DEFEATED_DIGLETT_4_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
 
 DewfordTown_EventScript_Briney::
 	lock
