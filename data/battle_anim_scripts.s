@@ -898,7 +898,7 @@ gBattleAnims_Moves::
 	.4byte Move_SOUL_STEALING_7_STAR_STRIKE
 @@@@ MAX MOVES
 	.4byte Move_MAX_GUARD
-	.4byte Move_MAX_STRIKE 
+	.4byte Move_MAX_STRIKE
 	.4byte Move_MAX_KNUCKLE
 	.4byte Move_MAX_AIRSTREAM
 	.4byte Move_MAX_OOZE
@@ -1007,8 +1007,9 @@ gBattleAnims_General::
 	.4byte General_Snow                     @ B_ANIM_SNOW_CONTINUES
 	.4byte General_UltraBurst               @ B_ANIM_ULTRA_BURST
 	.4byte General_SaltCureDamage           @ B_ANIM_SALT_CURE_DAMAGE
-	.4byte General_DynamaxGrowth			@ B_ANIM_DYNAMAX_GROWTH
-	.4byte General_SetWeather 				@ B_ANIM_MAX_SET_WEATHER
+	.4byte General_DynamaxGrowth            @ B_ANIM_DYNAMAX_GROWTH
+	.4byte General_SetWeather               @ B_ANIM_MAX_SET_WEATHER
+	.4byte General_SyrupBombSpeedDrop       @ B_ANIM_SYRUP_BOMB_SPEED_DROP
 
 	.align 2
 gBattleAnims_Special::
@@ -15162,16 +15163,21 @@ Move_SILK_TRAP::
 	clearmonbg ANIM_ATK_PARTNER
 	end
 
-@ Also used by Snow weather. Currently identical with Move_HAIL
+@ Also used by Snow weather. Credits to Dat.H A
 Move_SNOWSCAPE::
-	loadspritegfx ANIM_TAG_HAIL
-	loadspritegfx ANIM_TAG_ICE_CRYSTALS
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_BG, 3, 0, 6, RGB_BLACK
+	loadspritegfx ANIM_TAG_SNOWFLAKES
+	playsewithpan SE_M_GUST, SOUND_PAN_ATTACKER
+	createvisualtask AnimTask_BlendBattleAnimPal, 10, (F_PAL_BG | F_PAL_BATTLERS), 2, 0, 4, RGB(11, 18, 22)
 	waitforvisualfinish
-	createvisualtask AnimTask_Hail, 5
-	loopsewithpan SE_M_HAIL, 0, 8, 10
+	createvisualtask AnimTask_CreateSnowflakes, 2, 0, 3, 120
+	createvisualtask AnimTask_CreateSnowflakes, 2, 0, 3, 120
+	createvisualtask AnimTask_CreateSnowflakes, 2, 0, 3, 120
+	delay 120
+	playsewithpan SE_M_GUST2, SOUND_PAN_ATTACKER
+	delay 30
 	waitforvisualfinish
-	createvisualtask AnimTask_BlendBattleAnimPal, 10, F_PAL_BG, 3, 6, 0, RGB_BLACK
+	createvisualtask AnimTask_BlendBattleAnimPal, 10, (F_PAL_BG | F_PAL_BATTLERS), 2, 4, 0, RGB(11, 18, 22)
+	waitforvisualfinish
 	end
 
 @Credits to Skeli
@@ -16520,6 +16526,113 @@ Move_DOUBLE_SHOCK::
 	blendoff
 	end
 
+Move_SYRUP_BOMB::
+	createvisualtask AnimTask_SyrupBomb, 0x5
+	jumpargeq 0x0, FALSE, Move_SYRUP_BOMB_RED
+	jumpargeq 0x0, TRUE, Move_SYRUP_BOMB_YELLOW
+
+@ Credits to Dat.H A
+Move_SYRUP_BOMB_RED:
+	loadspritegfx ANIM_TAG_SYRUP_BLOB_RED
+	loadspritegfx ANIM_TAG_SYRUP_SPLAT_RED
+	loadspritegfx ANIM_TAG_SYRUP_SHELL_RED
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	call SyrupBombProjectileRed
+	createvisualtask AnimTask_ShakeMon2, 5, ANIM_TARGET, 3, 0, 15, 1
+	createvisualtask AnimTask_BlendColorCycle, 2, F_PAL_TARGET, 1, 2, 0, 12, RGB(20, 3, 3)
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, 42, 27, 20
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, -27, 44, 20
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, 39, -28, 20
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, -42, -42, 20
+	playsewithpan SE_M_DIG, SOUND_PAN_TARGET
+	delay 5
+	createsprite gSyrupBombRedShellSpriteTemplate, ANIM_TARGET, 1, ANIM_TARGET, 100
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, 0, 40, 20
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, -8, -44, 20
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, -46, -28, 20
+	createsprite gSyrupBombRedHitParticleSpriteTemplate, ANIM_TARGET, 2, 46, 9, 20
+	playsewithpan SE_M_DIG, SOUND_PAN_TARGET
+	delay 5
+	waitsound
+	waitforvisualfinish
+	end
+SyrupBombProjectileRed:
+	playsewithpan SE_M_BUBBLE3, SOUND_PAN_ATTACKER
+	createsprite gSyrupRedProjectileSpriteTemplate, ANIM_TARGET, 2, 20, 0, 40, 0
+	delay 3
+	return
+
+Move_SYRUP_BOMB_YELLOW:
+	loadspritegfx ANIM_TAG_SYRUP_BLOB_YELLOW
+	loadspritegfx ANIM_TAG_SYRUP_SPLAT_YELLOW
+	loadspritegfx ANIM_TAG_SYRUP_SHELL_YELLOW
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	call SyrupBombProjectileYellow
+	createvisualtask AnimTask_ShakeMon2, 5, ANIM_TARGET, 3, 0, 15, 1
+	createvisualtask AnimTask_BlendColorCycle, 2, F_PAL_TARGET, 1, 2, 0, 12, RGB(23, 13, 1)
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, 42, 27, 20
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, -27, 44, 20
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, 39, -28, 20
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, -42, -42, 20
+	playsewithpan SE_M_DIG, SOUND_PAN_TARGET
+	delay 5
+	createsprite gSyrupBombYellowShellSpriteTemplate, ANIM_TARGET, 1, ANIM_TARGET, 100
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, 0, 40, 20
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, -8, -44, 20
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, -46, -28, 20
+	createsprite gSyrupBombYellowHitParticleSpriteTemplate, ANIM_TARGET, 2, 46, 9, 20
+	playsewithpan SE_M_DIG, SOUND_PAN_TARGET
+	delay 5
+	waitsound
+	waitforvisualfinish
+	end
+SyrupBombProjectileYellow:
+	playsewithpan SE_M_BUBBLE3, SOUND_PAN_ATTACKER
+	createsprite gSyrupYellowProjectileSpriteTemplate, ANIM_TARGET, 2, 20, 0, 40, 0
+	delay 3
+	return
+
+General_SyrupBombSpeedDrop::
+	createvisualtask AnimTask_StickySyrup, 0x5
+	jumpargeq 0x0, FALSE, SyrupBombSpeedDropRed
+	jumpargeq 0x0, TRUE, SyrupBombSpeedDropYellow
+
+SyrupBombSpeedDropRed:
+	loadspritegfx ANIM_TAG_SYRUP_BLOB_RED
+	loadspritegfx ANIM_TAG_SYRUP_SHELL_RED
+	loopsewithpan SE_M_TOXIC, SOUND_PAN_TARGET, 13, 6
+	createvisualtask AnimTask_ShakeMon2, 5, ANIM_TARGET, 3, 0, 15, 1
+	createvisualtask AnimTask_BlendColorCycle, 2, F_PAL_TARGET, 1, 2, 0, 12, RGB(20, 3, 3)
+	createsprite gSyrupBombRedShellBSpriteTemplate, ANIM_TARGET, 1, ANIM_TARGET, 60
+	waitforvisualfinish
+	end
+
+SyrupBombSpeedDropYellow:
+	loadspritegfx ANIM_TAG_SYRUP_BLOB_YELLOW
+	loadspritegfx ANIM_TAG_SYRUP_SHELL_YELLOW
+	loopsewithpan SE_M_TOXIC, SOUND_PAN_TARGET, 13, 6
+	createvisualtask AnimTask_ShakeMon2, 5, ANIM_TARGET, 3, 0, 15, 1
+	createvisualtask AnimTask_BlendColorCycle, 2, F_PAL_TARGET, 1, 2, 0, 12, RGB(23, 13, 1)
+	createsprite gSyrupBombYellowShellBSpriteTemplate, ANIM_TARGET, 1, ANIM_TARGET, 60
+	waitforvisualfinish
+	end
+
 Move_TERA_BLAST::
 Move_AXE_KICK::
 Move_LAST_RESPECTS::
@@ -16568,7 +16681,6 @@ Move_PSYBLADE::
 Move_HYDRO_STEAM::
 Move_BLOOD_MOON::
 Move_MATCHA_GOTCHA::
-Move_SYRUP_BOMB::
 Move_IVY_CUDGEL::
 	end @to do
 
