@@ -1236,14 +1236,14 @@ static const struct OamData sOam_Throbber =
 
 static const union AnimCmd sAnim_Throbber[] =
 {
-    ANIMCMD_FRAME(0, 4),
-    ANIMCMD_FRAME(32, 4),
-    ANIMCMD_FRAME(64, 4),
-    ANIMCMD_FRAME(96, 4),
-    ANIMCMD_FRAME(128, 4),
-    ANIMCMD_FRAME(160, 4),
-    ANIMCMD_FRAME(192, 4),
     ANIMCMD_FRAME(224, 4),
+    ANIMCMD_FRAME(192, 4),
+    ANIMCMD_FRAME(160, 4),
+    ANIMCMD_FRAME(128, 4),
+    ANIMCMD_FRAME(96, 4),
+    ANIMCMD_FRAME(64, 4),
+    ANIMCMD_FRAME(32, 4),
+    ANIMCMD_FRAME(0, 4),
     ANIMCMD_JUMP(0),
 };
 
