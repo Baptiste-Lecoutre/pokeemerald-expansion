@@ -176,13 +176,20 @@
 	multi_do_fixed MULTI_BATTLE_2_VS_WILD, \partnerId, \partnerPicId
 	.endm
 
-	@ Starts a Raid Battle.
+	@ Starts a Raid Battle without a partner.
 	.macro doraidbattle
 	setvar VAR_0x8004, SPECIAL_BATTLE_RAID
-@	special SavePlayerParty
 	special DoSpecialTrainerBattle
 	waitstate
-@	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SAVE_PARTY
-@	special CallFrontierUtilFunc
-@	special LoadPlayerParty
+	.endm
+
+	@ Starts a Raid Battle with a partner
+	.macro doraidbattlepartner
+	setvar VAR_0x8004, SPECIAL_BATTLE_RAID
+	special SavePlayerParty
+	special DoSpecialTrainerBattle
+	waitstate
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SAVE_PARTY
+	special CallFrontierUtilFunc
+	special LoadPlayerParty
 	.endm

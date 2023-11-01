@@ -361,7 +361,10 @@ bool32 InitRaidData(void)
         }
     }*/
     
-    // create raid boss
+    // Free previous enemy party in case
+    ZeroEnemyPartyMons();
+
+    // Create raid boss
     CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
@@ -372,6 +375,11 @@ bool32 InitCustomRaidData(void)
 {
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
+
+    // Free previous enemy party in case
+    ZeroEnemyPartyMons();
+
+    // Create raid boss
     CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, gSpecialVar_0x8007, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
@@ -386,7 +394,7 @@ void InitRaidBattleData(void)
     gBattleStruct->raid.nextShield = GetNextShieldThreshold();
     gBattleStruct->raid.shield = 0;
     gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
-	gBattleStruct->raid.energy = B_POSITION_PLAYER_LEFT;
+	gBattleStruct->raid.energy = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
 
     // Zeroes sprite IDs for Gen 8-style shield.
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
@@ -435,6 +443,9 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 // Updates Raid Storm state and returns whether battle should end.
 bool32 ShouldRaidKickPlayer(void)
 {
+    if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
+        gBattleStruct->raid.energy ^= BIT_FLANK;
+
     // Gen 8-style raids are capped at 10 turns.
     if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
     {

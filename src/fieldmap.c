@@ -25,7 +25,7 @@ struct ConnectionFlags
     u8 east:1;
 };
 
-EWRAM_DATA static u16 ALIGNED(4) sBackupMapData[MAX_MAP_DATA_SIZE] = {0};
+EWRAM_DATA u16 ALIGNED(4) sBackupMapData[MAX_MAP_DATA_SIZE] = {0};
 EWRAM_DATA struct MapHeader gMapHeader = {0};
 EWRAM_DATA struct Camera gCamera = {0};
 EWRAM_DATA static struct ConnectionFlags sMapConnectionFlags = {0};
@@ -48,16 +48,12 @@ static const struct MapConnection *GetIncomingConnection(u8 direction, int x, in
 static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, const struct MapConnection *connection);
 static bool8 IsCoordInIncomingConnectingMap(int coord, int srcMax, int destMax, int offset);
 
-#define GetBorderBlockAt(x, y)({                                                                   \
-    u16 block;                                                                                     \
-    int i;                                                                                         \
-    const u16 *border = gMapHeader.mapLayout->border; /* Unused, they read it again below */       \
-                                                                                                   \
-    i = (x + 1) & 1;                                                                               \
-    i += ((y + 1) & 1) * 2;                                                                        \
-                                                                                                   \
-    block = gMapHeader.mapLayout->border[i] | MAPGRID_COLLISION_MASK;                              \
-})
+static inline u16 GetBorderBlockAt(int x, int y)
+{
+    int i = (x + 1) & 1;
+    i += ((y + 1) & 1) * 2;
+    return gMapHeader.mapLayout->border[i] | MAPGRID_COLLISION_MASK;
+}
 
 #define AreCoordsWithinMapGridBounds(x, y) (x >= 0 && x < gBackupMapLayout.width && y >= 0 && y < gBackupMapLayout.height)
 
@@ -681,7 +677,7 @@ bool8 CameraMove(int x, int y)
         {
             DebugPrintfLevel(MGBA_LOG_WARN, "GetIncomingConnection returned an invalid connection inside CameraMove!");
         }
-        
+
     }
     return gCamera.active;
 }
@@ -881,7 +877,7 @@ static void UNUSED ApplyGlobalTintToPaletteSlot(u8 slot, u8 count)
 
 }
 
-void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size, bool8 skipFaded)
+static void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size, bool8 skipFaded)
 {
     u32 low = 0;
     u32 high = 0;
@@ -902,8 +898,10 @@ void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size,
         }
         else if (tileset->isSecondary == TRUE)
         {
+            // (void*) is to silence 'source potentially unaligned' error
+            // All 'gTilesetPalettes_' arrays should have ALIGNED(4) in them
             if (skipFaded)
-                CpuFastCopy(tileset->palettes[NUM_PALS_IN_PRIMARY], &gPlttBufferUnfaded[destOffset], size);
+                CpuFastCopy((void*)tileset->palettes[NUM_PALS_IN_PRIMARY], &gPlttBufferUnfaded[destOffset], size);
             else
                 LoadPaletteFast(tileset->palettes[NUM_PALS_IN_PRIMARY], destOffset, size);
             low = NUM_PALS_IN_PRIMARY;
@@ -914,14 +912,17 @@ void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size,
             LoadCompressedPalette((const u32 *)tileset->palettes, destOffset, size);
             ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
         }
-        if (tileset->isSecondary == FALSE || tileset->isSecondary == TRUE) {
-            u32 i;
+        // convert legacy light palette system to current
+        if (tileset->lightPalettes) {
+            u32 i, j, color;
             for (i = low; i < high; i++) {
-                if (tileset->lightPalettes & (1 << (i - low))) { // Mark as light palette
-                    u32 index = i * 16;
-                    gPlttBufferFaded[index] = gPlttBufferUnfaded[index] |= 0x8000;
-                    if (tileset->customLightColor & (1 << (i - low))) // Mark as custom light color
-                        gPlttBufferFaded[index+15] = gPlttBufferUnfaded[index+15] |= 0x8000;
+                if (tileset->lightPalettes & (1 << (i - low))) { // Mark light colors
+                    for (j = 1, color = gPlttBufferUnfaded[PLTT_ID(i)]; j < 16 && color; j++, color >>= 1) {
+                        if (color & 1)
+                            gPlttBufferFaded[PLTT_ID(i)+j] = gPlttBufferUnfaded[PLTT_ID(i)+j] |= RGB_ALPHA;
+                    }
+                    if (tileset->customLightColor & (1 << (i - low))) // Copy old custom light color to index 0
+                        gPlttBufferFaded[PLTT_ID(i)] = gPlttBufferUnfaded[PLTT_ID(i)] = gPlttBufferUnfaded[PLTT_ID(i)+15] | RGB_ALPHA;
                 }
             }
         }
