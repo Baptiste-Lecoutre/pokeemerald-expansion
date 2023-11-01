@@ -373,7 +373,6 @@ static const u16 sIgnoredPowerfulMoveEffects[] =
     EFFECT_RECHARGE,
     EFFECT_SKULL_BASH,
     EFFECT_SOLAR_BEAM,
-    EFFECT_SPIT_UP,
     EFFECT_FOCUS_PUNCH,
     EFFECT_SUPERPOWER,
     EFFECT_ERUPTION,
@@ -1996,6 +1995,7 @@ bool32 ShouldLowerAccuracy(u32 battlerAtk, u32 battlerDef, u32 defAbility)
       && defAbility != ABILITY_WHITE_SMOKE
       && defAbility != ABILITY_FULL_METAL_BODY
       && defAbility != ABILITY_KEEN_EYE
+      && (B_ILLUMINATE_EFFECT >= GEN_9 && defAbility != ABILITY_ILLUMINATE)
       && AI_DATA->holdEffects[battlerDef] != HOLD_EFFECT_CLEAR_AMULET)
         return TRUE;
     return FALSE;
@@ -2062,7 +2062,6 @@ bool32 HasMoveWithSplit(u32 battler, u32 split)
         if (moves[i] != MOVE_NONE && moves[i] != MOVE_UNAVAILABLE && GetBattleMoveSplit(moves[i]) == split)
             return TRUE;
     }
-
     return FALSE;
 }
 
