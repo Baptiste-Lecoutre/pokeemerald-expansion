@@ -398,7 +398,13 @@
 #define ANIM_TAG_POLTERGEIST                (ANIM_SPRITES_START + 384)
 #define ANIM_TAG_TEAPOT                     (ANIM_SPRITES_START + 385)
 #define ANIM_TAG_WOOD_HAMMER_HAMMER         (ANIM_SPRITES_START + 386)
-
+#define ANIM_TAG_SNOWFLAKES                 (ANIM_SPRITES_START + 387)
+#define ANIM_TAG_SYRUP_BLOB_RED             (ANIM_SPRITES_START + 388)
+#define ANIM_TAG_SYRUP_SHELL_RED            (ANIM_SPRITES_START + 389)
+#define ANIM_TAG_SYRUP_BLOB_YELLOW          (ANIM_SPRITES_START + 390)
+#define ANIM_TAG_SYRUP_SHELL_YELLOW         (ANIM_SPRITES_START + 391)
+#define ANIM_TAG_SYRUP_SPLAT_RED            (ANIM_SPRITES_START + 392)
+#define ANIM_TAG_SYRUP_SPLAT_YELLOW         (ANIM_SPRITES_START + 393)
 
 // battlers
 #define ANIM_ATTACKER         0
@@ -552,15 +558,16 @@
 #define B_ANIM_SALT_CURE_DAMAGE         38
 #define B_ANIM_DYNAMAX_GROWTH           39
 #define B_ANIM_MAX_SET_WEATHER          40
-#define B_ANIM_RAID_STORM_BREWS         41
-#define B_ANIM_RAID_SHIELD_APPEARED     42
-#define B_ANIM_RAID_SHIELD_DISAPPEARED  43
-#define B_ANIM_RAID_BARRIER_BROKEN      44
-#define B_ANIM_RAID_SHOCKWAVE           45
-#define B_ANIM_RAID_BOSS_EXPLOSION      46
-#define B_ANIM_MON_SCARED               47
-#define B_ANIM_GHOST_GET_OUT            48
-#define B_ANIM_GO_GOGGLED               49
+#define B_ANIM_SYRUP_BOMB_SPEED_DROP    41
+#define B_ANIM_RAID_STORM_BREWS         42
+#define B_ANIM_RAID_SHIELD_APPEARED     43
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  44
+#define B_ANIM_RAID_BARRIER_BROKEN      45
+#define B_ANIM_RAID_SHOCKWAVE           46
+#define B_ANIM_RAID_BOSS_EXPLOSION      47
+#define B_ANIM_MON_SCARED               48
+#define B_ANIM_GHOST_GET_OUT            49
+#define B_ANIM_GO_GOGGLED               50
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

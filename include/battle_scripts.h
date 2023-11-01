@@ -482,6 +482,7 @@ extern const u8 BattleScript_SelectingNotAllowedCurrentMove[];
 extern const u8 BattleScript_SelectingNotAllowedCurrentMoveInPalace[];
 extern const u8 BattleScript_SaltCureExtraDamage[];
 extern const u8 BattleScript_SyrupBombEndTurn[];
+extern const u8 BattleScript_SyrupBombActivates[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];

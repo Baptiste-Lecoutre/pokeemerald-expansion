@@ -362,7 +362,10 @@ bool32 InitRaidData(void)
         }
     }*/
     
-    // create raid boss
+    // Free previous enemy party in case
+    ZeroEnemyPartyMons();
+
+    // Create raid boss
     CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     return TRUE;
@@ -374,6 +377,11 @@ bool32 InitCustomRaidData(void)
     u16 item = gSpecialVar_0x8008;
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
+
+    // Free previous enemy party in case
+    ZeroEnemyPartyMons();
+
+    // Create raid boss
     CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, gSpecialVar_0x8007, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     if (item != ITEM_NONE)
