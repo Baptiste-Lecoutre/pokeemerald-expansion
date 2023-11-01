@@ -5307,18 +5307,6 @@ bool8 FollowablePlayerMovement_Idle(struct ObjectEvent *objectEvent, struct Spri
     u8 direction;
     if (!objectEvent->singleMovementActive)
     { // walk in place
-      /*// Bounce up and down
-      switch (sprite->sState2)
-      {
-      case 0:
-          sprite->y2 += 1;
-          sprite->sState2++;
-          break;
-      default:
-          sprite->y2 -= 1;
-          sprite->sState2 = 0;
-          break;
-      }*/
       ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkInPlaceNormalMovementAction(objectEvent->facingDirection));
       sprite->sTypeFuncId = 1;
       objectEvent->singleMovementActive = 1;
@@ -5358,19 +5346,6 @@ bool8 FollowablePlayerMovement_Step(struct ObjectEvent *objectEvent, struct Spri
     x = objectEvent->currentCoords.x;
     y = objectEvent->currentCoords.y;
     ClearObjectEventMovement(objectEvent, sprite);
-
-    /*// Bounce up and down
-    switch (sprite->sState2)
-    {
-    case 0:
-        sprite->y2 += 1;
-        sprite->sState2++;
-        break;
-    default:
-        sprite->y2 -= 1;
-        sprite->sState2 = 0;
-        break;
-    }*/
 
     if (objectEvent->invisible) { // Animate exiting pokeball
       // Player is jumping, but follower is invisible
