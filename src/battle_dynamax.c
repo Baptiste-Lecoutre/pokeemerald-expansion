@@ -233,7 +233,7 @@ void UndoDynamax(u16 battlerId)
         gBattleMons[battlerId].hp = UQ_4_12_TO_INT((GetMonData(mon, MON_DATA_HP) * mult + 1) + UQ_4_12_ROUND); // round up
         SetMonData(mon, MON_DATA_HP, &gBattleMons[battlerId].hp);
 
-//        DynamaxIndicator_DestroySprite(gHealthboxSpriteIds[battlerId]);
+        MegaIndicator_DestroySprite(gHealthboxSpriteIds[battlerId]);
         UpdateHealthboxAttribute(gHealthboxSpriteIds[battlerId], mon, HEALTHBOX_ALL); // update healthbox
     }
 
