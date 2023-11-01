@@ -734,7 +734,6 @@ static EWRAM_DATA struct TempWallyBag *sTempWallyBag = 0;
 // but that isn't really a lot of space
 static EWRAM_DATA u16 sKeyItemWheelExtraPalette[16] = {0};
 static EWRAM_DATA u8    spriteIdData[PARTY_SIZE] = {};
-static EWRAM_DATA u16   spriteIdPalette[PARTY_SIZE] = {};
 
 void ResetBagScrollPositions(void)
 {
@@ -3140,27 +3139,13 @@ static void SpriteCb_TMMonIcon(struct Sprite *sprite)
 }
 #undef sMonIconStill
 
-void LoadMonIconPalettesTinted(void)
-{
-    u16 paletteOffset;
-
-    // load mon icon palettes
-    LoadMonIconPalettes();
-
-    // load another one for blend in slot 15
-    LoadSpritePaletteInSlot(&gMonIconPaletteTable[0],15);
-    paletteOffset = 15 * 16 + 0x100;
-    BlendPalette(paletteOffset, 16, 16, RGB(15, 15, 15));
-    CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
-}
-
 static void DrawPartyMonIcons(void)
 {
     u32 i;
     u16 species;
     u8 icon_x = 0, icon_y = 0;
 
-    LoadMonIconPalettesTinted();
+    LoadMonIconPalettes();
 
     for (i = 0; i < gPlayerPartyCount; i++)
     {
@@ -3178,10 +3163,9 @@ static void DrawPartyMonIcons(void)
         species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
         spriteIdData[i] = CreateMonIcon(species, SpriteCb_TMMonIcon, icon_x, icon_y, 1, GetMonData(&gPlayerParty[i], MON_DATA_PERSONALITY));
 
-        //Set priority, stop movement and save original palette position
+        //Set priority and stop movement
         gSprites[spriteIdData[i]].oam.priority = 0;
         StartSpriteAnim(&gSprites[spriteIdData[i]], 4); //full stop
-        spriteIdPalette[i] = gSprites[spriteIdData[i]].oam.paletteNum; //save correct palette number to array
     }
 }
 
@@ -3191,11 +3175,13 @@ static void TintPartyMonIcons(u16 itemId)
     
     for (i = 0; i < gPlayerPartyCount; i++)
     {
+        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL);
+        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(7, 11));
         if (!CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), ItemIdToBattleMoveId(itemId))
-            || !(itemId >= ITEM_HM01 && itemId <= ITEM_HM08))
-            gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
+            || gItems[itemId].pocket != POCKET_TM_HM)
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_BLEND;
         else
-            gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_NORMAL;
     }
 }
 
