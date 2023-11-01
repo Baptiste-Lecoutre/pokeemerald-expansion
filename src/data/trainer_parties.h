@@ -8710,7 +8710,7 @@ static const struct TrainerMon sParty_Angelica[] = {
     {
     .iv = TRAINER_PARTY_IVS(6, 6, 6, 6, 6, 6),
     .lvl = 57,
-    .species = SPECIES_CASTFORM,
+    .species = SPECIES_CASTFORM_NORMAL,
     .moves = {MOVE_THUNDER, MOVE_WEATHER_BALL, MOVE_HURRICANE, MOVE_ICE_BEAM}
     },
     {
@@ -9732,7 +9732,7 @@ static const struct TrainerMon sParty_Jonas[] = {
 static const struct TrainerMon sParty_Kayley[] = {
     {
     .lvl = 31,
-    .species = SPECIES_CASTFORM,
+    .species = SPECIES_CASTFORM_NORMAL,
     .moves = {MOVE_SUNNY_DAY, MOVE_WEATHER_BALL, MOVE_ICE_BEAM, MOVE_SOLAR_BEAM}
     },
     {

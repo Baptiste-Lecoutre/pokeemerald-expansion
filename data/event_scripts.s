@@ -1,3 +1,4 @@
+#include "config.h"
 #include "config/battle.h"
 #include "config/item.h"
 #include "constants/global.h"
@@ -727,10 +728,8 @@ Common_EventScript_OutOfCenterPartyHeal::
 	playfanfare MUS_HEAL
 	waitfanfare
 	special HealPlayerParty
-  @ start fade then immediately load following pokemon, and wait for fade
-	fadescreenswapbuffers FADE_FROM_BLACK, 1
-  callnative UpdateFollowingPokemon
-  callfunc ScrFunc_WaitPaletteNotActive
+	callnative UpdateFollowingPokemon
+	fadescreenswapbuffers FADE_FROM_BLACK
 	return
 
 EventScript_RegionMap::

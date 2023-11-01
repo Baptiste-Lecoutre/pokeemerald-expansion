@@ -24452,7 +24452,7 @@ static const u16 sJirachiTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sDeoxysTeachableLearnset[] = {
+static const u16 sDeoxysNormalTeachableLearnset[] = {
 	MOVE_SEISMIC_TOSS,
 	MOVE_SHOCK_WAVE,
 	MOVE_SWIFT,
@@ -26090,7 +26090,7 @@ static const u16 sBurmyTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sWormadamTeachableLearnset[] = {
+static const u16 sWormadamPlantCloakTeachableLearnset[] = {
 	MOVE_BUG_BITE,
 	MOVE_MIMIC,
 	MOVE_SIGNAL_BEAM,
@@ -31346,7 +31346,7 @@ static const u16 sDarkraiTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sShayminTeachableLearnset[] = {
+static const u16 sShayminLandTeachableLearnset[] = {
 	MOVE_COVET,
 	MOVE_SWIFT,
 	MOVE_MIMIC,
@@ -43151,7 +43151,7 @@ static const u16 sEspurrTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sMeowsticTeachableLearnset[] = {
+static const u16 sMeowsticMaleTeachableLearnset[] = {
 	MOVE_COVET,
 	MOVE_SHOCK_WAVE,
 	MOVE_SNATCH,
@@ -45824,7 +45824,7 @@ static const u16 sDiancieTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sHoopaTeachableLearnset[] = {
+static const u16 sHoopaConfinedTeachableLearnset[] = {
 	MOVE_SEISMIC_TOSS,
 	MOVE_COVET,
 	MOVE_SHOCK_WAVE,
@@ -47359,7 +47359,7 @@ static const u16 sRockruffTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sLycanrocTeachableLearnset[] = {
+static const u16 sLycanrocMiddayTeachableLearnset[] = {
 	MOVE_PSYCHIC_FANGS,
 	MOVE_SEISMIC_TOSS,
 	MOVE_COVET,
@@ -53381,7 +53381,7 @@ static const u16 sToxelTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sToxtricityTeachableLearnset[] = {
+static const u16 sToxtricityAmpedTeachableLearnset[] = {
 	MOVE_FURY_CUTTER,
 	MOVE_SHOCK_WAVE,
 	MOVE_SWIFT,
@@ -55025,7 +55025,7 @@ static const u16 sEiscueTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sIndeedeeTeachableLearnset[] = {
+static const u16 sIndeedeeMaleTeachableLearnset[] = {
 	MOVE_SEISMIC_TOSS,
 	MOVE_SHOCK_WAVE,
 	MOVE_SWIFT,
@@ -56015,7 +56015,7 @@ static const u16 sKubfuTeachableLearnset[] = {
 	MOVE_UNAVAILABLE,
 };
 
-static const u16 sUrshifuTeachableLearnset[] = {
+static const u16 sUrshifuSingleStrikeStyleTeachableLearnset[] = {
 	MOVE_FURY_CUTTER,
 	MOVE_SEISMIC_TOSS,
 	MOVE_COVET,

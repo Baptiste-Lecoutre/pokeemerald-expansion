@@ -1315,26 +1315,6 @@
         .bodyColor = BODY_COLOR_PURPLE,                                     \
         .noFlip = FALSE
 
-#define ALCREMIE_MISC_INFO(color)                                           \
-        .baseHP        = 65,                                                \
-        .baseAttack    = 60,                                                \
-        .baseDefense   = 75,                                                \
-        .baseSpeed     = 64,                                                \
-        .baseSpAttack  = 110,                                               \
-        .baseSpDefense = 121,                                               \
-        .types = { TYPE_FAIRY, TYPE_FAIRY},                                 \
-        .catchRate = 100,                                                   \
-        .expYield = 173,                                                    \
-        .evYield_SpDefense = 2,                                             \
-        .genderRatio = MON_FEMALE,                                          \
-        .eggCycles = 20,                                                    \
-        .friendship = STANDARD_FRIENDSHIP,                                  \
-        .growthRate = GROWTH_MEDIUM_FAST,                                   \
-        .eggGroups = { EGG_GROUP_FAIRY, EGG_GROUP_AMORPHOUS},               \
-        .abilities = {ABILITY_SWEET_VEIL, ABILITY_NONE, ABILITY_AROMA_VEIL},\
-        .bodyColor = color,                                                 \
-        .noFlip = FALSE
-
 #define MORPEKO_SPECIES_INFO                               \
     {                                                      \
         .baseHP        = 58,                               \
@@ -1398,7 +1378,7 @@
         .bodyColor = BODY_COLOR_WHITE,                                              \
         .noFlip = FALSE
 
-#define URSHIFU_MISC_INFO                                               \
+#define URSHIFU_SINGLE_STRIKE_STYLE_MISC_INFO                           \
         .baseHP        = 100,                                           \
         .baseAttack    = 130,                                           \
         .baseDefense   = 100,                                           \
@@ -9394,7 +9374,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_CASTFORM] = CASTFORM_SPECIES_INFO(TYPE_NORMAL, BODY_COLOR_GRAY),
+    [SPECIES_CASTFORM_NORMAL] = CASTFORM_SPECIES_INFO(TYPE_NORMAL, BODY_COLOR_GRAY),
 
     [SPECIES_KECLEON] =
     {
@@ -10185,7 +10165,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_DEOXYS] =
+    [SPECIES_DEOXYS_NORMAL] =
     {
         .baseHP        = 50,
         .baseAttack    = 150,
@@ -10790,9 +10770,9 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_BURMY] = BURMY_SPECIES_INFO(BODY_COLOR_GREEN),
+    [SPECIES_BURMY_PLANT_CLOAK] = BURMY_SPECIES_INFO(BODY_COLOR_GREEN),
 
-    [SPECIES_WORMADAM] =
+    [SPECIES_WORMADAM_PLANT_CLOAK] =
     {
         .baseHP        = 60,
         .baseAttack    = 59,
@@ -10975,11 +10955,11 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_CHERRIM] = CHERRIM_SPECIES_INFO(BODY_COLOR_PURPLE),
+    [SPECIES_CHERRIM_OVERCAST] = CHERRIM_SPECIES_INFO(BODY_COLOR_PURPLE),
 
-    [SPECIES_SHELLOS] = SHELLOS_SPECIES_INFO(BODY_COLOR_PURPLE),
+    [SPECIES_SHELLOS_WEST_SEA] = SHELLOS_SPECIES_INFO(BODY_COLOR_PURPLE),
 
-    [SPECIES_GASTRODON] = GASTRODON_SPECIES_INFO(BODY_COLOR_PURPLE),
+    [SPECIES_GASTRODON_WEST_SEA] = GASTRODON_SPECIES_INFO(BODY_COLOR_PURPLE),
 
     [SPECIES_AMBIPOM] =
     {
@@ -12425,7 +12405,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_GIRATINA] =
+    [SPECIES_GIRATINA_ALTERED] =
     {
         .baseHP        = 150,
         .baseAttack    = 100,
@@ -12541,7 +12521,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_SHAYMIN] =
+    [SPECIES_SHAYMIN_LAND] =
     {
         .baseHP        = 100,
         .baseAttack    = 100,
@@ -12566,7 +12546,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_ARCEUS] =
+    [SPECIES_ARCEUS_NORMAL] =
     {
         .baseHP        = 120,
         .baseAttack    = 120,
@@ -13893,7 +13873,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = TRUE,
     },
 
-    [SPECIES_BASCULIN] =
+    [SPECIES_BASCULIN_RED_STRIPED] =
     {
         .baseHP        = 70,
         .baseAttack    = 92,
@@ -13902,7 +13882,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 80,
         .baseSpDefense = 55,
         .types = { TYPE_WATER, TYPE_WATER},
-        .catchRate = 25,
+        .catchRate = 190,
         .expYield = 161,
         .evYield_Speed     = 2,
         .itemRare = ITEM_DEEP_SEA_TOOTH,
@@ -14011,7 +13991,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_DARMANITAN] =
+    [SPECIES_DARMANITAN_STANDARD_MODE] =
     {
         .baseHP        = 105,
         .baseAttack    = 140,
@@ -14670,9 +14650,9 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_DEERLING] = DEERLING_SPECIES_INFO(BODY_COLOR_PINK),
+    [SPECIES_DEERLING_SPRING] = DEERLING_SPECIES_INFO(BODY_COLOR_PINK),
 
-    [SPECIES_SAWSBUCK] = SAWSBUCK_SPECIES_INFO,
+    [SPECIES_SAWSBUCK_SPRING] = SAWSBUCK_SPECIES_INFO,
 
     [SPECIES_EMOLGA] =
     {
@@ -15899,7 +15879,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_TORNADUS] =
+    [SPECIES_TORNADUS_INCARNATE] =
     {
         .baseHP        = 79,
         .baseAttack    = 115,
@@ -15922,7 +15902,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_THUNDURUS] =
+    [SPECIES_THUNDURUS_INCARNATE] =
     {
         .baseHP        = 79,
         .baseAttack    = 115,
@@ -15991,7 +15971,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_LANDORUS] =
+    [SPECIES_LANDORUS_INCARNATE] =
     {
         .baseHP        = 89,
         .baseAttack    = 125,
@@ -16039,7 +16019,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_KELDEO] =
+    [SPECIES_KELDEO_ORDINARY] =
     {
         .baseHP        = 91,
         .baseAttack    = 72,
@@ -16062,7 +16042,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_MELOETTA] =
+    [SPECIES_MELOETTA_ARIA] =
     {
         .baseHP        = 100,
         .baseAttack    = 77,
@@ -16445,7 +16425,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_VIVILLON] = VIVILLON_SPECIES_INFO(BODY_COLOR_WHITE),
+    [SPECIES_VIVILLON_ICY_SNOW] = VIVILLON_SPECIES_INFO(BODY_COLOR_WHITE),
 
     [SPECIES_LITLEO] =
     {
@@ -16491,11 +16471,11 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_FLABEBE] = FLABEBE_SPECIES_INFO,
+    [SPECIES_FLABEBE_RED_FLOWER] = FLABEBE_SPECIES_INFO,
 
-    [SPECIES_FLOETTE] = FLOETTE_SPECIES_INFO,
+    [SPECIES_FLOETTE_RED_FLOWER] = FLOETTE_SPECIES_INFO,
 
-    [SPECIES_FLORGES] = FLORGES_SPECIES_INFO,
+    [SPECIES_FLORGES_RED_FLOWER] = FLORGES_SPECIES_INFO,
 
     [SPECIES_SKIDDO] =
     {
@@ -16587,7 +16567,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_FURFROU] = FURFROU_SPECIES_INFO(FLIP),
+    [SPECIES_FURFROU_NATURAL] = FURFROU_SPECIES_INFO(FLIP),
 
     [SPECIES_ESPURR] =
     {
@@ -16611,7 +16591,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_MEOWSTIC] =
+    [SPECIES_MEOWSTIC_MALE] =
     {
         .baseHP        = 74,
         .baseAttack    = 48,
@@ -16677,7 +16657,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_AEGISLASH] =
+    [SPECIES_AEGISLASH_SHIELD] =
     {
         .baseHP        = 60,
         .baseAttack    = 50,
@@ -17330,7 +17310,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_PUMPKABOO] =
+    [SPECIES_PUMPKABOO_AVERAGE] =
     {
         .baseHP        = 49,
         .baseAttack    = 66,
@@ -17341,7 +17321,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         PUMKPABOO_MISC_INFO,
     },
 
-    [SPECIES_GOURGEIST] =
+    [SPECIES_GOURGEIST_AVERAGE] =
     {
         .baseHP        = 65,
         .baseAttack    = 90,
@@ -17456,7 +17436,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_XERNEAS] = XERNEAS_SPECIES_INFO,
+    [SPECIES_XERNEAS_NEUTRAL] = XERNEAS_SPECIES_INFO,
 
     [SPECIES_YVELTAL] =
     {
@@ -17481,7 +17461,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_ZYGARDE] = ZYGARDE_50_SPECIES_INFO(ABILITY_AURA_BREAK),
+    [SPECIES_ZYGARDE_50_AURA_BREAK] = ZYGARDE_50_SPECIES_INFO(ABILITY_AURA_BREAK),
 
     [SPECIES_DIANCIE] =
     {
@@ -17507,7 +17487,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_HOOPA] =
+    [SPECIES_HOOPA_CONFINED] =
     {
         .baseHP        = 80,
         .baseAttack    = 110,
@@ -17981,7 +17961,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_ORICORIO] = ORICORIO_SPECIES_INFO(TYPE_FIRE, BODY_COLOR_RED),
+    [SPECIES_ORICORIO_BAILE] = ORICORIO_SPECIES_INFO(TYPE_FIRE, BODY_COLOR_RED),
 
     [SPECIES_CUTIEFLY] =
     {
@@ -18031,7 +18011,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 
     [SPECIES_ROCKRUFF] = ROCKRUFF_SPECIES_INFO(ABILITY_KEEN_EYE, ABILITY_VITAL_SPIRIT, ABILITY_STEADFAST),
 
-    [SPECIES_LYCANROC] =
+    [SPECIES_LYCANROC_MIDDAY] =
     {
         .baseHP        = 75,
         .baseAttack    = 115,
@@ -18053,7 +18033,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_WISHIWASHI] =
+    [SPECIES_WISHIWASHI_SOLO] =
     {
         .baseHP        = 45,
         .baseAttack    = 20,
@@ -18668,9 +18648,9 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_SILVALLY] = SILVALLY_SPECIES_INFO(TYPE_NORMAL),
+    [SPECIES_SILVALLY_NORMAL] = SILVALLY_SPECIES_INFO(TYPE_NORMAL),
 
-    [SPECIES_MINIOR] = MINIOR_METEOR_SPECIES_INFO,
+    [SPECIES_MINIOR_METEOR_RED] = MINIOR_METEOR_SPECIES_INFO,
 
     [SPECIES_KOMALA] =
     {
@@ -18740,7 +18720,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_MIMIKYU] = MIMIKYU_SPECIES_INFO,
+    [SPECIES_MIMIKYU_DISGUISED] = MIMIKYU_SPECIES_INFO,
 
     [SPECIES_BRUXISH] =
     {
@@ -19467,7 +19447,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_RILLABOOM] = 
+    [SPECIES_RILLABOOM] =
     {
         RILLABOOM_MISC_INFO,
     },
@@ -20095,7 +20075,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_TOXTRICITY] =
+    [SPECIES_TOXTRICITY_AMPED] =
     {
         TOXTRICITY_MISC_INFO(ABILITY_PLUS),
     },
@@ -20171,9 +20151,9 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_SINISTEA] = SINISTEA_SPECIES_INFO,
+    [SPECIES_SINISTEA_PHONY] = SINISTEA_SPECIES_INFO,
 
-    [SPECIES_POLTEAGEIST] = POLTEAGEIST_SPECIES_INFO,
+    [SPECIES_POLTEAGEIST_PHONY] = POLTEAGEIST_SPECIES_INFO,
 
     [SPECIES_HATENNA] =
     {
@@ -20428,8 +20408,93 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_ALCREMIE] = { ALCREMIE_MISC_INFO(BODY_COLOR_WHITE) },
+#define ALCREMIE_MISC_INFO(color)                                           \
+        .baseHP        = 65,                                                \
+        .baseAttack    = 60,                                                \
+        .baseDefense   = 75,                                                \
+        .baseSpeed     = 64,                                                \
+        .baseSpAttack  = 110,                                               \
+        .baseSpDefense = 121,                                               \
+        .types = { TYPE_FAIRY, TYPE_FAIRY},                                 \
+        .catchRate = 100,                                                   \
+        .expYield = 173,                                                    \
+        .evYield_SpDefense = 2,                                             \
+        .genderRatio = MON_FEMALE,                                          \
+        .eggCycles = 20,                                                    \
+        .friendship = STANDARD_FRIENDSHIP,                                  \
+        .growthRate = GROWTH_MEDIUM_FAST,                                   \
+        .eggGroups = { EGG_GROUP_FAIRY, EGG_GROUP_AMORPHOUS},               \
+        .abilities = {ABILITY_SWEET_VEIL, ABILITY_NONE, ABILITY_AROMA_VEIL},\
+        .bodyColor = color,                                                 \
+        .noFlip = FALSE
 
+// For later
+#define ALCREMIE_REGULAR_MISC_INFO(color, sweet, cream)                     \
+    ALCREMIE_MISC_INFO(color)
+
+    [SPECIES_ALCREMIE_STRAWBERRY_VANILLA_CREAM] = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Strawberry, VanillaCream), },
+    [SPECIES_ALCREMIE_STRAWBERRY_RUBY_CREAM]    = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_PINK, Strawberry, RubyCream), },
+    [SPECIES_ALCREMIE_STRAWBERRY_MATCHA_CREAM]  = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_GREEN, Strawberry, MatchaCream), },
+    [SPECIES_ALCREMIE_STRAWBERRY_MINT_CREAM]    = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BLUE, Strawberry, MintCream), },
+    [SPECIES_ALCREMIE_STRAWBERRY_LEMON_CREAM]   = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Strawberry, LemonCream), },
+    [SPECIES_ALCREMIE_STRAWBERRY_SALTED_CREAM]  = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Strawberry, SaltedCream), },
+    [SPECIES_ALCREMIE_STRAWBERRY_RUBY_SWIRL]    = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Strawberry, RubySwirl), },
+    [SPECIES_ALCREMIE_STRAWBERRY_CARAMEL_SWIRL] = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BROWN, Strawberry, CaramelSwirl), },
+    [SPECIES_ALCREMIE_STRAWBERRY_RAINBOW_SWIRL] = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Strawberry, RainbowSwirl), },
+    [SPECIES_ALCREMIE_BERRY_VANILLA_CREAM]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Berry, VanillaCream) },
+    [SPECIES_ALCREMIE_BERRY_RUBY_CREAM]         = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_PINK, Berry, RubyCream) },
+    [SPECIES_ALCREMIE_BERRY_MATCHA_CREAM]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_GREEN, Berry, MatchaCream), },
+    [SPECIES_ALCREMIE_BERRY_MINT_CREAM]         = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BLUE, Berry, MintCream), },
+    [SPECIES_ALCREMIE_BERRY_LEMON_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Berry, LemonCream), },
+    [SPECIES_ALCREMIE_BERRY_SALTED_CREAM]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Berry, SaltedCream), },
+    [SPECIES_ALCREMIE_BERRY_RUBY_SWIRL]         = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Berry, RubySwirl), },
+    [SPECIES_ALCREMIE_BERRY_CARAMEL_SWIRL]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BROWN, Berry, CaramelSwirl), },
+    [SPECIES_ALCREMIE_BERRY_RAINBOW_SWIRL]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Berry, RainbowSwirl), },
+    [SPECIES_ALCREMIE_LOVE_VANILLA_CREAM]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Love, VanillaCream) },
+    [SPECIES_ALCREMIE_LOVE_RUBY_CREAM]          = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_PINK, Love, RubyCream) },
+    [SPECIES_ALCREMIE_LOVE_MATCHA_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_GREEN, Love, MatchaCream), },
+    [SPECIES_ALCREMIE_LOVE_MINT_CREAM]          = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BLUE, Love, MintCream), },
+    [SPECIES_ALCREMIE_LOVE_LEMON_CREAM]         = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Love, LemonCream), },
+    [SPECIES_ALCREMIE_LOVE_SALTED_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Love, SaltedCream), },
+    [SPECIES_ALCREMIE_LOVE_RUBY_SWIRL]          = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Love, RubySwirl), },
+    [SPECIES_ALCREMIE_LOVE_CARAMEL_SWIRL]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BROWN, Love, CaramelSwirl), },
+    [SPECIES_ALCREMIE_LOVE_RAINBOW_SWIRL]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Love, RainbowSwirl), },
+    [SPECIES_ALCREMIE_STAR_VANILLA_CREAM]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Star, VanillaCream) },
+    [SPECIES_ALCREMIE_STAR_RUBY_CREAM]          = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_PINK, Star, RubyCream) },
+    [SPECIES_ALCREMIE_STAR_MATCHA_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_GREEN, Star, MatchaCream), },
+    [SPECIES_ALCREMIE_STAR_MINT_CREAM]          = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BLUE, Star, MintCream), },
+    [SPECIES_ALCREMIE_STAR_LEMON_CREAM]         = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Star, LemonCream), },
+    [SPECIES_ALCREMIE_STAR_SALTED_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Star, SaltedCream), },
+    [SPECIES_ALCREMIE_STAR_RUBY_SWIRL]          = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Star, RubySwirl), },
+    [SPECIES_ALCREMIE_STAR_CARAMEL_SWIRL]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BROWN, Star, CaramelSwirl), },
+    [SPECIES_ALCREMIE_STAR_RAINBOW_SWIRL]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Star, RainbowSwirl), },
+    [SPECIES_ALCREMIE_CLOVER_VANILLA_CREAM]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Clover, VanillaCream) },
+    [SPECIES_ALCREMIE_CLOVER_RUBY_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_PINK, Clover, RubyCream) },
+    [SPECIES_ALCREMIE_CLOVER_MATCHA_CREAM]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_GREEN, Clover, MatchaCream), },
+    [SPECIES_ALCREMIE_CLOVER_MINT_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BLUE, Clover, MintCream), },
+    [SPECIES_ALCREMIE_CLOVER_LEMON_CREAM]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Clover, LemonCream), },
+    [SPECIES_ALCREMIE_CLOVER_SALTED_CREAM]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Clover, SaltedCream), },
+    [SPECIES_ALCREMIE_CLOVER_RUBY_SWIRL]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Clover, RubySwirl), },
+    [SPECIES_ALCREMIE_CLOVER_CARAMEL_SWIRL]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BROWN, Clover, CaramelSwirl), },
+    [SPECIES_ALCREMIE_CLOVER_RAINBOW_SWIRL]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Clover, RainbowSwirl), },
+    [SPECIES_ALCREMIE_FLOWER_VANILLA_CREAM]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Flower, VanillaCream) },
+    [SPECIES_ALCREMIE_FLOWER_RUBY_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_PINK, Flower, RubyCream) },
+    [SPECIES_ALCREMIE_FLOWER_MATCHA_CREAM]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_GREEN, Flower, MatchaCream), },
+    [SPECIES_ALCREMIE_FLOWER_MINT_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BLUE, Flower, MintCream), },
+    [SPECIES_ALCREMIE_FLOWER_LEMON_CREAM]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Flower, LemonCream), },
+    [SPECIES_ALCREMIE_FLOWER_SALTED_CREAM]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Flower, SaltedCream), },
+    [SPECIES_ALCREMIE_FLOWER_RUBY_SWIRL]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Flower, RubySwirl), },
+    [SPECIES_ALCREMIE_FLOWER_CARAMEL_SWIRL]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BROWN, Flower, CaramelSwirl), },
+    [SPECIES_ALCREMIE_FLOWER_RAINBOW_SWIRL]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Flower, RainbowSwirl), },
+    [SPECIES_ALCREMIE_RIBBON_VANILLA_CREAM]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Ribbon, VanillaCream) },
+    [SPECIES_ALCREMIE_RIBBON_RUBY_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_PINK, Ribbon, RubyCream) },
+    [SPECIES_ALCREMIE_RIBBON_MATCHA_CREAM]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_GREEN, Ribbon, MatchaCream), },
+    [SPECIES_ALCREMIE_RIBBON_MINT_CREAM]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BLUE, Ribbon, MintCream), },
+    [SPECIES_ALCREMIE_RIBBON_LEMON_CREAM]       = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Ribbon, LemonCream), },
+    [SPECIES_ALCREMIE_RIBBON_SALTED_CREAM]      = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_WHITE, Ribbon, SaltedCream), },
+    [SPECIES_ALCREMIE_RIBBON_RUBY_SWIRL]        = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Ribbon, RubySwirl), },
+    [SPECIES_ALCREMIE_RIBBON_CARAMEL_SWIRL]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_BROWN, Ribbon, CaramelSwirl), },
+    [SPECIES_ALCREMIE_RIBBON_RAINBOW_SWIRL]     = { ALCREMIE_REGULAR_MISC_INFO(BODY_COLOR_YELLOW, Ribbon, RainbowSwirl), },
     [SPECIES_FALINKS] =
     {
         .baseHP        = 65,
@@ -20542,7 +20607,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_EISCUE] =
+    [SPECIES_EISCUE_ICE_FACE] =
     {
         .baseHP        = 75,
         .baseAttack    = 80,
@@ -20564,7 +20629,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_INDEEDEE] =
+    [SPECIES_INDEEDEE_MALE] =
     {
         .baseHP        = 60,
         .baseAttack    = 65,
@@ -20586,7 +20651,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_MORPEKO] = MORPEKO_SPECIES_INFO,
+    [SPECIES_MORPEKO_FULL_BELLY] = MORPEKO_SPECIES_INFO,
 
     [SPECIES_CUFANT] =
     {
@@ -20775,7 +20840,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_ZACIAN] =
+    [SPECIES_ZACIAN_HERO_OF_MANY_BATTLES] =
     {
         .baseHP        = 92,
         .baseAttack    = P_UPDATED_STATS >= GEN_9 ? 120 : 130,
@@ -20798,7 +20863,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_ZAMAZENTA] =
+    [SPECIES_ZAMAZENTA_HERO_OF_MANY_BATTLES] =
     {
         .baseHP        = 92,
         .baseAttack    = P_UPDATED_STATS >= GEN_9 ? 120 : 130,
@@ -20867,7 +20932,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_URSHIFU] = { URSHIFU_MISC_INFO, },
+    [SPECIES_URSHIFU_SINGLE_STRIKE_STYLE] = { URSHIFU_SINGLE_STRIKE_STYLE_MISC_INFO, },
 
     [SPECIES_ZARUDE] = ZARUDE_SPECIES_INFO,
 
@@ -20996,8 +21061,9 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpDefense = 75,
         .types = { TYPE_NORMAL, TYPE_PSYCHIC},
         .catchRate = 45,
-        .expYield = 184,
+        .expYield = 263,
         .evYield_Attack    = 1,
+        .evYield_SpAttack  = 1,
         .genderRatio = PERCENT_FEMALE(50),
         .eggCycles = 20,
         .friendship = STANDARD_FRIENDSHIP,
@@ -21017,11 +21083,11 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 45,
         .baseSpDefense = 70,
         .types = { TYPE_BUG, TYPE_ROCK},
-        .catchRate = 25,
+        .catchRate = 15,
         .expYield = 175,
-        .evYield_Attack    = 2,
+        .evYield_Attack    = 3,
         .genderRatio = PERCENT_FEMALE(50),
-        .eggCycles = 25,
+        .eggCycles = 20,
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = { EGG_GROUP_BUG, EGG_GROUP_BUG},
@@ -21039,8 +21105,8 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 45,
         .baseSpDefense = 80,
         .types = { TYPE_GROUND, TYPE_NORMAL},
-        .catchRate = 75,
-        .expYield = 194,
+        .catchRate = 20,
+        .expYield = 275,
         .evYield_Attack    = 3,
         .genderRatio = PERCENT_FEMALE(50),
         .eggCycles = 20,
@@ -21052,7 +21118,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_BASCULEGION] =
+    [SPECIES_BASCULEGION_MALE] =
     {
         .baseHP        = 120,
         .baseAttack    = 112,
@@ -21061,15 +21127,15 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 80,
         .baseSpDefense = 75,
         .types = { TYPE_WATER, TYPE_GHOST},
-        .catchRate = 25,
-        .expYield = 186,
-        .evYield_HP     = 2,
+        .catchRate = 45,
+        .expYield = 265,
+        .evYield_HP     = 3,
         .genderRatio = MON_MALE,
-        .eggCycles = 40,
+        .eggCycles = 20,
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = { EGG_GROUP_WATER_2, EGG_GROUP_WATER_2},
-        .abilities = {ABILITY_RATTLED, ABILITY_ADAPTABILITY, ABILITY_MOLD_BREAKER},
+        .abilities = {ABILITY_SWIFT_SWIM, ABILITY_ADAPTABILITY, ABILITY_MOLD_BREAKER},
         .bodyColor = BODY_COLOR_GREEN,
         .noFlip = FALSE,
     },
@@ -21083,15 +21149,15 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 100,
         .baseSpDefense = 75,
         .types = { TYPE_WATER, TYPE_GHOST},
-        .catchRate = 25,
-        .expYield = 186,
-        .evYield_HP     = 2,
+        .catchRate = 45,
+        .expYield = 265,
+        .evYield_HP     = 3,
         .genderRatio = MON_FEMALE,
-        .eggCycles = 40,
+        .eggCycles = 20,
         .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = { EGG_GROUP_WATER_2, EGG_GROUP_WATER_2},
-        .abilities = {ABILITY_RATTLED, ABILITY_ADAPTABILITY, ABILITY_MOLD_BREAKER},
+        .abilities = {ABILITY_SWIFT_SWIM, ABILITY_ADAPTABILITY, ABILITY_MOLD_BREAKER},
         .bodyColor = BODY_COLOR_GREEN,
         .noFlip = FALSE,
     },
@@ -21105,13 +21171,12 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 40,
         .baseSpDefense = 80,
         .types = { TYPE_FIGHTING, TYPE_POISON},
-        .catchRate = 135,
-        .expYield = 179,
-        .evYield_Attack    = 1,
-        .evYield_Speed     = 1,
+        .catchRate = 20,
+        .expYield = 102,
+        .evYield_Attack    = 2,
         .genderRatio = PERCENT_FEMALE(50),
         .eggCycles = 20,
-        .friendship = 35,
+        .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_MEDIUM_SLOW,
         .eggGroups = { EGG_GROUP_FIELD, EGG_GROUP_FIELD},
         .abilities = {ABILITY_PRESSURE, ABILITY_UNBURDEN, ABILITY_POISON_TOUCH},
@@ -21128,9 +21193,9 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 65,
         .baseSpDefense = 65,
         .types = { TYPE_DARK, TYPE_POISON},
-        .catchRate = 135,
-        .expYield = 180,
-        .evYield_Attack    = 1,
+        .catchRate = 45,
+        .expYield = 179,
+        .evYield_Attack    = 2,
         .genderRatio = PERCENT_FEMALE(50),
         .eggCycles = 20,
         .friendship = STANDARD_FRIENDSHIP,
@@ -21141,7 +21206,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_ENAMORUS] =
+    [SPECIES_ENAMORUS_INCARNATE] =
     {
         .baseHP        = 74,
         .baseAttack    = 115,
@@ -21151,14 +21216,14 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpDefense = 80,
         .types = { TYPE_FAIRY, TYPE_FLYING},
         .catchRate = 3,
-        .expYield = 261,
+        .expYield = 116,
         .evYield_SpAttack    = 3,
         .genderRatio = MON_FEMALE,
-        .eggCycles = 120,
-        .friendship = 90,
+        .eggCycles = 20,
+        .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_SLOW,
         .eggGroups = { EGG_GROUP_UNDISCOVERED, EGG_GROUP_UNDISCOVERED},
-        .abilities = {ABILITY_HEALER, ABILITY_NONE, ABILITY_CONTRARY},
+        .abilities = {ABILITY_CUTE_CHARM, ABILITY_NONE, ABILITY_CONTRARY},
         .bodyColor = BODY_COLOR_PINK,
         .noFlip = FALSE,
         .flags = SPECIES_FLAG_LEGENDARY,
@@ -23144,7 +23209,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_GALARIAN_FORM,
     },
 
-    [SPECIES_DARMANITAN_GALARIAN] =
+    [SPECIES_DARMANITAN_GALARIAN_STANDARD_MODE] =
     {
         .baseHP        = 105,
         .baseAttack    = 140,
@@ -23348,7 +23413,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = { EGG_GROUP_WATER_2, EGG_GROUP_WATER_2},
         .abilities = {ABILITY_POISON_POINT, ABILITY_SWIFT_SWIM, ABILITY_INTIMIDATE},
-        .bodyColor = BODY_COLOR_GRAY,
+        .bodyColor = BODY_COLOR_BLACK,
         .noFlip = FALSE,
         .flags = SPECIES_FLAG_HISUIAN_FORM,
     },
@@ -23372,7 +23437,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .growthRate = GROWTH_MEDIUM_SLOW,
         .eggGroups = { EGG_GROUP_FIELD, EGG_GROUP_FIELD},
         .abilities = {ABILITY_INNER_FOCUS, ABILITY_KEEN_EYE, ABILITY_PICKPOCKET},
-        .bodyColor = BODY_COLOR_BLACK,
+        .bodyColor = BODY_COLOR_GRAY,
         .noFlip = TRUE,
         .flags = SPECIES_FLAG_HISUIAN_FORM,
     },
@@ -23389,7 +23454,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .types = { TYPE_WATER, TYPE_DARK},
         .catchRate = 45,
         .expYield = 238,
-        .evYield_SpAttack  = 3,
+        .evYield_Attack  = 3,
         .genderRatio = PERCENT_FEMALE(12.5),
         .eggCycles = 20,
         .friendship = STANDARD_FRIENDSHIP,
@@ -23412,7 +23477,8 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .types = { TYPE_GRASS, TYPE_FIGHTING},
         .catchRate = 75,
         .expYield = 168,
-        .evYield_Attack  = 2,
+        .evYield_Attack  = 1,
+        .evYield_Speed  = 1,
         .itemRare = ITEM_ABSORB_BULB,
         .genderRatio = MON_FEMALE,
         .eggCycles = 20,
@@ -23896,7 +23962,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 80,
         .baseSpDefense = 55,
         .types = { TYPE_WATER, TYPE_WATER},
-        .catchRate = 25,
+        .catchRate = 190,
         .expYield = 161,
         .evYield_Speed     = 2,
         .itemRare = ITEM_DEEP_SEA_SCALE,
@@ -23919,7 +23985,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpAttack  = 80,
         .baseSpDefense = 55,
         .types = { TYPE_WATER, TYPE_WATER},
-        .catchRate = 25,
+        .catchRate = 190,
         .expYield = 161,
         .evYield_Speed     = 2,
         .itemRare = ITEM_DEEP_SEA_SCALE,
@@ -23955,7 +24021,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_DARMANITAN_ZEN_MODE_GALARIAN] =
+    [SPECIES_DARMANITAN_GALARIAN_ZEN_MODE] =
     {
         .baseHP        = 105,
         .baseAttack    = 160,
@@ -24391,7 +24457,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 
     [SPECIES_XERNEAS_ACTIVE] = XERNEAS_SPECIES_INFO,
 
-    [SPECIES_ZYGARDE_10] = ZYGARDE_10_SPECIES_INFO(ABILITY_AURA_BREAK),
+    [SPECIES_ZYGARDE_10_AURA_BREAK] = ZYGARDE_10_SPECIES_INFO(ABILITY_AURA_BREAK),
     [SPECIES_ZYGARDE_10_POWER_CONSTRUCT] = ZYGARDE_50_SPECIES_INFO(ABILITY_POWER_CONSTRUCT),
     [SPECIES_ZYGARDE_50_POWER_CONSTRUCT] = ZYGARDE_50_SPECIES_INFO(ABILITY_POWER_CONSTRUCT),
 
@@ -24432,7 +24498,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .evYield_SpAttack  = 3,
         .genderRatio = MON_GENDERLESS,
         .eggCycles = 120,
-        .friendship = 100,
+        .friendship = P_UPDATED_FRIENDSHIP >= GEN_8 ? STANDARD_FRIENDSHIP : 100,
         .growthRate = GROWTH_SLOW,
         .eggGroups = { EGG_GROUP_UNDISCOVERED, EGG_GROUP_UNDISCOVERED},
         .abilities = {ABILITY_MAGICIAN, ABILITY_NONE},
@@ -24637,15 +24703,6 @@ const struct SpeciesInfo gSpeciesInfo[] =
 
     [SPECIES_POLTEAGEIST_ANTIQUE] = POLTEAGEIST_SPECIES_INFO,
 
-    [SPECIES_ALCREMIE_RUBY_CREAM]    = { ALCREMIE_MISC_INFO(BODY_COLOR_PINK) },
-    [SPECIES_ALCREMIE_MATCHA_CREAM]  = { ALCREMIE_MISC_INFO(BODY_COLOR_GREEN) },
-    [SPECIES_ALCREMIE_MINT_CREAM]    = { ALCREMIE_MISC_INFO(BODY_COLOR_BLUE) },
-    [SPECIES_ALCREMIE_LEMON_CREAM]   = { ALCREMIE_MISC_INFO(BODY_COLOR_YELLOW) },
-    [SPECIES_ALCREMIE_SALTED_CREAM]  = { ALCREMIE_MISC_INFO(BODY_COLOR_WHITE) },
-    [SPECIES_ALCREMIE_RUBY_SWIRL]    = { ALCREMIE_MISC_INFO(BODY_COLOR_YELLOW) },
-    [SPECIES_ALCREMIE_CARAMEL_SWIRL] = { ALCREMIE_MISC_INFO(BODY_COLOR_BROWN) },
-    [SPECIES_ALCREMIE_RAINBOW_SWIRL] = { ALCREMIE_MISC_INFO(BODY_COLOR_YELLOW) },
-
     [SPECIES_EISCUE_NOICE_FACE] =
     {
         .baseHP        = 75,
@@ -24824,11 +24881,11 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .baseSpDefense = 100,
         .types = { TYPE_FAIRY, TYPE_FLYING},
         .catchRate = 3,
-        .expYield = 270,
+        .expYield = 116,
         .evYield_SpAttack  = 3,
         .genderRatio = MON_FEMALE,
-        .eggCycles = 120,
-        .friendship = 90,
+        .eggCycles = 20,
+        .friendship = STANDARD_FRIENDSHIP,
         .growthRate = GROWTH_SLOW,
         .eggGroups = { EGG_GROUP_UNDISCOVERED, EGG_GROUP_UNDISCOVERED},
         .abilities = {ABILITY_OVERCOAT, ABILITY_NONE},
@@ -24958,9 +25015,14 @@ const struct SpeciesInfo gSpeciesInfo[] =
         SANDACONDA_MISC_INFO,
         .gigantamax = TRUE,
     },
-    [SPECIES_TOXTRICITY_GIGANTAMAX] =
+    [SPECIES_TOXTRICITY_AMPED_GIGANTAMAX] =
     {
         TOXTRICITY_MISC_INFO(ABILITY_PLUS),
+        .gigantamax = TRUE,
+    },
+    [SPECIES_TOXTRICITY_LOW_KEY_GIGANTAMAX] =
+    {
+        TOXTRICITY_MISC_INFO(ABILITY_MINUS),
         .gigantamax = TRUE,
     },
     [SPECIES_CENTISKORCH_GIGANTAMAX] =
@@ -24993,9 +25055,9 @@ const struct SpeciesInfo gSpeciesInfo[] =
         DURALUDON_MISC_INFO,
         .gigantamax = TRUE,
     },
-    [SPECIES_URSHIFU_GIGANTAMAX] =
+    [SPECIES_URSHIFU_SINGLE_STRIKE_STYLE_GIGANTAMAX] =
     {
-        URSHIFU_MISC_INFO,
+        URSHIFU_SINGLE_STRIKE_STYLE_MISC_INFO,
         .gigantamax = TRUE,
     },
     [SPECIES_URSHIFU_RAPID_STRIKE_STYLE_GIGANTAMAX] =
