@@ -465,10 +465,10 @@
 #define FLAG_SHOWN_AURORA_TICKET             0x1AF
 #define FLAG_SHOWN_OLD_SEA_MAP               0x1B0
 #define FLAG_WANDA_GARDEVOIRITE                    0x1B1 // previously move tutor flags
-#define FLAG_DEFEATED_DIGLETT_1_DEWFORD                    0x1B2
-#define FLAG_DEFEATED_DIGLETT_2_DEWFORD                    0x1B3
-#define FLAG_DEFEATED_DIGLETT_3_DEWFORD                    0x1B4
-#define FLAG_DEFEATED_DIGLETT_4_DEWFORD                    0x1B5
+#define FLAG_DEFEATED_SANDYGAST_1_DEWFORD                    0x1B2
+#define FLAG_DEFEATED_SANDYGAST_2_DEWFORD                    0x1B3
+#define FLAG_DEFEATED_SANDYGAST_3_DEWFORD                    0x1B4
+#define FLAG_DEFEATED_SANDYGAST_4_DEWFORD                    0x1B5
 #define FLAG_UNUSED_0x1B6                    0x1B6
 #define FLAG_UNUSED_0x1B7                    0x1B7
 #define FLAG_UNUSED_0x1B8                    0x1B8
