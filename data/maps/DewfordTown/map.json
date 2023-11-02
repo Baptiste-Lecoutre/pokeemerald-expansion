@@ -109,7 +109,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_DIGLETT",
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SANDYGAST",
       "x": 5,
       "y": 11,
       "elevation": 0,
@@ -118,11 +118,11 @@
       "movement_range_y": 4,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "DewfordTown_EventScript_Diglett1",
-      "flag": "FLAG_DEFEATED_DIGLETT_1_DEWFORD"
+      "script": "DewfordTown_EventScript_Sandygast1",
+      "flag": "FLAG_DEFEATED_SANDYGAST_1_DEWFORD"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_DIGLETT",
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SANDYGAST",
       "x": 3,
       "y": 4,
       "elevation": 0,
@@ -131,11 +131,11 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "DewfordTown_EventScript_Diglett2",
-      "flag": "FLAG_DEFEATED_DIGLETT_2_DEWFORD"
+      "script": "DewfordTown_EventScript_Sandygast2",
+      "flag": "FLAG_DEFEATED_SANDYGAST_2_DEWFORD"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_DIGLETT",
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SANDYGAST",
       "x": 8,
       "y": 18,
       "elevation": 0,
@@ -144,11 +144,11 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "DewfordTown_EventScript_Diglett3",
-      "flag": "FLAG_DEFEATED_DIGLETT_3_DEWFORD"
+      "script": "DewfordTown_EventScript_Sandygast3",
+      "flag": "FLAG_DEFEATED_SANDYGAST_3_DEWFORD"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_DIGLETT",
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SANDYGAST",
       "x": 18,
       "y": 11,
       "elevation": 0,
@@ -157,8 +157,8 @@
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
-      "script": "DewfordTown_EventScript_Diglett4",
-      "flag": "FLAG_DEFEATED_DIGLETT_4_DEWFORD"
+      "script": "DewfordTown_EventScript_Sandygast4",
+      "flag": "FLAG_DEFEATED_SANDYGAST_4_DEWFORD"
     }
   ],
   "warp_events": [
