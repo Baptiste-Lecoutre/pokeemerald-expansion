@@ -403,6 +403,7 @@ static void Task_WaitFadeAccessPC(u8 taskId)
 {
     if (WaitForPokenavShutdownFade())
     {
+        gSaveBlock2Ptr->startShortcut = 15; // MENU_ACTION_PC
         ScriptContext_SetupScript(EventScript_PCMainMenu);
         DestroyTask(taskId);
     }

@@ -2027,6 +2027,9 @@ const u32 gItemIconPalette_PokeVial[] = INCBIN_U32("graphics/items/icon_palettes
 const u32 gItemIcon_BerserkGene[] = INCBIN_U32("graphics/items/icons/berserk_gene.4bpp.lz");
 const u32 gItemIconPalette_BerserkGene[] = INCBIN_U32("graphics/items/icon_palettes/berserk_gene.gbapal.lz");
 
+const u32 gItemIcon_FairyFeather[] = INCBIN_U32("graphics/items/icons/fairy_feather.4bpp.lz");
+const u32 gItemIconPalette_FairyFeather[] = INCBIN_U32("graphics/items/icon_palettes/fairy_feather.gbapal.lz");
+
 const u32 gItemIcon_EonFlute[] = INCBIN_U32("graphics/items/icons/eon_flute.4bpp.lz");
 const u32 gItemIconPalette_EonFlute[] = INCBIN_U32("graphics/items/icon_palettes/eon_flute.gbapal.lz");
 
