@@ -731,8 +731,7 @@ static bool8 HandleStartMenuInput(void)
     if (JOY_NEW(R_BUTTON))
     {
         PlaySE(SE_SELECT);
-        gMenuCallback = sStartMenuItems[MENU_ACTION_DEXNAV].func.u8_void;
-        //gMenuCallback = sStartMenuItems[MENU_ACTION_PC].func.u8_void;
+        gMenuCallback = sStartMenuItems[gSaveBlock2Ptr->startShortcut].func.u8_void;
         return FALSE;
     }
 
