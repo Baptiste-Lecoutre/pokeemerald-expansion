@@ -13,20 +13,6 @@
 #include "menu.h"
 #include "dma3.h"
 
-struct Pokenav_MainMenu
-{
-    void (*loopTask)(u32);
-    u32 (*isLoopTaskActiveFunc)(void);
-    u32 unused;
-    u32 currentTaskId;
-    u32 helpBarWindowId;
-    u32 palettes;
-    struct Sprite *spinningPokenav;
-    struct Sprite *leftHeaderSprites[2];
-    struct Sprite *submenuLeftHeaderSprites[2];
-    u8 tilemapBuffer[BG_SCREEN_SIZE];
-};
-
 // This struct uses a 32bit tag, and doesn't have a size field.
 // Needed to match LoadLeftHeaderGfxForSubMenu.
 struct CompressedSpriteSheetNoSize
@@ -46,7 +32,6 @@ static void MoveLeftHeader(struct Sprite *, s32, s32, s32);
 static void SpriteCB_MoveLeftHeader(struct Sprite *);
 static void InitPokenavMainMenuResources(void);
 static void CreateLeftHeaderSprites(void);
-static void InitHelpBar(void);
 static u32 LoopedTask_SlideMenuHeaderUp(s32);
 static u32 LoopedTask_SlideMenuHeaderDown(s32);
 static void DrawHelpBar(u32);
@@ -316,9 +301,14 @@ u32 PokenavMainMenuLoopedTaskIsActive(void)
 
 void ShutdownPokenav(void)
 {
-    PlaySE(SE_POKENAV_OFF);
-    ResetBldCnt_();
-    BeginNormalPaletteFade(PALETTES_ALL, -1, 0, 16, RGB_BLACK);
+    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+    {
+        PlaySE(SE_POKENAV_OFF);
+        ResetBldCnt_();
+        BeginNormalPaletteFade(PALETTES_ALL, -1, 0, 16, RGB_BLACK);
+    }
+    else
+        ResetBldCnt_();
 }
 
 bool32 WaitForPokenavShutdownFade(void)
@@ -551,7 +541,7 @@ void InitBgTemplates(const struct BgTemplate *templates, int count)
         InitBgFromTemplate(templates++);
 }
 
-static void InitHelpBar(void)
+void InitHelpBar(void)
 {
     struct Pokenav_MainMenu *menu = GetSubstructPtr(POKENAV_SUBSTRUCT_MAIN_MENU);
 

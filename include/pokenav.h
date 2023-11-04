@@ -54,6 +54,30 @@ struct PokenavMonList
     struct PokenavMonListItem monData[TOTAL_BOXES_COUNT * IN_BOX_COUNT + PARTY_SIZE];
 };
 
+struct Pokenav_Menu
+{
+    u16 menuType;
+    s16 cursorPos;
+    u16 currMenuItem;
+    u16 helpBarIndex;
+    u32 menuId;
+    u32 (*callback)(struct Pokenav_Menu *);
+};
+
+struct Pokenav_MainMenu
+{
+    void (*loopTask)(u32);
+    u32 (*isLoopTaskActiveFunc)(void);
+    u32 unused;
+    u32 currentTaskId;
+    u32 helpBarWindowId;
+    u32 palettes;
+    struct Sprite *spinningPokenav;
+    struct Sprite *leftHeaderSprites[2];
+    struct Sprite *submenuLeftHeaderSprites[2];
+    u8 tilemapBuffer[BG_SCREEN_SIZE];
+};
+
 // Return values of LoopedTask functions.
 #define LT_INC_AND_PAUSE 0
 #define LT_INC_AND_CONTINUE 1
@@ -67,6 +91,8 @@ enum
     POKENAV_MODE_NORMAL,           // Chosen from Start menu.
     POKENAV_MODE_FORCE_CALL_READY, // Pokenav tutorial before calling Mr. Stone
     POKENAV_MODE_FORCE_CALL_EXIT,  // Pokenav tutorial after calling Mr. Stone
+    POKENAV_MODE_TOWN_MAP,         // Town Map from start menu
+    POKENAV_MODE_TOWN_MAP_EXIT,    // Town Map from start menu exit
 };
 
 enum
@@ -318,6 +344,7 @@ void SetSelectedConditionSearch(u32);
 u32 GetSelectedConditionSearch(void);
 
 void CB2_InitPokeNav(void);
+void OpenPokenavForTownMap(MainCallback exitCallback);
 u32 CreateLoopedTask(LoopedTask loopedTask, u32 priority);
 bool32 FuncIsActiveLoopedTask(LoopedTask func);
 void *GetSubstructPtr(u32 index);
@@ -403,6 +430,7 @@ int GetPokenavMenuType(void);
 int GetPokenavCursorPos(void);
 int GetCurrentMenuItemId(void);
 u16 GetHelpBarTextId(void);
+void InitHelpBar(void);
 
 // pokenav_menu_handler_gfx.c
 bool32 OpenPokenavMenuInitial(void);

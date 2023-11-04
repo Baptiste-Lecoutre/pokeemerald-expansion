@@ -10,16 +10,6 @@
 #include "overworld.h"
 #include "event_scripts.h"
 
-struct Pokenav_Menu
-{
-    u16 menuType;
-    s16 cursorPos;
-    u16 currMenuItem;
-    u16 helpBarIndex;
-    u32 menuId;
-    u32 (*callback)(struct Pokenav_Menu *);
-};
-
 static bool32 UpdateMenuCursorPos(struct Pokenav_Menu *);
 static void ReturnToConditionMenu(struct Pokenav_Menu *);
 static void ReturnToMainMenu(struct Pokenav_Menu *);
@@ -32,6 +22,8 @@ static u32 HandleConditionMenuInput(struct Pokenav_Menu *);
 static u32 HandleCantOpenRibbonsInput(struct Pokenav_Menu *);
 static u32 HandleMainMenuInputEndTutorial(struct Pokenav_Menu *);
 static u32 HandleMainMenuInputTutorial(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputTownMap(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputTownMapExit(struct Pokenav_Menu *);
 static u32 HandleMainMenuInput(struct Pokenav_Menu *);
 static u32 (*GetMainMenuInputHandler(void))(struct Pokenav_Menu *);
 static void SetMenuInputHandler(struct Pokenav_Menu *);
@@ -199,7 +191,8 @@ static void SetMenuInputHandler(struct Pokenav_Menu *menu)
     switch (menu->menuType)
     {
     case POKENAV_MENU_TYPE_DEFAULT:
-        SetPokenavMode(POKENAV_MODE_NORMAL);
+        if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP && GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+            SetPokenavMode(POKENAV_MODE_NORMAL);
         // fallthrough
     case POKENAV_MENU_TYPE_UNLOCK_MC:
     case POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS:
@@ -225,6 +218,10 @@ static u32 (*GetMainMenuInputHandler(void))(struct Pokenav_Menu *)
         return HandleMainMenuInputTutorial;
     case POKENAV_MODE_FORCE_CALL_EXIT:
         return HandleMainMenuInputEndTutorial;
+    case POKENAV_MODE_TOWN_MAP:
+        return HandleMainMenuInputTownMap;
+    case POKENAV_MODE_TOWN_MAP_EXIT:
+        return HandleMainMenuInputTownMapExit;
     }
 }
 
@@ -360,6 +357,17 @@ static u32 HandleMainMenuInputEndTutorial(struct Pokenav_Menu *menu)
         return -1;
     }
     return POKENAV_MENU_FUNC_NONE;
+}
+
+static u32 HandleMainMenuInputTownMap(struct Pokenav_Menu *menu)
+{
+    SetMenuIdAndCB(menu, POKENAV_REGION_MAP);
+    return POKENAV_MENU_FUNC_OPEN_FEATURE;
+}
+
+static u32 HandleMainMenuInputTownMapExit(struct Pokenav_Menu *menu)
+{
+    return -1;
 }
 
 // Handles input after selecting Ribbons when there are no ribbon winners left

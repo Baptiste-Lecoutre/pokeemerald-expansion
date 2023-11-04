@@ -317,6 +317,8 @@ static u32 LoopedTask_OpenRegionMap(s32 taskState)
         regionMap = GetSubstructPtr(POKENAV_SUBSTRUCT_REGION_MAP);
         InitRegionMapData(regionMap, &sRegionMapBgTemplates[1], ShouldOpenRegionMapZoomed());
         LoadCityZoomViewGfx();
+        if (GetPokenavMode() == POKENAV_MODE_TOWN_MAP)
+            SetPokenavMode(POKENAV_MODE_TOWN_MAP_EXIT);
         return LT_INC_AND_PAUSE;
     case 1:
         if (LoadRegionMapGfx())
@@ -367,7 +369,10 @@ static u32 LoopedTask_OpenRegionMap(s32 taskState)
 
         LoadLeftHeaderGfxForIndex(menuGfxId);
         ShowLeftHeaderGfx(menuGfxId, TRUE, TRUE);
-        PokenavFadeScreen(POKENAV_FADE_FROM_BLACK);
+        if (GetPokenavMode() == POKENAV_MODE_TOWN_MAP_EXIT)
+            PokenavFadeScreen(POKENAV_FADE_FROM_BLACK_ALL);
+        else
+            PokenavFadeScreen(POKENAV_FADE_FROM_BLACK);
         return LT_INC_AND_PAUSE;
     case 7:
         if (IsPaletteFadeActive() || AreLeftHeaderSpritesMoving())
@@ -459,15 +464,21 @@ static u32 LoopedTask_ExitRegionMap(s32 taskState)
     switch (taskState)
     {
     case 0:
-        PlaySE(SE_SELECT);
-        PokenavFadeScreen(POKENAV_FADE_TO_BLACK);
+        if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+        {
+            PlaySE(SE_SELECT);
+            PokenavFadeScreen(POKENAV_FADE_TO_BLACK);
+        }
+        else
+            PokenavFadeScreen(POKENAV_FADE_TO_BLACK_ALL);
         return LT_INC_AND_PAUSE;
     case 1:
         if (IsPaletteFadeActive())
             return LT_PAUSE;
 
         SetLeftHeaderSpritesInvisibility();
-        SlideMenuHeaderDown();
+        if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+            SlideMenuHeaderDown();
         return LT_INC_AND_PAUSE;
     case 2:
         if (MainMenuLoopedTaskIsBusy())

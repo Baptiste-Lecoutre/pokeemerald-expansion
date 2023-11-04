@@ -72,7 +72,8 @@ enum
     MENU_ACTION_PYRAMID_BAG,
     MENU_ACTION_DEBUG,
     MENU_ACTION_DEXNAV,
-    MENU_ACTION_PC
+    MENU_ACTION_PC,
+    MENU_ACTION_TOWN_MAP
 };
 
 // Save status
@@ -142,13 +143,14 @@ static u8 SaveReturnErrorCallback(void);
 static u8 BattlePyramidConfirmRetireCallback(void);
 static u8 BattlePyramidRetireYesNoCallback(void);
 static u8 BattlePyramidRetireInputCallback(void);
+static bool8 FieldCB_ReturnToFieldStartMenu(void);
+static bool8 StartMenuTownMapCallback(void);
 
 // Task callbacks
 static void StartMenuTask(u8 taskId);
 static void SaveGameTask(u8 taskId);
 static void Task_SaveAfterLinkBattle(u8 taskId);
 static void Task_WaitForBattleTowerLinkSave(u8 taskId);
-static bool8 FieldCB_ReturnToFieldStartMenu(void);
 
 static const struct WindowTemplate sWindowTemplate_SafariBalls = {
     .bg = 0,
@@ -193,6 +195,7 @@ static const struct WindowTemplate sWindowTemplate_PyramidPeak = {
 };
 
 static const u8 gText_MenuDebug[] = _("DEBUG");
+static const u8 gText_TownMap[] = _("Town Map");
 
 static const struct MenuAction sStartMenuItems[] =
 {
@@ -212,6 +215,7 @@ static const struct MenuAction sStartMenuItems[] =
     [MENU_ACTION_DEBUG]           = {gText_MenuDebug,   {.u8_void = StartMenuDebugCallback}},
     [MENU_ACTION_DEXNAV]          = {gText_MenuDexNav,  {.u8_void = StartMenuDexNavCallback}},
     [MENU_ACTION_PC]              = {gText_Pokenav_Access_PC, {.u8_void = StartMenuAccessPCCallback}},
+    [MENU_ACTION_TOWN_MAP]        = {gText_TownMap, {.u8_void = StartMenuTownMapCallback}},
 };
 
 static const struct BgTemplate sBgTemplates_LinkBattleSave[] =
@@ -752,7 +756,10 @@ static bool8 HandleStartMenuInput(void)
                 SetMainCallback2(CB2_OpenFlyMap);
             }
             else
-                FieldInitRegionMap(CB2_ReturnToFieldContinueScriptPlayMapMusic);
+            {
+                FadeScreen(FADE_TO_BLACK, 0);
+                gMenuCallback = StartMenuTownMapCallback;
+            }
             return FALSE;
         }
     }
@@ -1694,4 +1701,13 @@ static bool8 StartMenuAccessPCCallback(void)
     RemoveStartMenuWindow();
     ScriptContext_SetupScript(EventScript_PC);   
     return TRUE;
+}
+
+static bool8 StartMenuTownMapCallback(void)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        OpenPokenavForTownMap(CB2_ReturnToField);
+    }
 }
