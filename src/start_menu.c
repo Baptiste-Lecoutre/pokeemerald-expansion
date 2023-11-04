@@ -728,7 +728,7 @@ static bool8 HandleStartMenuInput(void)
         return FALSE;
     }
 
-    if (JOY_NEW(R_BUTTON))
+    if (JOY_NEW(R_BUTTON) && !gSaveBlock2Ptr->startShortcut)
     {
         PlaySE(SE_SELECT);
         gMenuCallback = sStartMenuItems[gSaveBlock2Ptr->startShortcut].func.u8_void;
@@ -746,7 +746,7 @@ static bool8 HandleStartMenuInput(void)
 
             //gMenuCallback = PokenavCallback_Init_RegionMap;
             //gMenuCallback = PokenavMenuCallbacks[6/*POKENAV_REGION_MAP - POKENAV_MENU_IDS_START*/];
-            if(FlagGet(FLAG_BADGE06_GET) && CanLearnFlyInParty() && Overworld_MapTypeAllowsTeleportAndFly(GetCurrentMapType()))
+            if(FlagGet(FLAG_BADGE06_GET) && CheckBagHasItem(ITEM_HM02_FLY, 1) && CanLearnFlyInParty() && Overworld_MapTypeAllowsTeleportAndFly(GetCurrentMapType()))
             {
                 gPartyMenu.slotId = gSpecialVar_Result;
                 SetMainCallback2(CB2_OpenFlyMap);
