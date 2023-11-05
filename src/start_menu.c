@@ -45,6 +45,7 @@
 #include "text.h"
 #include "text_window.h"
 #include "trainer_card.h"
+#include "trainer_radar.h"
 #include "window.h"
 #include "union_room.h"
 #include "dexnav.h"
@@ -736,6 +737,12 @@ static bool8 HandleStartMenuInput(void)
     {
         PlaySE(SE_SELECT);
         gMenuCallback = sStartMenuItems[gSaveBlock2Ptr->startShortcut].func.u8_void;
+
+        /*RemoveExtraStartMenuWindows();
+        ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
+        RemoveStartMenuWindow();
+        InitTrainerRadar();*/
+
         return FALSE;
     }
 
