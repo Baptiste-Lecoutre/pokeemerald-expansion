@@ -738,9 +738,7 @@ static bool8 HandleStartMenuInput(void)
         PlaySE(SE_SELECT);
         gMenuCallback = sStartMenuItems[gSaveBlock2Ptr->startShortcut].func.u8_void;
 
-        /*RemoveExtraStartMenuWindows();
-        ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
-        RemoveStartMenuWindow();
+        /*HideStartMenuWindow();
         InitTrainerRadar();*/
 
         return FALSE;
