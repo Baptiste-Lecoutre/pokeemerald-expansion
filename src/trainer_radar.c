@@ -15,10 +15,11 @@
 #include "malloc.h"
 #include "menu.h"
 #include "overworld.h"
-#include "random.h"
 #include "palette.h"
 #include "pokemon_icon.h"
 #include "pokemon_summary_screen.h"
+#include "random.h"
+#include "region_map.h"
 #include "save.h"
 #include "scanline_effect.h"
 #include "script.h"
@@ -52,13 +53,13 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 {
     [WIN_ROUTE] =
 	{
-		.bg = 1,
-		.tilemapLeft = 16,
-		.tilemapTop = 0,
-		.width = 14,
+		.bg = 0,
+		.tilemapLeft = 4,
+		.tilemapTop = 255,
+		.width = 26,
 		.height = 3,
 		.paletteNum = 15,
-		.baseBlock = 1,
+		.baseBlock = 200,
 	},
     [WIN_TRAINER_NAME] = 
 	{
@@ -104,7 +105,10 @@ static const struct BgTemplate sTrainerRadarBgTemplates[] =
 	}
 };
 
-// functions
+// gui font
+static const u8 sFontColor_White[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
+
+// skeleton functions
 static void PrintInstructions(void);
 static void CleanWindows(void);
 static void CommitWindows(void);
@@ -116,9 +120,12 @@ static void Task_TrainerRadarWaitForKeyPress(u8 taskId);
 static void Task_TrainerRadarFadeIn(u8 taskId);
 static void InitTrainerRadarScreen(void);
 
+// skin functions
+static void PrintMapName(void);
+
 EWRAM_DATA static struct TrainerRadar *sTrainerRadar = NULL;
 
-// code
+// code for UI skeleton
 static void MainCB2_TrainerRadar(void)
 {
     RunTasks();
@@ -241,6 +248,7 @@ static void InitTrainerRadarScreen(void)
 	CommitWindows();
 
     // do stuff
+    PrintMapName();
 
 	CommitWindows();
 }
@@ -291,4 +299,12 @@ void InitTrainerRadar(void)
 
     PlayRainStoppingSoundEffect();
     SetMainCallback2(CB2_TrainerRadar);
+}
+
+// code for the UI purpose
+static void PrintMapName(void)
+{
+    GetMapName(gStringVar3, GetCurrentRegionMapSectionId(), 0);
+    AddTextPrinterParameterized3(WIN_ROUTE, 1, 104, 7, sFontColor_White, 0, gStringVar3);
+    CopyWindowToVram(WIN_ROUTE, 3);
 }
