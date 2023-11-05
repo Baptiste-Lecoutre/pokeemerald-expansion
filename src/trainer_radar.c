@@ -44,9 +44,9 @@ struct TrainerRadar
 };
 
 // const rom data
-static const u32 sTrainerRadarBgGfx[]      = INCBIN_U32("graphics/misc/raid_battle_intro_bg.4bpp.lz");
-static const u32 sTrainerRadarBgPal[]      = INCBIN_U32("graphics/misc/raid_battle_intro_bg.gbapal.lz");
-static const u32 sTrainerRadarBgMap[]      = INCBIN_U32("graphics/misc/raid_battle_intro_bg.bin.lz");
+static const u32 sTrainerRadarBgGfx[]      = INCBIN_U32("graphics/misc/trainer_radar.4bpp.lz");
+static const u32 sTrainerRadarBgPal[]      = INCBIN_U32("graphics/misc/trainer_radar.gbapal.lz");
+static const u32 sTrainerRadarBgMap[]      = INCBIN_U32("graphics/misc/trainer_radar.bin.lz");
 
 static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 {
