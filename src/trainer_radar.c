@@ -2,6 +2,7 @@
 #include "bg.h"
 #include "sprite.h"
 #include "main.h"
+#include "data.h"
 #include "decompress.h"
 #include "event_data.h"
 #include "event_object_movement.h"
@@ -34,7 +35,7 @@
 
 enum Windows
 {
-	WIN_ROUTE,
+	WIN_MAP_NAME,
 	WIN_TRAINER_NAME,
 	WINDOW_COUNT,
 };
@@ -42,6 +43,8 @@ enum Windows
 struct TrainerRadar
 {
     u32* tilemapPtr;
+    u16 trainerNum;
+    u16 trainerOW;
 };
 
 // const rom data
@@ -51,25 +54,25 @@ static const u32 sTrainerRadarBgMap[]      = INCBIN_U32("graphics/misc/trainer_r
 
 static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 {
-    [WIN_ROUTE] =
+    [WIN_MAP_NAME] =
 	{
 		.bg = 0,
-		.tilemapLeft = 4,
+		.tilemapLeft = 16,
 		.tilemapTop = 255,
-		.width = 26,
+		.width = 14,
 		.height = 3,
 		.paletteNum = 15,
-		.baseBlock = 200,
+		.baseBlock = 20,
 	},
     [WIN_TRAINER_NAME] = 
 	{
-		.bg = 1,
-		.tilemapLeft = 14,
-		.tilemapTop = 6,
-		.width = 15,
-		.height = 11,
+		.bg = 0,
+		.tilemapLeft = 1,
+		.tilemapTop = 255,
+		.width = 10,
+		.height = 3,
 		.paletteNum = 15,
-		.baseBlock = 233,
+		.baseBlock = 0,
 	},
 	DUMMY_WIN_TEMPLATE
 };
@@ -122,6 +125,9 @@ static void InitTrainerRadarScreen(void);
 
 // skin functions
 static void PrintMapName(void);
+static void PrintTrainerName(void);
+static void PrintTrainerPic(void);
+static void PrintTrainerOW(void);
 
 EWRAM_DATA static struct TrainerRadar *sTrainerRadar = NULL;
 
@@ -248,7 +254,12 @@ static void InitTrainerRadarScreen(void)
 	CommitWindows();
 
     // do stuff
+    sTrainerRadar->trainerNum = TRAINER_WALLACE;
+    sTrainerRadar->trainerOW = OBJ_EVENT_GFX_WALLACE;
     PrintMapName();
+    PrintTrainerName();
+    PrintTrainerPic();
+    PrintTrainerOW();
 
 	CommitWindows();
 }
@@ -305,6 +316,23 @@ void InitTrainerRadar(void)
 static void PrintMapName(void)
 {
     GetMapName(gStringVar3, GetCurrentRegionMapSectionId(), 0);
-    AddTextPrinterParameterized3(WIN_ROUTE, 1, 104, 7, sFontColor_White, 0, gStringVar3);
-    CopyWindowToVram(WIN_ROUTE, 3);
+    AddTextPrinterParameterized3(WIN_MAP_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar3);
+    CopyWindowToVram(WIN_MAP_NAME, 3);
+}
+
+static void PrintTrainerName(void)
+{
+    StringCopy(gStringVar1, gTrainers[sTrainerRadar->trainerNum].trainerName);
+    AddTextPrinterParameterized3(WIN_TRAINER_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar1);
+    CopyWindowToVram(WIN_TRAINER_NAME, 3);
+}
+
+static void PrintTrainerPic(void)
+{
+    u8 spriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerNum].trainerPic, TRUE, 136, 67, 6, TAG_NONE);
+}
+
+static void PrintTrainerOW(void)
+{
+    u8 spriteId = CreateObjectGraphicsSprite(sTrainerRadar->trainerOW, SpriteCallbackDummy, 140, 124, 0);
 }
