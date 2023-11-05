@@ -128,6 +128,7 @@ static void PrintMapName(void);
 static void PrintTrainerName(void);
 static void PrintTrainerPic(void);
 static void PrintTrainerOW(void);
+static void PrintTrainerParty(void);
 
 EWRAM_DATA static struct TrainerRadar *sTrainerRadar = NULL;
 
@@ -260,6 +261,7 @@ static void InitTrainerRadarScreen(void)
     PrintTrainerName();
     PrintTrainerPic();
     PrintTrainerOW();
+    PrintTrainerParty();
 
 	CommitWindows();
 }
@@ -329,10 +331,29 @@ static void PrintTrainerName(void)
 
 static void PrintTrainerPic(void)
 {
-    u8 spriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerNum].trainerPic, TRUE, 136, 67, 6, TAG_NONE);
+    u8 spriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerNum].trainerPic, TRUE, 136, 67, 15, TAG_NONE);
+    // slot 15 to avoid conflict with mon icon palettes
 }
 
 static void PrintTrainerOW(void)
 {
     u8 spriteId = CreateObjectGraphicsSprite(sTrainerRadar->trainerOW, SpriteCallbackDummy, 140, 124, 0);
+}
+
+static void PrintTrainerParty(void)
+{
+    u32 i;
+    u16 species;
+    u8 icon_x = 0, icon_y = 0;
+
+    LoadMonIconPalettes();
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        icon_x = 188 + (i%2) * 35;
+        icon_y = 38 + (i/2) * 40;
+
+        species = gTrainers[sTrainerRadar->trainerNum].party[i].species;
+        CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
+    }
 }
