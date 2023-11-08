@@ -29,6 +29,7 @@
 #include "util.h"
 #include "window.h"
 #include "constants/event_objects.h"
+#include "constants/opponents.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
@@ -106,6 +107,15 @@ static const struct BgTemplate sTrainerRadarBgTemplates[] =
 		.priority = 0,
 		.baseTile = 0,
 	}
+};
+
+static const u16 sTrainerObjEventGfx[TRAINERS_COUNT] = {
+    [TRAINER_NONE] = OBJ_EVENT_GFX_SNORLAX_SLEEPING,
+    [TRAINER_CALVIN_1] = OBJ_EVENT_GFX_YOUNGSTER,
+    [TRAINER_ALLEN] = OBJ_EVENT_GFX_YOUNGSTER,
+    [TRAINER_TIANA] = OBJ_EVENT_GFX_LASS,
+    [TRAINER_RICK] = OBJ_EVENT_GFX_BUG_CATCHER,
+    [TRAINER_WALLACE] = OBJ_EVENT_GFX_WALLACE,
 };
 
 // gui font
@@ -215,7 +225,7 @@ static void Task_TrainerRadarFadeOut(u8 taskId)
 
 static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
 {
-    if (JOY_NEW(A_BUTTON))
+    if (JOY_NEW(A_BUTTON | B_BUTTON))
     {
         PlaySE(SE_SELECT);
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
@@ -256,7 +266,7 @@ static void InitTrainerRadarScreen(void)
 
     // do stuff
     sTrainerRadar->trainerNum = TRAINER_WALLACE;
-    sTrainerRadar->trainerOW = OBJ_EVENT_GFX_WALLACE;
+    sTrainerRadar->trainerOW = sTrainerObjEventGfx[sTrainerRadar->trainerNum];//OBJ_EVENT_GFX_WALLACE;
     PrintMapName();
     PrintTrainerName();
     PrintTrainerPic();
