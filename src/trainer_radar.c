@@ -26,6 +26,7 @@
 #include "script.h"
 #include "string_util.h"
 #include "trainer_pokemon_sprites.h"
+#include "trainer_radar.h"
 #include "util.h"
 #include "window.h"
 #include "constants/event_objects.h"
@@ -109,17 +110,10 @@ static const struct BgTemplate sTrainerRadarBgTemplates[] =
 	}
 };
 
-static const u16 sTrainerObjEventGfx[TRAINERS_COUNT] = {
-    [TRAINER_NONE] = OBJ_EVENT_GFX_SNORLAX_SLEEPING,
-    [TRAINER_CALVIN_1] = OBJ_EVENT_GFX_YOUNGSTER,
-    [TRAINER_ALLEN] = OBJ_EVENT_GFX_YOUNGSTER,
-    [TRAINER_TIANA] = OBJ_EVENT_GFX_LASS,
-    [TRAINER_RICK] = OBJ_EVENT_GFX_BUG_CATCHER,
-    [TRAINER_WALLACE] = OBJ_EVENT_GFX_WALLACE,
-};
-
 // gui font
 static const u8 sFontColor_White[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
+
+#include "data/trainer_radar.h"
 
 // skeleton functions
 static void PrintInstructions(void);
@@ -261,11 +255,12 @@ static void CommitWindows(void)
 
 static void InitTrainerRadarScreen(void)
 {
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[MAPSEC_ROUTE_103];
 	CleanWindows();
 	CommitWindows();
 
     // do stuff
-    sTrainerRadar->trainerNum = TRAINER_WALLACE;
+    sTrainerRadar->trainerNum = routeTrainersStruct->routeTrainers[0];//TRAINER_WALLACE;
     sTrainerRadar->trainerOW = sTrainerObjEventGfx[sTrainerRadar->trainerNum];//OBJ_EVENT_GFX_WALLACE;
     PrintMapName();
     PrintTrainerName();
