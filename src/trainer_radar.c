@@ -46,7 +46,6 @@ struct TrainerRadar
 {
     u32* tilemapPtr;
     u16 trainerNum;
-    u16 trainerOW;
     u8 mapsec;
 };
 
@@ -130,6 +129,7 @@ static void InitTrainerRadarScreen(void);
 
 // skin functions
 static void InitTrainerRadarData(void);
+static void PrintTrainerList(void);
 static void PrintMapName(void);
 static void PrintTrainerName(void);
 static void PrintTrainerPic(void);
@@ -263,6 +263,7 @@ static void InitTrainerRadarScreen(void)
     // do stuff
     sTrainerRadar->mapsec = MAPSEC_ROUTE_103;//GetCurrentRegionMapSectionId();
     InitTrainerRadarData();
+    PrintTrainerList();
     PrintMapName();
     PrintTrainerName();
     PrintTrainerPic();
@@ -324,8 +325,16 @@ void InitTrainerRadar(void)
 static void InitTrainerRadarData(void)
 {
     const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
-    sTrainerRadar->trainerNum = routeTrainersStruct->routeTrainers[0];//TRAINER_WALLACE;
-    sTrainerRadar->trainerOW = sTrainerObjEventGfx[sTrainerRadar->trainerNum];//OBJ_EVENT_GFX_WALLACE;
+    
+    if (routeTrainersStruct->routeTrainers != NULL)
+        sTrainerRadar->trainerNum = routeTrainersStruct->routeTrainers[0];//TRAINER_WALLACE;
+    else
+        sTrainerRadar->trainerNum = TRAINER_NONE;
+}
+
+static void PrintTrainerList(void)
+{
+
 }
 
 static void PrintMapName(void)
@@ -350,7 +359,7 @@ static void PrintTrainerPic(void)
 
 static void PrintTrainerOW(void)
 {
-    u8 spriteId = CreateObjectGraphicsSprite(sTrainerRadar->trainerOW, SpriteCallbackDummy, 140, 124, 0);
+    u8 spriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadar->trainerNum], SpriteCallbackDummy, 140, 124, 0);
 }
 
 static void PrintTrainerParty(void)
