@@ -353,7 +353,7 @@ static void PrintTrainerParty(void)
 
     LoadMonIconPalettes();
 
-    for (i = 0; i < PARTY_SIZE; i++)
+    for (i = 0; i < gTrainers[sTrainerRadar->trainerNum].partySize; i++)
     {
         icon_x = 188 + (i%2) * 35;
         icon_y = 38 + (i/2) * 40;
