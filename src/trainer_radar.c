@@ -47,6 +47,7 @@ struct TrainerRadar
     u32* tilemapPtr;
     u16 trainerNum;
     u16 trainerOW;
+    u8 mapsec;
 };
 
 // const rom data
@@ -128,6 +129,7 @@ static void Task_TrainerRadarFadeIn(u8 taskId);
 static void InitTrainerRadarScreen(void);
 
 // skin functions
+static void InitTrainerRadarData(void);
 static void PrintMapName(void);
 static void PrintTrainerName(void);
 static void PrintTrainerPic(void);
@@ -255,13 +257,12 @@ static void CommitWindows(void)
 
 static void InitTrainerRadarScreen(void)
 {
-    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[MAPSEC_ROUTE_103];
 	CleanWindows();
 	CommitWindows();
 
     // do stuff
-    sTrainerRadar->trainerNum = routeTrainersStruct->routeTrainers[0];//TRAINER_WALLACE;
-    sTrainerRadar->trainerOW = sTrainerObjEventGfx[sTrainerRadar->trainerNum];//OBJ_EVENT_GFX_WALLACE;
+    sTrainerRadar->mapsec = MAPSEC_ROUTE_103;//GetCurrentRegionMapSectionId();
+    InitTrainerRadarData();
     PrintMapName();
     PrintTrainerName();
     PrintTrainerPic();
@@ -320,9 +321,16 @@ void InitTrainerRadar(void)
 }
 
 // code for the UI purpose
+static void InitTrainerRadarData(void)
+{
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
+    sTrainerRadar->trainerNum = routeTrainersStruct->routeTrainers[0];//TRAINER_WALLACE;
+    sTrainerRadar->trainerOW = sTrainerObjEventGfx[sTrainerRadar->trainerNum];//OBJ_EVENT_GFX_WALLACE;
+}
+
 static void PrintMapName(void)
 {
-    GetMapName(gStringVar3, GetCurrentRegionMapSectionId(), 0);
+    GetMapName(gStringVar3, sTrainerRadar->mapsec, 0);
     AddTextPrinterParameterized3(WIN_MAP_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar3);
     CopyWindowToVram(WIN_MAP_NAME, 3);
 }
