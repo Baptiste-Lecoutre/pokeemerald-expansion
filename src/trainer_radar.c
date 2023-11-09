@@ -37,8 +37,9 @@
 
 enum Windows
 {
+    WIN_TRAINER_NAME,
 	WIN_MAP_NAME,
-	WIN_TRAINER_NAME,
+    WIN_TRAINER_LIST,
 	WINDOW_COUNT,
 };
 
@@ -56,16 +57,6 @@ static const u32 sTrainerRadarBgMap[]      = INCBIN_U32("graphics/misc/trainer_r
 
 static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 {
-    [WIN_MAP_NAME] =
-	{
-		.bg = 0,
-		.tilemapLeft = 16,
-		.tilemapTop = 255,
-		.width = 14,
-		.height = 3,
-		.paletteNum = 15,
-		.baseBlock = 20,
-	},
     [WIN_TRAINER_NAME] = 
 	{
 		.bg = 0,
@@ -76,6 +67,27 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 		.paletteNum = 15,
 		.baseBlock = 0,
 	},
+    [WIN_MAP_NAME] =
+	{
+		.bg = 0,
+		.tilemapLeft = 16,
+		.tilemapTop = 255,
+		.width = 14,
+		.height = 3,
+		.paletteNum = 15,
+		.baseBlock = 30,
+	},
+    [WIN_TRAINER_LIST] = 
+	{
+		.bg = 0,
+		.tilemapLeft = 1,
+		.tilemapTop = 5,
+		.width = 10,
+		.height = 12,
+		.paletteNum = 15,
+		.baseBlock = 72,
+	},
+    
 	DUMMY_WIN_TEMPLATE
 };
 
@@ -112,6 +124,7 @@ static const struct BgTemplate sTrainerRadarBgTemplates[] =
 
 // gui font
 static const u8 sFontColor_White[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
+static const u8 sFontColor_Black[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
 
 #include "data/trainer_radar.h"
 
@@ -334,7 +347,15 @@ static void InitTrainerRadarData(void)
 
 static void PrintTrainerList(void)
 {
+    u32 i;
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
 
+    if (routeTrainersStruct->routeTrainers != NULL)
+    {
+        for (i = 0; i < routeTrainersStruct->numTrainers; i++)
+            AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 2, 4 + i*16, sFontColor_Black, 0, gTrainers[routeTrainersStruct->routeTrainers[i]].trainerName);
+        CopyWindowToVram(WIN_TRAINER_LIST, 3);
+    }
 }
 
 static void PrintMapName(void)
