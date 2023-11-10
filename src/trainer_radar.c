@@ -46,14 +46,20 @@ enum Windows
 struct TrainerRadar
 {
     u32* tilemapPtr;
-    u16 trainerNum;
+    u16 trainerId;
     u8 mapsec;
+    u8 numOfTrainers;
+    u8 visibleCursorPosition;
+    u8 absoluteCursorPosition;
 };
 
 // const rom data
 static const u32 sTrainerRadarBgGfx[]      = INCBIN_U32("graphics/misc/trainer_radar.4bpp.lz");
 static const u32 sTrainerRadarBgPal[]      = INCBIN_U32("graphics/misc/trainer_radar.gbapal.lz");
 static const u32 sTrainerRadarBgMap[]      = INCBIN_U32("graphics/misc/trainer_radar.bin.lz");
+
+static const u32 sSelectionCursorGfx[] = INCBIN_U32("graphics/dexnav/cursor.4bpp.lz");
+static const u16 sSelectionCursorPal[] = INCBIN_U16("graphics/dexnav/cursor.gbapal");
 
 static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 {
@@ -87,7 +93,6 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 		.paletteNum = 15,
 		.baseBlock = 72,
 	},
-    
 	DUMMY_WIN_TEMPLATE
 };
 
@@ -139,6 +144,7 @@ static void Task_TrainerRadarFadeOut(u8 taskId);
 static void Task_TrainerRadarWaitForKeyPress(u8 taskId);
 static void Task_TrainerRadarFadeIn(u8 taskId);
 static void InitTrainerRadarScreen(void);
+static void CreateTrainerRadarCursor(void);
 
 // skin functions
 static void InitTrainerRadarData(void);
@@ -148,8 +154,38 @@ static void PrintTrainerName(void);
 static void PrintTrainerPic(void);
 static void PrintTrainerOW(void);
 static void PrintTrainerParty(void);
+static void TrainerRadar_CursorCallback(struct Sprite *sprite);
 
 EWRAM_DATA static struct TrainerRadar *sTrainerRadar = NULL;
+
+#define SELECTION_CURSOR_TAG    0x4005
+static const struct OamData sSelectionCursorOam =
+{
+    .y = 0,
+    .affineMode = 0,
+    .objMode = 0,
+    .mosaic = 0,
+    .bpp = 0,
+    .shape = 0,
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(32x32),
+    .tileNum = 0,
+    .priority = 0, // above BG layers
+    .paletteNum = 14,
+    .affineParam = 0
+};
+
+static const struct SpriteTemplate sSelectionCursorSpriteTemplate =
+{
+    .tileTag = SELECTION_CURSOR_TAG,
+    .paletteTag = 0xFFFF,
+    .oam = &sSelectionCursorOam,
+    .anims =  gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = TrainerRadar_CursorCallback,
+};
 
 // code for UI skeleton
 static void MainCB2_TrainerRadar(void)
@@ -240,6 +276,22 @@ static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
         gTasks[taskId].func = Task_TrainerRadarFadeOut;
     }
+    else if (JOY_NEW(DPAD_DOWN)) // move cursors down
+    {
+        PlaySE(SE_SELECT);
+        if (sTrainerRadar->visibleCursorPosition < sTrainerRadar->numOfTrainers)
+            sTrainerRadar->visibleCursorPosition++;
+        else
+            sTrainerRadar->visibleCursorPosition = 0;
+    }    
+    else if (JOY_NEW(DPAD_UP)) // move cursors up
+    {
+        PlaySE(SE_SELECT);
+        if (sTrainerRadar->visibleCursorPosition > 0)
+            sTrainerRadar->visibleCursorPosition--;
+        else
+            sTrainerRadar->visibleCursorPosition = sTrainerRadar->numOfTrainers;
+    }  
 }
 
 static void Task_TrainerRadarFadeIn(u8 taskId)
@@ -274,8 +326,13 @@ static void InitTrainerRadarScreen(void)
 	CommitWindows();
 
     // do stuff
-    sTrainerRadar->mapsec = MAPSEC_ROUTE_103;//GetCurrentRegionMapSectionId();
+    sTrainerRadar->mapsec = MAPSEC_ROUTE_102;//GetCurrentRegionMapSectionId();
+    sTrainerRadar->visibleCursorPosition = 0;
+    sTrainerRadar->absoluteCursorPosition = 0;
+    
     InitTrainerRadarData();
+    CreateTrainerRadarCursor();
+
     PrintTrainerList();
     PrintMapName();
     PrintTrainerName();
@@ -334,15 +391,36 @@ void InitTrainerRadar(void)
     SetMainCallback2(CB2_TrainerRadar);
 }
 
+static void CreateTrainerRadarCursor(void)
+{
+    u8 spriteId;
+    struct CompressedSpriteSheet spriteSheet;
+    
+    spriteSheet.data = sSelectionCursorGfx;
+    spriteSheet.size = 0x200;
+    spriteSheet.tag = SELECTION_CURSOR_TAG;
+    LoadCompressedSpriteSheet(&spriteSheet);
+    
+    LoadPalette(sSelectionCursorPal, (16 * sSelectionCursorOam.paletteNum) + 0x100, 32);
+    
+    spriteId = CreateSprite(&sSelectionCursorSpriteTemplate, 16, 48 + sTrainerRadar->visibleCursorPosition * 16, 0);
+}
+
 // code for the UI purpose
 static void InitTrainerRadarData(void)
 {
     const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
     
     if (routeTrainersStruct->routeTrainers != NULL)
-        sTrainerRadar->trainerNum = routeTrainersStruct->routeTrainers[0];//TRAINER_WALLACE;
+    {
+        sTrainerRadar->trainerId = routeTrainersStruct->routeTrainers[0];//TRAINER_WALLACE;
+        sTrainerRadar->numOfTrainers = routeTrainersStruct->numTrainers;
+    }
     else
-        sTrainerRadar->trainerNum = TRAINER_NONE;
+    {
+        sTrainerRadar->trainerId = TRAINER_NONE;
+        sTrainerRadar->numOfTrainers = 0;
+    }
 }
 
 static void PrintTrainerList(void)
@@ -367,20 +445,20 @@ static void PrintMapName(void)
 
 static void PrintTrainerName(void)
 {
-    StringCopy(gStringVar1, gTrainers[sTrainerRadar->trainerNum].trainerName);
+    StringCopy(gStringVar1, gTrainers[sTrainerRadar->trainerId].trainerName);
     AddTextPrinterParameterized3(WIN_TRAINER_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar1);
     CopyWindowToVram(WIN_TRAINER_NAME, 3);
 }
 
 static void PrintTrainerPic(void)
 {
-    u8 spriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerNum].trainerPic, TRUE, 136, 67, 15, TAG_NONE);
+    u8 spriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerId].trainerPic, TRUE, 136, 67, 15, TAG_NONE);
     // slot 15 to avoid conflict with mon icon palettes
 }
 
 static void PrintTrainerOW(void)
 {
-    u8 spriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadar->trainerNum], SpriteCallbackDummy, 140, 124, 0);
+    u8 spriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadar->trainerId], SpriteCallbackDummy, 140, 124, 0);
 }
 
 static void PrintTrainerParty(void)
@@ -391,12 +469,17 @@ static void PrintTrainerParty(void)
 
     LoadMonIconPalettes();
 
-    for (i = 0; i < gTrainers[sTrainerRadar->trainerNum].partySize; i++)
+    for (i = 0; i < gTrainers[sTrainerRadar->trainerId].partySize; i++)
     {
         icon_x = 188 + (i%2) * 35;
         icon_y = 38 + (i/2) * 40;
 
-        species = gTrainers[sTrainerRadar->trainerNum].party[i].species;
+        species = gTrainers[sTrainerRadar->trainerId].party[i].species;
         CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
     }
+}
+
+static void TrainerRadar_CursorCallback(struct Sprite *sprite)
+{
+    sprite->y = 48 + sTrainerRadar->visibleCursorPosition * 16;
 }
