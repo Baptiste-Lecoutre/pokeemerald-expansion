@@ -51,7 +51,12 @@ struct TrainerRadar
     u8 numOfTrainers;
     u8 visibleCursorPosition;
     u8 absoluteCursorPosition;
+    u8 trainerFrontPicSpriteId;
+    u8 trainerObjEventSpriteId;
+    u8 trainerPartySpriteIds[PARTY_SIZE];
 };
+
+#define VISIBLE_CURSOR_MAX_VALUE 5 //6 slots - 1
 
 // const rom data
 static const u32 sTrainerRadarBgGfx[]      = INCBIN_U32("graphics/misc/trainer_radar.4bpp.lz");
@@ -89,7 +94,7 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 		.tilemapLeft = 1,
 		.tilemapTop = 5,
 		.width = 10,
-		.height = 12,
+		.height = 13,
 		.paletteNum = 15,
 		.baseBlock = 72,
 	},
@@ -279,19 +284,39 @@ static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
     else if (JOY_NEW(DPAD_DOWN)) // move cursors down
     {
         PlaySE(SE_SELECT);
-        if (sTrainerRadar->visibleCursorPosition < sTrainerRadar->numOfTrainers)
-            sTrainerRadar->visibleCursorPosition++;
+        if (sTrainerRadar->absoluteCursorPosition < sTrainerRadar->numOfTrainers-1)
+        {
+            sTrainerRadar->absoluteCursorPosition++;
+            if (sTrainerRadar->visibleCursorPosition < VISIBLE_CURSOR_MAX_VALUE)
+                sTrainerRadar->visibleCursorPosition++;
+        }
         else
-            sTrainerRadar->visibleCursorPosition = 0;
+            sTrainerRadar->visibleCursorPosition = sTrainerRadar->absoluteCursorPosition = 0;
+        FillWindowPixelBuffer(WIN_TRAINER_LIST, PIXEL_FILL(0));
+        PrintTrainerList();
+        CommitWindows();
     }    
     else if (JOY_NEW(DPAD_UP)) // move cursors up
     {
         PlaySE(SE_SELECT);
-        if (sTrainerRadar->visibleCursorPosition > 0)
-            sTrainerRadar->visibleCursorPosition--;
+        if (sTrainerRadar->absoluteCursorPosition > 0)
+        {
+            sTrainerRadar->absoluteCursorPosition--;
+            if (sTrainerRadar->visibleCursorPosition > 0)
+                sTrainerRadar->visibleCursorPosition--;
+        }
         else
-            sTrainerRadar->visibleCursorPosition = sTrainerRadar->numOfTrainers;
-    }  
+        {
+            sTrainerRadar->absoluteCursorPosition = sTrainerRadar->numOfTrainers-1;
+            sTrainerRadar->visibleCursorPosition = VISIBLE_CURSOR_MAX_VALUE;
+            if (sTrainerRadar->numOfTrainers-1 < VISIBLE_CURSOR_MAX_VALUE)
+                sTrainerRadar->visibleCursorPosition = sTrainerRadar->numOfTrainers-1;
+        }
+        
+        FillWindowPixelBuffer(WIN_TRAINER_LIST, PIXEL_FILL(0));
+        PrintTrainerList();
+        CommitWindows();
+    }
 }
 
 static void Task_TrainerRadarFadeIn(u8 taskId)
@@ -322,13 +347,18 @@ static void CommitWindows(void)
 
 static void InitTrainerRadarScreen(void)
 {
+    u32 i;
 	CleanWindows();
 	CommitWindows();
 
     // do stuff
-    sTrainerRadar->mapsec = MAPSEC_ROUTE_102;//GetCurrentRegionMapSectionId();
+    sTrainerRadar->mapsec = MAPSEC_ROUTE_103;//GetCurrentRegionMapSectionId();
     sTrainerRadar->visibleCursorPosition = 0;
     sTrainerRadar->absoluteCursorPosition = 0;
+    sTrainerRadar->trainerFrontPicSpriteId = 0xFF;
+    sTrainerRadar->trainerObjEventSpriteId = 0xFF;
+    for (i = 0; i < PARTY_SIZE; i++)
+        sTrainerRadar->trainerPartySpriteIds[i]=0xFF;
     
     InitTrainerRadarData();
     CreateTrainerRadarCursor();
@@ -430,8 +460,8 @@ static void PrintTrainerList(void)
 
     if (routeTrainersStruct->routeTrainers != NULL)
     {
-        for (i = 0; i < routeTrainersStruct->numTrainers; i++)
-            AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 2, 4 + i*16, sFontColor_Black, 0, gTrainers[routeTrainersStruct->routeTrainers[i]].trainerName);
+        for (i = 0; i < VISIBLE_CURSOR_MAX_VALUE+1/*routeTrainersStruct->numTrainers*/; i++)
+            AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 2, 4 + i*16, sFontColor_Black, 0, gTrainers[routeTrainersStruct->routeTrainers[i+sTrainerRadar->absoluteCursorPosition-sTrainerRadar->visibleCursorPosition]].trainerName);
         CopyWindowToVram(WIN_TRAINER_LIST, 3);
     }
 }
@@ -452,13 +482,17 @@ static void PrintTrainerName(void)
 
 static void PrintTrainerPic(void)
 {
-    u8 spriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerId].trainerPic, TRUE, 136, 67, 15, TAG_NONE);
+    if (sTrainerRadar->trainerFrontPicSpriteId != 0xFF)
+        DestroySprite(&gSprites[sTrainerRadar->trainerFrontPicSpriteId]);
+    sTrainerRadar->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerId].trainerPic, TRUE, 136, 67, 15, TAG_NONE);
     // slot 15 to avoid conflict with mon icon palettes
 }
 
 static void PrintTrainerOW(void)
 {
-    u8 spriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadar->trainerId], SpriteCallbackDummy, 140, 124, 0);
+    if (sTrainerRadar->trainerObjEventSpriteId != 0xFF)
+        DestroySprite(&gSprites[sTrainerRadar->trainerObjEventSpriteId]);
+    sTrainerRadar->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadar->trainerId], SpriteCallbackDummy, 140, 124, 0);
 }
 
 static void PrintTrainerParty(void)
@@ -475,7 +509,7 @@ static void PrintTrainerParty(void)
         icon_y = 38 + (i/2) * 40;
 
         species = gTrainers[sTrainerRadar->trainerId].party[i].species;
-        CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
+        sTrainerRadar->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
     }
 }
 
