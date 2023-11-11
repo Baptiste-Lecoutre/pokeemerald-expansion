@@ -310,7 +310,7 @@ static void Task_TrainerRadarFadeOut(u8 taskId)
 
 static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
 {
-    if (JOY_NEW(A_BUTTON | B_BUTTON))
+    if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
