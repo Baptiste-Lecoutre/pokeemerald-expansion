@@ -73,7 +73,7 @@ static const u16 sSelectionCursorPal[] = INCBIN_U16("graphics/misc/trainer_radar
 static const u8 sText_NoData[] = _("No data");
 static const u8 sText_unknown[] = _("???");
 static const u8 sText_InstructionsArea[] = _("{DPAD_LEFTRIGHT}Area");
-static const u8 sText_InstructionsAreaTrainer[] = _("{DPAD_LEFTRIGHT}Area {DPAD_UPDOWN}Trainer");
+static const u8 sText_InstructionsAreaTrainer[] = _("{DPAD_LEFTRIGHT}Area  {DPAD_UPDOWN}Trainer");
 static const u8 sText_InstructionsExit[] = _("{B_BUTTON}Exit");
 static const u8 sText_Defeated[] = _("Defeated: ");
 
@@ -576,8 +576,17 @@ static void PrintTrainerPic(void)
         FreeAndDestroyTrainerPicSprite(sTrainerRadar->trainerFrontPicSpriteId);
 
     if (sTrainerRadar->trainerId != TRAINER_NONE)
+    {
         sTrainerRadar->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerId].trainerPic, TRUE, 132, 65, 15, TAG_NONE);
-    // slot 15 to avoid conflict with mon icon palettes
+        // slot 15 to avoid conflict with mon icon palettes
+
+        /*if (!HasTrainerBeenFought(sTrainerRadar->trainerId))
+        {
+            u16 paletteOffset = 15 * 16 + 0x100;
+            BlendPalette(paletteOffset, 16, 16, RGB(5, 5, 5));
+            CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
+        }*/
+    }
 }
 
 static void PrintTrainerOW(void)
