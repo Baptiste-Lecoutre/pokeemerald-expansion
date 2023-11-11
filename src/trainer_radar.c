@@ -67,8 +67,8 @@ static const u32 sTrainerRadarBgGfx[]      = INCBIN_U32("graphics/misc/trainer_r
 static const u32 sTrainerRadarBgPal[]      = INCBIN_U32("graphics/misc/trainer_radar.gbapal.lz");
 static const u32 sTrainerRadarBgMap[]      = INCBIN_U32("graphics/misc/trainer_radar.bin.lz");
 
-static const u32 sSelectionCursorGfx[] = INCBIN_U32("graphics/dexnav/cursor.4bpp.lz");
-static const u16 sSelectionCursorPal[] = INCBIN_U16("graphics/dexnav/cursor.gbapal");
+static const u32 sSelectionCursorGfx[] = INCBIN_U32("graphics/misc/trainer_radar_cursor.4bpp.lz");
+static const u16 sSelectionCursorPal[] = INCBIN_U16("graphics/misc/trainer_radar_cursor.gbapal");
 
 static const u8 sText_NoData[] = _("No data");
 static const u8 sText_unknown[] = _("???");
@@ -209,7 +209,7 @@ static const struct OamData sSelectionCursorOam =
     .shape = 0,
     .x = 0,
     .matrixNum = 0,
-    .size = SPRITE_SIZE(32x32),
+    .size = SPRITE_SIZE(8x8),
     .tileNum = 0,
     .priority = 0, // above BG layers
     .paletteNum = 14,
@@ -494,7 +494,7 @@ static void CreateTrainerRadarCursor(void)
     
     LoadPalette(sSelectionCursorPal, (16 * sSelectionCursorOam.paletteNum) + 0x100, 32);
     
-    spriteId = CreateSprite(&sSelectionCursorSpriteTemplate, 16, 48 + sTrainerRadar->visibleCursorPosition * 16, 0);
+    spriteId = CreateSprite(&sSelectionCursorSpriteTemplate, 11, 52 + sTrainerRadar->visibleCursorPosition * 16, 0);
 }
 
 // code for the UI purpose
@@ -543,9 +543,9 @@ static void PrintTrainerList(void)
         {
             trainerNum = routeTrainersStruct->routeTrainers[i+sTrainerRadar->absoluteCursorPosition-sTrainerRadar->visibleCursorPosition];
             if (HasTrainerBeenFought(trainerNum))
-                AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 2, 4 + i*16, sFontColor_Black, 0, gTrainers[trainerNum].trainerName);
+                AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 8, 4 + i*16, sFontColor_Black, 0, gTrainers[trainerNum].trainerName);
             else
-                AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 2, 4 + i*16, sFontColor_Red, 0, gTrainers[trainerNum].trainerName);
+                AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 8, 4 + i*16, sFontColor_Red, 0, gTrainers[trainerNum].trainerName);
         }
         CopyWindowToVram(WIN_TRAINER_LIST, 3);
     }
@@ -668,5 +668,5 @@ static void TrainerRadar_CursorCallback(struct Sprite *sprite)
     else
         sprite->invisible = TRUE;
         
-    sprite->y = 48 + sTrainerRadar->visibleCursorPosition * 16;
+    sprite->y = 52 + sTrainerRadar->visibleCursorPosition * 16;
 }
