@@ -52,6 +52,7 @@ static void Task_RunLoopedTask(u8);
 static void Task_Pokenav(u8);
 static void CB2_InitPokenavForTutorial(void);
 static void CB2_InitPokenavForTownMap(void);
+static void CB2_InitPokenavForMatchCall(void);
 
 const struct PokenavCallbacks PokenavMenuCallbacks[17] =
 {
@@ -414,6 +415,33 @@ static void CB2_InitPokenavForTownMap(void)
     }
 }
 
+void OpenPokenavForMatchCall(MainCallback exitCallback)
+{
+    gPokenavResources = Alloc(sizeof(*gPokenavResources));
+    if (gPokenavResources != NULL)
+        gPokenavResources->exitCallback = exitCallback;
+    SetMainCallback2(CB2_InitPokenavForMatchCall);
+}
+
+static void CB2_InitPokenavForMatchCall(void)
+{
+    if (gPokenavResources == NULL)
+    {
+        SetMainCallback2(CB2_ReturnToField);
+    }
+    else
+    {
+        InitPokenavResources(gPokenavResources);
+        gPokenavResources->mode = POKENAV_MODE_MATCH_CALL;
+        ResetTasks();
+        ResetSpriteData();
+        FreeAllSpritePalettes();
+        SetVBlankCallback(NULL);
+        CreateTask(Task_Pokenav, 0);
+        SetMainCallback2(CB2_Pokenav);
+        SetVBlankCallback(VBlankCB_Pokenav);
+    }
+}
 
 static void FreePokenavResources(void)
 {
@@ -506,6 +534,12 @@ static void Task_Pokenav(u8 taskId)
             PrintHelpBarText(gSaveBlock2Ptr->regionMapZoom ? HELPBAR_MAP_ZOOMED_IN : HELPBAR_MAP_ZOOMED_OUT);
             SetActivePokenavMenu(POKENAV_REGION_MAP);
         }
+        else if (GetPokenavMode() == POKENAV_MODE_MATCH_CALL)
+        {
+            ChangeBgY(0, 0x2000, BG_COORD_SET);
+            PrintHelpBarText(HELPBAR_MC_CALL_MENU);
+            SetActivePokenavMenu(POKENAV_MATCH_CALL);
+        }
         else
             SetActivePokenavMenu(POKENAV_MAIN_MENU);
         tState = 4;
@@ -525,7 +559,7 @@ static void Task_Pokenav(u8 taskId)
         {
             PokenavMenuCallbacks[gPokenavResources->currentMenuIndex].free2();
             PokenavMenuCallbacks[gPokenavResources->currentMenuIndex].free1();
-            if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT && SetActivePokenavMenu(menuId))
+            if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT && GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT && SetActivePokenavMenu(menuId))
             {
                 tState = 4;
             }
@@ -549,7 +583,8 @@ static void Task_Pokenav(u8 taskId)
     case 5:
         if (!WaitForPokenavShutdownFade())
         {
-            bool32 calledFromMap = (gPokenavResources->mode == POKENAV_MODE_TOWN_MAP) || (gPokenavResources->mode == POKENAV_MODE_TOWN_MAP_EXIT);
+            bool32 calledFromMap = (gPokenavResources->mode == POKENAV_MODE_TOWN_MAP) || (gPokenavResources->mode == POKENAV_MODE_MATCH_CALL)
+                            || (gPokenavResources->mode == POKENAV_MODE_TOWN_MAP_EXIT) || (gPokenavResources->mode == POKENAV_MODE_MATCH_CALL_EXIT);
             bool32 calledFromScript = (gPokenavResources->mode != POKENAV_MODE_NORMAL);
 
             FreeMenuHandlerSubstruct1();

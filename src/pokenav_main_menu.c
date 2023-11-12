@@ -301,7 +301,7 @@ u32 PokenavMainMenuLoopedTaskIsActive(void)
 
 void ShutdownPokenav(void)
 {
-    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT && GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT)
     {
         PlaySE(SE_POKENAV_OFF);
         ResetBldCnt_();

@@ -448,11 +448,11 @@ void FreeMenuHandlerSubstruct2(void)
 {
     struct Pokenav_MenuGfx * gfx = GetSubstructPtr(POKENAV_SUBSTRUCT_MENU_GFX);
 
-    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT && GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT)
         DestroyMovingDotsBgTask();
     RemoveWindow(gfx->optionDescWindowId);
     FreeAndDestroyMainMenuSprites();
-    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT && GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT)
         DestroyMenuOptionGlowTask();
     FreePokenavSubstruct(POKENAV_SUBSTRUCT_MENU_GFX);
 }

@@ -93,6 +93,8 @@ enum
     POKENAV_MODE_FORCE_CALL_EXIT,  // Pokenav tutorial after calling Mr. Stone
     POKENAV_MODE_TOWN_MAP,         // Town Map from start menu
     POKENAV_MODE_TOWN_MAP_EXIT,    // Town Map from start menu exit
+    POKENAV_MODE_MATCH_CALL,       // Match Call from start menu
+    POKENAV_MODE_MATCH_CALL_EXIT,  // Match Call from start menu exit
 };
 
 enum
@@ -345,6 +347,7 @@ u32 GetSelectedConditionSearch(void);
 
 void CB2_InitPokeNav(void);
 void OpenPokenavForTownMap(MainCallback exitCallback);
+void OpenPokenavForMatchCall(MainCallback exitCallback);
 u32 CreateLoopedTask(LoopedTask loopedTask, u32 priority);
 bool32 FuncIsActiveLoopedTask(LoopedTask func);
 void *GetSubstructPtr(u32 index);

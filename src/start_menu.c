@@ -72,9 +72,10 @@ enum
     MENU_ACTION_RETIRE_FRONTIER,
     MENU_ACTION_PYRAMID_BAG,
     MENU_ACTION_DEBUG,
-    MENU_ACTION_DEXNAV,
-    MENU_ACTION_PC,
-    MENU_ACTION_TOWN_MAP
+    MENU_ACTION_DEXNAV, // 14
+    MENU_ACTION_PC, // 15
+    MENU_ACTION_TOWN_MAP,
+    MENU_ACTION_MATCH_CALL // 16
 };
 
 // Save status
@@ -118,6 +119,9 @@ static bool8 StartMenuBattlePyramidBagCallback(void);
 static bool8 StartMenuDebugCallback(void);
 static bool8 StartMenuDexNavCallback(void);
 static bool8 StartMenuAccessPCCallback(void);
+static bool8 FieldCB_ReturnToFieldStartMenu(void);
+static bool8 StartMenuTownMapCallback(void);
+static bool8 StartMenuMatchCallCallback(void);
 
 // Menu callbacks
 static bool8 SaveStartCallback(void);
@@ -144,8 +148,6 @@ static u8 SaveReturnErrorCallback(void);
 static u8 BattlePyramidConfirmRetireCallback(void);
 static u8 BattlePyramidRetireYesNoCallback(void);
 static u8 BattlePyramidRetireInputCallback(void);
-static bool8 FieldCB_ReturnToFieldStartMenu(void);
-static bool8 StartMenuTownMapCallback(void);
 
 // Task callbacks
 static void StartMenuTask(u8 taskId);
@@ -195,8 +197,9 @@ static const struct WindowTemplate sWindowTemplate_PyramidPeak = {
     .baseBlock = 0x8
 };
 
-static const u8 gText_MenuDebug[] = _("DEBUG");
-static const u8 gText_TownMap[] = _("Town Map");
+static const u8 sText_MenuDebug[] = _("Debug");
+static const u8 sText_TownMap[] = _("Town Map");
+static const u8 sText_MatchCall[] = _("Match Call");
 
 static const struct MenuAction sStartMenuItems[] =
 {
@@ -213,10 +216,11 @@ static const struct MenuAction sStartMenuItems[] =
     [MENU_ACTION_REST_FRONTIER]   = {gText_MenuRest,    {.u8_void = StartMenuSaveCallback}},
     [MENU_ACTION_RETIRE_FRONTIER] = {gText_MenuRetire,  {.u8_void = StartMenuBattlePyramidRetireCallback}},
     [MENU_ACTION_PYRAMID_BAG]     = {gText_MenuBag,     {.u8_void = StartMenuBattlePyramidBagCallback}},
-    [MENU_ACTION_DEBUG]           = {gText_MenuDebug,   {.u8_void = StartMenuDebugCallback}},
+    [MENU_ACTION_DEBUG]           = {sText_MenuDebug,   {.u8_void = StartMenuDebugCallback}},
     [MENU_ACTION_DEXNAV]          = {gText_MenuDexNav,  {.u8_void = StartMenuDexNavCallback}},
     [MENU_ACTION_PC]              = {gText_Pokenav_Access_PC, {.u8_void = StartMenuAccessPCCallback}},
-    [MENU_ACTION_TOWN_MAP]        = {gText_TownMap, {.u8_void = StartMenuTownMapCallback}},
+    [MENU_ACTION_TOWN_MAP]        = {sText_TownMap, {.u8_void = StartMenuTownMapCallback}},
+    [MENU_ACTION_MATCH_CALL]      = {sText_MatchCall, {.u8_void = StartMenuMatchCallCallback}},
 };
 
 static const struct BgTemplate sBgTemplates_LinkBattleSave[] =
@@ -737,6 +741,9 @@ static bool8 HandleStartMenuInput(void)
     {
         PlaySE(SE_SELECT);
         gMenuCallback = sStartMenuItems[gSaveBlock2Ptr->startShortcut].func.u8_void;
+        
+        if (gMenuCallback == StartMenuMatchCallCallback)
+            FadeScreen(FADE_TO_BLACK, 0);
 
         /*HideStartMenuWindow();
         InitTrainerRadar();*/
@@ -1714,5 +1721,14 @@ static bool8 StartMenuTownMapCallback(void)
     {
         CleanupOverworldWindowsAndTilemaps();
         OpenPokenavForTownMap(CB2_ReturnToField);
+    }
+}
+
+static bool8 StartMenuMatchCallCallback(void)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        OpenPokenavForMatchCall(CB2_ReturnToField);
     }
 }

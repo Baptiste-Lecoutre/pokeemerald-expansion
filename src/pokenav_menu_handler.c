@@ -24,6 +24,8 @@ static u32 HandleMainMenuInputEndTutorial(struct Pokenav_Menu *);
 static u32 HandleMainMenuInputTutorial(struct Pokenav_Menu *);
 static u32 HandleMainMenuInputTownMap(struct Pokenav_Menu *);
 static u32 HandleMainMenuInputTownMapExit(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputMatchCall(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputMatchCallExit(struct Pokenav_Menu *);
 static u32 HandleMainMenuInput(struct Pokenav_Menu *);
 static u32 (*GetMainMenuInputHandler(void))(struct Pokenav_Menu *);
 static void SetMenuInputHandler(struct Pokenav_Menu *);
@@ -191,7 +193,8 @@ static void SetMenuInputHandler(struct Pokenav_Menu *menu)
     switch (menu->menuType)
     {
     case POKENAV_MENU_TYPE_DEFAULT:
-        if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP && GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT)
+        if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP && GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT
+            && GetPokenavMode() != POKENAV_MODE_MATCH_CALL && GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT)
             SetPokenavMode(POKENAV_MODE_NORMAL);
         // fallthrough
     case POKENAV_MENU_TYPE_UNLOCK_MC:
@@ -222,6 +225,10 @@ static u32 (*GetMainMenuInputHandler(void))(struct Pokenav_Menu *)
         return HandleMainMenuInputTownMap;
     case POKENAV_MODE_TOWN_MAP_EXIT:
         return HandleMainMenuInputTownMapExit;
+    case POKENAV_MODE_MATCH_CALL:
+        return HandleMainMenuInputMatchCall;
+    case POKENAV_MODE_MATCH_CALL_EXIT:
+        return HandleMainMenuInputMatchCallExit;
     }
 }
 
@@ -273,6 +280,7 @@ static u32 HandleMainMenuInput(struct Pokenav_Menu *menu)
         case POKENAV_MENUITEM_MATCH_CALL:
             menu->helpBarIndex = HELPBAR_MC_TRAINER_LIST;
             SetMenuIdAndCB(menu, POKENAV_MATCH_CALL);
+            gSaveBlock2Ptr->startShortcut = 17; // MENU_ACTION_MATCH_CALL
             return POKENAV_MENU_FUNC_OPEN_FEATURE;
         /*case POKENAV_MENUITEM_RIBBONS:
             if (CanViewRibbonsMenu())
@@ -366,6 +374,17 @@ static u32 HandleMainMenuInputTownMap(struct Pokenav_Menu *menu)
 }
 
 static u32 HandleMainMenuInputTownMapExit(struct Pokenav_Menu *menu)
+{
+    return -1;
+}
+
+static u32 HandleMainMenuInputMatchCall(struct Pokenav_Menu *menu)
+{
+    SetMenuIdAndCB(menu, POKENAV_MATCH_CALL);
+    return POKENAV_MENU_FUNC_OPEN_FEATURE;
+}
+
+static u32 HandleMainMenuInputMatchCallExit(struct Pokenav_Menu *menu)
 {
     return -1;
 }
