@@ -212,7 +212,7 @@ static const u8 sMapName_Dewford_Manor[] = _("Dewford Manor");
 static const u8 sMapName_Verdant_Glade[] = _("Verdant Glade");
 static const u8 sMapName_Draco_Chamber[] = _("Draco Chamber");
 static const u8 sMapName_Route_110_East[] = _("Route 110 East");
-static const u8 sMapName_Cave_Of_Shock[] = _("Cave of Shock");
+static const u8 sMapName_Cave_of_Shock[] = _("Cave of Shock");
 static const u8 sMapName_Haunted_Manor[] = _("Haunted Manor");
 
 const struct RegionMapLocation gRegionMapEntries[] = {
@@ -438,7 +438,7 @@ const struct RegionMapLocation gRegionMapEntries[] = {
     [MAPSEC_VERDANTURF_MEADOW] = { 4, 7, 1, 1, sMapName_Verdant_Glade},
     [MAPSEC_DRACO_CHAMBER] = { 0, 3, 1, 1, sMapName_Draco_Chamber},
     [MAPSEC_CAVE_OF_SHOCK] = { 9, 7, 1, 1, sMapName_Route_110_East},
-    [MAPSEC_CAVE_OF_SHOCK2] = { 9, 7, 1, 1, sMapName_Cave_Of_Shock},
+    [MAPSEC_CAVE_OF_SHOCK2] = { 9, 7, 1, 1, sMapName_Cave_of_Shock},
     [MAPSEC_HAUNTED_MANOR] = { 5, 2, 1, 1, sMapName_Haunted_Manor},
 };
 
