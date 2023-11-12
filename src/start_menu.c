@@ -75,7 +75,8 @@ enum
     MENU_ACTION_DEXNAV, // 14
     MENU_ACTION_PC, // 15
     MENU_ACTION_TOWN_MAP,
-    MENU_ACTION_MATCH_CALL // 16
+    MENU_ACTION_MATCH_CALL, // 17
+    MENU_ACTION_TRAINER_RADAR // 18
 };
 
 // Save status
@@ -122,6 +123,7 @@ static bool8 StartMenuAccessPCCallback(void);
 static bool8 FieldCB_ReturnToFieldStartMenu(void);
 static bool8 StartMenuTownMapCallback(void);
 static bool8 StartMenuMatchCallCallback(void);
+static bool8 StartMenuTrainerRadarCallback(void);
 
 // Menu callbacks
 static bool8 SaveStartCallback(void);
@@ -200,6 +202,7 @@ static const struct WindowTemplate sWindowTemplate_PyramidPeak = {
 static const u8 sText_MenuDebug[] = _("Debug");
 static const u8 sText_TownMap[] = _("Town Map");
 static const u8 sText_MatchCall[] = _("Match Call");
+static const u8 sText_TrainerRadar[] = _("Trainer Database");
 
 static const struct MenuAction sStartMenuItems[] =
 {
@@ -221,6 +224,7 @@ static const struct MenuAction sStartMenuItems[] =
     [MENU_ACTION_PC]              = {gText_Pokenav_Access_PC, {.u8_void = StartMenuAccessPCCallback}},
     [MENU_ACTION_TOWN_MAP]        = {sText_TownMap, {.u8_void = StartMenuTownMapCallback}},
     [MENU_ACTION_MATCH_CALL]      = {sText_MatchCall, {.u8_void = StartMenuMatchCallCallback}},
+    [MENU_ACTION_TRAINER_RADAR]   = {sText_TrainerRadar, {.u8_void = StartMenuTrainerRadarCallback}},
 };
 
 static const struct BgTemplate sBgTemplates_LinkBattleSave[] =
@@ -1731,4 +1735,10 @@ static bool8 StartMenuMatchCallCallback(void)
         CleanupOverworldWindowsAndTilemaps();
         OpenPokenavForMatchCall(CB2_ReturnToField);
     }
+}
+
+static bool8 StartMenuTrainerRadarCallback(void)
+{
+    HideStartMenuWindow();
+    InitTrainerRadar();
 }
