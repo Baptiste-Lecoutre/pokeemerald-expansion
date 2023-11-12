@@ -9,6 +9,7 @@
 #include "pokemon_storage_system.h"
 #include "pokenav.h"
 #include "event_data.h"
+#include "trainer_radar.h"
 
 #define LOOPED_TASK_DECODE_STATE(action) (action - 5)
 
@@ -54,7 +55,7 @@ static void CB2_InitPokenavForTutorial(void);
 static void CB2_InitPokenavForTownMap(void);
 static void CB2_InitPokenavForMatchCall(void);
 
-const struct PokenavCallbacks PokenavMenuCallbacks[17] =
+const struct PokenavCallbacks PokenavMenuCallbacks[19] =
 {
     [POKENAV_MAIN_MENU - POKENAV_MENU_IDS_START] =
     {
@@ -79,6 +80,16 @@ const struct PokenavCallbacks PokenavMenuCallbacks[17] =
     [POKENAV_MAIN_MENU_CURSOR_ON_DEXNAV - POKENAV_MENU_IDS_START] =
     {
         .init = PokenavCallback_Init_MainMenuCursorOnDexNav,
+        .callback = GetMenuHandlerCallback,
+        .open = OpenPokenavMenuNotInitial,
+        .createLoopTask = CreateMenuHandlerLoopedTask,
+        .isLoopTaskActive = IsMenuHandlerLoopedTaskActive,
+        .free1 = FreeMenuHandlerSubstruct1,
+        .free2 = FreeMenuHandlerSubstruct2,
+    },
+    [POKENAV_MAIN_MENU_CURSOR_ON_TRAINER_RADAR - POKENAV_MENU_IDS_START] =
+    {
+        .init = PokenavCallback_Init_MainMenuCursorOnTrainerRadar,
         .callback = GetMenuHandlerCallback,
         .open = OpenPokenavMenuNotInitial,
         .createLoopTask = CreateMenuHandlerLoopedTask,
@@ -139,6 +150,16 @@ const struct PokenavCallbacks PokenavMenuCallbacks[17] =
     [POKENAV_DEXNAV - POKENAV_MENU_IDS_START] =
     {
         .init = PokeNavMenuDexNavCallback,
+        .callback = GetConditionGraphMenuCallback,
+        .open = OpenConditionGraphMenu,
+        .createLoopTask = CreateConditionGraphMenuLoopedTask,
+        .isLoopTaskActive = IsConditionGraphMenuLoopedTaskActive,
+        .free1 = FreeConditionGraphMenuSubstruct1,
+        .free2 = FreeConditionGraphMenuSubstruct2,
+    },
+    [POKENAV_TRAINER_RADAR - POKENAV_MENU_IDS_START] =
+    {
+        .init = PokeNavMenuTrainerRadarCallback,
         .callback = GetConditionGraphMenuCallback,
         .open = OpenConditionGraphMenu,
         .createLoopTask = CreateConditionGraphMenuLoopedTask,

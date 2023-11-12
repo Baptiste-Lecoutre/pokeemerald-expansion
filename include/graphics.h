@@ -10915,8 +10915,6 @@ extern const u32 gBerryCrush_TextWindows_Tilemap[];
 extern const u32 gPokenavMessageBox_Gfx[];
 extern const u32 gPokenavMessageBox_Tilemap[];
 extern const u16 gPokenavMessageBox_Pal[];
-extern const u32 gPokenavOptions_Gfx[];
-extern const u16 gPokenavOptions_Pal[];
 
 // DexNav
 extern const u16 gDexNav_Gui_Pal[];

@@ -64,6 +64,7 @@ static u32 LoopedTask_CannotAccesPC(s32);
 static u32 LoopedTask_ReShowDescription(s32);
 static u32 LoopedTask_OpenPokenavFeature(s32);
 static u32 LoopedTask_OpenPokenavDexNav(s32);
+static u32 LoopedTask_OpenPokenavTrainerRadar(s32);
 static void LoadPokenavOptionPalettes(void);
 static void FreeAndDestroyMainMenuSprites(void);
 static void CreateMenuOptionSprites(void);
@@ -152,14 +153,15 @@ static const LoopedTask sMenuHandlerLoopTaskFuncs[] =
     [POKENAV_MENU_FUNC_RESHOW_DESCRIPTION]    = LoopedTask_ReShowDescription,
     [POKENAV_MENU_FUNC_OPEN_FEATURE]          = LoopedTask_OpenPokenavFeature,
     [POKENAV_MENU_FUNC_CANNOT_ACCESS_PC]      = LoopedTask_CannotAccesPC,
-    [POKENAV_MENU_FUNC_OPEN_DEXNAV]           = LoopedTask_OpenPokenavDexNav
+    [POKENAV_MENU_FUNC_OPEN_DEXNAV]           = LoopedTask_OpenPokenavDexNav,
+    [POKENAV_MENU_FUNC_OPEN_TRAINER_RADAR]    = LoopedTask_OpenPokenavTrainerRadar
 };
 
 static const struct CompressedSpriteSheet sPokenavOptionsSpriteSheets[] =
 {
     {
         .data = gPokenavOptions_Gfx,
-        .size = 0x3C00,
+        .size = 0x4000,
         .tag = GFXTAG_OPTIONS
     },
     {
@@ -184,19 +186,20 @@ static const struct SpritePalette sPokenavOptionsSpritePalettes[] =
 // Tile number, palette tag offset
 static const u16 sOptionsLabelGfx_RegionMap[] = {0x000, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
 static const u16 sOptionsLabelGfx_DexNav[]    = {0x020, PALTAG_OPTIONS_CYAN - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_AccessPC[]  = {0x040, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Condition[] = {0x060, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_MatchCall[] = {0x080, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_SwitchOff[] = {0x0A0, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Party[]     = {0x0C0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Ribbons[]   = {0x0E0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Search[]    = {0x100, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Cool[]      = {0x120, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Beauty[]    = {0x140, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Cute[]      = {0x160, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Smart[]     = {0x180, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Tough[]     = {0x1A0, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Cancel[]    = {0x1C0, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_TrainerRadar[]= {0x040, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START}; 
+static const u16 sOptionsLabelGfx_AccessPC[]  = {0x060, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Condition[] = {0x080, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_MatchCall[] = {0x0A0, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_SwitchOff[] = {0x0C0, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Party[]     = {0x0E0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Ribbons[]   = {0x100, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Search[]    = {0x120, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Cool[]      = {0x140, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Beauty[]    = {0x160, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Cute[]      = {0x180, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Smart[]     = {0x1A0, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Tough[]     = {0x1C0, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Cancel[]    = {0x1E0, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
 
 struct
 {
@@ -212,6 +215,7 @@ struct
         .gfx = {
             sOptionsLabelGfx_RegionMap,
             sOptionsLabelGfx_DexNav,
+            sOptionsLabelGfx_TrainerRadar,
             sOptionsLabelGfx_AccessPC,
             sOptionsLabelGfx_SwitchOff
         }
@@ -223,6 +227,7 @@ struct
         .gfx = {
             sOptionsLabelGfx_RegionMap,
             sOptionsLabelGfx_DexNav,
+            sOptionsLabelGfx_TrainerRadar,
             sOptionsLabelGfx_AccessPC,
             sOptionsLabelGfx_MatchCall,
             sOptionsLabelGfx_SwitchOff
@@ -282,12 +287,12 @@ static const u8 *const sPageDescriptions[] =
 {
     [POKENAV_MENUITEM_MAP]                     = gText_CheckMapOfHoenn,
     [POKENAV_MENUITEM_DEXNAV]                  = gText_DexNavDescription,
+    [POKENAV_MENUITEM_TRAINER_RADAR]           = gText_TrainerRadarDescription,
     [POKENAV_MENUITEM_ACCESS_PC]               = gText_Pokenav_Access_PC,
     [POKENAV_MENUITEM_CONDITION]               = gText_CheckPokemonInDetail,
     [POKENAV_MENUITEM_MATCH_CALL]              = gText_CallRegisteredTrainer,
     [POKENAV_MENUITEM_RIBBONS]                 = gText_CheckObtainedRibbons,
     [POKENAV_MENUITEM_SWITCH_OFF]              = gText_PutAwayPokenav,
-//    [POKENAV_MENUITEM_CONDITION_ACCESS_PC]     = gText_Pokenav_Access_PC,
     [POKENAV_MENUITEM_CONDITION_PARTY]         = gText_CheckPartyPokemonInDetail,
     [POKENAV_MENUITEM_CONDITION_RIBBONS]       = gText_CheckObtainedRibbons,
     [POKENAV_MENUITEM_CONDITION_SEARCH]        = gText_CheckAllPokemonInDetail,
@@ -828,6 +833,48 @@ static u32 LoopedTask_OpenPokenavFeature(s32 state)
 
 // For selecting a feature option from a menu, e.g. the Map, Match Call, Beauty search, etc.
 static u32 LoopedTask_OpenPokenavDexNav(s32 state)
+{
+    switch (state)
+    {
+    case 0:
+        PrintHelpBarText(GetHelpBarTextId());
+        return LT_INC_AND_PAUSE;
+    case 1:
+        if (WaitForHelpBar())
+            return LT_PAUSE;
+        ResetBldCnt();
+        StartOptionAnimations_Exit();
+        switch (GetPokenavMenuType())
+        {
+        case POKENAV_MENU_TYPE_CONDITION_SEARCH:
+            HideMainOrSubMenuLeftHeader(POKENAV_GFX_SEARCH_MENU, FALSE);
+            // fallthrough
+        case POKENAV_MENU_TYPE_CONDITION:
+            HideMainOrSubMenuLeftHeader(POKENAV_GFX_CONDITION_MENU, FALSE);
+            break;
+        default:
+            HideMainOrSubMenuLeftHeader(POKENAV_GFX_MAIN_MENU, FALSE);
+            break;
+        }
+        PlaySE(SE_SELECT);
+        return LT_INC_AND_PAUSE;
+    case 2:
+        if (AreMenuOptionSpritesMoving())
+            return LT_PAUSE;
+        if (AreLeftHeaderSpritesMoving())
+            return LT_PAUSE;
+        PokenavFadeScreen(POKENAV_FADE_TO_BLACK_ALL);
+        return LT_INC_AND_PAUSE;
+    case 3:
+        if (IsPaletteFadeActive())
+            return LT_PAUSE;
+        break;
+    }
+    return LT_FINISH;
+}
+
+// For selecting a feature option from a menu, e.g. the Map, Match Call, Beauty search, etc.
+static u32 LoopedTask_OpenPokenavTrainerRadar(s32 state)
 {
     switch (state)
     {

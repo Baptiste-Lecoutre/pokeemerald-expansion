@@ -20,6 +20,7 @@
 #include "palette.h"
 #include "pokemon_icon.h"
 #include "pokemon_summary_screen.h"
+#include "pokenav.h"
 #include "random.h"
 #include "region_map.h"
 #include "save.h"
@@ -49,6 +50,7 @@ enum Windows
 
 struct TrainerRadar
 {
+    MainCallback savedCallback;
     u32* tilemapPtr;
     u16 trainerId;
     u8 mapsec;
@@ -196,7 +198,8 @@ static void PrintTrainerCount(void);
 static void PrintInstructions(void);
 static void TrainerRadar_CursorCallback(struct Sprite *sprite);
 
-EWRAM_DATA static struct TrainerRadar *sTrainerRadar = NULL;
+EWRAM_DATA static struct TrainerRadar *sTrainerRadarPtr = NULL;
+EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
 
 #define SELECTION_CURSOR_TAG    0x4005
 static const struct OamData sSelectionCursorOam =
@@ -233,6 +236,7 @@ static void MainCB2_TrainerRadar(void)
     RunTasks();
     AnimateSprites();
     BuildOamBuffer();
+    DoScheduledBgTilemapCopiesToVram();
     UpdatePaletteFade();
 }
 
@@ -257,10 +261,16 @@ void CB2_TrainerRadar(void)
             gMain.state++;
             break;
         case 2:
-            sTrainerRadar->tilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
+            sTrainerRadarPtr->tilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
+            sBg1TilemapBuffer = Alloc(0x800);
+            memset(sBg1TilemapBuffer, 0, 0x800);
             ResetBgsAndClearDma3BusyFlags(0);
+            
             InitBgsFromTemplates(0, sTrainerRadarBgTemplates, 3);
-            SetBgTilemapBuffer(2, sTrainerRadar->tilemapPtr);
+            SetBgTilemapBuffer(1, sBg1TilemapBuffer);
+            SetBgTilemapBuffer(2, sTrainerRadarPtr->tilemapPtr);
+            ScheduleBgCopyTilemapToVram(1);
+            ScheduleBgCopyTilemapToVram(2);
             gMain.state++;
             break;
         case 3:
@@ -273,6 +283,7 @@ void CB2_TrainerRadar(void)
                 ShowBg(0);
                 ShowBg(1);
                 ShowBg(2);
+                CopyBgTilemapBufferToVram(1);
                 CopyBgTilemapBufferToVram(2);
                 gMain.state++;
             }
@@ -299,10 +310,11 @@ static void Task_TrainerRadarFadeOut(u8 taskId)
 {
 	if (!gPaletteFade.active)
 	{
-        SetMainCallback2(CB2_ReturnToFieldContinueScript);
-		Free(sTrainerRadar->tilemapPtr);
-		Free(sTrainerRadar);
-        sTrainerRadar = NULL;
+        SetMainCallback2(sTrainerRadarPtr->savedCallback);
+        Free(sBg1TilemapBuffer);
+		Free(sTrainerRadarPtr->tilemapPtr);
+		Free(sTrainerRadarPtr);
+        sTrainerRadarPtr = NULL;
 		FreeAllWindowBuffers();
 		DestroyTask(taskId);
 	}
@@ -315,37 +327,39 @@ static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
         PlaySE(SE_SELECT);
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
         gTasks[taskId].func = Task_TrainerRadarFadeOut;
+        SetVBlankCallback(VBlankCB_TrainerRadar);
+        SetMainCallback2(MainCB2_TrainerRadar);
     }
-    else if (JOY_NEW(DPAD_DOWN) && sTrainerRadar->numOfTrainers != 0) // move cursors down
+    else if (JOY_NEW(DPAD_DOWN) && sTrainerRadarPtr->numOfTrainers != 0) // move cursors down
     {
         PlaySE(SE_SELECT);
-        if (sTrainerRadar->absoluteCursorPosition < sTrainerRadar->numOfTrainers-1)
+        if (sTrainerRadarPtr->absoluteCursorPosition < sTrainerRadarPtr->numOfTrainers-1)
         {
-            sTrainerRadar->absoluteCursorPosition++;
-            if (sTrainerRadar->visibleCursorPosition < VISIBLE_CURSOR_MAX_VALUE)
-                sTrainerRadar->visibleCursorPosition++;
+            sTrainerRadarPtr->absoluteCursorPosition++;
+            if (sTrainerRadarPtr->visibleCursorPosition < VISIBLE_CURSOR_MAX_VALUE)
+                sTrainerRadarPtr->visibleCursorPosition++;
         }
         else
-            sTrainerRadar->visibleCursorPosition = sTrainerRadar->absoluteCursorPosition = 0;
+            sTrainerRadarPtr->visibleCursorPosition = sTrainerRadarPtr->absoluteCursorPosition = 0;
         
         UpdateTrainerRadarData();
         UpdateTrainerRadarVisualElements();
     }    
-    else if (JOY_NEW(DPAD_UP) && sTrainerRadar->numOfTrainers != 0) // move cursors up
+    else if (JOY_NEW(DPAD_UP) && sTrainerRadarPtr->numOfTrainers != 0) // move cursors up
     {
         PlaySE(SE_SELECT);
-        if (sTrainerRadar->absoluteCursorPosition > 0)
+        if (sTrainerRadarPtr->absoluteCursorPosition > 0)
         {
-            sTrainerRadar->absoluteCursorPosition--;
-            if (sTrainerRadar->visibleCursorPosition > 0)
-                sTrainerRadar->visibleCursorPosition--;
+            sTrainerRadarPtr->absoluteCursorPosition--;
+            if (sTrainerRadarPtr->visibleCursorPosition > 0)
+                sTrainerRadarPtr->visibleCursorPosition--;
         }
         else
         {
-            sTrainerRadar->absoluteCursorPosition = sTrainerRadar->numOfTrainers-1;
-            sTrainerRadar->visibleCursorPosition = VISIBLE_CURSOR_MAX_VALUE;
-            if (sTrainerRadar->numOfTrainers-1 < VISIBLE_CURSOR_MAX_VALUE)
-                sTrainerRadar->visibleCursorPosition = sTrainerRadar->numOfTrainers-1;
+            sTrainerRadarPtr->absoluteCursorPosition = sTrainerRadarPtr->numOfTrainers-1;
+            sTrainerRadarPtr->visibleCursorPosition = VISIBLE_CURSOR_MAX_VALUE;
+            if (sTrainerRadarPtr->numOfTrainers-1 < VISIBLE_CURSOR_MAX_VALUE)
+                sTrainerRadarPtr->visibleCursorPosition = sTrainerRadarPtr->numOfTrainers-1;
         }
 
         UpdateTrainerRadarData();
@@ -354,16 +368,16 @@ static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
     else if (JOY_NEW(DPAD_LEFT))
     {
         PlaySE(SE_SELECT);
-        sTrainerRadar->visibleCursorPosition = sTrainerRadar->absoluteCursorPosition = 0;
+        sTrainerRadarPtr->visibleCursorPosition = sTrainerRadarPtr->absoluteCursorPosition = 0;
 
-        if (sTrainerRadar->mapsec > MAPSEC_LITTLEROOT_TOWN)
-            sTrainerRadar->mapsec--;
+        if (sTrainerRadarPtr->mapsec > MAPSEC_LITTLEROOT_TOWN)
+            sTrainerRadarPtr->mapsec--;
         else
-            sTrainerRadar->mapsec = MAPSEC_NONE-1;
+            sTrainerRadarPtr->mapsec = MAPSEC_NONE-1;
     
         // skip over kanto mapsecs & MAPSEC_SECRET_BASE & MAPSEC_DYNAMIC
-        if (sTrainerRadar->mapsec >= MAPSEC_SECRET_BASE && sTrainerRadar->mapsec <= KANTO_MAPSEC_END)
-            sTrainerRadar->mapsec = MAPSEC_SECRET_BASE - 1;
+        if (sTrainerRadarPtr->mapsec >= MAPSEC_SECRET_BASE && sTrainerRadarPtr->mapsec <= KANTO_MAPSEC_END)
+            sTrainerRadarPtr->mapsec = MAPSEC_SECRET_BASE - 1;
 
         UpdateTrainerRadarData();
         UpdateTrainerRadarVisualElements();
@@ -371,16 +385,16 @@ static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
     else if (JOY_NEW(DPAD_RIGHT))
     {
         PlaySE(SE_SELECT);
-        sTrainerRadar->visibleCursorPosition = sTrainerRadar->absoluteCursorPosition = 0;
+        sTrainerRadarPtr->visibleCursorPosition = sTrainerRadarPtr->absoluteCursorPosition = 0;
 
-        if (sTrainerRadar->mapsec < MAPSEC_NONE-1)
-            sTrainerRadar->mapsec++;
+        if (sTrainerRadarPtr->mapsec < MAPSEC_NONE-1)
+            sTrainerRadarPtr->mapsec++;
         else
-            sTrainerRadar->mapsec = MAPSEC_LITTLEROOT_TOWN;
+            sTrainerRadarPtr->mapsec = MAPSEC_LITTLEROOT_TOWN;
 
         // skip over kanto mapsecs & MAPSEC_SECRET_BASE & MAPSEC_DYNAMIC
-        if (sTrainerRadar->mapsec >= MAPSEC_SECRET_BASE && sTrainerRadar->mapsec <= KANTO_MAPSEC_END)
-            sTrainerRadar->mapsec = KANTO_MAPSEC_END + 1;
+        if (sTrainerRadarPtr->mapsec >= MAPSEC_SECRET_BASE && sTrainerRadarPtr->mapsec <= KANTO_MAPSEC_END)
+            sTrainerRadarPtr->mapsec = KANTO_MAPSEC_END + 1;
 
         UpdateTrainerRadarData();
         UpdateTrainerRadarVisualElements();
@@ -420,13 +434,13 @@ static void InitTrainerRadarScreen(void)
 	CommitWindows();
 
     // do stuff
-    sTrainerRadar->mapsec = GetCurrentRegionMapSectionId();
-    sTrainerRadar->visibleCursorPosition = 0;
-    sTrainerRadar->absoluteCursorPosition = 0;
-    sTrainerRadar->trainerFrontPicSpriteId = 0xFF;
-    sTrainerRadar->trainerObjEventSpriteId = 0xFF;
+    sTrainerRadarPtr->mapsec = GetCurrentRegionMapSectionId();
+    sTrainerRadarPtr->visibleCursorPosition = 0;
+    sTrainerRadarPtr->absoluteCursorPosition = 0;
+    sTrainerRadarPtr->trainerFrontPicSpriteId = 0xFF;
+    sTrainerRadarPtr->trainerObjEventSpriteId = 0xFF;
     for (i = 0; i < PARTY_SIZE; i++)
-        sTrainerRadar->trainerPartySpriteIds[i]=0xFF;
+        sTrainerRadarPtr->trainerPartySpriteIds[i]=0xFF;
     
     UpdateTrainerRadarData();
     CreateTrainerRadarCursor();
@@ -437,7 +451,7 @@ static void InitTrainerRadarScreen(void)
 static void LoadTrainerRadarGfx(void)
 {	
     DecompressAndCopyTileDataToVram(2, &sTrainerRadarBgGfx, 0, 0, 0);
-	LZDecompressWram(sTrainerRadarBgMap, sTrainerRadar->tilemapPtr);
+	LZDecompressWram(sTrainerRadarBgMap, sTrainerRadarPtr->tilemapPtr);
 	LoadCompressedPalette(sTrainerRadarBgPal, 0, BG_PLTT_ID(2));
     ListMenuLoadStdPalAt(BG_PLTT_ID(12), 1);
     LoadPalette(&gStandardMenuPalette, BG_PLTT_ID(15), PLTT_SIZE_4BPP);
@@ -473,13 +487,31 @@ static void ClearVramOamPlttRegs(void)
 	SetGpuReg(REG_OFFSET_BG0VOFS, DISPCNT_MODE_0);
 }
 
-void InitTrainerRadar(void)
+void InitTrainerRadar(MainCallback callback)
 {
-    if (sTrainerRadar == NULL)
-        sTrainerRadar = AllocZeroed(sizeof(struct TrainerRadar));
+    if (sTrainerRadarPtr == NULL)
+        sTrainerRadarPtr = AllocZeroed(sizeof(struct TrainerRadar));
 
     PlayRainStoppingSoundEffect();
+    sTrainerRadarPtr->savedCallback = callback;
     SetMainCallback2(CB2_TrainerRadar);
+}
+
+u32 PokeNavMenuTrainerRadarCallback(void)
+{
+    gSaveBlock2Ptr->startShortcut = 18; // MENU_ACTION_TRAINER_RADAR
+    CreateTask(Task_OpenTrainerRadarFromPokenav, 0);
+    return TRUE;
+}
+
+void Task_OpenTrainerRadarFromPokenav(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        InitTrainerRadar(CB2_InitPokeNav);
+        DestroyTask(taskId);
+    }
 }
 
 static void CreateTrainerRadarCursor(void)
@@ -494,23 +526,23 @@ static void CreateTrainerRadarCursor(void)
     
     LoadPalette(sSelectionCursorPal, (16 * sSelectionCursorOam.paletteNum) + 0x100, 32);
     
-    spriteId = CreateSprite(&sSelectionCursorSpriteTemplate, 11, 52 + sTrainerRadar->visibleCursorPosition * 16, 0);
+    spriteId = CreateSprite(&sSelectionCursorSpriteTemplate, 11, 52 + sTrainerRadarPtr->visibleCursorPosition * 16, 0);
 }
 
 // code for the UI purpose
 static void UpdateTrainerRadarData(void)
 {
-    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
     
     if (routeTrainersStruct->routeTrainers != NULL)
     {
-        sTrainerRadar->trainerId = routeTrainersStruct->routeTrainers[sTrainerRadar->absoluteCursorPosition];
-        sTrainerRadar->numOfTrainers = routeTrainersStruct->numTrainers;
+        sTrainerRadarPtr->trainerId = routeTrainersStruct->routeTrainers[sTrainerRadarPtr->absoluteCursorPosition];
+        sTrainerRadarPtr->numOfTrainers = routeTrainersStruct->numTrainers;
     }
     else
     {
-        sTrainerRadar->trainerId = TRAINER_NONE;
-        sTrainerRadar->numOfTrainers = 0;
+        sTrainerRadarPtr->trainerId = TRAINER_NONE;
+        sTrainerRadarPtr->numOfTrainers = 0;
     }
 }
 
@@ -532,7 +564,7 @@ static void PrintTrainerList(void)
 {
     u32 i, maxSeen = VISIBLE_CURSOR_MAX_VALUE+1;
     u16 trainerNum;
-    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
 
     if (routeTrainersStruct->routeTrainers != NULL)
     {
@@ -541,7 +573,7 @@ static void PrintTrainerList(void)
 
         for (i = 0; i < maxSeen; i++)
         {
-            trainerNum = routeTrainersStruct->routeTrainers[i+sTrainerRadar->absoluteCursorPosition-sTrainerRadar->visibleCursorPosition];
+            trainerNum = routeTrainersStruct->routeTrainers[i+sTrainerRadarPtr->absoluteCursorPosition-sTrainerRadarPtr->visibleCursorPosition];
             if (HasTrainerBeenFought(trainerNum))
                 AddTextPrinterParameterized3(WIN_TRAINER_LIST, 1, 8, 4 + i*16, sFontColor_Black, 0, gTrainers[trainerNum].trainerName);
             else
@@ -553,18 +585,18 @@ static void PrintTrainerList(void)
 
 static void PrintMapName(void)
 {
-    GetMapName(gStringVar3, sTrainerRadar->mapsec, 0);
+    GetMapName(gStringVar3, sTrainerRadarPtr->mapsec, 0);
     AddTextPrinterParameterized3(WIN_MAP_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar3);
     CopyWindowToVram(WIN_MAP_NAME, 3);
 }
 
 static void PrintTrainerClass(void)
 {
-    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
 
     if (routeTrainersStruct->routeTrainers != NULL)
     {
-        StringCopy(gStringVar1, gTrainerClassNames[gTrainers[sTrainerRadar->trainerId].trainerClass]);
+        StringCopy(gStringVar1, gTrainerClassNames[gTrainers[sTrainerRadarPtr->trainerId].trainerClass]);
         AddTextPrinterParameterized3(WIN_TRAINER_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar1);
         CopyWindowToVram(WIN_TRAINER_NAME, 3);
     }
@@ -572,15 +604,15 @@ static void PrintTrainerClass(void)
 
 static void PrintTrainerPic(void)
 {
-    if (sTrainerRadar->trainerFrontPicSpriteId != 0xFF)
-        FreeAndDestroyTrainerPicSprite(sTrainerRadar->trainerFrontPicSpriteId);
+    if (sTrainerRadarPtr->trainerFrontPicSpriteId != 0xFF)
+        FreeAndDestroyTrainerPicSprite(sTrainerRadarPtr->trainerFrontPicSpriteId);
 
-    if (sTrainerRadar->trainerId != TRAINER_NONE)
+    if (sTrainerRadarPtr->trainerId != TRAINER_NONE)
     {
-        sTrainerRadar->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadar->trainerId].trainerPic, TRUE, 132, 65, 15, TAG_NONE);
+        sTrainerRadarPtr->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadarPtr->trainerId].trainerPic, TRUE, 132, 65, 15, TAG_NONE);
         // slot 15 to avoid conflict with mon icon palettes
 
-        /*if (!HasTrainerBeenFought(sTrainerRadar->trainerId))
+        /*if (!HasTrainerBeenFought(sTrainerRadarPtr->trainerId))
         {
             u16 paletteOffset = 15 * 16 + 0x100;
             BlendPalette(paletteOffset, 16, 16, RGB(5, 5, 5));
@@ -591,11 +623,11 @@ static void PrintTrainerPic(void)
 
 static void PrintTrainerOW(void)
 {
-    if (sTrainerRadar->trainerObjEventSpriteId != 0xFF)
-        DestroySpriteAndFreeResources(&gSprites[sTrainerRadar->trainerObjEventSpriteId]);
+    if (sTrainerRadarPtr->trainerObjEventSpriteId != 0xFF)
+        DestroySpriteAndFreeResources(&gSprites[sTrainerRadarPtr->trainerObjEventSpriteId]);
     
-    if (sTrainerRadar->trainerId != TRAINER_NONE)
-        sTrainerRadar->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadar->trainerId], SpriteCallbackDummy, 140, 124, 0);
+    if (sTrainerRadarPtr->trainerId != TRAINER_NONE)
+        sTrainerRadarPtr->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadarPtr->trainerId], SpriteCallbackDummy, 140, 124, 0);
 }
 
 static void PrintTrainerParty(void)
@@ -606,23 +638,23 @@ static void PrintTrainerParty(void)
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        if (sTrainerRadar->trainerPartySpriteIds[i] != 0xFF)
-            FreeAndDestroyMonIconSprite(&gSprites[sTrainerRadar->trainerPartySpriteIds[i]]);
+        if (sTrainerRadarPtr->trainerPartySpriteIds[i] != 0xFF)
+            FreeAndDestroyMonIconSprite(&gSprites[sTrainerRadarPtr->trainerPartySpriteIds[i]]);
     }
     
     FreeMonIconPalettes();
 
-    if (sTrainerRadar->trainerId != TRAINER_NONE)
+    if (sTrainerRadarPtr->trainerId != TRAINER_NONE)
     {
         LoadMonIconPalettes();
 
-        for (i = 0; i < gTrainers[sTrainerRadar->trainerId].partySize; i++)
+        for (i = 0; i < gTrainers[sTrainerRadarPtr->trainerId].partySize; i++)
         {
             icon_x = 188 + (i%2) * 35;
             icon_y = 43 + (i/2) * 35;
 
-            species = HasTrainerBeenFought(sTrainerRadar->trainerId) ? gTrainers[sTrainerRadar->trainerId].party[i].species : SPECIES_NONE;
-            sTrainerRadar->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
+            species = HasTrainerBeenFought(sTrainerRadarPtr->trainerId) ? gTrainers[sTrainerRadarPtr->trainerId].party[i].species : SPECIES_NONE;
+            sTrainerRadarPtr->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
         }
     }
 }
@@ -631,7 +663,7 @@ static void PrintTrainerCount(void)
 {
     u32 i;
     u8 numTrainers = 0;
-    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
 
     if (routeTrainersStruct->routeTrainers != NULL)
     {
@@ -657,7 +689,7 @@ static void PrintTrainerCount(void)
 
 static void PrintInstructions(void)
 {
-    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
 
     if (routeTrainersStruct->routeTrainers != NULL)
         AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 5, 4, sFontColor_White, 0, sText_InstructionsAreaTrainer);
@@ -670,12 +702,12 @@ static void PrintInstructions(void)
 
 static void TrainerRadar_CursorCallback(struct Sprite *sprite)
 {
-    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadar->mapsec];
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
     
     if (routeTrainersStruct->routeTrainers != NULL)
         sprite->invisible = FALSE;
     else
         sprite->invisible = TRUE;
         
-    sprite->y = 52 + sTrainerRadar->visibleCursorPosition * 16;
+    sprite->y = 52 + sTrainerRadarPtr->visibleCursorPosition * 16;
 }

@@ -10,6 +10,8 @@ struct RouteTrainers
 extern const struct RouteTrainers gRouteTrainers[];
 
 void CB2_TrainerRadar(void);
-void InitTrainerRadar(void);
+void InitTrainerRadar(MainCallback callback);
+void Task_OpenTrainerRadarFromPokenav(u8 taskId);
+u32 PokeNavMenuTrainerRadarCallback(void);
 
 #endif

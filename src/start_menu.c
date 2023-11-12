@@ -741,16 +741,13 @@ static bool8 HandleStartMenuInput(void)
         return FALSE;
     }
 
-    if (JOY_NEW(R_BUTTON) && !gSaveBlock2Ptr->startShortcut)
+    if (JOY_NEW(R_BUTTON) && gSaveBlock2Ptr->startShortcut)
     {
         PlaySE(SE_SELECT);
         gMenuCallback = sStartMenuItems[gSaveBlock2Ptr->startShortcut].func.u8_void;
         
         if (gMenuCallback == StartMenuMatchCallCallback)
             FadeScreen(FADE_TO_BLACK, 0);
-
-        /*HideStartMenuWindow();
-        InitTrainerRadar();*/
 
         return FALSE;
     }
@@ -1739,6 +1736,7 @@ static bool8 StartMenuMatchCallCallback(void)
 
 static bool8 StartMenuTrainerRadarCallback(void)
 {
-    HideStartMenuWindow();
-    InitTrainerRadar();
+    ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
+    RemoveStartMenuWindow();
+    InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);
 }
