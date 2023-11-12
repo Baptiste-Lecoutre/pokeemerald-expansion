@@ -685,31 +685,32 @@
 #define STRINGID_TEAMSURROUNDEDBYROCKS                683
 #define STRINGID_PKMNHURTBYROCKSTHROWN                684
 #define STRINGID_MOVEBLOCKEDBYDYNAMAX                 685
-#define STRINGID_PKMNAPPEARSMASSIVE                   686
-#define STRINGID_DYNAMAXENERGYGATHERED                687
-#define STRINGID_RAIDSHIELDAPPEARED                   688
-#define STRINGID_RAIDSHIELDDISAPPEARED                689
-#define STRINGID_CATCHRAIDMON                         690
-#define STRINGID_PKMNISTOOSTRONG                      691
-#define STRINGID_PKMNNULLIFIEDOTHERS                  692
-#define STRINGID_MOVEPREVENTEDBYDYNAMAX               693
-#define STRINGID_RAIDPKMNDISAPPEARED                  694
-#define STRINGID_STORMSTARTEDBREWING                  695
-#define STRINGID_STORMGETTINGSTRONGER                 696
-#define STRINGID_STORMGETTINGEVENSTRONGER             697
-#define STRINGID_STORMGETTINGTOOSTRONG                698
-#define STRINGID_BLOWNOUTOFDEN                        699
-#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           700
-#define STRINGID_ENERGYGATHEREDAROUNDPKMN             701
-#define STRINGID_PKMNBROKEITSSTANCE                   702
-#define STRINGID_RAIDNOTMUCHTIMELEFT                  703
-#define STRINGID_RAIDPKMNRELEASEDENERGY               704
-#define STRINGID_PKMNGAINEDEXPSHARE                   705
-#define STRINGID_PKMNDROPPEDITEM                      706
-#define STRINGID_BAGISFULL                            707
-#define STRINGID_NORUNNINGFROMTHISBATTLE              708
+#define STRINGID_ZEROTOHEROTRANSFORMATION             686
+#define STRINGID_PKMNAPPEARSMASSIVE                   687
+#define STRINGID_DYNAMAXENERGYGATHERED                688
+#define STRINGID_RAIDSHIELDAPPEARED                   689
+#define STRINGID_RAIDSHIELDDISAPPEARED                690
+#define STRINGID_CATCHRAIDMON                         691
+#define STRINGID_PKMNISTOOSTRONG                      692
+#define STRINGID_PKMNNULLIFIEDOTHERS                  693
+#define STRINGID_MOVEPREVENTEDBYDYNAMAX               694
+#define STRINGID_RAIDPKMNDISAPPEARED                  695
+#define STRINGID_STORMSTARTEDBREWING                  696
+#define STRINGID_STORMGETTINGSTRONGER                 697
+#define STRINGID_STORMGETTINGEVENSTRONGER             698
+#define STRINGID_STORMGETTINGTOOSTRONG                699
+#define STRINGID_BLOWNOUTOFDEN                        700
+#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           701
+#define STRINGID_ENERGYGATHEREDAROUNDPKMN             702
+#define STRINGID_PKMNBROKEITSSTANCE                   703
+#define STRINGID_RAIDNOTMUCHTIMELEFT                  704
+#define STRINGID_RAIDPKMNRELEASEDENERGY               705
+#define STRINGID_PKMNGAINEDEXPSHARE                   706
+#define STRINGID_PKMNDROPPEDITEM                      707
+#define STRINGID_BAGISFULL                            708
+#define STRINGID_NORUNNINGFROMTHISBATTLE              709
 
-#define BATTLESTRINGS_COUNT                           709
+#define BATTLESTRINGS_COUNT                           710
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

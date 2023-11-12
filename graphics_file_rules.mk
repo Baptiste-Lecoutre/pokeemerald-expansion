@@ -608,6 +608,7 @@ $(BATTRANSGFXDIR)/frontier_logo_center.4bpp: %.4bpp: %.png
 
 $(PKNAVOPTIONSGFXDIR)/options.4bpp: $(PKNAVOPTIONSGFXDIR)/hoenn_map.4bpp \
 									$(PKNAVOPTIONSGFXDIR)/dexnav.4bpp \
+									$(PKNAVOPTIONSGFXDIR)/trainer_database.4bpp \
 									$(PKNAVOPTIONSGFXDIR)/pc.4bpp \
                                     $(PKNAVOPTIONSGFXDIR)/condition.4bpp \
                                     $(PKNAVOPTIONSGFXDIR)/match_call.4bpp \
