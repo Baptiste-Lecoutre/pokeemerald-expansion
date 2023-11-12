@@ -97,6 +97,7 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SET;
     gSaveBlock2Ptr->optionsBattleSceneOff = FALSE;
     gSaveBlock2Ptr->regionMapZoom = FALSE;
+    gSaveBlock2Ptr->startShortcut = 0;
 
     gSaveBlock2Ptr->optionsFastFieldMove = FALSE;
     gSaveBlock2Ptr->optionsLevelCap = 1;

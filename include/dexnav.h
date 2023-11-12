@@ -66,7 +66,7 @@
 #define ROWS_COUNT      4
 
 #define ROW_WATER_ICON_X        26
-#define ROW_WATER_ICON_Y        44
+#define ROW_WATER_ICON_Y        45
 
 #define ROW_LAND_ICON_X         20
 #define ROW_LAND_TOP_ICON_Y     94//(ROW_WATER_ICON_Y + 28)

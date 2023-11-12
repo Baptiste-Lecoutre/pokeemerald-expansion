@@ -113,6 +113,7 @@ static const u16 sSkillSwapBannedAbilities[] =
     ABILITY_ICE_FACE,
     ABILITY_HUNGER_SWITCH,
     ABILITY_GULP_MISSILE,
+    ABILITY_ZERO_TO_HERO,
 };
 
 static const u16 sRolePlayBannedAbilities[] =
@@ -138,6 +139,7 @@ static const u16 sRolePlayBannedAbilities[] =
     ABILITY_ICE_FACE,
     ABILITY_HUNGER_SWITCH,
     ABILITY_GULP_MISSILE,
+    ABILITY_ZERO_TO_HERO,
 };
 
 static const u16 sRolePlayBannedAttackerAbilities[] =
@@ -154,6 +156,7 @@ static const u16 sRolePlayBannedAttackerAbilities[] =
     ABILITY_POWER_CONSTRUCT,
     ABILITY_ICE_FACE,
     ABILITY_GULP_MISSILE,
+    ABILITY_ZERO_TO_HERO,
 };
 
 static const u16 sWorrySeedBannedAbilities[] =
@@ -170,6 +173,7 @@ static const u16 sWorrySeedBannedAbilities[] =
     ABILITY_TRUANT,
     ABILITY_ICE_FACE,
     ABILITY_GULP_MISSILE,
+    ABILITY_ZERO_TO_HERO,
 };
 
 static const u16 sGastroAcidBannedAbilities[] =
@@ -188,6 +192,7 @@ static const u16 sGastroAcidBannedAbilities[] =
     ABILITY_SHIELDS_DOWN,
     ABILITY_STANCE_CHANGE,
     ABILITY_ZEN_MODE,
+    ABILITY_ZERO_TO_HERO,
 };
 
 static const u16 sEntrainmentBannedAttackerAbilities[] =
@@ -206,6 +211,7 @@ static const u16 sEntrainmentBannedAttackerAbilities[] =
     ABILITY_ICE_FACE,
     ABILITY_HUNGER_SWITCH,
     ABILITY_GULP_MISSILE,
+    ABILITY_ZERO_TO_HERO,
 };
 
 static const u16 sEntrainmentTargetSimpleBeamBannedAbilities[] =
@@ -221,6 +227,7 @@ static const u16 sEntrainmentTargetSimpleBeamBannedAbilities[] =
     ABILITY_BATTLE_BOND,
     ABILITY_ICE_FACE,
     ABILITY_GULP_MISSILE,
+    ABILITY_ZERO_TO_HERO,
 };
 
 static u8 CalcBeatUpPower(void)
@@ -1029,6 +1036,7 @@ static const u8 sAbilitiesNotTraced[ABILITIES_COUNT] =
     [ABILITY_STANCE_CHANGE] = 1,
     [ABILITY_TRACE] = 1,
     [ABILITY_ZEN_MODE] = 1,
+    [ABILITY_ZERO_TO_HERO] = 1,
 };
 
 static const u8 sHoldEffectToType[][2] =
@@ -3813,6 +3821,8 @@ u8 AtkCanceller_UnableToUseMove2(void)
             if (gFieldStatuses & STATUS_FIELD_PSYCHIC_TERRAIN
                 && IsBattlerGrounded(gBattlerTarget)
                 && GetChosenMovePriority(gBattlerAttacker) > 0
+                && gBattleMoves[gCurrentMove].target != MOVE_TARGET_ALL_BATTLERS
+                && gBattleMoves[gCurrentMove].target != MOVE_TARGET_OPPONENTS_FIELD
                 && GetBattlerSide(gBattlerAttacker) != GetBattlerSide(gBattlerTarget))
             {
                 CancelMultiTurnMoves(gBattlerAttacker);
@@ -4146,6 +4156,13 @@ static uq4_12_t GetSupremeOverlordModifier(u32 battler)
     }
 
     return modifier;
+}
+
+static bool32 HadMoreThanHalfHpNowHasLess(u32 battler)
+{
+    // Had more than half of hp before, now has less
+     return (gBattleStruct->hpBefore[battler] >= gBattleMons[battler].maxHP / 2
+             && gBattleMons[battler].hp < gBattleMons[battler].maxHP / 2);
 }
 
 u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 moveArg)
@@ -4743,6 +4760,17 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        case ABILITY_ZERO_TO_HERO:
+            if (!gSpecialStatuses[battler].switchInAbilityDone
+             && gBattleMons[battler].species == SPECIES_PALAFIN_HERO
+             && !gBattleStruct->transformZeroToHero[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)])
+            {
+                gSpecialStatuses[battler].switchInAbilityDone = TRUE;
+                gBattleStruct->transformZeroToHero[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)] = TRUE;
+                BattleScriptPushCursorAndCallback(BattleScript_ZeroToHeroActivates);
+                effect++;
+            }
+            break;
         }
         break;
     case ABILITYEFFECT_ENDTURN: // 1
@@ -5100,6 +5128,9 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                         PREPARE_STAT_BUFFER(gBattleTextBuff1, statId);
                 }
             }
+
+            if (effect)
+                gMultiHitCounter = 0; // Prevent multi-hit moves from hitting more than once after move has been absorbed.
         }
         break;
     case ABILITYEFFECT_MOVE_END: // Think contact abilities.
@@ -5164,9 +5195,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
              && TARGET_TURN_DAMAGED
              && IsBattlerAlive(battler)
-            // Had more than half of hp before, now has less
-             && gBattleStruct->hpBefore[battler] >= gBattleMons[battler].maxHP / 2
-             && gBattleMons[battler].hp < gBattleMons[battler].maxHP / 2
+             && HadMoreThanHalfHpNowHasLess(battler)
              && (gMultiHitCounter == 0 || gMultiHitCounter == 1)
              && !(TestSheerForceFlag(gBattlerAttacker, gCurrentMove))
              && CompareStat(battler, STAT_SPATK, MAX_STAT_STAGE, CMP_LESS_THAN))
@@ -5643,8 +5672,9 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
              && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
              && TARGET_TURN_DAMAGED
+             && (gMultiHitCounter == 0 || gMultiHitCounter == 1) // Activates after all hits from a multi-hit move.
              && IsBattlerAlive(gBattlerTarget)
-             && (gBattleMons[gBattlerTarget].hp <= gBattleMons[gBattlerTarget].maxHP / 2)
+             && HadMoreThanHalfHpNowHasLess(gBattlerTarget)
              && !(TestSheerForceFlag(gBattlerAttacker, gCurrentMove)))
             {
                 gBattlerAttacker = gBattlerTarget;
@@ -6124,6 +6154,7 @@ bool32 IsNeutralizingGasBannedAbility(u32 ability)
     case ABILITY_ICE_FACE:
     case ABILITY_AS_ONE_ICE_RIDER:
     case ABILITY_AS_ONE_SHADOW_RIDER:
+    case ABILITY_ZERO_TO_HERO:
         return TRUE;
     default:
         return FALSE;

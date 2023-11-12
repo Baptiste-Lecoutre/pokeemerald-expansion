@@ -2548,6 +2548,7 @@ void Task_OpenDexNavFromStartMenu(u8 taskId)
 
 u32 PokeNavMenuDexNavCallback(void)
 {
+    gSaveBlock2Ptr->startShortcut = 14; // MENU_ACTION_DEXNAV
     CreateTask(Task_OpenDexNavFromPokenav, 0);
     return TRUE;
 }
