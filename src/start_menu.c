@@ -45,6 +45,7 @@
 #include "text.h"
 #include "text_window.h"
 #include "trainer_card.h"
+#include "trainer_radar.h"
 #include "window.h"
 #include "union_room.h"
 #include "dexnav.h"
@@ -71,8 +72,11 @@ enum
     MENU_ACTION_RETIRE_FRONTIER,
     MENU_ACTION_PYRAMID_BAG,
     MENU_ACTION_DEBUG,
-    MENU_ACTION_DEXNAV,
-    MENU_ACTION_PC
+    MENU_ACTION_DEXNAV, // 14
+    MENU_ACTION_PC, // 15
+    MENU_ACTION_TOWN_MAP,
+    MENU_ACTION_MATCH_CALL, // 17
+    MENU_ACTION_TRAINER_RADAR // 18
 };
 
 // Save status
@@ -116,6 +120,10 @@ static bool8 StartMenuBattlePyramidBagCallback(void);
 static bool8 StartMenuDebugCallback(void);
 static bool8 StartMenuDexNavCallback(void);
 static bool8 StartMenuAccessPCCallback(void);
+static bool8 FieldCB_ReturnToFieldStartMenu(void);
+static bool8 StartMenuTownMapCallback(void);
+static bool8 StartMenuMatchCallCallback(void);
+static bool8 StartMenuTrainerRadarCallback(void);
 
 // Menu callbacks
 static bool8 SaveStartCallback(void);
@@ -148,7 +156,6 @@ static void StartMenuTask(u8 taskId);
 static void SaveGameTask(u8 taskId);
 static void Task_SaveAfterLinkBattle(u8 taskId);
 static void Task_WaitForBattleTowerLinkSave(u8 taskId);
-static bool8 FieldCB_ReturnToFieldStartMenu(void);
 
 static const struct WindowTemplate sWindowTemplate_SafariBalls = {
     .bg = 0,
@@ -192,7 +199,10 @@ static const struct WindowTemplate sWindowTemplate_PyramidPeak = {
     .baseBlock = 0x8
 };
 
-static const u8 gText_MenuDebug[] = _("DEBUG");
+static const u8 sText_MenuDebug[] = _("Debug");
+static const u8 sText_TownMap[] = _("Town Map");
+static const u8 sText_MatchCall[] = _("Match Call");
+static const u8 sText_TrainerRadar[] = _("Trainer Database");
 
 static const struct MenuAction sStartMenuItems[] =
 {
@@ -209,9 +219,12 @@ static const struct MenuAction sStartMenuItems[] =
     [MENU_ACTION_REST_FRONTIER]   = {gText_MenuRest,    {.u8_void = StartMenuSaveCallback}},
     [MENU_ACTION_RETIRE_FRONTIER] = {gText_MenuRetire,  {.u8_void = StartMenuBattlePyramidRetireCallback}},
     [MENU_ACTION_PYRAMID_BAG]     = {gText_MenuBag,     {.u8_void = StartMenuBattlePyramidBagCallback}},
-    [MENU_ACTION_DEBUG]           = {gText_MenuDebug,   {.u8_void = StartMenuDebugCallback}},
+    [MENU_ACTION_DEBUG]           = {sText_MenuDebug,   {.u8_void = StartMenuDebugCallback}},
     [MENU_ACTION_DEXNAV]          = {gText_MenuDexNav,  {.u8_void = StartMenuDexNavCallback}},
     [MENU_ACTION_PC]              = {gText_Pokenav_Access_PC, {.u8_void = StartMenuAccessPCCallback}},
+    [MENU_ACTION_TOWN_MAP]        = {sText_TownMap, {.u8_void = StartMenuTownMapCallback}},
+    [MENU_ACTION_MATCH_CALL]      = {sText_MatchCall, {.u8_void = StartMenuMatchCallCallback}},
+    [MENU_ACTION_TRAINER_RADAR]   = {sText_TrainerRadar, {.u8_void = StartMenuTrainerRadarCallback}},
 };
 
 static const struct BgTemplate sBgTemplates_LinkBattleSave[] =
@@ -725,10 +738,14 @@ static bool8 HandleStartMenuInput(void)
         return FALSE;
     }
 
-    if (JOY_NEW(R_BUTTON))
+    if (JOY_NEW(R_BUTTON) && gSaveBlock2Ptr->startShortcut)
     {
         PlaySE(SE_SELECT);
         gMenuCallback = sStartMenuItems[gSaveBlock2Ptr->startShortcut].func.u8_void;
+        
+        if (gMenuCallback == StartMenuMatchCallCallback)
+            FadeScreen(FADE_TO_BLACK, 0);
+
         return FALSE;
     }
 
@@ -743,13 +760,16 @@ static bool8 HandleStartMenuInput(void)
 
             //gMenuCallback = PokenavCallback_Init_RegionMap;
             //gMenuCallback = PokenavMenuCallbacks[6/*POKENAV_REGION_MAP - POKENAV_MENU_IDS_START*/];
-            if(FlagGet(FLAG_BADGE06_GET) && CanLearnFlyInParty() && Overworld_MapTypeAllowsTeleportAndFly(GetCurrentMapType()))
+            if(FlagGet(FLAG_BADGE06_GET) && CheckBagHasItem(ITEM_HM02_FLY, 1) && CanLearnFlyInParty() && Overworld_MapTypeAllowsTeleportAndFly(GetCurrentMapType()))
             {
                 gPartyMenu.slotId = gSpecialVar_Result;
                 SetMainCallback2(CB2_OpenFlyMap);
             }
             else
-                FieldInitRegionMap(CB2_ReturnToFieldContinueScriptPlayMapMusic);
+            {
+                FadeScreen(FADE_TO_BLACK, 0);
+                gMenuCallback = StartMenuTownMapCallback;
+            }
             return FALSE;
         }
     }
@@ -1691,4 +1711,29 @@ static bool8 StartMenuAccessPCCallback(void)
     RemoveStartMenuWindow();
     ScriptContext_SetupScript(EventScript_PC);   
     return TRUE;
+}
+
+static bool8 StartMenuTownMapCallback(void)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        OpenPokenavForTownMap(CB2_ReturnToField);
+    }
+}
+
+static bool8 StartMenuMatchCallCallback(void)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        OpenPokenavForMatchCall(CB2_ReturnToField);
+    }
+}
+
+static bool8 StartMenuTrainerRadarCallback(void)
+{
+    ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
+    RemoveStartMenuWindow();
+    InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);
 }

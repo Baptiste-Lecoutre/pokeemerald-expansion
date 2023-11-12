@@ -10,16 +10,6 @@
 #include "overworld.h"
 #include "event_scripts.h"
 
-struct Pokenav_Menu
-{
-    u16 menuType;
-    s16 cursorPos;
-    u16 currMenuItem;
-    u16 helpBarIndex;
-    u32 menuId;
-    u32 (*callback)(struct Pokenav_Menu *);
-};
-
 static bool32 UpdateMenuCursorPos(struct Pokenav_Menu *);
 static void ReturnToConditionMenu(struct Pokenav_Menu *);
 static void ReturnToMainMenu(struct Pokenav_Menu *);
@@ -32,6 +22,10 @@ static u32 HandleConditionMenuInput(struct Pokenav_Menu *);
 static u32 HandleCantOpenRibbonsInput(struct Pokenav_Menu *);
 static u32 HandleMainMenuInputEndTutorial(struct Pokenav_Menu *);
 static u32 HandleMainMenuInputTutorial(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputTownMap(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputTownMapExit(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputMatchCall(struct Pokenav_Menu *);
+static u32 HandleMainMenuInputMatchCallExit(struct Pokenav_Menu *);
 static u32 HandleMainMenuInput(struct Pokenav_Menu *);
 static u32 (*GetMainMenuInputHandler(void))(struct Pokenav_Menu *);
 static void SetMenuInputHandler(struct Pokenav_Menu *);
@@ -43,8 +37,8 @@ extern const u8 EventScript_PCMainMenu[];
 // Number of entries - 1 for that menu type
 static const u8 sLastCursorPositions[] =
 {
-    [POKENAV_MENU_TYPE_DEFAULT]           = 3,
-    [POKENAV_MENU_TYPE_UNLOCK_MC]         = 4,
+    [POKENAV_MENU_TYPE_DEFAULT]           = 4,
+    [POKENAV_MENU_TYPE_UNLOCK_MC]         = 5,
     [POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS] = 5,
     [POKENAV_MENU_TYPE_CONDITION]         = 3,
     [POKENAV_MENU_TYPE_CONDITION_SEARCH]  = 5
@@ -55,26 +49,29 @@ static const u8 sMenuItems[][MAX_POKENAV_MENUITEMS] =
     [POKENAV_MENU_TYPE_DEFAULT] =
     {
         POKENAV_MENUITEM_MAP,
-        POKENAV_MENUITEM_DEXNAV, 
+        POKENAV_MENUITEM_DEXNAV,
+        POKENAV_MENUITEM_TRAINER_RADAR,
         POKENAV_MENUITEM_ACCESS_PC,
-        [3 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
+        [4 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
     },
     [POKENAV_MENU_TYPE_UNLOCK_MC] =
     {
         POKENAV_MENUITEM_MAP,
         POKENAV_MENUITEM_DEXNAV,
+        POKENAV_MENUITEM_TRAINER_RADAR,
         POKENAV_MENUITEM_ACCESS_PC,
         POKENAV_MENUITEM_MATCH_CALL,
-        [4 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
+        [5 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
     },
     [POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS] =
     {
         POKENAV_MENUITEM_MAP,
         POKENAV_MENUITEM_DEXNAV,
+        POKENAV_MENUITEM_TRAINER_RADAR,
         POKENAV_MENUITEM_ACCESS_PC,
         POKENAV_MENUITEM_CONDITION,
-        POKENAV_MENUITEM_MATCH_CALL,
-        [5 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
+        POKENAV_MENUITEM_MATCH_CALL/*,
+        [6 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF*/
     },
     [POKENAV_MENU_TYPE_CONDITION] =
     {
@@ -134,6 +131,20 @@ bool32 PokenavCallback_Init_MainMenuCursorOnDexNav(void)
     menu->menuType = GetPokenavMainMenuType();
     menu->cursorPos = POKENAV_MENUITEM_DEXNAV;
     menu->currMenuItem = POKENAV_MENUITEM_DEXNAV;
+    menu->helpBarIndex = HELPBAR_NONE;
+    SetMenuInputHandler(menu);
+    return TRUE;
+}
+
+bool32 PokenavCallback_Init_MainMenuCursorOnTrainerRadar(void)
+{
+    struct Pokenav_Menu *menu = AllocSubstruct(POKENAV_SUBSTRUCT_MAIN_MENU_HANDLER, sizeof(struct Pokenav_Menu));
+    if (!menu)
+        return FALSE;
+
+    menu->menuType = GetPokenavMainMenuType();
+    menu->cursorPos = POKENAV_MENUITEM_TRAINER_RADAR;
+    menu->currMenuItem = POKENAV_MENUITEM_TRAINER_RADAR;
     menu->helpBarIndex = HELPBAR_NONE;
     SetMenuInputHandler(menu);
     return TRUE;
@@ -199,7 +210,9 @@ static void SetMenuInputHandler(struct Pokenav_Menu *menu)
     switch (menu->menuType)
     {
     case POKENAV_MENU_TYPE_DEFAULT:
-        SetPokenavMode(POKENAV_MODE_NORMAL);
+        if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP && GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT
+            && GetPokenavMode() != POKENAV_MODE_MATCH_CALL && GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT)
+            SetPokenavMode(POKENAV_MODE_NORMAL);
         // fallthrough
     case POKENAV_MENU_TYPE_UNLOCK_MC:
     case POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS:
@@ -225,6 +238,14 @@ static u32 (*GetMainMenuInputHandler(void))(struct Pokenav_Menu *)
         return HandleMainMenuInputTutorial;
     case POKENAV_MODE_FORCE_CALL_EXIT:
         return HandleMainMenuInputEndTutorial;
+    case POKENAV_MODE_TOWN_MAP:
+        return HandleMainMenuInputTownMap;
+    case POKENAV_MODE_TOWN_MAP_EXIT:
+        return HandleMainMenuInputTownMapExit;
+    case POKENAV_MODE_MATCH_CALL:
+        return HandleMainMenuInputMatchCall;
+    case POKENAV_MODE_MATCH_CALL_EXIT:
+        return HandleMainMenuInputMatchCallExit;
     }
 }
 
@@ -255,6 +276,9 @@ static u32 HandleMainMenuInput(struct Pokenav_Menu *menu)
         case POKENAV_MENUITEM_DEXNAV:
             SetMenuIdAndCB(menu, POKENAV_DEXNAV);
             return POKENAV_MENU_FUNC_OPEN_DEXNAV;
+        case POKENAV_MENUITEM_TRAINER_RADAR:
+            SetMenuIdAndCB(menu, POKENAV_TRAINER_RADAR);
+            return POKENAV_MENU_FUNC_OPEN_TRAINER_RADAR;
         case POKENAV_MENUITEM_ACCESS_PC:
             if(Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType)){
                 gSysPcFromPokenav = TRUE;
@@ -276,6 +300,7 @@ static u32 HandleMainMenuInput(struct Pokenav_Menu *menu)
         case POKENAV_MENUITEM_MATCH_CALL:
             menu->helpBarIndex = HELPBAR_MC_TRAINER_LIST;
             SetMenuIdAndCB(menu, POKENAV_MATCH_CALL);
+            gSaveBlock2Ptr->startShortcut = 17; // MENU_ACTION_MATCH_CALL
             return POKENAV_MENU_FUNC_OPEN_FEATURE;
         /*case POKENAV_MENUITEM_RIBBONS:
             if (CanViewRibbonsMenu())
@@ -360,6 +385,28 @@ static u32 HandleMainMenuInputEndTutorial(struct Pokenav_Menu *menu)
         return -1;
     }
     return POKENAV_MENU_FUNC_NONE;
+}
+
+static u32 HandleMainMenuInputTownMap(struct Pokenav_Menu *menu)
+{
+    SetMenuIdAndCB(menu, POKENAV_REGION_MAP);
+    return POKENAV_MENU_FUNC_OPEN_FEATURE;
+}
+
+static u32 HandleMainMenuInputTownMapExit(struct Pokenav_Menu *menu)
+{
+    return -1;
+}
+
+static u32 HandleMainMenuInputMatchCall(struct Pokenav_Menu *menu)
+{
+    SetMenuIdAndCB(menu, POKENAV_MATCH_CALL);
+    return POKENAV_MENU_FUNC_OPEN_FEATURE;
+}
+
+static u32 HandleMainMenuInputMatchCallExit(struct Pokenav_Menu *menu)
+{
+    return -1;
 }
 
 // Handles input after selecting Ribbons when there are no ribbon winners left
