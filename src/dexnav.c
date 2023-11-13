@@ -2124,14 +2124,27 @@ static void TryDrawIconInSlot(u16 species, s16 x, s16 y)
     u8 i;
     if (species == SPECIES_NONE)
         CreateNoDataIcon(x, y);   //'X' in slot
-    else if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT)) {
+    /*else if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT)) {
         CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF); //pal==2
 	}
     else if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN)) {
 		//CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF, 0);
         i = CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF); 
 		gSprites[i].oam.paletteNum = 6 + gSprites[i].oam.paletteNum; //pal==9
-	}
+	}*/
+    else
+    {
+        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL);
+        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(7, 11));
+        i = CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF);
+        
+        if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+            gSprites[i].oam.objMode = ST_OAM_OBJ_NORMAL;
+        else if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
+            gSprites[i].oam.objMode = ST_OAM_OBJ_BLEND;
+        else
+            gSprites[i].invisible = TRUE;
+    }
 }
 
 static void DrawSpeciesIcons(void)
@@ -2140,12 +2153,12 @@ static void DrawSpeciesIcons(void)
     u32 i;
     u16 species;
     
-    TintPalette_GrayScale2(&gPlttBufferUnfaded[0x160],16);
+    /*TintPalette_GrayScale2(&gPlttBufferUnfaded[0x160],16);
 	TintPalette_GrayScale2(&gPlttBufferUnfaded[0x170],16);
 	TintPalette_GrayScale2(&gPlttBufferUnfaded[0x180],16);
     TintPalette_GrayScale2(&gPlttBufferUnfaded[0x190],16);
 	TintPalette_GrayScale2(&gPlttBufferUnfaded[0x1A0],16);
-	TintPalette_GrayScale2(&gPlttBufferUnfaded[0x1B0],16);
+	TintPalette_GrayScale2(&gPlttBufferUnfaded[0x1B0],16);*/
 
     LoadCompressedSpriteSheetUsingHeap(&sNoDataIconSpriteSheet);
     for (i = 0; i < LAND_WILD_COUNT; i++)
@@ -2535,6 +2548,7 @@ void Task_OpenDexNavFromStartMenu(u8 taskId)
 
 u32 PokeNavMenuDexNavCallback(void)
 {
+    gSaveBlock2Ptr->startShortcut = 14; // MENU_ACTION_DEXNAV
     CreateTask(Task_OpenDexNavFromPokenav, 0);
     return TRUE;
 }

@@ -1,6 +1,7 @@
 #ifndef GUARD_BATTLE_SCRIPTS_H
 #define GUARD_BATTLE_SCRIPTS_H
 
+extern const u8 BattleScript_OpportunistCopyStatChange[];
 extern const u8 BattleScript_MirrorHerbCopyStatChange[];
 extern const u8 BattleScript_MirrorHerbCopyStatChangeEnd2[];
 extern const u8 BattleScript_NotAffected[];
@@ -459,6 +460,7 @@ extern const u8 BattleScript_RuinAbilityActivates[];
 extern const u8 BattleScript_CudChewActivates[];
 extern const u8 BattleScript_SupremeOverlordActivates[];
 extern const u8 BattleScript_CostarActivates[];
+extern const u8 BattleScript_ZeroToHeroActivates[];
 extern const u8 BattleScript_ToxicDebrisActivates[];
 extern const u8 BattleScript_EarthEaterActivates[];
 extern const u8 BattleScript_MimicryActivates_End3[];
@@ -480,6 +482,8 @@ extern const u8 BattleScript_UltraBurst[];
 extern const u8 BattleScript_SelectingNotAllowedCurrentMove[];
 extern const u8 BattleScript_SelectingNotAllowedCurrentMoveInPalace[];
 extern const u8 BattleScript_SaltCureExtraDamage[];
+extern const u8 BattleScript_SyrupBombEndTurn[];
+extern const u8 BattleScript_SyrupBombActivates[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];
@@ -490,7 +494,6 @@ extern const u8 BattleScript_StatUpZMove[];
 extern const u8 BattleScript_HealReplacementZMove[];
 extern const u8 BattleScript_EffectExtremeEvoboost[];
 
-extern const u8 BattleScript_ItemDropped[];
 // max moves
 extern const u8 BattleScript_EffectRaiseStatAllies[];
 extern const u8 BattleScript_EffectLowerStatFoes[];
@@ -530,5 +533,7 @@ extern const u8 BattleScript_FaintRaidBoss[];
 extern const u8 BattleScript_RaidDefeat[];
 extern const u8 BattleScript_TeraRaidTimerLow[];
 extern const u8 BattleScript_RaidBallBlock[];
+
+extern const u8 BattleScript_ItemDropped[];
 
 #endif // GUARD_BATTLE_SCRIPTS_H

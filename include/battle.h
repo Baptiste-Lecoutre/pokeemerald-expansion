@@ -107,6 +107,9 @@ struct DisableStruct
     u8 toxicSpikesDone:1;
     u8 stickyWebDone:1;
     u8 stealthRockDone:1;
+    u8 syrupBombTimer;
+    u8 syrupBombIsShiny:1;
+    u8 steelSurgeDone:1;
 };
 
 struct ProtectStruct
@@ -154,6 +157,7 @@ struct ProtectStruct
     u16 maxGuarded:1;
     u16 silkTrapped:1;
     u16 eatMirrorHerb:1;
+    u16 activateOpportunist:2; // 2 - to copy stats. 1 - stats copied (do not repeat). 0 - no stats to copy
     u32 physicalDmg;
     u32 specialDmg;
     u8 physicalBattlerId;
@@ -172,7 +176,6 @@ struct SpecialStatus
     u8 lightningRodRedirected:1;
     u8 restoredBattlerSprite: 1;
     u8 traced:1;
-    u8 ppNotAffectedByPressure:1;
     u8 faintedHasReplacement:1;
     u8 focusBanded:1;
     u8 focusSashed:1;
@@ -289,6 +292,12 @@ struct AIPartyData // Opposing battlers - party mons.
     u8 count[MAX_BATTLERS_COUNT];
 };
 
+struct SwitchinCandidate
+{
+    struct BattlePokemon battleMon;
+    bool8 hypotheticalStatus;
+};
+
 // Ai Data used when deciding which move to use, computed only once before each turn's start.
 struct AiLogicData
 {
@@ -300,7 +309,6 @@ struct AiLogicData
     u8 hpPercents[MAX_BATTLERS_COUNT];
     u16 partnerMove;
     u16 speedStats[MAX_BATTLERS_COUNT]; // Speed stats for all battles, calculated only once, same way as damages
-    u8 moveDmgResult[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // MOVE_POWER defines for GetMoveDamageResult ; attacker, target, moveIndex
     s32 simulatedDmg[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
     u8 effectiveness[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
     u8 moveAccuracy[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
@@ -308,6 +316,8 @@ struct AiLogicData
     bool8 shouldSwitchMon; // Because all available moves have no/little effect. Each bit per battler.
     u8 monToSwitchId[MAX_BATTLERS_COUNT]; // ID of the mon to switch.
     bool8 weatherHasEffect; // The same as WEATHER_HAS_EFFECT. Stored here, so it's called only once.
+    u8 mostSuitableMonId; // Stores result of GetMostSuitableMonToSwitchInto, which decides which generic mon the AI would switch into if they decide to switch. This can be overruled by specific mons found in ShouldSwitch; the final resulting mon is stored in AI_monToSwitchIntoId.
+    struct SwitchinCandidate switchinCandidate; // Struct used for deciding which mon to switch to in battle_ai_switch_items.c
 };
 
 struct AI_ThinkingStruct
@@ -544,7 +554,6 @@ struct DynamaxData
 {
     bool8 playerSelect;
     u8 triggerSpriteId;
-    u8 indicatorSpriteId[MAX_BATTLERS_COUNT];
     u8 toDynamax; // flags using gBitTable
     bool8 alreadyDynamaxed[MAX_BATTLERS_COUNT];
     bool8 dynamaxed[MAX_BATTLERS_COUNT];
@@ -685,7 +694,7 @@ struct BattleStruct
     u8 lastMoveFailed; // as bits for each battler, for the sake of Stomping Tantrum
     u8 lastMoveTarget[MAX_BATTLERS_COUNT]; // The last target on which each mon used a move, for the sake of Instruct
     u16 tracedAbility[MAX_BATTLERS_COUNT];
-    u16 hpBefore[MAX_BATTLERS_COUNT]; // Hp of battlers before using a move. For Berserk
+    u16 hpBefore[MAX_BATTLERS_COUNT]; // Hp of battlers before using a move. For Berserk and Anger Shell.
     bool8 spriteIgnore0Hp;
     struct Illusion illusion[MAX_BATTLERS_COUNT];
     s32 aiFinalScore[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // AI, target, moves to make debugging easier
@@ -733,6 +742,7 @@ struct BattleStruct
     u8 revealedEnemyMons[2];
     u32 aiDelayTimer; // Counts number of frames AI takes to choose an action.
     u32 aiDelayFrames; // Number of frames it took to choose an action.
+    bool8 transformZeroToHero[PARTY_SIZE][NUM_BATTLE_SIDES];
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -769,12 +779,16 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 #define BATTLER_DAMAGED(battlerId) ((gSpecialStatuses[battlerId].physicalDmg != 0 || gSpecialStatuses[battlerId].specialDmg != 0))
 
 #define IS_BATTLER_OF_TYPE(battlerId, type)((GetBattlerType(battlerId, 0) == type || GetBattlerType(battlerId, 1) == type || (GetBattlerType(battlerId, 2) != TYPE_MYSTERY && GetBattlerType(battlerId, 2) == type)))
+
+#define IS_BATTLER_TYPELESS(battlerId)(GetBattlerType(battlerId, 0) == TYPE_MYSTERY && GetBattlerType(battlerId, 1) == TYPE_MYSTERY && GetBattlerType(battlerId, 2) == TYPE_MYSTERY)
+
 #define SET_BATTLER_TYPE(battlerId, type)           \
 {                                                   \
     gBattleMons[battlerId].type1 = type;            \
     gBattleMons[battlerId].type2 = type;            \
     gBattleMons[battlerId].type3 = TYPE_MYSTERY;    \
 }
+
 #define RESTORE_BATTLER_TYPE(battlerId)                                                     \
 {                                                                                           \
     gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[0];   \
@@ -972,7 +986,7 @@ struct MonSpritesGfx
     u16 *buffer;
 };
 
-struct TotemBoost
+struct QueuedStatBoost
 {
     u8 stats;   // bitfield for each battle stat that is set if the stat changes
     s8 statChanges[NUM_BATTLE_STATS - 1];    // highest bit being set decreases the stat
@@ -991,7 +1005,7 @@ extern u16 gBattle_WIN0H;
 extern u16 gBattle_WIN0V;
 extern u16 gBattle_WIN1H;
 extern u16 gBattle_WIN1V;
-extern u8 gDisplayedStringBattle[400];
+extern u8 gDisplayedStringBattle[425];
 extern u8 gBattleTextBuff1[TEXT_BUFF_ARRAY_COUNT];
 extern u8 gBattleTextBuff2[TEXT_BUFF_ARRAY_COUNT];
 extern u8 gBattleTextBuff3[30]; //to handle stupidly large z move names
@@ -1085,7 +1099,7 @@ extern u32 gFieldStatuses;
 extern struct FieldTimer gFieldTimers;
 extern u8 gBattlerAbility;
 extern u16 gPartnerSpriteId;
-extern struct TotemBoost gTotemBoosts[MAX_BATTLERS_COUNT];
+extern struct QueuedStatBoost gQueuedStatBoosts[MAX_BATTLERS_COUNT];
 
 extern void (*gPreBattleCallback1)(void);
 extern void (*gBattleMainFunc)(void);

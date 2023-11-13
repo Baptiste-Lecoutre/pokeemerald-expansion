@@ -188,6 +188,7 @@
 #define STATUS4_WATER_SPORT             (1 << 3)    // Only used if B_SPORT_TURNS < GEN_6
 #define STATUS4_INFINITE_CONFUSION      (1 << 4)    // Used for Berserk Gene
 #define STATUS4_SALT_CURE               (1 << 5)
+#define STATUS4_SYRUP_BOMB              (1 << 6)
 
 #define HITMARKER_WAKE_UP_CLEAR         (1 << 4) // Cleared when waking up. Never set or checked.
 #define HITMARKER_SKIP_DMG_TRACK        (1 << 5)
@@ -236,8 +237,7 @@
 #define SIDE_STATUS_CRAFTY_SHIELD           (1 << 20)
 #define SIDE_STATUS_MAT_BLOCK               (1 << 21)
 #define SIDE_STATUS_STEELSURGE              (1 << 22)
-#define SIDE_STATUS_STEELSURGE_DAMAGED      (1 << 23)
-#define SIDE_STATUS_DAMAGE_NON_TYPES         (1 << 24)
+#define SIDE_STATUS_DAMAGE_NON_TYPES        (1 << 23)
 
 #define SIDE_STATUS_HAZARDS_ANY    (SIDE_STATUS_SPIKES | SIDE_STATUS_STICKY_WEB | SIDE_STATUS_TOXIC_SPIKES | SIDE_STATUS_STEALTH_ROCK | SIDE_STATUS_STEELSURGE)
 #define SIDE_STATUS_SCREEN_ANY     (SIDE_STATUS_REFLECT | SIDE_STATUS_LIGHTSCREEN | SIDE_STATUS_AURORA_VEIL)
@@ -387,8 +387,9 @@
 #define MOVE_EFFECT_STEALTH_ROCK        76
 #define MOVE_EFFECT_SPIKES              77
 #define MOVE_EFFECT_TRIPLE_ARROWS       78
+#define MOVE_EFFECT_SYRUP_BOMB          79
 
-#define NUM_MOVE_EFFECTS                79
+#define NUM_MOVE_EFFECTS                80
 
 #define MOVE_EFFECT_AFFECTS_USER        0x4000
 #define MOVE_EFFECT_CERTAIN             0x8000
@@ -501,12 +502,12 @@
 #define PARENTAL_BOND_2ND_HIT 1
 #define PARENTAL_BOND_OFF     0
 
-// Constants for Torment
-#define PERMANENT_TORMENT   0xF
-
 // Constants for if HandleScriptMegaPrimalBurst should handle Mega Evolution, Primal Reversion, or Ultra Burst.
 #define HANDLE_TYPE_MEGA_EVOLUTION 0
 #define HANDLE_TYPE_PRIMAL_REVERSION 1
 #define HANDLE_TYPE_ULTRA_BURST 2
+
+// Constants for Torment
+#define PERMANENT_TORMENT   0xF
 
 #endif // GUARD_CONSTANTS_BATTLE_H

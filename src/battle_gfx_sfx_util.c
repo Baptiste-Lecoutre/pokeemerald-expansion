@@ -591,13 +591,16 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battler)
     else
     {
         species = gBattleSpritesDataPtr->battlerData[battler].transformSpecies;
-        #if B_TRANSFORM_SHINY >= GEN_4
+        if (B_TRANSFORM_SHINY >= GEN_4)
+        {
             currentPersonality = gTransformedPersonalities[battler];
             currentOtId = gTransformedOtIds[battler];
-        #else
+        }
+        else
+        {
             currentPersonality = monsPersonality;
             currentOtId = otId;
-        #endif
+        }
     }
 
     position = GetBattlerPosition(battler);
@@ -705,7 +708,6 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
             MegaIndicator_LoadSpritesGfx();
-            DynamaxIndicator_LoadSpriteGfx();
         }
         else if (!IsDoubleBattle())
         {
@@ -896,14 +898,12 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
 
         if (GetBattlerSide(battlerAtk) == B_SIDE_PLAYER)
         {
-        #if B_TRANSFORM_SHINY >= GEN_4
-            if (trackEnemyPersonality)
+            if (B_TRANSFORM_SHINY >= GEN_4 && trackEnemyPersonality)
             {
                 personalityValue = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
                 otId = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
             }
             else
-        #endif
             {
                 personalityValue = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
                 otId = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
@@ -917,15 +917,13 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
         }
         else
         {
-        #if B_TRANSFORM_SHINY >= GEN_4
-            if (trackEnemyPersonality)
+            if (B_TRANSFORM_SHINY >= GEN_4 && trackEnemyPersonality)
             {
                 personalityValue = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
                 otId = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);
 
             }
             else
-        #endif
             {
                 personalityValue = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
                 otId = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_OT_ID);

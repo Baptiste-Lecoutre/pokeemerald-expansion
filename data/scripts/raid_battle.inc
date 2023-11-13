@@ -1,7 +1,7 @@
 EventScript_RaidBattle::
     lockall
     goto_if_unset FLAG_BADGE01_GET, EventScript_RaidBattleNoDynamaxBand
-    checkitem ITEM_DYNAMAX_BAND, 1
+    checkitem ITEM_DYNAMAX_BAND
     goto_if_eq VAR_RESULT, FALSE, EventScript_RaidBattleNoDynamaxBand
     special IsRaidBattleAvailable
     goto_if_eq VAR_RESULT, FALSE, EventScript_NoRaidBattle
@@ -12,14 +12,23 @@ EventScript_RaidBattle::
 EventScript_RaidBattleIntroScreen::
     special InitRaidIntro
     waitstate
-    goto_if_eq VAR_RESULT, FALSE, EventScript_RaidBattleEnd
-    doraidbattle
+    goto_if_eq VAR_RESULT, 0, EventScript_RaidBattleEnd
+    call_if_eq VAR_RESULT, 2, EventScript_DoRaidBattleSingle
+    call_if_eq VAR_RESULT, 1, EventScript_DoRaidBattlePartner
     specialvar VAR_RESULT, GetBattleOutcome
     goto_if_eq VAR_RESULT, B_OUTCOME_RAN, EventScript_RaidBattleEnd
     goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, EventScript_RaidBattleEnd
     special SetRaidBattleFlag
     setvar VAR_TEMP_A, 0
     goto EventScript_RaidBattleGiveRewards
+
+EventScript_DoRaidBattleSingle::
+    doraidbattle
+    return
+
+EventScript_DoRaidBattlePartner::
+    doraidbattlepartner
+    return
 
 EventScript_RaidBattleGiveRewards::
     special GiveRaidBattleRewards

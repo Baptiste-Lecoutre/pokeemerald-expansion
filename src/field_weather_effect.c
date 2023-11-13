@@ -950,7 +950,7 @@ static void InitSnowflakeSpriteMovement(struct Sprite *sprite)
     sprite->tFallCounter = 0;
 }
 
-static void WaitSnowflakeSprite(struct Sprite *sprite)
+static void UNUSED WaitSnowflakeSprite(struct Sprite *sprite)
 {
     if (++gWeatherPtr->snowflakeTimer > 18)
     {
@@ -965,7 +965,6 @@ static void WaitSnowflakeSprite(struct Sprite *sprite)
 static void UpdateSnowflakeSprite(struct Sprite *sprite)
 {
     s16 x;
-    s16 y;
 
     sprite->tPosY += sprite->tDeltaY;
     sprite->y = sprite->tPosY >> 7;
@@ -1362,7 +1361,7 @@ static void DestroyFogHorizontalSprites(void);
 // Updates just the color of shadows to match special weather blending
 u8 UpdateShadowColor(u16 color) {
   u8 paletteNum = IndexOfSpritePaletteTag(TAG_WEATHER_START);
-  u16 tempBuffer[16];
+  u16 ALIGNED(4) tempBuffer[16];
   u16 blendedColor;
   if (paletteNum != 0xFF) {
     u16 index = (paletteNum+16)*16+SHADOW_COLOR_INDEX;

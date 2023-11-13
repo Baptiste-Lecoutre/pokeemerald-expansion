@@ -66,7 +66,7 @@ struct BackupMapLayout
     u16 *map;
 };
 
-struct __attribute__((packed)) ObjectEventTemplate
+struct __attribute__((packed, aligned(4))) ObjectEventTemplate
 {
     /*0x00*/ u8 localId;
     /*0x02*/ u8 kind; // Always OBJ_KIND_NORMAL in Emerald.

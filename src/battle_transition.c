@@ -1233,7 +1233,7 @@ static bool8 Swirl_Init(struct Task *task)
     InitTransitionData();
     ScanlineEffect_Clear();
     BeginNormalPaletteFade(PALETTES_ALL, 4, 0, 16, RGB_BLACK);
-    SetSinWave(gScanlineEffectRegBuffers[1], sTransitionData->cameraX, 0, 2, 0, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[1], sTransitionData->cameraX, 0, 2, 0, DISPLAY_HEIGHT);
 
     SetVBlankCallback(VBlankCB_Swirl);
     SetHBlankCallback(HBlankCB_Swirl);
@@ -1250,7 +1250,7 @@ static bool8 Swirl_End(struct Task *task)
     task->tSinIndex += 4;
     task->tAmplitude += 8;
 
-    SetSinWave(gScanlineEffectRegBuffers[0], sTransitionData->cameraX, task->tSinIndex, 2, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], sTransitionData->cameraX, task->tSinIndex, 2, task->tAmplitude, DISPLAY_HEIGHT);
 
     if (!gPaletteFade.active)
     {
@@ -1546,7 +1546,7 @@ static bool8 BigPokeball_SetGfx(struct Task *task)
             SET_TILE(tilemap, i, j, *bigPokeballMap);
     }
 
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
     return TRUE;
@@ -1558,7 +1558,7 @@ static bool8 Aqua_SetGfx(struct Task *task)
 
     GetBg0TilesDst(&tilemap, &tileset);
     LZ77UnCompVram(sTeamAqua_Tilemap, tilemap);
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
     return FALSE;
@@ -1570,7 +1570,7 @@ static bool8 Magma_SetGfx(struct Task *task)
 
     GetBg0TilesDst(&tilemap, &tileset);
     LZ77UnCompVram(sTeamMagma_Tilemap, tilemap);
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
     return FALSE;
@@ -1607,7 +1607,7 @@ static bool8 Regice_SetGfx(struct Task *task)
     GetBg0TilesDst(&tilemap, &tileset);
     LoadPalette(sRegice_Palette, BG_PLTT_ID(15), sizeof(sRegice_Palette));
     CpuCopy16(sRegice_Tilemap, tilemap, 0x500);
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
     return FALSE;
@@ -1620,7 +1620,7 @@ static bool8 Registeel_SetGfx(struct Task *task)
     GetBg0TilesDst(&tilemap, &tileset);
     LoadPalette(sRegisteel_Palette, BG_PLTT_ID(15), sizeof(sRegisteel_Palette));
     CpuCopy16(sRegisteel_Tilemap, tilemap, 0x500);
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
     return FALSE;
@@ -1633,7 +1633,7 @@ static bool8 Regirock_SetGfx(struct Task *task)
     GetBg0TilesDst(&tilemap, &tileset);
     LoadPalette(sRegirock_Palette, BG_PLTT_ID(15), sizeof(sRegirock_Palette));
     CpuCopy16(sRegirock_Tilemap, tilemap, 0x500);
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
     return FALSE;
@@ -1725,7 +1725,7 @@ static bool8 PatternWeave_Blend1(struct Task *task)
     task->tSinIndex += 8;
     task->tAmplitude -= 256;
 
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude >> 8, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude >> 8, DISPLAY_HEIGHT);
 
     sTransitionData->VBlank_DMA++;
     return FALSE;
@@ -1745,7 +1745,7 @@ static bool8 PatternWeave_Blend2(struct Task *task)
     task->tSinIndex += 8;
     task->tAmplitude -= 256;
 
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude >> 8, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude >> 8, DISPLAY_HEIGHT);
 
     sTransitionData->VBlank_DMA++;
     return FALSE;
@@ -1757,7 +1757,7 @@ static bool8 PatternWeave_FinishAppear(struct Task *task)
     task->tSinIndex += 8;
     task->tAmplitude -= 256;
 
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude >> 8, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude >> 8, DISPLAY_HEIGHT);
 
     if (task->tAmplitude <= 0)
     {
@@ -4376,7 +4376,7 @@ static bool8 FrontierLogoWiggle_SetGfx(struct Task *task)
 
     GetBg0TilesDst(&tilemap, &tileset);
     LZ77UnCompVram(sFrontierLogo_Tilemap, tilemap);
-    SetSinWave(gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
     return TRUE;

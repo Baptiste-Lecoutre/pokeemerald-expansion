@@ -248,7 +248,7 @@ static void OpenEnemyParty(u32 battler)
 static u16 GetPrevBall(u16 ballId)
 {
     u16 ballPrev;
-    u32 i, j;
+    s32 i, j;
     CompactItemsInBagPocket(&gBagPockets[BALLS_POCKET]);
     for (i = 0; i < gBagPockets[BALLS_POCKET].capacity; i++)
     {
@@ -264,28 +264,29 @@ static u16 GetPrevBall(u16 ballId)
                 }
             }
             i--;
-            return gBagPockets[BALLS_POCKET].itemSlots[i].itemId;
+            break;
         }
     }
+    return gBagPockets[BALLS_POCKET].itemSlots[i].itemId;
 }
 
 static u16 GetNextBall(u16 ballId)
 {
-    u16 ballNext;
-    u32 i;
+    u16 ballNext = 0;
+    s32 i;
     CompactItemsInBagPocket(&gBagPockets[BALLS_POCKET]);
     for (i = 0; i < gBagPockets[BALLS_POCKET].capacity; i++)
     {
         if (ballId == gBagPockets[BALLS_POCKET].itemSlots[i].itemId)
         {
-            i++;
-            ballNext = gBagPockets[BALLS_POCKET].itemSlots[i].itemId;
-            if (ballNext == ITEM_NONE)
-                return gBagPockets[BALLS_POCKET].itemSlots[0].itemId; // Zeroth slot
-            else
-                return ballNext;
+            ballNext = gBagPockets[BALLS_POCKET].itemSlots[i+1].itemId;
+            break;
         }
     }
+    if (ballNext == ITEM_NONE)
+        return gBagPockets[BALLS_POCKET].itemSlots[0].itemId; // Zeroth slot
+    else
+        return ballNext;
 }
 
 static void HandleInputChooseAction(u32 battler)
@@ -448,9 +449,9 @@ static void HandleInputChooseAction(u32 battler)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, B_ACTION_CANCEL_PARTNER, 0);
             PlayerBufferExecCompleted(battler);
         }
-        else
+        else if (B_QUICK_MOVE_CURSOR_TO_RUN)
         {
-            if (!(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_RAID)))//if wild, pressing B moves cursor to run
+            if (!(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_RAID))) // If wild battle, pressing B moves cursor to "Run".
             {
                 PlaySE(SE_SELECT);
                 ActionSelectionDestroyCursorAt(gActionSelectionCursor[battler]);
@@ -550,10 +551,10 @@ void HandleInputChooseTarget(u32 battler)
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
         if (gBattleStruct->mega.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_MEGA_EVOLUTION | (gMultiUsePlayerCursor << 8));
-        else if (gBattleStruct->dynamax.playerSelect)
-            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->burst.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->dynamax.playerSelect)
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         EndBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX);
@@ -721,6 +722,8 @@ static void HandleInputShowEntireFieldTargets(u32 battler)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->burst.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->dynamax.playerSelect)
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         HideTriggerSprites();
@@ -749,10 +752,10 @@ static void HandleInputShowTargets(u32 battler)
         HideShownTargets(battler);
         if (gBattleStruct->mega.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_MEGA_EVOLUTION | (gMultiUsePlayerCursor << 8));
-        else if (gBattleStruct->dynamax.playerSelect)
-            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->burst.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->dynamax.playerSelect)
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         HideTriggerSprites();
@@ -829,11 +832,8 @@ void HandleInputChooseMove(u32 battler)
         }
 
         // Status moves turn into Max Guard when Dynamaxed, targets user.
-        if ((IsDynamaxed(battler) || gBattleStruct->dynamax.playerSelect)
-            && gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].split == SPLIT_STATUS)
-        {
-            moveTarget = MOVE_TARGET_USER;
-        }
+        if ((IsDynamaxed(battler) || gBattleStruct->dynamax.playerSelect))
+            moveTarget = gBattleMoves[GetMaxMove(battler, moveInfo->moves[gMoveSelectionCursor[battler]])].target;
 
         if (moveTarget & MOVE_TARGET_USER)
             gMultiUsePlayerCursor = battler;
@@ -862,25 +862,26 @@ void HandleInputChooseMove(u32 battler)
                 canSelectTarget = 0;
             }
 
-        #if B_SHOW_TARGETS == TRUE
-            // Show all available targets for multi-target moves
-            if ((moveTarget & MOVE_TARGET_ALL_BATTLERS) == MOVE_TARGET_ALL_BATTLERS)
+            if (B_SHOW_TARGETS == TRUE)
             {
-                u32 i = 0;
-                for (i = 0; i < gBattlersCount; i++)
-                    TryShowAsTarget(i);
+                // Show all available targets for multi-target moves
+                if ((moveTarget & MOVE_TARGET_ALL_BATTLERS) == MOVE_TARGET_ALL_BATTLERS)
+                {
+                    u32 i = 0;
+                    for (i = 0; i < gBattlersCount; i++)
+                        TryShowAsTarget(i);
 
-                canSelectTarget = 3;
+                    canSelectTarget = 3;
+                }
+                else if (moveTarget & (MOVE_TARGET_OPPONENTS_FIELD | MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY))
+                {
+                    TryShowAsTarget(gMultiUsePlayerCursor);
+                    TryShowAsTarget(BATTLE_PARTNER(gMultiUsePlayerCursor));
+                    if (moveTarget & MOVE_TARGET_FOES_AND_ALLY)
+                        TryShowAsTarget(BATTLE_PARTNER(battler));
+                    canSelectTarget = 2;
+                }
             }
-            else if (moveTarget & (MOVE_TARGET_OPPONENTS_FIELD | MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY))
-            {
-                TryShowAsTarget(gMultiUsePlayerCursor);
-                TryShowAsTarget(BATTLE_PARTNER(gMultiUsePlayerCursor));
-                if (moveTarget & MOVE_TARGET_FOES_AND_ALLY)
-                    TryShowAsTarget(BATTLE_PARTNER(battler));
-                canSelectTarget = 2;
-            }
-        #endif
         }
 
         switch (canSelectTarget)
@@ -889,10 +890,10 @@ void HandleInputChooseMove(u32 battler)
         default:
             if (gBattleStruct->mega.playerSelect)
                 BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_MEGA_EVOLUTION | (gMultiUsePlayerCursor << 8));
-            else if (gBattleStruct->dynamax.playerSelect)
-                BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
             else if (gBattleStruct->burst.playerSelect)
                 BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
+            else if (gBattleStruct->dynamax.playerSelect)
+                BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
             else
                 BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
             HideTriggerSprites();
@@ -929,8 +930,8 @@ void HandleInputChooseMove(u32 battler)
         else
         {
             gBattleStruct->mega.playerSelect = FALSE;
-            gBattleStruct->dynamax.playerSelect = FALSE;
             gBattleStruct->burst.playerSelect = FALSE;
+            gBattleStruct->dynamax.playerSelect = FALSE;
             gBattleStruct->zmove.viable = FALSE;
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, 0xFFFF);
             HideTriggerSprites();
@@ -1050,8 +1051,8 @@ void HandleInputChooseMove(u32 battler)
 static void ReloadMoveNames(u32 battler)
 {
     gBattleStruct->mega.playerSelect = FALSE;
-    gBattleStruct->dynamax.playerSelect = FALSE;
     gBattleStruct->burst.playerSelect = FALSE;
+    gBattleStruct->dynamax.playerSelect = FALSE;
     gBattleStruct->zmove.viewing = FALSE;
     MoveSelectionDestroyCursorAt(battler);
     MoveSelectionDisplayMoveNames(battler);
@@ -2094,7 +2095,7 @@ static void PlayerHandleDrawTrainerPic(u32 battler)
 {
     bool32 isFrontPic;
     s16 xPos, yPos;
-    u32 trainerPicId, gender;
+    u32 trainerPicId;
 
     trainerPicId = PlayerGetTrainerBackPicId();
     if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
@@ -2282,8 +2283,8 @@ void PlayerHandleChooseMove(u32 battler)
 
         InitMoveSelectionsVarsAndStrings(battler);
         gBattleStruct->mega.playerSelect = FALSE;
-        gBattleStruct->dynamax.playerSelect = FALSE;
         gBattleStruct->burst.playerSelect = FALSE;
+        gBattleStruct->dynamax.playerSelect = FALSE;
         if (!IsMegaTriggerSpriteActive())
             gBattleStruct->mega.triggerSpriteId = 0xFF;
         if (CanMegaEvolve(battler))
@@ -2292,6 +2293,10 @@ void PlayerHandleChooseMove(u32 battler)
             gBattleStruct->burst.triggerSpriteId = 0xFF;
         if (CanUltraBurst(battler))
             CreateBurstTriggerSprite(battler, 0);
+        if (!IsDynamaxTriggerSpriteActive())
+            gBattleStruct->dynamax.triggerSpriteId = 0xFF;
+        if (CanDynamax(battler))
+            CreateDynamaxTriggerSprite(battler, 0);
         if (!IsZMoveTriggerSpriteActive())
             gBattleStruct->zmove.triggerSpriteId = 0xFF;
         GetUsableZMoves(battler, moveInfo->moves);

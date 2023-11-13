@@ -1,5 +1,5 @@
 #include "global.h"
-#include "test_battle.h"
+#include "test/battle.h"
 
 // ============= DYNAMAX AND MAX MOVE INTERACTIONS ===================
 SINGLE_BATTLE_TEST("(DYNAMAX) Dynamax increases HP and max HP by 1.5x", u16 hp)
@@ -19,7 +19,7 @@ SINGLE_BATTLE_TEST("(DYNAMAX) Dynamax increases HP and max HP by 1.5x", u16 hp)
         }
         MESSAGE("Foe Wobbuffet used Celebrate!");
     } THEN {
-        results[i].hp = player->hp;        
+        results[i].hp = player->hp;
     } FINALLY {
         EXPECT_MUL_EQ(results[0].hp, Q_4_12(1.5), results[1].hp);
     }
@@ -49,7 +49,7 @@ SINGLE_BATTLE_TEST("(DYNAMAX) Dynamax expires after three turns", u16 hp)
         if (dynamax) // Expect to have visual reversion at the end.
             ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_FORM_CHANGE, player);
     } THEN {
-        results[i].hp = player->hp;        
+        results[i].hp = player->hp;
     } FINALLY {
         EXPECT_EQ(results[0].hp, results[1].hp);
     }
@@ -155,6 +155,24 @@ SINGLE_BATTLE_TEST("(DYNAMAX) Dynamaxed Pokemon are not affected by phazing move
     }
 }
 
+SINGLE_BATTLE_TEST("(DYNAMAX) Dynamaxed Pokemon are not affected by phazing moves but no block message is printed if they faint")
+{
+    GIVEN {
+        ASSUME(gBattleMoves[MOVE_DRAGON_TAIL].effect == EFFECT_HIT_SWITCH_TARGET);
+        PLAYER(SPECIES_WOBBUFFET) { HP(1); };
+        PLAYER(SPECIES_WYNAUT);
+        OPPONENT(SPECIES_WOBBUFFET);
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_DRAGON_TAIL); MOVE(player, MOVE_TACKLE, dynamax: TRUE); SEND_OUT(player, 1); }
+    } SCENE {
+        MESSAGE("Wobbuffet used Max Strike!");
+        MESSAGE("Foe Wobbuffet used Dragon Tail!");
+        HP_BAR(player);
+        MESSAGE("Wobbuffet fainted!");
+        NOT MESSAGE("The move was blocked by the power of Dynamax!");
+    }
+}
+
 SINGLE_BATTLE_TEST("(DYNAMAX) Dynamaxed Pokemon are not affected by Red Card")
 {
     GIVEN {
@@ -250,7 +268,7 @@ SINGLE_BATTLE_TEST("(DYNAMAX) Dynamaxed Pokemon can be encored immediately after
         TURN { MOVE(player, MOVE_ARM_THRUST, dynamax: TRUE); }
         TURN { MOVE(player, MOVE_ARM_THRUST); }
         TURN { MOVE(player, MOVE_ARM_THRUST); }
-        TURN { MOVE(opponent, MOVE_ENCORE); MOVE(player, MOVE_TACKLE); } 
+        TURN { MOVE(opponent, MOVE_ENCORE); MOVE(player, MOVE_TACKLE); }
     } SCENE {
         MESSAGE("Wobbuffet used Max Knuckle!");
         MESSAGE("Wobbuffet used Max Knuckle!");
@@ -322,7 +340,7 @@ SINGLE_BATTLE_TEST("(DYNAMAX) Dynamaxed Pokemon are not immune to Knock Off")
         MESSAGE("Wobbuffet used Max Strike!");
         MESSAGE("Foe Wobbuffet used Knock Off!");
         MESSAGE("Foe Wobbuffet knocked off Wobbuffet's Potion!");
-    } THEN { 
+    } THEN {
         EXPECT_EQ(player->item, ITEM_NONE);
     }
 }
@@ -457,7 +475,7 @@ SINGLE_BATTLE_TEST("(DYNAMAX) Pokemon with Gigantamax forms change upon Dynamaxi
     } WHEN {
         TURN { MOVE(player, MOVE_TACKLE, dynamax: TRUE); }
     } THEN {
-        EXPECT_EQ(player->species, SPECIES_VENUSAUR_GMAX);
+        EXPECT_EQ(player->species, SPECIES_VENUSAUR_GIGANTAMAX);
     }
 }
 
@@ -783,18 +801,22 @@ SINGLE_BATTLE_TEST("(DYNAMAX) Max Rockfall sets up a sandstorm")
 
 SINGLE_BATTLE_TEST("(DYNAMAX) Max Overgrowth sets up Grassy Terrain")
 {
-    KNOWN_FAILING; // Grassy terrain bugged #2820
+    s32 maxHP = 490; // Because of recalculated stats upon Dynamaxing
     GIVEN {
         ASSUME(gBattleMoves[MOVE_MAX_OVERGROWTH].argument == MAX_EFFECT_GRASSY_TERRAIN);
-        OPPONENT(SPECIES_WOBBUFFET) { MaxHP(256); HP(128); };
-        PLAYER(SPECIES_WOBBUFFET) { MaxHP(256); HP(128); };
+        ASSUME(gSpeciesInfo[SPECIES_WOBBUFFET].baseHP == 190);
+        OPPONENT(SPECIES_WOBBUFFET) { MaxHP(maxHP); HP(maxHP / 2); };
+        PLAYER(SPECIES_WOBBUFFET) { MaxHP(maxHP); HP(maxHP / 2); };
     } WHEN {
         TURN { MOVE(player, MOVE_VINE_WHIP, dynamax: TRUE); MOVE(opponent, MOVE_CELEBRATE); }
         TURN { MOVE(player, MOVE_VINE_WHIP); MOVE(opponent, MOVE_CELEBRATE); }
     } SCENE {
         MESSAGE("Wobbuffet used Max Overgrowth!");
-        MESSAGE("Foe Wobbuffet cannot use Celebrate!");
-        HP_BAR(player, damage: -256/16);
+        MESSAGE("Grass grew to cover the battlefield!");
+        MESSAGE("Wobbuffet is healed by the grassy terrain!");
+        HP_BAR(player, damage: -maxHP/16);
+        MESSAGE("Foe Wobbuffet is healed by the grassy terrain!");
+        HP_BAR(opponent, damage: -maxHP/16);
     }
 }
 
@@ -941,7 +963,6 @@ DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Volt Crash paralyzes both opponents")
 DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Stun Shock paralyzes or poisons both opponents")
 {
     u8 statusAnim;
-    u16 species;
     u32 rng;
     PARAMETRIZE { statusAnim = B_ANIM_STATUS_PRZ; rng = STATUS1_PARALYSIS; }
     PARAMETRIZE { statusAnim = B_ANIM_STATUS_PSN; rng = STATUS1_POISON; }
@@ -1013,7 +1034,6 @@ DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Stun Shock chooses statuses before consideri
 DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Befuddle paralyzes, poisons, or sleeps both opponents")
 {
     u8 statusAnim;
-    u16 species;
     u32 rng;
     PARAMETRIZE { statusAnim = B_ANIM_STATUS_PRZ; rng = STATUS1_PARALYSIS; }
     PARAMETRIZE { statusAnim = B_ANIM_STATUS_PSN; rng = STATUS1_POISON; }
@@ -1214,7 +1234,7 @@ DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Wildfire sets a field effect that damages no
         MESSAGE("Foe Wynaut is burning up within G-Max Wildfire's flames!");
         HP_BAR(opponentRight);
         // turn 5
-        NONE_OF { 
+        NONE_OF {
             HP_BAR(opponentRight);
             MESSAGE("Foe Wynaut is burning up within G-Max Wildfire's flames!");
         }
@@ -1292,14 +1312,13 @@ DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Finale heals allies by 1/6 of their health")
         HP_BAR(playerLeft, captureDamage: &damage1);
         HP_BAR(playerRight, captureDamage: &damage2);
     } THEN {
-        EXPECT_MUL_EQ(playerLeft->hp - 1, Q_4_12(6), playerLeft->maxHP); // heals based on Dynamax HP
-        EXPECT_MUL_EQ(playerRight->hp - 1, Q_4_12(6), playerRight->maxHP);
+        EXPECT_MUL_EQ(-damage1, Q_4_12(6), playerLeft->maxHP); // heals based on Dynamax HP
+        EXPECT_MUL_EQ(-damage2, Q_4_12(6), playerRight->maxHP);
     }
 }
 
 DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Sweetness cures allies' status conditions")
 {
-    s16 damage1, damage2;
     GIVEN {
         ASSUME(P_GEN_8_POKEMON == TRUE);
         ASSUME(gBattleMoves[MOVE_G_MAX_SWEETNESS].argument == MAX_EFFECT_AROMATHERAPY);
@@ -1321,7 +1340,6 @@ DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Sweetness cures allies' status conditions")
 // This test applies to G-Max Sandblast, too.
 DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Centiferno traps both opponents in Fire Spin")
 {
-    s16 damage1, damage2;
     GIVEN {
         ASSUME(P_GEN_8_POKEMON == TRUE);
         ASSUME(gBattleMoves[MOVE_G_MAX_CENTIFERNO].argument == MAX_EFFECT_FIRE_SPIN_FOES);
@@ -1350,9 +1368,7 @@ DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Centiferno traps both opponents in Fire Spin
 
 DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Chi Strike boosts allies' crit chance")
 {
-    s16 damage1, damage2;
     u32 j;
-    KNOWN_FAILING; // Debug printing confirms Machop is at +5 crit stages. Not sure what's broken.
     GIVEN {
         ASSUME(B_CRIT_CHANCE >= GEN_6);
         ASSUME(gBattleMoves[MOVE_G_MAX_CHI_STRIKE].argument == MAX_EFFECT_CRIT_PLUS);
@@ -1389,7 +1405,7 @@ DOUBLE_BATTLE_TEST("(DYNAMAX) G-Max Depletion takes away 2 PP from the target's 
         PLAYER(SPECIES_DURALUDON);
         PLAYER(SPECIES_WYNAUT);
         // Dynamax behaves weird with test turn order because stats are recalculated.
-        OPPONENT(SPECIES_SABLEYE) { Ability(ABILITY_PRANKSTER); } 
+        OPPONENT(SPECIES_SABLEYE) { Ability(ABILITY_PRANKSTER); }
         OPPONENT(SPECIES_WYNAUT);
     } WHEN {
         TURN { MOVE(playerLeft, MOVE_DRAGON_CLAW, target: opponentLeft, dynamax: TRUE); }

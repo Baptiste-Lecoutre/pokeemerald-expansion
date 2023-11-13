@@ -408,7 +408,7 @@ static void PlayerPartnerHandleChoosePokemon(u32 battler)
     // Switching out
     else if (gBattleStruct->monToSwitchIntoId[battler] >= PARTY_SIZE || !IsValidForBattle(&party[gBattleStruct->monToSwitchIntoId[battler]]))
     {
-        chosenMonId = GetMostSuitableMonToSwitchInto(battler);
+        chosenMonId = GetMostSuitableMonToSwitchInto(battler, TRUE);
 
         if (chosenMonId == PARTY_SIZE || !IsValidForBattle(&party[chosenMonId])) // just switch to the next mon
         {

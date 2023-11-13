@@ -322,7 +322,7 @@ void AnimateSprites(void)
 void BuildOamBuffer(void)
 {
     bool32 oamLoadDisabled;
-    u32 i, stride;
+    u32 i;
     u8 oamIndex;
 
     // All attributes which affect sorting packed into a single u32:
@@ -1723,7 +1723,7 @@ bool8 AddSubspritesToOamBuffer(struct Sprite *sprite, struct OamData *destOam, u
             destOam[i].y = baseY + y;
             destOam[i].tileNum = tileNum + subspriteTable->subsprites[i].tileOffset;
 
-            if (sprite->subspriteMode != SUBSPRITES_IGNORE_PRIORITY)
+            if (sprite->subspriteMode < SUBSPRITES_IGNORE_PRIORITY)
                 destOam[i].priority = subspriteTable->subsprites[i].priority;
         }
     }
