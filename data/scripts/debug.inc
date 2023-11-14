@@ -147,6 +147,7 @@ Debug_EventScript_Script_7::
 	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_MAN_1
 	setflag FLAG_LEGENDARIES_IN_SOOTOPOLIS
+	warp MAP_SOOTOPOLIS_CITY, 43, 32
 	end
 
 Debug_EventScript_Script_8::
