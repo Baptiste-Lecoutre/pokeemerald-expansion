@@ -3666,7 +3666,7 @@ static void DoBattleIntro(void)
                 {
                     BtlController_EmitLoadMonSprite(battler, BUFFER_A);
                     MarkBattlerForControllerExec(battler);
-                    gBattleResults.lastOpponentSpecies = GetMonData(&gEnemy2Party[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES, NULL);
+                    gBattleResults.lastOpponentSpecies = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES, NULL);
                 }
                 break;
             }
