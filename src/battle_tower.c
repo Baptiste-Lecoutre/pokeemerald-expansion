@@ -2175,6 +2175,7 @@ void DoSpecialTrainerBattle(void)
         PlayMapChosenOrBattleBGM(0);
         if (FlagGet(FLAG_SOOTOPOLIS_BATTLE))
         {
+            gBattleTypeFlags |= BATTLE_TYPE_TWO_OPPONENTS;
             PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
             BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);
         }

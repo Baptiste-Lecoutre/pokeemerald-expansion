@@ -2476,12 +2476,12 @@ bool8 ScrCmd_setsootopolisbattle(struct ScriptContext *ctx)
         SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, heldItem1);
     }
 
-    CreateMon(&gEnemyParty[1], species2, level2, 32, 0, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(&gEnemy2Party[0], species2, level2, 32, 0, 0, OT_ID_PLAYER_ID, 0);
     if (item2)
     {
         heldItem2[0] = item2;
         heldItem2[1] = item2 >> 8;
-        SetMonData(&gEnemyParty[1], MON_DATA_HELD_ITEM, heldItem2);
+        SetMonData(&gEnemy2Party[0], MON_DATA_HELD_ITEM, heldItem2);
     }
     
     return FALSE;

@@ -171,7 +171,7 @@ static void InitSinglePlayerBtlControllers(void)
         if (BATTLE_TWO_VS_ONE_OPPONENT || WILD_DOUBLE_BATTLE)
         {
             gBattlerPartyIndexes[2] = 0;
-            gBattlerPartyIndexes[3] = 1;
+            gBattlerPartyIndexes[3] = 0;//1;
         }
         else
         {
