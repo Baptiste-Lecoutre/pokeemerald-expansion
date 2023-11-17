@@ -20,4 +20,16 @@ const struct RaidPartner gRaidPartners[]=
 		.graphicsId = OBJ_EVENT_GFX_RED,
 		.trainerBackPic = TRAINER_BACK_PIC_RED,
 	},
+	// wally
+	// steven
+	// brendan
+	// may
+	// chase
+	// elaine
+	// gold
+	// lyra
+	// red
+	// leaf
+	// lucas
+	// dawn
 };
