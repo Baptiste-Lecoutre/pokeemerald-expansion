@@ -702,6 +702,13 @@ bool32 UpdateRaidShield(void)
                         ++gBattleMons[gBattlerTarget].statStages[i];
                 }
             }
+            else if (gRaidData.rank > RAID_RANK_3)
+            {
+                if (gBattleMons[gBattlerTarget].statStages[STAT_DEF] < MAX_STAT_STAGE)
+                    ++gBattleMons[gBattlerTarget].statStages[STAT_DEF];
+                if (gBattleMons[gBattlerTarget].statStages[STAT_SPDEF] < MAX_STAT_STAGE)
+                    ++gBattleMons[gBattlerTarget].statStages[STAT_SPDEF];
+            }
             gBattleCommunication[MULTIUSE_STATE] = RAID_TYPE_MEGA;
         }
 
