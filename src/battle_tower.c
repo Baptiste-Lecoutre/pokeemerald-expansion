@@ -2188,13 +2188,15 @@ void DoSpecialTrainerBattle(void)
         break;
     // TODO: Does this belong with all the other multi battles?
     case SPECIAL_BATTLE_RAID:
+        {
+        const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
         gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;// | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
 
         if (gRaidData.partnerNum != 0) // working as intended. I have to do something about the SavePlayerParty before this call, then the CallFrontierUtilFunc, and the LoadPlayerParty
         {
             gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
-            gPartnerSpriteId = gRaidPartners[gRaidData.partnerNum].trainerBackPic;
-            gPartnerTrainerId = gRaidPartners[gRaidData.partnerNum].trainerNum + TRAINER_CUSTOM_PARTNER;
+            gPartnerSpriteId = raidPartners->partnerData[gRaidData.partnerNum].trainerBackPic;
+            gPartnerTrainerId = raidPartners->partnerData[gRaidData.partnerNum].trainerNum + TRAINER_CUSTOM_PARTNER;
             FillPartnerParty(gPartnerTrainerId);
         }
 
@@ -2202,6 +2204,7 @@ void DoSpecialTrainerBattle(void)
         PlayMapChosenOrBattleBGM(0);
         BattleTransition_StartOnField(GetRaidBattleTransition());
         break;
+        }
     }
 }
 

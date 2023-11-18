@@ -739,6 +739,7 @@ static bool32 GetRaidBattleData(void)
 	
 	if (success)
 	{
+		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
 		FlagClear(FLAG_SYS_SPECIAL_RAID_BATTLE);
 
 		sRaidBattleIntro->species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
@@ -752,10 +753,10 @@ static bool32 GetRaidBattleData(void)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
 			partner->id = i+1;//gRaidPartners[i+1].id; // Not the actual trainerNum, but the entry of gRaidPartnerArray
-			partner->graphicsId = gRaidPartners[partner->id].graphicsId;
+			partner->graphicsId = raidPartners->partnerData[partner->id].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				partner->team[j] = gTrainers[gRaidPartners[partner->id].trainerNum].party[j].species;
+				partner->team[j] = gTrainers[raidPartners->partnerData[partner->id].trainerNum].party[j].species;
 		}
 
 		return TRUE;

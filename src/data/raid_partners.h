@@ -1,4 +1,4 @@
-const struct RaidPartner gRaidPartners[]=
+const struct RaidPartnerData sRaidPartnerData_Rank1[]=
 {
 	{
         .trainerNum = TRAINER_NONE,
@@ -32,4 +32,16 @@ const struct RaidPartner gRaidPartners[]=
 	// leaf
 	// lucas
 	// dawn
+};
+
+const struct RaidPartner gRaidPartners[MAX_RAID_RANK + 1] =
+{
+	[NO_RAID]     = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+    [RAID_RANK_1] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+	[RAID_RANK_2] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+	[RAID_RANK_3] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+	[RAID_RANK_4] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+	[RAID_RANK_5] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+	[RAID_RANK_6] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+    [RAID_RANK_7] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
 };

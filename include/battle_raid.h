@@ -17,11 +17,17 @@ struct RaidData {
     u8 partnerNum;
 };
 
-struct RaidPartner
+struct RaidPartnerData
 {
-	u16 trainerNum;
+    u16 trainerNum;
 	u16 graphicsId;
 	u16 trainerBackPic;
+};
+
+struct RaidPartner
+{
+	const struct RaidPartnerData *partnerData;
+	u8 numOfPartners;
 };
 
 
