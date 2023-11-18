@@ -97,6 +97,7 @@ enum {
     MENU_TRADE1,
     MENU_TRADE2,
     MENU_TOSS,
+    MENU_SUB_FIELD_MOVES,
     MENU_FIELD_MOVES
 };
 
@@ -116,6 +117,7 @@ enum {
     ACTIONS_TRADE,
     ACTIONS_SPIN_TRADE,
     ACTIONS_TAKEITEM_TOSS,
+    ACTIONS_FIELDMOVE_SUB,
 };
 
 // In CursorCb_FieldMove, field moves <= FIELD_MOVE_WATERFALL are assumed to line up with the badge flags.
@@ -343,6 +345,7 @@ static void Task_CancelParticipationYesNo(u8);
 static void Task_HandleCancelParticipationYesNoInput(u8);
 static bool8 ShouldUseChooseMonText(void);
 static void SetPartyMonFieldSelectionActions(struct Pokemon *, u8);
+static void SetPartyMonFieldMoveSelectionActions(struct Pokemon*, u8);
 static u8 GetPartyMenuActionsTypeInBattle(struct Pokemon *);
 static u8 GetPartySlotEntryStatus(s8);
 static void Task_UpdateHeldItemSprite(u8);
@@ -485,6 +488,7 @@ static void CursorCb_Register(u8);
 static void CursorCb_Trade1(u8);
 static void CursorCb_Trade2(u8);
 static void CursorCb_Toss(u8);
+static void CursorCb_FieldMovesSubMenu(u8);
 static void CursorCb_FieldMove(u8);
 static bool8 SetUpFieldMove_Surf(void);
 static bool8 SetUpFieldMove_Fly(void);
@@ -2775,12 +2779,56 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
     {
         SetPartyMonFieldSelectionActions(mons, slotId);
     }
+    else if (action == ACTIONS_FIELDMOVE_SUB)
+    {
+        sPartyMenuInternal->numActions = 0;
+        SetPartyMonFieldMoveSelectionActions(mons, slotId);
+    }
     else
     {
         sPartyMenuInternal->numActions = sPartyMenuActionCounts[action];
         for (i = 0; i < sPartyMenuInternal->numActions; i++)
             sPartyMenuInternal->actions[i] = sPartyMenuActions[action][i];
     }
+}
+
+static void SetPartyMonFieldMoveSelectionActions(struct Pokemon *mons, u8 slotId)
+{
+    u32 i,j, move;
+    sPartyMenuInternal->numActions = 0;
+
+    if (/*sPartyMenuInternal->numActions < 5 &&*/ CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), MOVE_FLY) && CheckBagHasItem(ITEM_HM02_FLY, 1) && FlagGet(FLAG_BADGE06_GET)) 
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLY + MENU_FIELD_MOVES);
+    if (/*sPartyMenuInternal->numActions < 5 &&*/ CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), MOVE_FLASH) && CheckBagHasItem(ITEM_HM05_FLASH, 1) && FlagGet(FLAG_BADGE02_GET)) 
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLASH + MENU_FIELD_MOVES);
+    if (/*sPartyMenuInternal->numActions < 5 &&*/ CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), MOVE_SURF) && CheckBagHasItem(ITEM_HM03_SURF, 1) && FlagGet(FLAG_BADGE05_GET)) 
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_SURF + MENU_FIELD_MOVES);
+
+    // Add field moves to action list
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        for (j = 0; sFieldMoves[j] != FIELD_MOVES_COUNT; j++)
+        {
+            move = GetMonData(&mons[slotId], i + MON_DATA_MOVE1);
+            if (move == MOVE_FLY || move == MOVE_FLASH)
+            {
+                break;
+            }
+            else if (move == sFieldMoves[j])
+            {
+                AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
+                break;
+            }
+        }
+    }
+
+    /*for (j = 0; sFieldMoves[j] != FIELD_MOVES_COUNT; j++)
+    {
+        if (CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), sFieldMoves[j]))
+            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
+    }*/
+
+    AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_CANCEL1);
 }
 
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
@@ -2790,7 +2838,7 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     sPartyMenuInternal->numActions = 0;
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SUMMARY);
 
-    // Add field moves to action list
+    /*// Add field moves to action list
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         for (j = 0; sFieldMoves[j] != FIELD_MOVES_COUNT; j++)
@@ -2815,7 +2863,7 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 5 + MENU_FIELD_MOVES);
     // If Mon can learn HM05 and action list consists of < 4 moves, add FLASH to action list
     if (sPartyMenuInternal->numActions < 5 && CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), MOVE_FLASH) && CheckBagHasItem(ITEM_HM05_FLASH, 1) && FlagGet(FLAG_BADGE02_GET)) 
-        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 1 + MENU_FIELD_MOVES);
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 1 + MENU_FIELD_MOVES);*/
 
     if (!InBattlePike())
     {
@@ -2826,6 +2874,7 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         else
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_ITEM);
     }
+    AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SUB_FIELD_MOVES);
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_CANCEL1);
 }
 
@@ -3685,6 +3734,18 @@ static void Task_HandleLoseMailMessageYesNoInput(u8 taskId)
         gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
         break;
     }
+}
+
+static void CursorCb_FieldMovesSubMenu(u8 taskId)
+{
+    PlaySE(SE_SELECT);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+    SetPartyMonSelectionActions(gPlayerParty, gPartyMenu.slotId, ACTIONS_FIELDMOVE_SUB);
+    DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+    DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_MON);
+    gTasks[taskId].data[0] = 0xFF;
+    gTasks[taskId].func = Task_HandleSelectionMenuInput;
 }
 
 static void CursorCb_Cancel2(u8 taskId)
