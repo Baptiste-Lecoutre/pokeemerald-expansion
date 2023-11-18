@@ -124,6 +124,19 @@ const u8 gRaidBattleHiddenAbilityChances[MAX_RAID_RANK + 1] =
     [RAID_RANK_7] = 50,
 };
 
+// The number of perfect IVs the raid boss is certain to have
+const u8 gRaidBattlePerfectIVsNumber[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 1,
+	[RAID_RANK_2] = 2,
+	[RAID_RANK_3] = 3,
+	[RAID_RANK_4] = 4,
+	[RAID_RANK_5] = 5,
+	[RAID_RANK_6] = 6,
+    [RAID_RANK_7] = 6,
+};
+
 static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
 {	//In percent
 	100,
@@ -299,7 +312,8 @@ bool32 InitRaidData(void)
 {
     u16 numBadges, min, max, species = SPECIES_NONE, preEvoSpecies = SPECIES_NONE, postEvoSpecies = SPECIES_NONE;
 	u32 i, randomNum = GetRaidRandomNumber();
-    u8 raidBossLevel, numPostEvoSpecies = 0;;
+    u8 raidBossLevel, numPostEvoSpecies = 0, maxIV = MAX_IV_MASK;
+    u8 statIDs[NUM_STATS] = {STAT_HP, STAT_ATK, STAT_DEF, STAT_SPEED, STAT_SPATK, STAT_SPDEF};
 
     // determine raid type
     gRaidData.raidType = RAID_TYPE_MAX;
@@ -386,6 +400,13 @@ bool32 InitRaidData(void)
     // Create raid boss
     CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
+    if (gRaidBattlePerfectIVsNumber[gRaidData.rank])
+    {
+        ShuffleStatArray(statIDs);
+        for (i = 0; i < gRaidBattlePerfectIVsNumber[gRaidData.rank]; i++)
+            SetMonData(&gEnemyParty[0], MON_DATA_HP_IV + statIDs[i], &maxIV);
+    }
+    
     return TRUE;
 }
 

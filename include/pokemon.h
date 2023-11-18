@@ -648,5 +648,6 @@ u16 GetPreEvolution(u16 species);
 u8 CalculatePartyCount(struct Pokemon *party);
 u16 SanitizeSpeciesId(u16 species);
 bool32 IsSpeciesEnabled(u16 species);
+void ShuffleStatArray(u8* statArray);
 
 #endif // GUARD_POKEMON_H

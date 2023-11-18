@@ -9836,3 +9836,16 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
 
     return trainerPic;
 }
+
+void ShuffleStatArray(u8* statArray)
+{
+    int i;
+
+    // Shuffle the stats array using Fisher-Yates shuffle
+    for (i = NUM_STATS - 1; i > 0; i--)
+    {
+        u8 temp;
+        int j = Random() % (i + 1);
+        SWAP(statArray[i], statArray[j], temp);
+    }
+}
