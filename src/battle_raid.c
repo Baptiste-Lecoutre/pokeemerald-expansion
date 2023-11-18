@@ -24,12 +24,6 @@
 #include "constants/items.h"
 #include "constants/moves.h"
 
-// TODO:
-//  - Switch-in abilities reapplying after Max Mindstorm?
-//  - Battle partner fainting and switching breaking after Max Flare?
-//  - Raid barrier sprite alignment.
-//  - Raid rank disappears in Intro UI after a Raid has occurred.
-
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
     [RAID_TYPE_MAX] = {
