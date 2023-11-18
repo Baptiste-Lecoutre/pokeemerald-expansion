@@ -111,6 +111,19 @@ const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK + 1] =
     [RAID_RANK_7] = 90,
 };
 
+// The chance that the raid boss has its hidden ability
+const u8 gRaidBattleHiddenAbilityChances[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 0,
+	[RAID_RANK_2] = 0,
+	[RAID_RANK_3] = 10,
+	[RAID_RANK_4] = 20,
+	[RAID_RANK_5] = 30,
+	[RAID_RANK_6] = 40,
+    [RAID_RANK_7] = 50,
+};
+
 static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
 {	//In percent
 	100,
@@ -360,7 +373,13 @@ bool32 InitRaidData(void)
             species = gEvolutionTable[species][randomNum % numPostEvoSpecies].targetSpecies;
         }
     }*/
-    
+
+    // Hidden ability
+#if P_FLAG_FORCE_HIDDEN_ABILITY != 0
+    if (randomNum % 100 < gRaidBattleHiddenAbilityChances[gRaidData.rank])
+        FlagSet(P_FLAG_FORCE_HIDDEN_ABILITY);
+#endif
+
     // Free previous enemy party in case
     ZeroEnemyPartyMons();
 
