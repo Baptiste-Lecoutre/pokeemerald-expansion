@@ -49,6 +49,7 @@
 #include "pokemon_jump.h"
 #include "pokemon_storage_system.h"
 #include "pokemon_summary_screen.h"
+#include "random.h"
 #include "region_map.h"
 #include "reshow_battle_screen.h"
 #include "scanline_effect.h"
@@ -2795,25 +2796,33 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
 static void SetPartyMonFieldMoveSelectionActions(struct Pokemon *mons, u8 slotId)
 {
     u32 i;
-    u8 maxActions = 7;
+    u8 index, maxActions = 7;
     u16 move, itemId;
+    u8 shuffledIndex[FIELD_MOVES_COUNT + 1];
 
     sPartyMenuInternal->numActions = 0;
 
+    for (i = 0; i < NELEMS(shuffledIndex); i++)
+        shuffledIndex[i] = i;
+
+    Shuffle8(shuffledIndex, FIELD_MOVES_COUNT);
+
     for (i = 0; i != FIELD_MOVES_COUNT; i++)
     {
-        move = sFieldMoves[i];
-        for (itemId = ITEM_TM01; itemId <= ITEM_HM08; itemId++)
+        index = shuffledIndex[i];
+        move = sFieldMoves[index];
+        for (itemId = ITEM_TM01; itemId <= ITEM_HM08 + 1; itemId++) // allow overflow to next item for field moves that are not TMs
         {
             if (ItemIdToBattleMoveId(itemId) == move)
                 break;
         }
 
-        if (i < FIELD_MOVE_TELEPORT && !FlagGet(FLAG_BADGE01_GET + i))
+        if (index <= FIELD_MOVE_WATERFALL && !FlagGet(FLAG_BADGE01_GET + index))
             continue;
-        if (((CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), move) && CheckBagHasItem(itemId, 1)) || MonKnowsMove(&mons[slotId], move))
+        if (((CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), move) 
+                && ((CheckBagHasItem(itemId, 1)) || ItemId_GetPocket(itemId) != POCKET_TM_HM)) || MonKnowsMove(&mons[slotId], move))
             && sPartyMenuInternal->numActions < maxActions)
-            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, i + MENU_FIELD_MOVES);
+            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, index + MENU_FIELD_MOVES);
     }
 
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_CANCEL1);
