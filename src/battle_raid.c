@@ -7,16 +7,19 @@
 #include "battle_setup.h"
 #include "battle_transition.h"
 #include "data.h"
+#include "daycare.h"
 #include "event_data.h"
 #include "item.h"
 #include "malloc.h"
 #include "overworld.h"
+#include "party_menu.h"
 #include "pokemon.h"
 #include "random.h"
 #include "rtc.h"
 #include "sprite.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
+#include "constants/daycare.h"
 #include "constants/item.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -311,9 +314,11 @@ u32 GetRaidRandomNumber(void);
 bool32 InitRaidData(void)
 {
     u16 numBadges, min, max, species = SPECIES_NONE, preEvoSpecies = SPECIES_NONE, postEvoSpecies = SPECIES_NONE;
-	u32 i, randomNum = GetRaidRandomNumber();
-    u8 raidBossLevel, numPostEvoSpecies = 0, maxIV = MAX_IV_MASK;
+	u32 i, randomNum = GetRaidRandomNumber(), numEggMoves;
+    u8 raidBossLevel, numPostEvoSpecies = 0, maxIV = MAX_IV_MASK, eggMoveChance = GetRaidEggMoveChance();
     u8 statIDs[NUM_STATS] = {STAT_HP, STAT_ATK, STAT_DEF, STAT_SPEED, STAT_SPATK, STAT_SPDEF};
+    u16 eggMoves[EGG_MOVES_ARRAY_COUNT] = {0};
+    struct Pokemon* mon = &gEnemyParty[0];
 
     // determine raid type
     gRaidData.raidType = RAID_TYPE_MAX;
@@ -398,15 +403,27 @@ bool32 InitRaidData(void)
     ZeroEnemyPartyMons();
 
     // Create raid boss
-    CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(mon, species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
     if (gRaidBattlePerfectIVsNumber[gRaidData.rank])
     {
         ShuffleStatArray(statIDs);
         for (i = 0; i < gRaidBattlePerfectIVsNumber[gRaidData.rank]; i++)
-            SetMonData(&gEnemyParty[0], MON_DATA_HP_IV + statIDs[i], &maxIV);
+            SetMonData(mon, MON_DATA_HP_IV + statIDs[i], &maxIV);
     }
-    
+
+    numEggMoves = GetEggMovesSpecies(species, eggMoves);
+    if (numEggMoves && Random() % 100 < eggMoveChance)
+    {
+        u16 eggMove = eggMoves[RandRange(0, numEggMoves)];
+
+        if (MonKnowsMove(mon, eggMove))
+            eggMove = eggMoves[RandRange(0, numEggMoves)];
+
+        if (!MonKnowsMove(mon, eggMove) && GiveMoveToMon(mon, eggMove) == MON_HAS_MAX_MOVES)
+            DeleteFirstMoveAndGiveMoveToMon(mon, eggMove);
+    }
+
     return TRUE;
 }
 
@@ -1058,4 +1075,9 @@ u8 GetRaidRecommendedLevel(void)
         recommendedLevel = MAX_LEVEL;
 
 	return recommendedLevel; 
+}
+
+u8 GetRaidEggMoveChance(void)
+{
+    return gRaidBattleEggMoveChances[gRaidData.rank];
 }

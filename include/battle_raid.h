@@ -53,5 +53,6 @@ void ClearAllRaidBattleFlags(void);
 
 void GiveRaidBattleRewards(void);
 u8 GetRaidRecommendedLevel(void);
+u8 GetRaidEggMoveChance(void);
 
 #endif
