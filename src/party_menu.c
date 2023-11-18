@@ -2796,21 +2796,23 @@ static void SetPartyMonFieldMoveSelectionActions(struct Pokemon *mons, u8 slotId
 {
     u32 i;
     u8 maxActions = 7;
+    u16 move, itemId;
+
     sPartyMenuInternal->numActions = 0;
-
-//    if (/*sPartyMenuInternal->numActions < 5 &&*/ CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), MOVE_FLY) && CheckBagHasItem(ITEM_HM02_FLY, 1) && FlagGet(FLAG_BADGE06_GET)) 
-//        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLY + MENU_FIELD_MOVES);
-//    if (/*sPartyMenuInternal->numActions < 5 &&*/ CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), MOVE_FLASH) && CheckBagHasItem(ITEM_HM05_FLASH, 1) && FlagGet(FLAG_BADGE02_GET)) 
-//        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLASH + MENU_FIELD_MOVES);
-//    if (/*sPartyMenuInternal->numActions < 5 &&*/ CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), MOVE_SURF) && CheckBagHasItem(ITEM_HM03_SURF, 1) && FlagGet(FLAG_BADGE05_GET)) 
-//        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_SURF + MENU_FIELD_MOVES);
-
 
     for (i = 0; i != FIELD_MOVES_COUNT; i++)
     {
+        move = sFieldMoves[i];
+        for (itemId = ITEM_TM01; itemId <= ITEM_HM08; itemId++)
+        {
+            if (ItemIdToBattleMoveId(itemId) == move)
+                break;
+        }
+
         if (i < FIELD_MOVE_TELEPORT && !FlagGet(FLAG_BADGE01_GET + i))
             continue;
-        if (CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), sFieldMoves[i]) && sPartyMenuInternal->numActions < maxActions)
+        if (((CanLearnTeachableMove(GetMonData(&mons[slotId], MON_DATA_SPECIES_OR_EGG), move) && CheckBagHasItem(itemId, 1)) || MonKnowsMove(&mons[slotId], move))
+            && sPartyMenuInternal->numActions < maxActions)
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, i + MENU_FIELD_MOVES);
     }
 
