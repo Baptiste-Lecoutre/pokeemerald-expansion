@@ -9726,6 +9726,25 @@ static inline uq4_12_t GetDefenderItemsModifier(u32 moveType, u32 battlerDef, uq
     return UQ_4_12(1.0);
 }
 
+static inline uq4_12_t GetSynergyModifier(u32 move, u32 battlerAtk)
+{
+    struct Pokemon *party = GetBattlerParty(battlerAtk);
+    u32 i;
+    u16 species;
+    u8 moveType = gBattleMoves[move].type;
+    uq4_12_t modifier = UQ_4_12(1.0);
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
+        if (species != SPECIES_NONE && species != SPECIES_EGG && i != gBattlerPartyIndexes[battlerAtk] && GetMonData(&party[i], MON_DATA_HP)
+            && (gSpeciesInfo[species].types[0] == moveType || gSpeciesInfo[species].types[1] == moveType))
+            uq4_12_add(modifier, UQ_4_12(0.05));
+    }
+
+    return modifier;
+}
+
 #define DAMAGE_MULTIPLY_MODIFIER(modifier) do {                     \
     finalModifier = uq4_12_multiply_half_down(modifier, finalModifier); \
 } while (0)
@@ -9750,6 +9769,7 @@ static inline uq4_12_t GetOtherModifiers(u32 move, u32 moveType, u32 battlerAtk,
     DAMAGE_MULTIPLY_MODIFIER(GetAirborneModifier(move, battlerDef));
     DAMAGE_MULTIPLY_MODIFIER(GetScreensModifier(move, battlerAtk, battlerDef, isCrit, abilityAtk));
     DAMAGE_MULTIPLY_MODIFIER(GetCollisionCourseElectroDriftModifier(move, typeEffectivenessModifier));
+    DAMAGE_MULTIPLY_MODIFIER(GetSynergyModifier(move, battlerAtk));
 
     if (unmodifiedAttackerSpeed >= unmodifiedDefenderSpeed)
     {
