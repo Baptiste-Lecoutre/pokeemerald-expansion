@@ -1,10 +1,7 @@
-const struct RaidPartnerData sRaidPartnerData_Rank1[]=
+const struct RaidPartnerData sRaidPartnerData_Rank0[] = {};
+
+const struct RaidPartnerData sRaidPartnerData_Rank1[] =
 {
-	{
-        .trainerNum = TRAINER_NONE,
-        .graphicsId = OBJ_EVENT_GFX_SNORLAX_SLEEPING,
-        .trainerBackPic = TRAINER_BACK_PIC_BRENDAN,
-    },
     {
 		.trainerNum = TRAINER_STEVEN,
 		.graphicsId = OBJ_EVENT_GFX_STEVEN,
@@ -19,6 +16,16 @@ const struct RaidPartnerData sRaidPartnerData_Rank1[]=
 		.trainerNum = TRAINER_RED_VICTORY_ROAD,
 		.graphicsId = OBJ_EVENT_GFX_RED,
 		.trainerBackPic = TRAINER_BACK_PIC_RED,
+	},
+	{
+		.trainerNum = TRAINER_BRENDAN_LILYCOVE_TORCHIC,
+		.graphicsId = OBJ_EVENT_GFX_BRENDAN_DECORATING, // _NORMAL is 0, which causes issues becuase of conditions like "sRaidBattleIntro->partners[i].graphicsId != 0"
+		.trainerBackPic = TRAINER_BACK_PIC_BRENDAN,
+	},
+	{
+		.trainerNum = TRAINER_WALLY_VR_1,
+		.graphicsId = OBJ_EVENT_GFX_WALLY,
+		.trainerBackPic = TRAINER_BACK_PIC_WALLY,
 	},
 	// wally
 	// steven
@@ -36,7 +43,7 @@ const struct RaidPartnerData sRaidPartnerData_Rank1[]=
 
 const struct RaidPartner gRaidPartners[MAX_RAID_RANK + 1] =
 {
-	[NO_RAID]     = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
+	[NO_RAID]     = {sRaidPartnerData_Rank0, NELEMS(sRaidPartnerData_Rank0)},
     [RAID_RANK_1] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
 	[RAID_RANK_2] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},
 	[RAID_RANK_3] = {sRaidPartnerData_Rank1, NELEMS(sRaidPartnerData_Rank1)},

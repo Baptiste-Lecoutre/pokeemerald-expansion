@@ -752,7 +752,7 @@ static bool32 GetRaidBattleData(void)
 		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->id = i+1;//gRaidPartners[i+1].id; // Not the actual trainerNum, but the entry of gRaidPartnerArray
+			partner->id = i+1;//i;//i+1; // Not the actual trainerNum, but the entry of sRaidPartnerData_Rank
 			partner->graphicsId = raidPartners->partnerData[partner->id].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
