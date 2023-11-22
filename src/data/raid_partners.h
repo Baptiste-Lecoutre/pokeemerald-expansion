@@ -19,7 +19,7 @@ const struct RaidPartnerData sRaidPartnerData_Rank1[] =
 	},
 	{
 		.trainerNum = TRAINER_BRENDAN_LILYCOVE_TORCHIC,
-		.graphicsId = OBJ_EVENT_GFX_BRENDAN_DECORATING, // _NORMAL is 0, which causes issues becuase of conditions like "sRaidBattleIntro->partners[i].graphicsId != 0"
+		.graphicsId = OBJ_EVENT_GFX_BRENDAN_NORMAL,
 		.trainerBackPic = TRAINER_BACK_PIC_BRENDAN,
 	},
 	{

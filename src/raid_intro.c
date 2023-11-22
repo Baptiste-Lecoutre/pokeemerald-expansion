@@ -398,12 +398,13 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_UP)
 	{
+		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
 		PlaySE(SE_SELECT);
 		if (sRaidBattleIntro->selectedTeam == 0)
 		{
 			for (i = 0; i < MAX_TEAM_SIZE; ++i)
 			{
-				if (sRaidBattleIntro->partners[i].graphicsId != 0)
+				if (i < raidPartners->numOfPartners)
 					sRaidBattleIntro->selectedTeam++;
 				else
 					break;
@@ -416,11 +417,12 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_DOWN)
 	{
+		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
 		PlaySE(SE_SELECT);
 		sRaidBattleIntro->selectedTeam++;
 
 		if (sRaidBattleIntro->selectedTeam >= MAX_TEAM_SIZE
-		    || sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].graphicsId == 0)
+		    || sRaidBattleIntro->selectedTeam >= raidPartners->numOfPartners)
 			sRaidBattleIntro->selectedTeam = 0;
 	}
 }
@@ -594,11 +596,12 @@ static void ShowPartnerTeams(void)
 {
 	u8 i, j;
 	const u8 partnerColour[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
+	const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
 
 	for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 	{
 		//AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
-		if (sRaidBattleIntro->partners[i].graphicsId != 0)
+		if (i < raidPartners->numOfPartners)
 		{
             u32 spriteId;
 
@@ -752,7 +755,7 @@ static bool32 GetRaidBattleData(void)
 		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->id = i+1;//i;//i+1; // Not the actual trainerNum, but the entry of sRaidPartnerData_Rank
+			partner->id = i+1; // Not the actual trainerNum, but the entry of sRaidPartnerData_Rank
 			partner->graphicsId = raidPartners->partnerData[partner->id].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
