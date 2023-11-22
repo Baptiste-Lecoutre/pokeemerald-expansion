@@ -743,10 +743,13 @@ static bool32 GetRaidBattleData(void)
 	if (success)
 	{
 		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
+		u8 partnerTrainerIndex[raidPartners->numOfPartners];
 		FlagClear(FLAG_SYS_SPECIAL_RAID_BATTLE);
 
 		sRaidBattleIntro->species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
 		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0], MON_DATA_PERSONALITY, NULL);
+
+		DetermineRaidPartners(partnerTrainerIndex, NELEMS(partnerTrainerIndex));
 
 		// Placeholder Data
 		// TODO: Select proper partners from gRaidPartners, based on rank + raid random number.
@@ -755,7 +758,7 @@ static bool32 GetRaidBattleData(void)
 		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->id = i+1; // Not the actual trainerNum, but the entry of sRaidPartnerData_Rank
+			partner->id = partnerTrainerIndex[i];//i+1; // Not the actual trainerNum, but the entry of sRaidPartnerData_Rank
 			partner->graphicsId = raidPartners->partnerData[partner->id].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)

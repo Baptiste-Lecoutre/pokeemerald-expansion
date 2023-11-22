@@ -60,5 +60,6 @@ void ClearAllRaidBattleFlags(void);
 void GiveRaidBattleRewards(void);
 u8 GetRaidRecommendedLevel(void);
 u8 GetRaidEggMoveChance(void);
+void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners);
 
 #endif

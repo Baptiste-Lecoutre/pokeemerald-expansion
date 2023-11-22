@@ -1075,3 +1075,23 @@ u8 GetRaidEggMoveChance(void)
 {
     return gRaidBattleEggMoveChances[gRaidData.rank];
 }
+
+void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners)
+{
+    u32 j, n, index, randomNum = GetRaidRandomNumber();
+
+    for (j = 0; j < maxPartners; j++)
+        partnerTrainerIndex[j] = j;
+
+    //Shuffle8(partnerTrainerIndex, maxPartners);
+
+    n = maxPartners-1;
+    while (n>1) // Shuffle8, but use GetRaidRandomNumber() for randomness reproductibility
+    {
+        j = (randomNum * (n+1)) >>16;
+        SWAP(partnerTrainerIndex[n], partnerTrainerIndex[j], index);
+        n--;
+    }
+
+    
+}
