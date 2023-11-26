@@ -588,3 +588,4 @@ gSpecials::
 	def_special BufferChosenMonNature
 	def_special DoRegielekiPuzzle
  	def_special SetFollowerPokemonOption
+	def_special HoneyWildEncounter

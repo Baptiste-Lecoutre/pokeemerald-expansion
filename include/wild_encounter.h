@@ -25,6 +25,7 @@ struct WildPokemonHeader
     const struct WildPokemonInfo *rockSmashMonsInfo;
     const struct WildPokemonInfo *hiddenMonsInfo;
     const struct WildPokemonInfo *fishingMonsInfo;
+    const struct WildPokemonInfo *honeyMonsInfo;
 };
 
 extern const struct WildPokemonHeader gWildMonHeaders[];
@@ -50,5 +51,6 @@ u8 ChooseHiddenMonIndex(void);
 bool32 MapHasNoEncounterData(void);
 bool8 StandardWildEncounter_Debug(void);
 u8 GetMedianLevelOfPlayerParty(void);
+void HoneyWildEncounter(void);
 
 #endif // GUARD_WILD_ENCOUNTER_H
