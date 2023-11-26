@@ -48,6 +48,12 @@ enum Windows
 	WINDOW_COUNT,
 };
 
+enum Page
+{
+    PAGE_MAIN,
+    PAGE_ROUTE,
+};
+
 struct TrainerRadar
 {
     MainCallback savedCallback;
@@ -60,18 +66,22 @@ struct TrainerRadar
     u8 trainerFrontPicSpriteId;
     u8 trainerObjEventSpriteId;
     u8 trainerPartySpriteIds[PARTY_SIZE];
+    u8 page;
 };
 
 #define VISIBLE_CURSOR_MAX_VALUE 5 //6 slots - 1
 
 // const rom data
-static const u32 sTrainerRadarBgGfx[]      = INCBIN_U32("graphics/misc/trainer_radar.4bpp.lz");
 static const u32 sTrainerRadarBgPal[]      = INCBIN_U32("graphics/misc/trainer_radar.gbapal.lz");
-static const u32 sTrainerRadarBgMap[]      = INCBIN_U32("graphics/misc/trainer_radar.bin.lz");
+static const u32 sTrainerRadarMainBgGfx[]      = INCBIN_U32("graphics/misc/trainer_radar_main.4bpp.lz");
+static const u32 sTrainerRadarMainBgMap[]      = INCBIN_U32("graphics/misc/trainer_radar_main.bin.lz");
+static const u32 sTrainerRadarRouteBgGfx[]      = INCBIN_U32("graphics/misc/trainer_radar_route.4bpp.lz");
+static const u32 sTrainerRadarRouteBgMap[]      = INCBIN_U32("graphics/misc/trainer_radar_route.bin.lz");
 
 static const u32 sSelectionCursorGfx[] = INCBIN_U32("graphics/misc/trainer_radar_cursor.4bpp.lz");
 static const u16 sSelectionCursorPal[] = INCBIN_U16("graphics/misc/trainer_radar_cursor.gbapal");
 
+static const u8 sText_TrainerDatabase[] = _("Trainer Database");
 static const u8 sText_NoData[] = _("No data");
 static const u8 sText_unknown[] = _("???");
 static const u8 sText_InstructionsArea[] = _("{DPAD_LEFTRIGHT}Area");
@@ -189,7 +199,7 @@ static void CreateTrainerRadarCursor(void);
 static void UpdateTrainerRadarData(void);
 static void UpdateTrainerRadarVisualElements(void);
 static void PrintTrainerList(void);
-static void PrintMapName(void);
+static void PrintRightHeader(void);
 static void PrintTrainerClass(void);
 static void PrintTrainerPic(void);
 static void PrintTrainerOW(void);
@@ -274,6 +284,7 @@ void CB2_TrainerRadar(void)
             gMain.state++;
             break;
         case 3:
+            sTrainerRadarPtr->page = PAGE_MAIN;
             LoadTrainerRadarGfx();
             gMain.state++;
             break;
@@ -434,7 +445,7 @@ static void InitTrainerRadarScreen(void)
 	CommitWindows();
 
     // do stuff
-    sTrainerRadarPtr->mapsec = GetCurrentRegionMapSectionId();
+    sTrainerRadarPtr->mapsec = MAPSEC_ROUTE_103;//GetCurrentRegionMapSectionId();
     sTrainerRadarPtr->visibleCursorPosition = 0;
     sTrainerRadarPtr->absoluteCursorPosition = 0;
     sTrainerRadarPtr->trainerFrontPicSpriteId = 0xFF;
@@ -450,9 +461,17 @@ static void InitTrainerRadarScreen(void)
 
 static void LoadTrainerRadarGfx(void)
 {	
-    DecompressAndCopyTileDataToVram(2, &sTrainerRadarBgGfx, 0, 0, 0);
-	LZDecompressWram(sTrainerRadarBgMap, sTrainerRadarPtr->tilemapPtr);
-	LoadCompressedPalette(sTrainerRadarBgPal, 0, BG_PLTT_ID(2));
+    if (sTrainerRadarPtr->page == PAGE_MAIN)
+    {
+        DecompressAndCopyTileDataToVram(2, &sTrainerRadarMainBgGfx, 0, 0, 0);
+	    LZDecompressWram(sTrainerRadarMainBgMap, sTrainerRadarPtr->tilemapPtr);
+    }
+    else
+    {
+        DecompressAndCopyTileDataToVram(2, &sTrainerRadarRouteBgGfx, 0, 0, 0);
+	    LZDecompressWram(sTrainerRadarRouteBgMap, sTrainerRadarPtr->tilemapPtr);
+    }
+    LoadCompressedPalette(sTrainerRadarBgPal, 0, BG_PLTT_ID(2));
     ListMenuLoadStdPalAt(BG_PLTT_ID(12), 1);
     LoadPalette(&gStandardMenuPalette, BG_PLTT_ID(15), PLTT_SIZE_4BPP);
 }
@@ -550,11 +569,14 @@ static void UpdateTrainerRadarVisualElements(void)
 {
     CleanWindows();
     PrintTrainerList();
-    PrintMapName();
+    PrintRightHeader();
     PrintTrainerClass();
     PrintTrainerPic();
     PrintTrainerOW();
-    PrintTrainerParty();
+    
+    if (sTrainerRadarPtr->page == PAGE_ROUTE)
+        PrintTrainerParty();
+    
     PrintTrainerCount();
     PrintInstructions();
     CommitWindows();
@@ -583,14 +605,17 @@ static void PrintTrainerList(void)
     }
 }
 
-static void PrintMapName(void)
+static void PrintRightHeader(void)
 {
-    GetMapName(gStringVar3, sTrainerRadarPtr->mapsec, 0);
+    if (sTrainerRadarPtr->page == PAGE_MAIN) //if main page, print UI name, else print map name
+        StringCopy(gStringVar3, sText_TrainerDatabase);
+    else
+        GetMapName(gStringVar3, sTrainerRadarPtr->mapsec, 0);
     AddTextPrinterParameterized3(WIN_MAP_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar3);
     CopyWindowToVram(WIN_MAP_NAME, 3);
 }
 
-static void PrintTrainerClass(void)
+static void PrintTrainerClass(void) // if main page, print total trainer defeated, else print trainer class
 {
     const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
 
@@ -604,12 +629,18 @@ static void PrintTrainerClass(void)
 
 static void PrintTrainerPic(void)
 {
+    u16 trainerId = sTrainerRadarPtr->trainerId;
+    s32 x = 132, y = 65;
+
     if (sTrainerRadarPtr->trainerFrontPicSpriteId != 0xFF)
         FreeAndDestroyTrainerPicSprite(sTrainerRadarPtr->trainerFrontPicSpriteId);
 
-    if (sTrainerRadarPtr->trainerId != TRAINER_NONE)
+    if (sTrainerRadarPtr->page == PAGE_MAIN)
+        x = 206;
+
+    if (trainerId != TRAINER_NONE)
     {
-        sTrainerRadarPtr->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[sTrainerRadarPtr->trainerId].trainerPic, TRUE, 132, 65, 15, TAG_NONE);
+        sTrainerRadarPtr->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[trainerId].trainerPic, TRUE, x, y, 15, TAG_NONE);
         // slot 15 to avoid conflict with mon icon palettes
 
         /*if (!HasTrainerBeenFought(sTrainerRadarPtr->trainerId))
@@ -623,17 +654,23 @@ static void PrintTrainerPic(void)
 
 static void PrintTrainerOW(void)
 {
+    u16 trainerId = sTrainerRadarPtr->trainerId;
+    s32 x = 140, y = 124;
+
     if (sTrainerRadarPtr->trainerObjEventSpriteId != 0xFF)
         DestroySpriteAndFreeResources(&gSprites[sTrainerRadarPtr->trainerObjEventSpriteId]);
+
+    if (sTrainerRadarPtr->page == PAGE_MAIN)
+        x = 214;
     
-    if (sTrainerRadarPtr->trainerId != TRAINER_NONE)
-        sTrainerRadarPtr->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[sTrainerRadarPtr->trainerId], SpriteCallbackDummy, 140, 124, 0);
+    if (trainerId != TRAINER_NONE)
+        sTrainerRadarPtr->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[trainerId], SpriteCallbackDummy, x, y, 0);
 }
 
 static void PrintTrainerParty(void)
 {
     u32 i;
-    u16 species;
+    u16 species, trainerId = sTrainerRadarPtr->trainerId;
     u8 icon_x = 0, icon_y = 0;
 
     for (i = 0; i < PARTY_SIZE; i++)
@@ -644,16 +681,16 @@ static void PrintTrainerParty(void)
     
     FreeMonIconPalettes();
 
-    if (sTrainerRadarPtr->trainerId != TRAINER_NONE)
+    if (trainerId != TRAINER_NONE)
     {
         LoadMonIconPalettes();
 
-        for (i = 0; i < gTrainers[sTrainerRadarPtr->trainerId].partySize; i++)
+        for (i = 0; i < gTrainers[trainerId].partySize; i++)
         {
             icon_x = 188 + (i%2) * 35;
             icon_y = 43 + (i/2) * 35;
 
-            species = HasTrainerBeenFought(sTrainerRadarPtr->trainerId) ? gTrainers[sTrainerRadarPtr->trainerId].party[i].species : SPECIES_NONE;
+            species = HasTrainerBeenFought(trainerId) ? gTrainers[trainerId].party[i].species : SPECIES_NONE;
             sTrainerRadarPtr->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
         }
     }
