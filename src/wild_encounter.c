@@ -873,6 +873,20 @@ void RockSmashWildEncounter(void)
     }
 }
 
+void BerryWildEncounter(u8 headerId)
+{
+    if (gBerryTreeWildMonHeaders[headerId].landMonsInfo != NULL)
+    {
+        TryGenerateWildMon(gBerryTreeWildMonHeaders[headerId].landMonsInfo, WILD_AREA_LAND, 0);
+        BattleSetup_StartWildBattle();
+        gSpecialVar_Result = TRUE;
+    }
+    else
+    {
+        gSpecialVar_Result = FALSE;
+    }
+}
+
 bool8 SweetScentWildEncounter(void)
 {
     s16 x, y;

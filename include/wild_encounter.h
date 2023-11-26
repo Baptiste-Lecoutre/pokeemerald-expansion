@@ -35,6 +35,7 @@ void DisableWildEncounters(bool8 disabled);
 u8 PickWildMonNature(void);
 bool8 StandardWildEncounter(u16 currMetaTileBehavior, u16 previousMetaTileBehavior);
 bool8 SweetScentWildEncounter(void);
+void BerryWildEncounter(u8 headerId);
 bool8 DoesCurrentMapHaveFishingMons(void);
 void FishingWildEncounter(u8 rod);
 u16 GetLocalWildMon(bool8 *isWaterMon);
