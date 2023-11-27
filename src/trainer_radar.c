@@ -190,8 +190,10 @@ static void LoadTrainerRadarGfx(void);
 static void ClearTasksAndGraphicalStructs(void);
 static void ClearVramOamPlttRegs(void);
 static void Task_TrainerRadarFadeOut(u8 taskId);
-static void Task_TrainerRadarWaitForKeyPress(u8 taskId);
+static void Task_TrainerRadarMainWaitForKeyPress(u8 taskId);
+static void Task_TrainerRadarRouteWaitForKeyPress(u8 taskId);
 static void Task_TrainerRadarFadeIn(u8 taskId);
+static void Task_TrainerRadarChangePage(u8 taskId);
 static void InitTrainerRadarScreen(void);
 static void CreateTrainerRadarCursor(void);
 
@@ -284,7 +286,6 @@ void CB2_TrainerRadar(void)
             gMain.state++;
             break;
         case 3:
-            sTrainerRadarPtr->page = PAGE_MAIN;
             LoadTrainerRadarGfx();
             gMain.state++;
             break;
@@ -331,7 +332,7 @@ static void Task_TrainerRadarFadeOut(u8 taskId)
 	}
 }
 
-static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
+static void Task_TrainerRadarMainWaitForKeyPress(u8 taskId)
 {
     if (JOY_NEW(B_BUTTON))
     {
@@ -340,6 +341,25 @@ static void Task_TrainerRadarWaitForKeyPress(u8 taskId)
         gTasks[taskId].func = Task_TrainerRadarFadeOut;
         SetVBlankCallback(VBlankCB_TrainerRadar);
         SetMainCallback2(MainCB2_TrainerRadar);
+    }
+    else if(JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        sTrainerRadarPtr->page = PAGE_ROUTE;
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
+        gTasks[taskId].func = Task_TrainerRadarChangePage;
+    }
+}
+
+static void Task_TrainerRadarRouteWaitForKeyPress(u8 taskId)
+{
+    if (JOY_NEW(B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+
+        sTrainerRadarPtr->page = PAGE_MAIN;
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
+        gTasks[taskId].func = Task_TrainerRadarChangePage;
     }
     else if (JOY_NEW(DPAD_DOWN) && sTrainerRadarPtr->numOfTrainers != 0) // move cursors down
     {
@@ -417,8 +437,26 @@ static void Task_TrainerRadarFadeIn(u8 taskId)
 	if (!gPaletteFade.active)
 	{
         PlaySE(SE_RG_CARD_OPEN);
-		gTasks[taskId].func = Task_TrainerRadarWaitForKeyPress;
+        if (sTrainerRadarPtr->page == PAGE_MAIN)
+            gTasks[taskId].func = Task_TrainerRadarMainWaitForKeyPress;
+        else
+    		gTasks[taskId].func = Task_TrainerRadarRouteWaitForKeyPress;
 	}
+}
+
+static void Task_TrainerRadarChangePage(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        LoadTrainerRadarGfx();
+        ShowBg(0);
+        ShowBg(1);
+        ShowBg(2);
+        CopyBgTilemapBufferToVram(1);
+        CopyBgTilemapBufferToVram(2);
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
+        gTasks[taskId].func = Task_TrainerRadarFadeIn;
+    }
 }
 
 static void CleanWindows(void)
@@ -512,6 +550,7 @@ void InitTrainerRadar(MainCallback callback)
         sTrainerRadarPtr = AllocZeroed(sizeof(struct TrainerRadar));
 
     PlayRainStoppingSoundEffect();
+    sTrainerRadarPtr->page = PAGE_MAIN;
     sTrainerRadarPtr->savedCallback = callback;
     SetMainCallback2(CB2_TrainerRadar);
 }
