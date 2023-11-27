@@ -194,6 +194,7 @@ static void Task_TrainerRadarMainWaitForKeyPress(u8 taskId);
 static void Task_TrainerRadarRouteWaitForKeyPress(u8 taskId);
 static void Task_TrainerRadarFadeIn(u8 taskId);
 static void Task_TrainerRadarChangePage(u8 taskId);
+static void Task_TrainerRadarWaitChangePage(u8 taskId);
 static void InitTrainerRadarScreen(void);
 static void CreateTrainerRadarCursor(void);
 
@@ -448,7 +449,16 @@ static void Task_TrainerRadarChangePage(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        ScheduleBgCopyTilemapToVram(2);
         LoadTrainerRadarGfx();
+        gTasks[taskId].func = Task_TrainerRadarWaitChangePage;
+    }
+}
+
+static void Task_TrainerRadarWaitChangePage(u8 taskId)
+{
+    if (IsDma3ManagerBusyWithBgCopy() != TRUE)
+    {
         ShowBg(0);
         ShowBg(1);
         ShowBg(2);
