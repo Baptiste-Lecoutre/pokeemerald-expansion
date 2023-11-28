@@ -45,7 +45,6 @@ static bool32 SetActivePokenavMenu(u32);
 static bool32 AnyMonHasRibbon(void);
 static void InitPokenavResources(struct PokenavResources *);
 static void InitKeys_(void);
-static void FreePokenavResources(void);
 static void VBlankCB_Pokenav(void);
 static void CB2_Pokenav(void);
 static void Task_RunLoopedTask_LinkMode(u8);
@@ -464,7 +463,7 @@ static void CB2_InitPokenavForMatchCall(void)
     }
 }
 
-static void FreePokenavResources(void)
+void FreePokenavResources(void)
 {
     int i;
 

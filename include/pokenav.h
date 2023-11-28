@@ -439,6 +439,7 @@ int GetPokenavCursorPos(void);
 int GetCurrentMenuItemId(void);
 u16 GetHelpBarTextId(void);
 void InitHelpBar(void);
+void FreePokenavResources(void);
 
 // pokenav_menu_handler_gfx.c
 bool32 OpenPokenavMenuInitial(void);
