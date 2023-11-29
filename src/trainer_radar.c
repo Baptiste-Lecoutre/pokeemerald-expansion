@@ -57,6 +57,7 @@ enum Page
 struct TrainerRadar
 {
     MainCallback savedCallback;
+    u8 state;
     u32* tilemapPtr;
     u16 trainerId;
     u8 mapsec;
@@ -187,8 +188,8 @@ static void PrintInstructions(void);
 static void CleanWindows(void);
 static void CommitWindows(void);
 static void LoadTrainerRadarGfx(void);
-static void ClearTasksAndGraphicalStructs(void);
-static void ClearVramOamPlttRegs(void);
+//static void ClearTasksAndGraphicalStructs(void);
+//static void ClearVramOamPlttRegs(void);
 static void Task_TrainerRadarFadeOut(u8 taskId);
 static void Task_TrainerRadarMainWaitForKeyPress(u8 taskId);
 static void Task_TrainerRadarRouteWaitForKeyPress(u8 taskId);
@@ -197,6 +198,8 @@ static void Task_TrainerRadarChangePage(u8 taskId);
 static void Task_TrainerRadarWaitChangePage(u8 taskId);
 static void InitTrainerRadarScreen(void);
 static void CreateTrainerRadarCursor(void);
+
+static void Task_TrainerRadarWaitFadeIn(u8 taskId);
 
 // skin functions
 static void UpdateTrainerRadarData(void);
@@ -244,7 +247,14 @@ static const struct SpriteTemplate sSelectionCursorSpriteTemplate =
 };
 
 // code for UI skeleton
-static void MainCB2_TrainerRadar(void)
+static void TrainerRadar_VBlankCB(void)
+{
+    LoadOam();
+    ProcessSpriteCopyRequests();
+    TransferPlttBuffer();
+}
+
+static void TrainerRadar_MainCB(void)
 {
     RunTasks();
     AnimateSprites();
@@ -253,14 +263,148 @@ static void MainCB2_TrainerRadar(void)
     UpdatePaletteFade();
 }
 
-static void VBlankCB_TrainerRadar(void)
+static bool8 TrainerRadar_InitBgs(void)
+{
+    ResetVramOamAndBgCntRegs();
+    ResetAllBgsCoordinates();
+    sBg1TilemapBuffer = Alloc(0x800);
+    if (sBg1TilemapBuffer == NULL)
+        return FALSE;
+    
+    memset(sBg1TilemapBuffer, 0, 0x800);
+    ResetBgsAndClearDma3BusyFlags(0);
+    InitBgsFromTemplates(0, sTrainerRadarBgTemplates, NELEMS(sTrainerRadarBgTemplates));
+    SetBgTilemapBuffer(1, sBg1TilemapBuffer);
+    ScheduleBgCopyTilemapToVram(1);
+    SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_1D_MAP | DISPCNT_OBJ_ON);
+    SetGpuReg(REG_OFFSET_BLDCNT , 0);
+    ShowBg(0);
+    ShowBg(1);
+    return TRUE;
+}
+
+static bool8 TrainerRadar_LoadGraphics(void)
+{
+    switch (sTrainerRadarPtr->state)
+    {
+    case 0:
+        ResetTempTileDataBuffers();
+        DecompressAndCopyTileDataToVram(1, sTrainerRadarMainBgGfx, 0, 0, 0);
+        sTrainerRadarPtr->state++;
+        break;
+    case 1:
+        if (FreeTempTileDataBuffersIfPossible() != TRUE)
+        {
+            LZDecompressWram(sTrainerRadarMainBgMap, sBg1TilemapBuffer);
+            sTrainerRadarPtr->state++;
+        }
+        break;
+    case 2:
+        LoadCompressedPalette(sTrainerRadarBgPal, 0, 32/*BG_PLTT_ID(2)*/);
+        //LoadPalette(sTrainerRadarBgPal, 0, 32);
+        sTrainerRadarPtr->state++;
+        break;
+    default:
+        sTrainerRadarPtr->state = 0;
+        return TRUE;
+    }
+    
+    return FALSE;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static void TrainerRadar_InitWindows(void)
+{
+    InitWindows(sTrainerRadarWinTemplates);
+    DeactivateAllTextPrinters();
+    ScheduleBgCopyTilemapToVram(0);
+}
+
+static void TrainerRadarGuiFreeResources(void)
+{
+    Free(sTrainerRadarPtr);
+    Free(sBg1TilemapBuffer);
+    FreeAllWindowBuffers();
+}
+
+static void Task_TrainerRadarFadeAndExit(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreePokenavResources();
+        SetMainCallback2(sTrainerRadarPtr->savedCallback);
+        TrainerRadarGuiFreeResources();
+        DestroyTask(taskId);
+    }
+}
+
+static void TrainerRadarFadeAndExit(void)
+{
+    BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
+    CreateTask(Task_TrainerRadarFadeAndExit, 0);
+    SetVBlankCallback(TrainerRadar_VBlankCB);
+    SetMainCallback2(TrainerRadar_MainCB);
+}
+
+static void Task_TrainerRadarMain(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+
+    if (IsSEPlaying())
+        return;
+
+    if (JOY_NEW(B_BUTTON))
+    {
+        PlaySE(SE_POKENAV_OFF);
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
+        task->func = Task_TrainerRadarFadeAndExit;
+    }
+}
+
+
+
+
+
+
+
+
+
+/*static void VBlankCB_TrainerRadar(void)
 {
 	LoadOam();
 	ProcessSpriteCopyRequests();
 	TransferPlttBuffer();
-}
+}*/
 
-void CB2_TrainerRadar(void)
+/*void CB2_TrainerRadar(void)
 {
     switch (gMain.state){
         default:
@@ -317,9 +461,9 @@ void CB2_TrainerRadar(void)
             SetMainCallback2(MainCB2_TrainerRadar);
             break;
 	}
-}
+}*/
 
-static void Task_TrainerRadarFadeOut(u8 taskId)
+/*static void Task_TrainerRadarFadeOut(u8 taskId)
 {
 	if (!gPaletteFade.active)
 	{
@@ -467,7 +611,7 @@ static void Task_TrainerRadarWaitChangePage(u8 taskId)
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
         gTasks[taskId].func = Task_TrainerRadarFadeIn;
     }
-}
+}*/
 
 static void CleanWindows(void)
 {
@@ -524,7 +668,7 @@ static void LoadTrainerRadarGfx(void)
     LoadPalette(&gStandardMenuPalette, BG_PLTT_ID(15), PLTT_SIZE_4BPP);
 }
 
-static void ClearTasksAndGraphicalStructs(void)
+/*static void ClearTasksAndGraphicalStructs(void)
 {
 	ScanlineEffect_Stop();
 	ResetTasks();
@@ -532,9 +676,9 @@ static void ClearTasksAndGraphicalStructs(void)
 	ResetTempTileDataBuffers();
 	ResetPaletteFade();
 	FreeAllSpritePalettes();
-}
+}*/
 
-static void ClearVramOamPlttRegs(void)
+/*static void ClearVramOamPlttRegs(void)
 {
 	DmaFill16(3, 0, VRAM, VRAM_SIZE);
 	DmaFill32(3, 0, OAM, OAM_SIZE);
@@ -552,17 +696,120 @@ static void ClearVramOamPlttRegs(void)
 	SetGpuReg(REG_OFFSET_BG1VOFS, DISPCNT_MODE_0);
 	SetGpuReg(REG_OFFSET_BG0HOFS, DISPCNT_MODE_0);
 	SetGpuReg(REG_OFFSET_BG0VOFS, DISPCNT_MODE_0);
+}*/
+
+static bool8 TrainerRadar_DoGfxSetup(void)
+{
+    u8 taskId;
+
+    switch (gMain.state)
+    {
+        case 0:
+        SetVBlankHBlankCallbacksToNull();
+        ClearScheduledBgCopiesToVram();
+        gMain.state++;
+        break;
+    case 1:
+        ScanlineEffect_Stop();
+        gMain.state++;
+        break;
+    case 2:
+        FreeAllSpritePalettes();
+        gMain.state++;
+        break;
+    case 3:
+        ResetPaletteFade();
+        ResetSpriteData();
+        ResetTasks();
+        gMain.state++;
+        break;
+    case 4:
+        if (TrainerRadar_InitBgs())
+        {
+            sTrainerRadarPtr->state = 0;
+            gMain.state++;
+        }
+        else
+        {
+            TrainerRadarFadeAndExit();
+            return TRUE;
+        }
+        break;
+    case 5:
+        if (TrainerRadar_LoadGraphics() == TRUE)
+            gMain.state++;
+        break;
+    case 6:
+        TrainerRadar_InitWindows();
+        /*sDexNavUiDataPtr->cursorRow = ROW_WATER;
+        sDexNavUiDataPtr->cursorCol = 0;
+        sDexNavUiDataPtr->environment = ENCOUNTER_TYPE_LAND;*/
+        gMain.state++;
+        break;
+    case 7:
+        taskId = CreateTask(Task_TrainerRadarWaitFadeIn, 0);
+        /*gTasks[taskId].tSpecies = 0;
+        gTasks[taskId].tEnvironment = sDexNavUiDataPtr->environment;*/
+        gMain.state++;
+        break;
+    case 8:
+        BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+        gMain.state++;
+        break;
+    case 9:
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
+        gMain.state++;
+        break;
+    default:
+        SetVBlankCallback(TrainerRadar_VBlankCB);
+        SetMainCallback2(TrainerRadar_MainCB);
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
-void InitTrainerRadar(MainCallback callback)
-{
-    if (sTrainerRadarPtr == NULL)
-        sTrainerRadarPtr = AllocZeroed(sizeof(struct TrainerRadar));
 
-    PlayRainStoppingSoundEffect();
-    sTrainerRadarPtr->page = PAGE_MAIN;
+
+
+
+
+
+
+
+
+
+
+
+
+
+static void TrainerRadar_RunSetup(void)
+{
+    while (!TrainerRadar_DoGfxSetup()) {}
+}
+
+static void InitTrainerRadar(MainCallback callback)
+{
+    if ((sTrainerRadarPtr = AllocZeroed(sizeof(struct TrainerRadar))) == NULL)
+    {
+        SetMainCallback2(callback);
+        return;
+    }
+
+    sTrainerRadarPtr->state = 0;
+//    sTrainerRadarPtr->page = PAGE_MAIN;
     sTrainerRadarPtr->savedCallback = callback;
-    SetMainCallback2(CB2_TrainerRadar);
+    SetMainCallback2(TrainerRadar_RunSetup);
+}
+
+void Task_OpenTrainerRadarFromStartMenu(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);
+        DestroyTask(taskId);
+    }
 }
 
 u32 PokeNavMenuTrainerRadarCallback(void)
@@ -581,6 +828,42 @@ void Task_OpenTrainerRadarFromPokenav(u8 taskId)
         DestroyTask(taskId);
     }
 }
+
+static void Task_TrainerRadarWaitFadeIn(u8 taskId)
+{
+    if (!gPaletteFade.active)
+        gTasks[taskId].func = Task_TrainerRadarMain;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 static void CreateTrainerRadarCursor(void)
 {
