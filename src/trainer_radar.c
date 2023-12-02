@@ -62,6 +62,7 @@ struct TrainerRadar
     u32* tilemapPtr;
     u8 page;
     u8 listTaskId;
+    u8 scrollIndicatorsTaskId;
     u16 selectedRow;
     u16 scrollOffset;
     u16 trainerId;
@@ -209,6 +210,8 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId);
 
 static void TrainerRadarBuildMainListMenuTemplate(void);
 static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list);
+static void TrainerRadarAddScrollIndicatorArows(void);
+static void TrainerRadarRemoveScrollIndicatorArrows(void);
 
 // skin functions
 static void UpdateTrainerRadarData(void);
@@ -229,6 +232,7 @@ EWRAM_DATA static struct ListMenuItem *sListMenuItems = NULL;
 static EWRAM_DATA u8 (*sItemNames)[MAP_NAME_LENGTH + 2] = {0};
 
 #define SELECTION_CURSOR_TAG    0x4005
+#define TAG_SCROLL_ARROW   2100
 static const struct OamData sSelectionCursorOam =
 {
     .y = 0,
@@ -371,6 +375,7 @@ static void Task_TrainerRadarFadeAndExit(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        TrainerRadarRemoveScrollIndicatorArrows();
         DestroyListMenuTask(sTrainerRadarPtr->listTaskId, 0, 0);
         FreePokenavResources();
         SetMainCallback2(sTrainerRadarPtr->savedCallback);
@@ -463,6 +468,7 @@ static bool8 TrainerRadar_DoGfxSetup(void)
         gMain.state++;
         break;
     case 8:
+        TrainerRadarAddScrollIndicatorArows();
         taskId = CreateTask(Task_TrainerRadarWaitFadeIn, 0);
         sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, 0, 0);
         gMain.state++;
@@ -500,6 +506,7 @@ static void InitTrainerRadar(MainCallback callback)
     sTrainerRadarPtr->state = 0;
     sTrainerRadarPtr->page = PAGE_MAIN;
     sTrainerRadarPtr->savedCallback = callback;
+    sTrainerRadarPtr->scrollIndicatorsTaskId = TASK_NONE;
     SetMainCallback2(TrainerRadar_RunSetup);
 }
 
@@ -579,6 +586,32 @@ static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, s
         PlaySE(SE_SELECT);
 
     // print trainer graphics
+}
+
+static void TrainerRadarAddScrollIndicatorArows(void)
+{
+    if (sTrainerRadarPtr->scrollIndicatorsTaskId == TASK_NONE && MAIN_LIST_MENU_NUMBER_OF_ITEMS > 6)
+    {
+        sTrainerRadarPtr->scrollIndicatorsTaskId = AddScrollIndicatorArrowPairParameterized(
+            SCROLL_ARROW_UP,
+            82,
+            42,
+            142,
+            MAIN_LIST_MENU_NUMBER_OF_ITEMS - 6,
+            TAG_SCROLL_ARROW,
+            TAG_SCROLL_ARROW,
+            &sTrainerRadarPtr->scrollOffset
+        );
+    }
+}
+
+static void TrainerRadarRemoveScrollIndicatorArrows(void)
+{
+    if (sTrainerRadarPtr->scrollIndicatorsTaskId != TASK_NONE)
+    {
+        RemoveScrollIndicatorArrowPair(sTrainerRadarPtr->scrollIndicatorsTaskId);
+        sTrainerRadarPtr->scrollIndicatorsTaskId = TASK_NONE;
+    }
 }
 
 
