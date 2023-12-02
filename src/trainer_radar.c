@@ -213,6 +213,9 @@ static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 
 static void TrainerRadarAddScrollIndicatorArows(void);
 static void TrainerRadarRemoveScrollIndicatorArrows(void);
 
+static void PrintTrainerPic(void);
+static void PrintTrainerOW(void);
+
 // skin functions
 /*static void UpdateTrainerRadarData(void);
 static void UpdateTrainerRadarVisualElements(void);
@@ -621,10 +624,19 @@ static void TrainerRadarBuildMainListMenuTemplate(void)
 
 static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list)
 {
+    const struct RouteTrainers* routeTrainersStruct;
+
     if (onInit != TRUE)
         PlaySE(SE_SELECT);
 
-    // print trainer graphics
+    sTrainerRadarPtr->mapsec = listItem;
+    routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
+    if (routeTrainersStruct->routeTrainers != NULL)
+    {
+        sTrainerRadarPtr->trainerId = routeTrainersStruct->routeTrainers[0];
+        PrintTrainerPic();
+        PrintTrainerOW();
+    }
 }
 
 static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y)
@@ -1217,3 +1229,46 @@ static void TrainerRadar_CursorCallback(struct Sprite *sprite)
         
     sprite->y = 52 + sTrainerRadarPtr->visibleCursorPosition * 16;
 }*/
+
+static void PrintTrainerPic(void)
+{
+    u16 trainerId = sTrainerRadarPtr->trainerId;
+    s32 x = 132, y = 65;
+
+    if (sTrainerRadarPtr->trainerFrontPicSpriteId != 0xFF)
+        FreeAndDestroyTrainerPicSprite(sTrainerRadarPtr->trainerFrontPicSpriteId);
+
+    if (sTrainerRadarPtr->page == PAGE_MAIN)
+        x = 206;
+
+    if (trainerId != TRAINER_NONE)
+    {
+        sTrainerRadarPtr->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[trainerId].trainerPic, TRUE, x, y, 15, TAG_NONE);
+        // slot 15 to avoid conflict with mon icon palettes
+
+        //if (!HasTrainerBeenFought(sTrainerRadarPtr->trainerId))
+        //{
+        //    u16 paletteOffset = 15 * 16 + 0x100;
+        //    BlendPalette(paletteOffset, 16, 16, RGB(5, 5, 5));
+        //    CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
+        //}
+    }
+}
+
+static void PrintTrainerOW(void)
+{
+    u16 trainerId = sTrainerRadarPtr->trainerId;
+    s32 x = 140, y = 124;
+
+    if (sTrainerRadarPtr->trainerObjEventSpriteId != 0xFF)
+        DestroySpriteAndFreeResources(&gSprites[sTrainerRadarPtr->trainerObjEventSpriteId]);
+
+    if (sTrainerRadarPtr->page == PAGE_MAIN)
+        x = 214;
+    
+    if (trainerId != TRAINER_NONE)
+    {
+        sTrainerRadarPtr->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[trainerId], SpriteCallbackDummy, x, y, 0);
+        gSprites[sTrainerRadarPtr->trainerObjEventSpriteId].oam.priority = 0;
+    }
+}
