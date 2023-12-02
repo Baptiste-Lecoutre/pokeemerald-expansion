@@ -212,6 +212,7 @@ static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, s
 static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y);
 static void TrainerRadarAddScrollIndicatorArows(void);
 static void TrainerRadarRemoveScrollIndicatorArrows(void);
+static bool8 TrainerRadar_ReloadGraphics(void);
 
 static void PrintVisualElements(void);
 static void PrintTrainerPic(void);
@@ -585,13 +586,16 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
     {
         TrainerRadarRemoveScrollIndicatorArrows();
         if (sTrainerRadarPtr->listTaskId != TASK_NONE)
-        {DestroyListMenuTask(sTrainerRadarPtr->listTaskId, 0, 0);
-        ClearStdWindowAndFrameToTransparent(WIN_TRAINER_LIST, TRUE); //
-        RemoveWindow(WIN_TRAINER_LIST); }//
+        {
+            DestroyListMenuTask(sTrainerRadarPtr->listTaskId, 0, 0);
+            ClearStdWindowAndFrameToTransparent(WIN_TRAINER_LIST, TRUE); //
+            //RemoveWindow(WIN_TRAINER_LIST); //
+        }
 
-        if (TrainerRadar_LoadGraphics() == TRUE)
+        if (TrainerRadar_ReloadGraphics() == TRUE)
         {
             ScheduleBgCopyTilemapToVram(1);
+            PrintVisualElements();
             BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
 
             if (sTrainerRadarPtr->page == PAGE_MAIN)
@@ -610,7 +614,35 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
     }
 }
 
-
+static bool8 TrainerRadar_ReloadGraphics(void)
+{
+    switch (sTrainerRadarPtr->state)
+    {
+    case 0:
+        ResetTempTileDataBuffers();
+        if (sTrainerRadarPtr->page == PAGE_MAIN)
+            DecompressAndCopyTileDataToVram(1, sTrainerRadarMainBgGfx, 0, 0, 0);
+        else
+            DecompressAndCopyTileDataToVram(1, sTrainerRadarRouteBgGfx, 0, 0, 0);
+        sTrainerRadarPtr->state++;
+        break;
+    case 1:
+        if (FreeTempTileDataBuffersIfPossible() != TRUE)
+        {
+            if (sTrainerRadarPtr->page == PAGE_MAIN)
+                LZDecompressWram(sTrainerRadarMainBgMap, sBg1TilemapBuffer);
+            else
+                LZDecompressWram(sTrainerRadarRouteBgMap, sBg1TilemapBuffer);
+            sTrainerRadarPtr->state++;
+        }
+        break;
+    default:
+        sTrainerRadarPtr->state = 0;
+        return TRUE;
+    }
+    
+    return FALSE;
+}
 
 
 
