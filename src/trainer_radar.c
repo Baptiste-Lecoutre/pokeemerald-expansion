@@ -75,8 +75,7 @@ struct TrainerRadar
     u8 trainerPartySpriteIds[PARTY_SIZE];
 };
 
-#define VISIBLE_CURSOR_MAX_VALUE 5 //6 slots - 1
-#define MAIN_LIST_MENU_NUMBER_OF_ITEMS 10
+
 
 // const rom data
 static const u32 sTrainerRadarBgPal[]      = INCBIN_U32("graphics/misc/trainer_radar.gbapal.lz");
@@ -230,6 +229,9 @@ EWRAM_DATA static struct TrainerRadar *sTrainerRadarPtr = NULL;
 EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
 EWRAM_DATA static struct ListMenuItem *sListMenuItems = NULL;
 static EWRAM_DATA u8 (*sItemNames)[MAP_NAME_LENGTH + 2] = {0};
+
+#define VISIBLE_CURSOR_MAX_VALUE 5 //6 slots - 1
+#define MAIN_LIST_MENU_NUMBER_OF_ITEMS NELEMS(sTrainerRadarMapsecs)
 
 #define SELECTION_CURSOR_TAG    0x4005
 #define TAG_SCROLL_ARROW   2100
@@ -565,7 +567,7 @@ static void TrainerRadarBuildMainListMenuTemplate(void)
 
     for (i = 0; i < MAIN_LIST_MENU_NUMBER_OF_ITEMS; i++)
     {
-        GetMapName(sItemNames[i], i, 0);
+        GetMapName(sItemNames[i], sTrainerRadarMapsecs[i], 0);
         sListMenuItems[i].name = sItemNames[i];
         sListMenuItems[i].id = i;
     }
