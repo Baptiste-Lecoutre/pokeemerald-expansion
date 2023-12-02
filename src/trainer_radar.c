@@ -371,6 +371,7 @@ static void Task_TrainerRadarFadeAndExit(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        DestroyListMenuTask(sTrainerRadarPtr->listTaskId, 0, 0);
         FreePokenavResources();
         SetMainCallback2(sTrainerRadarPtr->savedCallback);
         TrainerRadarGuiFreeResources();
