@@ -13,6 +13,7 @@
 #include "graphics.h"
 #include "international_string_util.h"
 #include "item_menu.h"
+#include "list_menu.h"
 #include "sound.h"
 #include "malloc.h"
 #include "menu.h"
@@ -59,6 +60,10 @@ struct TrainerRadar
     MainCallback savedCallback;
     u8 state;
     u32* tilemapPtr;
+    u8 page;
+    u8 listTaskId;
+    u16 selectedRow;
+    u16 scrollOffset;
     u16 trainerId;
     u8 mapsec;
     u8 numOfTrainers;
@@ -67,10 +72,10 @@ struct TrainerRadar
     u8 trainerFrontPicSpriteId;
     u8 trainerObjEventSpriteId;
     u8 trainerPartySpriteIds[PARTY_SIZE];
-    u8 page;
 };
 
 #define VISIBLE_CURSOR_MAX_VALUE 5 //6 slots - 1
+#define MAIN_LIST_MENU_NUMBER_OF_ITEMS 10
 
 // const rom data
 static const u32 sTrainerRadarBgPal[]      = INCBIN_U32("graphics/misc/trainer_radar.gbapal.lz");
@@ -127,7 +132,7 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 		.bg = 0,
 		.tilemapLeft = 1,
 		.tilemapTop = 5,
-		.width = 10,
+		.width = 12,
 		.height = 13,
 		.paletteNum = 15,
 		.baseBlock = 102,
@@ -140,7 +145,7 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 		.width = 30,
 		.height = 2,
 		.paletteNum = 15,
-		.baseBlock = 232,
+		.baseBlock = 258,
 	},
 	DUMMY_WIN_TEMPLATE
 };
@@ -202,6 +207,9 @@ static void CreateTrainerRadarCursor(void);
 static void Task_TrainerRadarWaitFadeIn(u8 taskId);
 static void Task_TrainerRadarFadeAndChangePage(u8 taskId);
 
+static void TrainerRadarBuildMainListMenuTemplate(void);
+static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list);
+
 // skin functions
 static void UpdateTrainerRadarData(void);
 static void UpdateTrainerRadarVisualElements(void);
@@ -217,6 +225,8 @@ static void TrainerRadar_CursorCallback(struct Sprite *sprite);
 
 EWRAM_DATA static struct TrainerRadar *sTrainerRadarPtr = NULL;
 EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
+EWRAM_DATA static struct ListMenuItem *sListMenuItems = NULL;
+static EWRAM_DATA u8 (*sItemNames)[MAP_NAME_LENGTH + 2] = {0};
 
 #define SELECTION_CURSOR_TAG    0x4005
 static const struct OamData sSelectionCursorOam =
@@ -245,6 +255,28 @@ static const struct SpriteTemplate sSelectionCursorSpriteTemplate =
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = TrainerRadar_CursorCallback,
+};
+
+static const struct ListMenuTemplate sTrainerRadarMainMenuListTemplate =
+{
+    .items = NULL,
+    .moveCursorFunc = TrainerRadarMainListMenuMoveCursorFunc, // change trainer graphics
+    .itemPrintFunc = NULL, //BuyMenuPrintPriceInList // print number of trainer defeated per route
+    .totalItems = 0,
+    .maxShowed = 0,
+    .windowId = WIN_TRAINER_LIST,
+    .header_X = 0,
+    .item_X = 10,//8,
+    .cursor_X = 0,
+    .upText_Y = 4, //1,
+    .cursorPal = 2,
+    .fillValue = 0,
+    .cursorShadowPal = 3,
+    .lettersSpacing = 0,
+    .itemVerticalPadding = 0,
+    .scrollMultiple = LIST_NO_MULTIPLE_SCROLL,
+    .fontId = 7,
+    .cursorKind = 0
 };
 
 // code for UI skeleton
@@ -330,6 +362,8 @@ static void TrainerRadarGuiFreeResources(void)
 {
     Free(sTrainerRadarPtr);
     Free(sBg1TilemapBuffer);
+    Free(sListMenuItems);
+    Free(sItemNames);
     FreeAllWindowBuffers();
 }
 
@@ -355,9 +389,13 @@ static void TrainerRadarFadeAndExit(void)
 static void Task_TrainerRadarMain(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
+    s32 listItem;
 
     if (IsSEPlaying())
         return;
+
+    listItem = ListMenu_ProcessInput(sTrainerRadarPtr->listTaskId);
+    ListMenuGetScrollAndRow(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffset, &sTrainerRadarPtr->selectedRow);
 
     if (JOY_NEW(B_BUTTON))
     {
@@ -416,18 +454,23 @@ static bool8 TrainerRadar_DoGfxSetup(void)
             gMain.state++;
         break;
     case 6:
-        TrainerRadar_InitWindows();
+        TrainerRadarBuildMainListMenuTemplate();
         gMain.state++;
         break;
     case 7:
-        taskId = CreateTask(Task_TrainerRadarWaitFadeIn, 0);
+        TrainerRadar_InitWindows();
         gMain.state++;
         break;
     case 8:
-        BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+        taskId = CreateTask(Task_TrainerRadarWaitFadeIn, 0);
+        sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, 0, 0);
         gMain.state++;
         break;
     case 9:
+        BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+        gMain.state++;
+        break;
+    case 10:
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
         gMain.state++;
         break;
@@ -506,7 +549,36 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
     }
 }
 
+static void TrainerRadarBuildMainListMenuTemplate(void)
+{
+    u32 i;
+    sListMenuItems = Alloc(MAIN_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sListMenuItems));
+    sItemNames = Alloc(MAIN_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sItemNames));
 
+    for (i = 0; i < MAIN_LIST_MENU_NUMBER_OF_ITEMS; i++)
+    {
+        GetMapName(sItemNames[i], i, 0);
+        sListMenuItems[i].name = sItemNames[i];
+        sListMenuItems[i].id = i;
+    }
+
+    gMultiuseListMenuTemplate = sTrainerRadarMainMenuListTemplate;
+    gMultiuseListMenuTemplate.items = sListMenuItems;
+    gMultiuseListMenuTemplate.totalItems = MAIN_LIST_MENU_NUMBER_OF_ITEMS;
+
+    if (gMultiuseListMenuTemplate.totalItems > 6)
+        gMultiuseListMenuTemplate.maxShowed = 6;
+    else
+        gMultiuseListMenuTemplate.maxShowed = gMultiuseListMenuTemplate.totalItems;
+}
+
+static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list)
+{
+    if (onInit != TRUE)
+        PlaySE(SE_SELECT);
+
+    // print trainer graphics
+}
 
 
 
