@@ -132,7 +132,7 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 		.bg = 0,
 		.tilemapLeft = 1,
 		.tilemapTop = 5,
-		.width = 12,
+		.width = 18,
 		.height = 13,
 		.paletteNum = 15,
 		.baseBlock = 102,
@@ -145,7 +145,7 @@ static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
 		.width = 30,
 		.height = 2,
 		.paletteNum = 15,
-		.baseBlock = 258,
+		.baseBlock = 336,
 	},
 	DUMMY_WIN_TEMPLATE
 };
@@ -210,6 +210,9 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId);
 static void TrainerRadarBuildMainListMenuTemplate(void);
 static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list);
 static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y);
+static void TrainerRadarBuildRouteListMenuTemplate(void);
+static void TrainerRadarRouteListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list);
+static void TrainerRadarRouteListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y);
 static void TrainerRadarAddScrollIndicatorArows(void);
 static void TrainerRadarRemoveScrollIndicatorArrows(void);
 static bool8 TrainerRadar_ReloadGraphics(void);
@@ -274,6 +277,28 @@ static const struct ListMenuTemplate sTrainerRadarMainMenuListTemplate =
     .items = NULL,
     .moveCursorFunc = TrainerRadarMainListMenuMoveCursorFunc, // change trainer graphics
     .itemPrintFunc = TrainerRadarMainListMenuItemPrintFunc, // print number of trainer defeated per route
+    .totalItems = 0,
+    .maxShowed = 0,
+    .windowId = WIN_TRAINER_LIST,
+    .header_X = 0,
+    .item_X = 10,//8,
+    .cursor_X = 0,
+    .upText_Y = 4, //1,
+    .cursorPal = 2,
+    .fillValue = 0,
+    .cursorShadowPal = 3,
+    .lettersSpacing = 0,
+    .itemVerticalPadding = 0,
+    .scrollMultiple = LIST_NO_MULTIPLE_SCROLL,
+    .fontId = 7,
+    .cursorKind = 0
+};
+
+static const struct ListMenuTemplate sTrainerRadarRouteMenuListTemplate =
+{
+    .items = NULL,
+    .moveCursorFunc = TrainerRadarRouteListMenuMoveCursorFunc, // change trainer graphics
+    .itemPrintFunc = TrainerRadarRouteListMenuItemPrintFunc, // print number of trainer defeated per route
     .totalItems = 0,
     .maxShowed = 0,
     .windowId = WIN_TRAINER_LIST,
@@ -690,7 +715,71 @@ static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, s
 
 static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y)
 {
+    s32 x;
+    u32 i;
+    u8 numTrainers = 0;
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[listItem];
+
     // print number of defeated trainers on each route
+    if (routeTrainersStruct->routeTrainers != NULL)
+    {
+        for (i = 0; i < routeTrainersStruct->numTrainers; i++)
+        {
+            if (HasTrainerBeenFought(routeTrainersStruct->routeTrainers[i]))
+                numTrainers++;
+        }
+
+        ConvertIntToDecimalStringN(gStringVar1, numTrainers, STR_CONV_MODE_LEADING_ZEROS, 2);
+        StringAppend(gStringVar1,gText_Slash);
+        ConvertIntToDecimalStringN(gStringVar2, routeTrainersStruct->numTrainers, STR_CONV_MODE_LEADING_ZEROS, 2);
+        StringAppend(gStringVar1,gStringVar2);
+        x = GetStringRightAlignXOffset(7, gStringVar1, 145);
+        AddTextPrinterParameterized4(windowId, 7, x, y, 0, 0, sFontColor_Black, TEXT_SKIP_DRAW, gStringVar1);
+    }
+}
+
+static void TrainerRadarBuildRouteListMenuTemplate(void)
+{
+    /*u32 i; // build listmenutemplate for the route page -> trainer name + highlight 
+    sListMenuItems = Alloc(MAIN_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sListMenuItems));
+    sItemNames = Alloc(MAIN_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sItemNames));
+
+    for (i = 0; i < MAIN_LIST_MENU_NUMBER_OF_ITEMS; i++)
+    {
+        GetMapName(sItemNames[i], sTrainerRadarMapsecs[i], 0);
+        sListMenuItems[i].name = sItemNames[i];
+        sListMenuItems[i].id = sTrainerRadarMapsecs[i];
+    }
+
+    gMultiuseListMenuTemplate = sTrainerRadarMainMenuListTemplate;
+    gMultiuseListMenuTemplate.items = sListMenuItems;
+    gMultiuseListMenuTemplate.totalItems = MAIN_LIST_MENU_NUMBER_OF_ITEMS;
+
+    if (gMultiuseListMenuTemplate.totalItems > 6)
+        gMultiuseListMenuTemplate.maxShowed = 6;
+    else
+        gMultiuseListMenuTemplate.maxShowed = gMultiuseListMenuTemplate.totalItems;*/
+}
+
+static void TrainerRadarRouteListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list)
+{
+    /*const struct RouteTrainers* routeTrainersStruct; // do stuff when moving cursor -> updating graphics
+
+    if (onInit != TRUE)
+        PlaySE(SE_SELECT);
+
+    sTrainerRadarPtr->mapsec = listItem;
+    routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
+    if (routeTrainersStruct->routeTrainers != NULL)
+    {
+        sTrainerRadarPtr->trainerId = routeTrainersStruct->routeTrainers[0];
+        PrintVisualElements();
+    }*/
+}
+
+static void TrainerRadarRouteListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y)
+{
+    // print stuff
 }
 
 static void TrainerRadarAddScrollIndicatorArows(void)
