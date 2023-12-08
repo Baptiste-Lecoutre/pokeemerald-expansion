@@ -627,6 +627,8 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
 		    PutWindowTilemap(WIN_INSTRUCTIONS);
             //RemoveWindow(WIN_TRAINER_LIST); //
             sTrainerRadarPtr->listTaskId = TASK_NONE;
+            Free(sListMenuItems);
+            Free(sItemNames);
         }
 
         if (TrainerRadar_ReloadGraphics() == TRUE)
