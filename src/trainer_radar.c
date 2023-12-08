@@ -63,8 +63,8 @@ struct TrainerRadar
     u8 page;
     u8 listTaskId;
     u8 scrollIndicatorsTaskId;
-    u16 selectedRow;
-    u16 scrollOffset;
+    u16 selectedRowMain;
+    u16 scrollOffsetMain;
     u16 trainerId;
     u8 mapsec;
     u8 numOfTrainers;
@@ -90,9 +90,11 @@ static const u16 sSelectionCursorPal[] = INCBIN_U16("graphics/misc/trainer_radar
 static const u8 sText_TrainerDatabase[] = _("Trainer Database");
 static const u8 sText_NoData[] = _("No data");
 static const u8 sText_unknown[] = _("???");
-static const u8 sText_InstructionsArea[] = _("{DPAD_LEFTRIGHT}Area");
+static const u8 sText_InstructionsAreaMain[] = _("{DPAD_UPDOWN}Area");
+static const u8 sText_InstructionsAreaRoute[] = _("{DPAD_LEFTRIGHT}Area");
 static const u8 sText_InstructionsAreaTrainer[] = _("{DPAD_LEFTRIGHT}Area  {DPAD_UPDOWN}Trainer");
 static const u8 sText_InstructionsExit[] = _("{B_BUTTON}Exit");
+static const u8 sText_InstructionsSelectExit[] = _("{A_BUTTON}Select  {B_BUTTON}Exit");
 static const u8 sText_Defeated[] = _("Defeated: ");
 
 static const struct WindowTemplate sTrainerRadarWinTemplates[WINDOW_COUNT + 1] =
@@ -206,6 +208,7 @@ static const u8 sFontColor_Red[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_RED, TEX
 static void Task_TrainerRadarMainWaitFadeIn(u8 taskId);
 static void Task_TrainerRadarRouteWaitFadeIn(u8 taskId);
 static void Task_TrainerRadarFadeAndChangePage(u8 taskId);
+static void Task_TrainerRadar_RedoMainGfxSetup(u8 taskId);
 
 static void TrainerRadarBuildMainListMenuTemplate(void);
 static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list);
@@ -218,6 +221,7 @@ static void TrainerRadarRemoveScrollIndicatorArrows(void);
 static bool8 TrainerRadar_ReloadGraphics(void);
 
 static void PrintVisualElements(void);
+static void PrintInstructions(void);
 static void PrintTrainerPic(void);
 static void PrintTrainerOW(void);
 
@@ -433,7 +437,7 @@ static void Task_TrainerRadarMain(u8 taskId)
         return;
 
     listItem = ListMenu_ProcessInput(sTrainerRadarPtr->listTaskId);
-    ListMenuGetScrollAndRow(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffset, &sTrainerRadarPtr->selectedRow);
+    ListMenuGetScrollAndRow(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffsetMain, &sTrainerRadarPtr->selectedRowMain);
 
     switch (listItem)
     {
@@ -516,6 +520,7 @@ static bool8 TrainerRadar_DoGfxSetup(void)
         gMain.state++;
         break;
     case 8:
+        PrintInstructions();
         TrainerRadarAddScrollIndicatorArows();
         taskId = CreateTask(Task_TrainerRadarMainWaitFadeIn, 0);
         sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, 0, 0);
@@ -612,30 +617,79 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
         TrainerRadarRemoveScrollIndicatorArrows();
         if (sTrainerRadarPtr->listTaskId != TASK_NONE)
         {
-            DestroyListMenuTask(sTrainerRadarPtr->listTaskId, 0, 0);
-            ClearStdWindowAndFrameToTransparent(WIN_TRAINER_LIST, TRUE); //
+            DestroyListMenuTask(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffsetMain, &sTrainerRadarPtr->selectedRowMain);
+            //ClearStdWindowAndFrameToTransparent(WIN_TRAINER_LIST, TRUE); //
+            FillWindowPixelBuffer(WIN_TRAINER_LIST, PIXEL_FILL(0));
+            FillWindowPixelBuffer(WIN_INSTRUCTIONS, PIXEL_FILL(0));
+            CopyWindowToVram(WIN_TRAINER_LIST, 3);
+            CopyWindowToVram(WIN_INSTRUCTIONS, 3);
+		    PutWindowTilemap(WIN_TRAINER_LIST);
+		    PutWindowTilemap(WIN_INSTRUCTIONS);
             //RemoveWindow(WIN_TRAINER_LIST); //
+            sTrainerRadarPtr->listTaskId = TASK_NONE;
         }
 
         if (TrainerRadar_ReloadGraphics() == TRUE)
         {
             ScheduleBgCopyTilemapToVram(1);
-            PrintVisualElements();
-            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+//            PrintVisualElements();
+//            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
 
             if (sTrainerRadarPtr->page == PAGE_MAIN)
             {
 //                PrintVisualElements();
-                BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
-                gTasks[taskId].func = Task_TrainerRadarMainWaitFadeIn;
+        //        BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+//                BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
+                gTasks[taskId].func = Task_TrainerRadar_RedoMainGfxSetup;//Task_TrainerRadarMainWaitFadeIn;
             }
             else
             {
-//                PrintVisualElements();
+                PrintVisualElements();
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
                 BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
                 gTasks[taskId].func = Task_TrainerRadarRouteWaitFadeIn;
             }
         }
+    }
+}
+
+static void Task_TrainerRadar_RedoMainGfxSetup(u8 taskId)
+{
+    switch (sTrainerRadarPtr->state)
+    {
+        case 0:
+            TrainerRadarBuildMainListMenuTemplate();
+            sTrainerRadarPtr->state++;
+            break;
+        case 1:
+            PrintInstructions();
+            sTrainerRadarPtr->state++;
+            break;
+        case 2:
+            TrainerRadarAddScrollIndicatorArows();
+            sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, sTrainerRadarPtr->scrollOffsetMain, sTrainerRadarPtr->selectedRowMain);
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+            sTrainerRadarPtr->state++;
+            break;
+        case 3:
+            PrintTrainerPic();
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+            sTrainerRadarPtr->state++;
+            break;
+        case 4:
+            PrintTrainerOW();
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+            sTrainerRadarPtr->state++;
+            break;
+        /*case 3:
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+            sTrainerRadarPtr->state++;
+            break;*/
+        default:
+            sTrainerRadarPtr->state = 0;
+            BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
+            gTasks[taskId].func = Task_TrainerRadarMainWaitFadeIn;
+            break;
     }
 }
 
@@ -794,7 +848,7 @@ static void TrainerRadarAddScrollIndicatorArows(void)
             MAIN_LIST_MENU_NUMBER_OF_ITEMS - 6,
             TAG_SCROLL_ARROW,
             TAG_SCROLL_ARROW,
-            &sTrainerRadarPtr->scrollOffset
+            &sTrainerRadarPtr->scrollOffsetMain
         );
     }
 }
@@ -1350,7 +1404,7 @@ static void PrintInstructions(void)
     if (routeTrainersStruct->routeTrainers != NULL)
         AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 5, 4, sFontColor_White, 0, sText_InstructionsAreaTrainer);
     else
-        AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 5, 4, sFontColor_White, 0, sText_InstructionsArea);
+        AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 5, 4, sFontColor_White, 0, sText_InstructionsAreaRoute);
 
     AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 208, 4, sFontColor_White, 0, sText_InstructionsExit);
     CopyWindowToVram(WIN_INSTRUCTIONS, 3);
@@ -1415,4 +1469,25 @@ static void PrintTrainerOW(void)
         sTrainerRadarPtr->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[trainerId], SpriteCallbackDummy, x, y, 0);
         gSprites[sTrainerRadarPtr->trainerObjEventSpriteId].oam.priority = 0;
     }
+}
+
+static void PrintInstructions(void)
+{
+    const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
+
+    if (sTrainerRadarPtr->page == PAGE_MAIN)
+    {
+        AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 5, 4, sFontColor_White, 0, sText_InstructionsAreaMain);
+        AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 166, 4, sFontColor_White, 0, sText_InstructionsSelectExit);
+    }
+    else
+    {
+        if (routeTrainersStruct->routeTrainers != NULL)
+            AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 5, 4, sFontColor_White, 0, sText_InstructionsAreaTrainer);
+        else
+            AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 5, 4, sFontColor_White, 0, sText_InstructionsAreaRoute);
+        AddTextPrinterParameterized3(WIN_INSTRUCTIONS, 0, 208, 4, sFontColor_White, 0, sText_InstructionsExit);
+    }
+    CopyWindowToVram(WIN_INSTRUCTIONS, 3);
+    PutWindowTilemap(WIN_INSTRUCTIONS);
 }
