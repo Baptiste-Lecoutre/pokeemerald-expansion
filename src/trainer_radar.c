@@ -65,6 +65,8 @@ struct TrainerRadar
     u8 scrollIndicatorsTaskId;
     u16 selectedRowMain;
     u16 scrollOffsetMain;
+    u16 selectedRowRoute;
+    u16 scrollOffsetRoute;
     u16 trainerId;
     u8 mapsec;
     u8 numOfTrainers;
@@ -209,6 +211,7 @@ static void Task_TrainerRadarMainWaitFadeIn(u8 taskId);
 static void Task_TrainerRadarRouteWaitFadeIn(u8 taskId);
 static void Task_TrainerRadarFadeAndChangePage(u8 taskId);
 static void Task_TrainerRadar_RedoMainGfxSetup(u8 taskId);
+static void Task_TrainerRadar_RedoRouteGfxSetup(u8 taskId);
 
 static void TrainerRadarBuildMainListMenuTemplate(void);
 static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list);
@@ -224,6 +227,8 @@ static void PrintVisualElements(void);
 static void PrintInstructions(void);
 static void PrintTrainerPic(void);
 static void PrintTrainerOW(void);
+static void PrintTrainerParty(void);
+static void DestroyPartyIcons(void);
 
 // skin functions
 /*static void UpdateTrainerRadarData(void);
@@ -245,6 +250,7 @@ static EWRAM_DATA u8 (*sItemNames)[MAP_NAME_LENGTH + 2] = {0};
 
 #define VISIBLE_CURSOR_MAX_VALUE 5 //6 slots - 1
 #define MAIN_LIST_MENU_NUMBER_OF_ITEMS NELEMS(sTrainerRadarMapsecs)
+#define ROUTE_LIST_MENU_NUMBER_OF_ITEMS gRouteTrainers[sTrainerRadarPtr->mapsec].numTrainers
 
 #define TAG_SCROLL_ARROW   2100
 /*#define SELECTION_CURSOR_TAG    0x4005
@@ -451,7 +457,7 @@ static void Task_TrainerRadarMain(u8 taskId)
         default:
             PlaySE(SE_SELECT);
             BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
-            sTrainerRadarPtr->page ^= 1;
+            sTrainerRadarPtr->page = PAGE_ROUTE;
             task->func = Task_TrainerRadarFadeAndChangePage;
             break;
     }
@@ -460,14 +466,33 @@ static void Task_TrainerRadarMain(u8 taskId)
 static void Task_TrainerRadarRoute(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
+    s32 listItem;
 
-    if (JOY_NEW(B_BUTTON))
+    if (IsSEPlaying())
+        return;
+
+    listItem = ListMenu_ProcessInput(sTrainerRadarPtr->listTaskId);
+    ListMenuGetScrollAndRow(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffsetRoute, &sTrainerRadarPtr->selectedRowRoute);
+
+    switch (listItem)
+    {
+        case LIST_NOTHING_CHOSEN:
+            break;
+        case LIST_CANCEL:
+            PlaySE(SE_POKENAV_OFF);
+            BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
+            sTrainerRadarPtr->page = PAGE_MAIN;
+            task->func = Task_TrainerRadarFadeAndChangePage;
+            break;
+    }
+    
+    /*if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_SELECT);
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
-        sTrainerRadarPtr->page ^= 1;
+        sTrainerRadarPtr->page = PAGE_MAIN;
         task->func = Task_TrainerRadarFadeAndChangePage;
-    }
+    }*/
 }
 
 static bool8 TrainerRadar_DoGfxSetup(void)
@@ -617,7 +642,10 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
         TrainerRadarRemoveScrollIndicatorArrows();
         if (sTrainerRadarPtr->listTaskId != TASK_NONE)
         {
-            DestroyListMenuTask(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffsetMain, &sTrainerRadarPtr->selectedRowMain);
+            if (sTrainerRadarPtr->page == PAGE_MAIN) // changed page in the previous frame, so destroy the other page's list menu
+                DestroyListMenuTask(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffsetRoute, &sTrainerRadarPtr->selectedRowRoute);
+            else
+                DestroyListMenuTask(sTrainerRadarPtr->listTaskId, &sTrainerRadarPtr->scrollOffsetMain, &sTrainerRadarPtr->selectedRowMain);
             //ClearStdWindowAndFrameToTransparent(WIN_TRAINER_LIST, TRUE); //
             FillWindowPixelBuffer(WIN_TRAINER_LIST, PIXEL_FILL(0));
             FillWindowPixelBuffer(WIN_INSTRUCTIONS, PIXEL_FILL(0));
@@ -642,14 +670,15 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
 //                PrintVisualElements();
         //        BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
 //                BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
+                DestroyPartyIcons();
                 gTasks[taskId].func = Task_TrainerRadar_RedoMainGfxSetup;//Task_TrainerRadarMainWaitFadeIn;
             }
             else
             {
-                PrintVisualElements();
-            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
-                BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
-                gTasks[taskId].func = Task_TrainerRadarRouteWaitFadeIn;
+    //            PrintVisualElements();
+    //        BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+    //            BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
+                gTasks[taskId].func = Task_TrainerRadar_RedoRouteGfxSetup;//Task_TrainerRadarRouteWaitFadeIn;
             }
         }
     }
@@ -683,14 +712,47 @@ static void Task_TrainerRadar_RedoMainGfxSetup(u8 taskId)
             BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
             sTrainerRadarPtr->state++;
             break;
-        /*case 3:
-            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
-            sTrainerRadarPtr->state++;
-            break;*/
         default:
             sTrainerRadarPtr->state = 0;
             BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
             gTasks[taskId].func = Task_TrainerRadarMainWaitFadeIn;
+            break;
+    }
+}
+
+static void Task_TrainerRadar_RedoRouteGfxSetup(u8 taskId)
+{
+    switch (sTrainerRadarPtr->state)
+    {
+        case 0:
+            sTrainerRadarPtr->scrollOffsetRoute = sTrainerRadarPtr->selectedRowRoute = 0;
+            TrainerRadarBuildRouteListMenuTemplate();
+            sTrainerRadarPtr->state++;
+            break;
+        case 1:
+            PrintInstructions();
+            sTrainerRadarPtr->state++;
+            break;
+        case 2:
+            TrainerRadarAddScrollIndicatorArows();
+            sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, 0, 0);
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+            sTrainerRadarPtr->state++;
+            break;
+        case 3:
+            PrintTrainerPic();
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+            sTrainerRadarPtr->state++;
+            break;
+        case 4:
+            PrintTrainerOW();
+            BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
+            sTrainerRadarPtr->state++;
+            break;
+        default:
+            sTrainerRadarPtr->state = 0;
+            BeginNormalPaletteFade(0xFFFFFFFF, 0, 16, 0, RGB_BLACK);
+            gTasks[taskId].func = Task_TrainerRadarRouteWaitFadeIn;
             break;
     }
 }
@@ -796,46 +858,47 @@ static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 
 
 static void TrainerRadarBuildRouteListMenuTemplate(void)
 {
-    /*u32 i; // build listmenutemplate for the route page -> trainer name + highlight 
-    sListMenuItems = Alloc(MAIN_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sListMenuItems));
-    sItemNames = Alloc(MAIN_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sItemNames));
+    u32 i; // build listmenutemplate for the route page -> trainer name + highlight
+    const struct RouteTrainers* routeTrainersStruct= &gRouteTrainers[sTrainerRadarPtr->mapsec];
 
-    for (i = 0; i < MAIN_LIST_MENU_NUMBER_OF_ITEMS; i++)
+    sListMenuItems = Alloc(ROUTE_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sListMenuItems));
+    sItemNames = Alloc(ROUTE_LIST_MENU_NUMBER_OF_ITEMS * sizeof(*sItemNames));
+
+    for (i = 0; i < ROUTE_LIST_MENU_NUMBER_OF_ITEMS; i++)
     {
-        GetMapName(sItemNames[i], sTrainerRadarMapsecs[i], 0);
+        StringCopy(sItemNames[i], gTrainers[routeTrainersStruct->routeTrainers[i]].trainerName);
         sListMenuItems[i].name = sItemNames[i];
-        sListMenuItems[i].id = sTrainerRadarMapsecs[i];
+        sListMenuItems[i].id = routeTrainersStruct->routeTrainers[i];
     }
 
-    gMultiuseListMenuTemplate = sTrainerRadarMainMenuListTemplate;
+    gMultiuseListMenuTemplate = sTrainerRadarRouteMenuListTemplate;
     gMultiuseListMenuTemplate.items = sListMenuItems;
-    gMultiuseListMenuTemplate.totalItems = MAIN_LIST_MENU_NUMBER_OF_ITEMS;
+    gMultiuseListMenuTemplate.totalItems = ROUTE_LIST_MENU_NUMBER_OF_ITEMS;
 
     if (gMultiuseListMenuTemplate.totalItems > 6)
         gMultiuseListMenuTemplate.maxShowed = 6;
     else
-        gMultiuseListMenuTemplate.maxShowed = gMultiuseListMenuTemplate.totalItems;*/
+        gMultiuseListMenuTemplate.maxShowed = gMultiuseListMenuTemplate.totalItems;
 }
 
 static void TrainerRadarRouteListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list)
 {
-    /*const struct RouteTrainers* routeTrainersStruct; // do stuff when moving cursor -> updating graphics
+    const struct RouteTrainers* routeTrainersStruct= &gRouteTrainers[sTrainerRadarPtr->mapsec]; // do stuff when moving cursor -> updating graphics
 
     if (onInit != TRUE)
         PlaySE(SE_SELECT);
 
-    sTrainerRadarPtr->mapsec = listItem;
-    routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
+    sTrainerRadarPtr->trainerId = listItem;
     if (routeTrainersStruct->routeTrainers != NULL)
     {
-        sTrainerRadarPtr->trainerId = routeTrainersStruct->routeTrainers[0];
         PrintVisualElements();
-    }*/
+        PrintTrainerParty();
+    }
 }
 
 static void TrainerRadarRouteListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y)
 {
-    // print stuff
+    // print stuff? nothing?
 }
 
 static void TrainerRadarAddScrollIndicatorArows(void)
@@ -1471,6 +1534,48 @@ static void PrintTrainerOW(void)
         sTrainerRadarPtr->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[trainerId], SpriteCallbackDummy, x, y, 0);
         gSprites[sTrainerRadarPtr->trainerObjEventSpriteId].oam.priority = 0;
     }
+}
+
+static void PrintTrainerParty(void)
+{
+    u32 i;
+    u16 species, trainerId = sTrainerRadarPtr->trainerId;
+    u8 icon_x = 0, icon_y = 0;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (sTrainerRadarPtr->trainerPartySpriteIds[i] != 0xFF)
+            FreeAndDestroyMonIconSprite(&gSprites[sTrainerRadarPtr->trainerPartySpriteIds[i]]);
+    }
+    
+    FreeMonIconPalettes();
+
+    if (trainerId != TRAINER_NONE)
+    {
+        LoadMonIconPalettes();
+
+        for (i = 0; i < gTrainers[trainerId].partySize; i++)
+        {
+            icon_x = 188 + (i%2) * 35;
+            icon_y = 43 + (i/2) * 35;
+
+            species = HasTrainerBeenFought(trainerId) ? gTrainers[trainerId].party[i].species : SPECIES_NONE;
+            sTrainerRadarPtr->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
+        }
+    }
+}
+
+static void DestroyPartyIcons(void)
+{
+    u32 i;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (sTrainerRadarPtr->trainerPartySpriteIds[i] != 0xFF)
+            FreeAndDestroyMonIconSprite(&gSprites[sTrainerRadarPtr->trainerPartySpriteIds[i]]);
+    }
+    
+    FreeMonIconPalettes();
 }
 
 static void PrintInstructions(void)
