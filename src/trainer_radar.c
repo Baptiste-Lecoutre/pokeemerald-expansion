@@ -212,6 +212,7 @@ static bool8 TrainerRadar_ReloadGraphics(void);
 
 static void PrintVisualElements(void);
 static void PrintRightHeader(void);
+static void PrintLeftHeader(void);
 static void PrintInstructions(void);
 static void PrintTrainerPic(void);
 static void PrintTrainerOW(void);
@@ -521,6 +522,7 @@ static bool8 TrainerRadar_DoGfxSetup(void)
         break;
     case 8:
         PrintRightHeader();
+        PrintLeftHeader();
         PrintInstructions();
         TrainerRadarAddMainScrollIndicatorArows();
         taskId = CreateTask(Task_TrainerRadarMainWaitFadeIn, 0);
@@ -627,12 +629,15 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
             FillWindowPixelBuffer(WIN_TRAINER_LIST, PIXEL_FILL(0));
             FillWindowPixelBuffer(WIN_INSTRUCTIONS, PIXEL_FILL(0));
             FillWindowPixelBuffer(WIN_MAP_NAME, PIXEL_FILL(0));
+            FillWindowPixelBuffer(WIN_TRAINER_NAME, PIXEL_FILL(0));
             CopyWindowToVram(WIN_TRAINER_LIST, 3);
             CopyWindowToVram(WIN_INSTRUCTIONS, 3);
             CopyWindowToVram(WIN_MAP_NAME, 3);
+            CopyWindowToVram(WIN_TRAINER_NAME, 3);
 		    PutWindowTilemap(WIN_TRAINER_LIST);
 		    PutWindowTilemap(WIN_INSTRUCTIONS);
             PutWindowTilemap(WIN_MAP_NAME);
+            PutWindowTilemap(WIN_TRAINER_NAME);
 
             sTrainerRadarPtr->listTaskId = TASK_NONE;
             Free(sListMenuItems);
@@ -666,6 +671,7 @@ static void Task_TrainerRadar_RedoMainGfxSetup(u8 taskId)
             break;
         case 1:
             PrintRightHeader();
+            PrintLeftHeader();
             PrintInstructions();
             sTrainerRadarPtr->state++;
             break;
@@ -704,6 +710,7 @@ static void Task_TrainerRadar_RedoRouteGfxSetup(u8 taskId)
             break;
         case 1:
             PrintRightHeader();
+            PrintLeftHeader();
             PrintInstructions();
             sTrainerRadarPtr->state++;
             break;
@@ -1278,6 +1285,59 @@ static void PrintRightHeader(void)
     AddTextPrinterParameterized3(WIN_MAP_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar3);
     CopyWindowToVram(WIN_MAP_NAME, 3);
     PutWindowTilemap(WIN_MAP_NAME);
+}
+
+static void PrintLeftHeader(void)
+{
+    u32 i, j, numTrainers = 0, numTrainersTotal = 0;
+    s32 x;
+    const struct RouteTrainers* routeTrainersStruct;
+
+    if (sTrainerRadarPtr->page == PAGE_MAIN)
+    {
+        for (i = 0; i < MAIN_LIST_MENU_NUMBER_OF_ITEMS; i++)
+        {
+            routeTrainersStruct = &gRouteTrainers[sTrainerRadarMapsecs[i]];
+
+            if (routeTrainersStruct->routeTrainers != NULL)
+            {
+                for (j = 0; j < routeTrainersStruct->numTrainers; j++)
+                {
+                    numTrainersTotal++;
+                    if (HasTrainerBeenFought(routeTrainersStruct->routeTrainers[j]))
+                        numTrainers++;
+                }
+            }
+        }
+
+        ConvertIntToDecimalStringN(gStringVar1, numTrainers, STR_CONV_MODE_LEADING_ZEROS, 3);
+        StringAppend(gStringVar1,gText_Slash);
+        ConvertIntToDecimalStringN(gStringVar2, numTrainersTotal, STR_CONV_MODE_LEADING_ZEROS, 3);
+        StringAppend(gStringVar1,gStringVar2);
+    }
+    else
+    {
+        routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
+        
+        if (routeTrainersStruct->routeTrainers != NULL)
+        {
+            for (i = 0; i < routeTrainersStruct->numTrainers; i++)
+            {
+                if (HasTrainerBeenFought(routeTrainersStruct->routeTrainers[i]))
+                    numTrainers++;
+            }
+
+            ConvertIntToDecimalStringN(gStringVar1, numTrainers, STR_CONV_MODE_LEADING_ZEROS, 2);
+            StringAppend(gStringVar1,gText_Slash);
+            ConvertIntToDecimalStringN(gStringVar2, routeTrainersStruct->numTrainers, STR_CONV_MODE_LEADING_ZEROS, 2);
+            StringAppend(gStringVar1,gStringVar2);
+        }
+    }
+
+    x = GetStringRightAlignXOffset(7, gStringVar1, 66);
+    AddTextPrinterParameterized3(WIN_TRAINER_NAME, 1, x, 7, sFontColor_White, 0, gStringVar1);
+    CopyWindowToVram(WIN_TRAINER_NAME, 3);
+    PutWindowTilemap(WIN_TRAINER_NAME);
 }
 
 static void PrintInstructions(void)
