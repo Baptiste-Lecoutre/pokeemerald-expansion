@@ -219,6 +219,8 @@ static void PrintTrainerOW(void);
 static void PrintTrainerParty(void);
 static void DestroyPartyIcons(void);
 
+static u16 GetTrainerOverride(u16 trainerId);
+
 EWRAM_DATA static struct TrainerRadar *sTrainerRadarPtr = NULL;
 EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
 EWRAM_DATA static struct ListMenuItem *sListMenuItems = NULL;
@@ -807,7 +809,7 @@ static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, s
     routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
     if (routeTrainersStruct->routeTrainers != NULL)
     {
-        sTrainerRadarPtr->trainerId = routeTrainersStruct->routeTrainers[0];
+        sTrainerRadarPtr->trainerId = GetTrainerOverride(routeTrainersStruct->routeTrainers[0]);
         PrintVisualElements();
     }
 }
@@ -824,7 +826,7 @@ static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 
     {
         for (i = 0; i < routeTrainersStruct->numTrainers; i++)
         {
-            if (HasTrainerBeenFought(routeTrainersStruct->routeTrainers[i]))
+            if (HasTrainerBeenFought(GetTrainerOverride(routeTrainersStruct->routeTrainers[i])))
                 numTrainers++;
         }
 
@@ -847,9 +849,9 @@ static void TrainerRadarBuildRouteListMenuTemplate(void)
 
     for (i = 0; i < routeTrainersStruct->numTrainers; i++)
     {
-        StringCopy(sItemNames[i], gTrainers[routeTrainersStruct->routeTrainers[i]].trainerName);
+        StringCopy(sItemNames[i], gTrainers[GetTrainerOverride(routeTrainersStruct->routeTrainers[i])].trainerName);
         sListMenuItems[i].name = sItemNames[i];
-        sListMenuItems[i].id = routeTrainersStruct->routeTrainers[i];
+        sListMenuItems[i].id = GetTrainerOverride(routeTrainersStruct->routeTrainers[i]);
     }
 
     gMultiuseListMenuTemplate = sTrainerRadarRouteMenuListTemplate;
@@ -869,7 +871,7 @@ static void TrainerRadarRouteListMenuMoveCursorFunc(s32 listItem, bool8 onInit, 
     if (onInit != TRUE)
         PlaySE(SE_SELECT);
 
-    sTrainerRadarPtr->trainerId = listItem;
+    sTrainerRadarPtr->trainerId = GetTrainerOverride(listItem);
     if (routeTrainersStruct->routeTrainers != NULL)
     {
         PrintVisualElements();
@@ -1304,7 +1306,7 @@ static void PrintLeftHeader(void)
                 for (j = 0; j < routeTrainersStruct->numTrainers; j++)
                 {
                     numTrainersTotal++;
-                    if (HasTrainerBeenFought(routeTrainersStruct->routeTrainers[j]))
+                    if (HasTrainerBeenFought(GetTrainerOverride(routeTrainersStruct->routeTrainers[j])))
                         numTrainers++;
                 }
             }
@@ -1323,7 +1325,7 @@ static void PrintLeftHeader(void)
         {
             for (i = 0; i < routeTrainersStruct->numTrainers; i++)
             {
-                if (HasTrainerBeenFought(routeTrainersStruct->routeTrainers[i]))
+                if (HasTrainerBeenFought(GetTrainerOverride(routeTrainersStruct->routeTrainers[i])))
                     numTrainers++;
             }
 
@@ -1359,4 +1361,54 @@ static void PrintInstructions(void)
     }
     CopyWindowToVram(WIN_INSTRUCTIONS, 3);
     PutWindowTilemap(WIN_INSTRUCTIONS);
+}
+
+static u16 GetTrainerOverride(u16 trainerId)
+{
+    if (trainerId == TRAINER_RIVAL_OVERRIDE)
+    {
+        switch (VarGet(VAR_STARTER_MON))
+        {
+            case 0: //chose treecko
+            {
+                if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_103)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_103_TREECKO : TRAINER_BRENDAN_ROUTE_103_TREECKO;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_RUSTBORO_CITY)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_RUSTBORO_TREECKO : TRAINER_BRENDAN_RUSTBORO_TREECKO;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_110)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_110_TREECKO : TRAINER_BRENDAN_ROUTE_110_TREECKO;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_119)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_119_TREECKO : TRAINER_BRENDAN_ROUTE_119_TREECKO;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_LILYCOVE_CITY)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_LILYCOVE_TREECKO : TRAINER_BRENDAN_LILYCOVE_TREECKO;
+            }
+            case 1: //chose torchic
+            {
+                if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_103)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_103_TORCHIC : TRAINER_BRENDAN_ROUTE_103_TORCHIC;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_RUSTBORO_CITY)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_RUSTBORO_TORCHIC : TRAINER_BRENDAN_RUSTBORO_TORCHIC;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_110)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_110_TORCHIC : TRAINER_BRENDAN_ROUTE_110_TORCHIC;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_119)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_119_TORCHIC : TRAINER_BRENDAN_ROUTE_119_TORCHIC;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_LILYCOVE_CITY)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_LILYCOVE_TORCHIC : TRAINER_BRENDAN_LILYCOVE_TORCHIC;
+            }
+            case 2: //chose mudkip
+            {
+                if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_103)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_103_MUDKIP : TRAINER_BRENDAN_ROUTE_103_MUDKIP;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_RUSTBORO_CITY)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_RUSTBORO_MUDKIP : TRAINER_BRENDAN_RUSTBORO_MUDKIP;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_110)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_110_MUDKIP : TRAINER_BRENDAN_ROUTE_110_MUDKIP;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_ROUTE_119)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_ROUTE_119_MUDKIP : TRAINER_BRENDAN_ROUTE_119_MUDKIP;
+                else if (sTrainerRadarPtr->mapsec == MAPSEC_LILYCOVE_CITY)
+                    return (gSaveBlock2Ptr->playerGender == MALE) ? TRAINER_MAY_LILYCOVE_MUDKIP : TRAINER_BRENDAN_LILYCOVE_MUDKIP;
+            }
+        }
+    }
+    return trainerId;
 }
