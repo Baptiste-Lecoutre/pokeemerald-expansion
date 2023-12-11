@@ -211,6 +211,7 @@ static void TrainerRadarRemoveScrollIndicatorArrows(void);
 static bool8 TrainerRadar_ReloadGraphics(void);
 
 static void PrintVisualElements(void);
+static void PrintRightHeader(void);
 static void PrintInstructions(void);
 static void PrintTrainerPic(void);
 static void PrintTrainerOW(void);
@@ -519,6 +520,7 @@ static bool8 TrainerRadar_DoGfxSetup(void)
         gMain.state++;
         break;
     case 8:
+        PrintRightHeader();
         PrintInstructions();
         TrainerRadarAddMainScrollIndicatorArows();
         taskId = CreateTask(Task_TrainerRadarMainWaitFadeIn, 0);
@@ -566,7 +568,7 @@ static void InitTrainerRadar(MainCallback callback)
     sTrainerRadarPtr->trainerFrontPicSpriteId = 0xFF;
     sTrainerRadarPtr->trainerObjEventSpriteId = 0xFF;
     for (i = 0; i < PARTY_SIZE; i++)
-        sTrainerRadarPtr->trainerPartySpriteIds[i]=0xFF;
+        sTrainerRadarPtr->trainerPartySpriteIds[i] = 0xFF;
 
     SetMainCallback2(TrainerRadar_RunSetup);
 }
@@ -624,10 +626,13 @@ static void Task_TrainerRadarFadeAndChangePage(u8 taskId)
 
             FillWindowPixelBuffer(WIN_TRAINER_LIST, PIXEL_FILL(0));
             FillWindowPixelBuffer(WIN_INSTRUCTIONS, PIXEL_FILL(0));
+            FillWindowPixelBuffer(WIN_MAP_NAME, PIXEL_FILL(0));
             CopyWindowToVram(WIN_TRAINER_LIST, 3);
             CopyWindowToVram(WIN_INSTRUCTIONS, 3);
+            CopyWindowToVram(WIN_MAP_NAME, 3);
 		    PutWindowTilemap(WIN_TRAINER_LIST);
 		    PutWindowTilemap(WIN_INSTRUCTIONS);
+            PutWindowTilemap(WIN_MAP_NAME);
 
             sTrainerRadarPtr->listTaskId = TASK_NONE;
             Free(sListMenuItems);
@@ -660,6 +665,7 @@ static void Task_TrainerRadar_RedoMainGfxSetup(u8 taskId)
             sTrainerRadarPtr->state++;
             break;
         case 1:
+            PrintRightHeader();
             PrintInstructions();
             sTrainerRadarPtr->state++;
             break;
@@ -697,11 +703,12 @@ static void Task_TrainerRadar_RedoRouteGfxSetup(u8 taskId)
             sTrainerRadarPtr->state++;
             break;
         case 1:
+            PrintRightHeader();
             PrintInstructions();
             sTrainerRadarPtr->state++;
             break;
         case 2:
-            TrainerRadarAddRouteScrollIndicatorArows();
+//            TrainerRadarAddRouteScrollIndicatorArows();
             sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, sTrainerRadarPtr->scrollOffsetRoute, sTrainerRadarPtr->selectedRowRoute);
             BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
             sTrainerRadarPtr->state++;
@@ -818,7 +825,7 @@ static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 
         StringAppend(gStringVar1,gText_Slash);
         ConvertIntToDecimalStringN(gStringVar2, routeTrainersStruct->numTrainers, STR_CONV_MODE_LEADING_ZEROS, 2);
         StringAppend(gStringVar1,gStringVar2);
-        x = GetStringRightAlignXOffset(7, gStringVar1, 145);
+        x = GetStringRightAlignXOffset(7, gStringVar1, 144);
         AddTextPrinterParameterized4(windowId, 7, x, y, 0, 0, sFontColor_Black, TEXT_SKIP_DRAW, gStringVar1);
     }
 }
@@ -1260,6 +1267,17 @@ static void DestroyPartyIcons(void)
     }
     
     FreeMonIconPalettes();
+}
+
+static void PrintRightHeader(void)
+{
+    if (sTrainerRadarPtr->page == PAGE_MAIN) //if main page, print UI name, else print map name
+        StringCopy(gStringVar3, sText_TrainerDatabase);
+    else
+        GetMapName(gStringVar3, sTrainerRadarPtr->mapsec, 0);
+    AddTextPrinterParameterized3(WIN_MAP_NAME, 1, 2, 7, sFontColor_White, 0, gStringVar3);
+    CopyWindowToVram(WIN_MAP_NAME, 3);
+    PutWindowTilemap(WIN_MAP_NAME);
 }
 
 static void PrintInstructions(void)
