@@ -7,25 +7,22 @@
 #include "battle_setup.h"
 #include "battle_transition.h"
 #include "data.h"
+#include "daycare.h"
 #include "event_data.h"
 #include "item.h"
 #include "malloc.h"
 #include "overworld.h"
+#include "party_menu.h"
 #include "pokemon.h"
 #include "random.h"
 #include "rtc.h"
 #include "sprite.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
+#include "constants/daycare.h"
 #include "constants/item.h"
 #include "constants/items.h"
 #include "constants/moves.h"
-
-// TODO:
-//  - Switch-in abilities reapplying after Max Mindstorm?
-//  - Battle partner fainting and switching breaking after Max Flare?
-//  - Raid barrier sprite alignment.
-//  - Raid rank disappears in Intro UI after a Raid has occurred.
 
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
@@ -109,6 +106,32 @@ const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK + 1] =
 	[RAID_RANK_5] = 70,
 	[RAID_RANK_6] = 80,
     [RAID_RANK_7] = 90,
+};
+
+// The chance that the raid boss has its hidden ability
+const u8 gRaidBattleHiddenAbilityChances[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 0,
+	[RAID_RANK_2] = 0,
+	[RAID_RANK_3] = 10,
+	[RAID_RANK_4] = 20,
+	[RAID_RANK_5] = 30,
+	[RAID_RANK_6] = 40,
+    [RAID_RANK_7] = 50,
+};
+
+// The number of perfect IVs the raid boss is certain to have
+const u8 gRaidBattlePerfectIVsNumber[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 1,
+	[RAID_RANK_2] = 2,
+	[RAID_RANK_3] = 3,
+	[RAID_RANK_4] = 4,
+	[RAID_RANK_5] = 5,
+	[RAID_RANK_6] = 6,
+    [RAID_RANK_7] = 6,
 };
 
 static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
@@ -286,8 +309,11 @@ u32 GetRaidRandomNumber(void);
 bool32 InitRaidData(void)
 {
     u16 numBadges, min, max, species = SPECIES_NONE, preEvoSpecies = SPECIES_NONE, postEvoSpecies = SPECIES_NONE;
-	u32 i, randomNum = GetRaidRandomNumber();
-    u8 raidBossLevel, numPostEvoSpecies = 0;;
+	u32 i, randomNum = GetRaidRandomNumber(), numEggMoves;
+    u8 raidBossLevel, numPostEvoSpecies = 0, maxIV = MAX_IV_MASK, eggMoveChance = GetRaidEggMoveChance();
+    u8 statIDs[NUM_STATS] = {STAT_HP, STAT_ATK, STAT_DEF, STAT_SPEED, STAT_SPATK, STAT_SPDEF};
+    u16 eggMoves[EGG_MOVES_ARRAY_COUNT] = {0};
+    struct Pokemon* mon = &gEnemyParty[0];
 
     // determine raid type
     gRaidData.raidType = RAID_TYPE_MAX;
@@ -361,12 +387,37 @@ bool32 InitRaidData(void)
             species = gEvolutionTable[species][randomNum % numPostEvoSpecies].targetSpecies;
         }
     }*/
-    
+
+    // Hidden ability
+#if P_FLAG_FORCE_HIDDEN_ABILITY != 0
+    if (randomNum % 100 < gRaidBattleHiddenAbilityChances[gRaidData.rank])
+        FlagSet(P_FLAG_FORCE_HIDDEN_ABILITY);
+#endif
+
     // Free previous enemy party in case
     ZeroEnemyPartyMons();
 
     // Create raid boss
-    CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(mon, species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+
+    if (gRaidBattlePerfectIVsNumber[gRaidData.rank])
+    {
+        ShuffleStatArray(statIDs);
+        for (i = 0; i < gRaidBattlePerfectIVsNumber[gRaidData.rank]; i++)
+            SetMonData(mon, MON_DATA_HP_IV + statIDs[i], &maxIV);
+    }
+
+    numEggMoves = GetEggMovesSpecies(species, eggMoves);
+    if (numEggMoves && Random() % 100 < eggMoveChance)
+    {
+        u16 eggMove = eggMoves[RandRange(0, numEggMoves)];
+
+        if (MonKnowsMove(mon, eggMove))
+            eggMove = eggMoves[RandRange(0, numEggMoves)];
+
+        if (!MonKnowsMove(mon, eggMove) && GiveMoveToMon(mon, eggMove) == MON_HAS_MAX_MOVES)
+            DeleteFirstMoveAndGiveMoveToMon(mon, eggMove);
+    }
 
     return TRUE;
 }
@@ -1136,4 +1187,29 @@ u8 GetRaidRecommendedLevel(void)
         recommendedLevel = MAX_LEVEL;
 
 	return recommendedLevel; 
+}
+
+u8 GetRaidEggMoveChance(void)
+{
+    return gRaidBattleEggMoveChances[gRaidData.rank];
+}
+
+void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners)
+{
+    u32 j, n, index, randomNum = GetRaidRandomNumber();
+
+    for (j = 0; j < maxPartners; j++)
+        partnerTrainerIndex[j] = j;
+
+    //Shuffle8(partnerTrainerIndex, maxPartners);
+
+    n = maxPartners-1;
+    while (n>1) // Shuffle8, but use GetRaidRandomNumber() for randomness reproductibility
+    {
+        j = (randomNum * (n+1)) >>16;
+        SWAP(partnerTrainerIndex[n], partnerTrainerIndex[j], index);
+        n--;
+    }
+
+    
 }

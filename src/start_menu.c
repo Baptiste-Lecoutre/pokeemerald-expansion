@@ -1733,7 +1733,11 @@ static bool8 StartMenuMatchCallCallback(void)
 
 static bool8 StartMenuTrainerRadarCallback(void)
 {
-    ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
+    /*ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
     RemoveStartMenuWindow();
-    InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);
+    InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);*/
+    RemoveExtraStartMenuWindows();
+    CleanupOverworldWindowsAndTilemaps();
+    CreateTask(Task_OpenTrainerRadarFromStartMenu, 0);
+    return TRUE;
 }

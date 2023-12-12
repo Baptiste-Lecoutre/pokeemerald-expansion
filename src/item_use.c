@@ -40,6 +40,7 @@
 #include "task.h"
 #include "text.h"
 #include "follow_me.h"
+#include "wild_encounter.h"
 #include "constants/event_bg.h"
 #include "constants/event_objects.h"
 #include "constants/item_effects.h"
@@ -78,9 +79,11 @@ static void Task_UseLure(u8 taskId);
 static void Task_CloseCantUseKeyItemMessage(u8);
 static void SetDistanceOfClosestHiddenItem(u8, s16, s16);
 static void CB2_OpenPokeblockFromBag(void);
-static void ItemUseOnFieldCB_Honey(u8 taskId);
+//static void ItemUseOnFieldCB_Honey(u8 taskId);
 static bool32 CannotUseBagBattleItem(u16 itemId);
 static void ItemUseOnFieldCB_PokeVial(u8 taskId);
+static void ItemUseOnFieldCB_Honey(u8 taskId);
+static void ItemUseOnFieldCB_HoneyFail(u8 taskId);
 
 // EWRAM variables
 EWRAM_DATA static void(*sItemUseOnFieldCB)(u8 taskId) = NULL;
@@ -1307,7 +1310,7 @@ void ItemUseOutOfBattle_FormChange_ConsumedOnUse(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
-void Task_UseHoneyOnField(u8 taskId)
+/*void Task_UseHoneyOnField(u8 taskId)
 {
     //ResetInitialPlayerAvatarState();
     StartSweetScentFieldEffect();
@@ -1328,7 +1331,7 @@ void ItemUseOutOfBattle_Honey(u8 taskId)
     gFieldCallback = FieldCB_UseItemOnField;
     gBagMenu->newScreenCallback = CB2_ReturnToField;
     Task_FadeAndCloseBagMenu(taskId);
-}
+}*/
 
 void ItemUseOutOfBattle_CannotUse(u8 taskId)
 {
@@ -1413,3 +1416,41 @@ void ItemUseOutOfBattle_EonFlute(u8 taskId)
 }
 
 #undef tUsingRegisteredKeyItem
+
+void ItemUseOutOfBattle_Honey(u8 taskId)
+{
+    s16 x, y;
+    u16 headerId = GetCurrentMapWildMonHeaderId();;
+
+    PlayerGetDestCoords(&x, &y);
+
+    if (MetatileBehavior_IsLandWildEncounter(MapGridGetMetatileBehaviorAt(x, y)) == TRUE // Player is on land encounter tile
+        && headerId != 0xFFFF // Map has wild Pokemon 
+        && gWildMonHeaders[headerId].honeyMonsInfo != NULL) // Map has honey encounters
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_Honey;
+    }
+    else // Honey fails to start encounter
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_HoneyFail;
+    }
+    gFieldCallback = FieldCB_UseItemOnField;
+    gBagMenu->newScreenCallback = CB2_ReturnToField;
+    Task_FadeAndCloseBagMenu(taskId);
+}
+
+static void ItemUseOnFieldCB_Honey(u8 taskId)
+{
+    RemoveBagItem(gSpecialVar_ItemId, 1);
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_HoneyEncounter);
+    DestroyTask(taskId);
+}
+
+static void ItemUseOnFieldCB_HoneyFail(u8 taskId)
+{
+    RemoveBagItem(gSpecialVar_ItemId, 1);
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_FailSweetScent);
+    DestroyTask(taskId);
+}

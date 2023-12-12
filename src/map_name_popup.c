@@ -251,7 +251,7 @@ void ShowMapNamePopup(void)
         if (!FuncIsActiveTask(Task_MapNamePopUpWindow))
         {
             gPopupTaskId = CreateTask(Task_MapNamePopUpWindow, 100);
-            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
+            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_TGT2_ALL);// | BLDCNT_EFFECT_BLEND);
             SetHBlankCallback(HBlankCB_DoublePopupWindow);
             EnableInterrupts(INTR_FLAG_HBLANK);
             gTasks[gPopupTaskId].tState = STATE_PRINT;

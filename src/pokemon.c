@@ -4296,7 +4296,12 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
 #if P_FLAG_FORCE_HIDDEN_ABILITY != 0
     if (FlagGet(P_FLAG_FORCE_HIDDEN_ABILITY))
     {
-        value = 2;
+        if (gSpeciesInfo[species].abilities[2])
+            value = 2;
+        else if (gSpeciesInfo[species].abilities[1])
+            value = personality & 1;
+        else
+            value = 0;
         FlagClear(P_FLAG_FORCE_HIDDEN_ABILITY);
         SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
     }
@@ -9854,4 +9859,17 @@ bool8 ShouldUnveilGhost(void)
         return TRUE;
     else
         return FALSE;
+}
+
+void ShuffleStatArray(u8* statArray)
+{
+    int i;
+
+    // Shuffle the stats array using Fisher-Yates shuffle
+    for (i = NUM_STATS - 1; i > 0; i--)
+    {
+        u8 temp;
+        int j = Random() % (i + 1);
+        SWAP(statArray[i], statArray[j], temp);
+    }
 }

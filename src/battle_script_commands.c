@@ -4371,9 +4371,12 @@ static void Cmd_getexp(void)
                     && !IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT))
                     && !gBattleStruct->wildVictorySong)
                 {
-                    BattleStopLowHpSound();
-                    PlayBGM(MUS_VICTORY_WILD);
-                    gBattleStruct->wildVictorySong++;
+                    if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL) == ITEM_NONE)
+                    {
+                        BattleStopLowHpSound();
+                        PlayBGM(MUS_VICTORY_WILD);
+                        gBattleStruct->wildVictorySong++;
+                    }
                 }
 
                 if (IsValidForBattle(&gPlayerParty[*expMonId]))
@@ -15547,6 +15550,14 @@ static void Cmd_displaydexinfo(void)
         if (!gPaletteFade.active)
         {
             FreeAllWindowBuffers();
+            gBattle_BG0_X = 0;
+            gBattle_BG0_Y = 0;
+            gBattle_BG1_X = 0;
+            gBattle_BG1_Y = 0;
+            gBattle_BG2_X = 0;
+            gBattle_BG2_Y = 0;
+            gBattle_BG3_X = 0;
+            gBattle_BG3_Y = 0;
             gBattleCommunication[TASK_ID] = DisplayCaughtMonDexPage(SpeciesToNationalPokedexNum(species),
                                                                         gBattleMons[GetCatchingBattler()].otId,
                                                                         gBattleMons[GetCatchingBattler()].personality);

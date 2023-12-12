@@ -11,6 +11,7 @@
 #include "battle_setup.h"
 #include "battle_tv.h"
 #include "cable_club.h"
+#include "event_data.h"
 #include "link.h"
 #include "link_rfu.h"
 #include "palette.h"
@@ -2437,6 +2438,13 @@ void BtlController_HandleLoadMonSprite(u32 battler, void (*controllerCallback)(u
     gSprites[gBattlerSpriteIds[battler]].x2 = -DISPLAY_WIDTH;
     gSprites[gBattlerSpriteIds[battler]].data[0] = battler;
     gSprites[gBattlerSpriteIds[battler]].data[2] = species;
+
+    if (FlagGet(FLAG_SOOTOPOLIS_BATTLE) && GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT)
+    {
+        gSprites[gBattlerSpriteIds[battler]].x2 = DISPLAY_WIDTH;
+        gSprites[gBattlerSpriteIds[battler]].callback = SpriteCB_MoveWildMonToLeft;
+    }
+
     gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = battler;
     StartSpriteAnim(&gSprites[gBattlerSpriteIds[battler]], 0);
 

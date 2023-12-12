@@ -81,7 +81,13 @@ EventScript_BufferZCrystalsPocket::
 	return
 
 EventScript_ObtainedItem::
+	goto_if_eq VAR_0x8001, TRUE, EventScript_ObtainedItemMessage
+	buffernumberstring 0, VAR_0x8001
+	message gText_ObtainedTheItems
+	goto EventScript_ContinueObtainedItem
+EventScript_ObtainedItemMessage:
 	message gText_ObtainedTheItem
+EventScript_ContinueObtainedItem:
 	delay 10
 	showitemdesc
 	waitfanfare
@@ -173,6 +179,11 @@ EventScript_FoundTMHM::
 	return
 
 EventScript_FoundItem::
+	goto_if_eq VAR_0x8001, TRUE, EventScript_FoundItemMessage
+	buffernumberstring 0, VAR_0x8001
+	message gText_PlayerFoundItems
+	return
+EventScript_FoundItemMessage::
 	message gText_PlayerFoundOneItem
 	return
 
