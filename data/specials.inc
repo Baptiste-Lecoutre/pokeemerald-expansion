@@ -589,5 +589,3 @@ gSpecials::
 	def_special DoRegielekiPuzzle
  	def_special SetFollowerPokemonOption
 	def_special HoneyWildEncounter
-	def_special GetSpeciesForRandomEgg
-	def_special IncrementAdoptionSpecials
