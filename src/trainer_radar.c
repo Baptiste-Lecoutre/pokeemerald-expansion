@@ -190,6 +190,7 @@ static const struct BgTemplate sTrainerRadarBgTemplates[] =
 static const u8 sFontColor_White[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 static const u8 sFontColor_Black[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
 static const u8 sFontColor_Red[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_RED, TEXT_COLOR_LIGHT_RED};
+static const u8 sFontColor_Green[3] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_GREEN, TEXT_COLOR_LIGHT_GREEN};
 
 #include "data/trainer_radar.h"
 
@@ -835,13 +836,19 @@ static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 
         ConvertIntToDecimalStringN(gStringVar2, routeTrainersStruct->numTrainers, STR_CONV_MODE_LEADING_ZEROS, 2);
         StringAppend(gStringVar1,gStringVar2);
         x = GetStringRightAlignXOffset(7, gStringVar1, 144);
-        AddTextPrinterParameterized4(windowId, 7, x, y, 0, 0, sFontColor_Black, TEXT_SKIP_DRAW, gStringVar1);
+
+        if (numTrainers == routeTrainersStruct->numTrainers)
+            AddTextPrinterParameterized4(windowId, 7, x, y, 0, 0, sFontColor_Green, TEXT_SKIP_DRAW, gStringVar1);
+        else
+            AddTextPrinterParameterized4(windowId, 7, x, y, 0, 0, sFontColor_Black, TEXT_SKIP_DRAW, gStringVar1);
     }
 }
 
+static const u8 sText_ColorRed[] = _("{COLOR_HIGHLIGHT_SHADOW RED TRANSPARENT LIGHT_RED}");
 static void TrainerRadarBuildRouteListMenuTemplate(void)
 {
     u32 i; // build listmenutemplate for the route page -> trainer name + highlight
+    u16 trainerId;
     const struct RouteTrainers* routeTrainersStruct= &gRouteTrainers[sTrainerRadarPtr->mapsec];
 
     sListMenuItems = Alloc(routeTrainersStruct->numTrainers * sizeof(*sListMenuItems));
@@ -849,9 +856,18 @@ static void TrainerRadarBuildRouteListMenuTemplate(void)
 
     for (i = 0; i < routeTrainersStruct->numTrainers; i++)
     {
-        StringCopy(sItemNames[i], gTrainers[GetTrainerOverride(routeTrainersStruct->routeTrainers[i])].trainerName);
+        trainerId = GetTrainerOverride(routeTrainersStruct->routeTrainers[i]);
+
+        if (HasTrainerBeenFought(trainerId))
+            StringCopy(sItemNames[i], gTrainers[trainerId].trainerName);
+        else
+        {
+            StringCopy(sItemNames[i], sText_ColorRed);
+            StringAppend(sItemNames[i], gTrainers[trainerId].trainerName);
+        }
+        
         sListMenuItems[i].name = sItemNames[i];
-        sListMenuItems[i].id = GetTrainerOverride(routeTrainersStruct->routeTrainers[i]);
+        sListMenuItems[i].id = trainerId;
     }
 
     gMultiuseListMenuTemplate = sTrainerRadarRouteMenuListTemplate;
