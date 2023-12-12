@@ -1256,7 +1256,10 @@ static void CreateDexNavWildMon(u16 species, u8 potential, u8 level, u8 abilityN
 
     //Set moves
     for (i = 0; i < MAX_MON_MOVES; i++)
-        SetMonMoveSlot(mon, moves[i], i);
+    {
+        if (moves[i] != MOVE_NONE)
+            SetMonMoveSlot(mon, moves[i], i);
+    } 
 
     CalculateMonStats(mon);
     FlagClear(FLAG_SHINY_CREATION);
@@ -2004,7 +2007,7 @@ static void Task_DexNavFadeAndExit(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
-        //FreePokenavResources();
+        FreePokenavResources();
         SetMainCallback2(sDexNavUiDataPtr->savedCallback);
         DexNavGuiFreeResources();
         DestroyTask(taskId);

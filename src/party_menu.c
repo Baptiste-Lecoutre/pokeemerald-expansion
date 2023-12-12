@@ -1551,7 +1551,16 @@ static u16 PartyMenuButtonHandler(s8 *slotPtr)
     }
 
     if (JOY_NEW(START_BUTTON))
-        return START_BUTTON;
+    {
+        if (CalculatePlayerPartyCount() >= 2 && gPartyMenu.menuType == PARTY_MENU_TYPE_FIELD && !IsInvalidPartyMenuActionType(gPartyMenu.action) && gPartyMenu.action != PARTY_ACTION_SWITCH)
+        {
+            gPartyMenu.slotId2 = 0;
+            gPartyMenu.action = PARTY_ACTION_SWITCH;
+            return A_BUTTON;
+        }
+        else
+            return START_BUTTON;
+    }
 
     if (JOY_NEW(SELECT_BUTTON) && CalculatePlayerPartyCount() >= 2 && !IsInvalidPartyMenuActionType(gPartyMenu.action))
     {
