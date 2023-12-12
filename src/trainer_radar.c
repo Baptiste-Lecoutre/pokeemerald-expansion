@@ -717,7 +717,7 @@ static void Task_TrainerRadar_RedoRouteGfxSetup(u8 taskId)
             sTrainerRadarPtr->state++;
             break;
         case 2:
-//            TrainerRadarAddRouteScrollIndicatorArows();
+            TrainerRadarAddRouteScrollIndicatorArows();
             sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, sTrainerRadarPtr->scrollOffsetRoute, sTrainerRadarPtr->selectedRowRoute);
             BlendPalettes(0xFFFFFFFF, 16, RGB_BLACK);
             sTrainerRadarPtr->state++;
@@ -1239,7 +1239,10 @@ static void PrintTrainerParty(void)
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (sTrainerRadarPtr->trainerPartySpriteIds[i] != 0xFF)
+        {
             FreeAndDestroyMonIconSprite(&gSprites[sTrainerRadarPtr->trainerPartySpriteIds[i]]);
+            sTrainerRadarPtr->trainerPartySpriteIds[i] = 0xFF;
+        }
     }
     
     FreeMonIconPalettes();
@@ -1248,19 +1251,28 @@ static void PrintTrainerParty(void)
     {
         LoadMonIconPalettes();
 
-        for (i = 0; i < PARTY_SIZE/*gTrainers[trainerId].partySize*/; i++)
+        /*for (i = 0; i < PARTY_SIZE; i++)
         {
             icon_x = 188 + (i%2) * 35;
             icon_y = 43 + (i/2) * 35;
 
             if (i < gTrainers[trainerId].partySize)
-                species = /*HasTrainerBeenFought(trainerId)*/TRUE ? gTrainers[trainerId].party[i].species : SPECIES_NONE;
+                species = gTrainers[trainerId].party[i].species;
             else
                 species = SPECIES_NONE;
             sTrainerRadarPtr->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
 
-            /*if (i >= gTrainers[trainerId].partySize)
-                gSprites[sTrainerRadarPtr->trainerPartySpriteIds[i]].invisible = TRUE;*/
+            //if (i >= gTrainers[trainerId].partySize)
+            //    gSprites[sTrainerRadarPtr->trainerPartySpriteIds[i]].invisible = TRUE;
+        }*/
+
+        for (i = 0; i < gTrainers[trainerId].partySize; i++)
+        {
+            icon_x = 188 + (i%2) * 35;
+            icon_y = 43 + (i/2) * 35;
+
+            species = HasTrainerBeenFought(trainerId) ? gTrainers[trainerId].party[i].species : SPECIES_NONE;
+            sTrainerRadarPtr->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
         }
     }
 }
@@ -1272,7 +1284,10 @@ static void DestroyPartyIcons(void)
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (sTrainerRadarPtr->trainerPartySpriteIds[i] != 0xFF)
+        {
             FreeAndDestroyMonIconSprite(&gSprites[sTrainerRadarPtr->trainerPartySpriteIds[i]]);
+            sTrainerRadarPtr->trainerPartySpriteIds[i] = 0xFF;
+        }
     }
     
     FreeMonIconPalettes();
