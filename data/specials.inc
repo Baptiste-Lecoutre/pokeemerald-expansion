@@ -591,3 +591,5 @@ gSpecials::
  	def_special SetFollowerPokemonOption
 	def_special InitStoryRaid
 	def_special HoneyWildEncounter
+	def_special GetSpeciesForRandomEgg
+	def_special IncrementAdoptionSpecials
