@@ -63,13 +63,12 @@ Route117_PokemonDayCare_EventScript_AdoptedFivePokemonEvent::
 	goto Route117_PokemonDayCare_EventScript_TryGiveEgg
 
 Route117_PokemonDayCare_EventScript_AdoptedTenPokemon::
-	goto_if_unset FLAG_ADOPTION_LADY_GIVES_CHARM, Route117_PokemonDayCare_EventScript_AdoptedTenPokemonEvent
+	goto_if_eq VAR_DAYCARE_ADOPTION_SPECIALS, 11, Route117_PokemonDayCare_EventScript_AdoptedTenPokemonEvent
 	msgbox Route117_PokemonDayCare_Text_HaveEggWillYouTakeIt2, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, Route117_PokemonDayCare_EventScript_DeclineEgg
 	goto Route117_PokemonDayCare_EventScript_TryGiveEgg
 
 Route117_PokemonDayCare_EventScript_AdoptedTenPokemonEvent::
-	setflag FLAG_ADOPTION_LADY_GIVES_CHARM
 	msgbox Route117_PokemonDayCare_Text_HopeYouDidntForget, MSGBOX_DEFAULT
 	giveitem ITEM_OVAL_CHARM
 	msgbox Route117_PokemonDayCare_Text_IHopeYouLikeIt, MSGBOX_YESNO
@@ -97,7 +96,7 @@ Route117_PokemonDayCare_Text_HopeYoullWalkPlentyWithEgg:
 	.string "be very happy travelling with you.$"
 
 Route117_PokemonDayCare_Text_ReceivedTheEgg:
-	.string "{PLAYER} received the EGG.$"
+	.string "{PLAYER} received the Egg.$"
 
 Route117_PokemonDayCare_Text_NoEggsAtTheMinute:
 	.string "Thank you for helping give these\n"
@@ -142,11 +141,8 @@ Route117_PokemonDayCare_Text_YouveAdoptedFivePokemonNow:
 	.string "rehome Five Pokémon now?\p"
 	.string "You're just incredible!\p"
 	.string "… … …\p"
-	.string "I'm actually working on something\n"
-	.string "as a thanks from the Pokémon, but\l"
-	.string "it's not ready yet.\p"
-	.string "So, would you like to adopt a\n"
-	.string "Pokémon egg in the meanwhile?$"
+	.string "Say, would you like to adopt another\n"
+	.string "of the Pokémon eggs left here?$"
 
 Route117_PokemonDayCare_Text_HopeYouDidntForget:
 	.string "Hey {PLAYER}!\p"
@@ -155,17 +151,11 @@ Route117_PokemonDayCare_Text_HopeYouDidntForget:
 	.string "Did you know that you've helped\n"
 	.string "rehome Ten Pokémon now?\p"
 	.string "Well…\p"
-	.string "I hope you didn't forget about\n"
-	.string "the gift I was working on with\l"
-	.string "the Pokémon here!\p"
-	.string "…because it's finished!\p"
-	.string "Hold out your hands!$"
+	.string "You're by the far the trainer\n"
+	.string "that adopted the most eggs!$"
 
 Route117_PokemonDayCare_Text_IHopeYouLikeIt:
-	.string "I know it's not much, but\n"
-	.string "I hope you like it!\p"
-	.string "Just a little something to\n"
-	.string "remind you of your good deeds!\p"
+	.string "We're all proud of your good deeds!\p"
 	.string "With that said…\p"
 	.string "Would you like to adopt a\n"
 	.string "Pokémon Egg now?$"
