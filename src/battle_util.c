@@ -1463,8 +1463,11 @@ void ResetSentPokesToOpponentValue(void)
     gSentPokesToOpponent[0] = 0;
     gSentPokesToOpponent[1] = 0;
 
-    for (i = 0; i < gBattlersCount; i += 2)
-        bits |= gBitTable[gBattlerPartyIndexes[i]];
+    /*for (i = 0; i < gBattlersCount; i += 2)
+        bits |= gBitTable[gBattlerPartyIndexes[i]];*/
+    bits |= gBitTable[gBattlerPartyIndexes[0]];
+    if (gBattlersCount > 2 && GetBattlerPosition(2) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+        bits |= gBitTable[gBattlerPartyIndexes[2]];
 
     for (i = 1; i < gBattlersCount; i += 2)
         gSentPokesToOpponent[(i & BIT_FLANK) >> 1] = bits;
@@ -1480,11 +1483,15 @@ void OpponentSwitchInResetSentPokesToOpponentValue(u32 battler)
         u8 flank = ((battler & BIT_FLANK) >> 1);
         gSentPokesToOpponent[flank] = 0;
 
-        for (i = 0; i < gBattlersCount; i += 2)
+        /*for (i = 0; i < gBattlersCount; i += 2)
         {
             if (!(gAbsentBattlerFlags & gBitTable[i]))
                 bits |= gBitTable[gBattlerPartyIndexes[i]];
-        }
+        }*/
+        if (!(gAbsentBattlerFlags & gBitTable[0]))
+            bits |= gBitTable[gBattlerPartyIndexes[0]];
+        if (!(gAbsentBattlerFlags & gBitTable[2]) && gBattlersCount > 2 && GetBattlerPosition(2) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+            bits |= gBitTable[gBattlerPartyIndexes[2]];
         gSentPokesToOpponent[flank] = bits;
     }
 }
@@ -1495,7 +1502,7 @@ void UpdateSentPokesToOpponentValue(u32 battler)
     {
         OpponentSwitchInResetSentPokesToOpponentValue(battler);
     }
-    else
+    else if (GetBattlerPosition(battler) == B_POSITION_PLAYER_LEFT || (GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)))
     {
         s32 i;
         for (i = 1; i < gBattlersCount; i++)
@@ -1900,7 +1907,7 @@ u8 GetImprisonedMovesCount(u32 battler, u16 move)
 u32 GetBattlerFriendshipScore(u32 battler)
 {
     u8 side = GetBattlerSide(battler);
-    struct Pokemon *party = GetSideParty(side);
+    struct Pokemon *party = GetBattlerParty(battler);
     u16 species = GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES);
 
     if (side != B_SIDE_PLAYER)
@@ -3253,7 +3260,7 @@ bool32 HandleFaintedMonActions(void)
             {
                 gBattlerFainted = gBattlerTarget = gBattleStruct->faintedActionsBattlerId;
                 if (gBattleMons[gBattleStruct->faintedActionsBattlerId].hp == 0
-                 && !(gBattleStruct->givenExpMons & gBitTable[gBattlerPartyIndexes[gBattleStruct->faintedActionsBattlerId]])
+                 && !(gBattleStruct->givenExpMons[(gBattleStruct->faintedActionsBattlerId & 2) >> 1] & gBitTable[gBattlerPartyIndexes[gBattleStruct->faintedActionsBattlerId]])
                  && !(gAbsentBattlerFlags & gBitTable[gBattleStruct->faintedActionsBattlerId]))
                 {
                     BattleScriptExecute(BattleScript_GiveExp);
@@ -3874,35 +3881,16 @@ bool32 HasNoMonsToSwitch(u32 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2
     else if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
     {
         party = GetBattlerParty(battler);
-        if (side == B_SIDE_OPPONENT && WILD_DOUBLE_BATTLE)
-        {
-            flankId = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-            playerId = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
 
-            if (partyIdBattlerOn1 == PARTY_SIZE)
-                partyIdBattlerOn1 = gBattlerPartyIndexes[flankId];
-            if (partyIdBattlerOn2 == PARTY_SIZE)
-                partyIdBattlerOn2 = gBattlerPartyIndexes[playerId];
-
-            for (i = 0; i < PARTY_SIZE; i++)
-            {
-                if (IsValidForBattle(&party[i])
-                 && i != partyIdBattlerOn1 && i != partyIdBattlerOn2
-                 && i != *(gBattleStruct->monToSwitchIntoId + flankId) && i != playerId[gBattleStruct->monToSwitchIntoId])
-                    break;
-            }
-            return (i == PARTY_SIZE);
-        }
-        else
+        //playerId = ((battler & BIT_FLANK) / 2);
+        //for (i = playerId * MULTI_PARTY_SIZE; i < playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE; i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
-            playerId = ((battler & BIT_FLANK) / 2);
-            for (i = playerId * MULTI_PARTY_SIZE; i < playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE; i++)
-            {
-                if (IsValidForBattle(&party[i]))
-                    break;
-            }
-            return (i == playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE);
+            if (IsValidForBattle(&party[i]))
+                break;
         }
+        //return (i == playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE);
+        return (i == PARTY_SIZE);
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
     {
@@ -3930,28 +3918,32 @@ bool32 HasNoMonsToSwitch(u32 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2
             playerId = GetLinkTrainerFlankId(flankId);
         }
 
-        for (i = playerId * MULTI_PARTY_SIZE; i < playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE; i++)
+//        for (i = playerId * MULTI_PARTY_SIZE; i < playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE; i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
             if (IsValidForBattle(&party[i]))
                 break;
         }
-        return (i == playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE);
+//        return (i == playerId * MULTI_PARTY_SIZE + MULTI_PARTY_SIZE);
+        return (i == PARTY_SIZE);
     }
     else if ((gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && side == B_SIDE_OPPONENT)
     {
-        party = gEnemyParty;
+        party = GetBattlerParty(battler);
 
-        if (battler == 1)
-            playerId = 0;
-        else
-            playerId = MULTI_PARTY_SIZE;
+        //if (battler == 1)
+        //    playerId = 0;
+        //else
+        //    playerId = MULTI_PARTY_SIZE;
 
-        for (i = playerId; i < playerId + MULTI_PARTY_SIZE; i++)
+        //for (i = playerId; i < playerId + MULTI_PARTY_SIZE; i++)
+        for (i = 0; i < PARTY_SIZE; i++)
         {
             if (IsValidForBattle(&party[i]))
                 break;
         }
-        return (i == playerId + 3);
+        //return (i == playerId + 3);
+        return (i == PARTY_SIZE);
     }
     else
     {
@@ -3959,13 +3951,13 @@ bool32 HasNoMonsToSwitch(u32 battler, u8 partyIdBattlerOn1, u8 partyIdBattlerOn2
         {
             flankId = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             playerId = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
-            party = gEnemyParty;
+            party = GetBattlerParty(battler);
         }
         else
         {
             flankId = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
             playerId = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
-            party = gPlayerParty;
+            party = GetBattlerParty(battler);
         }
 
         if (partyIdBattlerOn1 == PARTY_SIZE)
@@ -3999,15 +3991,15 @@ static const u16 sWeatherFlagsInfo[][3] =
 static void ShouldChangeFormInWeather(u32 battler)
 {
     int i;
-    int side = GetBattlerSide(battler);
-    struct Pokemon *party = GetSideParty(side);
+    int position = GetBattlerPosition(battler);
+    struct Pokemon *party = GetBattlerParty(battler);
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&party[i], MON_DATA_SPECIES) == SPECIES_EISCUE_NOICE_FACE)
-            gBattleStruct->allowedToChangeFormInWeather[i][side] = TRUE;
+            gBattleStruct->allowedToChangeFormInWeather[i][position] = TRUE;
         else
-            gBattleStruct->allowedToChangeFormInWeather[i][side] = FALSE;
+            gBattleStruct->allowedToChangeFormInWeather[i][position] = FALSE;
     }
 }
 
@@ -4951,8 +4943,8 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             case ABILITY_CUD_CHEW:
                 if (ItemId_GetPocket(GetUsedHeldItem(battler)) == POCKET_BERRIES && gDisableStructs[battler].cudChew == TRUE)
                 {
-                    gLastUsedItem = gBattleStruct->usedHeldItems[battler][GetBattlerSide(battler)];
-                    gBattleStruct->usedHeldItems[battler][GetBattlerSide(battler)] = ITEM_NONE;
+                    gLastUsedItem = gBattleStruct->usedHeldItems[battler][GetBattlerPosition(battler)];
+                    gBattleStruct->usedHeldItems[battler][GetBattlerPosition(battler)] = ITEM_NONE;
                     BattleScriptPushCursorAndCallback(BattleScript_CudChewActivates);
                     effect++;
                 }
@@ -6061,9 +6053,9 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             if (IsBattlerWeatherAffected(battler, B_WEATHER_HAIL | B_WEATHER_SNOW)
              && gBattleMons[battler].species == SPECIES_EISCUE_NOICE_FACE
              && !(gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
-             && gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)])
+             && gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerPosition(battler)])
             {
-                gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)] = FALSE;
+                gBattleStruct->allowedToChangeFormInWeather[gBattlerPartyIndexes[battler]][GetBattlerPosition(battler)] = FALSE;
                 gBattleMons[battler].species = SPECIES_EISCUE_ICE_FACE;
                 BattleScriptPushCursorAndCallback(BattleScript_BattlerFormChangeWithStringEnd3);
                 effect++;
@@ -10206,7 +10198,7 @@ bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId)
 bool32 CanMegaEvolve(u32 battler)
 {
     u32 itemId, holdEffect;
-    struct Pokemon *mon;
+    struct Pokemon *mon, *party;
     u32 battlerPosition = GetBattlerPosition(battler);
     u8 partnerPosition = GetBattlerPosition(BATTLE_PARTNER(battler));
     struct MegaEvolutionData *mega = &(((struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]))->mega);
@@ -10234,10 +10226,8 @@ bool32 CanMegaEvolve(u32 battler)
         return FALSE;
 
     // Gets mon data.
-    if (GetBattlerSide(battler) == B_SIDE_OPPONENT)
-        mon = &gEnemyParty[gBattlerPartyIndexes[battler]];
-    else
-        mon = &gPlayerParty[gBattlerPartyIndexes[battler]];
+    party = GetBattlerParty(battler);
+    mon = &party[gBattlerPartyIndexes[battler]];
 
     itemId = GetMonData(mon, MON_DATA_HELD_ITEM);
 
@@ -10467,9 +10457,9 @@ bool32 TryBattleFormChange(u32 battler, u16 method)
         targetSpecies = GetFormChangeTargetSpecies(&party[monId], method, 0);
     if (targetSpecies != SPECIES_NONE)
     {
-        // Saves the original species on the first form change.
-        if (gBattleStruct->changedSpecies[side][monId] == SPECIES_NONE)
-            gBattleStruct->changedSpecies[side][monId] = gBattleMons[battler].species;
+        // Saves the original species on the first form change for the player.
+        if (gBattleStruct->changedSpecies[battler][monId] == SPECIES_NONE)
+            gBattleStruct->changedSpecies[battler][monId] = gBattleMons[battler].species;
 
         TryToSetBattleFormChangeMoves(&party[monId], method);
         SetMonData(&party[monId], MON_DATA_SPECIES, &targetSpecies);
@@ -10477,7 +10467,7 @@ bool32 TryBattleFormChange(u32 battler, u16 method)
         RecalcBattlerStats(battler, &party[monId]);
         return TRUE;
     }
-    else if (gBattleStruct->changedSpecies[side][monId] != SPECIES_NONE)
+    else if (gBattleStruct->changedSpecies[battler][monId] != SPECIES_NONE)
     {
         bool32 restoreSpecies = FALSE;
 
@@ -10497,7 +10487,7 @@ bool32 TryBattleFormChange(u32 battler, u16 method)
         {
             // Reverts the original species
             TryToSetBattleFormChangeMoves(&party[monId], method);
-            SetMonData(&party[monId], MON_DATA_SPECIES, &gBattleStruct->changedSpecies[side][monId]);
+            SetMonData(&party[monId], MON_DATA_SPECIES, &gBattleStruct->changedSpecies[battler][monId]);
             RecalcBattlerStats(battler, &party[monId]);
             return TRUE;
         }
@@ -10544,15 +10534,12 @@ bool32 CanBattlerGetOrLoseItem(u32 battler, u16 itemId)
 
 struct Pokemon *GetIllusionMonPtr(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
+
     if (gBattleStruct->illusion[battler].broken)
         return NULL;
     if (!gBattleStruct->illusion[battler].set)
-    {
-        if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-            SetIllusionMon(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
-        else
-            SetIllusionMon(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
-    }
+        SetIllusionMon(&party[gBattlerPartyIndexes[battler]], battler);
     if (!gBattleStruct->illusion[battler].on)
         return NULL;
 
@@ -10872,6 +10859,7 @@ void TryRestoreHeldItems(void)
 bool32 CanStealItem(u32 battlerStealing, u32 battlerItem, u16 item)
 {
     u8 stealerSide = GetBattlerSide(battlerStealing);
+    u8 stealerPosition = GetBattlerPosition(battlerStealing);
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER_HILL)
         return FALSE;
@@ -10895,7 +10883,7 @@ bool32 CanStealItem(u32 battlerStealing, u32 battlerItem, u16 item)
            | BATTLE_TYPE_LINK
            | BATTLE_TYPE_RECORDED_LINK
            | BATTLE_TYPE_SECRET_BASE))
-        && (gWishFutureKnock.knockedOffMons[stealerSide] & gBitTable[gBattlerPartyIndexes[battlerStealing]]))
+        && (gWishFutureKnock.knockedOffMons[stealerPosition] & gBitTable[gBattlerPartyIndexes[battlerStealing]]))
     {
         return FALSE;
     }
@@ -11061,7 +11049,7 @@ bool32 BlocksPrankster(u16 move, u32 battlerPrankster, u32 battlerDef, bool32 ch
 
 u16 GetUsedHeldItem(u32 battler)
 {
-    return gBattleStruct->usedHeldItems[gBattlerPartyIndexes[battler]][GetBattlerSide(battler)];
+    return gBattleStruct->usedHeldItems[gBattlerPartyIndexes[battler]][GetBattlerPosition(battler)];
 }
 
 bool32 IsBattlerWeatherAffected(u32 battler, u32 weatherFlags)

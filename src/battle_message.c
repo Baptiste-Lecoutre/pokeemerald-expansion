@@ -2850,6 +2850,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
     switch (stringID)
     {
     case STRINGID_INTROMSG: // first battle msg
+        {
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
             if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
@@ -2898,7 +2899,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
             }
             else if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
                 stringPtr = sText_LegendaryPkmnAppeared;
-            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)]]))
+            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gEnemy2Party[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)]]))
                 stringPtr = sText_TwoWildPkmnAppeared;
             else if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL)
                 stringPtr = sText_WildPkmnAppearedPause;
@@ -2908,10 +2909,13 @@ void BufferStringBattle(u16 stringID, u32 battler)
                 stringPtr = sText_WildPkmnAppeared;
         }
         break;
+        }
     case STRINGID_INTROSENDOUT: // poke first send-out
+        {
+        struct Pokemon *partnerParty = GetBattlerParty(BATTLE_PARTNER(battler));
         if (GetBattlerSide(battler) == B_SIDE_PLAYER)
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]) && !FlagGet(FLAG_SOOTOPOLIS_BATTLE))
+            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]) && !FlagGet(FLAG_SOOTOPOLIS_BATTLE))
             {
                 if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
                     stringPtr = sText_InGamePartnerSentOutZGoN;
@@ -2929,7 +2933,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
         }
         else
         {
-            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]))
+            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsValidForBattle(&partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]))
             {
                 if (BATTLE_TWO_VS_ONE_OPPONENT)
                     stringPtr = sText_Trainer1SentOutTwoPkmn;
@@ -2955,6 +2959,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
             }
         }
         break;
+        }
     case STRINGID_RETURNMON: // sending poke to ball msg
         if (GetBattlerSide(battler) == B_SIDE_PLAYER)
         {
@@ -3168,12 +3173,8 @@ static const u8 *TryGetStatusString(u8 *src)
 
 static void GetBattlerNick(u32 battler, u8 *dst)
 {
-    struct Pokemon *mon, *illusionMon;
-
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        mon = &gPlayerParty[gBattlerPartyIndexes[battler]];
-    else
-        mon = &gEnemyParty[gBattlerPartyIndexes[battler]];
+    struct Pokemon *mon, *illusionMon, *party = GetBattlerParty(battler);
+    mon = &party[gBattlerPartyIndexes[battler]];
 
     illusionMon = GetIllusionMonPtr(battler);
     if (illusionMon != NULL)
@@ -3586,27 +3587,30 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 }
                 break;
             case B_TXT_26: // ?
-                if (GetBattlerSide(gBattleScripting.battler) != B_SIDE_PLAYER)
                 {
-                    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-                        toCpy = sText_FoePkmnPrefix;
-                    else
-                        toCpy = sText_WildPkmnPrefix;
-                    while (*toCpy != EOS)
+                    struct Pokemon *party = GetBattlerParty(gBattleScripting.battler);
+                    if (GetBattlerSide(gBattleScripting.battler) != B_SIDE_PLAYER)
                     {
-                        dst[dstID] = *toCpy;
-                        dstID++;
-                        toCpy++;
+                        if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+                            toCpy = sText_FoePkmnPrefix;
+                        else
+                            toCpy = sText_WildPkmnPrefix;
+                        while (*toCpy != EOS)
+                        {
+                            dst[dstID] = *toCpy;
+                            dstID++;
+                            toCpy++;
+                        }
+                        GetMonData(&party[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
                     }
-                    GetMonData(&gEnemyParty[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
+                    else
+                    {
+                        GetMonData(&party[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
+                    }
+                    StringGet_Nickname(text);
+                    toCpy = text;
+                    break;
                 }
-                else
-                {
-                    GetMonData(&gPlayerParty[gBattleStruct->scriptPartyIdx], MON_DATA_NICKNAME, text);
-                }
-                StringGet_Nickname(text);
-                toCpy = text;
-                break;
             case B_TXT_PC_CREATOR_NAME: // lanette pc
                 if (FlagGet(FLAG_SYS_PC_LANETTE))
                     toCpy = sText_Lanettes;
@@ -3773,12 +3777,13 @@ static void IllusionNickHack(u32 battler, u32 partyId, u8 *dst)
 {
     s32 id, i;
     // we know it's gEnemyParty
-    struct Pokemon *mon = &gEnemyParty[partyId], *partnerMon;
+    struct Pokemon *party = GetBattlerParty(battler), *partnerParty=GetBattlerParty(BATTLE_PARTNER(battler));
+    struct Pokemon *mon = &party[partyId], *partnerMon;
 
     if (GetMonAbility(mon) == ABILITY_ILLUSION)
     {
         if (IsBattlerAlive(BATTLE_PARTNER(battler)))
-            partnerMon = &gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]];
+            partnerMon = &partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]];
         else
             partnerMon = mon;
 
@@ -3786,12 +3791,12 @@ static void IllusionNickHack(u32 battler, u32 partyId, u8 *dst)
         for (i = PARTY_SIZE - 1; i >= 0; i--)
         {
             id = i;
-            if (GetMonData(&gEnemyParty[id], MON_DATA_SANITY_HAS_SPECIES)
-                && GetMonData(&gEnemyParty[id], MON_DATA_HP)
-                && &gEnemyParty[id] != mon
-                && &gEnemyParty[id] != partnerMon)
+            if (GetMonData(&party[id], MON_DATA_SANITY_HAS_SPECIES)
+                && GetMonData(&party[id], MON_DATA_HP)
+                && &party[id] != mon
+                && &party[id] != partnerMon)
             {
-                GetMonData(&gEnemyParty[id], MON_DATA_NICKNAME, dst);
+                GetMonData(&party[id], MON_DATA_NICKNAME, dst);
                 return;
             }
         }
@@ -3842,23 +3847,26 @@ void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             srcID += 2;
             break;
         case B_BUFF_MON_NICK_WITH_PREFIX: // poke nick with prefix
-            if (GetBattlerSide(src[srcID + 1]) == B_SIDE_PLAYER)
             {
-                GetMonData(&gPlayerParty[src[srcID + 2]], MON_DATA_NICKNAME, nickname);
-            }
-            else
-            {
-                if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
-                    StringAppend(dst, sText_FoePkmnPrefix);
+                struct Pokemon *party = GetBattlerParty(src[srcID+1]);
+                if (GetBattlerSide(src[srcID + 1]) == B_SIDE_PLAYER)
+                {
+                    GetMonData(&party[src[srcID + 2]], MON_DATA_NICKNAME, nickname);
+                }
                 else
-                    StringAppend(dst, sText_WildPkmnPrefix);
+                {
+                    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+                        StringAppend(dst, sText_FoePkmnPrefix);
+                    else
+                        StringAppend(dst, sText_WildPkmnPrefix);
 
-                GetMonData(&gEnemyParty[src[srcID + 2]], MON_DATA_NICKNAME, nickname);
+                    GetMonData(&party[src[srcID + 2]], MON_DATA_NICKNAME, nickname);
+                }
+                StringGet_Nickname(nickname);
+                StringAppend(dst, nickname);
+                srcID += 3;
+                break;
             }
-            StringGet_Nickname(nickname);
-            StringAppend(dst, nickname);
-            srcID += 3;
-            break;
         case B_BUFF_STAT: // stats
             StringAppend(dst, gStatNamesTable[src[srcID + 1]]);
             srcID += 2;
@@ -3868,26 +3876,26 @@ void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             srcID += 3;
             break;
         case B_BUFF_MON_NICK: // poke nick without prefix
-            if (src[srcID + 2] == gBattlerPartyIndexes[src[srcID + 1]])
             {
-                GetBattlerNick(src[srcID + 1], dst);
-            }
-            else if (gBattleScripting.illusionNickHack) // for STRINGID_ENEMYABOUTTOSWITCHPKMN
-            {
-                gBattleScripting.illusionNickHack = 0;
-                IllusionNickHack(src[srcID + 1], src[srcID + 2], dst);
-                StringGet_Nickname(dst);
-            }
-            else
-            {
-                if (GetBattlerSide(src[srcID + 1]) == B_SIDE_PLAYER)
-                    GetMonData(&gPlayerParty[src[srcID + 2]], MON_DATA_NICKNAME, dst);
+                struct Pokemon *party = GetBattlerParty(src[srcID+2]);
+                if (src[srcID + 2] == gBattlerPartyIndexes[src[srcID + 1]])
+                {
+                    GetBattlerNick(src[srcID + 1], dst);
+                }
+                else if (gBattleScripting.illusionNickHack) // for STRINGID_ENEMYABOUTTOSWITCHPKMN
+                {
+                    gBattleScripting.illusionNickHack = 0;
+                    IllusionNickHack(src[srcID + 1], src[srcID + 2], dst);
+                    StringGet_Nickname(dst);
+                }
                 else
-                    GetMonData(&gEnemyParty[src[srcID + 2]], MON_DATA_NICKNAME, dst);
-                StringGet_Nickname(dst);
+                {
+                    GetMonData(&party[src[srcID + 2]], MON_DATA_NICKNAME, dst);
+                    StringGet_Nickname(dst);
+                }
+                srcID += 3;
+                break;
             }
-            srcID += 3;
-            break;
         case B_BUFF_NEGATIVE_FLAVOR: // flavor table
             StringAppend(dst, gPokeblockWasTooXStringTable[src[srcID + 1]]);
             srcID += 2;

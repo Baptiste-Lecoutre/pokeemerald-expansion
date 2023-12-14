@@ -147,8 +147,8 @@
 	special DoSpecialTrainerBattle
 	waitstate
 	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SAVE_PARTY
-	special CallFrontierUtilFunc
-	special LoadPlayerParty
+@	special CallFrontierUtilFunc
+@	special LoadPlayerParty
 	.endm
 
 	.macro multi_fixed_2_vs_2 trainer1Id:req, trainer1LoseText:req, trainer2Id:req, trainer2LoseText:req, partnerId:req, partnerPicId:req
@@ -172,7 +172,7 @@
 
 	.macro multi_fixed_sootopolis partnerId:req, partnerPicId:req
 	special SavePlayerParty
-	setvar FLAG_SOOTOPOLIS_BATTLE
+	setflag FLAG_SOOTOPOLIS_BATTLE
 	multi_do_fixed MULTI_BATTLE_2_VS_WILD, \partnerId, \partnerPicId
 	.endm
 

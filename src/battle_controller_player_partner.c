@@ -171,6 +171,7 @@ static void Intro_WaitForHealthbox(u32 battler)
 // Also used by the link partner.
 void Controller_PlayerPartnerShowIntroHealthbox(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive
         && !gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].ballAnimActive
         && gSprites[gBattleControllerData[battler]].callback == SpriteCallbackDummy
@@ -181,14 +182,15 @@ void Controller_PlayerPartnerShowIntroHealthbox(u32 battler)
 
         if (IsDoubleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
         {
+            party = GetBattlerParty(BATTLE_PARTNER(battler));
             DestroySprite(&gSprites[gBattleControllerData[BATTLE_PARTNER(battler)]]);
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &gPlayerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &party[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], HEALTHBOX_ALL);
             StartHealthboxSlideIn(BATTLE_PARTNER(battler));
             SetHealthboxSpriteVisible(gHealthboxSpriteIds[BATTLE_PARTNER(battler)]);
         }
 
         DestroySprite(&gSprites[gBattleControllerData[battler]]);
-        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gPlayerParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
+        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &party[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
         StartHealthboxSlideIn(battler);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[battler]);
 
@@ -229,6 +231,8 @@ static void SwitchIn_ShowHealthbox(u32 battler)
 {
     if (gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim)
     {
+        struct Pokemon *party = GetBattlerParty(battler);
+
         gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim = FALSE;
         gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim = FALSE;
 
@@ -236,9 +240,9 @@ static void SwitchIn_ShowHealthbox(u32 battler)
         FreeSpritePaletteByTag(ANIM_TAG_GOLD_STARS);
 
         CreateTask(Task_PlayerController_RestoreBgmAfterCry, 10);
-        HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
+        HandleLowHpMusicChange(&party[gBattlerPartyIndexes[battler]], battler);
         StartSpriteAnim(&gSprites[gBattlerSpriteIds[battler]], 0);
-        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gPlayerParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
+        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &party[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
         StartHealthboxSlideIn(battler);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[battler]);
 
@@ -248,10 +252,12 @@ static void SwitchIn_ShowHealthbox(u32 battler)
 
 static void SwitchIn_TryShinyAnim(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
+
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim
         && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive)
     {
-        TryShinyAnimation(battler, &gPlayerParty[gBattlerPartyIndexes[battler]]);
+        TryShinyAnimation(battler, &party[gBattlerPartyIndexes[battler]]);
     }
 
     if (gSprites[gBattleControllerData[battler]].callback == SpriteCallbackDummy
@@ -393,17 +399,18 @@ static void PlayerPartnerHandleChooseMove(u32 battler)
 static void PlayerPartnerHandleChoosePokemon(u32 battler)
 {
     s32 chosenMonId;
+    struct Pokemon *party = GetBattlerParty(battler);
     // Choosing Revival Blessing target
     if ((gBattleResources->bufferA[battler][1] & 0xF) == PARTY_ACTION_CHOOSE_FAINTED_MON)
     {
         chosenMonId = gSelectedMonPartyId = GetFirstFaintedPartyIndex(battler);
     }
     // Switching out
-    else if (gBattleStruct->monToSwitchIntoId[battler] >= PARTY_SIZE || !IsValidForBattle(&gPlayerParty[gBattleStruct->monToSwitchIntoId[battler]]))
+    else if (gBattleStruct->monToSwitchIntoId[battler] >= PARTY_SIZE || !IsValidForBattle(&party[gBattleStruct->monToSwitchIntoId[battler]]))
     {
         chosenMonId = GetMostSuitableMonToSwitchInto(battler, TRUE);
 
-        if (chosenMonId == PARTY_SIZE || !IsValidForBattle(&gPlayerParty[chosenMonId])) // just switch to the next mon
+        if (chosenMonId == PARTY_SIZE || !IsValidForBattle(&party[chosenMonId])) // just switch to the next mon
         {
             s32 firstId = (IsAiVsAiBattle()) ? 0 : (PARTY_SIZE / 2);
             u32 battler1 = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
@@ -411,7 +418,7 @@ static void PlayerPartnerHandleChoosePokemon(u32 battler)
 
             for (chosenMonId = firstId; chosenMonId < PARTY_SIZE; chosenMonId++)
             {
-                if (GetMonData(&gPlayerParty[chosenMonId], MON_DATA_HP) != 0
+                if (GetMonData(&party[chosenMonId], MON_DATA_HP) != 0
                     && chosenMonId != gBattlerPartyIndexes[battler1]
                     && chosenMonId != gBattlerPartyIndexes[battler2])
                 {

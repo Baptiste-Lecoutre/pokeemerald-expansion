@@ -653,9 +653,10 @@ static void CB2_InitBattleInternal(void)
         {
             CreateNPCTrainerParty(&gEnemyParty[0], gTrainerBattleOpponent_A, TRUE);
             if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS && !BATTLE_TWO_VS_ONE_OPPONENT)
-                CreateNPCTrainerParty(&gEnemyParty[PARTY_SIZE / 2], gTrainerBattleOpponent_B, FALSE);
+                CreateNPCTrainerParty(&gEnemy2Party[0], gTrainerBattleOpponent_B, FALSE);
             SetWildMonHeldItem();
             CalculateEnemyPartyCount();
+            CalculateEnemy2PartyCount();
         }
     }
 
@@ -663,12 +664,19 @@ static void CB2_InitBattleInternal(void)
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
 
     for (i = 0; i < PARTY_SIZE; i++)
-    {
         AdjustFriendship(&gPlayerParty[i], FRIENDSHIP_EVENT_LEAGUE_BATTLE);
 
-        // Apply party-wide start-of-battle form changes for both sides.
-        TryFormChange(i, B_SIDE_PLAYER, FORM_CHANGE_BEGIN_BATTLE);
-        TryFormChange(i, B_SIDE_OPPONENT, FORM_CHANGE_BEGIN_BATTLE);
+    // Apply party-wide start-of-battle form changes
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        // Player's side
+        TryFormChange(i, B_POSITION_PLAYER_LEFT, FORM_CHANGE_BEGIN_BATTLE);
+        // Opponent's side
+        TryFormChange(i, B_POSITION_OPPONENT_LEFT, FORM_CHANGE_BEGIN_BATTLE);
+        // Partner's side
+        TryFormChange(i, B_POSITION_PLAYER_RIGHT, FORM_CHANGE_BEGIN_BATTLE);
+        // Opponent2's side
+        TryFormChange(i, B_POSITION_OPPONENT_RIGHT, FORM_CHANGE_BEGIN_BATTLE);
     }
 
     gBattleCommunication[MULTIUSE_STATE] = 0;
@@ -1375,7 +1383,7 @@ static void SetMultiPartnerMenuParty(u8 offset)
 {
     s32 i;
 
-    for (i = 0; i < MULTI_PARTY_SIZE; i++)
+    for (i = 0; i < PARTY_SIZE; i++)
     {
         gMultiPartnerParty[i].species     = GetMonData(&gPlayerParty[offset + i], MON_DATA_SPECIES);
         gMultiPartnerParty[i].heldItem    = GetMonData(&gPlayerParty[offset + i], MON_DATA_HELD_ITEM);
@@ -1504,13 +1512,13 @@ static void CB2_PreInitIngamePlayerPartnerBattle(void)
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
     case 0:
-        sMultiPartnerPartyBuffer = Alloc(sizeof(gMultiPartnerParty));
-        SetMultiPartnerMenuParty(MULTI_PARTY_SIZE);
+//        sMultiPartnerPartyBuffer = Alloc(sizeof(gMultiPartnerParty));
+//        SetMultiPartnerMenuParty(0);//MULTI_PARTY_SIZE
         gBattleCommunication[MULTIUSE_STATE]++;
         *savedCallback = gMain.savedCallback;
         *savedBattleTypeFlags = gBattleTypeFlags;
         gMain.savedCallback = CB2_PreInitIngamePlayerPartnerBattle;
-        ShowPartyMenuToShowcaseMultiBattleParty();
+//        ShowPartyMenuToShowcaseMultiBattleParty();
         break;
     case 1:
         if (!gPaletteFade.active)
@@ -1519,7 +1527,7 @@ static void CB2_PreInitIngamePlayerPartnerBattle(void)
             gBattleTypeFlags = *savedBattleTypeFlags;
             gMain.savedCallback = *savedCallback;
             SetMainCallback2(CB2_InitBattleInternal);
-            FREE_AND_SET_NULL(sMultiPartnerPartyBuffer);
+//            FREE_AND_SET_NULL(sMultiPartnerPartyBuffer);
         }
         break;
     }
@@ -2001,9 +2009,9 @@ void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMon 
 u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags)
 {
     u32 personalityValue;
-    u8 fixedIV, monLevel, averageOpponentLevel = 0, playerLevel = GetMedianLevelOfPlayerParty();//GetHighestLevelInPlayerParty();
+    u8 fixedIV, monsCount, playerLevel = GetMedianLevelOfPlayerParty();//GetHighestLevelInPlayerParty();
     s32 i, j;
-    u8 monsCount;
+    s16 averageOpponentLevel = 0, monLevel;
     if (battleTypeFlags & BATTLE_TYPE_TRAINER && !(battleTypeFlags & (BATTLE_TYPE_FRONTIER
                                                                         | BATTLE_TYPE_EREADER_TRAINER
                                                                         | BATTLE_TYPE_TRAINER_HILL)))
@@ -2013,17 +2021,17 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
 
 //        *trainer = TryOverrideParty(trainer);
 
-        if (battleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+        /*if (battleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
         {
             if (trainer->partySize > PARTY_SIZE / 2)
                 monsCount = PARTY_SIZE / 2;
             else
                 monsCount = trainer->partySize;
         }
-        else
-        {
+        else*/
+        //{
             monsCount = trainer->partySize;
-        }
+        //}
 
         for (i = 0; i < monsCount; i++)
         {
@@ -2795,7 +2803,8 @@ extern const struct MonCoords gMonFrontPicCoords[];
 void SpriteCB_FaintOpponentMon(struct Sprite *sprite)
 {
     u8 battler = sprite->sBattler;
-    u32 personality = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_PERSONALITY);
+    struct Pokemon *party = GetBattlerParty(battler);
+    u32 personality = GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_PERSONALITY);
     u16 species;
     u8 yOffset;
 
@@ -3221,7 +3230,8 @@ static void BattleStartClearSetData(void)
     else
         gBattleStruct->moneyMultiplier = 1;
 
-    gBattleStruct->givenExpMons = 0;
+    gBattleStruct->givenExpMons[0] = 0;
+    gBattleStruct->givenExpMons[1] = 0;
     gBattleStruct->palaceFlags = 0;
 
     gRandomTurnNumber = Random();
@@ -3239,17 +3249,22 @@ static void BattleStartClearSetData(void)
         gSideTimers[i].stickyWebBattlerId = 0xFF;
     }
     gBattleStruct->appearedInBattle = 0;
-    gBattleStruct->revealedEnemyMons = 0;
+    gBattleStruct->revealedEnemyMons[0] = 0;
+    gBattleStruct->revealedEnemyMons[1] = 0;
     gBattleStruct->beatUpSlot = 0;
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        gBattleStruct->usedHeldItems[i][B_SIDE_PLAYER] = 0;
-        gBattleStruct->usedHeldItems[i][B_SIDE_OPPONENT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_PLAYER_LEFT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_OPPONENT_LEFT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_PLAYER_RIGHT] = 0;
+        gBattleStruct->usedHeldItems[i][B_POSITION_OPPONENT_RIGHT] = 0;
         gBattleStruct->itemLost[i].originalItem = GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM);
         gPartyCriticalHits[i] = 0;
-        gBattleStruct->allowedToChangeFormInWeather[i][B_SIDE_PLAYER] = FALSE;
-        gBattleStruct->allowedToChangeFormInWeather[i][B_SIDE_OPPONENT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_PLAYER_LEFT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_OPPONENT_LEFT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_PLAYER_RIGHT] = FALSE;
+        gBattleStruct->allowedToChangeFormInWeather[i][B_POSITION_OPPONENT_RIGHT] = FALSE;
     }
 
     gBattleStruct->swapDamageCategory = FALSE; // Photon Geyser, Shell Side Arm, Light That Burns the Sky
@@ -3597,7 +3612,7 @@ static void DoBattleIntro(void)
                 gBattleMons[battler].type2 = gSpeciesInfo[gBattleMons[battler].species].types[1];
                 gBattleMons[battler].type3 = TYPE_MYSTERY;
                 gBattleMons[battler].ability = GetAbilityBySpecies(gBattleMons[battler].species, gBattleMons[battler].abilityNum);
-                gBattleStruct->hpOnSwitchout[GetBattlerSide(battler)] = gBattleMons[battler].hp;
+                gBattleStruct->hpOnSwitchout[GetBattlerPosition(battler)] = gBattleMons[battler].hp;
                 gBattleMons[battler].status2 = 0;
                 for (i = 0; i < NUM_BATTLE_STATS; i++)
                     gBattleMons[battler].statStages[i] = DEFAULT_STAT_STAGE;
@@ -3676,44 +3691,32 @@ static void DoBattleIntro(void)
         if (!gBattleControllerExecFlags)
         {
             struct HpAndStatus hpStatus[PARTY_SIZE];
-
-            for (i = 0; i < PARTY_SIZE; i++)
+            struct Pokemon *party;
+            for (battler = 0; battler < gBattlersCount; battler++)
             {
-                if (GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-                 || GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
-                {
-                    hpStatus[i].hp = HP_EMPTY_SLOT;
-                    hpStatus[i].status = 0;
-                }
-                else
-                {
-                    hpStatus[i].hp = GetMonData(&gEnemyParty[i], MON_DATA_HP);
-                    hpStatus[i].status = GetMonData(&gEnemyParty[i], MON_DATA_STATUS);
-                }
-            }
+                if ((battler == GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT) && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+                    || (battler == GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT) && !(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)))
+                    continue;
 
-            battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-            BtlController_EmitDrawPartyStatusSummary(battler, BUFFER_A, hpStatus, PARTY_SUMM_SKIP_DRAW_DELAY);
-            MarkBattlerForControllerExec(battler);
-
-            for (i = 0; i < PARTY_SIZE; i++)
-            {
-                if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
-                 || GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+                party = GetBattlerParty(battler);
+                for (i = 0; i < PARTY_SIZE; i++)
                 {
-                    hpStatus[i].hp = HP_EMPTY_SLOT;
-                    hpStatus[i].status = 0;
+                    if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE
+                     || GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG)
+                    {
+                        hpStatus[i].hp = HP_EMPTY_SLOT;
+                        hpStatus[i].status = 0;
+                    }
+                    else
+                    {
+                        hpStatus[i].hp = GetMonData(&party[i], MON_DATA_HP);
+                        hpStatus[i].status = GetMonData(&party[i], MON_DATA_STATUS);
+                    }
                 }
-                else
-                {
-                    hpStatus[i].hp = GetMonData(&gPlayerParty[i], MON_DATA_HP);
-                    hpStatus[i].status = GetMonData(&gPlayerParty[i], MON_DATA_STATUS);
-                }
-            }
 
-            battler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-            BtlController_EmitDrawPartyStatusSummary(battler, BUFFER_A, hpStatus, PARTY_SUMM_SKIP_DRAW_DELAY);
-            MarkBattlerForControllerExec(battler);
+                BtlController_EmitDrawPartyStatusSummary(battler, BUFFER_A, hpStatus, PARTY_SUMM_SKIP_DRAW_DELAY);
+                MarkBattlerForControllerExec(battler);
+            }   
 
             (*state)++;
         }
@@ -4006,7 +4009,7 @@ static void TryDoEventsBeforeFirstTurn(void)
             gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
         //Add to team preview
         if (GetBattlerSide(i) == B_SIDE_OPPONENT && IsBattlerAlive(i))
-            gBattleStruct->revealedEnemyMons |= gBitTable[gBattlerPartyIndexes[i]];
+            gBattleStruct->revealedEnemyMons[(i & BIT_FLANK) >> 1] |= gBitTable[gBattlerPartyIndexes[i]];
     }
     TurnValuesCleanUp(FALSE);
     SpecialStatusesClear();
@@ -4216,7 +4219,7 @@ void SwitchPartyOrder(u32 battler)
     partyId2 = GetPartyIdFromBattlePartyId(*(gBattleStruct->monToSwitchIntoId + battler));
     SwitchPartyMonSlots(partyId1, partyId2);
 
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
     {
         for (i = 0; i < (int)ARRAY_COUNT(gBattlePartyCurrentOrder); i++)
         {
@@ -5645,8 +5648,10 @@ static void HandleEndTurn_FinishBattle(void)
                 changedForm = TryFormChange(i, B_SIDE_PLAYER, FORM_CHANGE_END_BATTLE);
 
             // Clear original species field
-            gBattleStruct->changedSpecies[B_SIDE_PLAYER][i] = SPECIES_NONE;
-            gBattleStruct->changedSpecies[B_SIDE_OPPONENT][i] = SPECIES_NONE;
+            gBattleStruct->changedSpecies[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)][i] = SPECIES_NONE;
+            gBattleStruct->changedSpecies[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)][i] = SPECIES_NONE;
+            gBattleStruct->changedSpecies[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)][i] = SPECIES_NONE;
+            gBattleStruct->changedSpecies[GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)][i] = SPECIES_NONE;
 
             // Recalculate the stats of every party member before the end
             if (!changedForm && B_RECALCULATE_STATS >= GEN_5)

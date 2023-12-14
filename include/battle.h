@@ -259,7 +259,7 @@ struct WishFutureKnock
     u8 wishCounter[MAX_BATTLERS_COUNT];
     u8 wishPartyId[MAX_BATTLERS_COUNT];
     u8 weatherDuration;
-    u8 knockedOffMons[NUM_BATTLE_SIDES]; // Each battler is represented by a bit.
+    u8 knockedOffMons[MAX_BATTLERS_COUNT]; // Each battler is represented by a bit.
 };
 
 struct AI_SavedBattleMon
@@ -288,8 +288,8 @@ struct AiPartyMon
 
 struct AIPartyData // Opposing battlers - party mons.
 {
-    struct AiPartyMon mons[NUM_BATTLE_SIDES][PARTY_SIZE]; // 2 parties(player, opponent). Used to save information on opposing party.
-    u8 count[NUM_BATTLE_SIDES];
+    struct AiPartyMon mons[MAX_BATTLERS_COUNT][PARTY_SIZE]; // 2 parties(player, opponent). Used to save information on opposing party.
+    u8 count[MAX_BATTLERS_COUNT];
 };
 
 struct SwitchinCandidate
@@ -555,7 +555,7 @@ struct DynamaxData
     bool8 playerSelect;
     u8 triggerSpriteId;
     u8 toDynamax; // flags using gBitTable
-    bool8 alreadyDynamaxed[NUM_BATTLE_SIDES];
+    bool8 alreadyDynamaxed[MAX_BATTLERS_COUNT];
     bool8 dynamaxed[MAX_BATTLERS_COUNT];
     u8 dynamaxTurns[MAX_BATTLERS_COUNT];
     u8 usingMaxMove[MAX_BATTLERS_COUNT];
@@ -599,7 +599,7 @@ struct BattleStruct
     u8 expOrderId:3;
     u8 expGetterBattlerId:2;
     u8 teamGotExpMsgPrinted:1; // The 'Rest of your team got msg' has been printed.
-    u8 givenExpMons; // Bits for enemy party's pokemon that gave exp to player's party.
+    u8 givenExpMons[2]; // Bits for enemy parties pokemon that gave exp to player's party.
     u8 expSentInMons; // As bits for player party mons - not including exp share mons.
     u8 wildVictorySong;
     u8 dynamicMoveType;
@@ -639,14 +639,14 @@ struct BattleStruct
     u8 wallyWaitFrames;
     u8 wallyMoveFrames;
     u16 lastTakenMove[MAX_BATTLERS_COUNT]; // Last move that a battler was hit with.
-    u16 hpOnSwitchout[NUM_BATTLE_SIDES];
+    u16 hpOnSwitchout[MAX_BATTLERS_COUNT];
     u32 savedBattleTypeFlags;
     u16 abilityPreventingSwitchout;
     u8 hpScale;
     u16 synchronizeMoveEffect;
     bool8 anyMonHasTransformed;
     void (*savedCallback)(void);
-    u16 usedHeldItems[PARTY_SIZE][NUM_BATTLE_SIDES]; // For each party member and side. For harvest, recycle
+    u16 usedHeldItems[PARTY_SIZE][MAX_BATTLERS_COUNT]; // For each party member and side. For harvest, recycle
     u16 chosenItem[MAX_BATTLERS_COUNT];
     u16 choicedMove[MAX_BATTLERS_COUNT];
     u16 changedItems[MAX_BATTLERS_COUNT];
@@ -706,7 +706,7 @@ struct BattleStruct
     bool8 friskedAbility; // If identifies two mons, show the ability pop-up only once.
     u8 sameMoveTurns[MAX_BATTLERS_COUNT]; // For Metronome, number of times the same moves has been SUCCESFULLY used.
     u16 moveEffect2; // For Knock Off
-    u16 changedSpecies[NUM_BATTLE_SIDES][PARTY_SIZE]; // For forms when multiple mons can change into the same pokemon.
+    u16 changedSpecies[MAX_BATTLERS_COUNT][PARTY_SIZE]; // For forms when multiple mons can change into the same pokemon.
     u8 quickClawBattlerId;
     struct LostItem itemLost[PARTY_SIZE];  // Player's team that had items consumed or stolen (two bytes per party member)
     u8 blunderPolicy:1; // should blunder policy activate
@@ -723,8 +723,8 @@ struct BattleStruct
     bool8 effectsBeforeUsingMoveDone:1; // Mega Evo and Focus Punch/Shell Trap effects.
     u8 targetsDone[MAX_BATTLERS_COUNT]; // Each battler as a bit.
     u16 overwrittenAbilities[MAX_BATTLERS_COUNT];    // abilities overwritten during battle (keep separate from battle history in case of switching)
-    bool8 allowedToChangeFormInWeather[PARTY_SIZE][NUM_BATTLE_SIDES]; // For each party member and side, used by Ice Face.
-    u8 battleBondTransformed[NUM_BATTLE_SIDES]; // Bitfield for each party.
+    bool8 allowedToChangeFormInWeather[PARTY_SIZE][MAX_BATTLERS_COUNT]; // For each party member and side, used by Ice Face.
+    u8 battleBondTransformed[MAX_BATTLERS_COUNT]; // Bitfield for each party.
     u8 storedHealingWish:4; // Each battler as a bit.
     u8 storedLunarDance:4; // Each battler as a bit.
     u8 bonusCritStages[MAX_BATTLERS_COUNT]; // G-Max Chi Strike boosts crit stages of allies.
@@ -740,7 +740,7 @@ struct BattleStruct
     bool8 trainerSlideZMoveMsgDone;
     bool8 trainerSlideBeforeFirstTurnMsgDone;
     u32 battleTimer; // frame counter to measure battle time length
-    u8 revealedEnemyMons;
+    u8 revealedEnemyMons[2];
     u32 aiDelayTimer; // Counts number of frames AI takes to choose an action.
     u32 aiDelayFrames; // Number of frames it took to choose an action.
     bool8 transformZeroToHero[PARTY_SIZE][NUM_BATTLE_SIDES];
@@ -817,6 +817,35 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 
 #define SET_STATCHANGER(statId, stage, goesDown)(gBattleScripting.statChanger = (statId) + ((stage) << 3) + (goesDown << 7))
 #define SET_STATCHANGER2(dst, statId, stage, goesDown)(dst = (statId) + ((stage) << 3) + (goesDown << 7))
+
+/*static inline struct Pokemon *GetSideParty(u32 side)
+{
+    return side == B_SIDE_PLAYER ? gPlayerParty : gEnemyParty;
+}
+
+static inline struct Pokemon *GetBattlerParty(u32 battlerId)
+{
+    extern u32 gBattleTypeFlags;
+    //extern u8 GetBattlerSide(u8 battler);
+    //return GetSideParty(GetBattlerSide(battlerId));
+    switch (battlerId)
+    {
+        case 0:
+            return gPlayerParty;
+        case 1:
+            return gEnemyParty;
+        case 2:
+            if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
+                return gPlayerPartnerParty;
+            else
+                return gPlayerParty;
+        case 3:
+            if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+                return gEnemy2Party;
+            else
+                return gEnemyParty;
+    }
+}*/
 
 // NOTE: The members of this struct have hard-coded offsets
 //       in include/constants/battle_script_commands.h
@@ -1111,7 +1140,25 @@ static inline struct Pokemon *GetSideParty(u32 side)
 
 static inline struct Pokemon *GetBattlerParty(u32 battler)
 {
-    return GetSideParty(GetBattlerSide(battler));
+    extern u32 gBattleTypeFlags;
+    //return GetSideParty(GetBattlerSide(battler));
+    switch (battler)
+    {
+        case 0:
+            return gPlayerParty;
+        case 1:
+            return gEnemyParty;
+        case 2:
+            if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
+                return gPlayerPartnerParty;
+            else
+                return gPlayerParty;
+        case 3:
+            if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+                return gEnemy2Party;
+            else
+                return gEnemyParty;
+    }
 }
 
 #endif // GUARD_BATTLE_H

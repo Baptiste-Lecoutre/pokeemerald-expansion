@@ -315,6 +315,7 @@ static void HandleInputChooseAction(u32 battler)
             gBattleAnimAttacker = battler;
             UpdateOamPriorityInAllHealthboxes(0, TRUE);
             ChangeBattlerSpritesInvisibilities(TRUE);
+            gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             DisplayInBattleTeamPreview();
             gBattlerControllerFuncs[battler] = HandleInputTeamPreview;
         }
@@ -514,6 +515,7 @@ static void HandleInputChooseAction(u32 battler)
                 gBattleAnimAttacker = battler;
                 UpdateOamPriorityInAllHealthboxes(0, TRUE);
                 ChangeBattlerSpritesInvisibilities(TRUE);
+                gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
                 DisplayInBattleTeamPreview();
                 gBattlerControllerFuncs[battler] = HandleInputTeamPreview;
             }
@@ -527,7 +529,8 @@ void HandleInputChooseTarget(u32 battler)
 {
     s32 i;
     static const u8 identities[MAX_BATTLERS_COUNT] = {B_POSITION_PLAYER_LEFT, B_POSITION_PLAYER_RIGHT, B_POSITION_OPPONENT_RIGHT, B_POSITION_OPPONENT_LEFT};
-    u16 move = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_MOVE1 + gMoveSelectionCursor[battler]);
+    struct Pokemon *party = GetBattlerParty(battler);
+    u16 move = GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_MOVE1 + gMoveSelectionCursor[battler]);
     u16 moveTarget = GetBattlerMoveTargetType(battler, move);
 
     DoBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX, 15, 1);
@@ -1363,6 +1366,8 @@ static void Intro_DelayAndEnd(u32 battler)
 static void Intro_WaitForShinyAnimAndHealthbox(u32 battler)
 {
     bool8 healthboxAnimDone = FALSE;
+    struct Pokemon *party = GetBattlerParty(battler);
+    struct Pokemon *partnerParty = GetBattlerParty(BATTLE_PARTNER(battler));
 
     // Check if healthbox has finished sliding in
     if (TwoPlayerIntroMons(battler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
@@ -1389,10 +1394,10 @@ static void Intro_WaitForShinyAnimAndHealthbox(u32 battler)
         FreeSpriteTilesByTag(ANIM_TAG_GOLD_STARS);
         FreeSpritePaletteByTag(ANIM_TAG_GOLD_STARS);
 
-        HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
+        HandleLowHpMusicChange(&party[gBattlerPartyIndexes[battler]], battler);
 
         if (TwoPlayerIntroMons(battler))
-            HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], BATTLE_PARTNER(battler));
+            HandleLowHpMusicChange(&partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], BATTLE_PARTNER(battler));
 
         gBattleSpritesDataPtr->healthBoxesData[battler].introEndDelay = 3;
         gBattlerControllerFuncs[battler] = Intro_DelayAndEnd;
@@ -1403,16 +1408,18 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
 {
     bool32 bgmRestored = FALSE;
     bool32 battlerAnimsDone = FALSE;
+    struct Pokemon *party = GetBattlerParty(battler);
+    struct Pokemon *partnerParty = GetBattlerParty(BATTLE_PARTNER(battler));
 
     // Start shiny animation if applicable for 1st pokemon
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim
      && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive)
-        TryShinyAnimation(battler, &gPlayerParty[gBattlerPartyIndexes[battler]]);
+        TryShinyAnimation(battler, &party[gBattlerPartyIndexes[battler]]);
 
     // Start shiny animation if applicable for 2nd pokemon
     if (!gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].triedShinyMonAnim
      && !gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].ballAnimActive)
-        TryShinyAnimation(BATTLE_PARTNER(battler), &gPlayerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]);
+        TryShinyAnimation(BATTLE_PARTNER(battler), &partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]);
 
     // Show healthbox after ball anim
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive
@@ -1422,11 +1429,11 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
         {
             if (TwoPlayerIntroMons(battler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
             {
-                UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &gPlayerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], HEALTHBOX_ALL);
+                UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], HEALTHBOX_ALL);
                 StartHealthboxSlideIn(BATTLE_PARTNER(battler));
                 SetHealthboxSpriteVisible(gHealthboxSpriteIds[BATTLE_PARTNER(battler)]);
             }
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gPlayerParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &party[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
             StartHealthboxSlideIn(battler);
             SetHealthboxSpriteVisible(gHealthboxSpriteIds[battler]);
         }
@@ -1509,28 +1516,32 @@ static void SwitchIn_CleanShinyAnimShowSubstitute(u32 battler)
 
 static void SwitchIn_HandleSoundAndEnd(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
+
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].specialAnimActive
         && !IsCryPlayingOrClearCrySongs())
     {
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
-        HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
+        HandleLowHpMusicChange(&party[gBattlerPartyIndexes[battler]], battler);
         PlayerBufferExecCompleted(battler);
     }
 }
 
 static void SwitchIn_TryShinyAnimShowHealthbox(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
+
     // Start shiny animation if applicable
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim
         && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive)
-        TryShinyAnimation(battler, &gPlayerParty[gBattlerPartyIndexes[battler]]);
+        TryShinyAnimation(battler, &party[gBattlerPartyIndexes[battler]]);
 
     // Wait for ball anim, then show healthbox
     if (gSprites[gBattleControllerData[battler]].callback == SpriteCallbackDummy
      && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive)
     {
         DestroySprite(&gSprites[gBattleControllerData[battler]]);
-        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gPlayerParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
+        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &party[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
         StartHealthboxSlideIn(battler);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[battler]);
         gBattlerControllerFuncs[battler] = SwitchIn_CleanShinyAnimShowSubstitute;
@@ -1689,11 +1700,12 @@ static void Task_LaunchLvlUpAnim(u8 taskId)
 {
     u8 battler = gTasks[taskId].tExpTask_battler;
     u8 monIndex = gTasks[taskId].tExpTask_monId;
+    struct Pokemon *party = GetBattlerParty(battler);
 
     if (IsDoubleBattle() == TRUE && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battler)])
         battler ^= BIT_FLANK;
 
-    if (GetEvolutionTargetSpecies(&gPlayerParty[monIndex], EVO_MODE_NORMAL, ITEM_NONE, NULL) != SPECIES_NONE)
+    if (GetEvolutionTargetSpecies(&party[monIndex], EVO_MODE_NORMAL, ITEM_NONE, NULL) != SPECIES_NONE)
         InitAndLaunchSpecialAnimation(battler, battler, battler, B_ANIM_LVL_UP_EVOLVE);
     else
         InitAndLaunchSpecialAnimation(battler, battler, battler, B_ANIM_LVL_UP);
@@ -1703,15 +1715,17 @@ static void Task_LaunchLvlUpAnim(u8 taskId)
 static void Task_UpdateLvlInHealthbox(u8 taskId)
 {
     u8 battler = gTasks[taskId].tExpTask_battler;
+    struct Pokemon *party = GetBattlerParty(battler);
+    struct Pokemon *partnerParty = GetBattlerParty(BATTLE_PARTNER(battler));
 
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].specialAnimActive)
     {
         u8 monIndex = gTasks[taskId].tExpTask_monId;
 
         if (IsDoubleBattle() == TRUE && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battler)])
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &gPlayerParty[monIndex], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &partnerParty[monIndex], HEALTHBOX_ALL);
         else
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gPlayerParty[monIndex], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &party[monIndex], HEALTHBOX_ALL);
 
         gTasks[taskId].func = Task_SetControllerToWaitForString;
     }
@@ -2031,7 +2045,9 @@ static void PrintLinkStandbyMsg(void)
 
 static void PlayerHandleLoadMonSprite(u32 battler)
 {
-    BattleLoadMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[battler]], battler);
+    struct Pokemon *party = GetBattlerParty(battler);
+
+    BattleLoadMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
     gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = battler;
     gBattlerControllerFuncs[battler] = CompleteOnBattlerSpritePosX_0;
 }
@@ -2361,10 +2377,11 @@ static void PlayerHandleHealthBarUpdate(u32 battler)
 
 void PlayerHandleExpUpdate(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
     u8 monId = gBattleResources->bufferA[battler][1];
     s32 taskId, expPointsToGive;
 
-    if (GetMonData(&gPlayerParty[monId], MON_DATA_LEVEL) >= MAX_LEVEL)
+    if (GetMonData(&party[monId], MON_DATA_LEVEL) >= MAX_LEVEL)
     {
         PlayerBufferExecCompleted(battler);
     }
@@ -2389,9 +2406,10 @@ void PlayerHandleExpUpdate(u32 battler)
 
 static void PlayerHandleStatusXor(u32 battler)
 {
-    u8 val = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_STATUS) ^ gBattleResources->bufferA[battler][1];
+    struct Pokemon *party = GetBattlerParty(battler);
+    u8 val = GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_STATUS) ^ gBattleResources->bufferA[battler][1];
 
-    SetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_STATUS, &val);
+    SetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_STATUS, &val);
     PlayerBufferExecCompleted(battler);
 }
 
@@ -2547,7 +2565,7 @@ static void PlayerHandleBattleDebug(u32 battler)
 
 static void HandleInputTeamPreview(u32 battler)
 {
-	if (JOY_NEW(A_BUTTON | B_BUTTON | L_BUTTON | DPAD_ANY))
+	if (JOY_NEW(A_BUTTON | B_BUTTON))
 	{
 		PlaySE(SE_SELECT);
 		TryRestoreLastUsedBall();
@@ -2555,6 +2573,15 @@ static void HandleInputTeamPreview(u32 battler)
 		UpdateOamPriorityInAllHealthboxes(1, TRUE);
 		ChangeBattlerSpritesInvisibilities(FALSE);
 		HideInBattleTeamPreview();
+//        gMultiUsePlayerCursor = 0;
 		gBattlerControllerFuncs[battler] = HandleInputChooseAction;
 	}
+    else if (JOY_NEW(L_BUTTON | R_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+//        HideInBattleTeamPreview();
+//        DisplayInBattleTeamPreview();
+        gMultiUsePlayerCursor ^= BIT_FLANK;
+        UpdateInBattleTeamPreview();
+    }
 }

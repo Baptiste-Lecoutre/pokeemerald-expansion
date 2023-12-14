@@ -326,10 +326,8 @@ void AnimTask_DrawFallingWhiteLinesOnAttacker(u8 taskId)
     }
     else
     {
-        if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
-            species = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_SPECIES);
-        else
-            species = GetMonData(&gPlayerParty[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_SPECIES);
+        struct Pokemon *party = GetBattlerParty(gBattleAnimAttacker);
+        species = GetMonData(&party[gBattlerPartyIndexes[gBattleAnimAttacker]], MON_DATA_SPECIES);
     }
 
     spriteId = GetAnimBattlerSpriteId(ANIM_ATTACKER);
@@ -468,10 +466,8 @@ static void StatsChangeAnimation_Step1(u8 taskId)
     }
     else
     {
-        if (GetBattlerSide(sAnimStatsChangeData->battler1) != B_SIDE_PLAYER)
-            sAnimStatsChangeData->species = GetMonData(&gEnemyParty[gBattlerPartyIndexes[sAnimStatsChangeData->battler1]], MON_DATA_SPECIES);
-        else
-            sAnimStatsChangeData->species = GetMonData(&gPlayerParty[gBattlerPartyIndexes[sAnimStatsChangeData->battler1]], MON_DATA_SPECIES);
+        struct Pokemon *party = GetBattlerParty(sAnimStatsChangeData->battler1);
+        sAnimStatsChangeData->species = GetMonData(&party[gBattlerPartyIndexes[sAnimStatsChangeData->battler1]], MON_DATA_SPECIES);
     }
 
     gTasks[taskId].func = StatsChangeAnimation_Step2;
@@ -850,10 +846,8 @@ void StartMonScrollingBgMask(u8 taskId, int UNUSED unused, u16 scrollSpeed, u8 b
     }
     else
     {
-        if (GetBattlerSide(battler) != B_SIDE_PLAYER)
-            species = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES);
-        else
-            species = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES);
+        struct Pokemon *party = GetBattlerParty(battler);
+        species = GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES);
     }
 
     spriteId = CreateInvisibleSpriteCopy(battler, gBattlerSpriteIds[battler], species);
