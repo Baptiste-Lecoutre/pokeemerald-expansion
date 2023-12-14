@@ -212,7 +212,7 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
-                DecompressGhostFrontPic(&pParty[gBattlerPartyIndexes[battler]], battler);
+                DecompressGhostFrontPic(&party[gBattlerPartyIndexes[battler]], battler);
             else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
                 BattleLoadMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
             else
