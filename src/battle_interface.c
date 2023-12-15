@@ -1907,10 +1907,11 @@ u8 CreatePartyStatusSummarySprites(u8 battlerId, struct HpAndStatus *partyInfo, 
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT || GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT)
-            ballIconSpritesIds[i] = CreateSpriteAtEnd(&sStatusSummaryBallsSpriteTemplates[isOpponent], bar_X, bar_Y - 4, 9);
-        else
+        if ((GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_RIGHT && gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+            || (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_RIGHT && gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
             ballIconSpritesIds[i] = CreateSpriteAtEnd(&sStatusSummaryBallsSpriteTemplates[isOpponent], bar_X, bar_Y + 10, 9);
+        else
+            ballIconSpritesIds[i] = CreateSpriteAtEnd(&sStatusSummaryBallsSpriteTemplates[isOpponent], bar_X, bar_Y - 4, 9);
 
         if (!isBattleStart)
         {
