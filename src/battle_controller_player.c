@@ -2576,7 +2576,7 @@ static void HandleInputTeamPreview(u32 battler)
 //        gMultiUsePlayerCursor = 0;
 		gBattlerControllerFuncs[battler] = HandleInputChooseAction;
 	}
-    else if (JOY_NEW(L_BUTTON | R_BUTTON))
+    else if (JOY_NEW(L_BUTTON | R_BUTTON) && gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
     {
         PlaySE(SE_SELECT);
 //        HideInBattleTeamPreview();

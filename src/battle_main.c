@@ -2136,7 +2136,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
                                                                         | BATTLE_TYPE_EREADER_TRAINER
                                                                         | BATTLE_TYPE_TRAINER_HILL)))
     {
-        gBattleTypeFlags |= gTrainers[trainerNum].doubleBattle;
+        gBattleTypeFlags |= gTrainers[trainerNum].doubleBattle; // BATTLE_TYPE_DOUBLE is 1
     }
     return retVal;
 }
@@ -3996,7 +3996,12 @@ static void TryDoEventsBeforeFirstTurn(void)
             gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[i]];
         //Add to team preview
         if (GetBattlerSide(i) == B_SIDE_OPPONENT && IsBattlerAlive(i))
-            gBattleStruct->revealedEnemyMons[(i & BIT_FLANK) >> 1] |= gBitTable[gBattlerPartyIndexes[i]];
+        {
+            if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+                gBattleStruct->revealedEnemyMons[(i & BIT_FLANK) >> 1] |= gBitTable[gBattlerPartyIndexes[i]];
+            else
+                gBattleStruct->revealedEnemyMons[0] |= gBitTable[gBattlerPartyIndexes[i]];
+        }
     }
     TurnValuesCleanUp(FALSE);
     SpecialStatusesClear();
