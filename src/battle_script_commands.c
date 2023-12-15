@@ -7032,7 +7032,12 @@ static void Cmd_switchineffects(void)
         gBattleStruct->appearedInBattle |= gBitTable[gBattlerPartyIndexes[battler]];
 
     if (GetBattlerSide(battler) == B_SIDE_OPPONENT && IsBattlerAlive(battler))
-        gBattleStruct->revealedEnemyMons[(battler & BIT_FLANK) >> 1] |= gBitTable[gBattlerPartyIndexes[battler]]; //Add to team preview
+    {
+        if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+            gBattleStruct->revealedEnemyMons[(battler & BIT_FLANK) >> 1] |= gBitTable[gBattlerPartyIndexes[battler]]; //Add to team preview
+        else
+            gBattleStruct->revealedEnemyMons[0] |= gBitTable[gBattlerPartyIndexes[battler]];
+    }
 
     // Neutralizing Gas announces itself before hazards
     if (gBattleMons[battler].ability == ABILITY_NEUTRALIZING_GAS && gSpecialStatuses[battler].announceNeutralizingGas == 0)

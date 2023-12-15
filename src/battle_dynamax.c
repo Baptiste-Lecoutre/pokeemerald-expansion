@@ -134,8 +134,8 @@ bool32 CanDynamax(u16 battlerId)
 
     // Cannot Dynamax if already has.
     if (gBattleStruct->dynamax.alreadyDynamaxed[battlerId]
-        /*|| gBattleStruct->dynamax.dynamaxed[BATTLE_PARTNER(battlerId)]
-        || gBattleStruct->dynamax.toDynamax & gBitTable[BATTLE_PARTNER(battlerId)]*/)
+        || ((gBattleStruct->dynamax.dynamaxed[BATTLE_PARTNER(battlerId)] || gBattleStruct->dynamax.toDynamax & gBitTable[BATTLE_PARTNER(battlerId)])
+            && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)))
         return FALSE;
 
     // TODO: Cannot Dynamax in a Max Raid if you don't have Dynamax Energy.
