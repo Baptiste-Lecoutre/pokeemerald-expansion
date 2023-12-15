@@ -60,6 +60,7 @@ MossdeepCity_House1_EventScript_CynthiaBattle::
 	waitmovement 0
 	applymovement LOCALID_CYNTHIA, Common_Movement_Delay48
 	waitmovement 0
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, FALSE
 	applymovement LOCALID_CYNTHIA, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	msgbox MossdeepCity_House1_Text_WhatsThis, MSGBOX_YESNO
