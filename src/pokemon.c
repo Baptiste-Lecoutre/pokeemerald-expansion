@@ -8600,14 +8600,15 @@ u16 GetBattleBGM(void)
         {
         case TRAINER_CLASS_AQUA_LEADER:
         case TRAINER_CLASS_MAGMA_LEADER:
-        case TRAINER_CLASS_BOSS:
             return MUS_VS_AQUA_MAGMA_LEADER;
         case TRAINER_CLASS_TEAM_AQUA:
         case TRAINER_CLASS_TEAM_MAGMA:
         case TRAINER_CLASS_AQUA_ADMIN:
         case TRAINER_CLASS_MAGMA_ADMIN:
-        case TRAINER_CLASS_TEAM_ROCKET:
             return MUS_VS_AQUA_MAGMA;
+        case TRAINER_CLASS_TEAM_ROCKET:
+        case TRAINER_CLASS_BOSS:
+            return MUS_HG_VS_ROCKET;
         case TRAINER_CLASS_LEADER:
             switch (gTrainerBattleOpponent_A)
             {
@@ -8619,13 +8620,20 @@ u16 GetBattleBGM(void)
             case TRAINER_BLAINE:
             case TRAINER_KOGA:
             case TRAINER_BLUE:
-                return MUS_RG_VS_GYM_LEADER;
+                return MUS_HG_VS_GYM_LEADER_KANTO;
             default:
                 return MUS_VS_GYM_LEADER;
             }
             
         case TRAINER_CLASS_CHAMPION:
-            return MUS_VS_CHAMPION;
+            switch (gTrainerBattleOpponent_A)
+            {
+            case TRAINER_CYNTHIA_1:
+            case TRAINER_CYNTHIA_2:
+                return MUS_DP_VS_CHAMPION;
+            default:
+                return MUS_VS_CHAMPION;
+            }
         case TRAINER_CLASS_RIVAL:
             if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
                 return MUS_VS_RIVAL;
