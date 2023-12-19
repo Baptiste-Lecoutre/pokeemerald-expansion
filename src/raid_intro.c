@@ -56,6 +56,7 @@ struct Partner
 {
 	u16 id;
 	u16 graphicsId;
+	u8 trainerBackPic;
 	u16 team[MAX_TEAM_SIZE];
 };
 
@@ -367,9 +368,10 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	{
         // TODO:
         //  - Set Raid Partner information based on selected trainer.
-		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
-		gSpecialVar_Result = 1;
 		PRESSED_A:
+		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
+		gRaidData.trainerBackPic = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].trainerBackPic;
+		gSpecialVar_Result = 1;
 		PlaySE(SE_SUCCESS);
 		gTasks[taskId].func = Task_RaidBattleIntroSetUpBattle;
 	}
@@ -384,8 +386,9 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	{
 		// TODO:
         //  - Select a random team to partner with.
-		gRaidData.partnerNum = sRaidBattleIntro->partners[Random()%3].id;
-		gSpecialVar_Result = 1;
+		/*gRaidData.partnerNum = sRaidBattleIntro->partners[Random()%3].id;
+		gSpecialVar_Result = 1;*/
+		sRaidBattleIntro->selectedTeam = Random()%3;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & START_BUTTON)
@@ -751,22 +754,23 @@ static bool32 GetRaidBattleData(void)
 
 		DetermineRaidPartners(partnerTrainerIndex, NELEMS(partnerTrainerIndex));
 
-		// Placeholder Data
-		// TODO: Select proper partners from gRaidPartners, based on rank + raid random number.
-		// TODO: Figure out how to encode things: difference between the gRaidPartners array index, 
-		// 		the gRaidPartners Id, the sRaidBattleIntro->partners index, the trainernum...
 		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->id = partnerTrainerIndex[i];//i+1; // Not the actual trainerNum, but the entry of sRaidPartnerData_Rank
-			partner->graphicsId = raidPartners->partnerData[partner->id].graphicsId;
+			partner->id = OverrideRaidPartnerTrainerId(raidPartners->partnerData[partnerTrainerIndex[i]].trainerNum);
+
+			if (raidPartners->partnerData[partnerTrainerIndex[i]].trainerNum == TRAINER_RIVAL_OVERRIDE)
+				partner->graphicsId = (gSaveBlock2Ptr->playerGender == MALE) ? OBJ_EVENT_GFX_MAY_NORMAL : OBJ_EVENT_GFX_BRENDAN_NORMAL;
+			else
+				partner->graphicsId = raidPartners->partnerData[partnerTrainerIndex[i]].graphicsId;
+
+			partner->trainerBackPic = raidPartners->partnerData[partnerTrainerIndex[i]].trainerBackPic;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				partner->team[j] = gTrainers[raidPartners->partnerData[partner->id].trainerNum].party[j].species;
+				partner->team[j] = gTrainers[partner->id].party[j].species;
 		}
 
 		return TRUE;
 	}
 	return FALSE;
 }
-

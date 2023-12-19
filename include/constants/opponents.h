@@ -864,6 +864,8 @@
 #define TRAINERS_COUNT                      855
 #define MAX_TRAINERS_COUNT                  864
 
+#define TRAINER_RED_OVERRIDE                0xFFFC
+#define TRAINER_WALLY_OVERRIDE              0xFFFD
 #define TRAINER_RIVAL_OVERRIDE              0xFFFE
 
 #define TRAINER_MAY_VICTORY_ROAD_TORCHIC 900
