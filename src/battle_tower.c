@@ -2202,8 +2202,8 @@ void DoSpecialTrainerBattle(void)
         if (gRaidData.partnerNum != 0)
         {
             gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
-            gPartnerSpriteId = raidPartners->partnerData[gRaidData.partnerNum].trainerBackPic;
-            gPartnerTrainerId = raidPartners->partnerData[gRaidData.partnerNum].trainerNum + TRAINER_CUSTOM_PARTNER;
+            gPartnerSpriteId = gRaidData.trainerBackPic;
+            gPartnerTrainerId = gRaidData.partnerNum + TRAINER_CUSTOM_PARTNER;
             FillPartnerParty(gPartnerTrainerId);
         }
 

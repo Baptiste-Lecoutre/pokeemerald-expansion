@@ -8,22 +8,17 @@ const struct RaidPartnerData sRaidPartnerData_Rank1[] =
 		.trainerBackPic = TRAINER_BACK_PIC_STEVEN,
 	},
 	{
-		.trainerNum = TRAINER_MAY_LILYCOVE_MUDKIP,
+		.trainerNum = TRAINER_RIVAL_OVERRIDE,
 		.graphicsId = OBJ_EVENT_GFX_MAY_NORMAL,
 		.trainerBackPic = TRAINER_BACK_PIC_MAY,
 	},
 	{
-		.trainerNum = TRAINER_RED_VICTORY_ROAD,
+		.trainerNum = TRAINER_RED_OVERRIDE,
 		.graphicsId = OBJ_EVENT_GFX_RED,
 		.trainerBackPic = TRAINER_BACK_PIC_RED,
 	},
 	{
-		.trainerNum = TRAINER_BRENDAN_LILYCOVE_TORCHIC,
-		.graphicsId = OBJ_EVENT_GFX_BRENDAN_NORMAL,
-		.trainerBackPic = TRAINER_BACK_PIC_BRENDAN,
-	},
-	{
-		.trainerNum = TRAINER_WALLY_VR_1,
+		.trainerNum = TRAINER_WALLY_OVERRIDE,
 		.graphicsId = OBJ_EVENT_GFX_WALLY,
 		.trainerBackPic = TRAINER_BACK_PIC_WALLY,
 	},
@@ -39,6 +34,10 @@ const struct RaidPartnerData sRaidPartnerData_Rank1[] =
 	// leaf
 	// lucas
 	// dawn
+
+	// old man FRLG
+	// pokedude FRLG
+	// cynthia
 };
 
 const struct RaidPartner gRaidPartners[MAX_RAID_RANK + 1] =

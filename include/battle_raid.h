@@ -14,14 +14,15 @@ struct RaidData {
     u8 rank;
     u8 raidType;
 //    struct Trainer* partners;
-    u8 partnerNum;
+    u16 partnerNum;
+	u8 trainerBackPic;
 };
 
 struct RaidPartnerData
 {
     u16 trainerNum;
 	u16 graphicsId;
-	u16 trainerBackPic;
+	u8 trainerBackPic;
 };
 
 struct RaidPartner
@@ -61,5 +62,6 @@ void GiveRaidBattleRewards(void);
 u8 GetRaidRecommendedLevel(void);
 u8 GetRaidEggMoveChance(void);
 void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners);
+u16 OverrideRaidPartnerTrainerId(u16 trainerId);
 
 #endif
