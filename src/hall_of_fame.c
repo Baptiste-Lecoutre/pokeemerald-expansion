@@ -454,7 +454,7 @@ static void Task_Hof_InitMonData(u8 taskId)
             for (j = 0; j < POKEMON_NAME_LENGTH; j++)
                 sHofMonPtr->mon[i].nickname[j] = nickname[j];
             
-            formChanges = gFormChangeTablePointers[sHofMonPtr->mon[i].species];
+            /*formChanges = gFormChangeTablePointers[sHofMonPtr->mon[i].species];
             if (formChanges != NULL)
             {
                 for (j = 0; formChanges[j].method != FORM_CHANGE_TERMINATOR; j++)
@@ -479,7 +479,7 @@ static void Task_Hof_InitMonData(u8 taskId)
                         }
                     }
                 }
-            }
+            }*/
 
             gTasks[taskId].tMonNumber++;
         }

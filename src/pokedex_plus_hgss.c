@@ -6496,7 +6496,6 @@ static u8 PrintPreEvolutions(u8 taskId, u16 species)
         {
             if (evolutions[j].targetSpecies == species)
             {
-                const struct FormChange *formChanges = gFormChangeTablePointers[i];
                 preEvolutionOne = i;
                 numPreEvolutions += 1;
                 
