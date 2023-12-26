@@ -1673,10 +1673,15 @@ static void MakeSpriteTemplateFromObjectEventTemplate(const struct ObjectEventTe
 static u8 LoadDynamicFollowerPaletteFromGraphicsId(u16 graphicsId, bool8 shiny, struct SpriteTemplate *template) {
     u16 species = ((graphicsId & OBJ_EVENT_GFX_SPECIES_MASK) - OBJ_EVENT_GFX_MON_BASE);
     u8 form = (graphicsId >> OBJ_EVENT_GFX_SPECIES_BITS);
-    const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonPaletteTable)[species];
-    u8 paletteNum = LoadDynamicFollowerPalette(species, form, shiny);
+    u8 paletteNum;
+    //const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonPaletteTable)[species];
+    struct CompressedSpritePalette spritePalette = {.tag = shiny ? species + SPECIES_SHINY_TAG : species};
+    spritePalette.data = (u32*) (shiny ? gSpeciesInfo[species].shinyPalette : gSpeciesInfo[species].palette);
+
+    //const struct CompressedSpritePalette *spritePalette = &gSpeciesInfo[species].(shiny ? shinyPalette : palette);
+    paletteNum = LoadDynamicFollowerPalette(species, form, shiny);
     if (template)
-        template->paletteTag = spritePalette->tag;
+        template->paletteTag = spritePalette.tag;
     return paletteNum;
 }
 
@@ -1816,16 +1821,33 @@ static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species,
 }
 
 // Find, or load, the palette for the specified pokemon info
-static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny) {
+/*static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny) {
     u8 paletteNum;
     // Note that the shiny palette tag is `species + SPECIES_SHINY_TAG`, which must be increased with more pokemon
     // so that palette tags do not overlap
-    const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonPaletteTable)[species];
+    //const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonPaletteTable)[species];
+
+    const struct CompressedSpritePalette *spritePalette = (shiny ? gSpeciesInfo[species].shinyPalette : gSpeciesInfo[species].palette);
+    
     if ((paletteNum = IndexOfSpritePaletteTag(spritePalette->tag)) == 0xFF) { // Load compressed palette
         LoadCompressedSpritePalette(spritePalette);
         paletteNum = IndexOfSpritePaletteTag(spritePalette->tag); // Tag is always present
         // TODO: Add more glowing pokemon besides Ampharos
         // CHARIZARD LINE ? CHINCHOU LANTERN FLAAFY MAREEP UMBREON VOLBEAT ?
+        UpdateSpritePaletteWithWeather(paletteNum, FALSE);
+    }
+    return paletteNum;
+}*/
+
+static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny) {
+    u32 paletteNum;
+    // Note that the shiny palette tag is `species + SPECIES_SHINY_TAG`, which must be increased with more pokemon
+    // so that palette tags do not overlap
+    struct CompressedSpritePalette spritePalette = {.tag = shiny ? species + SPECIES_SHINY_TAG : species};
+    spritePalette.data = (u32*) (shiny ? gSpeciesInfo[species].shinyPalette : gSpeciesInfo[species].palette);
+    if ((paletteNum = IndexOfSpritePaletteTag(spritePalette.tag)) == 0xFF) { // Load compressed palette
+        LoadCompressedSpritePalette(&spritePalette);
+        paletteNum = IndexOfSpritePaletteTag(spritePalette.tag); // Tag is always present
         UpdateSpritePaletteWithWeather(paletteNum, FALSE);
     }
     return paletteNum;
@@ -5136,7 +5158,7 @@ static bool8 TryStartFollowerTransformEffect(struct ObjectEvent *objectEvent, st
         && OW_SPECIES(objectEvent) != GetOverworldCastformSpecies()) {
         sprite->data[7] = TRANSFORM_TYPE_WEATHER << 8;
         return TRUE;
-    } else if ((gRngValue >> 16) < 18 && GetLocalWildMon(FALSE)
+    } else if (Random() < 18 && GetLocalWildMon(FALSE)
             && (OW_SPECIES(objectEvent) == SPECIES_MEW || OW_SPECIES(objectEvent) == SPECIES_DITTO)) {
         sprite->data[7] = TRANSFORM_TYPE_RANDOM_WILD << 8;
         PlaySE(SE_M_MINIMIZE);
@@ -10501,4 +10523,18 @@ bool8 MovementAction_WalkFastDiagonal_Step1(struct ObjectEvent *objectEvent, str
     return FALSE;
 }
 
+bool8 MovementAction_EmoteX_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    ObjectEventGetLocalIdAndMap(objectEvent, &gFieldEffectArguments[0], &gFieldEffectArguments[1], &gFieldEffectArguments[2]);
+    FieldEffectStart(FLDEFF_X_ICON);
+    sprite->sActionFuncId = 1;
+    return TRUE;
+}
 
+bool8 MovementAction_EmoteDoubleExclamationMark_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    ObjectEventGetLocalIdAndMap(objectEvent, &gFieldEffectArguments[0], &gFieldEffectArguments[1], &gFieldEffectArguments[2]);
+    FieldEffectStart(FLDEFF_DOUBLE_EXCL_MARK_ICON);
+    sprite->sActionFuncId = 1;
+    return TRUE;
+}

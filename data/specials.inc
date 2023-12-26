@@ -577,3 +577,9 @@ gSpecials::
 	def_special CheckSpeciesInParty
 	def_special ChangePokemonNature
 	def_special BufferChosenMonNature
+	def_special GetNumberSprayStrength
+	def_special GetSprayId
+	def_special GetLastUsedSprayType
+	def_special TrySkyBattle
+	def_special VsSeekerResetObjectMovementAfterChargeComplete
+	def_special VsSeekerFreezeObjectsAfterChargeComplete

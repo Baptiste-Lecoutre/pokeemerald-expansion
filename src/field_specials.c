@@ -1,4 +1,5 @@
 #include "global.h"
+#include "debug.h"
 #include "malloc.h"
 #include "battle.h"
 #include "battle_tower.h"
@@ -22,6 +23,7 @@
 #include "item_icon.h"
 #include "item_menu.h"
 #include "link.h"
+#include "load_save.h"
 #include "list_menu.h"
 #include "main.h"
 #include "mystery_gift.h"
@@ -97,8 +99,6 @@ static EWRAM_DATA u8 sPCBoxToSendMon = 0;
 static EWRAM_DATA u32 sBattleTowerMultiBattleTypeFlags = 0;
 
 struct ListMenuTemplate gScrollableMultichoice_ListMenuTemplate;
-
-extern struct Evolution gEvolutionTable[][EVOS_PER_MON];
 
 void TryLoseFansFromPlayTime(void);
 void SetPlayerGotFirstFans(void);
@@ -5275,11 +5275,12 @@ bool8 AreChosenMonEVsMaxedOut(void)
 bool8 HasMightyMagikarp(void)
 {
     u32 i = 0;
+    const struct Evolution *evolutions = GetSpeciesEvolutions(SPECIES_MAGIKARP);
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_MAGIKARP
-            && GetMonData(&gPlayerParty[i], MON_DATA_LEVEL) >= gEvolutionTable[SPECIES_MAGIKARP][0].param)
+            && IsMonPastEvolutionLevel(&gPlayerParty[i]))
         {
             return TRUE;
         }
@@ -5532,8 +5533,8 @@ u8 CountRotomInParty (void)
     
     for (i = 0; i < partyCount; i++)
     {
-        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
-        if (gSpeciesToNationalPokedexNum[species - 1] == SPECIES_ROTOM)
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL);
+        if (GET_BASE_SPECIES_ID(species) == SPECIES_ROTOM)
         {
             gSpecialVar_0x8004 = i;
             rotomCount++;
@@ -5662,4 +5663,48 @@ void ChangePokemonNature (void)
     newNature = (gSpecialVar_0x8005 * (NUM_STATS - 1)) + gSpecialVar_0x8006;
 	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
+}
+
+void TrySkyBattle(void)
+{
+    int i;
+
+    if (B_VAR_SKY_BATTLE == 0 || B_FLAG_SKY_BATTLE == 0)
+    {
+        LockPlayerFieldControls();
+        ScriptContext_SetupScript(Debug_FlagsAndVarNotSetBattleConfigMessage);
+        return;
+    }
+    for (i = 0; i < CalculatePlayerPartyCount(); i++)
+    {
+        struct Pokemon* pokemon = &gPlayerParty[i];
+        if (CanMonParticipateInSkyBattle(pokemon) && GetMonData(pokemon, MON_DATA_HP, NULL) > 0)
+        {
+            PreparePartyForSkyBattle();
+            gSpecialVar_Result = TRUE;
+            return;
+        }
+    }
+    gSpecialVar_Result = FALSE;
+}
+
+void PreparePartyForSkyBattle(void)
+{
+    int i, participatingPokemonSlot = 0;
+    u8 partyCount = CalculatePlayerPartyCount();
+
+    FlagSet(B_FLAG_SKY_BATTLE);
+    SavePlayerParty();
+
+    for (i = 0; i < partyCount; i++)
+    {
+        struct Pokemon* pokemon = &gPlayerParty[i];
+
+        if (CanMonParticipateInSkyBattle(pokemon))
+            participatingPokemonSlot += 1 << i;
+        else
+            ZeroMonData(pokemon);
+    }
+    VarSet(B_VAR_SKY_BATTLE,participatingPokemonSlot);
+    CompactPartySlots();
 }
