@@ -3508,7 +3508,7 @@ void TryAddLastUsedBallItemSprites(void)
         ArrowsChangeColorLastBallCycle(0); //Default the arrows to be invisible
 }
 
-static void CreateLastUsedBallGfx(void)
+UNUSED static void CreateLastUsedBallGfx(void)
 {
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {

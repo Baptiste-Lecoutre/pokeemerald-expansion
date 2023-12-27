@@ -6512,6 +6512,7 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
 
     switch (costumeId)
     {
+        default:
         case BRENDAN_COSTUME:
             trainerPic = TRAINER_PIC_BRENDAN;
             break;

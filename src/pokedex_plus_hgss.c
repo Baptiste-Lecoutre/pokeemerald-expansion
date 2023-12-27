@@ -6472,7 +6472,6 @@ static u8 PrintPreEvolutions(u8 taskId, u16 species)
 {
     u16 i;
     u16 j;
-    u16 k;
 
     u8 base_x = 13+8;
     u8 base_y = 51;

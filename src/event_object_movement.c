@@ -1583,9 +1583,6 @@ TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplat
   struct SpriteFrameImage spriteFrameImage;
   const struct ObjectEventGraphicsInfo *graphicsInfo;
   const struct SubspriteTable *subspriteTables = NULL;
-  u16 species;
-  u8 form = 0;
-  bool8 shiny = FALSE;
 
   graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
   CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(graphicsId, objectEventTemplate->movementType, &spriteTemplate, &subspriteTables);
