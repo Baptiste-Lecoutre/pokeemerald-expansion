@@ -1771,7 +1771,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU] =
     {
-        PIKACHU_MISC_INFO,
+        PIKACHU_MISC_INFO,//(TYPE_ELECTRIC),
         PIKACHU_REGULAR_SIZE_INFO,
         .genderRatio = PERCENT_FEMALE(50),
         .eggGroups = { EGG_GROUP_FIELD, EGG_GROUP_FAIRY },
@@ -1806,7 +1806,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_COSPLAY]   =
     {
-        PIKACHU_COSPLAY_MISC_INFO,
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_ELECTRIC),
         FRONT_PIC(PikachuCosplay, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuCosplay,
@@ -1820,7 +1820,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_ROCK_STAR] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_STEEL),
         FRONT_PIC(PikachuRockStar, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuRockStar,
@@ -1834,7 +1834,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_BELLE] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_ICE),
         .noFlip = TRUE,
         FRONT_PIC(PikachuBelle, 48, 48),
         .frontPicYOffset = 9,
@@ -1849,7 +1849,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_POP_STAR] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_FAIRY),
         .noFlip = TRUE,
         FRONT_PIC(PikachuPopStar, 48, 48),
         .frontPicYOffset = 9,
@@ -1864,7 +1864,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_PH_D] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_PSYCHIC),
         FRONT_PIC(PikachuPhD, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuPhD,
@@ -1878,7 +1878,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_LIBRE] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_FIGHTING),
         FRONT_PIC(PikachuLibre, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuLibre,
@@ -1888,6 +1888,34 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         //.backAnimId = BACK_ANIM_NONE,
         PALETTES(PikachuLibre),
         ICON(PikachuLibre, 0),
+    },
+
+    [SPECIES_PIKACHU_FLYING] = 
+    {
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_FLYING),
+        FRONT_PIC(PikachuFlying, 48, 48),
+        .frontPicYOffset = 9,
+        .frontAnimFrames = sAnims_PikachuFlying,
+        //.frontAnimId = ANIM_V_SQUISH_AND_BOUNCE,
+        BACK_PIC(PikachuFlying, 64, 56),
+        .backPicYOffset = 4,
+        //.backAnimId = BACK_ANIM_NONE,
+        PALETTES(PikachuFlying),
+        ICON(PikachuFlying, 0),
+    },
+
+    [SPECIES_PIKACHU_SURFING] = 
+    {
+        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_WATER),
+        FRONT_PIC(PikachuSurfing, 48, 48),
+        .frontPicYOffset = 9,
+        .frontAnimFrames = sAnims_PikachuSurfing,
+        //.frontAnimId = ANIM_V_SQUISH_AND_BOUNCE,
+        BACK_PIC(PikachuSurfing, 64, 56),
+        .backPicYOffset = 4,
+        //.backAnimId = BACK_ANIM_NONE,
+        PALETTES(PikachuSurfing),
+        ICON(PikachuSurfing, 0),
     },
 
 #endif //P_COSPLAY_PIKACHU_FORMS

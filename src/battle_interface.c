@@ -1816,11 +1816,11 @@ static void MegaIndicator_CreateSprite(u32 battlerId, u32 healthboxSpriteId)
     gSprites[*spriteId].invisible = TRUE;
 }
 
-void MegaIndicator_DestroySprite(u32 healthboxSpriteId)
+/*void MegaIndicator_DestroySprite(u32 healthboxSpriteId)
 {
     u8 *spriteId = MegaIndicator_GetSpriteId(healthboxSpriteId);
     DestroySprite(&gSprites[*spriteId]);
-}
+}*/
 
 static void SpriteCb_MegaIndicator(struct Sprite *sprite)
 {

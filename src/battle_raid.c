@@ -292,8 +292,6 @@ static const u16 *const sRaidBattleDropItems[] =
     [RAID_RANK_7] = sRaidBattleDropItems_RaidRank7
 };
 
-extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
-
 EWRAM_DATA struct RaidData gRaidData = {0};
 
 // forward declarations
@@ -346,7 +344,7 @@ bool32 InitRaidData(void)
     do
     {
         species = ((randomNum + species) % FORMS_START) + 1;
-    } while (species == SPECIES_NONE || gSpeciesInfo[species].flags & (SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_MYTHICAL | SPECIES_FLAG_ULTRA_BEAST));
+    } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
     /*preEvoSpecies = GetPreEvolution(species);
@@ -923,10 +921,10 @@ u16 GetRaidRewardAmount(u16 item)
         return Random() % 3 + gRaidData.rank;
 
     if (item >= ITEM_LONELY_MINT && item <= ITEM_SERIOUS_MINT)
-        return Random() % 3;
+        return 1;
 
     if (item >= ITEM_HEALTH_FEATHER && item <= ITEM_SWIFT_FEATHER)
-        return Random() % 21 + 10;
+        return Random() % 21 + 5;
 
     if (item >= ITEM_HP_UP && item <= ITEM_PP_MAX)
         return Random() % 3 + 1;
@@ -938,7 +936,7 @@ u16 GetRaidRewardAmount(u16 item)
         return 1;
 
     if (item >= ITEM_BUG_TERA_SHARD && item <= ITEM_WATER_TERA_SHARD)
-        return Random() % 21 + 10;
+        return Random() % 21 + 5;
 
 	// default
 	return 1;
