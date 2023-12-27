@@ -1674,11 +1674,8 @@ static u8 LoadDynamicFollowerPaletteFromGraphicsId(u16 graphicsId, bool8 shiny, 
     u16 species = ((graphicsId & OBJ_EVENT_GFX_SPECIES_MASK) - OBJ_EVENT_GFX_MON_BASE);
     u8 form = (graphicsId >> OBJ_EVENT_GFX_SPECIES_BITS);
     u8 paletteNum;
-    //const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonPaletteTable)[species];
     struct CompressedSpritePalette spritePalette = {.tag = shiny ? species + SPECIES_SHINY_TAG : species};
     spritePalette.data = (u32*) (shiny ? gSpeciesInfo[species].shinyPalette : gSpeciesInfo[species].palette);
-
-    //const struct CompressedSpritePalette *spritePalette = &gSpeciesInfo[species].(shiny ? shinyPalette : palette);
     paletteNum = LoadDynamicFollowerPalette(species, form, shiny);
     if (template)
         template->paletteTag = spritePalette.tag;
@@ -1819,25 +1816,6 @@ static const struct ObjectEventGraphicsInfo * SpeciesToGraphicsInfo(u16 species,
   }
   return graphicsInfo->tileTag == TAG_NONE ? graphicsInfo : &gPokemonObjectGraphics[SPECIES_PORYGON]; // avoid OOB access
 }
-
-// Find, or load, the palette for the specified pokemon info
-/*static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny) {
-    u8 paletteNum;
-    // Note that the shiny palette tag is `species + SPECIES_SHINY_TAG`, which must be increased with more pokemon
-    // so that palette tags do not overlap
-    //const struct CompressedSpritePalette *spritePalette = &(shiny ? gMonShinyPaletteTable : gMonPaletteTable)[species];
-
-    const struct CompressedSpritePalette *spritePalette = (shiny ? gSpeciesInfo[species].shinyPalette : gSpeciesInfo[species].palette);
-    
-    if ((paletteNum = IndexOfSpritePaletteTag(spritePalette->tag)) == 0xFF) { // Load compressed palette
-        LoadCompressedSpritePalette(spritePalette);
-        paletteNum = IndexOfSpritePaletteTag(spritePalette->tag); // Tag is always present
-        // TODO: Add more glowing pokemon besides Ampharos
-        // CHARIZARD LINE ? CHINCHOU LANTERN FLAAFY MAREEP UMBREON VOLBEAT ?
-        UpdateSpritePaletteWithWeather(paletteNum, FALSE);
-    }
-    return paletteNum;
-}*/
 
 static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny) {
     u32 paletteNum;
@@ -5288,18 +5266,6 @@ bool8 FollowablePlayerMovement_Idle(struct ObjectEvent *objectEvent, struct Spri
     u8 direction;
     if (!objectEvent->singleMovementActive)
     { // walk in place
-      // Bounce up and down
-      switch (sprite->sState2)
-      {
-      case 0:
-          sprite->y2 += 1;
-          sprite->sState2++;
-          break;
-      default:
-          sprite->y2 -= 1;
-          sprite->sState2 = 0;
-          break;
-      }
       ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkInPlaceNormalMovementAction(objectEvent->facingDirection));
       sprite->sTypeFuncId = 1;
       objectEvent->singleMovementActive = 1;
@@ -5339,19 +5305,6 @@ bool8 FollowablePlayerMovement_Step(struct ObjectEvent *objectEvent, struct Spri
     x = objectEvent->currentCoords.x;
     y = objectEvent->currentCoords.y;
     ClearObjectEventMovement(objectEvent, sprite);
-
-    // Bounce up and down
-    switch (sprite->sState2)
-    {
-    case 0:
-        sprite->y2 += 1;
-        sprite->sState2++;
-        break;
-    default:
-        sprite->y2 -= 1;
-        sprite->sState2 = 0;
-        break;
-    }
 
     if (objectEvent->invisible) { // Animate exiting pokeball
       // Player is jumping, but follower is invisible
