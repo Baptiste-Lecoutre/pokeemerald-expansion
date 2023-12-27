@@ -64,7 +64,7 @@ static EWRAM_DATA u16 sMovingNpcMapNum = 0;
 static EWRAM_DATA u16 sFieldEffectScriptId = 0;
 
 static u8 sBrailleWindowId;
-static bool8 gIsScriptedWildDouble;
+static bool8 sIsScriptedWildDouble;
 
 extern const SpecialFunc gSpecials[];
 extern const u8 *gStdScripts[];
@@ -1989,12 +1989,12 @@ bool8 ScrCmd_setwildbattle(struct ScriptContext *ctx)
     if(species2 == SPECIES_NONE)
     {
         CreateScriptedWildMon(species, level, item);
-        gIsScriptedWildDouble = FALSE;
+        sIsScriptedWildDouble = FALSE;
     }
     else
     {
         CreateScriptedDoubleWildMon(species, level, item, species2, level2, item2);
-        gIsScriptedWildDouble = TRUE;
+        sIsScriptedWildDouble = TRUE;
     }
 
     return FALSE;
@@ -2002,7 +2002,7 @@ bool8 ScrCmd_setwildbattle(struct ScriptContext *ctx)
 
 bool8 ScrCmd_dowildbattle(struct ScriptContext *ctx)
 {
-    if (gIsScriptedWildDouble == FALSE)
+    if (sIsScriptedWildDouble == FALSE)
         BattleSetup_StartScriptedWildBattle();
     else
         BattleSetup_StartScriptedDoubleWildBattle();
@@ -2468,7 +2468,7 @@ bool8 ScrCmd_checkPartyHasSpecies(struct ScriptContext *ctx)
     for (i = 0; i < partyCount; i++)
     {
         partySpecies = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
-        if (gSpeciesToNationalPokedexNum[partySpecies - 1] == wantedSpecies)
+        if (GET_BASE_SPECIES_ID(partySpecies) == wantedSpecies)
         {
             gSpecialVar_Result = TRUE;
         }
@@ -2484,7 +2484,7 @@ bool8 ScrCmd_isChosenMonSpecies(struct ScriptContext *ctx)
     u16 chosenSpecies = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, NULL);
 
     gSpecialVar_Result = FALSE;
-    if (gSpeciesToNationalPokedexNum[chosenSpecies - 1] == wantedSpecies)
+    if (GET_BASE_SPECIES_ID(chosenSpecies) == wantedSpecies)
     {
         gSpecialVar_Result = TRUE;
     }

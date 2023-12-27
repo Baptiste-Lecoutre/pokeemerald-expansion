@@ -42,6 +42,7 @@
 #include "tv.h"
 #include "window.h"
 #include "constants/battle_move_effects.h"
+#include "constants/hold_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/party_menu.h"
@@ -214,7 +215,7 @@ static EWRAM_DATA struct PokemonSummaryScreenData
     bool8 handleDeoxys;
     s16 switchCounter; // Used for various switch statement cases that decompress/load graphics or pokemon data
     u8 unk_filler4[6];
-    u8 splitIconSpriteId;
+    u8 categoryIconSpriteId;
 } *sMonSummaryScreen = NULL;
 
 EWRAM_DATA u8 gLastViewedMonIndex = 0;
@@ -533,64 +534,64 @@ static const u8 sMovesPPLayout[] = _("{PP}{DYNAMIC 0}/{DYNAMIC 1}");
 #define TAG_MON_STATUS 30001
 #define TAG_MOVE_TYPES 30002
 #define TAG_MON_MARKINGS 30003
-#define TAG_SPLIT_ICONS 30004
+#define TAG_CATEGORY_ICONS 30004
 #define TAG_HEALTH_BAR      30005
 #define TAG_EXP_BAR         30006
 
-static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/interface/split_icons.gbapal");
-static const u32 sSplitIcons_Gfx[] = INCBIN_U32("graphics/interface/split_icons.4bpp.lz");
+static const u16 sCategoryIcons_Pal[] = INCBIN_U16("graphics/interface/category_icons.gbapal");
+static const u32 sCategoryIcons_Gfx[] = INCBIN_U32("graphics/interface/category_icons.4bpp.lz");
 
-static const struct OamData sOamData_SplitIcons =
+static const struct OamData sOamData_CategoryIcons =
 {
     .size = SPRITE_SIZE(16x16),
     .shape = SPRITE_SHAPE(16x16),
     .priority = 0,
 };
 
-static const struct CompressedSpriteSheet sSpriteSheet_SplitIcons =
+static const struct CompressedSpriteSheet sSpriteSheet_CategoryIcons =
 {
-    .data = sSplitIcons_Gfx,
+    .data = sCategoryIcons_Gfx,
     .size = 16*16*3/2,
-    .tag = TAG_SPLIT_ICONS,
+    .tag = TAG_CATEGORY_ICONS,
 };
 
-static const struct SpritePalette sSpritePal_SplitIcons =
+static const struct SpritePalette sSpritePal_CategoryIcons =
 {
-    .data = sSplitIcons_Pal,
-    .tag = TAG_SPLIT_ICONS
+    .data = sCategoryIcons_Pal,
+    .tag = TAG_CATEGORY_ICONS
 };
 
-static const union AnimCmd sSpriteAnim_SplitIcon0[] =
+static const union AnimCmd sSpriteAnim_CategoryIcon0[] =
 {
     ANIMCMD_FRAME(0, 0),
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_SplitIcon1[] =
+static const union AnimCmd sSpriteAnim_CategoryIcon1[] =
 {
     ANIMCMD_FRAME(4, 0),
     ANIMCMD_END
 };
 
-static const union AnimCmd sSpriteAnim_SplitIcon2[] =
+static const union AnimCmd sSpriteAnim_CategoryIcon2[] =
 {
     ANIMCMD_FRAME(8, 0),
     ANIMCMD_END
 };
 
-static const union AnimCmd *const sSpriteAnimTable_SplitIcons[] =
+static const union AnimCmd *const sSpriteAnimTable_CategoryIcons[] =
 {
-    sSpriteAnim_SplitIcon0,
-    sSpriteAnim_SplitIcon1,
-    sSpriteAnim_SplitIcon2,
+    sSpriteAnim_CategoryIcon0,
+    sSpriteAnim_CategoryIcon1,
+    sSpriteAnim_CategoryIcon2,
 };
 
-static const struct SpriteTemplate sSpriteTemplate_SplitIcons =
+static const struct SpriteTemplate sSpriteTemplate_CategoryIcons =
 {
-    .tileTag = TAG_SPLIT_ICONS,
-    .paletteTag = TAG_SPLIT_ICONS,
-    .oam = &sOamData_SplitIcons,
-    .anims = sSpriteAnimTable_SplitIcons,
+    .tileTag = TAG_CATEGORY_ICONS,
+    .paletteTag = TAG_CATEGORY_ICONS,
+    .oam = &sOamData_CategoryIcons,
+    .anims = sSpriteAnimTable_CategoryIcons,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCallbackDummy
@@ -1148,100 +1149,22 @@ const u8 sText_Tough[] = _("TOUGH");
 const u8 sText_HeldItem[] = _("HELD ITEM");
 #endif
 
-#if CONFIG_PHYSICAL_SPECIAL_SPLIT || CONFIG_SHOW_ICONS_FOR_OLD_SPLIT
-static const u16 ALIGNED(4) sSplitIcons_Pal[] = INCBIN_U16("graphics/summary_screen/split_icons.gbapal");
-static const u32 sSplitIcons_Gfx[] = INCBIN_U32("graphics/summary_screen/split_icons.4bpp.lz");
-
-static const struct OamData sOamData_SplitIcons =
-{
-    .size = SPRITE_SIZE(32x16),
-    .shape = SPRITE_SHAPE(32x16),
-    .priority = 0,
-};
-
-static const struct CompressedSpriteSheet sSpriteSheet_SplitIcons =
-{
-    .data = sSplitIcons_Gfx,
-    .size = 32*16*3/2,
-    .tag = TAG_SPLIT_ICONS,
-};
-
-static const struct SpritePalette sSpritePal_SplitIcons =
-{
-    .data = sSplitIcons_Pal,
-    .tag = TAG_SPLIT_ICONS
-};
-
-static const union AnimCmd sSpriteAnim_SplitIcon0[] =
-{
-    ANIMCMD_FRAME(0, 0),
-    ANIMCMD_END
-};
-
-static const union AnimCmd sSpriteAnim_SplitIcon1[] =
-{
-    ANIMCMD_FRAME(8, 0),
-    ANIMCMD_END
-};
-
-static const union AnimCmd sSpriteAnim_SplitIcon2[] =
-{
-    ANIMCMD_FRAME(16, 0),
-    ANIMCMD_END
-};
-
-static const union AnimCmd *const sSpriteAnimTable_SplitIcons[] =
-{
-    sSpriteAnim_SplitIcon0,
-    sSpriteAnim_SplitIcon1,
-    sSpriteAnim_SplitIcon2,
-};
-
-static const struct SpriteTemplate sSpriteTemplate_SplitIcons =
-{
-    .tileTag = TAG_SPLIT_ICONS,
-    .paletteTag = TAG_SPLIT_ICONS,
-    .oam = &sOamData_SplitIcons,
-    .anims = sSpriteAnimTable_SplitIcons,
-    .images = NULL,
-    .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = SpriteCallbackDummy
-};
-
-static u8 ShowSplitIcon(u32 split)
-{
-    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT] == 0xFF)
-        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT] = CreateSprite(&sSpriteTemplate_SplitIcons, 58, 74, 0);
-
-    gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT]].invisible = FALSE;
-    StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT]], split);
-    return sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT];
-}
-
-static void DestroySplitIcon(void)
-{
-    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT] != 0xFF)
-        DestroySprite(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT]]);
-    sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT] = 0xFF;
-}
-#endif
-
 // code
-static u8 ShowSplitIcon(u32 split)
+static u8 ShowCategoryIcon(u32 category)
 {
-    if (sMonSummaryScreen->splitIconSpriteId == 0xFF)
-        sMonSummaryScreen->splitIconSpriteId = CreateSprite(&sSpriteTemplate_SplitIcons, 48, 129, 0);
+    if (sMonSummaryScreen->categoryIconSpriteId == 0xFF)
+        sMonSummaryScreen->categoryIconSpriteId = CreateSprite(&sSpriteTemplate_CategoryIcons, 48, 129, 0);
 
-    gSprites[sMonSummaryScreen->splitIconSpriteId].invisible = FALSE;
-    StartSpriteAnim(&gSprites[sMonSummaryScreen->splitIconSpriteId], split);
-    return sMonSummaryScreen->splitIconSpriteId;
+    gSprites[sMonSummaryScreen->categoryIconSpriteId].invisible = FALSE;
+    StartSpriteAnim(&gSprites[sMonSummaryScreen->categoryIconSpriteId], category);
+    return sMonSummaryScreen->categoryIconSpriteId;
 }
 
-static void DestroySplitIcon(void)
+static void DestroyCategoryIcon(void)
 {
-    if (sMonSummaryScreen->splitIconSpriteId != 0xFF)
-        DestroySprite(&gSprites[sMonSummaryScreen->splitIconSpriteId]);
-    sMonSummaryScreen->splitIconSpriteId = 0xFF;
+    if (sMonSummaryScreen->categoryIconSpriteId != 0xFF)
+        DestroySprite(&gSprites[sMonSummaryScreen->categoryIconSpriteId]);
+    sMonSummaryScreen->categoryIconSpriteId = 0xFF;
 }
 
 void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, void (*callback)(void))
@@ -1283,7 +1206,7 @@ void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, 
     sMonSummaryScreen->minPageIndex = sMonSummaryScreen->trueMinPageIndex;
     sMonSummaryScreen->maxPageIndex = sMonSummaryScreen->trueMaxPageIndex;
     sMonSummaryScreen->currPageIndex = sMonSummaryScreen->minPageIndex;
-    sMonSummaryScreen->splitIconSpriteId = 0xFF;
+    sMonSummaryScreen->categoryIconSpriteId = 0xFF;
     sMonSummaryScreen->currStatIndex = 0;
     sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SPLIT] = 0xFF;
     SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
@@ -2257,9 +2180,7 @@ static void Task_HandleInput_MoveSelect(u8 taskId)
             data[0]++;
             break;
         case 4:
-            if (sMonSummaryScreen->firstMoveIndex == MAX_MON_MOVES)
-                PrintMoveDetails(sMonSummaryScreen->newMove);
-            else
+            if (sMonSummaryScreen->firstMoveIndex != MAX_MON_MOVES)
                 PrintMoveDetails(sMonSummaryScreen->summary.moves[sMonSummaryScreen->firstMoveIndex]);
             PutWindowTilemap(PSS_LABEL_PANE_LEFT_MOVE);
             data[0]++;
@@ -2315,9 +2236,6 @@ static void ChangeSelectedMove(s16 *taskData, s8 direction, u8 *moveIndexPtr)
 
     if (*moveIndexPtr != MAX_MON_MOVES && newMoveIndex == MAX_MON_MOVES && sMonSummaryScreen->newMove == MOVE_NONE)
     {
-        #if CONFIG_PHYSICAL_SPECIAL_SPLIT || CONFIG_SHOW_ICONS_FOR_OLD_SPLIT
-        DestroySplitIcon();
-        #endif
         ScheduleBgCopyTilemapToVram(0);
     }
 
@@ -3595,32 +3513,6 @@ static void PrintContestMoves(void)
     PutWindowTilemap(PSS_LABEL_PANE_RIGHT);
 }
 
-static u8 GetBattleMoveCategory(u16 move)
-{
-    if (gBattleMoves[move].power == 0)
-    {
-        return 2;
-    }
-    else
-    {
-        switch (gBattleMoves[move].type)
-        {
-            case TYPE_NORMAL:
-            case TYPE_FIGHTING:
-            case TYPE_FLYING:
-            case TYPE_GROUND:
-            case TYPE_ROCK:
-            case TYPE_BUG:
-            case TYPE_GHOST:
-            case TYPE_POISON:
-            case TYPE_STEEL:
-                return 0;
-            default:
-                return 1;
-        }
-    }
-}
-
 static void PrintMoveDetails(u16 move)
 {
     u32 heartRow1, heartRow2;
@@ -3693,11 +3585,7 @@ static void PrintMoveDetails(u16 move)
 
             PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gMoveFourLineDescriptionPointers[move - 1], 2, 64, 0, 0);
 
-            #if CONFIG_PHYSICAL_SPECIAL_SPLIT
-            ShowSplitIcon(GetBattleMoveSplit(move));
-            #elif CONFIG_SHOW_ICONS_FOR_OLD_SPLIT
-            ShowSplitIcon(GetBattleMoveCategory(move));
-            #endif
+            ShowCategoryIcon(GetBattleMoveCategory(move));
         }
         else
         {
@@ -3983,7 +3871,6 @@ static void SwapMovesTypeSprites(u8 moveIndex1, u8 moveIndex2)
 
 static u8 LoadMonGfxAndSprite(struct Pokemon *mon, s16 *state)
 {
-    const struct CompressedSpritePalette *pal;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
 
     switch (*state)
@@ -4000,7 +3887,6 @@ static u8 LoadMonGfxAndSprite(struct Pokemon *mon, s16 *state)
         }
         else
         {
-        #ifdef POKEMON_EXPANSION
             if (gMonSpritesGfxPtr != NULL)
             {
                 HandleLoadSpecialPokePic(TRUE,
@@ -4015,29 +3901,12 @@ static u8 LoadMonGfxAndSprite(struct Pokemon *mon, s16 *state)
                                          summary->species2,
                                          summary->pid);
             }
-        #else
-            if (gMonSpritesGfxPtr != NULL)
-            {
-                HandleLoadSpecialPokePic(TRUE,
-                                         gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT],
-                                         summary->species2,
-                                         summary->pid);
-            }
-            else
-            {
-                HandleLoadSpecialPokePic(TRUE,
-                                         MonSpritesGfxManager_GetSpritePtr(MON_SPR_GFX_MANAGER_A, B_POSITION_OPPONENT_LEFT),
-                                         summary->species2,
-                                         summary->pid);
-            }
-        #endif
         }
         (*state)++;
         return 0xFF;
     case 1:
-        pal = GetMonSpritePalStructFromOtIdPersonality(summary->species2, summary->OTID, summary->pid);
-        LoadCompressedSpritePalette(pal);
-        SetMultiuseSpriteTemplateToPokemon(pal->tag, 1);
+        LoadCompressedSpritePaletteWithTag(GetMonSpritePalFromSpeciesAndPersonality(summary->species2, summary->OTID, summary->pid), summary->species2);
+        SetMultiuseSpriteTemplateToPokemon(summary->species2, B_POSITION_OPPONENT_LEFT);
         (*state)++;
         return 0xFF;
     }

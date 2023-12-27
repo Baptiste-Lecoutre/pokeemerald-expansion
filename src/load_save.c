@@ -14,6 +14,7 @@
 #include "decoration_inventory.h"
 #include "agb_flash.h"
 #include "constants/event_objects.h"
+#include "event_data.h"
 
 static void ApplyNewEncryptionKeyToAllEncryptedData(u32 encryptionKey);
 
@@ -132,7 +133,7 @@ void MoveSaveBlocks_ResetHeap(void)
     gMain.vblankCallback = vblankCB;
 
     // create a new encryption key
-    encryptionKey = (Random() << 16) + (Random());
+    encryptionKey = Random32();
     ApplyNewEncryptionKeyToAllEncryptedData(encryptionKey);
     gSaveBlock2Ptr->encryptionKey = encryptionKey;
 }
