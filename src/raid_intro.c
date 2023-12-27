@@ -500,16 +500,15 @@ static void ShowRaidPokemonSprite(void)
     u8 i, j;
     u16 species = sRaidBattleIntro->species;
 	u32 personality = sRaidBattleIntro->personality;
-	u32 otId = T1_READ_32(gSaveBlock2Ptr->playerTrainerId);
     u16 paletteOffset;
     u16 spriteId;
-	const struct CompressedSpritePalette *pal = GetMonSpritePalStructFromOtIdPersonality(species, otId, personality);
+	bool8 isShiny = FALSE;
 
 	// Create black silhouette.
-	sRaidBattleIntro->monSpriteId = CreateMonPicSprite(species, otId, personality, TRUE, 45, 57, 0, pal->tag);
+	sRaidBattleIntro->monSpriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, 45, 57, 0, species);
     gSprites[sRaidBattleIntro->monSpriteId].oam.priority = 0;
 
-	paletteOffset = IndexOfSpritePaletteTag(pal->tag) * 16 + 0x100;
+	paletteOffset = IndexOfSpritePaletteTag(species) * 16 + 0x100;
     BlendPalette(paletteOffset, 16, 16, RGB(4, 4, 4));
     CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
 
@@ -519,7 +518,7 @@ static void ShowRaidPokemonSprite(void)
     {
         for (j = 0; j < 2; j++)
         {
-            spriteId = CreateMonPicSprite(species, otId, personality, TRUE, 44 + i*2, 56 + j*2, gSprites[sRaidBattleIntro->monSpriteId].oam.paletteNum + 1, TAG_NONE);
+            spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, 44 + i*2, 56 + j*2, gSprites[sRaidBattleIntro->monSpriteId].oam.paletteNum + 1, TAG_NONE);
             gSprites[spriteId].oam.priority = 1;
         }
     }
