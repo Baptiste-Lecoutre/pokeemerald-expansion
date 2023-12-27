@@ -963,7 +963,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
     
     if (gBattleTypeFlags & BATTLE_TYPE_GHOST && ShouldUnveilGhost())
     {
-        SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesNames[targetSpecies]);
+        SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesInfo[targetSpecies].speciesName);
         UpdateNickInHealthbox(gHealthboxSpriteIds[battlerAtk], &gEnemyParty[gBattlerPartyIndexes[battlerAtk]]);
         TryAddPokeballIconToHealthbox(gHealthboxSpriteIds[battlerAtk], TRUE);
     }
