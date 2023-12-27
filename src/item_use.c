@@ -80,7 +80,6 @@ static void Task_CloseCantUseKeyItemMessage(u8);
 static void SetDistanceOfClosestHiddenItem(u8, s16, s16);
 static void CB2_OpenPokeblockFromBag(void);
 static void ItemUseOnFieldCB_Honey(u8 taskId);
-static bool32 CannotUseBagBattleItem(u16 itemId);
 static void ItemUseOnFieldCB_PokeVial(u8 taskId);
 static bool32 IsValidLocationForVsSeeker(void);
 

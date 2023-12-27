@@ -511,7 +511,6 @@ static bool8 SetUpFieldMove_RockClimb(void);
 void TryItemHoldFormChange(struct Pokemon *mon);
 static void ShowMoveSelectWindow(u8 slot);
 static void Task_HandleWhichMoveInput(u8 taskId);
-static bool32 CannotUsePartyBattleItem(u16 itemId, struct Pokemon* mon);
 static void CursorCb_MoveItem(u8);
 
 // static const data
@@ -2478,7 +2477,8 @@ static void BlitBitmapToPartyWindow_Equal(u8 windowId, u8 x, u8 y, u8 width, u8 
     else
         BlitBitmapToPartyWindow(windowId, sEqualMainSlotTileNums_Egg, 14, x, y, width, height);
 }
-static void DrawEmptySlot_Equal(u8 windowId)
+
+UNUSED static void DrawEmptySlot_Equal(u8 windowId)
 {
     BlitBitmapToPartyWindow(windowId, sEqualEmptySlotTileNums, 14, 0, 0, 14, 5);
 }//
@@ -5551,7 +5551,7 @@ static void StopLearningMovePrompt(u8 taskId)
     gTasks[taskId].func = Task_StopLearningMoveYesNo;*/
 }
 
-static void Task_StopLearningMoveYesNo(u8 taskId)
+UNUSED static void Task_StopLearningMoveYesNo(u8 taskId)
 {
     if (IsPartyMenuTextPrinterActive() != TRUE)
     {
@@ -7970,7 +7970,7 @@ static void Task_TryTradeEvolution(u8 taskId)
 
 void TryTradeEvolution(void)
 {
-    u8 taskId = CreateTask(Task_TryTradeEvolution, 10);
+    CreateTask(Task_TryTradeEvolution, 10);
 }
 
 void CanEvolveThroughTrade(void)

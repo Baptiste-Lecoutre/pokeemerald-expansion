@@ -471,7 +471,6 @@ static u8 PaletteStruct_GetPalNum(u16 id)
 // Like normal palette fade, but respects sprite/tile palettes immune to time of day fading
 static u8 UpdateTimeOfDayPaletteFade(void)
 {
-    u8 paletteNum;
     u16 paletteOffset;
     u16 selectedPalettes;
     u16 timePalettes = 0; // palettes passed to the time-blender
@@ -1331,7 +1330,7 @@ void TintPalette_CustomTone(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 b
 
 // Tints from Unfaded to Faded, using a 15-bit GBA color
 void TintPalette_RGB_Copy(u16 palOffset, u32 blendColor) {
-  s32 newR, newG, newB, rTone, gTone, bTone;
+  s32 newR, newG, newB, rTone = 0, gTone = 0, bTone = 0;
   u16 * src = gPlttBufferUnfaded + palOffset;
   u16 * dst = gPlttBufferFaded + palOffset;
   u32 defaultBlendColor = DEFAULT_LIGHT_COLOR;

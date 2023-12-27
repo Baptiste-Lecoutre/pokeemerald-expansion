@@ -5184,7 +5184,7 @@ void IncreaseChosenMonEVs(void)
 {
     u8 statToChange = gSpecialVar_0x8005;
     u8 increment = gSpecialVar_0x8006;
-    u8 oldEV;
+    u8 oldEV = 0;
     u8 newEV;
 
     // Get the number of EVs currently in the chosen stat
@@ -5275,7 +5275,6 @@ bool8 AreChosenMonEVsMaxedOut(void)
 bool8 HasMightyMagikarp(void)
 {
     u32 i = 0;
-    const struct Evolution *evolutions = GetSpeciesEvolutions(SPECIES_MAGIKARP);
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -5440,7 +5439,7 @@ void ChangeMonSpecies (void)
 // Takes a Rotom form as input and returns its special move
 u16 RotomFormToMove (u16 species)
 {
-    u16 move;
+    u16 move = MOVE_NONE;
 
     switch (species)
     {
@@ -5484,7 +5483,7 @@ void GetRotomState (void)
 // Returns TRUE if the moove was forgotten, false if not
 void RotomForgetSpecialMove (void)
 {
-    u8 i, forgotSpecialMove = 0;
+    u8 i;//, forgotSpecialMove = 0;
     u16 currentMove;
     u16 moveNone = MOVE_NONE;
 
@@ -5496,7 +5495,7 @@ void RotomForgetSpecialMove (void)
         {
             RemoveMonPPBonus(&gPlayerParty[gSpecialVar_0x8004], i);
             SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_MOVE1 + i, &moveNone);
-            forgotSpecialMove = TRUE;
+            //forgotSpecialMove = TRUE;
             break;
         }
     }
@@ -5574,7 +5573,7 @@ void BufferNextLevelCap(void)
 void IncreasePartyLevelToLevelCap(void)
 {
     u32 i, targetExp, currExp;
-    u8 lvlCap;
+    u8 lvlCap = gLevelCaps[NUM_SOFT_CAPS - 1];
     u16 species;
 
     // get lvl cap
