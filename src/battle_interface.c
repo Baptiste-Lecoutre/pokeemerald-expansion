@@ -203,7 +203,6 @@ static void SpriteCB_StatusSummaryBalls_OnSwitchout(struct Sprite *);
 
 static void SpriteCb_MegaTrigger(struct Sprite *);
 static void SpriteCb_BurstTrigger(struct Sprite *);
-static void MegaIndicator_SetVisibilities(u32 healthboxId, bool32 invisible);
 static void MegaIndicator_UpdateLevel(u32 healthboxId, u32 level);
 static void MegaIndicator_CreateSprite(u32 battlerId, u32 healthboxSpriteId);
 static void MegaIndicator_UpdateOamPriority(u32 healthboxId, u32 oamPriority);
@@ -3552,7 +3551,7 @@ void TryAddLastUsedBallItemSprites(void)
         ArrowsChangeColorLastBallCycle(0); //Default the arrows to be invisible
 }
 
-static void CreateLastUsedBallGfx(void)
+UNUSED static void CreateLastUsedBallGfx(void)
 {
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {
