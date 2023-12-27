@@ -494,7 +494,7 @@ static void OpponentHandleDrawTrainerPic(u32 battler)
     }
 
     BtlController_HandleDrawTrainerPic(battler, trainerPicId, TRUE,
-                                       xPos, 40 + 4 * (8 - gTrainerFrontPicCoords[trainerPicId].size),
+                                       xPos, 40 + 4 * (8 - gTrainerSprites[trainerPicId].y_offset),
                                        -1);
 }
 
@@ -693,7 +693,7 @@ static void OpponentHandleChoosePokemon(u32 battler)
                 if (IsValidForBattle(&party[chosenMonId])
                     && chosenMonId != gBattlerPartyIndexes[battler1]
                     && chosenMonId != gBattlerPartyIndexes[battler2]
-                    && (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_ACE_POKEMON)
+                    && (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ACE_POKEMON)
                         || (chosenMonId != CalculateEnemyPartyCount() - 1 && GetBattlerPosition(battler) == B_POSITION_OPPONENT_LEFT)
                         || (chosenMonId != CalculateEnemy2PartyCount() - 1 && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
                         || CountAIAliveNonEggMonsExcept(PARTY_SIZE, battler) == pokemonInBattle))
