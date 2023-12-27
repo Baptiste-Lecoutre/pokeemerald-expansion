@@ -1309,9 +1309,9 @@ const struct Item gItems[] =
                                        "reduces Defense."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_LONELY,
+        .flingPower = 10,
     },
 
     [ITEM_ADAMANT_MINT] =
@@ -1323,9 +1323,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Atk."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_ADAMANT,
+        .flingPower = 10,
     },
 
     [ITEM_NAUGHTY_MINT] =
@@ -1337,9 +1337,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Def."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_NAUGHTY,
+        .flingPower = 10,
     },
 
     [ITEM_BRAVE_MINT] =
@@ -1351,9 +1351,9 @@ const struct Item gItems[] =
                                        "reduces Speed."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_BRAVE,
+        .flingPower = 10,
     },
 
     [ITEM_BOLD_MINT] =
@@ -1365,9 +1365,9 @@ const struct Item gItems[] =
                                        "reduces Attack."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_BOLD,
+        .flingPower = 10,
     },
 
     [ITEM_IMPISH_MINT] =
@@ -1379,9 +1379,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Atk."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_IMPISH,
+        .flingPower = 10,
     },
 
     [ITEM_LAX_MINT] =
@@ -1393,9 +1393,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Def."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_LAX,
+        .flingPower = 10,
     },
 
     [ITEM_RELAXED_MINT] =
@@ -1407,9 +1407,9 @@ const struct Item gItems[] =
                                        "reduces Speed."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_RELAXED,
+        .flingPower = 10,
     },
 
     [ITEM_MODEST_MINT] =
@@ -1421,9 +1421,9 @@ const struct Item gItems[] =
                                        "reduces Attack."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_MODEST,
+        .flingPower = 10,
     },
 
     [ITEM_MILD_MINT] =
@@ -1435,9 +1435,9 @@ const struct Item gItems[] =
                                        "reduces Defense."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_MILD,
+        .flingPower = 10,
     },
 
     [ITEM_RASH_MINT] =
@@ -1449,9 +1449,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Def."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_RASH,
+        .flingPower = 10,
     },
 
     [ITEM_QUIET_MINT] =
@@ -1463,9 +1463,9 @@ const struct Item gItems[] =
                                        "reduces Speed."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_QUIET,
+        .flingPower = 10,
     },
 
     [ITEM_CALM_MINT] =
@@ -1477,9 +1477,9 @@ const struct Item gItems[] =
                                        "reduces Attack."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_CALM,
+        .flingPower = 10,
     },
 
     [ITEM_GENTLE_MINT] =
@@ -1491,9 +1491,9 @@ const struct Item gItems[] =
                                        "reduces Defense."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_GENTLE,
+        .flingPower = 10,
     },
 
     [ITEM_CAREFUL_MINT] =
@@ -1505,9 +1505,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Atk."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_CAREFUL,
+        .flingPower = 10,
     },
 
     [ITEM_SASSY_MINT] =
@@ -1519,9 +1519,9 @@ const struct Item gItems[] =
                                        "reduces Speed."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_SASSY,
+        .flingPower = 10,
     },
 
     [ITEM_TIMID_MINT] =
@@ -1533,9 +1533,9 @@ const struct Item gItems[] =
                                        "reduces Attack."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_TIMID,
+        .flingPower = 10,
     },
 
     [ITEM_HASTY_MINT] =
@@ -1547,9 +1547,9 @@ const struct Item gItems[] =
                                        "reduces Defense."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_HASTY,
+        .flingPower = 10,
     },
 
     [ITEM_JOLLY_MINT] =
@@ -1561,9 +1561,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Atk."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_JOLLY,
+        .flingPower = 10,
     },
 
     [ITEM_NAIVE_MINT] =
@@ -1575,9 +1575,9 @@ const struct Item gItems[] =
                                        "reduces Sp. Def."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_NAIVE,
+        .flingPower = 10,
     },
 
     [ITEM_SERIOUS_MINT] =
@@ -1589,9 +1589,9 @@ const struct Item gItems[] =
                                        "grow equally."),
         .pocket = POCKET_POWER_UP,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_Mints,
-        .flingPower = 10,
+        .fieldUseFunc = ItemUseOutOfBattle_Mint,
         .secondaryId = NATURE_SERIOUS,
+        .flingPower = 10,
     },
 
 // Candy
@@ -1687,8 +1687,8 @@ const struct Item gItems[] =
                                        "Level of a single\n"
                                        "Pokémon by one."),
         .pocket = POCKET_POWER_UP,
-        .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse, // Todo
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_DynamaxCandy,
         .flingPower = 30,
     },
 
