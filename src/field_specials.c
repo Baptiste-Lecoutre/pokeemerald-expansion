@@ -5648,7 +5648,7 @@ void BufferChosenMonNature (void)
 {
     u8 nature = 0;
 
-    nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE);
+    nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HIDDEN_NATURE);
     StringCopy (gStringVar2, gNatureNamePointers[nature]);
 }
 
@@ -5660,7 +5660,7 @@ void ChangePokemonNature (void)
     u8 newNature = 0;
 
     newNature = (gSpecialVar_0x8005 * (NUM_STATS - 1)) + gSpecialVar_0x8006;
-	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
+	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HIDDEN_NATURE, &newNature);
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }
 

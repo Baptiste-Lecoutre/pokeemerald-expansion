@@ -8225,7 +8225,7 @@ static void Task_Mints(u8 taskId)
             tState++;
         break;
     case 5:
-        SetMonData(&gPlayerParty[tMonId], MON_DATA_NATURE, &tNewNature);
+        //SetMonData(&gPlayerParty[tMonId], MON_DATA_NATURE, &tNewNature); // BoxMonRefactor removed this field and added new functions for mints
         CalculateMonStats(&gPlayerParty[tMonId]);
 
         RemoveBagItem(gSpecialVar_ItemId, 1);
