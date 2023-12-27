@@ -1785,7 +1785,7 @@ static void Task_HandleInput(u8 taskId)
                 PlaySE(SE_SELECT);
                 SwitchToMoveSelection(taskId);
             }
-            else if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS && FlagGet(FLAG_SYS_GAME_CLEAR))
+            else if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS /*&& FlagGet(FLAG_SYS_GAME_CLEAR)*/)
             {
                 PlaySE(SE_SELECT);
                 SetTaskFuncWithFollowupFunc(taskId, ChangeStatTask, gTasks[taskId].func);
@@ -3392,9 +3392,9 @@ static void PrintSkillsPage(void)
     if (numHPBarTicks == 0 && summary->currentHP != 0)
         numHPBarTicks = 1;
 
-    if (natureMod[STAT_ATK - 1] > 0)
+    if (natureMod[STAT_ATK - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 24, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_ATK - 1] < 0)
+    else if (natureMod[STAT_ATK - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 24, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Attack, 12, 24, 0, 1);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3406,9 +3406,9 @@ static void PrintSkillsPage(void)
     x = GetStringCenterAlignXOffset(1, gStringVar1, 72) + 76;
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 24, 0, 0);
 
-    if (natureMod[STAT_DEF - 1] > 0)
+    if (natureMod[STAT_DEF - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 40, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_DEF - 1] < 0)
+    else if (natureMod[STAT_DEF - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 40, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Defense, 12, 40, 0, 1);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3420,9 +3420,9 @@ static void PrintSkillsPage(void)
     x = GetStringCenterAlignXOffset(1, gStringVar1, 72) + 76;
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 40, 0, 0);
 
-    if (natureMod[STAT_SPATK - 1] > 0)
+    if (natureMod[STAT_SPATK - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 56, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_SPATK - 1] < 0)
+    else if (natureMod[STAT_SPATK - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 56, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_SpecialAttack, 12, 56, 0, PSS_COLOR_WHITE_BLACK_SHADOW);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3434,9 +3434,9 @@ static void PrintSkillsPage(void)
     x = GetStringCenterAlignXOffset(1, gStringVar1, 72) + 76;
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 56, 0, 0);
 
-    if (natureMod[STAT_SPDEF - 1] > 0)
+    if (natureMod[STAT_SPDEF - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 72, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_SPDEF - 1] < 0)
+    else if (natureMod[STAT_SPDEF - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 72, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_SpecialDefense, 12, 72, 0, 1);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3448,9 +3448,9 @@ static void PrintSkillsPage(void)
     x = GetStringCenterAlignXOffset(1, gStringVar1, 72) + 76;
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 72, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
 
-    if (natureMod[STAT_SPEED - 1] > 0)
+    if (natureMod[STAT_SPEED - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 88, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_SPEED - 1] < 0)
+    else if (natureMod[STAT_SPEED - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 88, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Speed, 12, 88, 0, PSS_COLOR_WHITE_BLACK_SHADOW);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -4558,12 +4558,12 @@ static void PrintInfoBar(u8 pageIndex, bool8 detailsShown)
             StringCopy(gStringVar2, sText_TitlePage);
             break;
         case PSS_PAGE_SKILLS:
-            if (!FlagGet(FLAG_SYS_GAME_CLEAR))
+            /*if (!FlagGet(FLAG_SYS_GAME_CLEAR))
             {
                 StringCopy(gStringVar1, sText_TitleSkills);
                 StringCopy(gStringVar2, sText_TitlePage);
             }
-            else if (sMonSummaryScreen->currStatIndex == 0)
+            else*/ if (sMonSummaryScreen->currStatIndex == 0)
             {
                 StringCopy(gStringVar1, sText_TitleSkills);
                 StringCopy(gStringVar2, sText_TitlePageIVs);
