@@ -1232,7 +1232,7 @@ u16 OverrideRaidPartnerTrainerId(u16 trainerId)
         if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
             trainerId = TRAINER_RED_VICTORY_ROAD;
     }
-    else if (trainerId == TRAINER_RIVAL_OVERRIDE)
+    /*else if (trainerId == TRAINER_RIVAL_OVERRIDE)
     {
         if (VarGet(VAR_STARTER_MON) == 0) // chose treecko
         {
@@ -1270,7 +1270,7 @@ u16 OverrideRaidPartnerTrainerId(u16 trainerId)
             if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
                 trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_VICTORY_ROAD_MUDKIP : TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP;
         }
-    }
+    }*/
 
     return trainerId;
 }
