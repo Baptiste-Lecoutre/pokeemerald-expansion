@@ -3610,7 +3610,9 @@ static void DoBattleIntro(void)
     case 4: // Copy battler data gotten in cases 0 and 1. Draw trainer/mon sprite.
         for (battler = 0; battler < gBattlersCount; battler++)
         {
-            if ((gBattleTypeFlags & BATTLE_TYPE_SAFARI) && GetBattlerSide(battler) == B_SIDE_PLAYER)
+            if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+                continue;
+            else if ((gBattleTypeFlags & BATTLE_TYPE_SAFARI) && GetBattlerSide(battler) == B_SIDE_PLAYER)
             {
                 memset(&gBattleMons[battler], 0, sizeof(struct BattlePokemon));
             }
