@@ -39,6 +39,7 @@ static const struct TrainerMon sParty_RayquazaPartner[] = {
     }
 };
 
+// Rival
 static const struct TrainerMon sParty_BrendanMudkipMeteorFalls[] = { // 2-3 more mons to add
     {
     .lvl = 30, 
@@ -450,5 +451,202 @@ static const struct TrainerMon sParty_MayVictoryRoadTorchic[] = {
     .species = SPECIES_SWAMPERT,
     .heldItem = ITEM_SWAMPERTITE,
     .moves = {MOVE_LIQUIDATION, MOVE_EARTHQUAKE, MOVE_ICE_PUNCH, MOVE_RAIN_DANCE}
+    }
+};
+
+// Red
+static const struct TrainerMon sParty_RedPetalburgWoodsPartner[] = {
+    {
+    .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
+    .lvl = 15,
+    .species = SPECIES_CHARMANDER,
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
+    .lvl = 15,
+    .species = SPECIES_BULBASAUR,
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
+    .lvl = 15,
+    .species = SPECIES_SQUIRTLE,
+    }
+};
+
+static const struct TrainerMon sParty_RedFallarborPartner[] = {
+    {
+    .iv = TRAINER_PARTY_IVS(6, 6, 6, 6, 6, 6),
+    .lvl = 37,
+    .heldItem = ITEM_LIGHT_BALL,
+    .species = SPECIES_PIKACHU_PH_D,
+    .moves = {MOVE_THUNDERBOLT, MOVE_PSYCHIC, MOVE_NASTY_PLOT, MOVE_BODY_SLAM},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(6, 6, 6, 6, 6, 6),
+    .lvl = 37,
+    .heldItem = ITEM_WHITE_HERB,
+    .species = SPECIES_VENUSAUR,
+    .moves = {MOVE_LEAF_STORM, MOVE_TOXIC, MOVE_SLUDGE_BOMB, MOVE_EARTH_POWER},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(6, 6, 6, 6, 6, 6),
+    .lvl = 37,
+    .heldItem = ITEM_WHITE_HERB,
+    .species = SPECIES_BLASTOISE,
+    .moves = {MOVE_WATER_PULSE, MOVE_SHELL_SMASH, MOVE_AURA_SPHERE, MOVE_AURORA_BEAM},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(6, 6, 6, 6, 6, 6),
+    .lvl = 37,
+    .heldItem = ITEM_CHARIZARDITE_X,
+    .species = SPECIES_CHARIZARD,
+    .moves = {MOVE_FLAMETHROWER, MOVE_THUNDER_PUNCH, MOVE_BRICK_BREAK, MOVE_DRAGON_CLAW},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
+    .lvl = 37,
+    .heldItem = ITEM_LEFTOVERS,
+    .species = SPECIES_SNORLAX,
+    .moves = {MOVE_BODY_SLAM, MOVE_CURSE, MOVE_REST, MOVE_SLEEP_TALK},
+    }
+};
+
+static const struct TrainerMon sParty_RedRoute121Partner[] = {
+    {
+    .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
+    .lvl = 65,
+    .heldItem = ITEM_LIGHT_BALL,
+    .species = SPECIES_PIKACHU_FLYING,
+    .moves = {MOVE_THUNDERBOLT, MOVE_AERIAL_ACE, MOVE_THUNDER_WAVE, MOVE_BODY_SLAM},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
+    .lvl = 65,
+    .heldItem = ITEM_FAIRY_GEM,
+    .species = SPECIES_ESPEON,
+    .moves = {MOVE_DAZZLING_GLEAM, MOVE_PSYCHIC, MOVE_SHADOW_BALL, MOVE_CALM_MIND},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
+    .lvl = 65,
+    .heldItem = ITEM_WHITE_HERB,
+    .species = SPECIES_VENUSAUR,
+    .moves = {MOVE_LEAF_STORM, MOVE_TOXIC, MOVE_SLUDGE_BOMB, MOVE_EARTH_POWER},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
+    .lvl = 65,
+    .heldItem = ITEM_WHITE_HERB,
+    .species = SPECIES_BLASTOISE,
+    .moves = {MOVE_WATER_PULSE, MOVE_SHELL_SMASH, MOVE_AURA_SPHERE, MOVE_AURORA_BEAM},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
+    .lvl = 65,
+    .heldItem = ITEM_CHARIZARDITE_X,
+    .species = SPECIES_CHARIZARD,
+    .moves = {MOVE_FLAMETHROWER, MOVE_THUNDER_PUNCH, MOVE_BRICK_BREAK, MOVE_DRAGON_CLAW},
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
+    .lvl = 65,
+    .heldItem = ITEM_LEFTOVERS,
+    .species = SPECIES_SNORLAX,
+    .moves = {MOVE_BODY_SLAM, MOVE_CURSE, MOVE_REST, MOVE_SLEEP_TALK},
+    }
+};
+
+static const struct TrainerMon sParty_RedVictoryRoadPartner[] = { // 3 more mons to add
+    {
+    .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+    .lvl = 75,
+    .species = SPECIES_CHARIZARD,
+    .heldItem = ITEM_CHARIZARDITE_X,
+    .moves = {MOVE_DRAGON_CLAW, MOVE_FLARE_BLITZ, MOVE_THUNDER_PUNCH, MOVE_BRICK_BREAK}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+    .lvl = 75,
+    .species = SPECIES_VENUSAUR,
+    .heldItem = ITEM_LIFE_ORB,
+    .moves = {MOVE_GIGA_DRAIN, MOVE_SLUDGE_BOMB, MOVE_WEATHER_BALL, MOVE_GROWTH}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(31, 31, 31, 31, 31, 31),
+    .lvl = 75,
+    .species = SPECIES_BLASTOISE,
+    .heldItem = ITEM_WHITE_HERB,
+    .moves = {MOVE_FLASH_CANNON, MOVE_DARK_PULSE, MOVE_SKULL_BASH, MOVE_SHELL_SMASH}
+    }
+};
+
+// Wally
+static const struct TrainerMon sParty_WallyPetalburgPartner[] = {
+    {
+    .iv = TRAINER_PARTY_IVS(3, 3, 3, 3, 3, 3),
+    .lvl = 8,
+    .species = SPECIES_RALTS,
+    }
+};
+
+static const struct TrainerMon sParty_WallyMauvillePartner[] = {
+    {
+    .iv = TRAINER_PARTY_IVS(3, 3, 3, 3, 3, 3),
+    .lvl = 20,
+    .species = SPECIES_ROSELIA,
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(3, 3, 3, 3, 3, 3),
+    .lvl = 20,
+    .species = SPECIES_FLETCHINDER,
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(3, 3, 3, 3, 3, 3),
+    .lvl = 20,
+    .species = SPECIES_MARILL,
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(3, 3, 3, 3, 3, 3),
+    .lvl = 22,
+    .species = SPECIES_KIRLIA,
+    }
+};
+
+static const struct TrainerMon sParty_WallyVictoryRoadPartner[] = {
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 44,
+    .species = SPECIES_GARCHOMP,
+    .moves = {MOVE_DRAGON_RUSH, MOVE_EARTHQUAKE, MOVE_STONE_EDGE, MOVE_STEALTH_ROCK}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 43,
+    .species = SPECIES_AZUMARILL,
+    .moves = {MOVE_LIQUIDATION, MOVE_PLAY_ROUGH, MOVE_IRON_TAIL, MOVE_AQUA_JET}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 44,
+    .species = SPECIES_ROSERADE,
+    .moves = {MOVE_MEGA_DRAIN, MOVE_SLUDGE_BOMB, MOVE_SLEEP_POWDER, MOVE_QUIVER_DANCE}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 41,
+    .species = SPECIES_MAGNEZONE,
+    .moves = {MOVE_FLASH_CANNON, MOVE_HIDDEN_POWER, MOVE_VOLT_SWITCH, MOVE_THUNDER_WAVE}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(24, 24, 24, 24, 24, 24),
+    .lvl = 41,
+    .species = SPECIES_TALONFLAME,
+    .moves = {MOVE_BRAVE_BIRD, MOVE_FLARE_BLITZ, MOVE_STEEL_WING, MOVE_U_TURN}
+    },
+    {
+    .iv = TRAINER_PARTY_IVS(30, 30, 30, 30, 30, 30),
+    .lvl = 45,
+    .species = SPECIES_GARDEVOIR,
+    .moves = {MOVE_DOUBLE_TEAM, MOVE_CALM_MIND, MOVE_PSYCHIC, MOVE_FUTURE_SIGHT}
     }
 };

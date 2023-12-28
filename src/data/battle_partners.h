@@ -135,4 +135,66 @@ const struct Trainer gBattlePartners[] = {
         .party = TRAINER_PARTY(sParty_MayVictoryRoadTorchic),
     },
 
+    [PARTNER_RED_PETALBURG_WOODS] =
+    {
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_BACK_PIC_RED,
+        .trainerName = _("Red"),
+        .party = TRAINER_PARTY(sParty_RedPetalburgWoodsPartner),
+    },
+
+    [PARTNER_RED_FALLARBOR] =
+    {
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_BACK_PIC_RED,
+        .trainerName = _("Red"),
+        .party = TRAINER_PARTY(sParty_RedFallarborPartner),
+    },
+
+    [PARTNER_RED_ROUTE121] =
+    {
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_BACK_PIC_RED,
+        .trainerName = _("Red"),
+        .party = TRAINER_PARTY(sParty_RedRoute121Partner),
+    },
+
+    [PARTNER_RED_VICTORY_ROAD] =
+    {
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_BACK_PIC_RED,
+        .trainerName = _("Red"),
+        .party = TRAINER_PARTY(sParty_RedVictoryRoadPartner),
+    },
+
+    [PARTNER_WALLY_PETALBURG] =
+    {
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_BACK_PIC_WALLY,
+        .trainerName = _("Wally"),
+        .party = TRAINER_PARTY(sParty_WallyPetalburgPartner),
+    },
+    
+    [PARTNER_WALLY_MAUVILLE] =
+    {
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_BACK_PIC_WALLY,
+        .trainerName = _("Wally"),
+        .party = TRAINER_PARTY(sParty_WallyMauvillePartner),
+    },
+
+    [PARTNER_WALLY_VICTORY_ROAD] =
+    {
+        .trainerClass = TRAINER_CLASS_RIVAL,
+        .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+        .trainerPic = TRAINER_BACK_PIC_WALLY,
+        .trainerName = _("Wally"),
+        .party = TRAINER_PARTY(sParty_WallyVictoryRoadPartner),
+    },
 };

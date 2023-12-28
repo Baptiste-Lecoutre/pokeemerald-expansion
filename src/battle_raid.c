@@ -1215,22 +1215,22 @@ u16 OverrideRaidPartnerTrainerId(u16 trainerId)
     if (trainerId == TRAINER_WALLY_OVERRIDE)
     {
         if (HasTrainerBeenFought(TRAINER_WALLY_PETALBURG))
-            trainerId = TRAINER_WALLY_PETALBURG;
+            trainerId = PARTNER_WALLY_PETALBURG;
         if (HasTrainerBeenFought(TRAINER_WALLY_MAUVILLE))
-            trainerId = TRAINER_WALLY_MAUVILLE;
+            trainerId = PARTNER_WALLY_MAUVILLE;
         if (HasTrainerBeenFought(TRAINER_WALLY_VR_1))
-            trainerId = TRAINER_WALLY_VR_1;
+            trainerId = PARTNER_WALLY_VICTORY_ROAD;
     }
     else if (trainerId == TRAINER_RED_OVERRIDE)
     {
         if (HasTrainerBeenFought(TRAINER_RED_PETALBURG_WOODS))
-            trainerId = TRAINER_RED_PETALBURG_WOODS;
+            trainerId = PARTNER_RED_PETALBURG_WOODS;
         if (HasTrainerBeenFought(TRAINER_RED_FALLARBOR))
-            trainerId = TRAINER_RED_FALLARBOR;
+            trainerId = PARTNER_RED_FALLARBOR;
         if (HasTrainerBeenFought(TRAINER_RED_ROUTE121))
-            trainerId = TRAINER_RED_ROUTE121;
+            trainerId = PARTNER_RED_ROUTE121;
         if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
-            trainerId = TRAINER_RED_VICTORY_ROAD;
+            trainerId = PARTNER_RED_VICTORY_ROAD;
     }
     /*else if (trainerId == TRAINER_RIVAL_OVERRIDE)
     {
