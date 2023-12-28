@@ -15,14 +15,12 @@ struct RaidData {
     u8 raidType;
 //    struct Trainer* partners;
     u16 partnerNum;
-	u8 trainerBackPic;
 };
 
 struct RaidPartnerData
 {
     u16 trainerNum;
 	u16 graphicsId;
-	u8 trainerBackPic;
 };
 
 struct RaidPartner

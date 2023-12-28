@@ -56,7 +56,6 @@ struct Partner
 {
 	u16 id;
 	u16 graphicsId;
-	u8 trainerBackPic;
 	u16 team[MAX_TEAM_SIZE];
 };
 
@@ -370,7 +369,6 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
         //  - Set Raid Partner information based on selected trainer.
 		PRESSED_A:
 		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
-		gRaidData.trainerBackPic = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].trainerBackPic;
 		gSpecialVar_Result = 1;
 		PlaySE(SE_SUCCESS);
 		gTasks[taskId].func = Task_RaidBattleIntroSetUpBattle;
@@ -405,7 +403,7 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 		PlaySE(SE_SELECT);
 		if (sRaidBattleIntro->selectedTeam == 0)
 		{
-			for (i = 0; i < MAX_TEAM_SIZE; ++i)
+			for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 			{
 				if (i < raidPartners->numOfPartners)
 					sRaidBattleIntro->selectedTeam++;
@@ -424,7 +422,7 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 		PlaySE(SE_SELECT);
 		sRaidBattleIntro->selectedTeam++;
 
-		if (sRaidBattleIntro->selectedTeam >= MAX_TEAM_SIZE
+		if (sRaidBattleIntro->selectedTeam >= MAX_NUM_PARTNERS
 		    || sRaidBattleIntro->selectedTeam >= raidPartners->numOfPartners)
 			sRaidBattleIntro->selectedTeam = 0;
 	}
@@ -607,16 +605,19 @@ static void ShowPartnerTeams(void)
 		{
             u32 spriteId;
 
-			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, 126, 59 + (i * 33), 0);
+			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, /*126*/101, 59 + (i * 33), 0);
             gSprites[spriteId].oam.priority = 0;
 
 			for (j = 0; j < MAX_TEAM_SIZE; ++j)
 			{
-				u16 species = sRaidBattleIntro->partners[i].team[j];
-				if (species != SPECIES_NONE)
+				//if (j < gBattlePartners[sRaidBattleIntro->partners[i].id].partySize)
 				{
-					LoadMonIconPalette(species);
-					CreateMonIcon(species, SpriteCB_MonIcon, 158 + (32 * j), 59 + (i * 33), 0, 0xFFFFFFFF);
+					u16 species = sRaidBattleIntro->partners[i].team[j];
+					if (species != SPECIES_NONE)
+					{
+						LoadMonIconPalette(species);
+						CreateMonIcon(species, SpriteCB_MonIcon, /*158*/120 + (/*32*/21 * j), 59 + (i * 33), 0, 0xFFFFFFFF);
+					}
 				}
 			}
 		}
@@ -627,7 +628,7 @@ static void ShowRaidCursor(void)
 {
 	LoadSpriteSheet(&sRaidBattleCursorSpriteSheet);
 	LoadSpritePalette(&sRaidBattleCursorSpritePalette);
-	CreateSprite(&sRaidBattleCursorSpriteTemplate, 95, 59, 0);
+	CreateSprite(&sRaidBattleCursorSpriteTemplate, /*95*/73, 59, 0);
 }
 
 static void CleanWindows(void)
@@ -772,10 +773,9 @@ static bool32 GetRaidBattleData(void)
 			else
 				partner->graphicsId = raidPartners->partnerData[partnerTrainerIndex[i]].graphicsId;
 
-			partner->trainerBackPic = raidPartners->partnerData[partnerTrainerIndex[i]].trainerBackPic;
-
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				partner->team[j] = gBattlePartners[partner->id].party[j].species;
+				//if (j < gBattlePartners[partner->id].partySize)
+					partner->team[j] = gBattlePartners[partner->id].party[j].species;
 		}
 
 		return TRUE;
