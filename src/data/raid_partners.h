@@ -3,7 +3,7 @@ const struct RaidPartnerData sRaidPartnerData_Rank0[] = {};
 const struct RaidPartnerData sRaidPartnerData_Rank1[] =
 {
     {
-		.trainerNum = TRAINER_STEVEN,
+		.trainerNum = PARTNER_STEVEN,
 		.graphicsId = OBJ_EVENT_GFX_STEVEN,
 		.trainerBackPic = TRAINER_BACK_PIC_STEVEN,
 	},

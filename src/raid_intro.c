@@ -775,7 +775,7 @@ static bool32 GetRaidBattleData(void)
 			partner->trainerBackPic = raidPartners->partnerData[partnerTrainerIndex[i]].trainerBackPic;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				partner->team[j] = gTrainers[partner->id].party[j].species;
+				partner->team[j] = gBattlePartners[partner->id].party[j].species;
 		}
 
 		return TRUE;

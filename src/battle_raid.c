@@ -1232,45 +1232,51 @@ u16 OverrideRaidPartnerTrainerId(u16 trainerId)
         if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
             trainerId = PARTNER_RED_VICTORY_ROAD;
     }
-    /*else if (trainerId == TRAINER_RIVAL_OVERRIDE)
+    else if (trainerId == TRAINER_RIVAL_OVERRIDE)
     {
         if (VarGet(VAR_STARTER_MON) == 0) // chose treecko
         {
-            trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_RUSTBORO_TREECKO : TRAINER_BRENDAN_RUSTBORO_TREECKO;
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_TREECKO : PARTNER_BRENDAN_RUSTBORO_TREECKO;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_TREECKO))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_ROUTE_110_TREECKO : TRAINER_BRENDAN_ROUTE_110_TREECKO;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_TREECKO : PARTNER_BRENDAN_ROUTE_110_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_TREECKO_METEOR_FALLS : PARTNER_BRENDAN_TREECKO_METEOR_FALLS;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_TREECKO))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_ROUTE_119_TREECKO : TRAINER_BRENDAN_ROUTE_119_TREECKO;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_TREECKO : PARTNER_BRENDAN_ROUTE_119_TREECKO;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_TREECKO))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_LILYCOVE_TREECKO : TRAINER_BRENDAN_LILYCOVE_TREECKO;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_TREECKO : PARTNER_BRENDAN_LILYCOVE_TREECKO;
             if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_VICTORY_ROAD_TREECKO : TRAINER_BRENDAN_VICTORY_ROAD_TREECKO;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_TREECKO : PARTNER_BRENDAN_VICTORY_ROAD_TREECKO;
         }
         else if (VarGet(VAR_STARTER_MON) == 1) // chose torchic
         {
-            trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_RUSTBORO_TORCHIC : TRAINER_BRENDAN_RUSTBORO_TORCHIC;
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_TORCHIC : PARTNER_BRENDAN_RUSTBORO_TORCHIC;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_TORCHIC))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_ROUTE_110_TORCHIC : TRAINER_BRENDAN_ROUTE_110_TORCHIC;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_TORCHIC : PARTNER_BRENDAN_ROUTE_110_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_TORCHIC_METEOR_FALLS : PARTNER_BRENDAN_TORCHIC_METEOR_FALLS;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_TORCHIC))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_ROUTE_119_TORCHIC : TRAINER_BRENDAN_ROUTE_119_TORCHIC;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_TORCHIC : PARTNER_BRENDAN_ROUTE_119_TORCHIC;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_TORCHIC))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_LILYCOVE_TORCHIC : TRAINER_BRENDAN_LILYCOVE_TORCHIC;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_TORCHIC : PARTNER_BRENDAN_LILYCOVE_TORCHIC;
             if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_VICTORY_ROAD_TORCHIC : TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_TORCHIC : PARTNER_BRENDAN_VICTORY_ROAD_TORCHIC;
         }
         else // chose mudkip
         {
-            trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_RUSTBORO_MUDKIP : TRAINER_BRENDAN_RUSTBORO_MUDKIP; // must have won against rival in rustboro to do raid battles
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_MUDKIP : PARTNER_BRENDAN_RUSTBORO_MUDKIP; // must have won against rival in rustboro to do raid battles
             if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_MUDKIP))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_ROUTE_110_MUDKIP : TRAINER_BRENDAN_ROUTE_110_MUDKIP;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_MUDKIP : PARTNER_BRENDAN_ROUTE_110_MUDKIP;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_MUDKIP_METEOR_FALLS : PARTNER_BRENDAN_MUDKIP_METEOR_FALLS;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_MUDKIP))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_ROUTE_119_MUDKIP : TRAINER_BRENDAN_ROUTE_119_MUDKIP;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_MUDKIP : PARTNER_BRENDAN_ROUTE_119_MUDKIP;
             if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_MUDKIP))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_LILYCOVE_MUDKIP : TRAINER_BRENDAN_LILYCOVE_MUDKIP;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_MUDKIP : PARTNER_BRENDAN_LILYCOVE_MUDKIP;
             if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
-                trainerId = (gSaveBlock2Ptr->playerGender = MALE) ? TRAINER_MAY_VICTORY_ROAD_MUDKIP : TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP;
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_MUDKIP : PARTNER_BRENDAN_VICTORY_ROAD_MUDKIP;
         }
-    }*/
+    }
 
     return trainerId;
 }
