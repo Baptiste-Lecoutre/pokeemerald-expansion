@@ -432,7 +432,7 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 // Makes the sprite move back and forth horizontally.
 static void SpriteCB_RaidCursor(struct Sprite* sprite)
 {
-    sprite->y2 = sRaidBattleIntro->selectedTeam * 33;
+    sprite->y2 = sRaidBattleIntro->selectedTeam * 34;
 
 	if (sprite->data[1])
 	{
@@ -606,18 +606,18 @@ static void ShowPartnerTeams(void)
 		{
             u32 spriteId;
 
-			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, /*126*/101, 59 + (i * 33), 0);
+			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, 126/*101*/, 58 + (i * 34), 0);
             gSprites[spriteId].oam.priority = 0;
 
 			for (j = 0; j < MAX_TEAM_SIZE; ++j)
 			{
-				//if (j < gBattlePartners[sRaidBattleIntro->partners[i].id].partySize)
+				if (j < gBattlePartners[sRaidBattleIntro->partners[i].id].partySize)
 				{
 					u16 species = sRaidBattleIntro->partners[i].team[j];
 					if (species != SPECIES_NONE)
 					{
 						LoadMonIconPalette(species);
-						CreateMonIcon(species, SpriteCB_MonIcon, /*158*/120 + (/*32*/21 * j), 59 + (i * 33), 0, 0xFFFFFFFF);
+						CreateMonIcon(species, SpriteCB_MonIcon, 158/*120*/ + (32/*21*/ * j), 58 + (i * 34), 0, 0xFFFFFFFF);
 					}
 				}
 			}
@@ -629,7 +629,7 @@ static void ShowRaidCursor(void)
 {
 	LoadSpriteSheet(&sRaidBattleCursorSpriteSheet);
 	LoadSpritePalette(&sRaidBattleCursorSpritePalette);
-	CreateSprite(&sRaidBattleCursorSpriteTemplate, /*95*/73, 59, 0);
+	CreateSprite(&sRaidBattleCursorSpriteTemplate, 95/*73*/, 64/*58*/, 0);
 }
 
 static void CleanWindows(void)
@@ -775,7 +775,7 @@ static bool32 GetRaidBattleData(void)
 				partner->graphicsId = raidPartners->partnerData[partnerTrainerIndex[i]].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				//if (j < gBattlePartners[partner->id].partySize)
+				if (j < gBattlePartners[partner->id].partySize)
 					partner->team[j] = gBattlePartners[partner->id].party[j].species;
 		}
 
