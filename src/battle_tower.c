@@ -2131,6 +2131,7 @@ void DoSpecialTrainerBattle(void)
         {
         const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
         gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;// | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
+        gTrainerBattleOpponent_B = 0xFFFF;
 
         if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
              && (u16)(gSaveBlock1Ptr->location.mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)

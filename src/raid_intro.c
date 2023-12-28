@@ -395,7 +395,8 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
         //  - Go alone.
 		gRaidData.partnerNum = 0;
 		gSpecialVar_Result = 2;
-		goto PRESSED_A;
+		PlaySE(SE_SUCCESS);
+		gTasks[taskId].func = Task_RaidBattleIntroSetUpBattle;
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_UP)
 	{
