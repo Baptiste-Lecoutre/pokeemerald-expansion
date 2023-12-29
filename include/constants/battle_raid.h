@@ -47,7 +47,7 @@
 
 // Raid Partners
 #define MAX_NUM_PARTNERS 3
-#define MAX_TEAM_SIZE PARTY_SIZE//3
+#define MAX_TEAM_SIZE 3//PARTY_SIZE//3
 
 // Other Constants
 #define MAX_RAID_DROPS     12
