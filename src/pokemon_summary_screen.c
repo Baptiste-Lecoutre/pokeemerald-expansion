@@ -3550,10 +3550,10 @@ static void PrintSkillsPage(void)
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 88, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
 
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Ability, 8, 112, 0, PSS_COLOR_WHITE_BLACK_SHADOW);
-    StringCopy(gStringVar1, gAbilityNames[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)]);
+    StringCopy(gStringVar1, gAbilities[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)].name);
     x = GetStringCenterAlignXOffset(1, gStringVar1, 88) + 58;
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 112, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
-    StringCopy(gStringVar1, gAbilityDescriptionPointers[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)]);
+    StringCopy(gStringVar1, gAbilities[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)].description);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, 8, 128, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
     ScheduleBgCopyTilemapToVram(0);
     PutWindowTilemap(PSS_LABEL_PANE_RIGHT);
