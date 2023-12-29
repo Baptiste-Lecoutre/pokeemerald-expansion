@@ -31,6 +31,7 @@
 #include "task.h"
 #include "test_runner.h"
 #include "text.h"
+#include "ui_battle_menu.h"
 #include "util.h"
 #include "window.h"
 #include "constants/battle.h"
@@ -98,6 +99,7 @@ static void MoveSelectionDisplaySplitIcon(u32 battler);
 static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId);
 static void MoveSelectionDisplayMoveDescription(u32 battler);
 static void HandleInputTeamPreview(u32 battler);
+static void Controller_WaitForUIBattleMenu(u32 battler);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 {
@@ -466,6 +468,13 @@ static void HandleInputChooseAction(u32 battler)
         PlayerBufferExecCompleted(battler);
     }
 #endif
+    else if (JOY_NEW(L_BUTTON) && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+    {
+        gBattlerControllerFuncs[battler] = Controller_WaitForUIBattleMenu;
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 0x10, RGB_BLACK);
+        FreeAllWindowBuffers();
+        UI_Battle_Menu_Init(CB2_SetUpReshowBattleScreenAfterMenu);
+    }
 /*#if B_LAST_USED_BALL == TRUE
     else if (JOY_HELD(B_LAST_USED_BALL_BUTTON))*/
 #if B_LAST_USED_BALL == TRUE && B_LAST_USED_BALL_CYCLE == FALSE
@@ -2536,4 +2545,10 @@ static void HandleInputTeamPreview(u32 battler)
 		HideInBattleTeamPreview();
 		gBattlerControllerFuncs[battler] = HandleInputChooseAction;
 	}
+}
+
+static void Controller_WaitForUIBattleMenu(u32 battler)
+{
+    if (gMain.callback2 == BattleMainCB2)
+        PlayerHandleChooseAction(battler);
 }
