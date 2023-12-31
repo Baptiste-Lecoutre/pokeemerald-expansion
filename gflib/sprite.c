@@ -279,7 +279,7 @@ EWRAM_DATA static bool8 sShouldProcessSpriteCopyRequests = 0;
 EWRAM_DATA static u8 sSpriteCopyRequestCount = 0;
 EWRAM_DATA static struct SpriteCopyRequest sSpriteCopyRequests[MAX_SPRITES] = {0};
 EWRAM_DATA u8 gOamLimit = 0;
-static EWRAM_DATA u8 sOamDummyIndex = 0;
+static EWRAM_DATA u8 gOamDummyIndex = 0;
 EWRAM_DATA u16 gReservedSpriteTileCount = 0;
 EWRAM_DATA static u8 sSpriteTileAllocBitmap[128] = {0};
 EWRAM_DATA s16 gSpriteCoordOffsetX = 0;
@@ -290,7 +290,7 @@ EWRAM_DATA bool8 gAffineAnimsDisabled = FALSE;
 void ResetSpriteData(void)
 {
     ResetOamRange(0, 128);
-    sOamDummyIndex = 0;
+    gOamDummyIndex = 0;
     ResetAllSprites();
     ClearSpriteCopyRequests();
     ResetAffineAnimData();
@@ -403,9 +403,9 @@ void BuildOamBuffer(void)
             break;
     }
 
-    for (i = oamIndex; i < sOamDummyIndex; i++)
+    for (i = oamIndex; i < gOamDummyIndex; i++)
         gMain.oamBuffer[i] = gDummyOamData;
-    sOamDummyIndex = oamIndex;
+    gOamDummyIndex = oamIndex;
 
     for (i = 0; matrices != 0; i++, matrices >>= 1)
     {
@@ -749,17 +749,9 @@ void RequestSpriteFrameImageCopy(u16 index, u16 tileNum, const struct SpriteFram
 {
     if (sSpriteCopyRequestCount < MAX_SPRITE_COPY_REQUESTS)
     {
-        if (!images[0].relativeFrames)
-        {
-            sSpriteCopyRequests[sSpriteCopyRequestCount].src = images[index].data;
-            sSpriteCopyRequests[sSpriteCopyRequestCount].size = images[index].size;
-        }
-        else
-        {
-            sSpriteCopyRequests[sSpriteCopyRequestCount].src = images[0].data + images[0].size * index;
-            sSpriteCopyRequests[sSpriteCopyRequestCount].size = images[0].size;
-        }
+        sSpriteCopyRequests[sSpriteCopyRequestCount].src = images[index].data;
         sSpriteCopyRequests[sSpriteCopyRequestCount].dest = (u8 *)OBJ_VRAM0 + TILE_SIZE_4BPP * tileNum;
+        sSpriteCopyRequests[sSpriteCopyRequestCount].size = images[index].size;
         sSpriteCopyRequestCount++;
     }
 }

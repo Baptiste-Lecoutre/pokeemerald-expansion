@@ -1,6 +1,11 @@
 #include "global.h"
 #include "test/battle.h"
 
+ASSUMPTIONS
+{
+    ASSUME(P_GEN_8_POKEMON == TRUE);
+}
+
 SINGLE_BATTLE_TEST("Mirror Armor lowers a stat of the attacking pokemon")
 {
     u16 move, statId;

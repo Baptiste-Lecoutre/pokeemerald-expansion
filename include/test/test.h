@@ -59,8 +59,8 @@ extern const struct TestRunner gAssumptionsRunner;
 
 struct FunctionTestRunnerState
 {
-    u16 parameters;
-    u16 runParameter;
+    u8 parameters;
+    u8 runParameter;
 };
 
 extern const struct TestRunner gFunctionTestRunner;

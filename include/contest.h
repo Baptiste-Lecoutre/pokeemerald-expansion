@@ -3,7 +3,6 @@
 
 #include "palette.h"
 #include "constants/contest.h"
-#include "random.h" // for rng_value_t
 
 enum
 {
@@ -328,7 +327,7 @@ extern struct ContestResources *gContestResources;
 extern struct ContestWinner gCurContestWinner;
 extern u8 gCurContestWinnerIsForArtist;
 extern u8 gCurContestWinnerSaveIdx;
-extern rng_value_t gContestRngValue;
+extern u32 gContestRngValue;
 
 // contest.c
 void ResetLinkContestBoolean(void);

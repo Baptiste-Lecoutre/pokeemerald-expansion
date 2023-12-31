@@ -3952,7 +3952,7 @@ static void CreateJumpMonSprites(void)
     {
         struct PokemonJump_MonInfo *monInfo = GetMonInfoByMultiplayerId(i);
 
-        y = gSpeciesInfo[monInfo->species].frontPicYOffset;
+        y = gMonFrontPicCoords[monInfo->species].y_offset;
         CreateJumpMonSprite(sPokemonJumpGfx, monInfo, *xCoords, y + 112, i);
         CreateStarSprite(sPokemonJumpGfx, *xCoords, 112, i);
         xCoords++;

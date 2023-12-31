@@ -1,6 +1,7 @@
 #ifndef GUARD_ALLOC_H
 #define GUARD_ALLOC_H
 
+#define HEAP_SIZE 0x1C000
 
 #define FREE_AND_SET_NULL(ptr)          \
 {                                       \
@@ -41,8 +42,7 @@ struct MemBlock
     u8 data[0];
 };
 
-#define HEAP_SIZE 0x1C000
-extern u8 gHeap[HEAP_SIZE];
+extern u8 gHeap[];
 
 #if TESTING || !defined(NDEBUG)
 

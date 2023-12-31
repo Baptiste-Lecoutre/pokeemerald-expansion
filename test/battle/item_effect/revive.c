@@ -72,5 +72,3 @@ SINGLE_BATTLE_TEST("Max Honey restores a fainted battler's HP fully")
         EXPECT_EQ(player->hp, 200);
     }
 }
-
-TO_DO_BATTLE_TEST("Revive won't restore a battler's HP if it hasn't fainted")

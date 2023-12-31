@@ -1,4 +1,3 @@
-	.include "gflib/malloc.o"
 	.include "src/decompress.o"
 	.include "src/main.o"
 	.include "gflib/window.o"

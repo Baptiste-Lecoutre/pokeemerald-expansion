@@ -423,7 +423,6 @@ static u8 EggHatchCreateMonSprite(u8 useAlt, u8 state, u8 partyId, u16 *speciesL
     u8 position = 0;
     u8 spriteId = 0;
     struct Pokemon *mon = NULL;
-    u16 species = SPECIES_NONE;
 
     if (useAlt == FALSE)
     {
@@ -436,23 +435,23 @@ static u8 EggHatchCreateMonSprite(u8 useAlt, u8 state, u8 partyId, u16 *speciesL
         mon = &gPlayerParty[partyId];
         position = B_POSITION_OPPONENT_RIGHT;
     }
-    species = GetMonData(mon, MON_DATA_SPECIES);
     switch (state)
     {
     case 0:
         // Load mon sprite gfx
         {
+            u16 species = GetMonData(mon, MON_DATA_SPECIES);
             u32 pid = GetMonData(mon, MON_DATA_PERSONALITY);
             HandleLoadSpecialPokePic(TRUE,
                                      gMonSpritesGfxPtr->sprites.ptr[(useAlt * 2) + B_POSITION_OPPONENT_LEFT],
                                      species, pid);
-            LoadCompressedSpritePaletteWithTag(GetMonFrontSpritePal(mon), species);
+            LoadCompressedSpritePalette(GetMonSpritePalStruct(mon));
             *speciesLoc = species;
         }
         break;
     case 1:
         // Create mon sprite
-        SetMultiuseSpriteTemplateToPokemon(species, position);
+        SetMultiuseSpriteTemplateToPokemon(GetMonSpritePalStruct(mon)->tag, position);
         spriteId = CreateSprite(&gMultiuseSpriteTemplate, EGG_X, EGG_Y, 6);
         gSprites[spriteId].invisible = TRUE;
         gSprites[spriteId].callback = SpriteCallbackDummy;

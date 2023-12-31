@@ -5680,13 +5680,13 @@ const struct SpriteTemplate gBlackHoleEclipseRedRingInwardsSpriteTemplate =
     .affineAnims = gThinRingShrinkingAffineAnimTable,
     .callback = AnimSpriteOnMonPos
 };
-static const union AffineAnimCmd sGrowingBackHoleTargetAffineCmds[] = {
+static const union AffineAnimCmd gGrowingBackHoleTargetAffineCmds[] = {
     AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
     AFFINEANIMCMD_FRAME(0, 0, -10, 0x88),
     AFFINEANIMCMD_END,
 };
 static const union AffineAnimCmd *const gGrowingBlackHoleTargetAffineAnimTable[] = {
-    sGrowingBackHoleTargetAffineCmds,
+    gGrowingBackHoleTargetAffineCmds,
 };
 const struct SpriteTemplate gBlackHoleEclipseHoleSpriteTemplate =
 {
@@ -5698,13 +5698,13 @@ const struct SpriteTemplate gBlackHoleEclipseHoleSpriteTemplate =
     .affineAnims = gGrowingBlackHoleTargetAffineAnimTable,
     .callback = AnimSpriteOnMonPos
 };
-static const union AffineAnimCmd sShrinkingBlackHoleAffineCmds[] = {
+static const union AffineAnimCmd gShrinkingBlackHoleAffineCmds[] = {
     AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
     AFFINEANIMCMD_FRAME(-0x10, -0x10, 0xf6, 8),
     AFFINEANIMCMD_END_ALT(1),
 };
 static const union AffineAnimCmd *const gShrinkingBlackHoleAffineAnimTable[] = {
-    sShrinkingBlackHoleAffineCmds,
+    gShrinkingBlackHoleAffineCmds,
 };
 const struct SpriteTemplate gBlackHoleEclipseHoleShrinkSpriteTemplate =
 {
@@ -5716,13 +5716,13 @@ const struct SpriteTemplate gBlackHoleEclipseHoleShrinkSpriteTemplate =
     .affineAnims = gShrinkingBlackHoleAffineAnimTable,
     .callback = AnimSpriteOnMonPos
 };
-static const union AffineAnimCmd sGrowingBackHoleAffineCmds[] = {
+static const union AffineAnimCmd gGrowingBackHoleAffineCmds[] = {
     AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
     AFFINEANIMCMD_FRAME(0, 0, -10, 0x48),
     AFFINEANIMCMD_END,
 };
 static const union AffineAnimCmd *const gGrowingBlackHoleAffineAnimTable[] = {
-    sGrowingBackHoleAffineCmds,
+    gGrowingBackHoleAffineCmds,
 };
 const struct SpriteTemplate gBlackHoleEclipseHoleUserSpriteTemplate =
 {
@@ -8630,7 +8630,7 @@ void AnimTask_TerrainPulse(u8 taskId)
 
 void AnimTask_AffectionHangedOn(u8 taskId)
 {
-    gBattleAnimArgs[0] = GetBattlerAffectionHearts(gBattleAnimTarget);
+    gBattleAnimArgs[0] = GetBattlerFriendshipScore(gBattleAnimTarget);
     DestroyAnimVisualTask(taskId);
 }
 
@@ -9152,12 +9152,18 @@ void AnimTask_GetWeatherToSet(u8 taskId)
 void AnimTask_SyrupBomb(u8 taskId)
 {
     struct Pokemon *party = GetBattlerParty(gBattleAnimAttacker);
-    gBattleAnimArgs[0] = IsMonShiny(&party[gBattlerPartyIndexes[gBattleAnimAttacker]]);
+    u32 isShiny = IsMonShiny(&party[gBattlerPartyIndexes[gBattleAnimAttacker]]);
+
+    gDisableStructs[gBattleAnimTarget].syrupBombIsShiny = isShiny;
+    gBattleAnimArgs[0] = isShiny;
     DestroyAnimVisualTask(taskId);
 }
 
 void AnimTask_StickySyrup(u8 taskId)
 {
-    gBattleAnimArgs[0] = gAnimDisableStructPtr->syrupBombIsShiny;
+    if (gDisableStructs[gBattleAnimTarget].syrupBombIsShiny)
+        gBattleAnimArgs[0] = TRUE;
+    else
+        gBattleAnimArgs[0] = FALSE;
     DestroyAnimVisualTask(taskId);
 }

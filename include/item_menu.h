@@ -111,6 +111,5 @@ void CloseItemMessage(u8 taskId);
 void DrawRegisteredQuickAccess(void);
 void DestroyItemIconSprites(void);
 bool8 PlayerHasOneRegisteredItem(void);
-void ItemMenu_RotomCatalog(u8 taskId);
 
 #endif //GUARD_ITEM_MENU_H

@@ -1040,13 +1040,6 @@ EventScript_DoWonderTrade_Text_WannaDoAnotherWonderTrade:
 EventScript_DoWonderTrade_Text_Done:
 	.string "Enjoy your new Pokémon.$"
 
-EventScript_VsSeekerChargingDone::
-	special VsSeekerFreezeObjectsAfterChargeComplete
-	waitstate
-	special VsSeekerResetObjectMovementAfterChargeComplete
-	releaseall
-	end
-
 	.include "data/scripts/pc_transfer.inc"
 	.include "data/scripts/questionnaire.inc"
 	.include "data/scripts/abnormal_weather.inc"

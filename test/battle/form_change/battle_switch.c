@@ -4,6 +4,7 @@
 SINGLE_BATTLE_TEST("Aegislash reverts to Shield Form upon switching out")
 {
     GIVEN {
+        ASSUME(P_GEN_6_POKEMON == TRUE);
         PLAYER(SPECIES_AEGISLASH_SHIELD);
         PLAYER(SPECIES_WOBBUFFET);
         OPPONENT(SPECIES_WOBBUFFET);

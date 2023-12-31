@@ -650,23 +650,25 @@ void BattleGfxSfxDummy2(u16 species)
 void DecompressTrainerFrontPic(u16 frontPicId, u8 battler)
 {
     u8 position = GetBattlerPosition(battler);
-    DecompressPicFromTable(&gTrainerSprites[frontPicId].frontPic,
-                           gMonSpritesGfxPtr->sprites.ptr[position]);
-    LoadCompressedSpritePalette(&gTrainerSprites[frontPicId].palette);
+    DecompressPicFromTable(&gTrainerFrontPicTable[frontPicId],
+                           gMonSpritesGfxPtr->sprites.ptr[position],
+                           SPECIES_NONE);
+    LoadCompressedSpritePalette(&gTrainerFrontPicPaletteTable[frontPicId]);
 }
 
 void DecompressTrainerBackPic(u16 backPicId, u8 battler)
 {
     u8 position = GetBattlerPosition(battler);
-    DecompressPicFromTable(&gTrainerBacksprites[backPicId].backPic,
-                           gMonSpritesGfxPtr->sprites.ptr[position]);
-    LoadCompressedPalette(gTrainerBacksprites[backPicId].palette.data,
+    DecompressPicFromTable(&gTrainerBackPicTable[backPicId],
+                           gMonSpritesGfxPtr->sprites.ptr[position],
+                           SPECIES_NONE);
+    LoadCompressedPalette(gTrainerBackPicPaletteTable[backPicId].data,
                           OBJ_PLTT_ID(battler), PLTT_SIZE_4BPP);
 }
 
 void FreeTrainerFrontPicPalette(u16 frontPicId)
 {
-    FreeSpritePaletteByTag(gTrainerSprites[frontPicId].palette.tag);
+    FreeSpritePaletteByTag(gTrainerFrontPicPaletteTable[frontPicId].tag);
 }
 
 // Unused.
@@ -1130,7 +1132,6 @@ void SpriteCB_EnemyShadow(struct Sprite *shadowSprite)
     bool8 invisible = FALSE;
     u8 battler = shadowSprite->tBattlerId;
     struct Sprite *battlerSprite = &gSprites[gBattlerSpriteIds[battler]];
-    u16 transformSpecies = SanitizeSpeciesId(gBattleSpritesDataPtr->battlerData[battler].transformSpecies);
 
     if (!battlerSprite->inUse || !IsBattlerSpritePresent(battler))
     {
@@ -1139,7 +1140,8 @@ void SpriteCB_EnemyShadow(struct Sprite *shadowSprite)
     }
     if (gAnimScriptActive || battlerSprite->invisible)
         invisible = TRUE;
-    else if (transformSpecies != SPECIES_NONE && gSpeciesInfo[transformSpecies].enemyMonElevation == 0)
+    else if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies != SPECIES_NONE
+             && gEnemyMonElevation[gBattleSpritesDataPtr->battlerData[battler].transformSpecies] == 0)
         invisible = TRUE;
 
     if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
@@ -1166,7 +1168,7 @@ void SetBattlerShadowSpriteCallback(u8 battler, u16 species)
     if (gBattleSpritesDataPtr->battlerData[battler].transformSpecies != SPECIES_NONE)
         species = gBattleSpritesDataPtr->battlerData[battler].transformSpecies;
 
-    if (gSpeciesInfo[SanitizeSpeciesId(species)].enemyMonElevation != 0)
+    if (gEnemyMonElevation[species] != 0)
         gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteId].callback = SpriteCB_EnemyShadow;
     else
         gSprites[gBattleSpritesDataPtr->healthBoxesData[battler].shadowSpriteId].callback = SpriteCB_SetInvisible;

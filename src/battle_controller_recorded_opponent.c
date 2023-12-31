@@ -421,7 +421,7 @@ static void RecordedOpponentHandleDrawTrainerPic(u32 battler)
     }
 
     BtlController_HandleDrawTrainerPic(battler, trainerPicId, TRUE,
-                                       xPos, 40 + 4 * (8 - gTrainerSprites[trainerPicId].y_offset),
+                                       xPos, 40 + 4 * (8 - gTrainerFrontPicCoords[trainerPicId].size),
                                        -1);
 }
 

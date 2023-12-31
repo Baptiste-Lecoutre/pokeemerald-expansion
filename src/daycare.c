@@ -26,7 +26,9 @@
 #include "constants/moves.h"
 #include "constants/region_map_sections.h"
 
-#define IS_DITTO(species) (gSpeciesInfo[species].eggGroups[0] == EGG_GROUP_DITTO || gSpeciesInfo[species].eggGroups[1] == EGG_GROUP_DITTO)
+extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
+
+#define IS_DITTO(species) (gBaseStats[species].eggGroup1 == EGG_GROUP_DITTO || gBaseStats[species].eggGroup2 == EGG_GROUP_DITTO)
 
 static void ClearDaycareMonMail(struct DaycareMail *mail);
 static void SetInitialEggData(struct Pokemon *mon, u16 species, struct DayCare *daycare);
@@ -234,8 +236,9 @@ static void StorePokemonInDaycare(struct Pokemon *mon, struct DaycareMon *daycar
     CompactPartySlots();
     CalculatePlayerPartyCount();
 
-    if (P_EGG_MOVE_TRANSFER >= GEN_8)
-        TransferEggMoves();
+#if P_EGG_MOVE_TRANSFER >= GEN_8
+    TransferEggMoves();
+#endif
 }
 
 static void StorePokemonInEmptyDaycareSlot(struct Pokemon *mon, struct DayCare *daycare)
@@ -488,17 +491,14 @@ u16 GetEggSpecies(u16 species)
 
     // Working backwards up to 5 times seems arbitrary, since the maximum number
     // of times would only be 3 for 3-stage evolutions.
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < EVOS_PER_MON; i++)
     {
         found = FALSE;
         for (j = 1; j < NUM_SPECIES; j++)
         {
-            const struct Evolution *evolutions = GetSpeciesEvolutions(j);
-            if (evolutions == NULL)
-                continue;
-            for (k = 0; evolutions[k].method != EVOLUTIONS_END; k++)
+            for (k = 0; k < EVOS_PER_MON; k++)
             {
-                if (SanitizeSpeciesId(evolutions[k].targetSpecies) == species)
+                if (gEvolutionTable[j][k].targetSpecies == species)
                 {
                     species = j;
                     found = TRUE;
@@ -733,19 +733,16 @@ static void InheritPokeball(struct Pokemon *egg, struct BoxPokemon *father, stru
     if (motherBall == ITEM_MASTER_BALL || motherBall == ITEM_CHERISH_BALL)
         motherBall = ITEM_POKE_BALL;
 
-    if (P_BALL_INHERITING >= GEN_7)
-    {
-        if (fatherSpecies == motherSpecies)
-            inheritBall = (Random() % 2 == 0 ? motherBall : fatherBall);
-        else if (motherSpecies != SPECIES_DITTO)
-            inheritBall = motherBall;
-        else
-            inheritBall = fatherBall;
-    }
-    else if (P_BALL_INHERITING == GEN_6)
-    {
+#if P_BALL_INHERITING >= GEN_7
+    if (fatherSpecies == motherSpecies)
+        inheritBall = (Random() % 2 == 0 ? motherBall : fatherBall);
+    else if (motherSpecies != SPECIES_DITTO)
         inheritBall = motherBall;
-    }
+    else
+        inheritBall = fatherBall;
+#elif P_BALL_INHERITING == GEN_6
+    inheritBall = motherBall;
+#endif
     SetMonData(egg, MON_DATA_POKEBALL, &inheritBall);
 }
 
@@ -757,18 +754,21 @@ static void InheritAbility(struct Pokemon *egg, struct BoxPokemon *father, struc
     u8 inheritAbility = motherAbility;
 
     if (motherSpecies == SPECIES_DITTO)
-    {
-        if (P_ABILITY_INHERITANCE >= GEN_6)
-            inheritAbility = fatherAbility;
-        else
-            return;
-    }
+    #if P_ABILITY_INHERITANCE < GEN_6
+        return;
+    #else
+        inheritAbility = fatherAbility;
+    #endif
 
     if (inheritAbility < 2 && (Random() % 10 < 8))
     {
         SetMonData(egg, MON_DATA_ABILITY_NUM, &inheritAbility);
     }
-    else if (Random() % 10 < (P_ABILITY_INHERITANCE >= GEN_6 ? 6 : 8))
+#if P_ABILITY_INHERITANCE < GEN_6
+    else if (Random() % 10 < 8)
+#else
+    else if (Random() % 10 < 6)
+#endif
     {
         // Hidden Abilities have a different chance of being passed down
         SetMonData(egg, MON_DATA_ABILITY_NUM, &inheritAbility);
@@ -1129,8 +1129,9 @@ static void _GiveEggFromDaycare(struct DayCare *daycare)
     InheritIVs(&egg, daycare);
     InheritPokeball(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
     BuildEggMoveset(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
-    if (P_ABILITY_INHERITANCE >= GEN_6)
-        InheritAbility(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
+#if P_ABILITY_INHERITANCE >= GEN_6
+    InheritAbility(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
+#endif
 
     GiveMoveIfItem(&egg, daycare);
 
@@ -1353,7 +1354,7 @@ u8 GetDaycareCompatibilityScore(struct DayCare *daycare)
     }
 
     // check unbreedable egg group
-    if (eggGroups[0][0] == EGG_GROUP_NO_EGGS_DISCOVERED || eggGroups[1][0] == EGG_GROUP_NO_EGGS_DISCOVERED)
+    if (eggGroups[0][0] == EGG_GROUP_UNDISCOVERED || eggGroups[1][0] == EGG_GROUP_UNDISCOVERED)
         return PARENTS_INCOMPATIBLE;
     // two Ditto can't breed
     if (eggGroups[0][0] == EGG_GROUP_DITTO && eggGroups[1][0] == EGG_GROUP_DITTO)

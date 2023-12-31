@@ -23,7 +23,9 @@ static u8 GetMatchingDigits(u16, u16);
 
 void ResetLotteryCorner(void)
 {
-    SetLotteryNumber(Random32());
+    u16 rand = Random();
+
+    SetLotteryNumber((Random() << 16) | rand);
     VarSet(VAR_POKELOT_PRIZE_ITEM, 0);
 }
 
