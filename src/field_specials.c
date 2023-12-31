@@ -1,4 +1,5 @@
 #include "global.h"
+#include "debug.h"
 #include "malloc.h"
 #include "battle.h"
 #include "battle_tower.h"
@@ -22,6 +23,7 @@
 #include "item_icon.h"
 #include "item_menu.h"
 #include "link.h"
+#include "load_save.h"
 #include "list_menu.h"
 #include "main.h"
 #include "mystery_gift.h"
@@ -97,8 +99,6 @@ static EWRAM_DATA u8 sPCBoxToSendMon = 0;
 static EWRAM_DATA u32 sBattleTowerMultiBattleTypeFlags = 0;
 
 struct ListMenuTemplate gScrollableMultichoice_ListMenuTemplate;
-
-extern struct Evolution gEvolutionTable[][EVOS_PER_MON];
 
 void TryLoseFansFromPlayTime(void);
 void SetPlayerGotFirstFans(void);
@@ -5184,7 +5184,7 @@ void IncreaseChosenMonEVs(void)
 {
     u8 statToChange = gSpecialVar_0x8005;
     u8 increment = gSpecialVar_0x8006;
-    u8 oldEV;
+    u8 oldEV = 0;
     u8 newEV;
 
     // Get the number of EVs currently in the chosen stat
@@ -5279,7 +5279,7 @@ bool8 HasMightyMagikarp(void)
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_MAGIKARP
-            && GetMonData(&gPlayerParty[i], MON_DATA_LEVEL) >= gEvolutionTable[SPECIES_MAGIKARP][0].param)
+            && IsMonPastEvolutionLevel(&gPlayerParty[i]))
         {
             return TRUE;
         }
@@ -5439,7 +5439,7 @@ void ChangeMonSpecies (void)
 // Takes a Rotom form as input and returns its special move
 u16 RotomFormToMove (u16 species)
 {
-    u16 move;
+    u16 move = MOVE_NONE;
 
     switch (species)
     {
@@ -5483,7 +5483,7 @@ void GetRotomState (void)
 // Returns TRUE if the moove was forgotten, false if not
 void RotomForgetSpecialMove (void)
 {
-    u8 i, forgotSpecialMove = 0;
+    u8 i;//, forgotSpecialMove = 0;
     u16 currentMove;
     u16 moveNone = MOVE_NONE;
 
@@ -5495,7 +5495,7 @@ void RotomForgetSpecialMove (void)
         {
             RemoveMonPPBonus(&gPlayerParty[gSpecialVar_0x8004], i);
             SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_MOVE1 + i, &moveNone);
-            forgotSpecialMove = TRUE;
+            //forgotSpecialMove = TRUE;
             break;
         }
     }
@@ -5532,8 +5532,8 @@ u8 CountRotomInParty (void)
     
     for (i = 0; i < partyCount; i++)
     {
-        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
-        if (gSpeciesToNationalPokedexNum[species - 1] == SPECIES_ROTOM)
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL);
+        if (GET_BASE_SPECIES_ID(species) == SPECIES_ROTOM)
         {
             gSpecialVar_0x8004 = i;
             rotomCount++;
@@ -5573,7 +5573,7 @@ void BufferNextLevelCap(void)
 void IncreasePartyLevelToLevelCap(void)
 {
     u32 i, targetExp, currExp;
-    u8 lvlCap;
+    u8 lvlCap = gLevelCaps[NUM_SOFT_CAPS - 1];
     u16 species;
 
     // get lvl cap
@@ -5686,4 +5686,48 @@ void IncrementAdoptionSpecials(void)
     VarSet(VAR_DAYCARE_ADOPTION_SPECIALS, (VarGet(VAR_DAYCARE_ADOPTION_SPECIALS + 1) % 50));
     if (VarGet(VAR_DAYCARE_ADOPTION_SPECIALS) == 0)
         VarSet(VAR_DAYCARE_ADOPTION_SPECIALS, 1);
+}
+
+void TrySkyBattle(void)
+{
+    int i;
+
+    if (B_VAR_SKY_BATTLE == 0 || B_FLAG_SKY_BATTLE == 0)
+    {
+        LockPlayerFieldControls();
+        ScriptContext_SetupScript(Debug_FlagsAndVarNotSetBattleConfigMessage);
+        return;
+    }
+    for (i = 0; i < CalculatePlayerPartyCount(); i++)
+    {
+        struct Pokemon* pokemon = &gPlayerParty[i];
+        if (CanMonParticipateInSkyBattle(pokemon) && GetMonData(pokemon, MON_DATA_HP, NULL) > 0)
+        {
+            PreparePartyForSkyBattle();
+            gSpecialVar_Result = TRUE;
+            return;
+        }
+    }
+    gSpecialVar_Result = FALSE;
+}
+
+void PreparePartyForSkyBattle(void)
+{
+    int i, participatingPokemonSlot = 0;
+    u8 partyCount = CalculatePlayerPartyCount();
+
+    FlagSet(B_FLAG_SKY_BATTLE);
+    SavePlayerParty();
+
+    for (i = 0; i < partyCount; i++)
+    {
+        struct Pokemon* pokemon = &gPlayerParty[i];
+
+        if (CanMonParticipateInSkyBattle(pokemon))
+            participatingPokemonSlot += 1 << i;
+        else
+            ZeroMonData(pokemon);
+    }
+    VarSet(B_VAR_SKY_BATTLE,participatingPokemonSlot);
+    CompactPartySlots();
 }

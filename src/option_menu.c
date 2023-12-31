@@ -109,7 +109,6 @@ static void Task_OptionMenuProcessInput(u8 taskId);
 static void Task_OptionMenuSave(u8 taskId);
 static void Task_OptionMenuFadeOut(u8 taskId);
 static void HighlightOptionMenuItem(int selection);
-static u8 TextSpeed_ProcessInput(u8 selection);
 void TextSpeed_DrawChoices(int selection, int y, u8 textSpeed);
 static u8 BattleScene_ProcessInput(u8 selection);
 void BattleScene_DrawChoices(int selection, int y, u8 textSpeed);
@@ -119,7 +118,6 @@ int Sound_ProcessInput(int selection);
 void Sound_DrawChoices(int selection, int y, u8 textSpeed);
 int FrameType_ProcessInput(int selection);
 void FrameType_DrawChoices(int selection, int y, u8 textSpeed);
-static u8 ButtonMode_ProcessInput(u8 selection);
 void ButtonMode_DrawChoices(int selection, int y, u8 textSpeed);
 static void DrawHeaderText(void);
 static void DrawOptionMenuTexts(void);
@@ -402,7 +400,7 @@ static void DrawChoices(u32 id, int y, u8 textSpeed)
 
 void CB2_InitOptionMenu(void)
 {
-    u32 i, taskId;
+    u32 i;
     switch (gMain.state)
     {
     default:
@@ -471,7 +469,7 @@ void CB2_InitOptionMenu(void)
         gMain.state++;
         break;
     case 10:
-        taskId = CreateTask(Task_OptionMenuFadeIn, 0);
+        CreateTask(Task_OptionMenuFadeIn, 0);
 
         //sOptions = AllocZeroed(sizeof(*sOptions));
         //sOptions->page = 1;
@@ -565,6 +563,7 @@ static void ScrollAll(int direction) // to bottom or top
     
     switch (sOptions->page)
     {
+    default:
     case PAGE_OPTIONS:
         items = MENUITEM_COUNT;
         menu = sOptionMenuItemsNames;
@@ -648,7 +647,6 @@ static void Task_ChangePage(u8 taskId)
 
 static void Task_OptionMenuProcessInput(u8 taskId)
 {
-    int i, scrollCount = 0, itemsToRedraw;
     u8 maxItems;
 
     switch (sOptions->page)
@@ -656,6 +654,7 @@ static void Task_OptionMenuProcessInput(u8 taskId)
     case PAGE_KEY:
         maxItems = MENUITEM_KEY_COUNT;
         break;
+    default:
     case PAGE_OPTIONS:
         maxItems = MENUITEM_COUNT;
         break;
@@ -1060,7 +1059,7 @@ void SurfBikeMusic_DrawChoices(int selection, int y, u8 textSpeed)
 
 
 
-static u8 BattleScene_ProcessInput(u8 selection)
+UNUSED static u8 BattleScene_ProcessInput(u8 selection)
 {
     if (JOY_NEW(DPAD_LEFT | DPAD_RIGHT))
     {
@@ -1073,7 +1072,7 @@ static u8 BattleScene_ProcessInput(u8 selection)
 
 
 
-static u8 BattleStyle_ProcessInput(u8 selection)
+UNUSED static u8 BattleStyle_ProcessInput(u8 selection)
 {
     if (JOY_NEW(DPAD_LEFT | DPAD_RIGHT))
     {
@@ -1184,7 +1183,7 @@ void ButtonMode_DrawChoices(int selection, int y , u8 textSpeed)
 
 static void DrawHeaderText(void)
 {
-    u32 i, widthOptions, xMid;
+    u32 i/*, widthOptions, xMid*/;
     u8 pageDots[9] = _("");  // Array size should be at least (2 * PAGE_COUNT) -1
 
     for (i = 0; i < PAGE_COUNT; i++)
@@ -1196,8 +1195,8 @@ static void DrawHeaderText(void)
         if (i < PAGE_COUNT - 1)
             StringAppend(pageDots, gText_Space);            
     }
-    widthOptions = GetStringWidth(FONT_NORMAL, pageDots, 0);
-    xMid = (8 + widthOptions + 5);
+    //widthOptions = GetStringWidth(FONT_NORMAL, pageDots, 0);
+    //xMid = (8 + widthOptions + 5);
 
     FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
 //    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, 8, 1, TEXT_SKIP_DRAW, NULL);
@@ -1214,6 +1213,7 @@ static void DrawOptionMenuTexts(void)
     
     switch (sOptions->page)
     {
+    default:
     case PAGE_OPTIONS:
         items = MENUITEM_COUNT;
         menu = sOptionMenuItemsNames;
