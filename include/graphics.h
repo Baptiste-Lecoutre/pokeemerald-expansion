@@ -65,76 +65,6 @@ extern const u32 gOpenPokeballGfx[];
 // pokemon gfx
 extern const u16 gMonIconPalettes[][16];
 
-extern const u32 gTrainerPalette_Ethan[];
-extern const u32 gTrainerPalette_Lyra[];
-extern const u32 gTrainerPalette_Kris[];
-extern const u32 gTrainerPalette_Lucas[];
-extern const u32 gTrainerPalette_Dawn[];
-extern const u32 gTrainerPalette_LucasPlatinum[];
-extern const u32 gTrainerPalette_DawnPlatinum[];
-extern const u32 gTrainerPalette_MagmaAdmin[];
-extern const u32 gTrainerPalette_Chase[];
-extern const u32 gTrainerPalette_Elaine[];
-
-extern const u8 gTrainerBackPic_Brendan[];
-extern const u8 gTrainerBackPic_May[];
-extern const u8 gTrainerBackPic_Red[];
-extern const u8 gTrainerBackPic_Leaf[];
-extern const u8 gTrainerBackPic_RubySapphireBrendan[];
-extern const u8 gTrainerBackPic_RubySapphireMay[];
-extern const u8 gTrainerBackPic_Wally[];
-extern const u8 gTrainerBackPic_Steven[];
-extern const u8 gTrainerBackPic_Ethan[];
-extern const u8 gTrainerBackPic_Lyra[];
-extern const u8 gTrainerBackPic_Kris[];
-extern const u8 gTrainerBackPic_Lucas[];
-extern const u8 gTrainerBackPic_Dawn[];
-extern const u8 gTrainerBackPic_LucasPlatinum[];
-extern const u8 gTrainerBackPic_DawnPlatinum[];
-extern const u8 gTrainerBackPic_Chase[];
-extern const u8 gTrainerBackPic_Elaine[];
-
-extern const u32 gTrainerBackPicPalette_Red[];
-extern const u32 gTrainerBackPicPalette_Leaf[];
-extern const u32 gTrainerBackPicPalette_Brendan[];
-extern const u32 gTrainerBackPicPalette_May[];
-extern const u32 gTrainerBackPicPalette_Red[];
-extern const u32 gTrainerBackPicPalette_Leaf[];
-extern const u32 gTrainerBackPicPalette_Ethan[];
-extern const u32 gTrainerBackPicPalette_Lyra[];
-extern const u32 gTrainerBackPicPalette_Kris[];
-extern const u32 gTrainerBackPicPalette_Lucas[];
-extern const u32 gTrainerBackPicPalette_Dawn[];
-extern const u32 gTrainerBackPicPalette_LucasPlatinum[];
-extern const u32 gTrainerBackPicPalette_DawnPlatinum[];
-extern const u32 gTrainerBackPicPalette_Chase[];
-extern const u32 gTrainerBackPicPalette_Elaine[];
-
-extern const u32 gTrainerFrontPic_LeaderBrock[];
-extern const u32 gTrainerPalette_LeaderBrock[];
-extern const u32 gTrainerFrontPic_LeaderMisty[];
-extern const u32 gTrainerPalette_LeaderMisty[];
-extern const u32 gTrainerFrontPic_LeaderLtSurge[];
-extern const u32 gTrainerPalette_LeaderLtSurge[];
-extern const u32 gTrainerFrontPic_LeaderErika[];
-extern const u32 gTrainerPalette_LeaderErika[];
-extern const u32 gTrainerFrontPic_LeaderKoga[];
-extern const u32 gTrainerPalette_LeaderKoga[];
-extern const u32 gTrainerFrontPic_LeaderSabrina[];
-extern const u32 gTrainerPalette_LeaderSabrina[];
-extern const u32 gTrainerFrontPic_LeaderBlaine[];
-extern const u32 gTrainerPalette_LeaderBlaine[];
-extern const u32 gTrainerFrontPic_RocketGruntM[];
-extern const u32 gTrainerPalette_RocketGruntM[];
-extern const u32 gTrainerFrontPic_RocketGruntF[];
-extern const u32 gTrainerPalette_RocketGruntF[];
-extern const u32 gTrainerFrontPic_Giovanni[];
-extern const u32 gTrainerPalette_Giovanni[];
-extern const u32 gTrainerFrontPic_Cynthia[];
-extern const u32 gTrainerPalette_Cynthia[];
-extern const u32 gTrainerFrontPic_Blue[];
-extern const u32 gTrainerPalette_Blue[];
-
 // pokeblock
 extern const u32 gMenuPokeblock_Gfx[];
 extern const u32 gMenuPokeblock_Pal[];
@@ -855,6 +785,8 @@ extern const u32 gItemIcon_UnremarkableTeacup[];
 extern const u32 gItemIconPalette_UnremarkableTeacup[];
 extern const u32 gItemIcon_MasterpieceTeacup[];
 extern const u32 gItemIconPalette_MasterpieceTeacup[];
+extern const u32 gItemIcon_MetalAlloy[];
+extern const u32 gItemIconPalette_MetalAlloy[];
 // Nectars
 extern const u32 gItemIcon_RedNectar[];
 extern const u32 gItemIconPalette_RedNectar[];

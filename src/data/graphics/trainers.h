@@ -374,6 +374,7 @@ const u32 gTrainerPalette_Chase[] = INCBIN_U32("graphics/trainers/palettes/chase
 
 const u32 gTrainerFrontPic_Elaine[] = INCBIN_U32("graphics/trainers/front_pics/elaine_front_pic.4bpp.lz");
 const u32 gTrainerPalette_Elaine[] = INCBIN_U32("graphics/trainers/palettes/elaine.gbapal.lz");
+
 static const union AnimCmd *const sAnims_Trainer[] ={
     sAnim_GeneralFrame0,
 };

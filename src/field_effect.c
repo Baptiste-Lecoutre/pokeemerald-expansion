@@ -187,7 +187,7 @@ static void AnimateIndoorShowMonBg(struct Task *);
 static bool8 SlideIndoorBannerOnscreen(struct Task *);
 static bool8 SlideIndoorBannerOffscreen(struct Task *);
 
-static u8 InitFieldMoveMonSprite(u32, u32, u32);
+static u8 InitFieldMoveMonSprite(u32, bool8, u32);
 static void SpriteCB_FieldMoveMonSlideOnscreen(struct Sprite *);
 static void SpriteCB_FieldMoveMonWaitAfterCry(struct Sprite *);
 static void SpriteCB_FieldMoveMonSlideOffscreen(struct Sprite *);
@@ -941,7 +941,7 @@ u8 AddNewGameBirchObject(s16 x, s16 y, u8 subpriority)
 
 u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
 {
-    s32 spriteId = CreateMonPicSprite(species, 0, 0x8000, TRUE, x, y, 0, species);
+    s32 spriteId = CreateMonPicSprite(species, FALSE, 0x8000, TRUE, x, y, 0, species);
     PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);
     if (spriteId == 0xFFFF)
         return MAX_SPRITES;
@@ -949,11 +949,14 @@ u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
         return spriteId;
 }
 
-u8 CreateMonSprite_FieldMove(u16 species, u32 otId, u32 personality, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x, s16 y, u8 subpriority)
 {
     // force load unique tag here to avoid collision with follower pokemon
-    UNUSED u8 paletteSlot = AllocSpritePalette(species);
+/*    UNUSED u8 paletteSlot = AllocSpritePalette(species);
     u16 spriteId = CreateMonPicSprite(species, otId, personality, TRUE, x, y, 0, species);
+    PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);*/
+    u16 spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, x, y, 0, species);
+//    PreservePaletteInWeather(gSprites[spriteId].oam.paletteNum + 0x10);
     PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);
     if (spriteId == 0xFFFF)
         return MAX_SPRITES;
@@ -2660,7 +2663,7 @@ bool8 FldEff_FieldMoveShowMonInit(void)
     {
         pokemon = &gPlayerParty[(u8)gFieldEffectArguments[0]];
         gFieldEffectArguments[0] = GetMonData(pokemon, MON_DATA_SPECIES);
-        gFieldEffectArguments[1] = GetMonData(pokemon, MON_DATA_OT_ID);
+        gFieldEffectArguments[1] = GetMonData(pokemon, MON_DATA_IS_SHINY);
         gFieldEffectArguments[2] = GetMonData(pokemon, MON_DATA_PERSONALITY);
     }
 
@@ -3002,14 +3005,14 @@ static bool8 SlideIndoorBannerOffscreen(struct Task *task)
 #undef tBgOffset
 #undef tMonSpriteId
 
-static u8 InitFieldMoveMonSprite(u32 species, u32 otId, u32 personality)
+static u8 InitFieldMoveMonSprite(u32 species, bool8 isShiny, u32 personality)
 {
     bool16 noDucking;
     u8 monSprite;
     struct Sprite *sprite;
     noDucking = (species & SHOW_MON_CRY_NO_DUCKING) >> 16;
     species &= ~SHOW_MON_CRY_NO_DUCKING;
-    monSprite = CreateMonSprite_FieldMove(species, otId, personality, 320, 80, 0);
+    monSprite = CreateMonSprite_FieldMove(species, isShiny, personality, 320, 80, 0);
     sprite = &gSprites[monSprite];
     sprite->callback = SpriteCallbackDummy;
     sprite->oam.priority = 0;

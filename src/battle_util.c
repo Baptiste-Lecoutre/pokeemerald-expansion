@@ -9029,7 +9029,7 @@ static inline u32 CalcMoveBasePower(u32 move, u32 battlerAtk, u32 battlerDef, u3
     return basePower;
 }
 
-static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 battlerDef, u32 moveType, bool32 updateFlags, u32 atkAbility, u32 defAbility, u32 holdEffectAtk, u32 weather)
+u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 battlerDef, u32 moveType, bool32 updateFlags, u32 atkAbility, u32 defAbility, u32 holdEffectAtk, u32 weather)
 {
     u32 i;
     u32 holdEffectParamAtk;
@@ -10127,7 +10127,7 @@ static inline s32 DoMoveDamageCalc(u32 move, u32 battlerAtk, u32 battlerDef, u32
 
 #undef DAMAGE_APPLY_MODIFIER
 
-static u32 GetWeather(void)
+u32 GetWeather(void)
 {
     if (gBattleWeather == B_WEATHER_NONE || !WEATHER_HAS_EFFECT)
         return B_WEATHER_NONE;
@@ -10590,6 +10590,7 @@ u16 GetBattleFormChangeTargetSpecies(u32 battler, u16 method)
     u16 targetSpecies = SPECIES_NONE;
     u16 species = gBattleMons[battler].species;
     const struct FormChange *formChanges = GetSpeciesFormChanges(species);
+    struct Pokemon *mon = &GetBattlerParty(battler)[gBattlerPartyIndexes[battler]];
     u16 heldItem;
 
     if (formChanges != NULL)
@@ -10637,8 +10638,8 @@ u16 GetBattleFormChangeTargetSpecies(u32 battler, u16 method)
                     }
                     break;
                 case FORM_CHANGE_BATTLE_GIGANTAMAX:
-                    // TODO: check Gigantamax factor
-                    targetSpecies = formChanges[i].targetSpecies;
+                    if (GetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR))
+                        targetSpecies = formChanges[i].targetSpecies;
                     break;
                 case FORM_CHANGE_BATTLE_WEATHER:
                     // Check if there is a required ability and if the battler's ability does not match it

@@ -562,7 +562,7 @@ static void Cmd_setsafeguard(void);
 static void Cmd_magnitudedamagecalculation(void);
 static void Cmd_jumpifnopursuitswitchdmg(void);
 static void Cmd_setsunny(void);
-static void Cmd_maxattackhalvehp(void);
+static void Cmd_halvehp(void);
 static void Cmd_copyfoestats(void);
 static void Cmd_rapidspinfree(void);
 static void Cmd_setdefensecurlbit(void);
@@ -821,7 +821,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_magnitudedamagecalculation,              //0xB9
     Cmd_jumpifnopursuitswitchdmg,                //0xBA
     Cmd_setsunny,                                //0xBB
-    Cmd_maxattackhalvehp,                        //0xBC
+    Cmd_halvehp,                                 //0xBC
     Cmd_copyfoestats,                            //0xBD
     Cmd_rapidspinfree,                           //0xBE
     Cmd_setdefensecurlbit,                       //0xBF
@@ -12447,7 +12447,7 @@ static void Cmd_transformdataexecution(void)
         gDisableStructs[gBattlerAttacker].disabledMove = MOVE_NONE;
         gDisableStructs[gBattlerAttacker].disableTimer = 0;
         gDisableStructs[gBattlerAttacker].transformedMonPersonality = gBattleMons[gBattlerTarget].personality;
-        gDisableStructs[gBattlerAttacker].transformedMonOtId = gBattleMons[gBattlerTarget].otId;
+        gDisableStructs[gBattlerAttacker].transformedMonShininess = gBattleMons[gBattlerTarget].isShiny;
         gDisableStructs[gBattlerAttacker].mimickedMoves = 0;
         gDisableStructs[gBattlerAttacker].usedMoves = 0;
 
@@ -12832,10 +12832,8 @@ static void Cmd_copymovepermanently(void)
     gChosenMove = MOVE_UNAVAILABLE;
 
     if (!(gBattleMons[gBattlerAttacker].status2 & STATUS2_TRANSFORMED)
-        && gLastPrintedMoves[gBattlerTarget] != MOVE_STRUGGLE
-        && gLastPrintedMoves[gBattlerTarget] != MOVE_NONE
         && gLastPrintedMoves[gBattlerTarget] != MOVE_UNAVAILABLE
-        && gLastPrintedMoves[gBattlerTarget] != MOVE_SKETCH)
+        && !gBattleMoves[gLastPrintedMoves[gBattlerTarget]].sketchBanned)
     {
         s32 i;
 
@@ -13463,8 +13461,8 @@ static void Cmd_setsunny(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-// Belly Drum
-static void Cmd_maxattackhalvehp(void)
+// Belly Drum, Fillet Away
+static void Cmd_halvehp(void)
 {
     CMD_ARGS(const u8 *failInstr);
 
@@ -13473,11 +13471,8 @@ static void Cmd_maxattackhalvehp(void)
     if (!(GetNonDynamaxMaxHP(gBattlerAttacker) / 2))
         halfHp = 1;
 
-    // Belly Drum fails if the user's current HP is less than half its maximum, or if the user's Attack is already at +6 (even if the user has Contrary).
-    if (gBattleMons[gBattlerAttacker].statStages[STAT_ATK] < MAX_STAT_STAGE
-        && gBattleMons[gBattlerAttacker].hp > halfHp)
+    if (gBattleMons[gBattlerAttacker].hp > halfHp)
     {
-        gBattleMons[gBattlerAttacker].statStages[STAT_ATK] = MAX_STAT_STAGE;
         gBattleMoveDamage = GetNonDynamaxMaxHP(gBattlerAttacker) / 2;
         if (gBattleMoveDamage == 0)
             gBattleMoveDamage = 1;
@@ -15310,6 +15305,7 @@ static void Cmd_displaydexinfo(void)
     case 1:
         if (!gPaletteFade.active)
         {
+            struct Pokemon *mon = &gEnemyParty[gBattlerPartyIndexes[GetCatchingBattler()]];
             FreeAllWindowBuffers();
             gBattle_BG0_X = 0;
             gBattle_BG0_Y = 0;
@@ -15320,8 +15316,8 @@ static void Cmd_displaydexinfo(void)
             gBattle_BG3_X = 0;
             gBattle_BG3_Y = 0;
             gBattleCommunication[TASK_ID] = DisplayCaughtMonDexPage(species,
-                                                                        gBattleMons[GetCatchingBattler()].otId,
-                                                                        gBattleMons[GetCatchingBattler()].personality);
+                                                                    GetMonData(mon, MON_DATA_IS_SHINY),
+                                                                    GetMonData(mon, MON_DATA_PERSONALITY));
             gBattleCommunication[0]++;
         }
         break;

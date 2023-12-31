@@ -347,6 +347,7 @@ SECTIONS {
 		src/dexnav.o(.text);
         src/soar.o(.text);
         src/trainer_radar.o(.text);
+        src/ui_battle_menu.o(.text);
     } > ROM =0
 
     script_data :
@@ -718,6 +719,7 @@ SECTIONS {
 		src/dexnav.o(.rodata);
         src/soar.o(.rodata);
         src/trainer_radar.o(.rodata);
+        src/ui_battle_menu.o(.rodata);
     } > ROM =0
 
     song_data :
@@ -1306,6 +1308,7 @@ SECTIONS {
         *libc.a:lseekr.o(.rodata);
         *libc.a:readr.o(.rodata);
         src/libisagbprn.o(.rodata);
+        src/ui_battle_menu.o(.data);
     } > ROM =0
 
     multiboot_data :
