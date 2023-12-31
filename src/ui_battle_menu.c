@@ -3718,6 +3718,7 @@ static void PrintSpeedTab(void)
             species = gBattleMons[battlertoCheck].species;
             target = BATTLE_OPPOSITE(battlertoCheck);
             targetCurrentHp = gBattleMons[target].hp;
+            y = i ? 12 : 4;
             
             //Species Name
             StringCopy(gStringVar1, gSpeciesInfo[species].speciesName);
