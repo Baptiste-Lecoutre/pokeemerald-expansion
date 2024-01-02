@@ -304,7 +304,7 @@ static const u8 sText_PkmnsXPreventsYLoss[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}
 static const u8 sText_PkmnsXInfatuatedY[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_DEF_ABILITY}\ninfatuated {B_ATK_NAME_WITH_PREFIX}!");
 static const u8 sText_PkmnsXMadeYIneffective[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_DEF_ABILITY}\nmade {B_CURRENT_MOVE} ineffective!");
 static const u8 sText_PkmnsXCuredYProblem[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_SCR_ACTIVE_ABILITY}\ncured its {B_BUFF1} problem!");
-static const u8 sText_ItSuckedLiquidOoze[] = _("It sucked up the\nLiquid Ooze!");
+static const u8 sText_ItSuckedLiquidOoze[] = _("It sucked up the\nliquid ooze!");
 static const u8 sText_PkmnTransformed[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} transformed!");
 static const u8 sText_PkmnsXTookAttack[] = _("{B_DEF_NAME_WITH_PREFIX}'s {B_DEF_ABILITY}\ntook the attack!");
 const u8 gText_PkmnsXPreventsSwitching[] = _("{B_BUFF1}'s {B_LAST_ABILITY}\nprevents switching!\p");
@@ -837,11 +837,13 @@ static const u8 sText_TheSeaOfFireDisappeared[] = _("The sea of fire around {B_A
 static const u8 sText_SwampEnvelopedSide[] = _("A swamp enveloped\n{B_DEF_TEAM2} team!");
 static const u8 sText_TheSwampDisappeared[] = _("The swamp around {B_ATK_TEAM2}\nteam disappeared!");
 static const u8 sText_HospitalityRestoration[] = _("The {B_ATK_PARTNER_NAME} drank down all\nthe matcha that Sinistcha made!");
+static const u8 sText_ElectroShockCharging[] = _("{B_ATK_NAME_WITH_PREFIX} absorbed\nelectricity!");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
     [STRINGID_BAGISFULL - BATTLESTRINGS_TABLE_START] = sText_BagIsFull,
     [STRINGID_PKMNDROPPEDITEM - BATTLESTRINGS_TABLE_START] = sText_PkmnDroppedItem,
+    [STRINGID_ELECTROSHOCKCHARGING - BATTLESTRINGS_TABLE_START] = sText_ElectroShockCharging,
     [STRINGID_HOSPITALITYRESTORATION - BATTLESTRINGS_TABLE_START] = sText_HospitalityRestoration,
     [STRINGID_THESWAMPDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_TheSwampDisappeared,
     [STRINGID_SWAMPENVELOPEDSIDE - BATTLESTRINGS_TABLE_START] = sText_SwampEnvelopedSide,
@@ -1770,6 +1772,7 @@ const u16 gFirstTurnOfTwoStringIds[] =
     [B_MSG_TURN1_FREEZE_SHOCK]  = STRINGID_CLOAKEDINAFREEZINGLIGHT,
     [B_MSG_TURN1_SKY_DROP]      = STRINGID_PKMNTOOKTARGETHIGH,
     [B_MSG_TURN1_METEOR_BEAM]   = STRINGID_METEORBEAMCHARGING,
+    [B_MSG_TURN1_ELECTRO_SHOCK] = STRINGID_ELECTROSHOCKCHARGING,
 };
 
 // Index copied from move's index in sTrappingMoves
@@ -2976,7 +2979,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
             }
         }
         break;
-    case STRINGID_USEDMOVE: // pokemon used a move msg
+    case STRINGID_USEDMOVE: // Pokémon used a move msg
         if (gBattleStruct->zmove.active && gBattleStruct->zmove.activeCategory != BATTLE_CATEGORY_STATUS)
             StringCopy(gBattleTextBuff3, GetZMoveName(gBattleMsgDataPtr->currentMove));
         else if (IsMaxMove(gBattleMsgDataPtr->currentMove))
@@ -3291,7 +3294,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
 {
     u32 dstID = 0; // if they used dstID, why not use srcID as well?
     const u8 *toCpy = NULL;
-    // This buffer may hold either the name of a trainer, pokemon, or item.
+    // This buffer may hold either the name of a trainer, Pokémon, or item.
     u8 text[max(max(max(32, TRAINER_NAME_LENGTH + 1), POKEMON_NAME_LENGTH + 1), ITEM_NAME_LENGTH)];
     u8 multiplayerId;
 
