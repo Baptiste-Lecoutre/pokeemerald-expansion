@@ -3839,13 +3839,13 @@ static void SetMonTypeIcons(void)
 
     if (gSpeciesInfo[summary->species].types[0] != gSpeciesInfo[summary->species].types[1])
     {
-        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 167, 65, SPRITE_ARR_ID_TYPE);
-        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 201, 65, SPRITE_ARR_ID_TYPE + 1);
+        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 167, 64, SPRITE_ARR_ID_TYPE);
+        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 201, 64, SPRITE_ARR_ID_TYPE + 1);
         SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, FALSE);
     }
     else
     {
-        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 184, 65, SPRITE_ARR_ID_TYPE);
+        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 184, 64, SPRITE_ARR_ID_TYPE);
         SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, TRUE);
     }
 }
