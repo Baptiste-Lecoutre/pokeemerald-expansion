@@ -217,7 +217,7 @@ static EWRAM_DATA struct PokemonSummaryScreenData
     u8 windowIds[PSS_LABEL_WINDOW_END - 1];
     u8 spriteIds[SPRITE_ARR_ID_COUNT];
     bool8 handleDeoxys;
-    s16 switchCounter; // Used for various switch statement cases that decompress/load graphics or pokemon data
+    s16 switchCounter; // Used for various switch statement cases that decompress/load graphics or Pokémon data
     u8 unk_filler4[6];
     u8 categoryIconSpriteId;
 } *sMonSummaryScreen = NULL;
@@ -349,7 +349,6 @@ static u8 *GetMapNameOrre(u8 *dest, u16 mapSecId, bool8 isXD);
 
 // const rom data
 #include "data/text/move_descriptions.h"
-#include "data/text/nature_names.h"
 #include "data/text/characteristics.h"
 #include "data/text/met_locations.h"
 
@@ -2345,9 +2344,7 @@ static void Task_HandleInput_MoveSelect(u8 taskId)
             data[0]++;
             break;
         case 4:
-            if (sMonSummaryScreen->firstMoveIndex == MAX_MON_MOVES)
-                PrintMoveDetails(sMonSummaryScreen->newMove);
-            else
+            if (sMonSummaryScreen->firstMoveIndex != MAX_MON_MOVES)
                 PrintMoveDetails(sMonSummaryScreen->summary.moves[sMonSummaryScreen->firstMoveIndex]);
             PutWindowTilemap(PSS_LABEL_PANE_LEFT_MOVE);
             data[0]++;
@@ -3550,10 +3547,10 @@ static void PrintSkillsPage(void)
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 88, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
 
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Ability, 8, 112, 0, PSS_COLOR_WHITE_BLACK_SHADOW);
-    StringCopy(gStringVar1, gAbilityNames[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)]);
+    StringCopy(gStringVar1, gAbilities[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)].name);
     x = GetStringCenterAlignXOffset(1, gStringVar1, 88) + 58;
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 112, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
-    StringCopy(gStringVar1, gAbilityDescriptionPointers[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)]);
+    StringCopy(gStringVar1, gAbilities[GetAbilityBySpecies(sMonSummaryScreen->summary.species, summary->abilityNum)].description);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, 8, 128, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
     ScheduleBgCopyTilemapToVram(0);
     PutWindowTilemap(PSS_LABEL_PANE_RIGHT);
@@ -3929,13 +3926,13 @@ static void SetMonTypeIcons(void)
 
     if (gSpeciesInfo[summary->species].types[0] != gSpeciesInfo[summary->species].types[1])
     {
-        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 167, 65, SPRITE_ARR_ID_TYPE);
-        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 201, 65, SPRITE_ARR_ID_TYPE + 1);
+        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 167, 64, SPRITE_ARR_ID_TYPE);
+        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 201, 64, SPRITE_ARR_ID_TYPE + 1);
         SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, FALSE);
     }
     else
     {
-        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 184, 65, SPRITE_ARR_ID_TYPE);
+        SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 184, 64, SPRITE_ARR_ID_TYPE);
         SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, TRUE);
     }
 }

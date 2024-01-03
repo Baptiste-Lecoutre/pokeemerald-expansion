@@ -27,7 +27,7 @@
 #define STARTER_MON_COUNT   3
 #define REGION_COUNT        9
 
-// Position of the sprite of the selected starter Pokemon
+// Position of the sprite of the selected starter Pokémon
 #define STARTER_PKMN_POS_X (DISPLAY_WIDTH / 2)
 #define STARTER_PKMN_POS_Y 64
 
@@ -464,7 +464,7 @@ void CB2_ChooseStarter(void)
     spriteId = CreateSprite(&sSpriteTemplate_Hand, 120, 56, 2);
     gSprites[spriteId].data[0] = taskId;
 
-    // Create three Pokeball sprites
+    // Create three Poké Ball sprites
     spriteId = CreateSprite(&sSpriteTemplate_Pokeball, sPokeballCoords[0][0], sPokeballCoords[0][1], 2);
     gSprites[spriteId].sTaskId = taskId;
     gSprites[spriteId].sBallId = 0;
@@ -694,7 +694,7 @@ static u8 CreatePokemonFrontSprite(u16 species, u8 x, u8 y)
 
 static void SpriteCB_SelectionHand(struct Sprite *sprite)
 {
-    // Float up and down above selected pokeball
+    // Float up and down above selected Poké Ball
     sprite->x = sCursorCoords[gTasks[sprite->data[0]].tStarterSelection][0];
     sprite->y = sCursorCoords[gTasks[sprite->data[0]].tStarterSelection][1];
     sprite->y2 = Sin(sprite->data[1], 8);
@@ -703,7 +703,7 @@ static void SpriteCB_SelectionHand(struct Sprite *sprite)
 
 static void SpriteCB_Pokeball(struct Sprite *sprite)
 {
-    // Animate pokeball if currently selected
+    // Animate Poké Ball if currently selected
     if (gTasks[sprite->sTaskId].tStarterSelection == sprite->sBallId)
         StartSpriteAnimIfDifferent(sprite, 1);
     else
