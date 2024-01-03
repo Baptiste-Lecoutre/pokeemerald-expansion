@@ -4196,7 +4196,7 @@ bool8 PartyIsMaxLevel(void)
 
 u8 GetTeamLevel(void)
 {
-    u8 i;
+    u32 i;
     u16 partyLevel = 0;
 
     for (i = 0; i < PARTY_SIZE; i++)
@@ -4206,7 +4206,7 @@ u8 GetTeamLevel(void)
         else
             break;
     }
-    partyLevel /= i;
+    partyLevel /= i+1;
 
     return partyLevel;
 }
@@ -4234,7 +4234,7 @@ double GetPkmnExpMultiplier(u8 level)
     }
 
     if (gSaveBlock2Ptr->optionsLevelCap == 0) // no lvl cap
-        lvlCapMultiplier = 1;
+        lvlCapMultiplier = 1.0;
     else if (gSaveBlock2Ptr->optionsLevelCap == 2 && (lvlCapMultiplier < 1.0)) // strict lvl cap
         lvlCapMultiplier = 0;
 
@@ -10975,7 +10975,7 @@ static void Cmd_various(void)
         {
             if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
                 continue;
-            if (!IsGastroAcidBannedAbility(gBattleMons[i].ability))
+            if (!gAbilities[gBattleMons[i].ability].cantBeSuppressed)
             {
                 if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
                     gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
