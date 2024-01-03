@@ -505,8 +505,8 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 // Updates Raid Storm state and returns whether battle should end.
 bool32 ShouldRaidKickPlayer(void)
 {
-    if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
-        gBattleStruct->raid.energy ^= BIT_FLANK;
+    //if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
+    //    gBattleStruct->raid.energy ^= BIT_FLANK;
 
     // Gen 8-style raids are capped at 10 turns.
     if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
@@ -544,6 +544,18 @@ bool32 ShouldRaidKickPlayer(void)
     {
         BattleScriptExecute(BattleScript_TeraRaidTimerLow);
     }
+    return FALSE;
+}
+
+bool32 ShouldMoveDynamaxEnergy(void)
+{
+    if (gRaidData.raidType == RAID_TYPE_MAX)
+    {
+        gBattleStruct->raid.energy ^= BIT_FLANK;
+        gBattlerAttacker = gBattleStruct->raid.energy;
+        return TRUE;
+    }
+
     return FALSE;
 }
 
