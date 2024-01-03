@@ -205,7 +205,7 @@ enum WindowIds
 enum battler_TabIds
 {
     TAB_STATS,
-    TAB_ABILITIES,
+    //TAB_ABILITIES,
     TAB_MOVES,
     TAB_DAMAGE_CALCULATOR,
     TAB_STATUS,
@@ -885,7 +885,7 @@ void LoadTilemapFromMode(void)
                 else
                     LZDecompressWram(sMenu_Tilemap_Singles_Battler_Status, sBg1TilemapBuffer);
             break;
-            case TAB_ABILITIES:
+            //case TAB_ABILITIES:
             case TAB_MOVES:
             case TAB_DAMAGE_CALCULATOR:
                 if(IsDoubleBattle())
@@ -1190,7 +1190,11 @@ const u8 sText_Title_Nature_NoStat[] = _("Nature:\n{STR_VAR_1}");
 
 const u8 sText_Title_Held_Item[]    = _("Held Item: {STR_VAR_1}");
 const u8 gText_NewLevelSymbol[] = _("{LV}{STR_VAR_1}");
+
+const u8 sText_PrintAbilityTab_Ability[] = _("Ability");
+
 #define SPACE_BETWEEN_TYPES (5 * 8)
+#define SPACE_BETWEEN_ABILITY_AND_NAME (8 * 8)
 
 static void PrintStatsTab(){
     u8 i, j;
@@ -1198,6 +1202,7 @@ static void PrintStatsTab(){
     u8 windowId = WINDOW_1;
     u8 colorIdx = FONT_BLACK;
     u16 species = gBattleMons[sMenuDataPtr->battlerId].species;
+    u16 ability = gBattleMons[sMenuDataPtr->battlerId].ability;
     u32 personality = gBattleMons[sMenuDataPtr->battlerId].personality;
     u8 gender = GetGenderFromSpeciesAndPersonality(gBattleMons[sMenuDataPtr->battlerId].species, gBattleMons[sMenuDataPtr->battlerId].personality);
     u8 statStage;
@@ -1221,7 +1226,7 @@ static void PrintStatsTab(){
 
     //Pokemon Name
     x  = 9;
-    y  = 4;
+    y  = 3;//4
     x2 = 0;
     y2 = -4;
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gSpeciesInfo[species].speciesName);
@@ -1287,13 +1292,13 @@ static void PrintStatsTab(){
     //Item Icon
     x  = 26 + 1;
     x2 = 4;
-    y  = 4  + 3;
+    y  = 3 + 3; // 4 + 3
     ShowItemIcon(gBattleMons[sMenuDataPtr->battlerId].item, (x * 8) + x2, (y * 8) + y2);
     x2 = 0;
 
     //Stat Drops & Ups
     x = 9;
-    y = 9;
+    y = 8;//9
     //Attack
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, sText_Attack);
     y++;
@@ -1319,7 +1324,7 @@ static void PrintStatsTab(){
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, sText_Critical);
     
     x = 11;
-    y = 9;
+    y = 8;//9
     for(i = 0; i < NUM_BATTLE_STATS - 1; i++){
         
         statStage = gBattleMons[sMenuDataPtr->battlerId].statStages[statorder[i + 1]];//HP is not taken into account
@@ -1349,7 +1354,7 @@ static void PrintStatsTab(){
 
     //Stat names
     x  = 20;
-    y  = 9;
+    y  = 8;//9
     //HP
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, sText_StatHP);
     ConvertIntToDecimalStringN(gStringVar1, gBattleMons[sMenuDataPtr->battlerId].hp, STR_CONV_MODE_LEFT_ALIGN, 3);
@@ -1384,7 +1389,7 @@ static void PrintStatsTab(){
 
     //Nature
     x = 20;
-    y = 16;
+    y = 15;//16
     party = GetBattlerParty(sMenuDataPtr->battlerId);
     
     nature = GetMonData(&party[gBattlerPartyIndexes[sMenuDataPtr->battlerId]], MON_DATA_HIDDEN_NATURE, NULL);
@@ -1443,13 +1448,24 @@ static void PrintStatsTab(){
     
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
 
+    // Ability
+    x = 9;
+    y = 18;
+    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, sText_PrintAbilityTab_Ability);
+	AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + SPACE_BETWEEN_ABILITY_AND_NAME, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilities[ability].name);
+	y++;
+    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilities[ability].description);
+
+
+
+
     PutWindowTilemap(windowId);
     CopyWindowToVram(windowId, 3);
 }
 
 
-const u8 sText_PrintAbilityTab_Ability[] = _("Ability");
-#define SPACE_BETWEEN_ABILITY_AND_NAME (8 * 8)
+//const u8 sText_PrintAbilityTab_Ability[] = _("Ability");
+//#define SPACE_BETWEEN_ABILITY_AND_NAME (8 * 8)
 #define SPACE_BETWEEN_ABILITIES 3
 static void PrintAbilityTab(){
     u8 i, j;
@@ -4227,7 +4243,7 @@ static void SetMonTypeIcons(void)
 
 static u8 tabColors[NUM_TABS] = {
     [TAB_STATS]             = MENU_COLOR_BLUE,
-    [TAB_ABILITIES]         = MENU_COLOR_RED,
+    //[TAB_ABILITIES]         = MENU_COLOR_RED,
     [TAB_MOVES]             = MENU_COLOR_GREEN,
     [TAB_STATUS]            = MENU_COLOR_YELLOW,
     [TAB_DAMAGE_CALCULATOR] = MENU_COLOR_RED,
@@ -4311,9 +4327,9 @@ static void PrintPage(void){
             case TAB_STATS:
                 PrintStatsTab();
             break;
-            case TAB_ABILITIES:
-                PrintAbilityTab();
-            break;
+            //case TAB_ABILITIES:
+            //    PrintAbilityTab();
+            //break;
             case TAB_MOVES:
                 PrintMoveTab();
             break;
