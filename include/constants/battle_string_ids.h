@@ -718,18 +718,19 @@
 #define STRINGID_RAIDNOTMUCHTIMELEFT                  716
 #define STRINGID_RAIDPKMNRELEASEDENERGY               717
 #define STRINGID_BARRIERRESTOREDENERGY                718
-#define STRINGID_PKMNGAINEDEXPSHARE                   719
-#define STRINGID_PKMNDROPPEDITEM                      720
-#define STRINGID_BAGISFULL                            721
-#define STRINGID_NORUNNINGFROMTHISBATTLE              722
-#define STRINGID_MONTOOSCAREDTOMOVE                   723
-#define STRINGID_GHOSTGETOUTGETOUT                    724
-#define STRINGID_DEVONSCOPEUNVEILED                   725
-#define STRINGID_MAYDEVONSCOPEUNVEILED                726
-#define STRINGID_BRENDANDEVONSCOPEUNVEILED            727
-#define STRINGID_GHOSTWASOPPONENT                     728
+#define STRINGID_DYNAMAXENERGYSURROUNDS               719
+#define STRINGID_PKMNGAINEDEXPSHARE                   720
+#define STRINGID_PKMNDROPPEDITEM                      721
+#define STRINGID_BAGISFULL                            722
+#define STRINGID_NORUNNINGFROMTHISBATTLE              723
+#define STRINGID_MONTOOSCAREDTOMOVE                   724
+#define STRINGID_GHOSTGETOUTGETOUT                    725
+#define STRINGID_DEVONSCOPEUNVEILED                   726
+#define STRINGID_MAYDEVONSCOPEUNVEILED                727
+#define STRINGID_BRENDANDEVONSCOPEUNVEILED            728
+#define STRINGID_GHOSTWASOPPONENT                     729
 
-#define BATTLESTRINGS_COUNT                           729
+#define BATTLESTRINGS_COUNT                           730
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

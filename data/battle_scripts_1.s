@@ -11051,6 +11051,11 @@ BattleScript_TeraRaidDefeatAnim:
 	waitanimation
 	goto BattleScript_BlownOutMsg
 
+BattleScript_RaidMoveDynamaxEnergy::
+	printstring STRINGID_DYNAMAXENERGYSURROUNDS
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
 @ Ghosts
 BattleScript_GhostGetOutGetOut::
 	printstring STRINGID_GHOSTGETOUTGETOUT

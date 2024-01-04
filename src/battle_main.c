@@ -3985,6 +3985,12 @@ static void TryDoEventsBeforeFirstTurn(void)
 
     if ((i = ShouldDoTrainerSlide(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), TRAINER_SLIDE_BEFORE_FIRST_TURN)))
         BattleScriptExecute(i == 1 ? BattleScript_TrainerASlideMsgEnd2 : BattleScript_TrainerBSlideMsgEnd2);
+    
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidData.raidType == RAID_TYPE_MAX)
+    {
+        gBattlerAttacker = gBattleStruct->raid.energy;
+        BattleScriptExecute(BattleScript_RaidMoveDynamaxEnergy);
+    }
 }
 
 static void HandleEndTurn_ContinueBattle(void)
@@ -4072,6 +4078,8 @@ void BattleTurnPassed(void)
 
     if (gBattleTypeFlags & BATTLE_TYPE_RAID && ShouldRaidKickPlayer()) // Raid Storm check
         gBattleMainFunc = HandleEndTurn_FinishBattle;
+    else if (gBattleTypeFlags & BATTLE_TYPE_RAID && ShouldMoveDynamaxEnergy()) // Show which mon has dynamax energy in raids
+        BattleScriptExecute(BattleScript_RaidMoveDynamaxEnergy);
     else if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
         BattleScriptExecute(BattleScript_PalacePrintFlavorText);
     else if (gBattleTypeFlags & BATTLE_TYPE_ARENA && gBattleStruct->arenaTurnCounter == 0)

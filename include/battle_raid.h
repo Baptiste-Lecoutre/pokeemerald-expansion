@@ -13,16 +13,13 @@ struct RaidType {
 struct RaidData {
     u8 rank;
     u8 raidType;
-//    struct Trainer* partners;
     u16 partnerNum;
-	u8 trainerBackPic;
 };
 
 struct RaidPartnerData
 {
     u16 trainerNum;
 	u16 graphicsId;
-	u8 trainerBackPic;
 };
 
 struct RaidPartner
@@ -44,6 +41,7 @@ bool32 IsRaidBoss(u16 battlerId);
 u8 GetRaidBattleTransition(void);
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon);
 bool32 ShouldRaidKickPlayer(void);
+bool32 ShouldMoveDynamaxEnergy(void);
 bool8 DoesRaidPreventMove(u16 move);
 u8 GetRaidRepeatedAttackChance(void);
 u8 GetRaidShockwaveChance(void);
