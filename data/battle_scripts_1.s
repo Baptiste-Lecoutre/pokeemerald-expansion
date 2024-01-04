@@ -11041,3 +11041,8 @@ BattleScript_TeraRaidDefeatAnim:
 	playanimation BS_OPPONENT1, B_ANIM_RAID_SHOCKWAVE @placeholder
 	waitanimation
 	goto BattleScript_BlownOutMsg
+
+BattleScript_RaidMoveDynamaxEnergy::
+	printstring STRINGID_DYNAMAXENERGYSURROUNDS
+	waitmessage B_WAIT_TIME_LONG
+	end2

@@ -2130,19 +2130,31 @@ void DoSpecialTrainerBattle(void)
     case SPECIAL_BATTLE_RAID:
         {
         const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
-        gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;// | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
+        gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;
+        gTrainerBattleOpponent_B = 0xFFFF;
 
-        if (gRaidData.partnerNum != 0) // working as intended. I have to do something about the SavePlayerParty before this call, then the CallFrontierUtilFunc, and the LoadPlayerParty
+        if (gRaidData.partnerNum != 0)
         {
             gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
-            gPartnerSpriteId = raidPartners->partnerData[gRaidData.partnerNum].trainerBackPic;
-            gPartnerTrainerId = TRAINER_PARTNER(raidPartners->partnerData[gRaidData.partnerNum].trainerNum);
+            gPartnerSpriteId = gBattlePartners[gRaidData.partnerNum].trainerPic;
+            gPartnerTrainerId = TRAINER_PARTNER(gRaidData.partnerNum);
             FillPartnerParty(gPartnerTrainerId);
         }
 
         CreateTask(Task_StartBattleAfterTransition, 1);
-        PlayMapChosenOrBattleBGM(0);
-        BattleTransition_StartOnField(GetRaidBattleTransition());
+        
+        switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
+        {
+            case SPECIES_RAYQUAZA:
+                PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
+                BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);
+                break;
+            default:
+                PlayMapChosenOrBattleBGM(0);
+                BattleTransition_StartOnField(GetRaidBattleTransition());
+                break;
+        }
+
         break;
         }
     }

@@ -3,24 +3,20 @@ const struct RaidPartnerData sRaidPartnerData_Rank0[] = {};
 const struct RaidPartnerData sRaidPartnerData_Rank1[] =
 {
     {
-		.trainerNum = TRAINER_STEVEN,
+		.trainerNum = PARTNER_STEVEN,
 		.graphicsId = OBJ_EVENT_GFX_STEVEN,
-		.trainerBackPic = TRAINER_BACK_PIC_STEVEN,
 	},
 	{
 		.trainerNum = TRAINER_RIVAL_OVERRIDE,
 		.graphicsId = OBJ_EVENT_GFX_MAY_NORMAL,
-		.trainerBackPic = TRAINER_BACK_PIC_MAY,
 	},
 	{
 		.trainerNum = TRAINER_RED_OVERRIDE,
 		.graphicsId = OBJ_EVENT_GFX_RED,
-		.trainerBackPic = TRAINER_BACK_PIC_RED,
 	},
 	{
 		.trainerNum = TRAINER_WALLY_OVERRIDE,
 		.graphicsId = OBJ_EVENT_GFX_WALLY,
-		.trainerBackPic = TRAINER_BACK_PIC_WALLY,
 	},
 	// wally
 	// steven
