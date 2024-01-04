@@ -13,19 +13,35 @@ MEMORY
 
 SECTIONS {
 
-    ewram 0x2000000 (NOLOAD) :
+    .ewram ORIGIN(EWRAM) : AT (__ewram_lma)
+    ALIGN(4)
+    {
+        __ewram_start = .;
+        *(.ewram*)
+        __ewram_end = .;
+    } > EWRAM
+
+    .ewram.sbss (NOLOAD) :
     ALIGN(4)
     {
         INCLUDE "sym_ewram.ld"
-        src/*.o(ewram_data);
-        gflib/*.o(ewram_data);
+        src/*.o(.sbss);
+        gflib/*.o(.sbss);
 
         *libc.a:impure.o(.data);
         *libc.a:locale.o(.data);
         *libc.a:mallocr.o(.data);
     } > EWRAM
 
-    iwram 0x3000000 (NOLOAD) :
+    .iwram ORIGIN(IWRAM) : AT (__iwram_lma)
+    ALIGN(4)
+    {
+        __iwram_start = .;
+        *(.iwram*);
+        __iwram_end = .;
+    } > IWRAM
+
+    .iwram.bss (NOLOAD) :
     ALIGN(4)
     {
         /* .bss starts at 0x3000000 */
@@ -350,6 +366,7 @@ SECTIONS {
         src/battle_raid.o(.text);
         src/follow_me.o(.text);
         src/trainer_radar.o(.text);
+        src/ui_battle_menu.o(.text);
     } > ROM =0
 
     script_data :
@@ -724,6 +741,7 @@ SECTIONS {
         src/battle_raid.o(.rodata);
         src/follow_me.o(.rodata);
         src/trainer_radar.o(.rodata);
+        src/ui_battle_menu.o(.rodata);
     } > ROM =0
 
     song_data :
@@ -1312,6 +1330,7 @@ SECTIONS {
         *libc.a:lseekr.o(.rodata);
         *libc.a:readr.o(.rodata);
         src/libisagbprn.o(.rodata);
+        src/ui_battle_menu.o(.data);
     } > ROM =0
 
     multiboot_data :
@@ -1336,6 +1355,20 @@ SECTIONS {
         src/*.o(.rodata);
         gflib/*.o(.rodata);
         data/*.o(.rodata);
+    } > ROM = 0
+
+    .data.iwram :
+    ALIGN(4)
+    {
+        __iwram_lma = .;
+        . = . + (__iwram_end - __iwram_start);
+    } > ROM = 0
+
+    .data.ewram :
+    ALIGN(4)
+    {
+        __ewram_lma = .;
+        . = . + (__ewram_end - __ewram_start);
     } > ROM = 0
 
     __rom_end = .;

@@ -156,3 +156,4 @@
 	.include "src/raid_intro.o"
 	.include "src/battle_raid.o"
 	.include "src/trainer_radar.o"
+	.include "src/ui_battle_menu.o"

@@ -697,31 +697,32 @@
 #define STRINGID_THESWAMPDISAPPEARED                  695
 #define STRINGID_PKMNTELLCHILLINGRECEPTIONJOKE        696
 #define STRINGID_HOSPITALITYRESTORATION               697
-#define STRINGID_PKMNAPPEARSMASSIVE                   698
-#define STRINGID_DYNAMAXENERGYGATHERED                699
-#define STRINGID_RAIDSHIELDAPPEARED                   700
-#define STRINGID_RAIDSHIELDDISAPPEARED                701
-#define STRINGID_CATCHRAIDMON                         702
-#define STRINGID_PKMNISTOOSTRONG                      703
-#define STRINGID_PKMNNULLIFIEDOTHERS                  704
-#define STRINGID_MOVEPREVENTEDBYDYNAMAX               705
-#define STRINGID_RAIDPKMNDISAPPEARED                  706
-#define STRINGID_STORMSTARTEDBREWING                  707
-#define STRINGID_STORMGETTINGSTRONGER                 708
-#define STRINGID_STORMGETTINGEVENSTRONGER             709
-#define STRINGID_STORMGETTINGTOOSTRONG                710
-#define STRINGID_BLOWNOUTOFDEN                        711
-#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           712
-#define STRINGID_ENERGYGATHEREDAROUNDPKMN             713
-#define STRINGID_PKMNBROKEITSSTANCE                   714
-#define STRINGID_RAIDNOTMUCHTIMELEFT                  715
-#define STRINGID_RAIDPKMNRELEASEDENERGY               716
-#define STRINGID_PKMNGAINEDEXPSHARE                   717
-#define STRINGID_PKMNDROPPEDITEM                      718
-#define STRINGID_BAGISFULL                            719
-#define STRINGID_NORUNNINGFROMTHISBATTLE              720
+#define STRINGID_ELECTROSHOCKCHARGING                 698
+#define STRINGID_PKMNAPPEARSMASSIVE                   699
+#define STRINGID_DYNAMAXENERGYGATHERED                700
+#define STRINGID_RAIDSHIELDAPPEARED                   701
+#define STRINGID_RAIDSHIELDDISAPPEARED                702
+#define STRINGID_CATCHRAIDMON                         703
+#define STRINGID_PKMNISTOOSTRONG                      704
+#define STRINGID_PKMNNULLIFIEDOTHERS                  705
+#define STRINGID_MOVEPREVENTEDBYDYNAMAX               706
+#define STRINGID_RAIDPKMNDISAPPEARED                  707
+#define STRINGID_STORMSTARTEDBREWING                  708
+#define STRINGID_STORMGETTINGSTRONGER                 709
+#define STRINGID_STORMGETTINGEVENSTRONGER             710
+#define STRINGID_STORMGETTINGTOOSTRONG                711
+#define STRINGID_BLOWNOUTOFDEN                        712
+#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           713
+#define STRINGID_ENERGYGATHEREDAROUNDPKMN             714
+#define STRINGID_PKMNBROKEITSSTANCE                   715
+#define STRINGID_RAIDNOTMUCHTIMELEFT                  716
+#define STRINGID_RAIDPKMNRELEASEDENERGY               717
+#define STRINGID_PKMNGAINEDEXPSHARE                   718
+#define STRINGID_PKMNDROPPEDITEM                      719
+#define STRINGID_BAGISFULL                            720
+#define STRINGID_NORUNNINGFROMTHISBATTLE              721
 
-#define BATTLESTRINGS_COUNT                           721
+#define BATTLESTRINGS_COUNT                           722
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -779,6 +780,7 @@
 #define B_MSG_TURN1_FREEZE_SHOCK   10
 #define B_MSG_TURN1_SKY_DROP       11
 #define B_MSG_TURN1_METEOR_BEAM    12
+#define B_MSG_TURN1_ELECTRO_SHOCK  13
 
 // gMoveWeatherChangeStringIds
 #define B_MSG_STARTED_RAIN      0
