@@ -24,8 +24,7 @@
 #include "constants/layouts.h"
 #include "constants/weather.h"
 
-extern const u8 EventScript_RepelWoreOff[];
-extern const u8 EventScript_LureWoreOff[];
+extern const u8 EventScript_SprayWoreOff[];
 
 #define MAX_ENCOUNTER_RATE 2880
 
@@ -478,7 +477,6 @@ u16 GetCurrentMapWildMonHeaderId(void)
 u8 PickWildMonNature(void)
 {
     u8 i;
-    u8 j;
     struct Pokeblock *safariPokeblock;
     u8 natures[NUM_NATURES];
 
@@ -489,17 +487,7 @@ u8 PickWildMonNature(void)
         {
             for (i = 0; i < NUM_NATURES; i++)
                 natures[i] = i;
-            for (i = 0; i < NUM_NATURES - 1; i++)
-            {
-                for (j = i + 1; j < NUM_NATURES; j++)
-                {
-                    if (Random() & 1)
-                    {
-                        u8 temp;
-                        SWAP(natures[i], natures[j], temp);
-                    }
-                }
-            }
+            Shuffle(natures, NUM_NATURES, sizeof(natures[0]));
             for (i = 0; i < NUM_NATURES; i++)
             {
                 if (PokeblockGetGain(natures[i], safariPokeblock) > 0)
@@ -1082,7 +1070,7 @@ bool8 UpdateRepelCounter(void)
             VarSet(VAR_REPEL_STEP_COUNT, steps);
             if (steps == 0)
             {
-                ScriptContext_SetupScript(EventScript_RepelWoreOff);
+                ScriptContext_SetupScript(EventScript_SprayWoreOff);
                 return TRUE;
             }
         }
@@ -1091,7 +1079,7 @@ bool8 UpdateRepelCounter(void)
             VarSet(VAR_REPEL_STEP_COUNT, steps | REPEL_LURE_MASK);
             if (steps == 0)
             {
-                ScriptContext_SetupScript(EventScript_LureWoreOff);
+                ScriptContext_SetupScript(EventScript_SprayWoreOff);
                 return TRUE;
             }
         }
