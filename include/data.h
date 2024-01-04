@@ -103,6 +103,7 @@ struct TrainerClass
     u8 name[13];
     u8 money;
     u16 ball;
+    s8 levelOffset;
 };
 
 #define TRAINER_ENCOUNTER_MUSIC(trainer)((gTrainers[trainer].encounterMusic_gender & 0x7F))

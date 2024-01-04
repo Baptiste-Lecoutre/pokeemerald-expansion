@@ -10959,7 +10959,7 @@ static void Cmd_various(void)
         {
             if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
                 continue;
-            if (!IsGastroAcidBannedAbility(gBattleMons[i].ability))
+            if (!gAbilities[gBattleMons[i].ability].cantBeSuppressed)
             {
                 if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
                     gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
