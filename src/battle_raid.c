@@ -537,7 +537,9 @@ bool32 ShouldMoveDynamaxEnergy(void)
     {
         gBattleStruct->raid.energy ^= BIT_FLANK;
         gBattlerAttacker = gBattleStruct->raid.energy;
-        return TRUE;
+
+        if (CanDynamax(gBattlerAttacker))
+            return TRUE;
     }
 
     return FALSE;
