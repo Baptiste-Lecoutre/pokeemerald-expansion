@@ -2,6 +2,7 @@
 #define GUARD_DATA_H
 
 #include "constants/moves.h"
+#include "constants/trainers.h"
 
 #define SPECIES_SHINY_TAG 5000
 #define N_FOLLOWER_HAPPY_MESSAGES 31
@@ -97,6 +98,14 @@ struct Trainer
     /*0x1F*/ u8 partySize;
 };
 
+struct TrainerClass
+{
+    u8 name[13];
+    u8 money;
+    u16 ball;
+    s8 levelOffset;
+};
+
 #define TRAINER_ENCOUNTER_MUSIC(trainer)((gTrainers[trainer].encounterMusic_gender & 0x7F))
 
 struct FollowerMsgInfo {
@@ -151,7 +160,7 @@ extern const struct TrainerBacksprite gTrainerBacksprites[];
 extern const struct Trainer gTrainers[];
 extern const struct Trainer gBattlePartners[];
 
-extern const u8 gTrainerClassNames[][13];
+extern const struct TrainerClass gTrainerClasses[TRAINER_CLASS_COUNT];
 extern const u8 gMoveNames[MOVES_COUNT_DYNAMAX][MOVE_NAME_LENGTH + 1];
 extern const u8 *const gZMoveNames[];
 extern const u8 *const gMaxMoveNames[];

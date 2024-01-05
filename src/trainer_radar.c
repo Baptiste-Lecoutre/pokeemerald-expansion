@@ -802,6 +802,7 @@ static void TrainerRadarBuildMainListMenuTemplate(void)
 static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list)
 {
     const struct RouteTrainers* routeTrainersStruct;
+    u16 trainerId;
 
     if (onInit != TRUE)
         PlaySE(SE_SELECT);
@@ -810,7 +811,7 @@ static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, s
     routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
     if (routeTrainersStruct->routeTrainers != NULL)
     {
-        sTrainerRadarPtr->trainerId = GetTrainerOverride(routeTrainersStruct->routeTrainers[0]);
+        sTrainerRadarPtr->trainerId = GetTrainerOverride(routeTrainersStruct->routeTrainers[routeTrainersStruct->numTrainers - 1]);
         PrintVisualElements();
     }
 }
@@ -845,6 +846,7 @@ static void TrainerRadarMainListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 
 }
 
 static const u8 sText_ColorRed[] = _("{COLOR_HIGHLIGHT_SHADOW RED TRANSPARENT LIGHT_RED}");
+static const u8 sText_HiddenTrainer[] = _("???");
 static void TrainerRadarBuildRouteListMenuTemplate(void)
 {
     u32 i; // build listmenutemplate for the route page -> trainer name + highlight
@@ -863,7 +865,14 @@ static void TrainerRadarBuildRouteListMenuTemplate(void)
         else
         {
             StringCopy(sItemNames[i], sText_ColorRed);
-            StringAppend(sItemNames[i], gTrainers[trainerId].trainerName);
+
+            if (!FlagGet(FLAG_SYS_GAME_CLEAR))
+                StringAppend(sItemNames[i], sText_HiddenTrainer);
+            else if (gTrainers[trainerId].trainerClass == TRAINER_CLASS_RIVAL || gTrainers[trainerId].trainerClass == TRAINER_CLASS_LEADER
+                || gTrainers[trainerId].trainerClass == TRAINER_CLASS_ELITE_FOUR || gTrainers[trainerId].trainerClass == TRAINER_CLASS_CHAMPION)
+                StringAppend(sItemNames[i], sText_HiddenTrainer);
+            else
+                StringAppend(sItemNames[i], gTrainers[trainerId].trainerName);
         }
         
         sListMenuItems[i].name = sItemNames[i];
@@ -1219,12 +1228,12 @@ static void PrintTrainerPic(void)
         sTrainerRadarPtr->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[trainerId].trainerPic, TRUE, x, y, 15, TAG_NONE);
         // slot 15 to avoid conflict with mon icon palettes
 
-        //if (!HasTrainerBeenFought(sTrainerRadarPtr->trainerId))
-        //{
-        //    u16 paletteOffset = 15 * 16 + 0x100;
-        //    BlendPalette(paletteOffset, 16, 16, RGB(5, 5, 5));
-        //    CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
-        //}
+        if (!HasTrainerBeenFought(sTrainerRadarPtr->trainerId))
+        {
+            u16 paletteOffset = 15 * 16 + 0x100;
+            BlendPalette(paletteOffset, 16, 16, RGB(5, 5, 5));
+            CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
+        }
     }
 }
 
@@ -1243,6 +1252,13 @@ static void PrintTrainerOW(void)
     {
         sTrainerRadarPtr->trainerObjEventSpriteId = CreateObjectGraphicsSprite(sTrainerObjEventGfx[trainerId], SpriteCallbackDummy, x, y, 0);
         gSprites[sTrainerRadarPtr->trainerObjEventSpriteId].oam.priority = 0;
+    
+        if (!HasTrainerBeenFought(trainerId))
+        {
+            u16 paletteOffset = OBJ_PLTT_ID(gSprites[sTrainerRadarPtr->trainerObjEventSpriteId].oam.paletteNum);
+            BlendPalette(paletteOffset, 16, 16, RGB(5, 5, 5));
+            CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
+        }
     }
 }
 

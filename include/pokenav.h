@@ -269,8 +269,8 @@ enum
                         [CHECK_PAGE_INTRO_2]  = gText_MatchCall##name##_Intro2}
 
 
-// Pokenav Function IDs
-// Indices into the LoopedTask tables for each of the main Pokenav features
+// PokéNav Function IDs
+// Indices into the LoopedTask tables for each of the main PokéNav features
 
 enum RegionMapFuncIds
 {

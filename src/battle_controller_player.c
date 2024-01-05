@@ -31,6 +31,7 @@
 #include "task.h"
 #include "test_runner.h"
 #include "text.h"
+#include "ui_battle_menu.h"
 #include "util.h"
 #include "window.h"
 #include "constants/battle.h"
@@ -98,6 +99,7 @@ static void MoveSelectionDisplaySplitIcon(u32 battler);
 static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId);
 static void MoveSelectionDisplayMoveDescription(u32 battler);
 static void HandleInputTeamPreview(u32 battler);
+static void Controller_WaitForUIBattleMenu(u32 battler);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 {
@@ -473,6 +475,13 @@ static void HandleInputChooseAction(u32 battler)
         PlayerBufferExecCompleted(battler);
     }
 #endif
+    else if (JOY_NEW(L_BUTTON) && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+    {
+        gBattlerControllerFuncs[battler] = Controller_WaitForUIBattleMenu;
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 0x10, RGB_BLACK);
+        FreeAllWindowBuffers();
+        UI_Battle_Menu_Init(CB2_SetUpReshowBattleScreenAfterMenu);
+    }
 /*#if B_LAST_USED_BALL == TRUE
     else if (JOY_HELD(B_LAST_USED_BALL_BUTTON))*/
 #if B_LAST_USED_BALL == TRUE && B_LAST_USED_BALL_CYCLE == FALSE
@@ -1413,12 +1422,12 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
     struct Pokemon *party = GetBattlerParty(battler);
     struct Pokemon *partnerParty = GetBattlerParty(BATTLE_PARTNER(battler));
 
-    // Start shiny animation if applicable for 1st pokemon
+    // Start shiny animation if applicable for 1st Pokémon
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim
      && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive)
         TryShinyAnimation(battler, &party[gBattlerPartyIndexes[battler]]);
 
-    // Start shiny animation if applicable for 2nd pokemon
+    // Start shiny animation if applicable for 2nd Pokémon
     if (!gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].triedShinyMonAnim
      && !gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].ballAnimActive)
         TryShinyAnimation(BATTLE_PARTNER(battler), &partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]);
@@ -1911,7 +1920,7 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
 {
     u8 *txtPtr;
     u8 type;
-    u32 itemId;
+    u32 speciesId;
     struct Pokemon *mon;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
 
@@ -1923,10 +1932,12 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_IVY_CUDGEL)
     {
         mon = &GetSideParty(GetBattlerSide(battler))[gBattlerPartyIndexes[battler]];
-        itemId = GetMonData(mon, MON_DATA_HELD_ITEM);
+        speciesId = GetMonData(mon, MON_DATA_SPECIES);
 
-        if (ItemId_GetHoldEffect(itemId) == HOLD_EFFECT_MASK)
-            type = ItemId_GetSecondaryId(itemId);
+        if (speciesId == SPECIES_OGERPON_WELLSPRING_MASK || speciesId == SPECIES_OGERPON_WELLSPRING_MASK_TERA
+            || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK_TERA
+            || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK_TERA)
+            type = gBattleMons[battler].type2;
         else
             type = gBattleMoves[MOVE_IVY_CUDGEL].type;
     }
@@ -2602,4 +2613,10 @@ static void HandleInputTeamPreview(u32 battler)
         gMultiUsePlayerCursor ^= BIT_FLANK;
         UpdateInBattleTeamPreview();
     }
+}
+
+static void Controller_WaitForUIBattleMenu(u32 battler)
+{
+    if (gMain.callback2 == BattleMainCB2)
+        PlayerHandleChooseAction(battler);
 }

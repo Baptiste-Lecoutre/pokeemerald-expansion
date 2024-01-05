@@ -325,158 +325,89 @@ const u8 gTypeNames[NUMBER_OF_MON_TYPES][TYPE_NAME_LENGTH + 1] =
     [TYPE_FAIRY] = _("Fairy"),
 };
 
-// This is a factor in how much money you get for beating a trainer.
-const struct TrainerMoney gTrainerMoneyTable[] =
-{
-    {TRAINER_CLASS_TEAM_AQUA, 5},
-    {TRAINER_CLASS_AQUA_ADMIN, 10},
-    {TRAINER_CLASS_AQUA_LEADER, 20},
-    {TRAINER_CLASS_AROMA_LADY, 10},
-    {TRAINER_CLASS_RUIN_MANIAC, 15},
-    {TRAINER_CLASS_INTERVIEWER, 12},
-    {TRAINER_CLASS_TUBER_F, 1},
-    {TRAINER_CLASS_TUBER_M, 1},
-    {TRAINER_CLASS_SIS_AND_BRO, 3},
-    {TRAINER_CLASS_COOLTRAINER, 12},
-    {TRAINER_CLASS_HEX_MANIAC, 6},
-    {TRAINER_CLASS_LADY, 50},
-    {TRAINER_CLASS_BEAUTY, 20},
-    {TRAINER_CLASS_RICH_BOY, 50},
-    {TRAINER_CLASS_POKEMANIAC, 15},
-    {TRAINER_CLASS_SWIMMER_M, 2},
-    {TRAINER_CLASS_BLACK_BELT, 8},
-    {TRAINER_CLASS_GUITARIST, 8},
-    {TRAINER_CLASS_KINDLER, 8},
-    {TRAINER_CLASS_CAMPER, 4},
-    {TRAINER_CLASS_OLD_COUPLE, 10},
-    {TRAINER_CLASS_BUG_MANIAC, 15},
-    {TRAINER_CLASS_PSYCHIC, 6},
-    {TRAINER_CLASS_GENTLEMAN, 20},
-    {TRAINER_CLASS_ELITE_FOUR, 25},
-    {TRAINER_CLASS_LEADER, 25},
-    {TRAINER_CLASS_SCHOOL_KID, 5},
-    {TRAINER_CLASS_SR_AND_JR, 4},
-    {TRAINER_CLASS_POKEFAN, 20},
-    {TRAINER_CLASS_EXPERT, 10},
-    {TRAINER_CLASS_YOUNGSTER, 4},
-    {TRAINER_CLASS_CHAMPION, 50},
-    {TRAINER_CLASS_FISHERMAN, 10},
-    {TRAINER_CLASS_TRIATHLETE, 10},
-    {TRAINER_CLASS_DRAGON_TAMER, 12},
-    {TRAINER_CLASS_BIRD_KEEPER, 8},
-    {TRAINER_CLASS_NINJA_BOY, 3},
-    {TRAINER_CLASS_BATTLE_GIRL, 6},
-    {TRAINER_CLASS_PARASOL_LADY, 10},
-    {TRAINER_CLASS_SWIMMER_F, 2},
-    {TRAINER_CLASS_PICNICKER, 4},
-    {TRAINER_CLASS_TWINS, 3},
-    {TRAINER_CLASS_SAILOR, 8},
-    {TRAINER_CLASS_COLLECTOR, 15},
-    {TRAINER_CLASS_RIVAL, 15},
-    {TRAINER_CLASS_PKMN_BREEDER, 10},
-    {TRAINER_CLASS_PKMN_RANGER, 12},
-    {TRAINER_CLASS_TEAM_MAGMA, 5},
-    {TRAINER_CLASS_MAGMA_ADMIN, 10},
-    {TRAINER_CLASS_MAGMA_LEADER, 20},
-    {TRAINER_CLASS_LASS, 4},
-    {TRAINER_CLASS_BUG_CATCHER, 4},
-    {TRAINER_CLASS_HIKER, 10},
-    {TRAINER_CLASS_YOUNG_COUPLE, 8},
-    {TRAINER_CLASS_WINSTRATE, 10},
-    {TRAINER_CLASS_TEAM_ROCKET, 10},
-    {TRAINER_CLASS_BOSS, 20},
-    {0xFF, 5}, // Any trainer class not listed above uses this
-};
+#define DEFAULT_MONEY 5
+#define DEFAULT_BALL ITEM_POKE_BALL
 
-const s8 gTrainerClassLevelOffsetTable[] = 
-{
-    [TRAINER_CLASS_TEAM_AQUA] = - 2,
-    [TRAINER_CLASS_AQUA_ADMIN] = 0,
-    [TRAINER_CLASS_AQUA_LEADER] = 1,
-    [TRAINER_CLASS_AROMA_LADY] = - 2,
-    [TRAINER_CLASS_RUIN_MANIAC] = - 2,
-    [TRAINER_CLASS_INTERVIEWER] = - 1,
-    [TRAINER_CLASS_TUBER_F] = - 2,
-    [TRAINER_CLASS_TUBER_M] = - 2,
-    [TRAINER_CLASS_SIS_AND_BRO] = - 2,
-    [TRAINER_CLASS_COOLTRAINER] = 0,
-    [TRAINER_CLASS_HEX_MANIAC] = - 2,
-    [TRAINER_CLASS_LADY] = - 2,
-    [TRAINER_CLASS_BEAUTY] = - 2,
-    [TRAINER_CLASS_RICH_BOY] = - 2,
-    [TRAINER_CLASS_POKEMANIAC] = - 2,
-    [TRAINER_CLASS_SWIMMER_M] = - 2,
-    [TRAINER_CLASS_BLACK_BELT] = - 1,
-    [TRAINER_CLASS_GUITARIST] = - 2,
-    [TRAINER_CLASS_KINDLER] = - 2,
-    [TRAINER_CLASS_CAMPER] = - 2,
-    [TRAINER_CLASS_OLD_COUPLE] = - 2,
-    [TRAINER_CLASS_BUG_MANIAC] = - 3,
-    [TRAINER_CLASS_PSYCHIC] = - 2,
-    [TRAINER_CLASS_GENTLEMAN] = - 2,
-    [TRAINER_CLASS_ELITE_FOUR] = 1,
-    [TRAINER_CLASS_LEADER] = 1,
-    [TRAINER_CLASS_SCHOOL_KID] = - 3,
-    [TRAINER_CLASS_SR_AND_JR] = - 3,
-    [TRAINER_CLASS_POKEFAN] = - 3,
-    [TRAINER_CLASS_EXPERT] = 0,
-    [TRAINER_CLASS_YOUNGSTER] = - 3,
-    [TRAINER_CLASS_CHAMPION] = 2,
-    [TRAINER_CLASS_FISHERMAN] = - 2,
-    [TRAINER_CLASS_TRIATHLETE] = - 1,
-    [TRAINER_CLASS_DRAGON_TAMER] = 0,
-    [TRAINER_CLASS_BIRD_KEEPER] = - 2,
-    [TRAINER_CLASS_NINJA_BOY] = - 2,
-    [TRAINER_CLASS_BATTLE_GIRL] = - 1,
-    [TRAINER_CLASS_PARASOL_LADY] = - 2,
-    [TRAINER_CLASS_SWIMMER_F] = - 2,
-    [TRAINER_CLASS_PICNICKER] = - 2,
-    [TRAINER_CLASS_TWINS] = - 2,
-    [TRAINER_CLASS_SAILOR] = - 2,
-    [TRAINER_CLASS_COLLECTOR] = - 2,
-    [TRAINER_CLASS_RIVAL] = 0,
-    [TRAINER_CLASS_PKMN_BREEDER] = - 1,
-    [TRAINER_CLASS_PKMN_RANGER] = - 1,
-    [TRAINER_CLASS_TEAM_MAGMA] = - 2,
-    [TRAINER_CLASS_MAGMA_ADMIN] = 0,
-    [TRAINER_CLASS_MAGMA_LEADER] = 1,
-    [TRAINER_CLASS_LASS] = - 1,
-    [TRAINER_CLASS_BUG_CATCHER] = - 3,
-    [TRAINER_CLASS_HIKER] = - 2,
-    [TRAINER_CLASS_YOUNG_COUPLE] = - 3,
-    [TRAINER_CLASS_WINSTRATE] = 0,
-    [TRAINER_CLASS_TEAM_ROCKET] = - 2,
-    [TRAINER_CLASS_BOSS] = 1,
-};
+#define TRAINER_CLASS(trainerClass, trainerName, trainerMoney, trainerBall, lvlOffset)   \
+    [TRAINER_CLASS_##trainerClass] =                                                     \
+    {                                                                                    \
+        .name = _(trainerName),                                                          \
+        .money = trainerMoney,                                                           \
+        .ball = trainerBall,                                                             \
+        .levelOffset = lvlOffset,                                                        \
+    }
 
-#if B_TRAINER_CLASS_POKE_BALLS >= GEN_7
-static const u16 sTrainerBallTable[TRAINER_CLASS_COUNT] =
+const struct TrainerClass gTrainerClasses[TRAINER_CLASS_COUNT] =
 {
-#if B_TRAINER_CLASS_POKE_BALLS == GEN_7
-    [TRAINER_CLASS_PKMN_BREEDER] = ITEM_FRIEND_BALL,
-#elif B_TRAINER_CLASS_POKE_BALLS == GEN_8
-    [TRAINER_CLASS_PKMN_BREEDER] = ITEM_HEAL_BALL,
-#endif
-    [TRAINER_CLASS_COOLTRAINER] = ITEM_ULTRA_BALL,
-    [TRAINER_CLASS_COLLECTOR] = ITEM_PREMIER_BALL,
-    [TRAINER_CLASS_SWIMMER_M] = ITEM_DIVE_BALL,
-    [TRAINER_CLASS_BLACK_BELT] = ITEM_ULTRA_BALL,
-    [TRAINER_CLASS_AQUA_LEADER] = ITEM_MASTER_BALL,
-    [TRAINER_CLASS_GENTLEMAN] = ITEM_LUXURY_BALL,
-    [TRAINER_CLASS_ELITE_FOUR] = ITEM_ULTRA_BALL,
-#if B_TRAINER_CLASS_POKE_BALLS == GEN_7
-    [TRAINER_CLASS_FISHERMAN] = ITEM_LURE_BALL,
-#elif B_TRAINER_CLASS_POKE_BALLS == GEN_8
-    [TRAINER_CLASS_FISHERMAN] = ITEM_DIVE_BALL,
-#endif
-    [TRAINER_CLASS_SWIMMER_F] = ITEM_DIVE_BALL,
-    [TRAINER_CLASS_COOLTRAINER_2] = ITEM_ULTRA_BALL,
-    [TRAINER_CLASS_MAGMA_LEADER] = ITEM_MASTER_BALL,
-    [TRAINER_CLASS_BOSS] = ITEM_MASTER_BALL,
+    TRAINER_CLASS(PKMN_TRAINER_1, "{PKMN} Trainer", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(PKMN_TRAINER_2, "{PKMN} Trainer", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(HIKER, "Hiker", 10, DEFAULT_BALL, -2),
+    TRAINER_CLASS(TEAM_AQUA, "Team Aqua", 5, DEFAULT_BALL, -2),
+    TRAINER_CLASS(PKMN_BREEDER, "{PKMN} Breeder", 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? ITEM_HEAL_BALL : ITEM_FRIEND_BALL, -1),
+    TRAINER_CLASS(COOLTRAINER, "Cooltrainer", 12, ITEM_ULTRA_BALL, 0),
+    TRAINER_CLASS(BIRD_KEEPER, "Bird Keeper", 8, DEFAULT_BALL, -2),
+    TRAINER_CLASS(COLLECTOR, "Collector", 15, ITEM_PREMIER_BALL, -2),
+    TRAINER_CLASS(SWIMMER_M, "Swimmer♂", 2, ITEM_DIVE_BALL, -2),
+    TRAINER_CLASS(TEAM_MAGMA, "Team Magma", 5, DEFAULT_BALL, -2),
+    TRAINER_CLASS(EXPERT, "Expert", 10, DEFAULT_BALL, 0),
+    TRAINER_CLASS(AQUA_ADMIN, "Aqua Admin", 10, DEFAULT_BALL, 0),
+    TRAINER_CLASS(BLACK_BELT, "Black Belt", 8, ITEM_ULTRA_BALL, -1),
+    TRAINER_CLASS(AQUA_LEADER, "Aqua Leader", 20, ITEM_MASTER_BALL, 1),
+    TRAINER_CLASS(HEX_MANIAC, "Hex Maniac", 6, DEFAULT_BALL, -2),
+    TRAINER_CLASS(AROMA_LADY, "Aroma Lady", 10, DEFAULT_BALL, -2),
+    TRAINER_CLASS(RUIN_MANIAC, "Ruin Maniac", 15, DEFAULT_BALL, -2),
+    TRAINER_CLASS(INTERVIEWER, "Interviewer", 12, DEFAULT_BALL, -1),
+    TRAINER_CLASS(TUBER_F, "Tuber", 1, DEFAULT_BALL, -2),
+    TRAINER_CLASS(TUBER_M, "Tuber", 1, DEFAULT_BALL, -2),
+    TRAINER_CLASS(LADY, "Lady", 50, DEFAULT_BALL, -2),
+    TRAINER_CLASS(BEAUTY, "Beauty", 20, DEFAULT_BALL, -2),
+    TRAINER_CLASS(RICH_BOY, "Rich Boy", 50, DEFAULT_BALL, -2),
+    TRAINER_CLASS(POKEMANIAC, "Pokémaniac", 15, DEFAULT_BALL, -2),
+    TRAINER_CLASS(GUITARIST, "Guitarist", 8, DEFAULT_BALL, -2),
+    TRAINER_CLASS(KINDLER, "Kindler", 8, DEFAULT_BALL, -2),
+    TRAINER_CLASS(CAMPER, "Camper", 4, DEFAULT_BALL, -2),
+    TRAINER_CLASS(PICNICKER, "Picnicker", 4, DEFAULT_BALL, -2),
+    TRAINER_CLASS(BUG_MANIAC, "Bug Maniac", 15, DEFAULT_BALL, -3),
+    TRAINER_CLASS(PSYCHIC, "Psychic", 6, DEFAULT_BALL, -2),
+    TRAINER_CLASS(GENTLEMAN, "Gentleman", 20, ITEM_LUXURY_BALL, -2),
+    TRAINER_CLASS(ELITE_FOUR, "Elite Four", 25, ITEM_ULTRA_BALL, 1),
+    TRAINER_CLASS(LEADER, "Leader", 25, DEFAULT_BALL, 1),
+    TRAINER_CLASS(SCHOOL_KID, "School Kid", 5, DEFAULT_BALL, -3),
+    TRAINER_CLASS(SR_AND_JR, "Sr. and Jr.", 4, DEFAULT_BALL, -3),
+    TRAINER_CLASS(WINSTRATE, "Winstrate", 10, DEFAULT_BALL, 0),
+    TRAINER_CLASS(POKEFAN, "Pokéfan", 20, DEFAULT_BALL, -3),
+    TRAINER_CLASS(YOUNGSTER, "Youngster", 4, DEFAULT_BALL, -3),
+    TRAINER_CLASS(CHAMPION, "Champion", 50, DEFAULT_BALL, 2),
+    TRAINER_CLASS(FISHERMAN, "Fisherman", 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? ITEM_DIVE_BALL : ITEM_LURE_BALL, -2),
+    TRAINER_CLASS(TRIATHLETE, "Triathlete", 10, DEFAULT_BALL, -1),
+    TRAINER_CLASS(DRAGON_TAMER, "Dragon Tamer", 12, DEFAULT_BALL, 0),
+    TRAINER_CLASS(NINJA_BOY, "Ninja Boy", 3, DEFAULT_BALL, -2),
+    TRAINER_CLASS(BATTLE_GIRL, "Battle Girl", 6, DEFAULT_BALL, -1),
+    TRAINER_CLASS(PARASOL_LADY, "Parasol Lady", 10, DEFAULT_BALL, -2),
+    TRAINER_CLASS(SWIMMER_F, "Swimmer♀", 2, ITEM_DIVE_BALL, -2),
+    TRAINER_CLASS(TWINS, "Twins", 3, DEFAULT_BALL, -2),
+    TRAINER_CLASS(SAILOR, "Sailor", 8, DEFAULT_BALL, -2),
+    TRAINER_CLASS(COOLTRAINER_2, "Cooltrainer", DEFAULT_MONEY, ITEM_ULTRA_BALL, 0),
+    TRAINER_CLASS(MAGMA_ADMIN, "Magma Admin", 10, DEFAULT_BALL, 0),
+    TRAINER_CLASS(RIVAL, "{PKMN} Trainer", 15, DEFAULT_BALL, 0),
+    TRAINER_CLASS(BUG_CATCHER, "Bug Catcher", 4, DEFAULT_BALL, -3),
+    TRAINER_CLASS(PKMN_RANGER, "{PKMN} Ranger", 12, DEFAULT_BALL, -1),
+    TRAINER_CLASS(MAGMA_LEADER, "Magma Leader", 20, ITEM_MASTER_BALL, 1),
+    TRAINER_CLASS(LASS, "Lass", 4, DEFAULT_BALL, -1),
+    TRAINER_CLASS(YOUNG_COUPLE, "Young Couple", 8, DEFAULT_BALL, -3),
+    TRAINER_CLASS(OLD_COUPLE, "Old Couple", 10, DEFAULT_BALL, -2),
+    TRAINER_CLASS(SIS_AND_BRO, "Sis and Bro", 3, DEFAULT_BALL, -2),
+    TRAINER_CLASS(SALON_MAIDEN, "Salon Maiden", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(DOME_ACE, "Dome Ace", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(PALACE_MAVEN, "Palace Maven", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(ARENA_TYCOON, "Arena Tycoon", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(FACTORY_HEAD, "Factory Head", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(PIKE_QUEEN, "Pike Queen", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(PYRAMID_KING, "Pyramid King", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(RS_PROTAG, "{PKMN} Trainer", DEFAULT_MONEY, DEFAULT_BALL, 0),
+    TRAINER_CLASS(TEAM_ROCKET, "Team Rocket", 10, DEFAULT_BALL, -2),
+    TRAINER_CLASS(BOSS, "Boss", 20, DEFAULT_BALL, 1),
 };
-#endif
-
-#include "data/text/abilities.h"
 
 static void (* const sTurnActionsFuncsTable[])(void) =
 {
@@ -2071,7 +2002,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
             for (j = 0; j < monsCount; j++)
                 averageOpponentLevel += partyData[j].lvl;
             averageOpponentLevel /= monsCount;
-            monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClassLevelOffsetTable[trainer->trainerClass];
+            monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClasses[trainer->trainerClass].levelOffset;
             if (monLevel > MAX_LEVEL)
                 monLevel = MAX_LEVEL;
             else if (monLevel < 2)
@@ -2133,7 +2064,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
         #if B_TRAINER_CLASS_POKE_BALLS >= GEN_7
             if (ball == -1)
             {
-                ball = (sTrainerBallTable[trainer->trainerClass]) ? sTrainerBallTable[trainer->trainerClass] : ITEM_POKE_BALL;
+                ball = gTrainerClasses[trainer->trainerClass].ball ?: ITEM_POKE_BALL;
                 SetMonData(&party[i], MON_DATA_POKEBALL, &ball);
             }
         #endif
@@ -3453,6 +3384,7 @@ const u8* FaintClearSetData(u32 battler)
     gProtectStructs[battler].quash = FALSE;
     gProtectStructs[battler].obstructed = FALSE;
     gProtectStructs[battler].silkTrapped = FALSE;
+    gProtectStructs[battler].burningBulwarked = FALSE;
     gProtectStructs[battler].endured = FALSE;
     gProtectStructs[battler].noValidMoves = FALSE;
     gProtectStructs[battler].helpingHand = FALSE;
@@ -5932,6 +5864,13 @@ void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk)
              || gBattleMons[battlerAtk].species == SPECIES_TAUROS_PALDEAN_AQUA_BREED))
     {
             gBattleStruct->dynamicMoveType = gBattleMons[battlerAtk].type2 | F_DYNAMIC_TYPE_SET;
+    }
+    else if (gBattleMoves[move].effect == EFFECT_IVY_CUDGEL
+            && (gBattleMons[battlerAtk].species == SPECIES_OGERPON_WELLSPRING_MASK || gBattleMons[battlerAtk].species == SPECIES_OGERPON_WELLSPRING_MASK_TERA
+             || gBattleMons[battlerAtk].species == SPECIES_OGERPON_HEARTHFLAME_MASK || gBattleMons[battlerAtk].species == SPECIES_OGERPON_HEARTHFLAME_MASK_TERA
+             || gBattleMons[battlerAtk].species == SPECIES_OGERPON_CORNERSTONE_MASK || gBattleMons[battlerAtk].species == SPECIES_OGERPON_CORNERSTONE_MASK_TERA ))
+    {
+        gBattleStruct->dynamicMoveType = gBattleMons[battlerAtk].type2 | F_DYNAMIC_TYPE_SET;
     }
     else if (gBattleMoves[move].effect == EFFECT_NATURAL_GIFT)
     {

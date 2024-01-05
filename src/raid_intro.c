@@ -365,8 +365,6 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 
 	if (gMain.newKeys & A_BUTTON)
 	{
-        // TODO:
-        //  - Set Raid Partner information based on selected trainer.
 		PRESSED_A:
 		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
 		gSpecialVar_Result = 1;
@@ -382,17 +380,11 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	}
 	else if (gMain.newAndRepeatedKeys & SELECT_BUTTON)
 	{
-		// TODO:
-        //  - Select a random team to partner with.
-		/*gRaidData.partnerNum = sRaidBattleIntro->partners[Random()%3].id;
-		gSpecialVar_Result = 1;*/
 		sRaidBattleIntro->selectedTeam = Random()%3;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & START_BUTTON)
 	{
-		// TODO:
-        //  - Go alone.
 		gRaidData.partnerNum = 0;
 		gSpecialVar_Result = 2;
 		PlaySE(SE_SUCCESS);
@@ -601,7 +593,7 @@ static void ShowPartnerTeams(void)
 
 	for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 	{
-		//AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
+		//AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*34, partnerColour, 0, sText_raidPartnerNotAvailable);
 		if (i < raidPartners->numOfPartners)
 		{
             u32 spriteId;
