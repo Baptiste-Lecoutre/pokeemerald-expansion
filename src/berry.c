@@ -1763,16 +1763,12 @@ void ObjectEventInteractionBerryTreePokemonEncounter(void)
     switch (tree->stage)
     {
     case BERRY_STAGE_SPROUTED:
+    case BERRY_STAGE_TALLER:
         tree->EncounterSproutStage = TRUE;
         break;
-    case BERRY_STAGE_TALLER:
-        tree->EncounterTallerStage = TRUE;
-        break;
     case BERRY_STAGE_FLOWERING:
-        tree->EncounterFlowerStage = TRUE;
-        break;     
     case BERRY_STAGE_BERRIES:
-        tree->EncounterBerryStage = TRUE;
+        tree->EncounterFlowerStage = TRUE;
         break;
     default:
         break;
@@ -1791,15 +1787,7 @@ void SetBerryEncounters(void)
     }
     if (Random() % 2)
     {
-        tree->EncounterTallerStage = TRUE;
-    }
-    if (Random() % 2)
-    {
         tree->EncounterFlowerStage = TRUE;
-    }
-    if (Random() % 2)
-    {
-        tree->EncounterBerryStage = TRUE;
     }
 }
 
@@ -1815,7 +1803,7 @@ void GetBerryEncounter(void)
         {
             gSpecialVar_Result = FALSE;
         }
-        else if (tree->EncounterTallerStage && tree->stage == BERRY_STAGE_TALLER)
+        else if (tree->EncounterSproutStage && tree->stage == BERRY_STAGE_TALLER)
         {
             gSpecialVar_Result = FALSE;
         }
@@ -1823,7 +1811,7 @@ void GetBerryEncounter(void)
         {
             gSpecialVar_Result = FALSE;
         }
-        else if (tree->EncounterBerryStage && tree->stage == BERRY_STAGE_BERRIES)
+        else if (tree->EncounterFlowerStage && tree->stage == BERRY_STAGE_BERRIES)
         {
             gSpecialVar_Result = FALSE;
         }
