@@ -60,6 +60,10 @@ gSpecials::
 	def_special ObjectEventInteractionPickBerryTree
 	def_special ObjectEventInteractionRemoveBerryTree
 	def_special ObjectEventInteractionWaterBerryTree
+	def_special ObjectEventInteractionBerryTreePokemonEncounter
+	def_special SetBerryEncounters
+	def_special GetBerryEncounter
+	def_special DoBerryEncounter
 	def_special PlayerHasBerries
 	def_special IsEnigmaBerryValid
 	def_special GetTrainerBattleMode
@@ -584,3 +588,10 @@ gSpecials::
 	def_special BufferChosenMonNature
 	def_special DoRegielekiPuzzle
  	def_special SetFollowerPokemonOption
+	def_special HoneyWildEncounter
+	def_special GetNumberSprayStrength
+	def_special GetSprayId
+	def_special GetLastUsedSprayType
+	def_special TrySkyBattle
+	def_special VsSeekerResetObjectMovementAfterChargeComplete
+	def_special VsSeekerFreezeObjectsAfterChargeComplete

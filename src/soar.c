@@ -46,14 +46,12 @@
 #define BG0_TILEMAP_OFFSET 0xB800
 
 static void CB2_LoadSoarGraphics(void);
-static void DoSoarFieldEffectsCB2(void);
 static void SoarVBlankCallback(void);
 static void SoarHBlankCallback(void);
 static void CB2_HandleInput(void);
 static void PromptLandCB2(void);
 static void ProcessYesNoCB2(void);
 static void WarpCB2(void);
-static void FadeOutVBlankCallback(void);
 static void CB2_FadeOut(void);
 static u8 windid;
 static u8 windid2;
@@ -171,7 +169,6 @@ static u8 sPlayerPitch;
 static u16 sPrevMapSection;
 
 static u8 sEonSpriteId;
-static u8 sShadowSpriteId;
 
 #define Q_8_7(iPart, fPart) (((iPart) << 8) | (fPart))
 #define IPART(n) ((n) >> 8)
@@ -389,7 +386,6 @@ static void SoarVBlankCallback(void)
 static void SoarHBlankCallback(void)
 {
 	const unsigned int bldcntFog = BLDCNT_EFFECT_LIGHTEN | BLDCNT_TGT1_BD | BLDCNT_TGT1_BG2;
-	const unsigned int bldcntShadow = BLDCNT_EFFECT_DARKEN | BLDCNT_TGT1_BG2;
 	int sinYaw = gSineTable[sPlayerYaw];
 	int cosYaw = gSineTable[sPlayerYaw + 64];
 

@@ -199,4 +199,10 @@
 #define STDSTRING_MEGASTONES       33
 #define STDSTRING_ZCRYSTALS        34
 
+// Dynamic Multichoice Callbacks
+
+#define DYN_MULTICHOICE_CB_DEBUG      0
+#define DYN_MULTICHOICE_CB_SHOW_ITEM  1
+#define DYN_MULTICHOICE_CB_NONE       255
+
 #endif //GUARD_SCRIPT_MENU_CONSTANTS_H

@@ -203,7 +203,7 @@ MeteorFalls_1F_1R_EventScript_MultiBrendan::
 	end
 
 MeteorFalls_1F_1R_EventScript_MayBattleTreecko::
-    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, MAY_TREECKO_METEOR_FALLS, TRAINER_BACK_PIC_MAY
+    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_MAY_TREECKO_METEOR_FALLS, TRAINER_BACK_PIC_MAY
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -212,7 +212,7 @@ MeteorFalls_1F_1R_EventScript_MayBattleTreecko::
     end
 
 MeteorFalls_1F_1R_EventScript_MayBattleTorchic::
-    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, MAY_TORCHIC_METEOR_FALLS, TRAINER_BACK_PIC_MAY
+    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_MAY_TORCHIC_METEOR_FALLS, TRAINER_BACK_PIC_MAY
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -221,7 +221,7 @@ MeteorFalls_1F_1R_EventScript_MayBattleTorchic::
     end
 
 MeteorFalls_1F_1R_EventScript_MayBattleMudkip::
-    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, MAY_MUDKIP_METEOR_FALLS, TRAINER_BACK_PIC_MAY
+    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_MAY_MUDKIP_METEOR_FALLS, TRAINER_BACK_PIC_MAY
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -230,7 +230,7 @@ MeteorFalls_1F_1R_EventScript_MayBattleMudkip::
     end
 
 MeteorFalls_1F_1R_EventScript_BrendanBattleTreecko::
-    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, BRENDAN_TREECKO_METEOR_FALLS, TRAINER_BACK_PIC_BRENDAN
+    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_BRENDAN_TREECKO_METEOR_FALLS, TRAINER_BACK_PIC_BRENDAN
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -239,7 +239,7 @@ MeteorFalls_1F_1R_EventScript_BrendanBattleTreecko::
     end
 
 MeteorFalls_1F_1R_EventScript_BrendanBattleTorchic::
-    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, BRENDAN_TORCHIC_METEOR_FALLS, TRAINER_BACK_PIC_BRENDAN
+    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_BRENDAN_TORCHIC_METEOR_FALLS, TRAINER_BACK_PIC_BRENDAN
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -248,7 +248,7 @@ MeteorFalls_1F_1R_EventScript_BrendanBattleTorchic::
     end
 
 MeteorFalls_1F_1R_EventScript_BrendanBattleMudkip::
-    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, BRENDAN_MUDKIP_METEOR_FALLS, TRAINER_BACK_PIC_BRENDAN
+    multi_fixed_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_BRENDAN_MUDKIP_METEOR_FALLS, TRAINER_BACK_PIC_BRENDAN
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost

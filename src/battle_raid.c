@@ -7,25 +7,22 @@
 #include "battle_setup.h"
 #include "battle_transition.h"
 #include "data.h"
+#include "daycare.h"
 #include "event_data.h"
 #include "item.h"
 #include "malloc.h"
 #include "overworld.h"
+#include "party_menu.h"
 #include "pokemon.h"
 #include "random.h"
 #include "rtc.h"
 #include "sprite.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
+#include "constants/daycare.h"
 #include "constants/item.h"
 #include "constants/items.h"
 #include "constants/moves.h"
-
-// TODO:
-//  - Switch-in abilities reapplying after Max Mindstorm?
-//  - Battle partner fainting and switching breaking after Max Flare?
-//  - Raid barrier sprite alignment.
-//  - Raid rank disappears in Intro UI after a Raid has occurred.
 
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
@@ -109,6 +106,32 @@ const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK + 1] =
 	[RAID_RANK_5] = 70,
 	[RAID_RANK_6] = 80,
     [RAID_RANK_7] = 90,
+};
+
+// The chance that the raid boss has its hidden ability
+const u8 gRaidBattleHiddenAbilityChances[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 0,
+	[RAID_RANK_2] = 0,
+	[RAID_RANK_3] = 10,
+	[RAID_RANK_4] = 20,
+	[RAID_RANK_5] = 30,
+	[RAID_RANK_6] = 40,
+    [RAID_RANK_7] = 50,
+};
+
+// The number of perfect IVs the raid boss is certain to have
+const u8 gRaidBattlePerfectIVsNumber[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 1,
+	[RAID_RANK_2] = 2,
+	[RAID_RANK_3] = 3,
+	[RAID_RANK_4] = 4,
+	[RAID_RANK_5] = 5,
+	[RAID_RANK_6] = 6,
+    [RAID_RANK_7] = 6,
 };
 
 static const u8 sRaidBattleDropRates[MAX_RAID_DROPS] =
@@ -269,8 +292,6 @@ static const u16 *const sRaidBattleDropItems[] =
     [RAID_RANK_7] = sRaidBattleDropItems_RaidRank7
 };
 
-extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
-
 EWRAM_DATA struct RaidData gRaidData = {0};
 
 // forward declarations
@@ -285,8 +306,11 @@ u32 GetRaidRandomNumber(void);
 bool32 InitRaidData(void)
 {
     u16 numBadges, min, max, species = SPECIES_NONE, preEvoSpecies = SPECIES_NONE, postEvoSpecies = SPECIES_NONE;
-	u32 i, randomNum = GetRaidRandomNumber();
-    u8 raidBossLevel, numPostEvoSpecies = 0;;
+	u32 i, randomNum = GetRaidRandomNumber(), numEggMoves;
+    u8 raidBossLevel, numPostEvoSpecies = 0, maxIV = MAX_IV_MASK, eggMoveChance = GetRaidEggMoveChance();
+    u8 statIDs[NUM_STATS] = {STAT_HP, STAT_ATK, STAT_DEF, STAT_SPEED, STAT_SPATK, STAT_SPDEF};
+    u16 eggMoves[EGG_MOVES_ARRAY_COUNT] = {0};
+    struct Pokemon* mon = &gEnemyParty[0];
 
     // determine raid type
     gRaidData.raidType = RAID_TYPE_MAX;
@@ -320,7 +344,7 @@ bool32 InitRaidData(void)
     do
     {
         species = ((randomNum + species) % FORMS_START) + 1;
-    } while (species == SPECIES_NONE || gSpeciesInfo[species].flags & (SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_MYTHICAL | SPECIES_FLAG_ULTRA_BEAST));
+    } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
     /*preEvoSpecies = GetPreEvolution(species);
@@ -360,12 +384,37 @@ bool32 InitRaidData(void)
             species = gEvolutionTable[species][randomNum % numPostEvoSpecies].targetSpecies;
         }
     }*/
-    
+
+    // Hidden ability
+#if P_FLAG_FORCE_HIDDEN_ABILITY != 0
+    if (randomNum % 100 < gRaidBattleHiddenAbilityChances[gRaidData.rank])
+        FlagSet(P_FLAG_FORCE_HIDDEN_ABILITY);
+#endif
+
     // Free previous enemy party in case
     ZeroEnemyPartyMons();
 
     // Create raid boss
-    CreateMon(&gEnemyParty[0], species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(mon, species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
+
+    if (gRaidBattlePerfectIVsNumber[gRaidData.rank])
+    {
+        ShuffleStatArray(statIDs);
+        for (i = 0; i < gRaidBattlePerfectIVsNumber[gRaidData.rank]; i++)
+            SetMonData(mon, MON_DATA_HP_IV + statIDs[i], &maxIV);
+    }
+
+    numEggMoves = GetEggMovesSpecies(species, eggMoves);
+    if (numEggMoves && Random() % 100 < eggMoveChance)
+    {
+        u16 eggMove = eggMoves[RandRange(0, numEggMoves)];
+
+        if (MonKnowsMove(mon, eggMove))
+            eggMove = eggMoves[RandRange(0, numEggMoves)];
+
+        if (!MonKnowsMove(mon, eggMove) && GiveMoveToMon(mon, eggMove) == MON_HAS_MAX_MOVES)
+            DeleteFirstMoveAndGiveMoveToMon(mon, eggMove);
+    }
 
     return TRUE;
 }
@@ -443,9 +492,6 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 // Updates Raid Storm state and returns whether battle should end.
 bool32 ShouldRaidKickPlayer(void)
 {
-    if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
-        gBattleStruct->raid.energy ^= BIT_FLANK;
-
     // Gen 8-style raids are capped at 10 turns.
     if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
     {
@@ -482,6 +528,20 @@ bool32 ShouldRaidKickPlayer(void)
     {
         BattleScriptExecute(BattleScript_TeraRaidTimerLow);
     }
+    return FALSE;
+}
+
+bool32 ShouldMoveDynamaxEnergy(void)
+{
+    if (gRaidData.raidType == RAID_TYPE_MAX)
+    {
+        gBattleStruct->raid.energy ^= BIT_FLANK;
+        gBattlerAttacker = gBattleStruct->raid.energy;
+
+        if (CanDynamax(gBattlerAttacker))
+            return TRUE;
+    }
+
     return FALSE;
 }
 
@@ -872,10 +932,10 @@ u16 GetRaidRewardAmount(u16 item)
         return Random() % 3 + gRaidData.rank;
 
     if (item >= ITEM_LONELY_MINT && item <= ITEM_SERIOUS_MINT)
-        return Random() % 3;
+        return 1;
 
     if (item >= ITEM_HEALTH_FEATHER && item <= ITEM_SWIFT_FEATHER)
-        return Random() % 21 + 10;
+        return Random() % 21 + 5;
 
     if (item >= ITEM_HP_UP && item <= ITEM_PP_MAX)
         return Random() % 3 + 1;
@@ -887,7 +947,7 @@ u16 GetRaidRewardAmount(u16 item)
         return 1;
 
     if (item >= ITEM_BUG_TERA_SHARD && item <= ITEM_WATER_TERA_SHARD)
-        return Random() % 21 + 10;
+        return Random() % 21 + 5;
 
 	// default
 	return 1;
@@ -1018,4 +1078,96 @@ u8 GetRaidRecommendedLevel(void)
         recommendedLevel = MAX_LEVEL;
 
 	return recommendedLevel; 
+}
+
+u8 GetRaidEggMoveChance(void)
+{
+    return gRaidBattleEggMoveChances[gRaidData.rank];
+}
+
+void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners)
+{
+    u32 j, n, index, randomNum = GetRaidRandomNumber();
+
+    for (j = 0; j < maxPartners; j++)
+        partnerTrainerIndex[j] = j;
+
+    //Shuffle8(partnerTrainerIndex, maxPartners);
+
+    n = maxPartners-1;
+    while (n>1) // Shuffle8, but use GetRaidRandomNumber() for randomness reproductibility
+    {
+        j = (randomNum * (n+1)) >>16;
+        SWAP(partnerTrainerIndex[n], partnerTrainerIndex[j], index);
+        n--;
+    }
+}
+
+u16 OverrideRaidPartnerTrainerId(u16 trainerId)
+{
+    if (trainerId == TRAINER_WALLY_OVERRIDE)
+    {
+        trainerId = PARTNER_WALLY_PETALBURG;
+        if (HasTrainerBeenFought(TRAINER_WALLY_MAUVILLE))
+            trainerId = PARTNER_WALLY_MAUVILLE;
+        if (HasTrainerBeenFought(TRAINER_WALLY_VR_1))
+            trainerId = PARTNER_WALLY_VICTORY_ROAD;
+    }
+    else if (trainerId == TRAINER_RED_OVERRIDE)
+    {
+        trainerId = PARTNER_RED_PETALBURG_WOODS;
+        if (HasTrainerBeenFought(TRAINER_RED_FALLARBOR))
+            trainerId = PARTNER_RED_FALLARBOR;
+        if (HasTrainerBeenFought(TRAINER_RED_ROUTE121))
+            trainerId = PARTNER_RED_ROUTE121;
+        if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+            trainerId = PARTNER_RED_VICTORY_ROAD;
+    }
+    else if (trainerId == TRAINER_RIVAL_OVERRIDE)
+    {
+        if (VarGet(VAR_STARTER_MON) == 0) // chose treecko
+        {
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_TREECKO : PARTNER_BRENDAN_RUSTBORO_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_TREECKO))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_TREECKO : PARTNER_BRENDAN_ROUTE_110_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_TREECKO_METEOR_FALLS : PARTNER_BRENDAN_TREECKO_METEOR_FALLS;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_TREECKO))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_TREECKO : PARTNER_BRENDAN_ROUTE_119_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_TREECKO))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_TREECKO : PARTNER_BRENDAN_LILYCOVE_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_TREECKO : PARTNER_BRENDAN_VICTORY_ROAD_TREECKO;
+        }
+        else if (VarGet(VAR_STARTER_MON) == 1) // chose torchic
+        {
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_TORCHIC : PARTNER_BRENDAN_RUSTBORO_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_TORCHIC))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_TORCHIC : PARTNER_BRENDAN_ROUTE_110_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_TORCHIC_METEOR_FALLS : PARTNER_BRENDAN_TORCHIC_METEOR_FALLS;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_TORCHIC))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_TORCHIC : PARTNER_BRENDAN_ROUTE_119_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_TORCHIC))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_TORCHIC : PARTNER_BRENDAN_LILYCOVE_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_TORCHIC : PARTNER_BRENDAN_VICTORY_ROAD_TORCHIC;
+        }
+        else // chose mudkip
+        {
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_MUDKIP : PARTNER_BRENDAN_RUSTBORO_MUDKIP; // must have won against rival in rustboro to do raid battles
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_MUDKIP))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_MUDKIP : PARTNER_BRENDAN_ROUTE_110_MUDKIP;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_MUDKIP_METEOR_FALLS : PARTNER_BRENDAN_MUDKIP_METEOR_FALLS;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_MUDKIP))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_MUDKIP : PARTNER_BRENDAN_ROUTE_119_MUDKIP;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_MUDKIP))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_MUDKIP : PARTNER_BRENDAN_LILYCOVE_MUDKIP;
+            if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_MUDKIP : PARTNER_BRENDAN_VICTORY_ROAD_MUDKIP;
+        }
+    }
+
+    return trainerId;
 }

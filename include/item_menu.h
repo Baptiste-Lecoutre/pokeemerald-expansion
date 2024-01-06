@@ -115,5 +115,6 @@ void DrawRegisteredQuickAccess(void);
 void DestroyItemIconSprites(void);
 bool8 PlayerHasOneRegisteredItem(void);
 s32 RegisteredItemIndex(u16 item);
+void ItemMenu_RotomCatalog(u8 taskId);
 
 #endif //GUARD_ITEM_MENU_H

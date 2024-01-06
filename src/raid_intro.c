@@ -365,11 +365,9 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 
 	if (gMain.newKeys & A_BUTTON)
 	{
-        // TODO:
-        //  - Set Raid Partner information based on selected trainer.
+		PRESSED_A:
 		gRaidData.partnerNum = sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].id;
 		gSpecialVar_Result = 1;
-		PRESSED_A:
 		PlaySE(SE_SUCCESS);
 		gTasks[taskId].func = Task_RaidBattleIntroSetUpBattle;
 	}
@@ -382,28 +380,25 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	}
 	else if (gMain.newAndRepeatedKeys & SELECT_BUTTON)
 	{
-		// TODO:
-        //  - Select a random team to partner with.
-		gRaidData.partnerNum = sRaidBattleIntro->partners[Random()%3].id;
-		gSpecialVar_Result = 1;
+		sRaidBattleIntro->selectedTeam = Random()%3;
 		goto PRESSED_A;
 	}
 	else if (gMain.newAndRepeatedKeys & START_BUTTON)
 	{
-		// TODO:
-        //  - Go alone.
 		gRaidData.partnerNum = 0;
 		gSpecialVar_Result = 2;
-		goto PRESSED_A;
+		PlaySE(SE_SUCCESS);
+		gTasks[taskId].func = Task_RaidBattleIntroSetUpBattle;
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_UP)
 	{
+		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
 		PlaySE(SE_SELECT);
 		if (sRaidBattleIntro->selectedTeam == 0)
 		{
-			for (i = 0; i < MAX_TEAM_SIZE; ++i)
+			for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 			{
-				if (sRaidBattleIntro->partners[i].graphicsId != 0)
+				if (i < raidPartners->numOfPartners)
 					sRaidBattleIntro->selectedTeam++;
 				else
 					break;
@@ -416,11 +411,12 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 	}
 	else if (gMain.newAndRepeatedKeys & DPAD_DOWN)
 	{
+		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
 		PlaySE(SE_SELECT);
 		sRaidBattleIntro->selectedTeam++;
 
-		if (sRaidBattleIntro->selectedTeam >= MAX_TEAM_SIZE
-		    || sRaidBattleIntro->partners[sRaidBattleIntro->selectedTeam].graphicsId == 0)
+		if (sRaidBattleIntro->selectedTeam >= MAX_NUM_PARTNERS
+		    || sRaidBattleIntro->selectedTeam >= raidPartners->numOfPartners)
 			sRaidBattleIntro->selectedTeam = 0;
 	}
 }
@@ -428,7 +424,7 @@ static void Task_RaidBattleIntroWaitForKeyPress(u8 taskId)
 // Makes the sprite move back and forth horizontally.
 static void SpriteCB_RaidCursor(struct Sprite* sprite)
 {
-    sprite->y2 = sRaidBattleIntro->selectedTeam * 33;
+    sprite->y2 = sRaidBattleIntro->selectedTeam * 34;
 
 	if (sprite->data[1])
 	{
@@ -498,16 +494,15 @@ static void ShowRaidPokemonSprite(void)
     u8 i, j;
     u16 species = sRaidBattleIntro->species;
 	u32 personality = sRaidBattleIntro->personality;
-	u32 otId = T1_READ_32(gSaveBlock2Ptr->playerTrainerId);
     u16 paletteOffset;
     u16 spriteId;
-	const struct CompressedSpritePalette *pal = GetMonSpritePalStructFromOtIdPersonality(species, otId, personality);
+	bool8 isShiny = FALSE;
 
 	// Create black silhouette.
-	sRaidBattleIntro->monSpriteId = CreateMonPicSprite(species, otId, personality, TRUE, 45, 57, 0, pal->tag);
+	sRaidBattleIntro->monSpriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, 45, 57, 0, species);
     gSprites[sRaidBattleIntro->monSpriteId].oam.priority = 0;
 
-	paletteOffset = IndexOfSpritePaletteTag(pal->tag) * 16 + 0x100;
+	paletteOffset = IndexOfSpritePaletteTag(species) * 16 + 0x100;
     BlendPalette(paletteOffset, 16, 16, RGB(4, 4, 4));
     CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
 
@@ -517,7 +512,7 @@ static void ShowRaidPokemonSprite(void)
     {
         for (j = 0; j < 2; j++)
         {
-            spriteId = CreateMonPicSprite(species, otId, personality, TRUE, 44 + i*2, 56 + j*2, gSprites[sRaidBattleIntro->monSpriteId].oam.paletteNum + 1, TAG_NONE);
+            spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, 44 + i*2, 56 + j*2, gSprites[sRaidBattleIntro->monSpriteId].oam.paletteNum + 1, TAG_NONE);
             gSprites[spriteId].oam.priority = 1;
         }
     }
@@ -594,24 +589,28 @@ static void ShowPartnerTeams(void)
 {
 	u8 i, j;
 	const u8 partnerColour[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
+	const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
 
 	for (i = 0; i < MAX_NUM_PARTNERS; ++i)
 	{
-		//AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*33, partnerColour, 0, sText_raidPartnerNotAvailable);
-		if (sRaidBattleIntro->partners[i].graphicsId != 0)
+		//AddTextPrinterParameterized3(WIN_PARTNER_NOT_AVAILABLE, 3, 1+28, 4+4+i*34, partnerColour, 0, sText_raidPartnerNotAvailable);
+		if (i < raidPartners->numOfPartners)
 		{
             u32 spriteId;
 
-			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, 126, 59 + (i * 33), 0);
+			spriteId = CreateObjectGraphicsSprite(sRaidBattleIntro->partners[i].graphicsId, SpriteCallbackDummy, 126/*101*/, 58 + (i * 34), 0);
             gSprites[spriteId].oam.priority = 0;
 
 			for (j = 0; j < MAX_TEAM_SIZE; ++j)
 			{
-				u16 species = sRaidBattleIntro->partners[i].team[j];
-				if (species != SPECIES_NONE)
+				if (j < gBattlePartners[sRaidBattleIntro->partners[i].id].partySize)
 				{
-					LoadMonIconPalette(species);
-					CreateMonIcon(species, SpriteCB_MonIcon, 158 + (32 * j), 59 + (i * 33), 0, 0xFFFFFFFF);
+					u16 species = sRaidBattleIntro->partners[i].team[j];
+					if (species != SPECIES_NONE)
+					{
+						LoadMonIconPalette(species);
+						CreateMonIcon(species, SpriteCB_MonIcon, 158/*120*/ + (32/*21*/ * j), 58 + (i * 34), 0, 0xFFFFFFFF);
+					}
 				}
 			}
 		}
@@ -622,7 +621,7 @@ static void ShowRaidCursor(void)
 {
 	LoadSpriteSheet(&sRaidBattleCursorSpriteSheet);
 	LoadSpritePalette(&sRaidBattleCursorSpritePalette);
-	CreateSprite(&sRaidBattleCursorSpriteTemplate, 95, 59, 0);
+	CreateSprite(&sRaidBattleCursorSpriteTemplate, 95/*73*/, 64/*58*/, 0);
 }
 
 static void CleanWindows(void)
@@ -739,27 +738,31 @@ static bool32 GetRaidBattleData(void)
 	
 	if (success)
 	{
+		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
+		u8 partnerTrainerIndex[raidPartners->numOfPartners];
 		FlagClear(FLAG_SYS_SPECIAL_RAID_BATTLE);
 
 		sRaidBattleIntro->species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
 		sRaidBattleIntro->personality = GetMonData(&gEnemyParty[0], MON_DATA_PERSONALITY, NULL);
 
-		// Placeholder Data
-		// TODO: Select proper partners from gRaidPartners, based on rank + raid random number.
-		// TODO: Figure out how to encode things: difference between the gRaidPartners array index, 
-		// 		the gRaidPartners Id, the sRaidBattleIntro->partners index, the trainernum...
+		DetermineRaidPartners(partnerTrainerIndex, NELEMS(partnerTrainerIndex));
+
 		for (i = 0; i < MAX_NUM_PARTNERS; i++)
 		{
 			struct Partner* partner = &sRaidBattleIntro->partners[i];
-			partner->id = i+1;//gRaidPartners[i+1].id; // Not the actual trainerNum, but the entry of gRaidPartnerArray
-			partner->graphicsId = gRaidPartners[partner->id].graphicsId;
+			partner->id = OverrideRaidPartnerTrainerId(raidPartners->partnerData[partnerTrainerIndex[i]].trainerNum);
+
+			if (raidPartners->partnerData[partnerTrainerIndex[i]].trainerNum == TRAINER_RIVAL_OVERRIDE)
+				partner->graphicsId = (gSaveBlock2Ptr->playerGender == MALE) ? OBJ_EVENT_GFX_MAY_NORMAL : OBJ_EVENT_GFX_BRENDAN_NORMAL;
+			else
+				partner->graphicsId = raidPartners->partnerData[partnerTrainerIndex[i]].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				partner->team[j] = gTrainers[gRaidPartners[partner->id].trainerNum].party[j].species;
+				if (j < gBattlePartners[partner->id].partySize)
+					partner->team[j] = gBattlePartners[partner->id].party[j].species;
 		}
 
 		return TRUE;
 	}
 	return FALSE;
 }
-

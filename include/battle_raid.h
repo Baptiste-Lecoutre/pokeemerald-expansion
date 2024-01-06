@@ -13,15 +13,19 @@ struct RaidType {
 struct RaidData {
     u8 rank;
     u8 raidType;
-//    struct Trainer* partners;
-    u8 partnerNum;
+    u16 partnerNum;
+};
+
+struct RaidPartnerData
+{
+    u16 trainerNum;
+	u16 graphicsId;
 };
 
 struct RaidPartner
 {
-	u16 trainerNum;
-	u16 graphicsId;
-	u16 trainerBackPic;
+	const struct RaidPartnerData *partnerData;
+	u8 numOfPartners;
 };
 
 
@@ -37,6 +41,7 @@ bool32 IsRaidBoss(u16 battlerId);
 u8 GetRaidBattleTransition(void);
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon);
 bool32 ShouldRaidKickPlayer(void);
+bool32 ShouldMoveDynamaxEnergy(void);
 bool8 DoesRaidPreventMove(u16 move);
 u8 GetRaidRepeatedAttackChance(void);
 u8 GetRaidShockwaveChance(void);
@@ -53,5 +58,8 @@ void ClearAllRaidBattleFlags(void);
 
 void GiveRaidBattleRewards(void);
 u8 GetRaidRecommendedLevel(void);
+u8 GetRaidEggMoveChance(void);
+void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners);
+u16 OverrideRaidPartnerTrainerId(u16 trainerId);
 
 #endif

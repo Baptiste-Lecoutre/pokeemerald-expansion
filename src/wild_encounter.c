@@ -24,8 +24,7 @@
 #include "constants/layouts.h"
 #include "constants/weather.h"
 
-extern const u8 EventScript_RepelWoreOff[];
-extern const u8 EventScript_LureWoreOff[];
+extern const u8 EventScript_SprayWoreOff[];
 
 #define MAX_ENCOUNTER_RATE 2880
 
@@ -43,6 +42,7 @@ enum {
     WILD_AREA_WATER,
     WILD_AREA_ROCKS,
     WILD_AREA_FISHING,
+    WILD_AREA_HONEY,
 };
 
 #define WILD_CHECK_REPEL    (1 << 0)
@@ -252,6 +252,24 @@ u8 ChooseWildMonIndex_WaterRock(void)
     return wildMonIndex;
 }
 
+static u8 ChooseWildMonIndex_Honey(void)
+{
+    u8 rand = Random() % ENCOUNTER_CHANCE_HONEY_MONS_TOTAL;
+
+    if (rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_0)
+        return 0;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_0 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_1)
+        return 1;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_1 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_2)
+        return 2;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_2 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_3)
+        return 3;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_3 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_4)
+        return 4;
+    else
+        return 5;
+}
+
 // FISH_WILD_COUNT
 static u8 ChooseWildMonIndex_Fishing(u8 rod)
 {
@@ -459,7 +477,6 @@ u16 GetCurrentMapWildMonHeaderId(void)
 u8 PickWildMonNature(void)
 {
     u8 i;
-    u8 j;
     struct Pokeblock *safariPokeblock;
     u8 natures[NUM_NATURES];
 
@@ -470,17 +487,7 @@ u8 PickWildMonNature(void)
         {
             for (i = 0; i < NUM_NATURES; i++)
                 natures[i] = i;
-            for (i = 0; i < NUM_NATURES - 1; i++)
-            {
-                for (j = i + 1; j < NUM_NATURES; j++)
-                {
-                    if (Random() & 1)
-                    {
-                        u8 temp;
-                        SWAP(natures[i], natures[j], temp);
-                    }
-                }
-            }
+            Shuffle(natures, NUM_NATURES, sizeof(natures[0]));
             for (i = 0; i < NUM_NATURES; i++)
             {
                 if (PokeblockGetGain(natures[i], safariPokeblock) > 0)
@@ -488,7 +495,7 @@ u8 PickWildMonNature(void)
             }
         }
     }
-    // check synchronize for a pokemon with the same ability
+    // check synchronize for a Pokémon with the same ability
     if (OW_SYNCHRONIZE_NATURE < GEN_9
         && !GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG)
         && GetMonAbility(&gPlayerParty[0]) == ABILITY_SYNCHRONIZE
@@ -588,6 +595,9 @@ static bool8 TryGenerateWildMon(const struct WildPokemonInfo *wildMonInfo, u8 ar
         break;
     case WILD_AREA_ROCKS:
         wildMonIndex = ChooseWildMonIndex_WaterRock();
+        break;
+    case WILD_AREA_HONEY:
+        wildMonIndex = ChooseWildMonIndex_Honey();
         break;
     }
 
@@ -873,6 +883,20 @@ void RockSmashWildEncounter(void)
     }
 }
 
+void BerryWildEncounter(u8 headerId)
+{
+    if (gBerryTreeWildMonHeaders[headerId].landMonsInfo != NULL)
+    {
+        TryGenerateWildMon(gBerryTreeWildMonHeaders[headerId].landMonsInfo, WILD_AREA_LAND, 0);
+        BattleSetup_StartWildBattle();
+        gSpecialVar_Result = TRUE;
+    }
+    else
+    {
+        gSpecialVar_Result = FALSE;
+    }
+}
+
 bool8 SweetScentWildEncounter(void)
 {
     s16 x, y;
@@ -992,16 +1016,16 @@ u16 GetLocalWildMon(bool8 *isWaterMon)
     // Neither
     if (landMonsInfo == NULL && waterMonsInfo == NULL)
         return SPECIES_NONE;
-    // Land Pokemon
+    // Land Pokémon
     else if (landMonsInfo != NULL && waterMonsInfo == NULL)
         return landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species;
-    // Water Pokemon
+    // Water Pokémon
     else if (landMonsInfo == NULL && waterMonsInfo != NULL)
     {
         *isWaterMon = TRUE;
         return waterMonsInfo->wildPokemon[ChooseWildMonIndex_WaterRock()].species;
     }
-    // Either land or water Pokemon
+    // Either land or water Pokémon
     if ((Random() % 100) < 80)
     {
         return landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species;
@@ -1046,7 +1070,7 @@ bool8 UpdateRepelCounter(void)
             VarSet(VAR_REPEL_STEP_COUNT, steps);
             if (steps == 0)
             {
-                ScriptContext_SetupScript(EventScript_RepelWoreOff);
+                ScriptContext_SetupScript(EventScript_SprayWoreOff);
                 return TRUE;
             }
         }
@@ -1055,7 +1079,7 @@ bool8 UpdateRepelCounter(void)
             VarSet(VAR_REPEL_STEP_COUNT, steps | REPEL_LURE_MASK);
             if (steps == 0)
             {
-                ScriptContext_SetupScript(EventScript_LureWoreOff);
+                ScriptContext_SetupScript(EventScript_SprayWoreOff);
                 return TRUE;
             }
         }
@@ -1230,4 +1254,14 @@ bool8 StandardWildEncounter_Debug(void)
 
     DoStandardWildBattle_Debug();
     return TRUE;
+}
+
+void HoneyWildEncounter(void)
+{
+    u16 headerId = GetCurrentMapWildMonHeaderId();
+
+    const struct WildPokemonInfo *wildPokemonInfo = gWildMonHeaders[headerId].honeyMonsInfo;
+
+    TryGenerateWildMon(wildPokemonInfo, WILD_AREA_HONEY, 0);
+    BattleSetup_StartWildBattle();
 }
