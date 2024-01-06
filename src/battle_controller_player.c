@@ -1931,7 +1931,7 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
 
     if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_IVY_CUDGEL)
     {
-        mon = &GetSideParty(GetBattlerSide(battler))[gBattlerPartyIndexes[battler]];
+        mon = &GetBattlerParty(battler)[gBattlerPartyIndexes[battler]];
         speciesId = GetMonData(mon, MON_DATA_SPECIES);
 
         if (speciesId == SPECIES_OGERPON_WELLSPRING_MASK || speciesId == SPECIES_OGERPON_WELLSPRING_MASK_TERA

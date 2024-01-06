@@ -589,7 +589,6 @@ extern u8 gPlayerPartnerPartyCount;
 extern struct Pokemon gPlayerPartnerParty[PARTY_SIZE];
 extern u8 gEnemy2PartyCount;
 extern struct Pokemon gEnemy2Party[PARTY_SIZE];
-extern struct Pokemon *gTrainerPartyArray[];
 extern struct SpriteTemplate gMultiuseSpriteTemplate;
 
 extern const struct BattleMove gBattleMoves[];
@@ -785,7 +784,6 @@ u32 GetMonAffectionHearts(struct Pokemon *pokemon);
 void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
 u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset);
 u16 GetNextRegionalForm(u16 species);
-struct Pokemon *GetBattlerPartyData(u8 position);
 u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGender);
 u16 GetPreEvolution(u16 species);
 u8 CalculatePartyCount(struct Pokemon *party);

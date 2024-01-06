@@ -105,14 +105,6 @@ struct CombinedMove
     u16 newMove;
 };
 
-EWRAM_DATA struct Pokemon *gTrainerPartyArray[] = 
-{
-    gPlayerParty,
-    gEnemyParty,
-    gPlayerPartnerParty,
-    gEnemy2Party
-};
-
 static const struct CombinedMove sCombinedMoves[2] =
 {
     {MOVE_EMBER, MOVE_GUST, MOVE_HEAT_WAVE},
@@ -880,11 +872,6 @@ void ZeroMonData(struct Pokemon *mon)
     SetMonData(mon, MON_DATA_SPDEF, &arg);
     arg = MAIL_NONE;
     SetMonData(mon, MON_DATA_MAIL, &arg);
-}
-
-struct Pokemon *GetBattlerPartyData(u8 position)
-{
-    return gTrainerPartyArray[position];
 }
 
 void ZeroPlayerPartyMons(void)

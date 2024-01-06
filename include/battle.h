@@ -770,11 +770,11 @@ struct BattleStruct
     u32 battleTimer; // frame counter to measure battle time length
     u32 aiDelayTimer; // Counts number of frames AI takes to choose an action.
     u32 aiDelayFrames; // Number of frames it took to choose an action.
-    u8 timesGotHit[NUM_BATTLE_SIDES][PARTY_SIZE];
+    u8 timesGotHit[MAX_BATTLERS_COUNT][PARTY_SIZE];
     u8 enduredDamage;
-    u8 transformZeroToHero[NUM_BATTLE_SIDES];
-    u8 intrepidSwordBoost[NUM_BATTLE_SIDES];
-    u8 dauntlessShieldBoost[NUM_BATTLE_SIDES];
+    u8 transformZeroToHero[MAX_BATTLERS_COUNT];
+    u8 intrepidSwordBoost[MAX_BATTLERS_COUNT];
+    u8 dauntlessShieldBoost[MAX_BATTLERS_COUNT];
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -1169,18 +1169,18 @@ static inline struct Pokemon *GetBattlerParty(u32 battler)
 {
     extern u32 gBattleTypeFlags;
     //return GetSideParty(GetBattlerSide(battler));
-    switch (battler)
+    switch (GetBattlerPosition(battler))
     {
-        case 0:
+        case B_POSITION_PLAYER_LEFT:
             return gPlayerParty;
-        case 1:
+        case B_POSITION_OPPONENT_LEFT:
             return gEnemyParty;
-        case 2:
+        case B_POSITION_PLAYER_RIGHT:
             if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
                 return gPlayerPartnerParty;
             else
                 return gPlayerParty;
-        case 3:
+        case B_POSITION_OPPONENT_RIGHT:
             if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
                 return gEnemy2Party;
             else
