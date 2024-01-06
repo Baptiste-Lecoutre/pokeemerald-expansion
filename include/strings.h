@@ -3560,4 +3560,8 @@ extern const u8 gText_TeamPreviewMultiText[];
 extern const u8 gText_TeamPreviewMultiLinkText[];
 extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
 
+// berries
+extern const u8 gText_Fertilize[];
+extern const u8 gText_PlantBerry[];
+
 #endif // GUARD_STRINGS_H
