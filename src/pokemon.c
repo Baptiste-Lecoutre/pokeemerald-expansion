@@ -3180,14 +3180,7 @@ u8 CalculatePlayerPartyCount(void)
 
 u8 CalculatePlayerPartnerPartyCount(void)
 {
-    gPlayerPartnerPartyCount = 0;
-
-    while (gPlayerPartnerPartyCount < PARTY_SIZE
-        && GetMonData(&gPlayerPartnerParty[gPlayerPartnerPartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
-    {
-        gPlayerPartnerPartyCount++;
-    }
-
+    gPlayerPartnerPartyCount = CalculatePartyCount(gPlayerPartnerParty);
     return gPlayerPartnerPartyCount;
 }
 
@@ -3199,14 +3192,7 @@ u8 CalculateEnemyPartyCount(void)
 
 u8 CalculateEnemy2PartyCount(void)
 {
-    gEnemy2PartyCount = 0;
-
-    while (gEnemy2PartyCount < PARTY_SIZE
-        && GetMonData(&gEnemy2Party[gEnemy2PartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
-    {
-        gEnemy2PartyCount++;
-    }
-
+    gEnemy2PartyCount = CalculatePartyCount(gEnemy2Party);
     return gEnemy2PartyCount;
 }
 

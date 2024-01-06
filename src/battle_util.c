@@ -10205,10 +10205,7 @@ bool32 CanUltraBurst(u32 battler)
         return FALSE;
 
     // Gets mon data.
-    if (GetBattlerSide(battler) == B_SIDE_OPPONENT)
-        mon = &gEnemyParty[gBattlerPartyIndexes[battler]];
-    else
-        mon = &gPlayerParty[gBattlerPartyIndexes[battler]];
+    mon = &GetBattlerParty(battler)[gBattlerPartyIndexes[battler]];
 
     itemId = GetMonData(mon, MON_DATA_HELD_ITEM);
 
