@@ -771,6 +771,13 @@ static const struct MenuAction MultichoiceList_TagMatchType[] =
     {gText_Exit},
 };
 
+static const struct MenuAction MultichoiceList_BerryPlot[] =
+{
+    {gText_Fertilize},
+    {gText_PlantBerry},
+    {gText_Exit},
+};
+
 const struct MenuAction MultichoiceList_HyperTrainingMenu[] =
 {
     {gText_ChangeIV},
@@ -1040,6 +1047,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_SLATEPORT_TENT_RULES]       = MULTICHOICE(MultichoiceList_SlateportTentRules),
     [MULTI_FALLARBOR_TENT_RULES]       = MULTICHOICE(MultichoiceList_FallarborTentRules),
     [MULTI_TAG_MATCH_TYPE]             = MULTICHOICE(MultichoiceList_TagMatchType),
+    [MULTI_BERRY_PLOT]                 = MULTICHOICE(MultichoiceList_BerryPlot),
     [MULTI_HYPER_TRAINING_MENU]        = MULTICHOICE(MultichoiceList_HyperTrainingMenu),
     [MULTI_BASE_STATS]                 = MULTICHOICE(MultichoiceList_BaseStats),
     [MULTI_IV_MENU]                    = MULTICHOICE(MultichoiceList_IVMenu),

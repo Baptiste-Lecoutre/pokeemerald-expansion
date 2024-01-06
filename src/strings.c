@@ -269,7 +269,8 @@ const u8 *const gBagMenu_ReturnToStrings[] =
     [ITEMMENULOCATION_QUIZ_LADY]           = gText_TheField,
     [ITEMMENULOCATION_APPRENTICE]          = gText_TheField,
     [ITEMMENULOCATION_WALLY]               = gText_TheBattle,
-    [ITEMMENULOCATION_PCBOX]               = gText_ThePC
+    [ITEMMENULOCATION_PCBOX]               = gText_ThePC,
+    [ITEMMENULOCATION_BERRY_TREE_MULCH]    = gText_TheField,
 };
 
 const u8 *const gPyramidBagMenu_ReturnToStrings[] =
@@ -2239,3 +2240,7 @@ const u8 gText_TeamPreviewSingleDoubleText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1
 const u8 gText_TeamPreviewMultiText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}'s Party\n{B_TRAINER2_CLASS} {B_TRAINER2_NAME}'s Party");
 const u8 gText_TeamPreviewMultiLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party");
 const u8 gText_TeamPreviewSingleDoubleLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party\n {B_LINK_OPPONENT2_NAME}'s Party");
+
+// berries
+const u8 gText_Fertilize[] = _("Fertilize");
+const u8 gText_PlantBerry[] = _("Plant Berry");
