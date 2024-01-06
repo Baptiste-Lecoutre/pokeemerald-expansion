@@ -2188,16 +2188,19 @@ void ObjectEventInteractionPickBerryTree(void)
     u8 id = GetObjectEventBerryTreeId(gSelectedObjectEvent);
     u8 berry = GetBerryTypeByBerryTreeId(id);
     u8 mutation = GetTreeMutationValue(id);
+    u8 count = GetBerryCountByBerryTreeId(id);
+    
+    gSpecialVar_0x8001 = count;
 
     if (!OW_BERRY_MUTATIONS || mutation == 0)
     {
-        gSpecialVar_0x8004 = AddBagItem(BerryTypeToItemId(berry), GetBerryCountByBerryTreeId(id));
+        gSpecialVar_0x8004 = AddBagItem(BerryTypeToItemId(berry), count);
         return;
     }
-    gSpecialVar_0x8004 = (CheckBagHasSpace(BerryTypeToItemId(berry), GetBerryCountByBerryTreeId(id)) && CheckBagHasSpace(BerryTypeToItemId(mutation), 1)) + 2;
+    gSpecialVar_0x8004 = (CheckBagHasSpace(BerryTypeToItemId(berry), count) && CheckBagHasSpace(BerryTypeToItemId(mutation), 1)) + 2;
     if (gSpecialVar_0x8004 == 3)
     {
-        AddBagItem(BerryTypeToItemId(berry), GetBerryCountByBerryTreeId(id));
+        AddBagItem(BerryTypeToItemId(berry), count);
         AddBagItem(BerryTypeToItemId(mutation), 1);
     }
 }
