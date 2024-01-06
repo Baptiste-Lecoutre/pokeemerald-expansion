@@ -3083,9 +3083,9 @@ static void FillPartnerParty(u16 trainerId)
             }
             CalculateMonStats(&gPlayerPartnerParty[i]);
 
-            StringCopy(trainerName, gTrainers[trainerId - TRAINER_PARTNER(PARTNER_NONE)].trainerName);
+            StringCopy(trainerName, gBattlePartners[trainerId - TRAINER_PARTNER(PARTNER_NONE)].trainerName);
             SetMonData(&gPlayerPartnerParty[i], MON_DATA_OT_NAME, trainerName);
-            j = gTrainers[trainerId - TRAINER_PARTNER(PARTNER_NONE)].encounterMusic_gender >> 7;
+            j = gBattlePartners[trainerId - TRAINER_PARTNER(PARTNER_NONE)].encounterMusic_gender >> 7;
             SetMonData(&gPlayerPartnerParty[i], MON_DATA_OT_GENDER, &j);
         }
     }

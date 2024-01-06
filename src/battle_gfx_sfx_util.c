@@ -917,6 +917,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
                 personalityValue = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
                 isShiny = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_IS_SHINY);
             }
+            isShiny = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_IS_SHINY); // hum?
 
             HandleLoadSpecialPokePic(FALSE,
                                      gMonSpritesGfxPtr->sprites.ptr[position],
