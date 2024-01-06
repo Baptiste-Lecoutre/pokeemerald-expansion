@@ -267,7 +267,8 @@ const u8 *const gBagMenu_ReturnToStrings[] =
     [ITEMMENULOCATION_QUIZ_LADY]           = gText_TheField,
     [ITEMMENULOCATION_APPRENTICE]          = gText_TheField,
     [ITEMMENULOCATION_WALLY]               = gText_TheBattle,
-    [ITEMMENULOCATION_PCBOX]               = gText_ThePC
+    [ITEMMENULOCATION_PCBOX]               = gText_ThePC,
+    [ITEMMENULOCATION_BERRY_TREE_MULCH]    = gText_TheField,
 };
 
 const u8 *const gPyramidBagMenu_ReturnToStrings[] =
@@ -2222,3 +2223,7 @@ const u8 gText_WaterPledge[] = _("Water Pledge");
 const u8 gText_FrenzyPlant[] = _("Frenzy Plant");
 const u8 gText_BlastBurn[] = _("Blast Burn");
 const u8 gText_HydroCannon[] = _("Hydro Cannon");
+
+// berries
+const u8 gText_Fertilize[] = _("Fertilize");
+const u8 gText_PlantBerry[] = _("Plant Berry");

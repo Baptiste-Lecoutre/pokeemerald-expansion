@@ -3543,4 +3543,8 @@ extern const u8 gText_FrenzyPlant[];
 extern const u8 gText_BlastBurn[];
 extern const u8 gText_HydroCannon[];
 
+// berries
+extern const u8 gText_Fertilize[];
+extern const u8 gText_PlantBerry[];
+
 #endif // GUARD_STRINGS_H
