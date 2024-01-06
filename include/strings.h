@@ -3561,4 +3561,8 @@ extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
 
 extern const u8 gText_Ghost[];
 
+// berries
+extern const u8 gText_Fertilize[];
+extern const u8 gText_PlantBerry[];
+
 #endif // GUARD_STRINGS_H
