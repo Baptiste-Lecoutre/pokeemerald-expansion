@@ -2576,7 +2576,7 @@ static void PlayerHandleBattleDebug(u32 battler)
 
 static void HandleInputTeamPreview(u32 battler)
 {
-	if (JOY_NEW(A_BUTTON | B_BUTTON | DPAD_ANY))
+	if (JOY_NEW(A_BUTTON | B_BUTTON | L_BUTTON | R_BUTTON | START_BUTTON | SELECT_BUTTON | DPAD_ANY))
 	{
 		PlaySE(SE_SELECT);
 		TryRestoreLastUsedBall();

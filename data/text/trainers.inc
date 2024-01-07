@@ -4780,6 +4780,64 @@ Route134_Text_HudsonPostBattle:
 	.string "My buddy's a timid fellow, so I'm\n"
 	.string "worried about him.$"
 
+AshenWoods_Text_AlannahIntro:
+	.string "Are you prepared to survive in\n"
+	.string "the wilderness?$"
+
+AshenWoods_Text_AlannahDefeat:
+	.string "Looks like you and your Pokémon\n"
+	.string "are prepared for anything!$"
+
+AshenWoods_Text_AlannahPostBattle:
+	.string "There are some pretty strong\n"
+	.string "Pokémon 'round these parts.\p"
+	.string "Rumor has it there's even a Legendary\n"
+	.string "Bird Pokémon roosting near here.$"
+	
+AshenWoods_Text_MartinIntro:
+	.string "Doesn't look like you need any help\n"
+	.string "from the Pokémon Rangers.\p"
+	.string "How about a battle instead?$"
+
+AshenWoods_Text_MartinDefeat:
+	.string "Ouch! Definitely not helpless…$"
+
+AshenWoods_Text_MartinPostBattle:
+	.string "There've been reports of a huge\n"
+	.string "fire ball in the sky here.\p"
+	.string "Some say it looked like a pair of\n"
+	.string "flaming wings.\p"
+	.string "Us Rangers are out here investigating,\n"
+	.string "but all we've seen is ash and trees.$"	
+	
+AshenWoods_Text_RomanIntro:
+	.string "Who would've thought the Ashen Woods\n"
+	.string "would be a good place for a hike?$"
+
+AshenWoods_Text_RomanDefeat:
+	.string "Good for a hike, not so much for a\n"
+	.string "battle…$"
+
+AshenWoods_Text_RomanPostBattle:
+	.string "I thought the Ashen Woods would be\n"
+	.string "flat and dull like Petalburg Woods.\p"
+	.string "They're no Jagged Pass, but they're\n"
+	.string "rocky enough for me!$"
+	
+AshenWoods_Text_ElmerIntro:
+	.string "I'm looking for powerful Bug-type\n"
+	.string "Pokémon in the grass here.\p"
+	.string "Look, I'll show you what I've found!$"
+
+AshenWoods_Text_ElmerDefeat:
+	.string "Wait! I only wanted to show you!$"
+
+AshenWoods_Text_ElmerPostBattle:
+	.string "As a Bug Maniac, I prefer collecting\n"
+	.string "to battling.\p"
+	.string "However, having a strong team makes\n"
+	.string "catching Pokémon much easier.$"
+
 VSSeeker_Text_BatteryNotChargedNeedXSteps::
 	.string "The battery isn't charged enough.\p"
 	.string "No. of steps required to fully\n"

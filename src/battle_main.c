@@ -1938,9 +1938,9 @@ void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMon 
 u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags)
 {
     u32 personalityValue;
-    u8 fixedIV, monLevel, averageOpponentLevel = 0, playerLevel = GetMedianLevelOfPlayerParty();//GetHighestLevelInPlayerParty();
+    u8 fixedIV, monsCount, playerLevel = GetMedianLevelOfPlayerParty();//GetHighestLevelInPlayerParty();
     s32 i, j;
-    u8 monsCount;
+    s16 averageOpponentLevel = 0, monLevel;
     if (battleTypeFlags & BATTLE_TYPE_TRAINER && !(battleTypeFlags & (BATTLE_TYPE_FRONTIER
                                                                         | BATTLE_TYPE_EREADER_TRAINER
                                                                         | BATTLE_TYPE_TRAINER_HILL)))
@@ -3527,7 +3527,9 @@ static void DoBattleIntro(void)
     case 4: // Copy battler data gotten in cases 0 and 1. Draw trainer/mon sprite.
         for (battler = 0; battler < gBattlersCount; battler++)
         {
-            if ((gBattleTypeFlags & BATTLE_TYPE_SAFARI) && GetBattlerSide(battler) == B_SIDE_PLAYER)
+            /*if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+                continue;
+            else*/ if ((gBattleTypeFlags & BATTLE_TYPE_SAFARI) && GetBattlerSide(battler) == B_SIDE_PLAYER)
             {
                 memset(&gBattleMons[battler], 0, sizeof(struct BattlePokemon));
             }
