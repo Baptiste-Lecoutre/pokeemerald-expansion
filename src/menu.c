@@ -2237,11 +2237,17 @@ void SetDoublePopUpWindowScanlineBuffers(u8 offset)
 
 void HBlankCB_DoublePopupWindow(void)
 {
-    u16 offset = 24 - gTasks[gPopupTaskId].data[2];
+    u16 offset = gTasks[gPopupTaskId].data[2];
     u16 scanline = REG_VCOUNT;
 
-    /*if (scanline < offset || scanline > 156 - offset)
-        REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
-    else*/
+    if (scanline < 80 || scanline > 160)
+    {
+        REG_BG0VOFS = offset;
+//        REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
+    }
+    else
+    {
+        REG_BG0VOFS = 512 - offset;
         REG_BLDALPHA = BLDALPHA_BLEND(8, 10);
+    }
 }
