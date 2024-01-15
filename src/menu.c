@@ -6,6 +6,7 @@
 #include "event_data.h"
 #include "graphics.h"
 #include "main.h"
+#include "map_name_popup.h"
 #include "menu.h"
 #include "menu_helpers.h"
 #include "palette.h"
@@ -2243,11 +2244,12 @@ void HBlankCB_DoublePopupWindow(void)
     if (scanline < 80 || scanline > 160)
     {
         REG_BG0VOFS = offset;
-//        REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
+
+        if(MAP_POPUP_ALPHA_BLEND)
+            REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
     }
     else
     {
         REG_BG0VOFS = 512 - offset;
-        REG_BLDALPHA = BLDALPHA_BLEND(8, 10);
     }
 }

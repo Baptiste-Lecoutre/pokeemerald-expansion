@@ -44,6 +44,10 @@ static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute);
 // EWRAM
 //EWRAM_DATA u8 gPopupTaskId = 0;
 
+static const u8 sMapPopUpTiles_Primary[] = INCBIN_U8("graphics/interface/map_popup_primary.4bpp");
+static const u8 sMapPopUpTiles_Secondary[] = INCBIN_U8("graphics/interface/map_popup_secondary.4bpp");
+static const u16 sMapPopUpTiles_Palette[16] = INCBIN_U16("graphics/interface/map_popup_palette.gbapal");
+
 // .rodata
 static const u8 sMapPopUp_Table[][960] =
 {
@@ -251,9 +255,10 @@ void ShowMapNamePopup(void)
         if (!FuncIsActiveTask(Task_MapNamePopUpWindow))
         {
             gPopupTaskId = CreateTask(Task_MapNamePopUpWindow, 100);
-            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_TGT2_ALL);// | BLDCNT_EFFECT_BLEND);
-//            SetHBlankCallback(HBlankCB_DoublePopupWindow);
-//            EnableInterrupts(INTR_FLAG_HBLANK);
+            
+            if (MAP_POPUP_ALPHA_BLEND)
+                SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
+        
             gTasks[gPopupTaskId].tState = STATE_PRINT;
             gTasks[gPopupTaskId].tYOffset = POPUP_OFFSCREEN_Y;
         }
@@ -281,7 +286,6 @@ static void Task_MapNamePopUpWindow(u8 taskId)
             ShowMapNamePopUpWindow();
             EnableInterrupts(INTR_FLAG_HBLANK);
             SetHBlankCallback(HBlankCB_DoublePopupWindow);
-//            ScanlineEffect_SetParams(gPopUpScanlineEffectParams);
         }
         break;
     case STATE_SLIDE_IN:
@@ -332,7 +336,6 @@ static void Task_MapNamePopUpWindow(u8 taskId)
         HideMapNamePopUpWindow();
         return;
     }
-//    SetDoublePopUpWindowScanlineBuffers(task->tYOffset);
 }
 
 void HideMapNamePopUpWindow(void)
@@ -343,15 +346,19 @@ void HideMapNamePopUpWindow(void)
         ClearStdWindowAndFrame(GetSecondaryPopUpWindowId(), TRUE);
         RemovePrimaryPopUpWindow();
         RemoveSecondaryPopUpWindow();
-//        ScanlineEffect_Stop();
         SetGpuReg_ForcedBlank(REG_OFFSET_BG0VOFS, 0);
-        SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN1_BG_ALL | WININ_WIN1_OBJ);
-        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_EFFECT_BLEND);
+
+        if (MAP_POPUP_ALPHA_BLEND)
+        {
+            SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN1_BG_ALL | WININ_WIN1_OBJ);
+            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_EFFECT_BLEND);
         //if (gTimeOfDay != TIME_OF_DAY_NIGHT) 
         //    Weather_SetBlendCoeffs(8, 10);
         //else
         //    Weather_SetBlendCoeffs(7, 12);
-        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 10));
+            SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 10));
+        }
+
         DisableInterrupts(INTR_FLAG_HBLANK);
         SetHBlankCallback(NULL);
         DestroyTask(gPopupTaskId);
@@ -363,11 +370,11 @@ static void ShowMapNamePopUpWindow(void)
     u8 mapDisplayHeader[24];
     u8 *withoutPrefixPtr;
     
-    SetGpuRegBits(REG_OFFSET_WININ, WININ_WIN0_CLR);
+    if (MAP_POPUP_ALPHA_BLEND)
+        SetGpuRegBits(REG_OFFSET_WININ, WININ_WIN0_CLR);
     AddMapNamePopUpWindow();
     AddWeatherPopUpWindow();
     LoadMapNamePopUpWindowBgs();
-    LoadPalette(gPopUpWindowBorder_Palette, 0xE0, 32);
 
     mapDisplayHeader[0] = EXT_CTRL_CODE_BEGIN;
     mapDisplayHeader[1] = EXT_CTRL_CODE_HIGHLIGHT;
@@ -399,10 +406,13 @@ static void LoadMapNamePopUpWindowBgs(void)
             regionMapSectionId = 0; // Discard kanto region sections;
     }
 
+    LoadPalette(sMapPopUpTiles_Palette, BG_PLTT_ID(14), sizeof(sMapPopUpTiles_Palette));
+
+    CopyToWindowPixelBuffer(mapNamePopUpWindowId, sMapPopUpTiles_Primary, sizeof(sMapPopUpTiles_Primary), 0);
+    CopyToWindowPixelBuffer(weatherPopUpWindowId, sMapPopUpTiles_Secondary, sizeof(sMapPopUpTiles_Secondary), 0);
+
     PutWindowTilemap(mapNamePopUpWindowId);
     PutWindowTilemap(weatherPopUpWindowId);
-    BlitBitmapRectToWindow(mapNamePopUpWindowId, gPopUpWindowBorder_Tiles, 0, 0, DISPLAY_WIDTH, 24, 0, 0, DISPLAY_WIDTH, 24);
-    BlitBitmapRectToWindow(weatherPopUpWindowId, gPopUpWindowBorder_Tiles, 0, 24, DISPLAY_WIDTH, 24, 0, 0, DISPLAY_WIDTH, 24);
 }
 
 static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute)

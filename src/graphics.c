@@ -2042,9 +2042,6 @@ const u16 gDexNav_Gui_Pal[] = INCBIN_U16("graphics/dexnav/dexnav_gui.gbapal");
 const u32 gDexNav_Gui_Gfx[] = INCBIN_U32("graphics/dexnav/dexnav_gui.4bpp.lz");
 const u32 gDexNav_Gui_Tilemap[] = INCBIN_U32("graphics/dexnav/dexnav_gui.bin.lz");
 
-const u8 gPopUpWindowBorder_Tiles[] = INCBIN_U8("graphics/interface/window_popup_tiles.4bpp");\
-const u16 gPopUpWindowBorder_Palette[] = INCBIN_U16("graphics/interface/map_popup_palette.gbapal");
-
 const u32 gBattleTeamPreview_TileSet[] = INCBIN_U32("graphics/battle_interface/teamPreview.4bpp.lz");
 const u32 gBattleTeamPreview_TileMap[] = INCBIN_U32("graphics/battle_interface/teamPreview.bin.lz");
 const u32 gBattleTeamPreview_Palette[] = INCBIN_U32("graphics/battle_interface/teamPreview.gbapal.lz");
