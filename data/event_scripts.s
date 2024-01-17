@@ -1042,6 +1042,13 @@ EventScript_DoWonderTrade_Text_WannaDoAnotherWonderTrade:
 EventScript_DoWonderTrade_Text_Done:
 	.string "Enjoy your new Pokémon.$"
 
+EventScript_VsSeekerChargingDone::
+	special VsSeekerFreezeObjectsAfterChargeComplete
+	waitstate
+	special VsSeekerResetObjectMovementAfterChargeComplete
+	releaseall
+	end
+
 	.include "data/scripts/pc_transfer.inc"
 	.include "data/scripts/questionnaire.inc"
 	.include "data/scripts/abnormal_weather.inc"
@@ -1160,6 +1167,7 @@ gText_OneDayImGoingToFightYou:
 
 	.include "data/scripts/furfrou.inc"
 	.include "data/scripts/rotom.inc"
+	.include "data/scripts/honey.inc"
 
 	.include "data/maps/Route110_CaveOfShock/scripts.inc"
 

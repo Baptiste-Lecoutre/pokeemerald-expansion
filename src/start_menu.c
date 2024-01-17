@@ -830,7 +830,7 @@ static bool8 StartMenuPokeNavCallback(void)
         PlayRainStoppingSoundEffect();
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
-        SetMainCallback2(CB2_InitPokeNav);  // Display PokeNav
+        SetMainCallback2(CB2_InitPokeNav);  // Display PokéNav
 
         return TRUE;
     }
@@ -1215,7 +1215,7 @@ static u8 SaveConfirmOverwriteDefaultNoCallback(void)
     return SAVE_IN_PROGRESS;
 }
 
-static u8 SaveConfirmOverwriteCallback(void)
+UNUSED static u8 SaveConfirmOverwriteCallback(void)
 {
     DisplayYesNoMenuDefaultYes(); // Show Yes/No menu
     sSaveDialogCallback = SaveOverwriteInputCallback;
@@ -1614,7 +1614,7 @@ static void ShowSaveInfoWindow(void)
 
     if (FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE)
     {
-        // Print pokedex count
+        // Print Pokédex count
         yOffset += 16;
         AddTextPrinterParameterized(sSaveInfoWindowId, FONT_NORMAL, gText_SavingPokedex, 0, yOffset, TEXT_SKIP_DRAW, NULL);
         BufferSaveMenuText(SAVE_MENU_CAUGHT, gStringVar4, color);
@@ -1733,7 +1733,11 @@ static bool8 StartMenuMatchCallCallback(void)
 
 static bool8 StartMenuTrainerRadarCallback(void)
 {
-    ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
+    /*ClearStdWindowAndFrame(GetStartMenuWindowId(), TRUE);
     RemoveStartMenuWindow();
-    InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);
+    InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);*/
+    RemoveExtraStartMenuWindows();
+    CleanupOverworldWindowsAndTilemaps();
+    CreateTask(Task_OpenTrainerRadarFromStartMenu, 0);
+    return TRUE;
 }

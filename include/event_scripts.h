@@ -542,6 +542,7 @@ extern const u8 MauvilleCity_PokemonCenter_1F_Text_HotSpringsStory[];
 extern const u8 LittlerootTown_BrendansHouse_2F_EventScript_PC[];
 extern const u8 LittlerootTown_MaysHouse_2F_EventScript_PC[];
 extern const u8 EventScript_PC[];
+extern const u8 EventScript_AccessPokemonBoxLink[];
 extern const u8 EventScript_TestSignpostMsg[];
 extern const u8 EventScript_HiddenItemScript[];
 extern const u8 EventScript_TV[];
@@ -616,6 +617,7 @@ extern const u8 TrainerHill_EventScript_TrainerBattle[];
 extern const u8 BerryTree_EventScript_ItemUsePlantBerry[];
 extern const u8 BerryTree_EventScript_ItemUseWailmerPail[];
 extern const u8 BattleFrontier_OutsideEast_EventScript_WaterSudowoodo[];
+extern const u8 EventScript_HoneyEncounter[];
 
 extern const u8 EventScript_SelectWithoutRegisteredItem[];
 
@@ -640,6 +642,10 @@ extern const u8 EventScript_TradeCenter_Chair1[];
 extern const u8 EventScript_TradeCenter_Chair0[];
 extern const u8 EventScript_ConfirmLeaveCableClubRoom[];
 extern const u8 EventScript_TerminateLink[];
+extern const u8 VSSeeker_Text_BatteryNotChargedNeedXSteps[];
+extern const u8 VSSeeker_Text_NoTrainersWithinRange[];
+extern const u8 VSSeeker_Text_TrainersNotReady[];
+extern const u8 EventScript_VsSeekerChargingDone[];
 
 // Dexnav
 extern const u8 EventScript_StartDexNavBattle[];

@@ -27,8 +27,6 @@
 #include "constants/battle_move_effects.h"
 #include "gba/io_reg.h"
 
-extern const struct CompressedSpriteSheet gMonFrontPicTable[];
-
 EWRAM_DATA static u8 sMailboxWindowIds[MAILBOXWIN_COUNT] = {0};
 EWRAM_DATA static struct ListMenuItem *sMailboxList = NULL;
 
@@ -1077,11 +1075,11 @@ void GetConditionMenuMonGfx(void *tilesDst, void *palDst, u16 boxId, u16 monId, 
     if (partyId != numMons)
     {
         u16 species = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPECIES_OR_EGG, NULL);
-        u32 trainerId = GetBoxOrPartyMonData(boxId, monId, MON_DATA_OT_ID, NULL);
+        bool8 isShiny = GetBoxOrPartyMonData(boxId, monId, MON_DATA_IS_SHINY, NULL);
         u32 personality = GetBoxOrPartyMonData(boxId, monId, MON_DATA_PERSONALITY, NULL);
 
         LoadSpecialPokePic(tilesDst, species, personality, TRUE);
-        LZ77UnCompWram(GetMonSpritePalFromSpeciesAndPersonality(species, trainerId, personality), palDst);
+        LZ77UnCompWram(GetMonSpritePalFromSpeciesAndPersonality(species, isShiny, personality), palDst);
     }
 }
 

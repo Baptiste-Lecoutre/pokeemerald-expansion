@@ -44,6 +44,10 @@ static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute);
 // EWRAM
 //EWRAM_DATA u8 gPopupTaskId = 0;
 
+static const u8 sMapPopUpTiles_Primary[] = INCBIN_U8("graphics/interface/map_popup_primary.4bpp");
+static const u8 sMapPopUpTiles_Secondary[] = INCBIN_U8("graphics/interface/map_popup_secondary.4bpp");
+static const u16 sMapPopUpTiles_Palette[16] = INCBIN_U16("graphics/interface/map_popup_palette.gbapal");
+
 // .rodata
 static const u8 sMapPopUp_Table[][960] =
 {
@@ -246,14 +250,15 @@ enum {
 
 void ShowMapNamePopup(void)
 {
-    if (FlagGet(FLAG_HIDE_MAP_NAME_POPUP) != TRUE && !gSaveBlock1Ptr->flashLevel)
+    if (FlagGet(FLAG_HIDE_MAP_NAME_POPUP) != TRUE/* && !gSaveBlock1Ptr->flashLevel*/)
     {
         if (!FuncIsActiveTask(Task_MapNamePopUpWindow))
         {
             gPopupTaskId = CreateTask(Task_MapNamePopUpWindow, 100);
-            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
-            SetHBlankCallback(HBlankCB_DoublePopupWindow);
-            EnableInterrupts(INTR_FLAG_HBLANK);
+            
+            if (MAP_POPUP_ALPHA_BLEND)
+                SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
+        
             gTasks[gPopupTaskId].tState = STATE_PRINT;
             gTasks[gPopupTaskId].tYOffset = POPUP_OFFSCREEN_Y;
         }
@@ -279,7 +284,8 @@ static void Task_MapNamePopUpWindow(u8 taskId)
             task->tState = STATE_SLIDE_IN;
             task->tPrintTimer = 0;
             ShowMapNamePopUpWindow();
-            ScanlineEffect_SetParams(gPopUpScanlineEffectParams);
+            EnableInterrupts(INTR_FLAG_HBLANK);
+            SetHBlankCallback(HBlankCB_DoublePopupWindow);
         }
         break;
     case STATE_SLIDE_IN:
@@ -289,7 +295,7 @@ static void Task_MapNamePopUpWindow(u8 taskId)
         {
             task->tYOffset = 0;
             task->tState = STATE_WAIT;
-            gTasks[gPopupTaskId].data[1] = 0;
+            gTasks[gPopupTaskId].tOnscreenTimer = 0;
         }
         break;
     case STATE_WAIT:
@@ -321,16 +327,15 @@ static void Task_MapNamePopUpWindow(u8 taskId)
             }
         }
         break;
-    case 4:
+    case STATE_ERASE:
         ClearStdWindowAndFrame(GetPrimaryPopUpWindowId(), TRUE);
         ClearStdWindowAndFrame(GetSecondaryPopUpWindowId(), TRUE);
-        task->tState = 5;
+        task->tState = STATE_END;
         break;
     case STATE_END:
         HideMapNamePopUpWindow();
         return;
     }
-    SetDoublePopUpWindowScanlineBuffers(task->tYOffset);
 }
 
 void HideMapNamePopUpWindow(void)
@@ -341,15 +346,19 @@ void HideMapNamePopUpWindow(void)
         ClearStdWindowAndFrame(GetSecondaryPopUpWindowId(), TRUE);
         RemovePrimaryPopUpWindow();
         RemoveSecondaryPopUpWindow();
-        ScanlineEffect_Stop();
         SetGpuReg_ForcedBlank(REG_OFFSET_BG0VOFS, 0);
-        SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN1_BG_ALL | WININ_WIN1_OBJ);
-        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_EFFECT_BLEND);
+
+        if (MAP_POPUP_ALPHA_BLEND)
+        {
+            SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN1_BG_ALL | WININ_WIN1_OBJ);
+            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_EFFECT_BLEND);
         //if (gTimeOfDay != TIME_OF_DAY_NIGHT) 
         //    Weather_SetBlendCoeffs(8, 10);
         //else
         //    Weather_SetBlendCoeffs(7, 12);
-        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 10));
+            SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 10));
+        }
+
         DisableInterrupts(INTR_FLAG_HBLANK);
         SetHBlankCallback(NULL);
         DestroyTask(gPopupTaskId);
@@ -361,11 +370,11 @@ static void ShowMapNamePopUpWindow(void)
     u8 mapDisplayHeader[24];
     u8 *withoutPrefixPtr;
     
-    SetGpuRegBits(REG_OFFSET_WININ, WININ_WIN0_CLR);
+    if (MAP_POPUP_ALPHA_BLEND)
+        SetGpuRegBits(REG_OFFSET_WININ, WININ_WIN0_CLR);
     AddMapNamePopUpWindow();
     AddWeatherPopUpWindow();
     LoadMapNamePopUpWindowBgs();
-    LoadPalette(gPopUpWindowBorder_Palette, 0xE0, 32);
 
     mapDisplayHeader[0] = EXT_CTRL_CODE_BEGIN;
     mapDisplayHeader[1] = EXT_CTRL_CODE_HIGHLIGHT;
@@ -383,63 +392,6 @@ static void ShowMapNamePopUpWindow(void)
     CopyWindowToVram(GetSecondaryPopUpWindowId(), COPYWIN_FULL);
 }
 
-#define TILE_TOP_EDGE_START 0x21D
-#define TILE_TOP_EDGE_END   0x228
-#define TILE_LEFT_EDGE_TOP  0x229
-#define TILE_RIGHT_EDGE_TOP 0x22A
-#define TILE_LEFT_EDGE_MID  0x22B
-#define TILE_RIGHT_EDGE_MID 0x22C
-#define TILE_LEFT_EDGE_BOT  0x22D
-#define TILE_RIGHT_EDGE_BOT 0x22E
-#define TILE_BOT_EDGE_START 0x22F
-#define TILE_BOT_EDGE_END   0x23A
-
-static void DrawMapNamePopUpFrame(u8 bg, u8 x, u8 y, u8 deltaX, u8 deltaY, u8 unused)
-{
-    s32 i;
-
-    // Draw top edge
-    for (i = 0; i < 1 + TILE_TOP_EDGE_END - TILE_TOP_EDGE_START; i++)
-        FillBgTilemapBufferRect(bg, TILE_TOP_EDGE_START + i, i - 1 + x, y - 1, 1, 1, 14);
-
-    // Draw sides
-    FillBgTilemapBufferRect(bg, TILE_LEFT_EDGE_TOP,       x - 1,     y, 1, 1, 14);
-    FillBgTilemapBufferRect(bg, TILE_RIGHT_EDGE_TOP, deltaX + x,     y, 1, 1, 14);
-    FillBgTilemapBufferRect(bg, TILE_LEFT_EDGE_MID,       x - 1, y + 1, 1, 1, 14);
-    FillBgTilemapBufferRect(bg, TILE_RIGHT_EDGE_MID, deltaX + x, y + 1, 1, 1, 14);
-    FillBgTilemapBufferRect(bg, TILE_LEFT_EDGE_BOT,       x - 1, y + 2, 1, 1, 14);
-    FillBgTilemapBufferRect(bg, TILE_RIGHT_EDGE_BOT, deltaX + x, y + 2, 1, 1, 14);
-
-    // Draw bottom edge
-    for (i = 0; i < 1 + TILE_BOT_EDGE_END - TILE_BOT_EDGE_START; i++)
-        FillBgTilemapBufferRect(bg, TILE_BOT_EDGE_START + i, i - 1 + x, y + deltaY, 1, 1, 14);
-}
-
-static void LoadMapNamePopUpWindowBg(void)
-{
-    u8 popUpThemeId;
-    u8 popupWindowId = GetPrimaryPopUpWindowId();
-    u16 regionMapSectionId = gMapHeader.regionMapSectionId;
-
-    if (regionMapSectionId >= KANTO_MAPSEC_START)
-    {
-        if (regionMapSectionId > KANTO_MAPSEC_END)
-            regionMapSectionId -= KANTO_MAPSEC_COUNT;
-        else
-            regionMapSectionId = 0; // Discard kanto region sections;
-    }
-    popUpThemeId = sRegionMapSectionId_To_PopUpThemeIdMapping[regionMapSectionId];
-
-    LoadBgTiles(GetWindowAttribute(popupWindowId, WINDOW_BG), sMapPopUp_OutlineTable[popUpThemeId], 0x400, 0x21D);
-    CallWindowFunction(popupWindowId, DrawMapNamePopUpFrame);
-    PutWindowTilemap(popupWindowId);
-    if (gMapHeader.weather == WEATHER_UNDERWATER_BUBBLES)
-        LoadPalette(&sMapPopUp_Palette_Underwater, BG_PLTT_ID(14), sizeof(sMapPopUp_Palette_Underwater));
-    else
-        LoadPalette(sMapPopUp_PaletteTable[popUpThemeId], BG_PLTT_ID(14), sizeof(sMapPopUp_PaletteTable[0]));
-    BlitBitmapToWindow(popupWindowId, sMapPopUp_Table[popUpThemeId], 0, 0, 80, 24);
-}
-
 static void LoadMapNamePopUpWindowBgs(void)
 {
     u8 mapNamePopUpWindowId = GetPrimaryPopUpWindowId();
@@ -454,10 +406,13 @@ static void LoadMapNamePopUpWindowBgs(void)
             regionMapSectionId = 0; // Discard kanto region sections;
     }
 
+    LoadPalette(sMapPopUpTiles_Palette, BG_PLTT_ID(14), sizeof(sMapPopUpTiles_Palette));
+
+    CopyToWindowPixelBuffer(mapNamePopUpWindowId, sMapPopUpTiles_Primary, sizeof(sMapPopUpTiles_Primary), 0);
+    CopyToWindowPixelBuffer(weatherPopUpWindowId, sMapPopUpTiles_Secondary, sizeof(sMapPopUpTiles_Secondary), 0);
+
     PutWindowTilemap(mapNamePopUpWindowId);
     PutWindowTilemap(weatherPopUpWindowId);
-    BlitBitmapRectToWindow(mapNamePopUpWindowId, gPopUpWindowBorder_Tiles, 0, 0, DISPLAY_WIDTH, 24, 0, 0, DISPLAY_WIDTH, 24);
-    BlitBitmapRectToWindow(weatherPopUpWindowId, gPopUpWindowBorder_Tiles, 0, 24, DISPLAY_WIDTH, 24, 0, 0, DISPLAY_WIDTH, 24);
 }
 
 static void FormatDecimalTimeWithoutSeconds(u8 *dest, s8 hour, s8 minute)

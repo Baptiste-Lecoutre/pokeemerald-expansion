@@ -180,6 +180,7 @@ const u8 gText_Pokemon4[] = _("Pokémon"); // Unused
 const u8 gText_FlyToWhere[] = _("Fly to where?");
 const u8 gMenuText_Use[] = _("Use");
 const u8 gMenuText_Toss[] = _("Toss");
+const u8 gText_FieldMoves[] = _("Field Moves");
 const u8 gMenuText_Register[] = _("Register");
 const u8 gMenuText_Give[] = _("Give");
 const u8 gMenuText_CheckTag[] = _("Check tag");
@@ -268,7 +269,8 @@ const u8 *const gBagMenu_ReturnToStrings[] =
     [ITEMMENULOCATION_QUIZ_LADY]           = gText_TheField,
     [ITEMMENULOCATION_APPRENTICE]          = gText_TheField,
     [ITEMMENULOCATION_WALLY]               = gText_TheBattle,
-    [ITEMMENULOCATION_PCBOX]               = gText_ThePC
+    [ITEMMENULOCATION_PCBOX]               = gText_ThePC,
+    [ITEMMENULOCATION_BERRY_TREE_MULCH]    = gText_TheField,
 };
 
 const u8 *const gPyramidBagMenu_ReturnToStrings[] =
@@ -389,6 +391,7 @@ const u8 gText_HP3[] = _("HP");
 const u8 gText_SpAtk3[] = _("Sp. Atk");
 const u8 gText_SpDef3[] = _("Sp. Def");
 const u8 gText_WontHaveEffect[] = _("It won't have any effect.{PAUSE_UNTIL_PRESS}");
+const u8 gText_NextFusionMon[] = _("Choose {PKMN} to fuse with.");
 const u8 gText_CantBeUsedOnPkmn[] = _("This can't be used on\nthat Pokémon.{PAUSE_UNTIL_PRESS}");
 const u8 gText_PkmnCantSwitchOut[] = _("{STR_VAR_1} can't be switched\nout!{PAUSE_UNTIL_PRESS}");
 const u8 gText_PkmnAlreadyInBattle[] = _("{STR_VAR_1} is already\nin battle!{PAUSE_UNTIL_PRESS}");
@@ -471,6 +474,7 @@ const u8 gText_ChoosePokemonConfirm[] = _("Choose Pokémon and confirm.");
 const u8 gText_EnjoyCycling[] = _("Let's enjoy cycling!");
 const u8 gText_InUseAlready_PM[] = _("This is in use already.");
 const u8 gText_AlreadyHoldingOne[] = _("{STR_VAR_1} is already holding\none {STR_VAR_2}.");
+const u8 gText_WhichAppliance[] = _("Order which\nappliance?");
 const u8 gText_NoUse[] = _("No use.");
 const u8 gText_Able[] = _("Able");
 const u8 gText_First_PM[] = _("First");
@@ -900,7 +904,7 @@ const u8 gText_PkmnWasReleased[] = _("{DYNAMIC 0} was released.");
 const u8 gText_ByeByePkmn[] = _("Bye-bye, {DYNAMIC 0}!");
 const u8 gText_MarkYourPkmn[] = _("Mark your Pokémon.");
 const u8 gText_ThatsYourLastPkmn[] = _("That's your last Pokémon!");
-const u8 gText_YourPartysFull[] = _("Your party's full!");
+const u8 gText_YourPartysFull[] = _("Your party's full!{PAUSE_UNTIL_PRESS}");
 const u8 gText_YoureHoldingAPkmn[] = _("You're holding a Pokémon!");
 const u8 gText_WhichOneWillYouTake[] = _("Which one will you take?");
 const u8 gText_YouCantReleaseAnEgg[] = _("You can't release an Egg.");
@@ -1821,6 +1825,10 @@ const u8 gText_TrainerHill1F[] = _("1F");
 const u8 gText_TrainerHill2F[] = _("2F");
 const u8 gText_TrainerHill3F[] = _("3F");
 const u8 gText_TrainerHill4F[] = _("4F");
+const u8 gText_LightBulb[] = _("Light bulb");
+const u8 gText_LawnMower[] = _("Lawn mower");
+const u8 gText_ChangeForm[] = _("Change form");
+const u8 gText_ChangeAbility[] = _("Change Ability");
 const u8 gText_TeachWhichMoveToPkmn[] = _("Teach which move to {STR_VAR_1}?");
 const u8 gText_MoveRelearnerTeachMoveConfirm[] = _("Teach {STR_VAR_2}?");
 const u8 gText_MoveRelearnerPkmnLearnedMove[] = _("{STR_VAR_1} learned\n{STR_VAR_2}!");
@@ -2235,3 +2243,7 @@ const u8 gText_TeamPreviewSingleDoubleLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s 
 
 // Ghost battle
 ALIGNED(4) const u8 gText_Ghost[] = _("Ghost");
+
+// berries
+const u8 gText_Fertilize[] = _("Fertilize");
+const u8 gText_PlantBerry[] = _("Plant Berry");

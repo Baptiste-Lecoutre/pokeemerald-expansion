@@ -50,6 +50,8 @@
 #include "trainer_see.h"
 #include "tv.h"
 #include "window.h"
+#include "list_menu.h"
+#include "malloc.h"
 #include "constants/event_objects.h"
 
 typedef u16 (*SpecialFunc)(void);
@@ -64,13 +66,14 @@ static EWRAM_DATA u16 sMovingNpcMapNum = 0;
 static EWRAM_DATA u16 sFieldEffectScriptId = 0;
 
 static u8 sBrailleWindowId;
-static bool8 gIsScriptedWildDouble;
+static bool8 sIsScriptedWildDouble;
 
 extern const SpecialFunc gSpecials[];
 extern const u8 *gStdScripts[];
 extern const u8 *gStdScripts_End[];
 
 static void CloseBrailleWindow(void);
+static void DynamicMultichoiceSortList(struct ListMenuItem *items, u32 count);
 
 // This is defined in here so the optimizer can't see its value when compiling
 // script.c.
@@ -1403,6 +1406,101 @@ bool8 ScrCmd_yesnobox(struct ScriptContext *ctx)
     }
 }
 
+static void DynamicMultichoiceSortList(struct ListMenuItem *items, u32 count)
+{
+    u32 i,j;
+    struct ListMenuItem tmp;
+    for (i = 0; i < count - 1; ++i)
+    {
+        for (j = 0; j < count - i - 1; ++j)
+        {
+            if (items[j].id > items[j+1].id)
+            {
+                tmp = items[j];
+                items[j] = items[j+1];
+                items[j+1] = tmp;
+            }
+        }
+    }
+}
+
+#define DYN_MULTICHOICE_DEFAULT_MAX_BEFORE_SCROLL 6
+
+bool8 ScrCmd_dynmultichoice(struct ScriptContext *ctx)
+{
+    u32 i;
+    u32 left = VarGet(ScriptReadHalfword(ctx));
+    u32 top = VarGet(ScriptReadHalfword(ctx));
+    bool32 ignoreBPress = ScriptReadByte(ctx);
+    u32 maxBeforeScroll = ScriptReadByte(ctx);
+    bool32 shouldSort = ScriptReadByte(ctx);
+    u32 initialSelected = VarGet(ScriptReadHalfword(ctx));
+    u32 callbackSet = ScriptReadByte(ctx);
+    u32 initialRow = 0;
+    // Read vararg
+    u32 argc = ScriptReadByte(ctx);
+    struct ListMenuItem *items;
+
+    if (argc == 0)
+        return FALSE;
+
+    if (maxBeforeScroll == 0xFF)
+        maxBeforeScroll = DYN_MULTICHOICE_DEFAULT_MAX_BEFORE_SCROLL;
+
+    if ((const u8*) ScriptPeekWord(ctx) != NULL)
+    {
+        items = AllocZeroed(sizeof(struct ListMenuItem) * argc);
+        for (i = 0; i < argc; ++i)
+        {
+            u8 *nameBuffer = Alloc(100);
+            const u8 *arg = (const u8 *) ScriptReadWord(ctx);
+            StringExpandPlaceholders(nameBuffer, arg);
+            items[i].name = nameBuffer;
+            items[i].id = i;
+            if (i == initialSelected)
+                initialRow = i;
+        }
+    }
+    else
+    {
+        argc = MultichoiceDynamic_StackSize();
+        items = AllocZeroed(sizeof(struct ListMenuItem) * argc);
+        for (i = 0; i < argc; ++i)
+        {
+            struct ListMenuItem *currentItem = MultichoiceDynamic_PeekElementAt(i);
+            items[i] = *currentItem;
+            if (currentItem->id == initialSelected)
+                initialRow = i;
+        }
+        if (shouldSort)
+            DynamicMultichoiceSortList(items, argc);
+        MultichoiceDynamic_DestroyStack();
+    }
+
+    if (ScriptMenu_MultichoiceDynamic(left, top, argc, items, ignoreBPress, maxBeforeScroll, initialRow, callbackSet))
+    {
+        ScriptContext_Stop();
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+bool8 ScrCmd_dynmultipush(struct ScriptContext *ctx)
+{
+    u8 *nameBuffer = Alloc(100);
+    const u8 *name = (const u8*) ScriptReadWord(ctx);
+    u32 id = VarGet(ScriptReadHalfword(ctx));
+    struct ListMenuItem item;
+    StringExpandPlaceholders(nameBuffer, name);
+    item.name = nameBuffer;
+    item.id = id;
+    MultichoiceDynamic_PushElement(item);
+    return FALSE;
+}
+
 bool8 ScrCmd_multichoice(struct ScriptContext *ctx)
 {
     u8 left = ScriptReadByte(ctx);
@@ -1989,12 +2087,12 @@ bool8 ScrCmd_setwildbattle(struct ScriptContext *ctx)
     if(species2 == SPECIES_NONE)
     {
         CreateScriptedWildMon(species, level, item);
-        gIsScriptedWildDouble = FALSE;
+        sIsScriptedWildDouble = FALSE;
     }
     else
     {
         CreateScriptedDoubleWildMon(species, level, item, species2, level2, item2);
-        gIsScriptedWildDouble = TRUE;
+        sIsScriptedWildDouble = TRUE;
     }
 
     return FALSE;
@@ -2002,7 +2100,7 @@ bool8 ScrCmd_setwildbattle(struct ScriptContext *ctx)
 
 bool8 ScrCmd_dowildbattle(struct ScriptContext *ctx)
 {
-    if (gIsScriptedWildDouble == FALSE)
+    if (sIsScriptedWildDouble == FALSE)
         BattleSetup_StartScriptedWildBattle();
     else
         BattleSetup_StartScriptedDoubleWildBattle();
@@ -2476,12 +2574,12 @@ bool8 ScrCmd_setsootopolisbattle(struct ScriptContext *ctx)
         SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, heldItem1);
     }
 
-    CreateMon(&gEnemyParty[3], species2, level2, 32, 0, 0, OT_ID_PLAYER_ID, 0);
+    CreateMon(&gEnemyParty[1], species2, level2, 32, 0, 0, OT_ID_PLAYER_ID, 0);
     if (item2)
     {
         heldItem2[0] = item2;
         heldItem2[1] = item2 >> 8;
-        SetMonData(&gEnemyParty[3], MON_DATA_HELD_ITEM, heldItem2);
+        SetMonData(&gEnemyParty[1], MON_DATA_HELD_ITEM, heldItem2);
     }
     
     return FALSE;
@@ -2501,7 +2599,7 @@ bool8 ScrCmd_checkPartyHasSpecies(struct ScriptContext *ctx)
     for (i = 0; i < partyCount; i++)
     {
         partySpecies = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
-        if (gSpeciesToNationalPokedexNum[partySpecies - 1] == wantedSpecies)
+        if (GET_BASE_SPECIES_ID(partySpecies) == wantedSpecies)
         {
             gSpecialVar_Result = TRUE;
         }
@@ -2517,7 +2615,7 @@ bool8 ScrCmd_isChosenMonSpecies(struct ScriptContext *ctx)
     u16 chosenSpecies = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES_OR_EGG, NULL);
 
     gSpecialVar_Result = FALSE;
-    if (gSpeciesToNationalPokedexNum[chosenSpecies - 1] == wantedSpecies)
+    if (GET_BASE_SPECIES_ID(chosenSpecies) == wantedSpecies)
     {
         gSpecialVar_Result = TRUE;
     }

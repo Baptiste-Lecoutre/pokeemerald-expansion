@@ -269,8 +269,8 @@ enum
                         [CHECK_PAGE_INTRO_2]  = gText_MatchCall##name##_Intro2}
 
 
-// Pokenav Function IDs
-// Indices into the LoopedTask tables for each of the main Pokenav features
+// PokéNav Function IDs
+// Indices into the LoopedTask tables for each of the main PokéNav features
 
 enum RegionMapFuncIds
 {
@@ -440,6 +440,7 @@ int GetPokenavCursorPos(void);
 int GetCurrentMenuItemId(void);
 u16 GetHelpBarTextId(void);
 void InitHelpBar(void);
+void FreePokenavResources(void);
 
 // pokenav_menu_handler_gfx.c
 bool32 OpenPokenavMenuInitial(void);

@@ -515,6 +515,7 @@
 #define BG_STEEL_BEAM_OPPONENT 78
 #define BG_STEEL_BEAM_PLAYER 79
 #define BG_CHLOROBLAST 80
+#define BG_RAINBOW 81
 
 // table ids for general animations (gBattleAnims_General)
 #define B_ANIM_STATS_CHANGE             0
@@ -559,15 +560,18 @@
 #define B_ANIM_DYNAMAX_GROWTH           39
 #define B_ANIM_MAX_SET_WEATHER          40
 #define B_ANIM_SYRUP_BOMB_SPEED_DROP    41
-#define B_ANIM_RAID_STORM_BREWS         42
-#define B_ANIM_RAID_SHIELD_APPEARED     43
-#define B_ANIM_RAID_SHIELD_DISAPPEARED  44
-#define B_ANIM_RAID_BARRIER_BROKEN      45
-#define B_ANIM_RAID_SHOCKWAVE           46
-#define B_ANIM_RAID_BOSS_EXPLOSION      47
-#define B_ANIM_MON_SCARED               48
-#define B_ANIM_GHOST_GET_OUT            49
-#define B_ANIM_GO_GOGGLED               50
+#define B_ANIM_RAINBOW                  42
+#define B_ANIM_SEA_OF_FIRE              43
+#define B_ANIM_SWAMP                    44
+#define B_ANIM_RAID_STORM_BREWS         45
+#define B_ANIM_RAID_SHIELD_APPEARED     46
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  47
+#define B_ANIM_RAID_BARRIER_BROKEN      48
+#define B_ANIM_RAID_SHOCKWAVE           49
+#define B_ANIM_RAID_BOSS_EXPLOSION      50
+#define B_ANIM_MON_SCARED               51
+#define B_ANIM_GHOST_GET_OUT            52
+#define B_ANIM_GO_GOGGLED               53
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0
@@ -648,5 +652,8 @@
 #define F_PAL_ADJACENT            (F_PAL_DEF_SIDE | F_PAL_ATK_PARTNER)
 #define F_PAL_ALL_BUT_DEF         (F_PAL_ATK_SIDE | F_PAL_DEF_PARTNER)
 #define F_PAL_ALL_BUT_ATK_PARTNER (F_PAL_ATTACKER | F_PAL_DEF_SIDE)
+// The below are only used by AnimTask_BlendBattleAnimPal to get battler sprite palettes by position rather than by role.
+// It's redundant with F_PAL_BATTLERS, because they're only ever used together to refer to all the battlers at once.
+#define F_PAL_BATTLERS_2  (1 << 7 | 1 << 8 | 1 << 9 | 1 << 10)
 
 #endif // GUARD_CONSTANTS_BATTLE_ANIM_H

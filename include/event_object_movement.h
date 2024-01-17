@@ -102,7 +102,6 @@ extern const struct OamData gObjectEventBaseOam_32x32;
 extern const struct SpriteTemplate *const gFieldEffectObjectTemplatePointers[];
 extern const u8 gReflectionEffectPaletteMap[];
 
-extern const u16 *const gBerryTreeObjectEventGraphicsIdTablePointers[];
 extern const struct SpriteFrameImage *const gBerryTreePicTablePointers[];
 extern const u8 *const gBerryTreePaletteSlotTablePointers[];
 
@@ -482,5 +481,7 @@ u16 GetMiniStepCount(u8 speed);
 void RunMiniStep(struct Sprite *sprite, u8 speed, u8 currentFrame);
 bool8 PlayerIsUnderWaterfall(struct ObjectEvent *objectEvent);
 void RemoveObjectEvent(struct ObjectEvent *objectEvent);
+bool8 MovementAction_EmoteX_Step0(struct ObjectEvent *, struct Sprite *);
+bool8 MovementAction_EmoteDoubleExclamationMark_Step0(struct ObjectEvent *, struct Sprite *);
 
 #endif //GUARD_EVENT_OBJECT_MOVEMENT_H
