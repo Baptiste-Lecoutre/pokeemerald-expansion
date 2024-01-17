@@ -104,14 +104,6 @@ struct CombinedMove
     u16 newMove;
 };
 
-EWRAM_DATA struct Pokemon *gTrainerPartyArray[] = 
-{
-    gPlayerParty,
-    gEnemyParty,
-    gPlayerPartnerParty,
-    gEnemy2Party
-};
-
 static const struct CombinedMove sCombinedMoves[2] =
 {
     {MOVE_EMBER, MOVE_GUST, MOVE_HEAT_WAVE},
@@ -879,11 +871,6 @@ void ZeroMonData(struct Pokemon *mon)
     SetMonData(mon, MON_DATA_SPDEF, &arg);
     arg = MAIL_NONE;
     SetMonData(mon, MON_DATA_MAIL, &arg);
-}
-
-struct Pokemon *GetBattlerPartyData(u8 position)
-{
-    return gTrainerPartyArray[position];
 }
 
 void ZeroPlayerPartyMons(void)
@@ -3192,14 +3179,7 @@ u8 CalculatePlayerPartyCount(void)
 
 u8 CalculatePlayerPartnerPartyCount(void)
 {
-    gPlayerPartnerPartyCount = 0;
-
-    while (gPlayerPartnerPartyCount < PARTY_SIZE
-        && GetMonData(&gPlayerPartnerParty[gPlayerPartnerPartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
-    {
-        gPlayerPartnerPartyCount++;
-    }
-
+    gPlayerPartnerPartyCount = CalculatePartyCount(gPlayerPartnerParty);
     return gPlayerPartnerPartyCount;
 }
 
@@ -3211,14 +3191,7 @@ u8 CalculateEnemyPartyCount(void)
 
 u8 CalculateEnemy2PartyCount(void)
 {
-    gEnemy2PartyCount = 0;
-
-    while (gEnemy2PartyCount < PARTY_SIZE
-        && GetMonData(&gEnemy2Party[gEnemy2PartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
-    {
-        gEnemy2PartyCount++;
-    }
-
+    gEnemy2PartyCount = CalculatePartyCount(gEnemy2Party);
     return gEnemy2PartyCount;
 }
 
