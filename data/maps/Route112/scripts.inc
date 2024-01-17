@@ -143,3 +143,23 @@ Route112_Text_RouteSignLavaridge:
 	.string "Route 112\n"
 	.string "{LEFT_ARROW} Lavaridge Town$"
 
+Route112_EventScript_AshenWoodsNotThisWay::
+	msgbox Route112_Text_AshenWoodsNotThisWay, MSGBOX_DEFAULT
+	closemessage
+	applymovement OBJ_EVENT_ID_PLAYER, Route112_Movement_WalkLeft
+	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Route112_Movement_WalkDown
+	waitmovement 0
+	end
+
+Route112_Movement_WalkLeft:
+	walk_left
+	step_end
+
+Route112_Movement_WalkDown:
+	walk_down
+	face_up
+	step_end
+
+Route112_Text_AshenWoodsNotThisWay:
+	.string "Where are you going?\n"
+	.string "The Ashen Woods are not this way!$"

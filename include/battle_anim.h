@@ -125,6 +125,7 @@ void GetBattleAnimBg1Data(struct BattleAnimBgData *);
 void GetBattleAnimBgData(struct BattleAnimBgData *, u32 bgId);
 u8 GetBattlerSpriteSubpriority(u8 battlerId);
 bool8 TranslateAnimHorizontalArc(struct Sprite *sprite);
+bool8 TranslateAnimVerticalArc(struct Sprite *sprite);
 void TranslateSpriteLinearByIdFixedPoint(struct Sprite *sprite);
 void ResetSpriteRotScale(u8 spriteId);
 void SetSpriteRotScale(u8 spriteId, s16 xScale, s16 yScale, u16 rotation);
@@ -134,7 +135,7 @@ void SetBattlerSpriteYOffsetFromRotation(u8 spriteId);
 u32 GetBattlePalettesMask(bool8 battleBackground, bool8 attacker, bool8 target, bool8 attackerPartner, bool8 targetPartner, bool8 anim1, bool8 anim2);
 u32 GetBattleMonSpritePalettesMask(u8 playerLeft, u8 playerRight, u8 opponentLeft, u8 opponentRight);
 u8 GetSpritePalIdxByBattler(u8 battler);
-s16 CloneBattlerSpriteWithBlend(u8);
+s16 CloneBattlerSpriteWithBlend(u8 animBattler);
 void DestroySpriteWithActiveSheet(struct Sprite *);
 u8 CreateInvisibleSpriteCopy(int, u8, int);
 void AnimLoadCompressedBgTilemapHandleContest(struct BattleAnimBgData *, const void *, bool32);
@@ -159,7 +160,7 @@ void PrepareAffineAnimInTaskData(struct Task *task, u8 spriteId, const union Aff
 bool8 RunAffineAnimFromTaskData(struct Task *task);
 void AnimThrowProjectile(struct Sprite *sprite);
 void GetBgDataForTransform(struct BattleAnimBgData *dest, u8 battlerId);
-u8 CreateAdditionalMonSpriteForMoveAnim(u16 species, bool8 isBackpic, u8 id, s16 x, s16 y, u8 subpriority, u32 personality, u32 trainerId, u32 battlerId);
+u8 CreateAdditionalMonSpriteForMoveAnim(u16 species, bool8 isBackpic, u8 id, s16 x, s16 y, u8 subpriority, u32 personality, bool8 isShiny, u32 battlerId);
 void ResetSpriteRotScale_PreserveAffine(struct Sprite *sprite);
 void Trade_MoveSelectedMonToTarget(struct Sprite *sprite);
 void DestroyAnimVisualTaskAndDisableBlend(u8 taskId);
@@ -201,6 +202,7 @@ void StoreSpriteCallbackInData6(struct Sprite *sprite, void (*spriteCallback)(st
 void SetSpritePrimaryCoordsFromSecondaryCoords(struct Sprite *sprite);
 u8 GetBattlerSpriteDefault_Y(u8 battlerId);
 u8 GetSubstituteSpriteDefault_Y(u8 battlerId);
+u8 GetGhostSpriteDefault_Y(u8 battlerId);
 
 // battle_anim_status_effects.c
 #define STAT_ANIM_PLUS1  MOVE_EFFECT_ATK_PLUS_1 - 1

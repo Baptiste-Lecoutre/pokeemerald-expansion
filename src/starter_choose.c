@@ -25,9 +25,9 @@
 #include "constants/rgb.h"
 
 #define STARTER_MON_COUNT   3
-#define REGION_COUNT        9
+#define REGION_COUNT        8
 
-// Position of the sprite of the selected starter Pokemon
+// Position of the sprite of the selected starter Pokémon
 #define STARTER_PKMN_POS_X (DISPLAY_WIDTH / 2)
 #define STARTER_PKMN_POS_Y 64
 
@@ -126,9 +126,9 @@ static const u8 sStarterLabelCoords[STARTER_MON_COUNT][2] =
 
 static const u16 sStarterMon[STARTER_MON_COUNT][REGION_COUNT] =
 {
-    {SPECIES_BULBASAUR, SPECIES_CHIKORITA, SPECIES_TREECKO, SPECIES_TURTWIG, SPECIES_SNIVY, SPECIES_CHESPIN, SPECIES_ROWLET, SPECIES_GROOKEY, SPECIES_SPRIGATITO},
-    {SPECIES_CHARMANDER, SPECIES_CYNDAQUIL, SPECIES_TORCHIC, SPECIES_CHIMCHAR, SPECIES_TEPIG, SPECIES_FENNEKIN, SPECIES_LITTEN, SPECIES_SCORBUNNY, SPECIES_FUECOCO},
-    {SPECIES_SQUIRTLE, SPECIES_TOTODILE, SPECIES_MUDKIP, SPECIES_PIPLUP, SPECIES_OSHAWOTT, SPECIES_FROAKIE, SPECIES_POPPLIO, SPECIES_SOBBLE, SPECIES_QUAXLY},
+    {SPECIES_BULBASAUR, SPECIES_CHIKORITA, SPECIES_TREECKO, SPECIES_TURTWIG, SPECIES_SNIVY, SPECIES_CHESPIN, SPECIES_ROWLET, SPECIES_GROOKEY},// SPECIES_SPRIGATITO},
+    {SPECIES_CHARMANDER, SPECIES_CYNDAQUIL, SPECIES_TORCHIC, SPECIES_CHIMCHAR, SPECIES_TEPIG, SPECIES_FENNEKIN, SPECIES_LITTEN, SPECIES_SCORBUNNY},// SPECIES_FUECOCO},
+    {SPECIES_SQUIRTLE, SPECIES_TOTODILE, SPECIES_MUDKIP, SPECIES_PIPLUP, SPECIES_OSHAWOTT, SPECIES_FROAKIE, SPECIES_POPPLIO, SPECIES_SOBBLE},// SPECIES_QUAXLY},
 };
 
 static const struct BgTemplate sBgTemplates[3] =
@@ -464,7 +464,7 @@ void CB2_ChooseStarter(void)
     spriteId = CreateSprite(&sSpriteTemplate_Hand, 120, 56, 2);
     gSprites[spriteId].data[0] = taskId;
 
-    // Create three Pokeball sprites
+    // Create three Poké Ball sprites
     spriteId = CreateSprite(&sSpriteTemplate_Pokeball, sPokeballCoords[0][0], sPokeballCoords[0][1], 2);
     gSprites[spriteId].sTaskId = taskId;
     gSprites[spriteId].sBallId = 0;
@@ -633,7 +633,7 @@ static void CreateStarterPokemonLabel(u8 selection, u8 region)
     u8 labelLeft, labelRight, labelTop, labelBottom;
 
     u16 species = GetStarterPokemon(selection, region);
-    CopyMonCategoryText(SpeciesToNationalPokedexNum(species), categoryText);
+    CopyMonCategoryText(species, categoryText);
     speciesName = GetSpeciesName(species);
 
     winTemplate = sWindowTemplate_StarterLabel;
@@ -687,14 +687,14 @@ static u8 CreatePokemonFrontSprite(u16 species, u8 x, u8 y)
 {
     u8 spriteId;
 
-    spriteId = CreateMonPicSprite_Affine(species, SHINY_ODDS, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+    spriteId = CreateMonPicSprite_Affine(species, FALSE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     gSprites[spriteId].oam.priority = 0;
     return spriteId;
 }
 
 static void SpriteCB_SelectionHand(struct Sprite *sprite)
 {
-    // Float up and down above selected pokeball
+    // Float up and down above selected Poké Ball
     sprite->x = sCursorCoords[gTasks[sprite->data[0]].tStarterSelection][0];
     sprite->y = sCursorCoords[gTasks[sprite->data[0]].tStarterSelection][1];
     sprite->y2 = Sin(sprite->data[1], 8);
@@ -703,7 +703,7 @@ static void SpriteCB_SelectionHand(struct Sprite *sprite)
 
 static void SpriteCB_Pokeball(struct Sprite *sprite)
 {
-    // Animate pokeball if currently selected
+    // Animate Poké Ball if currently selected
     if (gTasks[sprite->sTaskId].tStarterSelection == sprite->sBallId)
         StartSpriteAnimIfDifferent(sprite, 1);
     else

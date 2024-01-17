@@ -203,7 +203,6 @@ static void SpriteCB_StatusSummaryBalls_OnSwitchout(struct Sprite *);
 
 static void SpriteCb_MegaTrigger(struct Sprite *);
 static void SpriteCb_BurstTrigger(struct Sprite *);
-static void MegaIndicator_SetVisibilities(u32 healthboxId, bool32 invisible);
 static void MegaIndicator_UpdateLevel(u32 healthboxId, u32 level);
 static void MegaIndicator_CreateSprite(u32 battlerId, u32 healthboxSpriteId);
 static void MegaIndicator_UpdateOamPriority(u32 healthboxId, u32 oamPriority);
@@ -1517,7 +1516,7 @@ void HideTriggerSprites(void)
 
 void DestroyMegaTriggerSprite(void)
 {
-    FreeSpritePaletteByTag(TAG_MEGA_TRIGGER_PAL);
+//    FreeSpritePaletteByTag(TAG_MEGA_TRIGGER_PAL); // don't free the palette because it is shared
     FreeSpriteTilesByTag(TAG_MEGA_TRIGGER_TILE);
     if (gBattleStruct->mega.triggerSpriteId != 0xFF)
         DestroySprite(&gSprites[gBattleStruct->mega.triggerSpriteId]);
@@ -1815,12 +1814,6 @@ static void MegaIndicator_CreateSprite(u32 battlerId, u32 healthboxSpriteId)
     gSprites[*spriteId].tBattler = battlerId;
     gSprites[*spriteId].tPosX = x;
     gSprites[*spriteId].invisible = TRUE;
-}
-
-void MegaIndicator_DestroySprite(u32 healthboxSpriteId)
-{
-    u8 *spriteId = MegaIndicator_GetSpriteId(healthboxSpriteId);
-    DestroySprite(&gSprites[*spriteId]);
 }
 
 static void SpriteCb_MegaIndicator(struct Sprite *sprite)
@@ -2305,7 +2298,7 @@ static void SpriteCB_StatusSummaryBalls_OnSwitchout(struct Sprite *sprite)
     sprite->y2 = gSprites[barSpriteId].y2;
 }
 
-static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
+void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
 {
     u8 nickname[POKEMON_NAME_LENGTH + 1];
     void *ptr;
@@ -2325,6 +2318,9 @@ static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
     species = GetMonData(mon, MON_DATA_SPECIES);
 
     if ((species == SPECIES_NIDORAN_F || species == SPECIES_NIDORAN_M) && StringCompare(nickname, GetSpeciesName(species)) == 0)
+        gender = 100;
+
+    if (CheckBattleTypeGhost(mon, gSprites[healthboxSpriteId].hMain_Battler))
         gender = 100;
 
     // AddTextPrinterAndCreateWindowOnHealthbox's arguments are the same in all 3 cases.
@@ -2365,7 +2361,7 @@ static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
     RemoveWindowOnHealthbox(windowId);
 }
 
-static void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
+void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
 {
     u8 battlerId, healthBarSpriteId;
 
@@ -2376,6 +2372,8 @@ static void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
 
     battlerId = gSprites[healthboxSpriteId].hMain_Battler;
     if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
+        return;
+    if (CheckBattleTypeGhost(&gEnemyParty[gBattlerPartyIndexes[battlerId]], battlerId))
         return;
     if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES)), FLAG_GET_CAUGHT))
         return;
@@ -3160,7 +3158,7 @@ static void PrintBattlerOnAbilityPopUp(u8 battlerId, u8 spriteId1, u8 spriteId2)
 
 static void PrintAbilityOnAbilityPopUp(u32 ability, u8 spriteId1, u8 spriteId2)
 {
-    PrintOnAbilityPopUp(gAbilityNames[ability],
+    PrintOnAbilityPopUp(gAbilities[ability].name,
                         (void*)(OBJ_VRAM0) + (gSprites[spriteId1].oam.tileNum * 32) + 256,
                         (void*)(OBJ_VRAM0) + (gSprites[spriteId2].oam.tileNum * 32) + 256,
                         5, 12,
@@ -3552,7 +3550,7 @@ void TryAddLastUsedBallItemSprites(void)
         ArrowsChangeColorLastBallCycle(0); //Default the arrows to be invisible
 }
 
-static void CreateLastUsedBallGfx(void)
+UNUSED static void CreateLastUsedBallGfx(void)
 {
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {
@@ -3874,6 +3872,8 @@ void TryLoadTypeIcons(u8 activeBattler)
 
             if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && GetBattlerSide(GetBattlerAtPosition(position)) == B_SIDE_OPPONENT)
+                continue;
 
             if (illusionMon != NULL)
             {

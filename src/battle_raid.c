@@ -292,13 +292,12 @@ static const u16 *const sRaidBattleDropItems[] =
     [RAID_RANK_7] = sRaidBattleDropItems_RaidRank7
 };
 
-extern const struct Evolution gEvolutionTable[][EVOS_PER_MON];
-
 EWRAM_DATA struct RaidData gRaidData = {0};
 
 // forward declarations
 static u8 GetRaidShieldThresholdTotalNumber(void);
 static u16 GetNextShieldThreshold(void);
+static u16 GetShieldAmount(void);
 static u32 CreateRaidBarrierSprite(u8 index);
 static void CreateAllRaidBarrierSprites(void);
 static void DestroyRaidBarrierSprite(u8 index);
@@ -346,7 +345,7 @@ bool32 InitRaidData(void)
     do
     {
         species = ((randomNum + species) % FORMS_START) + 1;
-    } while (species == SPECIES_NONE || gSpeciesInfo[species].flags & (SPECIES_FLAG_LEGENDARY | SPECIES_FLAG_MYTHICAL | SPECIES_FLAG_ULTRA_BEAST));
+    } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
     /*preEvoSpecies = GetPreEvolution(species);
@@ -424,6 +423,7 @@ bool32 InitRaidData(void)
 // Sets the data for the Raid being loaded from set variables.
 bool32 InitCustomRaidData(void)
 {
+    u16 item = gSpecialVar_0x8008;
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
 
@@ -433,13 +433,15 @@ bool32 InitCustomRaidData(void)
     // Create raid boss
     CreateMon(&gEnemyParty[0], gSpecialVar_0x8003, gSpecialVar_0x8007, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
+    if (item != ITEM_NONE)
+        SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &item);
     return TRUE;
 }
 
 // Sets up the RaidBattleData struct in gBattleStruct.
 void InitRaidBattleData(void)
 {
-    u8 i;
+    u32 i;
 
     gBattleStruct->raid.shieldsRemaining = GetRaidShieldThresholdTotalNumber();
     gBattleStruct->raid.nextShield = GetNextShieldThreshold();
@@ -451,9 +453,16 @@ void InitRaidBattleData(void)
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
         gBattleStruct->raid.barrierSpriteIds[i] = MAX_SPRITES;
 
-    // TODO: Some Raids start off with a shield at the beginning.
-    // if (should do shield)
-    //    do shield.
+    // Mega Raids start off with a shield at the beginning.
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    {
+        gBattleStruct->raid.shield = GetShieldAmount();
+        CreateAllRaidBarrierSprites();
+        RaidBarrier_SetVisibilities(gHealthboxSpriteIds[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)], TRUE);
+
+        if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
+            gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].moves[3] = MOVE_DRAGON_ASCENT;
+    }
 
     // Update HP Multiplier.
     RecalcBattlerStats(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &gEnemyParty[0]);
@@ -470,6 +479,8 @@ u8 GetRaidBattleTransition(void)
 {
     if (gRaidData.raidType == RAID_TYPE_TERA)
         return B_TRANSITION_TERA_RAID;
+    else if (gRaidData.raidType == RAID_TYPE_MEGA)
+        return B_TRANSITION_MEGA_RAID;
     else
         return B_TRANSITION_MAX_RAID;
 }
@@ -494,9 +505,6 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 // Updates Raid Storm state and returns whether battle should end.
 bool32 ShouldRaidKickPlayer(void)
 {
-    if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
-        gBattleStruct->raid.energy ^= BIT_FLANK;
-
     // Gen 8-style raids are capped at 10 turns.
     if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
     {
@@ -533,6 +541,20 @@ bool32 ShouldRaidKickPlayer(void)
     {
         BattleScriptExecute(BattleScript_TeraRaidTimerLow);
     }
+    return FALSE;
+}
+
+bool32 ShouldMoveDynamaxEnergy(void)
+{
+    if (gRaidData.raidType == RAID_TYPE_MAX)
+    {
+        gBattleStruct->raid.energy ^= BIT_FLANK;
+        gBattlerAttacker = gBattleStruct->raid.energy;
+
+        if (CanDynamax(gBattlerAttacker))
+            return TRUE;
+    }
+
     return FALSE;
 }
 
@@ -580,14 +602,15 @@ u8 GetRaidShockwaveChance(void)
 
     switch (numStars)
     {
-		case NO_RAID ... RAID_RANK_3:
+		case NO_RAID ... RAID_RANK_2:
 			return 0; //Never
-		case RAID_RANK_4:
-			return 20; //20 % chance before each attack
+		case RAID_RANK_3:
+        case RAID_RANK_4:
+			return 15; //~20 % chance before each attack
 		case RAID_RANK_5:
-			return 35; //35 % chance before each attack
+			return 25; //~35 % chance before each attack: less probable to do 2 attacks 
 		default:
-			return 50; //50 % chance before each attack
+			return 25; //~50 % chance before each turn: probably do 2 attacks during the turn
 	}
 }
 
@@ -617,28 +640,53 @@ static u16 GetShieldAmount(void)
     u8 spDef = gSpeciesInfo[species].baseSpDefense;
     u8 retVal;
 
-    // Currently uses the sum of defenses to determine barrier count.
-    switch (hp + def + spDef)
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
     {
-        case 0 ... 199:
-            retVal = 3;
-            break;
-        case 200 ... 300:
-            retVal = 4;
-            break;
-        default: // > 300
-            retVal = MAX_BARRIER_COUNT;
-            break;
+        switch (gRaidData.rank)
+        {
+            case NO_RAID ... RAID_RANK_1:
+                retVal = 0;
+                break;
+            case RAID_RANK_2 ... RAID_RANK_3:
+                retVal = 1;
+                break;
+            case RAID_RANK_4 ... RAID_RANK_5:
+                retVal = 2;
+                break;
+            default: // 6 & 7 stars
+                retVal = 3;
+                break;
+        }
+    }
+    else
+    {
+        // Uses the sum of defenses to determine barrier count.
+        switch (hp + def + spDef)
+        {
+            case 0 ... 199:
+                retVal = 3;
+                break;
+            case 200 ... 300:
+                retVal = 4;
+                break;
+            default: // > 300
+                retVal = MAX_BARRIER_COUNT;
+                break;
+        }
+
+        if (gRaidData.rank < RAID_RANK_5)
+            retVal -= 1;
     }
 
-    if (gRaidData.rank < RAID_RANK_5)
-        retVal -= 1;
     return retVal;
     // only valid for dynamax raids atm
 }
 
 static u8 GetRaidShieldThresholdTotalNumber(void)
 {
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
+        return 0;
+
     switch (gRaidData.rank)
     {
         case RAID_RANK_7:
@@ -689,7 +737,7 @@ bool32 UpdateRaidShield(void)
         gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
         // Destroy an extra barrier with a Max Move.
         // TODO: Tera STAB moves will probably break 2 barriers, too.
-        if (IsMaxMove(gLastUsedMove) && gBattleStruct->raid.shield > 1)
+        if (IsMaxMove(gLastUsedMove) && gRaidData.raidType == RAID_TYPE_MAX && gBattleStruct->raid.shield > 1)
         {
             gBattleStruct->raid.shield--;
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
@@ -698,6 +746,30 @@ bool32 UpdateRaidShield(void)
         {
             gBattleStruct->raid.shield--;
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
+        }
+
+        if (gRaidData.raidType == RAID_TYPE_MEGA)
+        {
+            u32 i;
+            gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - gBattleMons[gBattlerTarget].maxHP;
+            gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
+
+            if (gRaidData.rank > RAID_RANK_5)
+            {
+                for (i = STAT_ATK; i < NUM_STATS; i++)
+                {
+                    if (gBattleMons[gBattlerTarget].statStages[i] < MAX_STAT_STAGE)
+                        ++gBattleMons[gBattlerTarget].statStages[i];
+                }
+            }
+            else if (gRaidData.rank > RAID_RANK_3)
+            {
+                if (gBattleMons[gBattlerTarget].statStages[STAT_DEF] < MAX_STAT_STAGE)
+                    ++gBattleMons[gBattlerTarget].statStages[STAT_DEF];
+                if (gBattleMons[gBattlerTarget].statStages[STAT_SPDEF] < MAX_STAT_STAGE)
+                    ++gBattleMons[gBattlerTarget].statStages[STAT_SPDEF];
+            }
+            gBattleCommunication[MULTIUSE_STATE] = RAID_TYPE_MEGA;
         }
 
         BattleScriptPushCursor();
@@ -746,21 +818,34 @@ u16 GetShieldDamageReduction(void)
 }
 
 // SHIELD SPRITE DATA:
-static const u16 sRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/raid_barrier.4bpp");
-static const u16 sRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/misc_indicator.gbapal");
+static const u16 sMaxRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/raid_barrier.4bpp");
+static const u16 sMaxRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/misc_indicator.gbapal");
+static const u16 sMegaRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/mega_shield.4bpp");
+static const u16 sMegaRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/mega_trigger.gbapal");
 
-static const struct SpriteSheet sSpriteSheet_RaidBarrier =
+static const struct SpriteSheet sSpriteSheet_MaxRaidBarrier =
 {
-    sRaidBarrierGfx, sizeof(sRaidBarrierGfx), TAG_RAID_BARRIER_TILE
+    sMaxRaidBarrierGfx, sizeof(sMaxRaidBarrierGfx), TAG_RAID_BARRIER_TILE
 };
 
-// Raid Barriers share a palette with the Alpha, Omega, and Dynamax indicators.
-static const struct SpritePalette sSpritePalette_RaidBarrier =
+static const struct SpriteSheet sSpriteSheet_MegaRaidBarrier =
 {
-    sRaidBarrierPal, TAG_MISC_INDICATOR_PAL
+    sMegaRaidBarrierGfx, sizeof(sMegaRaidBarrierGfx), TAG_RAID_BARRIER_TILE
 };
 
-static const struct OamData sOamData_RaidBarrier =
+// Max Raid Barriers share a palette with the Alpha, Omega, and Dynamax indicators.
+static const struct SpritePalette sSpritePalette_MaxRaidBarrier =
+{
+    sMaxRaidBarrierPal, TAG_MISC_INDICATOR_PAL
+};
+
+// Mega Raid Shields share a palette with the Mega trigger.
+static const struct SpritePalette sSpritePalette_MegaRaidBarrier =
+{
+    sMegaRaidBarrierPal, TAG_MEGA_TRIGGER_PAL
+};
+
+static const struct OamData sOamData_MaxRaidBarrier =
 {
     .y = 0,
     .affineMode = 0,
@@ -777,7 +862,25 @@ static const struct OamData sOamData_RaidBarrier =
     .affineParam = 0,
 };
 
-static const s8 sBarrierPosition[2] = {43, 9}; // 48 10
+static const struct OamData sOamData_MegaRaidBarrier =
+{
+    .y = 0,
+    .affineMode = 0,
+    .objMode = 0,
+    .mosaic = 0,
+    .bpp = 0,
+    .shape = SPRITE_SHAPE(32x16),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(32x16),
+    .tileNum = 0,
+    .priority = 1,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+static const s8 sMaxBarrierPosition[2] = {43, 9};
+static const s8 sMegaBarrierPosition[2] = {37, 9};
 
 // Sync up barrier sprites with healthbox.
 static void SpriteCb_RaidBarrier(struct Sprite *sprite)
@@ -786,11 +889,22 @@ static void SpriteCb_RaidBarrier(struct Sprite *sprite)
     sprite->y2 = gSprites[healthboxSpriteId].y2;
 }
 
-static const struct SpriteTemplate sSpriteTemplate_RaidBarrier =
+static const struct SpriteTemplate sSpriteTemplate_MaxRaidBarrier =
 {
     .tileTag = TAG_RAID_BARRIER_TILE,
     .paletteTag = TAG_MISC_INDICATOR_PAL,
-    .oam = &sOamData_RaidBarrier,
+    .oam = &sOamData_MaxRaidBarrier,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCb_RaidBarrier,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_MegaRaidBarrier =
+{
+    .tileTag = TAG_RAID_BARRIER_TILE,
+    .paletteTag = TAG_MEGA_TRIGGER_PAL,
+    .oam = &sOamData_MegaRaidBarrier,
     .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
@@ -807,12 +921,25 @@ static u32 CreateRaidBarrierSprite(u8 index)
     s16 x, y;
 
     GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
-    x += sBarrierPosition[0] - (index * 10);
-    y += sBarrierPosition[1];
 
-   	LoadSpritePalette(&sSpritePalette_RaidBarrier);
-   	LoadSpriteSheet(&sSpriteSheet_RaidBarrier);
-    spriteId = CreateSprite(&sSpriteTemplate_RaidBarrier, x, y, 0);
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    {
+        x += sMegaBarrierPosition[0] - (index * 25);
+        y += sMegaBarrierPosition[1];
+
+   	    LoadSpritePalette(&sSpritePalette_MegaRaidBarrier);
+   	    LoadSpriteSheet(&sSpriteSheet_MegaRaidBarrier);
+        spriteId = CreateSprite(&sSpriteTemplate_MegaRaidBarrier, x, y, 0);
+    }
+    else // MAX RAIDS & TERA RAIDS
+    {
+        x += sMaxBarrierPosition[0] - (index * 10);
+        y += sMaxBarrierPosition[1];
+
+   	    LoadSpritePalette(&sSpritePalette_MaxRaidBarrier);
+   	    LoadSpriteSheet(&sSpriteSheet_MaxRaidBarrier);
+        spriteId = CreateSprite(&sSpriteTemplate_MaxRaidBarrier, x, y, 0);
+    }
 
     gSprites[spriteId].tBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
     return spriteId;
@@ -923,10 +1050,10 @@ u16 GetRaidRewardAmount(u16 item)
         return Random() % 3 + gRaidData.rank;
 
     if (item >= ITEM_LONELY_MINT && item <= ITEM_SERIOUS_MINT)
-        return Random() % 3;
+        return 1;
 
     if (item >= ITEM_HEALTH_FEATHER && item <= ITEM_SWIFT_FEATHER)
-        return Random() % 21 + 10;
+        return Random() % 21 + 5;
 
     if (item >= ITEM_HP_UP && item <= ITEM_PP_MAX)
         return Random() % 3 + 1;
@@ -938,7 +1065,7 @@ u16 GetRaidRewardAmount(u16 item)
         return 1;
 
     if (item >= ITEM_BUG_TERA_SHARD && item <= ITEM_WATER_TERA_SHARD)
-        return Random() % 21 + 10;
+        return Random() % 21 + 5;
 
 	// default
 	return 1;
@@ -1092,6 +1219,73 @@ void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners)
         SWAP(partnerTrainerIndex[n], partnerTrainerIndex[j], index);
         n--;
     }
+}
 
-    
+u16 OverrideRaidPartnerTrainerId(u16 trainerId)
+{
+    if (trainerId == TRAINER_WALLY_OVERRIDE)
+    {
+        trainerId = PARTNER_WALLY_PETALBURG;
+        if (HasTrainerBeenFought(TRAINER_WALLY_MAUVILLE))
+            trainerId = PARTNER_WALLY_MAUVILLE;
+        if (HasTrainerBeenFought(TRAINER_WALLY_VR_1))
+            trainerId = PARTNER_WALLY_VICTORY_ROAD;
+    }
+    else if (trainerId == TRAINER_RED_OVERRIDE)
+    {
+        trainerId = PARTNER_RED_PETALBURG_WOODS;
+        if (HasTrainerBeenFought(TRAINER_RED_FALLARBOR))
+            trainerId = PARTNER_RED_FALLARBOR;
+        if (HasTrainerBeenFought(TRAINER_RED_ROUTE121))
+            trainerId = PARTNER_RED_ROUTE121;
+        if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+            trainerId = PARTNER_RED_VICTORY_ROAD;
+    }
+    else if (trainerId == TRAINER_RIVAL_OVERRIDE)
+    {
+        if (VarGet(VAR_STARTER_MON) == 0) // chose treecko
+        {
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_TREECKO : PARTNER_BRENDAN_RUSTBORO_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_TREECKO))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_TREECKO : PARTNER_BRENDAN_ROUTE_110_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_TREECKO_METEOR_FALLS : PARTNER_BRENDAN_TREECKO_METEOR_FALLS;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_TREECKO))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_TREECKO : PARTNER_BRENDAN_ROUTE_119_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_TREECKO) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_TREECKO))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_TREECKO : PARTNER_BRENDAN_LILYCOVE_TREECKO;
+            if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_TREECKO : PARTNER_BRENDAN_VICTORY_ROAD_TREECKO;
+        }
+        else if (VarGet(VAR_STARTER_MON) == 1) // chose torchic
+        {
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_TORCHIC : PARTNER_BRENDAN_RUSTBORO_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_TORCHIC))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_TORCHIC : PARTNER_BRENDAN_ROUTE_110_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_TORCHIC_METEOR_FALLS : PARTNER_BRENDAN_TORCHIC_METEOR_FALLS;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_TORCHIC))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_TORCHIC : PARTNER_BRENDAN_ROUTE_119_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_TORCHIC) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_TORCHIC))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_TORCHIC : PARTNER_BRENDAN_LILYCOVE_TORCHIC;
+            if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_TORCHIC : PARTNER_BRENDAN_VICTORY_ROAD_TORCHIC;
+        }
+        else // chose mudkip
+        {
+            trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_RUSTBORO_MUDKIP : PARTNER_BRENDAN_RUSTBORO_MUDKIP; // must have won against rival in rustboro to do raid battles
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_110_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_110_MUDKIP))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_110_MUDKIP : PARTNER_BRENDAN_ROUTE_110_MUDKIP;
+            if (HasTrainerBeenFought(TRAINER_COURTNEY_METEOR_FALLS))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_MUDKIP_METEOR_FALLS : PARTNER_BRENDAN_MUDKIP_METEOR_FALLS;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_ROUTE_119_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_ROUTE_119_MUDKIP))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_ROUTE_119_MUDKIP : PARTNER_BRENDAN_ROUTE_119_MUDKIP;
+            if (HasTrainerBeenFought(TRAINER_BRENDAN_LILYCOVE_MUDKIP) || HasTrainerBeenFought(TRAINER_MAY_LILYCOVE_MUDKIP))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_LILYCOVE_MUDKIP : PARTNER_BRENDAN_LILYCOVE_MUDKIP;
+            if (HasTrainerBeenFought(TRAINER_RED_VICTORY_ROAD))
+                trainerId = (gSaveBlock2Ptr->playerGender == MALE) ? PARTNER_MAY_VICTORY_ROAD_MUDKIP : PARTNER_BRENDAN_VICTORY_ROAD_MUDKIP;
+        }
+    }
+
+    return trainerId;
 }

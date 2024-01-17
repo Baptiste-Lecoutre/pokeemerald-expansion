@@ -1,3 +1,5 @@
+.set LOCALID_OLD_WOMAN, 1
+.set LOCALID_GIRL, 4
 .set LOCALID_RIVAL_ON_BIKE, 7
 .set LOCALID_RIVAL, 8
 
@@ -14,10 +16,29 @@ LavaridgeTown_OnTransition:
 	call Common_EventScript_SetupRivalOnBikeGfxId
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_CheckSetRivalPos
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_HideMapNamePopup
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_CheckSetOldWomanPos
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_RemoveLittleGirl
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_RemoveLittleGirl
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 3, LavaridgeTown_EventScript_RemoveLittleGirl
 	end
 
 LavaridgeTown_EventScript_ClearLavaridgeWhiteOut::
 	clearflag FLAG_WHITEOUT_TO_LAVARIDGE
+	return
+
+LavaridgeTown_EventScript_RemoveLittleGirl::
+	setflag FLAG_TEMP_B
+	removeobject LOCALID_GIRL
+	return
+
+LavaridgeTown_EventScript_CheckSetOldWomanPos::
+	getplayerxy VAR_0x8004, VAR_0x8005
+	goto_if_lt VAR_0x8004, 9, LavaridgeTown_EventScript_SetOldWomanPos
+	setobjectmovementtype LOCALID_OLD_WOMAN, MOVEMENT_TYPE_LOOK_AROUND
+	return
+
+LavaridgeTown_EventScript_SetOldWomanPos::
+	setobjectxyperm LOCALID_OLD_WOMAN, 5, 17
 	return
 
 LavaridgeTown_EventScript_CheckSetRivalPos::
@@ -47,6 +68,9 @@ LavaridgeTown_OnFrame:
 LavaridgeTown_EventScript_RivalGiveGoGoggles::
 	lockall
 	getplayerxy VAR_0x8008, VAR_0x8009
+	call_if_eq VAR_0x8008, 9, LavaridgeTown_EventScript_OldWomanNoticePlayerPokeCenter
+	call_if_ne VAR_0x8008, 9, LavaridgeTown_EventScript_OldWomanNoticePlayerGym
+	msgbox LavaridgeTown_Text_MyGrandDaughterDisappeared, MSGBOX_DEFAULT 
 	call_if_eq VAR_0x8008, 9, LavaridgeTown_EventScript_RivalNoticePlayer
 	call_if_ne VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExitHerbShop
 	delay 20
@@ -61,29 +85,32 @@ LavaridgeTown_EventScript_RivalGiveGoGoggles::
 	end
 
 LavaridgeTown_EventScript_MayGiveGoGoggles::
-	msgbox LavaridgeTown_Text_MayNiceBadgesTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_GO_GOGGLES
-	setflag FLAG_RECEIVED_GO_GOGGLES
-	msgbox LavaridgeTown_Text_MayExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
+	msgbox LavaridgeTown_Text_MayIheardThatLetsGo, MSGBOX_DEFAULT
+@	giveitem ITEM_GO_GOGGLES
+@	setflag FLAG_RECEIVED_GO_GOGGLES
+@	msgbox LavaridgeTown_Text_MayExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
 	end
 
 LavaridgeTown_EventScript_BrendanGiveGoGoggles::
-	msgbox LavaridgeTown_Text_BrendanNiceBadgesTakeThis, MSGBOX_DEFAULT
-	giveitem ITEM_GO_GOGGLES
-	setflag FLAG_RECEIVED_GO_GOGGLES
-	msgbox LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
+	msgbox LavaridgeTown_Text_BrendanIheardThatLetsGo, MSGBOX_DEFAULT
+@	giveitem ITEM_GO_GOGGLES
+@	setflag FLAG_RECEIVED_GO_GOGGLES
+@	msgbox LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
 	end
 
 LavaridgeTown_EventScript_RivalExit::
 	closemessage
-	removeobject LOCALID_RIVAL
-	addobject LOCALID_RIVAL_ON_BIKE
-	delay 30
-	call_if_eq VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExit1
-	call_if_ne VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExit2
-	removeobject LOCALID_RIVAL_ON_BIKE
+	loadword 0 LavaridgeTown_EventScript_FollowerScript
+	setfollower LOCALID_RIVAL 0x100 | FOLLOWER_FLAG_ALL_LAND
+	callnative UpdateFollowingPokemon
+@	removeobject LOCALID_RIVAL
+@	addobject LOCALID_RIVAL_ON_BIKE
+@	delay 30
+@	call_if_eq VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExit1
+@	call_if_ne VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExit2
+@	removeobject LOCALID_RIVAL_ON_BIKE
 	setvar VAR_LAVARIDGE_TOWN_STATE, 2
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
 	savebgm MUS_DUMMY
@@ -91,12 +118,50 @@ LavaridgeTown_EventScript_RivalExit::
 	releaseall
 	end
 
+LavaridgeTown_EventScript_FollowerScript:
+    msgbox LavaridgeTown_Text_RivalLetsGoSaveThisGirl MSGBOX_SIGN
+    end
+LavaridgeTown_Text_RivalLetsGoSaveThisGirl:
+    .string "Let's go save this kid!$"
+
 LavaridgeTown_EventScript_PlayMayMusic::
 	playbgm MUS_ENCOUNTER_MAY, TRUE
 	return
 
 LavaridgeTown_EventScript_PlayBrendanMusic::
 	playbgm MUS_ENCOUNTER_BRENDAN, TRUE
+	return
+
+LavaridgeTown_EventScript_OldWomanNoticePlayerGym::
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_FaceLeft
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_FaceRight
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_FaceDown
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_FaceUp
+	waitmovement 0
+	playse SE_PIN
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
+	waitmovement 0
+	return
+
+LavaridgeTown_EventScript_OldWomanNoticePlayerPokeCenter::
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_FaceRight
+	waitmovement 0
+	playse SE_PIN
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
+	waitmovement 0
 	return
 
 LavaridgeTown_EventScript_RivalNoticePlayer::
@@ -229,7 +294,13 @@ LavaridgeTown_EventScript_HotSpringsOldWoman2::
 	end
 
 LavaridgeTown_EventScript_ExpertF::
+	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
+	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 3, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
 	msgbox LavaridgeTown_Text_OhYouLikeHotSprings, MSGBOX_NPC
+	end
+
+LavaridgeTown_EventScript_ExpertFGrandDaughterMissing::
+	msgbox LavaridgeTown_Text_PleaseFindMyGrandDaughter, MSGBOX_NPC
 	end
 
 LavaridgeTown_EventScript_EggWoman::
@@ -294,9 +365,7 @@ LavaridgeTown_Text_MayExplainGoGogglesChallengeDad:
 	.string "Challenging Gyms…\p"
 	.string "You're trying hard because you don't\n"
 	.string "want to lose to me, I bet!\p"
-	.string "{PLAYER}{KUN}, I think I should challenge\n"
-	.string "your dad in Petalburg Gym.\p"
-	.string "See you again!$"
+	.string "Anyway, let's go save this little girl!$"
 
 LavaridgeTown_Text_BrendanNiceBadgesTakeThis:
 	.string "Brendan: {PLAYER}, hey, it's been a while.\n"
@@ -313,12 +382,7 @@ LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad:
 	.string "There should be some Pokémon that\n"
 	.string "are exclusively desert-dwellers.\l"
 	.string "You might look around for those.\p"
-	.string "As for me…\n"
-	.string "I'm considering challenging Norman,\l"
-	.string "the Gym Leader of Petalburg.\p"
-	.string "Unlike you, {PLAYER}, your dad looks like\n"
-	.string "he really is tough.\p"
-	.string "See you around!$"
+	.string "Anyway, let's go save this little girl!$"
 
 LavaridgeTown_Text_HaveEggWillYouTakeIt:
 	.string "I have here an Egg.\p"
@@ -407,3 +471,39 @@ LavaridgeTown_Text_HerbShopSign:
 	.string "Pokémon Herb Shop\n"
 	.string "“Bitter taste--better cure!”$"
 
+LavaridgeTown_Text_MyGrandDaughterDisappeared:
+	.string "Please… You have just defeated\n"
+	.string "Flannery didn't you?\p"
+	.string "My grand-daughter… She disappeared…\n"
+	.string "She was playing in the Ashen Woods\l"
+	.string "before she stopped giving any sign…\p"
+	.string "Please… You look trustworthy…\n"
+	.string "Please find her and save her…$"
+
+LavaridgeTown_Text_PleaseFindMyGrandDaughter:
+	.string "My grand-daughter… She disappeared…\n"
+	.string "Please find her and save her…$"
+
+LavaridgeTown_Text_MayIheardThatLetsGo:
+	.string "May: {PLAYER}{KUN}! Long time no see!\p"
+	.string "I just heard that conversation, I'll\n"
+	.string "help you look for this little girl!\p"
+	.string "Oh? While I visited the hot springs,\n"
+	.string "you got the Lavaridge Gym Badge.\p"
+	.string "Anyway, let's go save this little girl!$"
+@	.string "You must have collected\n"
+@	.string "good Pokémon…\l"
+@	.string "No, I believe you raised some.\p"
+@	.string "I guess it would be okay for you to\n"
+@	.string "have this.$"
+
+LavaridgeTown_Text_BrendanIheardThatLetsGo:
+	.string "Brendan: {PLAYER}, hey, it's been a while.\n"
+	.string "How's it going?\p"
+	.string "I just heard that conversation, I'll\n"
+	.string "help you look for this little girl!\p"
+	.string "Oh?\n"
+	.string "That's a decent collection of Badges.\p"
+	.string "Anyway, let's go save this little girl!$"
+@	.string "All right, then.\n"
+@	.string "You may as well have this.$"

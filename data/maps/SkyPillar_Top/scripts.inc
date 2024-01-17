@@ -44,21 +44,31 @@ SkyPillar_Top_EventScript_RayquazaFaceDown::
 
 SkyPillar_Top_EventScript_Rayquaza::
 	lockall
-	waitse
+	specialvar VAR_RESULT, IsPokeballPocketEmpty
+	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_RayquazaPrepareRaid
+	additem ITEM_POKE_BALL
+SkyPillar_Top_EventScript_RayquazaPrepareRaid:
+	preparefixedraid 2, 7, SPECIES_RAYQUAZA, 70, ITEM_NONE
+	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
+	special InitStoryRaid
+@	special InitRaidIntro
+@	waitstate
+@	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_ReleaseEnd
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
-	setwildbattle SPECIES_RAYQUAZA, VAR_RESULT
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special BattleSetup_StartLegendaryBattle
-	waitstate
+	doraidbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, SkyPillar_Top_EventScript_DefeatedRayquaza
 	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, SkyPillar_Top_EventScript_RanFromRayquaza
 	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, SkyPillar_Top_EventScript_RanFromRayquaza
 	setflag FLAG_DEFEATED_RAYQUAZA
+	releaseall
+	end
+
+SkyPillar_Top_EventScript_ReleaseEnd::
 	releaseall
 	end
 

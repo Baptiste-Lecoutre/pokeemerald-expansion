@@ -15,20 +15,24 @@ EventScript_RaidBattleIntroScreen::
     goto_if_eq VAR_RESULT, 0, EventScript_RaidBattleEnd
     call_if_eq VAR_RESULT, 2, EventScript_DoRaidBattleSingle
     call_if_eq VAR_RESULT, 1, EventScript_DoRaidBattlePartner
+EventScript_RaidBattleEndBattle:
     specialvar VAR_RESULT, GetBattleOutcome
-    goto_if_eq VAR_RESULT, B_OUTCOME_RAN, EventScript_RaidBattleEnd
-    goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, EventScript_RaidBattleEnd
+    goto_if_eq VAR_RESULT, B_OUTCOME_WON , EventScript_RaidBattleWon
+    goto_if_eq VAR_RESULT, B_OUTCOME_CAUGHT, EventScript_RaidBattleWon
+    goto EventScript_RaidBattleEnd
+
+EventScript_RaidBattleWon::    
     special SetRaidBattleFlag
     setvar VAR_TEMP_A, 0
     goto EventScript_RaidBattleGiveRewards
 
 EventScript_DoRaidBattleSingle::
     doraidbattle
-    return
+    goto EventScript_RaidBattleEndBattle
 
 EventScript_DoRaidBattlePartner::
     doraidbattlepartner
-    return
+    goto EventScript_RaidBattleEndBattle
 
 EventScript_RaidBattleGiveRewards::
     special GiveRaidBattleRewards

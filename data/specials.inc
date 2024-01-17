@@ -587,5 +587,23 @@ gSpecials::
 	def_special ChangePokemonNature
 	def_special BufferChosenMonNature
 	def_special DoRegielekiPuzzle
+	def_special IsPokeballPocketEmpty
  	def_special SetFollowerPokemonOption
+	def_special InitStoryRaid
 	def_special HoneyWildEncounter
+	def_special GetSpeciesForRandomEgg
+	def_special IncrementAdoptionSpecials
+	def_special GetNumberSprayStrength
+	def_special GetSprayId
+	def_special GetLastUsedSprayType
+	def_special TrySkyBattle
+	def_special VsSeekerResetObjectMovementAfterChargeComplete
+	def_special VsSeekerFreezeObjectsAfterChargeComplete
+	def_special PlayerHasMulch
+	def_special Bag_ChooseMulch
+	def_special ObjectEventInteractionApplyMulch
+	def_special ObjectEventInteractionPullBerryWeed
+	def_special ObjectEventInteractionClearBerryPests
+	def_special ObjectEventInteractionBerryHasWeed
+	def_special ObjectEventInteractionBerryHasPests
+	def_special CanWaterBerryPlot

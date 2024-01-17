@@ -266,3 +266,23 @@ JaggedPass_Text_AutumnPostBattle:
 	.string "What is that odd rock protrusion\n"
 	.string "a little up the hill from here?$"
 
+JaggedPass_EventScript_AshenWoodsNotThisWay::
+	msgbox JaggedPass_Text_AshenWoodsNotThisWay, MSGBOX_DEFAULT
+	closemessage
+	applymovement OBJ_EVENT_ID_PLAYER, JaggedPass_Movement_WalkLeft
+	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, JaggedPass_Movement_WalkRight
+	waitmovement 0
+	end
+
+JaggedPass_Movement_WalkLeft:
+	walk_left
+	step_end
+
+JaggedPass_Movement_WalkRight:
+	walk_right
+	face_left
+	step_end
+
+JaggedPass_Text_AshenWoodsNotThisWay:
+	.string "Where are you going?\n"
+	.string "The Ashen Woods are not this way!$"

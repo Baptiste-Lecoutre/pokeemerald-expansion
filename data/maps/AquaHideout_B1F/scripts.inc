@@ -24,7 +24,8 @@ AquaHideout_B1F_EventScript_ShowElectrode1::
 AquaHideout_B1F_EventScript_Electrode1::
 	lock
 	faceplayer
-	setwildbattle SPECIES_ELECTRODE, 30
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_ELECTRODE, VAR_RESULT
 	waitse
 	playmoncry SPECIES_ELECTRODE, CRY_MODE_ENCOUNTER
 	delay 40

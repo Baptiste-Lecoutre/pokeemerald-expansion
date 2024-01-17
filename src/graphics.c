@@ -689,7 +689,7 @@ const u8 gHealthboxElementsGfxTable[] = INCBIN_U8("graphics/battle_interface/hpb
                                                   "graphics/battle_interface/misc_frameend.4bpp",
                                                   "graphics/battle_interface/ball_display.4bpp",
                                                   "graphics/battle_interface/ball_caught_indicator.4bpp",
-                                                  "graphics/battle_interface/status2.4bpp", // these three duplicate sets of graphics are for the opponent/partner pokemon
+                                                  "graphics/battle_interface/status2.4bpp", // these three duplicate sets of graphics are for the opponent/partner Pokémon
                                                   "graphics/battle_interface/status3.4bpp",
                                                   "graphics/battle_interface/status4.4bpp",
                                                   "graphics/battle_interface/healthbox_doubles_frameend.4bpp",
@@ -1260,7 +1260,6 @@ const u32 gBattleAnimSpritePal_FlatRock[] = INCBIN_U32("graphics/battle_anims/sp
 
 const u32 gBattleAnimUnusedPal_Unknown2[] = INCBIN_U32("graphics/battle_anims/unused/unknown_2.gbapal.lz");
 
-#include "data/graphics/pokemon.h"
 #include "data/graphics/trainers.h"
 
 const u32 gBattleVSFrame_Gfx[] = INCBIN_U32("graphics/battle_transitions/vs_frame.4bpp.lz");
@@ -1280,7 +1279,7 @@ const u32 gDomeTourneyLineUp_Tilemap[] = INCBIN_U32("graphics/battle_frontier/to
 const u32 gDomeTourneyInfoCard_Gfx[] = INCBIN_U32("graphics/battle_frontier/tourney_info_card.4bpp.lz");
 const u32 gDomeTourneyInfoCard_Tilemap[] = INCBIN_U32("graphics/battle_frontier/tourney_info_card_tilemap.bin.lz");
 const u32 gDomeTourneyInfoCardBg_Tilemap[] = INCBIN_U32("graphics/battle_frontier/tourney_info_card_bg.bin.lz");
-const u32 gDomeTourneyTreeButtons_Gfx[] = INCBIN_U32("graphics/battle_frontier/tourney_buttons.4bpp.lz"); // exit/cancel and pokeball buttons
+const u32 gDomeTourneyTreeButtons_Gfx[] = INCBIN_U32("graphics/battle_frontier/tourney_buttons.4bpp.lz"); // exit/cancel and Poké Ball buttons
 const u32 gDomeTourneyTree_Pal[] = INCBIN_U32("graphics/battle_frontier/tourney_tree.gbapal.lz");
 const u32 gDomeTourneyTreeButtons_Pal[] = INCBIN_U32("graphics/battle_frontier/tourney_buttons.gbapal.lz");
 const u32 gDomeTourneyMatchCardBg_Pal[] = INCBIN_U32("graphics/battle_frontier/tourney_match_card_bg.gbapal.lz");
@@ -1606,6 +1605,11 @@ const u32 gBattleAnimSpritePal_Slash2[] = INCBIN_U32("graphics/battle_anims/spri
 const u32 gBattleAnimSpriteGfx_WhiteShadow[] = INCBIN_U32("graphics/battle_anims/sprites/white_shadow.4bpp.lz");
 const u32 gBattleAnimSpritePal_WhiteShadow[] = INCBIN_U32("graphics/battle_anims/sprites/white_shadow.gbapal.lz");
 
+// Pledge Effect field status - Rainbow
+const u32 gBattleAnimBgImage_Rainbow[] = INCBIN_U32("graphics/battle_anims/backgrounds/rainbow.4bpp.lz");
+const u32 gBattleAnimBGPalette_Rainbow[] = INCBIN_U32("graphics/battle_anims/backgrounds/rainbow.gbapal.lz");
+const u32 gBattleAnimBgTilemap_Rainbow[] = INCBIN_U32("graphics/battle_anims/backgrounds/rainbow.bin.lz");
+
 const u32 gPartyMenuBg_Gfx[] = INCBIN_U32("graphics/party_menu/bg.4bpp.lz");
 const u32 gPartyMenuBg_Pal[] = INCBIN_U32("graphics/party_menu/bg.gbapal.lz");
 const u32 gPartyMenuBg_Tilemap[] = INCBIN_U32("graphics/party_menu/bg.bin.lz");
@@ -1727,7 +1731,7 @@ const u16 gFrontierPassMapCursor_Pal[] = INCBIN_U16("graphics/frontier_pass/map_
 const u16 gFrontierPassMedalsSilver_Pal[] = INCBIN_U16("graphics/frontier_pass/silver.gbapal");
 const u16 gFrontierPassMedalsGold_Pal[] = INCBIN_U16("graphics/frontier_pass/gold.gbapal");
 
-// Pokedex
+// Pokédex
 const u16 gPokedexBgHoenn_Pal[] = INCBIN_U16("graphics/pokedex/bg_hoenn.gbapal");
 const u16 gPokedexCaughtScreen_Pal[] = INCBIN_U16("graphics/pokedex/caught_screen.gbapal");
 const u16 gPokedexSearchResults_Pal[] = INCBIN_U16("graphics/pokedex/search_results_bg.gbapal");
@@ -1781,7 +1785,7 @@ const u16 gContestResultsTitle_Smart_Tilemap[]  = INCBIN_U16("graphics/contest/r
 const u16 gContestResultsTitle_Tough_Tilemap[]  = INCBIN_U16("graphics/contest/results_screen/title_tough.bin");
 const u16 gContestResultsTitle_Tilemap[]        = INCBIN_U16("graphics/contest/results_screen/title.bin");
 
-// pokenav
+// PokéNav
 
 const u16 gPokenavCondition_Pal[] = INCBIN_U16("graphics/pokenav/condition/graph.gbapal");
 const u32 gPokenavCondition_Gfx[] = INCBIN_U32("graphics/pokenav/condition/graph.4bpp.lz");
@@ -1882,7 +1886,7 @@ const u32 gKantoTrainerCardFront_Tilemap[] = INCBIN_U32("graphics/trainer_card/f
 const u32 gKantoTrainerCardBack_Tilemap[] = INCBIN_U32("graphics/trainer_card/frlg/back.bin.lz");
 const u32 gKantoTrainerCardFrontLink_Tilemap[] = INCBIN_U32("graphics/trainer_card/frlg/front_link.bin.lz");
 
-// pokemon storage system
+// Pokémon storage system
 
 const u32 gStorageSystemMenu_Gfx[] = INCBIN_U32("graphics/pokemon_storage/menu.4bpp.lz");
 const u16 gStorageSystemPartyMenu_Pal[] = INCBIN_U16("graphics/pokemon_storage/party_menu.gbapal");
@@ -2038,9 +2042,6 @@ const u16 gDexNav_Gui_Pal[] = INCBIN_U16("graphics/dexnav/dexnav_gui.gbapal");
 const u32 gDexNav_Gui_Gfx[] = INCBIN_U32("graphics/dexnav/dexnav_gui.4bpp.lz");
 const u32 gDexNav_Gui_Tilemap[] = INCBIN_U32("graphics/dexnav/dexnav_gui.bin.lz");
 
-const u8 gPopUpWindowBorder_Tiles[] = INCBIN_U8("graphics/interface/window_popup_tiles.4bpp");\
-const u16 gPopUpWindowBorder_Palette[] = INCBIN_U16("graphics/interface/map_popup_palette.gbapal");
-
 const u32 gBattleTeamPreview_TileSet[] = INCBIN_U32("graphics/battle_interface/teamPreview.4bpp.lz");
 const u32 gBattleTeamPreview_TileMap[] = INCBIN_U32("graphics/battle_interface/teamPreview.bin.lz");
 const u32 gBattleTeamPreview_Palette[] = INCBIN_U32("graphics/battle_interface/teamPreview.gbapal.lz");
@@ -2080,3 +2081,6 @@ const u32 gSummaryScreenPageConditionTilemap[] = INCBIN_U32("graphics/summary_sc
 const u32 gSummaryExpBar_Tiles[] = INCBIN_U32("graphics/summary_screen/exp_bar.4bpp.lz");
 const u32 gSummaryHealthBar_Tiles[] = INCBIN_U32("graphics/summary_screen/hp_bar.4bpp.lz");
 const u16 gExpBarHealthBarGreenPal[] = INCBIN_U16("graphics/summary_screen/hp-exp_bar.gbapal");
+
+const u32 gGhostPalette[] = INCBIN_U32("graphics/pokemon/ghost/front.gbapal.lz");
+const u32 gGhostFrontPic[] = INCBIN_U32("graphics/pokemon/ghost/front.4bpp.lz");

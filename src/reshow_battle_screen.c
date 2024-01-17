@@ -15,12 +15,12 @@
 #include "battle_interface.h"
 #include "battle_anim.h"
 #include "data.h"
+#include "item.h"
 
 // this file's functions
 static void CB2_ReshowBattleScreenAfterMenu(void);
-static bool8 LoadBattlerSpriteGfx(u8 battlerId);
-static void CreateBattlerSprite(u8 battlerId);
-static void CreateHealthboxSprite(u8 battlerId);
+static bool8 LoadBattlerSpriteGfx(u32 battler);
+static void CreateHealthboxSprite(u32 battler);
 static void ClearBattleBgCntBaseBlocks(void);
 
 static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] = 
@@ -203,13 +203,15 @@ static void ClearBattleBgCntBaseBlocks(void)
     regBgcnt2->charBaseBlock = 0;
 }
 
-static bool8 LoadBattlerSpriteGfx(u8 battler)
+static bool8 LoadBattlerSpriteGfx(u32 battler)
 {
     if (battler < gBattlersCount)
     {
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
+                DecompressGhostFrontPic(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
+            else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
                 BattleLoadMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
             else
                 BattleLoadSubstituteOrMonSpriteGfx(battler, FALSE);
@@ -228,7 +230,7 @@ static bool8 LoadBattlerSpriteGfx(u8 battler)
     return TRUE;
 }
 
-static void CreateBattlerSprite(u8 battler)
+void CreateBattlerSprite(u32 battler)
 {
     u32 trainerPicId;
 
@@ -236,7 +238,9 @@ static void CreateBattlerSprite(u8 battler)
     {
         u8 posY;
 
-        if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
+        if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
+            posY = GetGhostSpriteDefault_Y(battler);
+        else if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
             posY = GetSubstituteSpriteDefault_Y(battler);
         else
             posY = GetBattlerSpriteDefault_Y(battler);
@@ -266,7 +270,7 @@ static void CreateBattlerSprite(u8 battler)
             DecompressTrainerBackPic(trainerPicId, battler);
             SetMultiuseSpriteTemplateToTrainerBack(trainerPicId, GetBattlerPosition(B_POSITION_PLAYER_LEFT));
             gBattlerSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate, 0x50,
-                                                (8 - gTrainerBackPicCoords[trainerPicId].size) * 4 + 80,
+                                                (8 - gTrainerBacksprites[trainerPicId].coordinates.size) * 4 + 80,
                                                  GetBattlerSpriteSubpriority(0));
             gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = battler;
             gSprites[gBattlerSpriteIds[battler]].callback = SpriteCallbackDummy;
@@ -276,7 +280,7 @@ static void CreateBattlerSprite(u8 battler)
         {
             SetMultiuseSpriteTemplateToTrainerBack(TRAINER_BACK_PIC_WALLY, GetBattlerPosition(0));
             gBattlerSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate, 0x50,
-                                                (8 - gTrainerBackPicCoords[TRAINER_BACK_PIC_WALLY].size) * 4 + 80,
+                                                (8 - gTrainerBacksprites[TRAINER_BACK_PIC_WALLY].coordinates.size) * 4 + 80,
                                                  GetBattlerSpriteSubpriority(0));
             gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = battler;
             gSprites[gBattlerSpriteIds[battler]].callback = SpriteCallbackDummy;
@@ -301,7 +305,7 @@ static void CreateBattlerSprite(u8 battler)
     }
 }
 
-static void CreateHealthboxSprite(u8 battler)
+static void CreateHealthboxSprite(u32 battler)
 {
     if (battler < gBattlersCount)
     {

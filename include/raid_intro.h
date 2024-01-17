@@ -3,5 +3,6 @@
 
 void CB2_RaidBattleIntro(void);
 void InitRaidIntro(void);
+void InitStoryRaid(void);
 
 #endif

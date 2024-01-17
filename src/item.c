@@ -33,7 +33,6 @@ EWRAM_DATA static u8 sHeaderBoxWindowId = 0;
 EWRAM_DATA u8 sItemIconSpriteId = 0;
 EWRAM_DATA u8 sItemIconSpriteId2 = 0;
 
-#include "data/text/item_descriptions.h"
 #include "data/items.h"
 
 static u16 GetBagItemQuantity(u16 *quantity)
@@ -898,7 +897,7 @@ const u8 *ItemId_GetName(u16 itemId)
     return gItems[SanitizeItemId(itemId)].name;
 }
 
-u16 ItemId_GetPrice(u16 itemId)
+u32 ItemId_GetPrice(u16 itemId)
 {
     return gItems[SanitizeItemId(itemId)].price;
 }
@@ -1018,13 +1017,13 @@ u32 GetItemStatus2Mask(u16 itemId)
 // Item Description Header
 bool8 GetSetItemObtained(u16 item, u8 caseId)
 {
-    u8 index;
+    /*u8 index;
     u8 bit;
     u8 mask;
 
     index = item / 8;
     bit = item % 8;
-    mask = 1 << bit;
+    mask = 1 << bit;*/
     switch (caseId)
     {
     case FLAG_GET_OBTAINED:
@@ -1140,7 +1139,7 @@ void HideHeaderBox(void)
 #define ITEM_TAG 0x2722 //same as money label
 static void ShowItemIconSprite(u16 item, bool8 firstTime, bool8 flash)
 {
-    s16 x, y;
+    s16 x = 213, y = 140;
     u8 iconSpriteId;   
     u8 spriteId2 = MAX_SPRITES;
 

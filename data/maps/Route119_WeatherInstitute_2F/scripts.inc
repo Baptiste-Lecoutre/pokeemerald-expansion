@@ -133,7 +133,7 @@ Route119_WeatherInstitute_2F_EventScript_ExplainCastform::
 	end
 
 Route119_WeatherInstitute_2F_EventScript_ScientistMentionWeather::
-	goto_if_set FLAG_SYS_GAME_CLEAR, Route119_WeatherInstitute_2F_EventScript_TryStartAbnormalWeather
+	goto_if_ge VAR_SOOTOPOLIS_CITY_STATE, 5, Route119_WeatherInstitute_2F_EventScript_TryStartAbnormalWeather
 	msgbox Route119_WeatherInstitute_2F_Text_ChangingWeatherRidiculous, MSGBOX_DEFAULT
 	release
 	end

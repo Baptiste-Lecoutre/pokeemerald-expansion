@@ -1509,13 +1509,14 @@ void BtlController_EmitSpriteInvisibility(u32 battler, u32 bufferId, bool8 isInv
     PrepareBufferDataTransfer(battler, bufferId, gBattleResources->transferBuffer, 4);
 }
 
-void BtlController_EmitBattleAnimation(u32 battler, u32 bufferId, u8 animationId, u16 argument)
+void BtlController_EmitBattleAnimation(u32 battler, u32 bufferId, u8 animationId, struct DisableStruct* disableStructPtr, u16 argument)
 {
     gBattleResources->transferBuffer[0] = CONTROLLER_BATTLEANIMATION;
     gBattleResources->transferBuffer[1] = animationId;
     gBattleResources->transferBuffer[2] = argument;
     gBattleResources->transferBuffer[3] = (argument & 0xFF00) >> 8;
-    PrepareBufferDataTransfer(battler, bufferId, gBattleResources->transferBuffer, 4);
+    memcpy(&gBattleResources->transferBuffer[4], disableStructPtr, sizeof(struct DisableStruct));
+    PrepareBufferDataTransfer(battler, bufferId, gBattleResources->transferBuffer, 4 + sizeof(struct DisableStruct));
 }
 
 // mode is a LINK_STANDBY_* constant
@@ -2416,13 +2417,23 @@ void BtlController_HandleLoadMonSprite(u32 battler, void (*controllerCallback)(u
 {
     struct Pokemon *party = GetBattlerParty(battler);
     u16 species = GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES);
+    u32 y;
 
-    BattleLoadMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
+    if ((gBattleTypeFlags & BATTLE_TYPE_GHOST) && GetBattlerSide(battler) == B_SIDE_OPPONENT)
+    {
+        DecompressGhostFrontPic(&party[gBattlerPartyIndexes[battler]], battler);
+        y = GetGhostSpriteDefault_Y(battler);
+    }
+    else
+    {
+        BattleLoadMonSpriteGfx(&party[gBattlerPartyIndexes[battler]], battler);
+        y = GetBattlerSpriteDefault_Y(battler);
+    }
     SetMultiuseSpriteTemplateToPokemon(species, GetBattlerPosition(battler));
 
     gBattlerSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate,
                                                GetBattlerSpriteCoord(battler, BATTLER_COORD_X_2),
-                                               GetBattlerSpriteDefault_Y(battler),
+                                               y,
                                                GetBattlerSpriteSubpriority(battler));
 
     gSprites[gBattlerSpriteIds[battler]].x2 = -DISPLAY_WIDTH;
@@ -2438,7 +2449,8 @@ void BtlController_HandleLoadMonSprite(u32 battler, void (*controllerCallback)(u
     gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = battler;
     StartSpriteAnim(&gSprites[gBattlerSpriteIds[battler]], 0);
 
-    SetBattlerShadowSpriteCallback(battler, species);
+    if (!(gBattleTypeFlags & BATTLE_TYPE_GHOST) && GetBattlerSide(battler) == B_SIDE_OPPONENT)
+        SetBattlerShadowSpriteCallback(battler, species);
 
     gBattlerControllerFuncs[battler] = controllerCallback;
 }
@@ -2487,7 +2499,7 @@ void BtlController_HandleDrawTrainerPic(u32 battler, u32 trainerPicId, bool32 is
                                                    yPos,
                                                    subpriority);
 
-        gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerFrontPicPaletteTable[trainerPicId].tag);
+        gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerSprites[trainerPicId].palette.tag);
         gSprites[gBattlerSpriteIds[battler]].x2 = -DISPLAY_WIDTH;
         gSprites[gBattlerSpriteIds[battler]].sSpeedX = 2;
         gSprites[gBattlerSpriteIds[battler]].oam.affineParam = trainerPicId;
@@ -2505,7 +2517,7 @@ void BtlController_HandleDrawTrainerPic(u32 battler, u32 trainerPicId, bool32 is
                                                              yPos,
                                                              subpriority);
 
-            gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerFrontPicPaletteTable[trainerPicId].tag);
+            gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerSprites[trainerPicId].palette.tag);
             gSprites[gBattlerSpriteIds[battler]].oam.affineMode = ST_OAM_AFFINE_OFF;
             gSprites[gBattlerSpriteIds[battler]].hFlip = 1;
             gSprites[gBattlerSpriteIds[battler]].y2 = 48;
@@ -2539,7 +2551,7 @@ void BtlController_HandleTrainerSlide(u32 battler, u32 trainerPicId)
         SetMultiuseSpriteTemplateToTrainerBack(trainerPicId, GetBattlerPosition(battler));
         gBattlerSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate,
                                                          80,
-                                                         (8 - gTrainerBackPicCoords[trainerPicId].size) * 4 + 80,
+                                                         (8 - gTrainerBacksprites[trainerPicId].coordinates.size) * 4 + 80,
                                                          30);
         gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = battler;
         gSprites[gBattlerSpriteIds[battler]].x2 = -96;
@@ -2551,10 +2563,10 @@ void BtlController_HandleTrainerSlide(u32 battler, u32 trainerPicId)
         SetMultiuseSpriteTemplateToTrainerBack(trainerPicId, GetBattlerPosition(battler));
         gBattlerSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate,
                                                   176,
-                                                  (8 - gTrainerFrontPicCoords[trainerPicId].size) * 4 + 40,
+                                                  (8 - gTrainerSprites[trainerPicId].y_offset) * 4 + 40,
                                                   30);
         gSprites[gBattlerSpriteIds[battler]].oam.affineParam = trainerPicId;
-        gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerFrontPicPaletteTable[trainerPicId].tag);
+        gSprites[gBattlerSpriteIds[battler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerSprites[trainerPicId].palette.tag);
         gSprites[gBattlerSpriteIds[battler]].x2 = 96;
         gSprites[gBattlerSpriteIds[battler]].x += 32;
         gSprites[gBattlerSpriteIds[battler]].sSpeedX = -2;
@@ -2656,7 +2668,7 @@ void BtlController_HandleMoveAnimation(u32 battler, bool32 updateTvData)
         gWeatherMoveAnim = gBattleResources->bufferA[battler][12] | (gBattleResources->bufferA[battler][13] << 8);
         gAnimDisableStructPtr = (struct DisableStruct *)&gBattleResources->bufferA[battler][16];
         gTransformedPersonalities[battler] = gAnimDisableStructPtr->transformedMonPersonality;
-        gTransformedOtIds[battler] = gAnimDisableStructPtr->transformedMonOtId;
+        gTransformedShininess[battler] = gAnimDisableStructPtr->transformedMonShininess;
         gBattleSpritesDataPtr->healthBoxesData[battler].animationState = 0;
         gBattlerControllerFuncs[battler] = Controller_DoMoveAnimation;
         if (updateTvData)
@@ -3043,6 +3055,8 @@ void BtlController_HandleBattleAnimation(u32 battler, bool32 ignoreSE, bool32 up
     {
         u8 animationId = gBattleResources->bufferA[battler][1];
         u16 argument = gBattleResources->bufferA[battler][2] | (gBattleResources->bufferA[battler][3] << 8);
+
+        gAnimDisableStructPtr = (struct DisableStruct *)&gBattleResources->bufferA[battler][4];
 
         if (TryHandleLaunchBattleTableAnimation(battler, battler, battler, animationId, argument))
             BattleControllerComplete(battler);

@@ -1,9 +1,11 @@
 #include "global.h"
+#include "debug.h"
 #include "malloc.h"
 #include "battle.h"
 #include "battle_tower.h"
 #include "cable_club.h"
 #include "data.h"
+#include "daycare.h"
 #include "decoration.h"
 #include "diploma.h"
 #include "event_data.h"
@@ -22,6 +24,7 @@
 #include "item_icon.h"
 #include "item_menu.h"
 #include "link.h"
+#include "load_save.h"
 #include "list_menu.h"
 #include "main.h"
 #include "mystery_gift.h"
@@ -88,7 +91,7 @@ static EWRAM_DATA u8 sTutorMoveAndElevatorWindowId = 0;
 static EWRAM_DATA u16 sLilycoveDeptStore_NeverRead = 0;
 static EWRAM_DATA u16 sLilycoveDeptStore_DefaultFloorChoice = 0;
 static EWRAM_DATA struct ListMenuItem *sScrollableMultichoice_ListMenuItem = NULL;
-static EWRAM_DATA u16 sScrollableMultichoice_ScrollOffset = 0;
+
 static EWRAM_DATA u16 sFrontierExchangeCorner_NeverRead = 0;
 static EWRAM_DATA u8 sScrollableMultichoice_ItemSpriteId = 0;
 static EWRAM_DATA u8 sBattlePointsWindowId = 0;
@@ -97,8 +100,7 @@ static EWRAM_DATA u8 sPCBoxToSendMon = 0;
 static EWRAM_DATA u32 sBattleTowerMultiBattleTypeFlags = 0;
 
 struct ListMenuTemplate gScrollableMultichoice_ListMenuTemplate;
-
-extern struct Evolution gEvolutionTable[][EVOS_PER_MON];
+EWRAM_DATA u16 gScrollableMultichoice_ScrollOffset = 0;
 
 void TryLoseFansFromPlayTime(void);
 void SetPlayerGotFirstFans(void);
@@ -2950,7 +2952,7 @@ static void Task_ShowScrollableMultichoice(u8 taskId)
     struct Task *task = &gTasks[taskId];
 
     LockPlayerFieldControls();
-    sScrollableMultichoice_ScrollOffset = 0;
+    gScrollableMultichoice_ScrollOffset = 0;
     sScrollableMultichoice_ItemSpriteId = MAX_SPRITES;
     FillFrontierExchangeCornerWindowAndItemIcon(task->tScrollMultiId, 0);
     ShowBattleFrontierTutorWindow(task->tScrollMultiId, 0);
@@ -3024,7 +3026,7 @@ static void ScrollableMultichoice_MoveCursor(s32 itemIndex, bool8 onInit, struct
         u16 selection;
         struct Task *task = &gTasks[taskId];
         ListMenuGetScrollAndRow(task->tListTaskId, &selection, NULL);
-        sScrollableMultichoice_ScrollOffset = selection;
+        gScrollableMultichoice_ScrollOffset = selection;
         ListMenuGetCurrentItemArrayId(task->tListTaskId, &selection);
         HideFrontierExchangeCornerItemIcon(task->tScrollMultiId, sFrontierExchangeCorner_NeverRead);
         FillFrontierExchangeCornerWindowAndItemIcon(task->tScrollMultiId, selection);
@@ -3145,7 +3147,7 @@ static void ScrollableMultichoice_UpdateScrollArrows(u8 taskId)
         template.secondY = task->tHeight * 8 + 10;
         template.fullyUpThreshold = 0;
         template.fullyDownThreshold = task->tNumItems - task->tMaxItemsOnScreen;
-        task->tScrollArrowId = AddScrollIndicatorArrowPair(&template, &sScrollableMultichoice_ScrollOffset);
+        task->tScrollArrowId = AddScrollIndicatorArrowPair(&template, &gScrollableMultichoice_ScrollOffset);
     }
 }
 
@@ -5206,7 +5208,7 @@ void IncreaseChosenMonEVs(void)
 {
     u8 statToChange = gSpecialVar_0x8005;
     u8 increment = gSpecialVar_0x8006;
-    u8 oldEV;
+    u8 oldEV = 0;
     u8 newEV;
 
     // Get the number of EVs currently in the chosen stat
@@ -5301,7 +5303,7 @@ bool8 HasMightyMagikarp(void)
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_MAGIKARP
-            && GetMonData(&gPlayerParty[i], MON_DATA_LEVEL) >= gEvolutionTable[SPECIES_MAGIKARP][0].param)
+            && IsMonPastEvolutionLevel(&gPlayerParty[i]))
         {
             return TRUE;
         }
@@ -5461,7 +5463,7 @@ void ChangeMonSpecies (void)
 // Takes a Rotom form as input and returns its special move
 u16 RotomFormToMove (u16 species)
 {
-    u16 move;
+    u16 move = MOVE_NONE;
 
     switch (species)
     {
@@ -5505,7 +5507,7 @@ void GetRotomState (void)
 // Returns TRUE if the moove was forgotten, false if not
 void RotomForgetSpecialMove (void)
 {
-    u8 i, forgotSpecialMove = 0;
+    u8 i;//, forgotSpecialMove = 0;
     u16 currentMove;
     u16 moveNone = MOVE_NONE;
 
@@ -5517,7 +5519,7 @@ void RotomForgetSpecialMove (void)
         {
             RemoveMonPPBonus(&gPlayerParty[gSpecialVar_0x8004], i);
             SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_MOVE1 + i, &moveNone);
-            forgotSpecialMove = TRUE;
+            //forgotSpecialMove = TRUE;
             break;
         }
     }
@@ -5554,8 +5556,8 @@ u8 CountRotomInParty (void)
     
     for (i = 0; i < partyCount; i++)
     {
-        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
-        if (gSpeciesToNationalPokedexNum[species - 1] == SPECIES_ROTOM)
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG, NULL);
+        if (GET_BASE_SPECIES_ID(species) == SPECIES_ROTOM)
         {
             gSpecialVar_0x8004 = i;
             rotomCount++;
@@ -5651,7 +5653,7 @@ void BufferChosenMonNature (void)
 {
     u8 nature = 0;
 
-    nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE);
+    nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HIDDEN_NATURE);
     StringCopy (gStringVar2, gNatureNamePointers[nature]);
 }
 
@@ -5663,8 +5665,14 @@ void ChangePokemonNature (void)
     u8 newNature = 0;
 
     newNature = (gSpecialVar_0x8005 * (NUM_STATS - 1)) + gSpecialVar_0x8006;
-	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_NATURE, &newNature);
+	SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HIDDEN_NATURE, &newNature);
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
+}
+
+// Checks if Pokeball pocket is empty, to be called in scripts via "specialvar VAR_RESULT, IsPokeballPocketEmpty"
+bool8 IsPokeballPocketEmpty(void)
+{
+    return !IsBagPocketNonEmpty(POCKET_POKE_BALLS);
 }
 
 void SetFollowerPokemonOption(void)
@@ -5673,4 +5681,67 @@ void SetFollowerPokemonOption(void)
 
     if (!gSaveBlock2Ptr->optionsShowFollowerPokemon)
         RemoveFollowingPokemon();
+}
+
+u16 GetSpeciesForRandomEgg(void)
+{
+    u16 species = SPECIES_NONE;
+
+    do
+    {
+        species = (Random() % FORMS_START) + 1;
+    } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
+
+    return GetEggSpecies(species);
+}
+
+void IncrementAdoptionSpecials(void)
+{
+    VarSet(VAR_DAYCARE_ADOPTION_SPECIALS, (VarGet(VAR_DAYCARE_ADOPTION_SPECIALS + 1) % 50));
+    if (VarGet(VAR_DAYCARE_ADOPTION_SPECIALS) == 0)
+        VarSet(VAR_DAYCARE_ADOPTION_SPECIALS, 1);
+}
+
+void TrySkyBattle(void)
+{
+    int i;
+
+    if (B_VAR_SKY_BATTLE == 0 || B_FLAG_SKY_BATTLE == 0)
+    {
+        LockPlayerFieldControls();
+        ScriptContext_SetupScript(Debug_FlagsAndVarNotSetBattleConfigMessage);
+        return;
+    }
+    for (i = 0; i < CalculatePlayerPartyCount(); i++)
+    {
+        struct Pokemon* pokemon = &gPlayerParty[i];
+        if (CanMonParticipateInSkyBattle(pokemon) && GetMonData(pokemon, MON_DATA_HP, NULL) > 0)
+        {
+            PreparePartyForSkyBattle();
+            gSpecialVar_Result = TRUE;
+            return;
+        }
+    }
+    gSpecialVar_Result = FALSE;
+}
+
+void PreparePartyForSkyBattle(void)
+{
+    int i, participatingPokemonSlot = 0;
+    u8 partyCount = CalculatePlayerPartyCount();
+
+    FlagSet(B_FLAG_SKY_BATTLE);
+    SavePlayerParty();
+
+    for (i = 0; i < partyCount; i++)
+    {
+        struct Pokemon* pokemon = &gPlayerParty[i];
+
+        if (CanMonParticipateInSkyBattle(pokemon))
+            participatingPokemonSlot += 1 << i;
+        else
+            ZeroMonData(pokemon);
+    }
+    VarSet(B_VAR_SKY_BATTLE,participatingPokemonSlot);
+    CompactPartySlots();
 }

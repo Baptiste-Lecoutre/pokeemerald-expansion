@@ -205,6 +205,12 @@ BattleScript_RaidBallBlock::
 	waitmessage B_WAIT_TIME_LONG
 	finishaction
 
+BattleScript_GhostBallDodge::
+	waitmessage B_WAIT_TIME_LONG
+	printstring STRINGID_ITDODGEDBALL
+	waitmessage B_WAIT_TIME_LONG
+	finishaction
+
 BattleScript_RunByUsingItem::
     playse SE_FLEE
     setbyte gBattleOutcome, B_OUTCOME_RAN

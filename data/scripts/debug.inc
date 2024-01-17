@@ -121,7 +121,7 @@ Debug_EventScript_Script_4::
 
 Debug_EventScript_Script_5::
 	lockall
-	preparefixedraid 0, 5, SPECIES_SALAMENCE, 30
+	preparefixedraid 2, 7, SPECIES_SALAMENCE, 90, ITEM_SALAMENCITE
 	special InitRaidIntro
 	waitstate
 	goto_if_eq VAR_RESULT, TRUE, Debug_DoFixedRaid
@@ -249,4 +249,36 @@ Debug_ShowExpansionVersion::
 Debug_ExpansionVersion:
 	.string "pokeemerald-expansion {STR_VAR_1}$"
 
+Debug_BerryPestsDisabled::
+	msgbox DebugText_BerryPestsDisabled, MSGBOX_DEFAULT
+	release
+	end
+
+DebugText_BerryPestsDisabled:
+	.string "OW_BERRY_PESTS is disabled.\n"
+	.string "Unable to force pests onto berry trees.$"
+
+Debug_BerryWeedsDisabled::
+	msgbox DebugText_BerryWeedsDisabled, MSGBOX_DEFAULT
+	release
+	end
+
+DebugText_BerryWeedsDisabled:
+	.string "OW_BERRY_WEEDS is disabled.\n"
+	.string "Unable to force weeds onto berry trees.$"
+
 .endif
+
+Debug_FlagsAndVarNotSetBattleConfigMessage::
+	lockall
+	message Debug_FlagsAndVarNotSetBattleConfigMessage_Text
+	waitmessage
+	waitbuttonpress
+	releaseall
+	end
+
+Debug_FlagsAndVarNotSetBattleConfigMessage_Text:
+	.string "Feature unavailable! Please define a\n"
+	.string "usable flag and a usable var in:\l"
+	.string "'include/config/battle.h'!$"
+
