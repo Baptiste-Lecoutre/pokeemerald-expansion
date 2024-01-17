@@ -1533,7 +1533,7 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
             u8 partyId = GetPartyIdFromBattleSlot((u8)*slotPtr);
             if (GetMonData(&gPlayerParty[*slotPtr], MON_DATA_HP) > 0
                 || GetMonData(&gPlayerParty[*slotPtr], MON_DATA_SPECIES_OR_EGG) == SPECIES_EGG
-                || ((gBattleTypeFlags & BATTLE_TYPE_MULTI) && partyId >= (PARTY_SIZE / 2)))
+                || ((gBattleTypeFlags & BATTLE_TYPE_MULTI) && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && partyId >= (PARTY_SIZE / 2)))
             {
                 // Can't select if egg, alive, or doesn't belong to you
                 PlaySE(SE_FAILURE);
@@ -2818,7 +2818,7 @@ void DisplayPartyMenuStdMessage(u32 stringId)
 
         if (stringId == PARTY_MSG_CHOOSE_MON)
         {
-            u8 enemyNextMonID = *(gBattleStruct->monToSwitchIntoId + B_SIDE_OPPONENT);
+            u8 enemyNextMonID = *(gBattleStruct->monToSwitchIntoId + B_POSITION_OPPONENT_LEFT);
             u16 species = GetMonData(&gEnemyParty[enemyNextMonID], MON_DATA_SPECIES);
             if (sPartyMenuInternal->chooseHalf)
                 stringId = PARTY_MSG_CHOOSE_MON_AND_CONFIRM;
@@ -2827,11 +2827,11 @@ void DisplayPartyMenuStdMessage(u32 stringId)
             else if (gMain.inBattle)
             {
                 // Checks if the opponent is sending out a new pokemon.
-                if (species >= NUM_SPECIES ||  species == SPECIES_NONE)
+                if (species >= NUM_SPECIES ||  species == SPECIES_NONE || enemyNextMonID >= PARTY_SIZE)
                 {
-                    species = gBattleMons[B_SIDE_OPPONENT].species;
+                    species = gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species;
                     // Now tries to check if there's any opposing pokemon on the field
-                    if (species >= NUM_SPECIES ||  species == SPECIES_NONE || gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+                    if (species >= NUM_SPECIES ||  species == SPECIES_NONE || gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_MULTI)) // remove last condition to have the message in double battles
                         stringId = PARTY_MSG_CHOOSE_MON_2;  // No species on the other side, show the default text.
                 }
                 if (stringId == PARTY_MSG_CHOOSE_MON)
@@ -7398,9 +7398,9 @@ void ChooseMonForWirelessMinigame(void)
 
 static u8 GetPartyLayoutFromBattleType(void)
 {
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
         return PARTY_LAYOUT_MULTI;
-    if (!IsDoubleBattle() || gPlayerPartyCount == 1) // Draw the single layout in a double battle where the player has only one pokemon.
+    if (!IsDoubleBattle() || gPlayerPartyCount == 1 || (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)) // Draw the single layout in a double battle where the player has only one pokemon.
         return PARTY_LAYOUT_SINGLE;
     return PARTY_LAYOUT_DOUBLE;
 }
@@ -7437,8 +7437,8 @@ static bool8 TrySwitchInPokemon(void)
     u8 newSlot;
     u8 i;
 
-    // In a multi battle, slots 1, 4, and 5 are the partner's Pokémon
-    if (IsMultiBattle() == TRUE && (slot == 1 || slot == 4 || slot == 5))
+    // In a multi battle, slots 1, 4, and 5 are the partner's pokemon
+    if (IsMultiBattle() == TRUE && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && (slot == 1 || slot == 4 || slot == 5))
     {
         StringCopy(gStringVar1, GetTrainerPartnerName());
         StringExpandPlaceholders(gStringVar4, gText_CantSwitchWithAlly);
@@ -7500,7 +7500,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
     u8 partyIds[PARTY_SIZE];
     int i, j;
 
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE  && !(gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
     {
         // Party ids are packed in 4 bits at a time
         // i.e. the party id order below would be 0, 3, 5, 4, 2, 1, and the two parties would be 0,5,4 and 3,2,1
@@ -7518,7 +7518,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
         }
         return;
     }
-    else if (IsDoubleBattle() == FALSE)
+    else /*if (IsDoubleBattle() == FALSE)*/
     {
         j = 1;
         partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
@@ -7531,7 +7531,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
             }
         }
     }
-    else
+    /*else
     {
         j = 2;
         partyIds[0] = gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)];
@@ -7544,7 +7544,7 @@ static void BufferBattlePartyOrder(u8 *partyBattleOrder, u8 flankId)
                 j++;
             }
         }
-    }
+    }*/
     for (i = 0; i < (int)ARRAY_COUNT(gBattlePartyCurrentOrder); i++)
         partyBattleOrder[i] = (partyIds[0 + (i * 2)] << 4) | partyIds[1 + (i * 2)];
 }
@@ -7573,21 +7573,89 @@ static void BufferBattlePartyOrderBySide(u8 *partyBattleOrder, u8 flankId, u8 ba
         rightBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
     }
 
-    if (IsMultiBattle() == TRUE)
+    if (IsMultiBattle() == TRUE) //
     {
-        if (flankId != 0)
+        if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT && (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
         {
-            partyBattleOrder[0] = 0 | (3 << 4);
-            partyBattleOrder[1] = 5 | (4 << 4);
-            partyBattleOrder[2] = 2 | (1 << 4);
+            j = 1;
+            partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
+            for (i = 0; i < PARTY_SIZE; i++)
+            {
+                if (i != partyIndexes[0])
+                {
+                    partyIndexes[j] = i;
+                    j++;
+                }
+            }
         }
         else
         {
-            partyBattleOrder[0] = 3 | (0 << 4);
-            partyBattleOrder[1] = 2 | (1 << 4);
-            partyBattleOrder[2] = 5 | (4 << 4);
+            if (flankId != 0)
+            {
+                partyBattleOrder[0] = 0 | (3 << 4);
+                partyBattleOrder[1] = 5 | (4 << 4);
+                partyBattleOrder[2] = 2 | (1 << 4);
+            }
+            else
+            {
+                partyBattleOrder[0] = 3 | (0 << 4);
+                partyBattleOrder[1] = 2 | (1 << 4);
+                partyBattleOrder[2] = 5 | (4 << 4);
+            }
+            return;
         }
-        return;
+    }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_RIGHT && (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[rightBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
+    }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT && (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
+    }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_RIGHT && (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[rightBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
+    }
+    else if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT && (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
+    {
+        j = 1;
+        partyIndexes[0] = gBattlerPartyIndexes[leftBattler];
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (i != partyIndexes[0])
+            {
+                partyIndexes[j] = i;
+                j++;
+            }
+        }
     }
     else if (IsDoubleBattle() == FALSE)
     {

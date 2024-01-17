@@ -519,10 +519,10 @@ SootopolisCity_EventScript_RayquazaSceneFromPokeCenter::
 
 SootopolisCity_EventScript_RayquazaFight::
 	msgbox SootopolisCity_Text_HelpRayquaza, MSGBOX_DEFAULT
-	choose_mons
-	call_if_eq VAR_RESULT, 0, SootopolisCity_EventScript_ChooseMons
+@	choose_mons
+@	call_if_eq VAR_RESULT, 0, SootopolisCity_EventScript_ChooseMons
 	setsootopolisbattle SPECIES_KYOGRE, 70, ITEM_NONE, SPECIES_GROUDON, 70, ITEM_NONE
-	multi_sootopolis PARTNER_RAYQUAZA, TRAINER_BACK_PIC_MAY
+	multi_fixed_sootopolis PARTNER_RAYQUAZA, TRAINER_BACK_PIC_MAY
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
 	setflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
 	clearflag FLAG_SOOTOPOLIS_BATTLE

@@ -56,7 +56,7 @@ static void OpponentHandleIntroTrainerBallThrow(u32 battler);
 static void OpponentHandleDrawPartyStatusSummary(u32 battler);
 static void OpponentHandleBattleAnimation(u32 battler);
 static void OpponentHandleEndLinkBattle(u32 battler);
-static u8 CountAIAliveNonEggMonsExcept(u8 slotToIgnore);
+static u8 CountAIAliveNonEggMonsExcept(u8 slotToIgnore, u32 battler);
 
 static void OpponentBufferRunCommand(u32 battler);
 static void OpponentBufferExecCompleted(u32 battler);
@@ -219,11 +219,14 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
     bool32 bgmRestored = FALSE;
     bool32 battlerAnimsDone = FALSE;
     bool32 twoMons;
+    struct Pokemon *party, *partnerParty;
+    party = GetBattlerParty(battler);
+    partnerParty = GetBattlerParty(BATTLE_PARTNER(battler));
 
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim
      && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive
      && !gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim)
-        TryShinyAnimation(battler, &gEnemyParty[gBattlerPartyIndexes[battler]]);
+        TryShinyAnimation(battler, &party[gBattlerPartyIndexes[battler]]);
 
     twoMons = TwoOpponentIntroMons(battler);
     if (!(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
@@ -232,7 +235,7 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
      && !gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].triedShinyMonAnim
      && !gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].ballAnimActive
      && !gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].finishedShinyMonAnim)
-        TryShinyAnimation(BATTLE_PARTNER(battler), &gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]);
+        TryShinyAnimation(BATTLE_PARTNER(battler), &party[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]]);
 
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive && !gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(battler)].ballAnimActive)
     {
@@ -240,11 +243,11 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
         {
             if (twoMons && (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) || BATTLE_TWO_VS_ONE_OPPONENT))
             {
-                UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], HEALTHBOX_ALL);
+                UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battler)], &party[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], HEALTHBOX_ALL);
                 StartHealthboxSlideIn(BATTLE_PARTNER(battler));
                 SetHealthboxSpriteVisible(gHealthboxSpriteIds[BATTLE_PARTNER(battler)]);
             }
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gEnemyParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &party[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
             StartHealthboxSlideIn(battler);
             SetHealthboxSpriteVisible(gHealthboxSpriteIds[battler]);
         }
@@ -294,11 +297,11 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
         if (twoMons && (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) || BATTLE_TWO_VS_ONE_OPPONENT))
         {
             DestroySprite(&gSprites[gBattleControllerData[BATTLE_PARTNER(battler)]]);
-            SetBattlerShadowSpriteCallback(BATTLE_PARTNER(battler), GetMonData(&gEnemyParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], MON_DATA_SPECIES));
+            SetBattlerShadowSpriteCallback(BATTLE_PARTNER(battler), GetMonData(&partnerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battler)]], MON_DATA_SPECIES));
         }
 
         DestroySprite(&gSprites[gBattleControllerData[battler]]);
-        SetBattlerShadowSpriteCallback(battler, GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES));
+        SetBattlerShadowSpriteCallback(battler, GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES));
         gBattleSpritesDataPtr->animationData->introAnimActive = FALSE;
         gBattleSpritesDataPtr->healthBoxesData[battler].bgmRestored = FALSE;
         gBattleSpritesDataPtr->healthBoxesData[battler].healthboxSlideInStarted = FALSE;
@@ -309,10 +312,12 @@ static void Intro_TryShinyAnimShowHealthbox(u32 battler)
 
 static void TryShinyAnimAfterMonAnim(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
+
     if (gSprites[gBattlerSpriteIds[battler]].x2 == 0
         && !gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim
         && !gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim)
-        TryShinyAnimation(battler, &gEnemyParty[gBattlerPartyIndexes[battler]]);
+        TryShinyAnimation(battler, &party[gBattlerPartyIndexes[battler]]);
 
     if (gSprites[gBattlerSpriteIds[battler]].callback == SpriteCallbackDummy
      && gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim)
@@ -353,12 +358,14 @@ static void SwitchIn_ShowHealthbox(u32 battler)
     if (gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim
      && gSprites[gBattlerSpriteIds[battler]].callback == SpriteCallbackDummy)
     {
+        struct Pokemon *party = GetBattlerParty(battler);
+
         gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim = FALSE;
         gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim = FALSE;
         FreeSpriteTilesByTag(ANIM_TAG_GOLD_STARS);
         FreeSpritePaletteByTag(ANIM_TAG_GOLD_STARS);
         StartSpriteAnim(&gSprites[gBattlerSpriteIds[battler]], 0);
-        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gEnemyParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
+        UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &party[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
         StartHealthboxSlideIn(battler);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[battler]);
         CopyBattleSpriteInvisibility(battler);
@@ -368,15 +375,17 @@ static void SwitchIn_ShowHealthbox(u32 battler)
 
 static void SwitchIn_TryShinyAnim(u32 battler)
 {
+    struct Pokemon *party = GetBattlerParty(battler);
+
     if (!gBattleSpritesDataPtr->healthBoxesData[battler].triedShinyMonAnim
      && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive)
-        TryShinyAnimation(battler, &gEnemyParty[gBattlerPartyIndexes[battler]]);
+        TryShinyAnimation(battler, &party[gBattlerPartyIndexes[battler]]);
 
     if (gSprites[gBattleControllerData[battler]].callback == SpriteCallbackDummy
      && !gBattleSpritesDataPtr->healthBoxesData[battler].ballAnimActive)
     {
         DestroySprite(&gSprites[gBattleControllerData[battler]]);
-        SetBattlerShadowSpriteCallback(battler, GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES));
+        SetBattlerShadowSpriteCallback(battler, GetMonData(&party[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES));
         gBattlerControllerFuncs[battler] = SwitchIn_ShowHealthbox;
     }
 }
@@ -567,7 +576,7 @@ static void OpponentHandleChooseMove(u32 battler)
                     else if (CanUltraBurst(battler))
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_ULTRA_BURST) | (gBattlerTarget << 8));
                     // If opponent can Dynamax and is on final Pokemon, do it.
-                    else if (CanDynamax(battler) && CountAIAliveNonEggMonsExcept(gBattlerPartyIndexes[battler]) == 0)
+                    else if (CanDynamax(battler) && CountAIAliveNonEggMonsExcept(gBattlerPartyIndexes[battler], battler) == 0)
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_DYNAMAX) | (gBattlerTarget << 8));
                     else
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (gBattlerTarget << 8));
@@ -647,6 +656,7 @@ static void OpponentHandleChoosePokemon(u32 battler)
 {
     s32 chosenMonId;
     s32 pokemonInBattle = 1;
+    struct Pokemon *party = GetBattlerParty(battler);
 
     // Choosing Revival Blessing target
     if ((gBattleResources->bufferA[battler][1] & 0xF) == PARTY_ACTION_CHOOSE_FAINTED_MON)
@@ -665,6 +675,10 @@ static void OpponentHandleChoosePokemon(u32 battler)
             {
                 battler2 = battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             }
+            else if (gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS)) // & opponent side?
+            {
+                battler2 = battler1 = battler;
+            }
             else
             {
                 battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
@@ -676,12 +690,13 @@ static void OpponentHandleChoosePokemon(u32 battler)
 
             for (chosenMonId = (lastId-1); chosenMonId >= firstId; chosenMonId--)
             {
-                if (IsValidForBattle(&gEnemyParty[chosenMonId])
+                if (IsValidForBattle(&party[chosenMonId])
                     && chosenMonId != gBattlerPartyIndexes[battler1]
                     && chosenMonId != gBattlerPartyIndexes[battler2]
                     && (!(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ACE_POKEMON)
-                        || chosenMonId != CalculateEnemyPartyCount() - 1
-                        || CountAIAliveNonEggMonsExcept(PARTY_SIZE) == pokemonInBattle))
+                        || (chosenMonId != CalculateEnemyPartyCount() - 1 && GetBattlerPosition(battler) == B_POSITION_OPPONENT_LEFT)
+                        || (chosenMonId != CalculateEnemy2PartyCount() - 1 && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+                        || CountAIAliveNonEggMonsExcept(PARTY_SIZE, battler) == pokemonInBattle))
                 {
                     break;
                 }
@@ -703,14 +718,15 @@ static void OpponentHandleChoosePokemon(u32 battler)
 
 }
 
-static u8 CountAIAliveNonEggMonsExcept(u8 slotToIgnore)
+static u8 CountAIAliveNonEggMonsExcept(u8 slotToIgnore, u32 battler)
 {
     u16 i, count;
+    struct Pokemon *party = GetBattlerParty(battler);
 
     for (i = 0, count = 0; i < PARTY_SIZE; i++)
     {
         if (i != slotToIgnore
-            && IsValidForBattle(&gEnemyParty[i]))
+            && IsValidForBattle(&party[i]))
         {
             count++;
         }

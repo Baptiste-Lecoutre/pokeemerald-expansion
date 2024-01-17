@@ -366,3 +366,25 @@ A Discord-based ROM hacking community that has many members who hack using the d
     - bag sprites
     - make magma bright during the night -> change the DNS from Merpp to Sierra? 
     - dexnav interface
+
+
+
+Regarder les occurences de 
+- Cmd_forcerandomswitch
+- SwitchPartyOrder
+x MULTI_PARTY_SIZE
+- Task_LaunchLvlUpAnim -> des partner trainent dedans, voir si c'est pas ça qui bousille l'xp
+- GetPartyIdFromBattlePartyId
+- SetMultiPartnerMenuParty
+- NUM_BATTLE_SIDES
+- Ai_InitPartyStruct
+- gPlayerPartyCount et assimilés
+
+x battleBondTransformed
+x allowedToChangeFormInWeather
+x knockedOffMons
+x usedHeldItems
+x hpOnSwitchout
+
+Terminer des remplacements de 
+- gPlayerParty

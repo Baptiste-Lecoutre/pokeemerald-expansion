@@ -3555,6 +3555,7 @@ extern const u8 gText_BlastBurn[];
 extern const u8 gText_HydroCannon[];
 
 extern const u8 gText_TeamPreviewSingleDoubleText[];
+extern const u8 gText_TeamPreviewSingleDoubleText2[];
 extern const u8 gText_TeamPreviewMultiText[];
 extern const u8 gText_TeamPreviewMultiLinkText[];
 extern const u8 gText_TeamPreviewSingleDoubleLinkText[];

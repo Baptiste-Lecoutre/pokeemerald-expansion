@@ -39,9 +39,9 @@ static void InitializeSwitchinCandidate(struct Pokemon *mon)
 static bool32 IsAceMon(u32 battler, u32 monPartyId)
 {
     if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_ACE_POKEMON
-            && !(gBattleStruct->forcedSwitch & gBitTable[battler])
-            && monPartyId == CalculateEnemyPartyCount()-1)
-        return TRUE;
+        && !(gBattleStruct->forcedSwitch & gBitTable[battler])
+        && ((GetBattlerPosition(battler) == B_POSITION_OPPONENT_LEFT && monPartyId == CalculateEnemyPartyCount()-1) || (GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT && monPartyId == CalculateEnemy2PartyCount()-1)))
+            return TRUE;
     return FALSE;
 }
 
@@ -51,7 +51,7 @@ void GetAIPartyIndexes(u32 battler, s32 *firstId, s32 *lastId)
     {
         *firstId = 0, *lastId = PARTY_SIZE;
     }
-    else if (gBattleTypeFlags & (BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_TOWER_LINK_MULTI))
+    else if (gBattleTypeFlags & (/*BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_INGAME_PARTNER |*/ BATTLE_TYPE_TOWER_LINK_MULTI))
     {
         if ((battler & BIT_FLANK) == B_FLANK_LEFT)
             *firstId = 0, *lastId = PARTY_SIZE / 2;
@@ -263,10 +263,7 @@ static bool32 ShouldSwitchIfWonderGuard(u32 battler, bool32 emitResult)
     // Get party information.
     GetAIPartyIndexes(battler, &firstId, &lastId);
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(battler);
 
     // Find a Pokémon in the party that has a super effective move.
     for (i = firstId; i < lastId; i++)
@@ -370,10 +367,7 @@ static bool32 FindMonThatAbsorbsOpponentsMove(u32 battler, bool32 emitResult)
 
     GetAIPartyIndexes(battler, &firstId, &lastId);
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(battler);
 
     for (i = firstId; i < lastId; i++)
     {
@@ -735,10 +729,7 @@ static bool32 FindMonWithFlagsAndSuperEffective(u32 battler, u16 flags, u32 modu
 
     GetAIPartyIndexes(battler, &firstId, &lastId);
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(battler);
 
     for (i = firstId; i < lastId; i++)
     {
@@ -969,10 +960,7 @@ bool32 ShouldSwitch(u32 battler, bool32 emitResult)
 
     GetAIPartyIndexes(battler, &firstId, &lastId);
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(battler);
 
     for (i = firstId; i < lastId; i++)
     {
@@ -1052,10 +1040,7 @@ void AI_TrySwitchOrUseItem(u32 battler)
     s32 lastId; // + 1
     u8 battlerPosition = GetBattlerPosition(battler);
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(battler);
 
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
@@ -1932,10 +1917,7 @@ u8 GetMostSuitableMonToSwitchInto(u32 battler, bool32 switchAfterMonKOd)
 
     GetAIPartyIndexes(battler, &firstId, &lastId);
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(battler);
 
     // Split ideal mon decision between after previous mon KO'd (prioritize offensive options) and after switching active mon out (prioritize defensive options), and expand the scope of both.
     // Only use better mon selection if AI_FLAG_SMART_MON_CHOICES is set for the trainer.
@@ -2030,10 +2012,7 @@ static bool32 ShouldUseItem(u32 battler)
     if (AiExpectsToFaintPlayer(battler))
         return FALSE;
 
-    if (GetBattlerSide(battler) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    party = GetBattlerParty(battler);
 
     for (i = 0; i < PARTY_SIZE; i++)
     {

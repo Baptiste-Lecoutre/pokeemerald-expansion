@@ -47,3 +47,7 @@ RustboroCity_PokemonCenter_1F_Text_HMCutNextDoor:
 	.string "I used it to teach my Pokémon how to\n"
 	.string "Cut down skinny trees.$"
 
+RustboroCity_PokemonCenter_1F_EventScript_Test_ingame_partner::
+	multi_fixed_2_vs_2 TRAINER_ROSE_1, Route118_Text_RoseDefeat, TRAINER_DEANDRE, Route118_Text_DeandreDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	releaseall
+	end

@@ -176,7 +176,7 @@ void RecordKnownMove(u32 battlerId, u32 move)
         if (BATTLE_HISTORY->usedMoves[battlerId][i] == MOVE_NONE)
         {
             BATTLE_HISTORY->usedMoves[battlerId][i] = move;
-            AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].moves[i] = move;
+            AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].moves[i] = move;
             break;
         }
     }
@@ -190,7 +190,7 @@ void RecordAllMoves(u32 battler)
 void RecordAbilityBattle(u32 battlerId, u32 abilityId)
 {
     BATTLE_HISTORY->abilities[battlerId] = abilityId;
-    AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].ability = abilityId;
+    AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability = abilityId;
 }
 
 void ClearBattlerAbilityHistory(u32 battlerId)
@@ -201,7 +201,7 @@ void ClearBattlerAbilityHistory(u32 battlerId)
 void RecordItemEffectBattle(u32 battlerId, u32 itemEffect)
 {
     BATTLE_HISTORY->itemEffects[battlerId] = itemEffect;
-    AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].heldEffect = itemEffect;
+    AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].heldEffect = itemEffect;
 }
 
 void ClearBattlerItemEffectHistory(u32 battlerId)
@@ -285,8 +285,8 @@ void SetBattlerData(u32 battlerId)
         }
 
         // Use the known battler's ability.
-        if (AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
-            gBattleMons[battlerId].ability = AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].ability;
+        if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
+            gBattleMons[battlerId].ability = AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability;
         // Check if mon can only have one ability.
         else if (gSpeciesInfo[species].abilities[1] == ABILITY_NONE
                 || gSpeciesInfo[species].abilities[1] == gSpeciesInfo[species].abilities[0])
@@ -295,12 +295,12 @@ void SetBattlerData(u32 battlerId)
         else
             gBattleMons[battlerId].ability = ABILITY_NONE;
 
-        if (AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].heldEffect == 0)
+        if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].heldEffect == 0)
             gBattleMons[battlerId].item = 0;
 
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
-            if (AI_PARTY->mons[side][gBattlerPartyIndexes[battlerId]].moves[i] == 0)
+            if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].moves[i] == 0)
                 gBattleMons[battlerId].moves[i] = 0;
         }
     }
@@ -1003,8 +1003,8 @@ s32 AI_DecideKnownAbilityForTurn(u32 battlerId)
     if (knownAbility == ABILITY_NONE)
         return knownAbility;
 
-    if (AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
-        return AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].ability;
+    if (AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability != ABILITY_NONE)
+        return AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].ability;
 
     // Abilities that prevent fleeing - treat as always known
     if (knownAbility == ABILITY_SHADOW_TAG || knownAbility == ABILITY_MAGNET_PULL || knownAbility == ABILITY_ARENA_TRAP)
@@ -1030,7 +1030,7 @@ u32 AI_DecideHoldEffectForTurn(u32 battlerId)
     u32 holdEffect;
 
     if (!IsAiBattlerAware(battlerId))
-        holdEffect = AI_PARTY->mons[GetBattlerSide(battlerId)][gBattlerPartyIndexes[battlerId]].heldEffect;
+        holdEffect = AI_PARTY->mons[battlerId][gBattlerPartyIndexes[battlerId]].heldEffect;
     else
         holdEffect = GetBattlerHoldEffect(battlerId, FALSE);
 
@@ -2224,11 +2224,8 @@ static bool32 AnyUsefulStatIsRaised(u32 battler)
 
 struct Pokemon *GetPartyBattlerPartyData(u32 battlerId, u32 switchBattler)
 {
-    struct Pokemon *mon;
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        mon = &gPlayerParty[switchBattler];
-    else
-        mon = &gEnemyParty[switchBattler];
+    struct Pokemon *mon, *party = GetBattlerParty(battlerId);
+    mon = &party[switchBattler];
     return mon;
 }
 
@@ -2754,13 +2751,8 @@ bool32 IsWakeupTurn(u32 battler)
 
 bool32 AnyPartyMemberStatused(u32 battlerId, bool32 checkSoundproof)
 {
-    struct Pokemon *party;
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u32 i;
-
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -3013,16 +3005,11 @@ bool32 ShouldUseWishAromatherapy(u32 battlerAtk, u32 battlerDef, u32 move)
 {
     u32 i;
     s32 firstId, lastId;
-    struct Pokemon* party;
+    struct Pokemon* party = GetBattlerParty(battlerAtk);
     bool32 hasStatus = FALSE;
     bool32 needHealing = FALSE;
 
     GetAIPartyIndexes(battlerAtk, &firstId, &lastId);
-
-    if (GetBattlerSide(battlerAtk) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
 
     if (CountUsablePartyMons(battlerAtk) == 0
       && (CanTargetFaintAi(battlerDef, battlerAtk) || BattlerWillFaintFromSecondaryDamage(battlerAtk, AI_DATA->abilities[battlerAtk])))
@@ -3110,12 +3097,7 @@ s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct Battl
 s32 CountUsablePartyMons(u32 battlerId)
 {
     s32 battlerOnField1, battlerOnField2, i, ret;
-    struct Pokemon *party;
-
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
+    struct Pokemon *party = GetBattlerParty(battlerId);
 
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
     {
@@ -3145,13 +3127,8 @@ s32 CountUsablePartyMons(u32 battlerId)
 
 bool32 IsPartyFullyHealedExceptBattler(u32 battlerId)
 {
-    struct Pokemon *party;
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u32 i;
-
-    if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
-        party = gPlayerParty;
-    else
-        party = gEnemyParty;
 
     for (i = 0; i < PARTY_SIZE; i++)
     {

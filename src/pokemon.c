@@ -82,8 +82,12 @@ void TrySpecialOverworldEvo();
 EWRAM_DATA static u8 sLearningMoveTableID = 0;
 EWRAM_DATA u8 gPlayerPartyCount = 0;
 EWRAM_DATA u8 gEnemyPartyCount = 0;
+EWRAM_DATA u8 gPlayerPartnerPartyCount = 0;
+EWRAM_DATA u8 gEnemy2PartyCount = 0;
 EWRAM_DATA struct Pokemon gPlayerParty[PARTY_SIZE] = {0};
 EWRAM_DATA struct Pokemon gEnemyParty[PARTY_SIZE] = {0};
+EWRAM_DATA struct Pokemon gPlayerPartnerParty[PARTY_SIZE] = {0};
+EWRAM_DATA struct Pokemon gEnemy2Party[PARTY_SIZE] = {0};
 EWRAM_DATA struct SpriteTemplate gMultiuseSpriteTemplate = {0};
 EWRAM_DATA static struct MonSpritesGfxManager *sMonSpritesGfxManagers[MON_SPR_GFX_MANAGERS_COUNT] = {NULL};
 EWRAM_DATA static u8 sTriedEvolving = 0;
@@ -98,6 +102,14 @@ struct CombinedMove
     u16 move1;
     u16 move2;
     u16 newMove;
+};
+
+EWRAM_DATA struct Pokemon *gTrainerPartyArray[] = 
+{
+    gPlayerParty,
+    gEnemyParty,
+    gPlayerPartnerParty,
+    gEnemy2Party
 };
 
 static const struct CombinedMove sCombinedMoves[2] =
@@ -869,18 +881,29 @@ void ZeroMonData(struct Pokemon *mon)
     SetMonData(mon, MON_DATA_MAIL, &arg);
 }
 
+struct Pokemon *GetBattlerPartyData(u8 position)
+{
+    return gTrainerPartyArray[position];
+}
+
 void ZeroPlayerPartyMons(void)
 {
     s32 i;
     for (i = 0; i < PARTY_SIZE; i++)
+    {    
         ZeroMonData(&gPlayerParty[i]);
+        ZeroMonData(&gPlayerPartnerParty[i]);
+    }
 }
 
 void ZeroEnemyPartyMons(void)
 {
     s32 i;
     for (i = 0; i < PARTY_SIZE; i++)
+    {
         ZeroMonData(&gEnemyParty[i]);
+        ZeroMonData(&gEnemy2Party[i]);
+    }
 }
 
 void CreateMon(struct Pokemon *mon, u16 species, u8 level, u8 fixedIV, u8 hasFixedPersonality, u32 fixedPersonality, u8 otIdType, u32 fixedOtId)
@@ -3167,10 +3190,36 @@ u8 CalculatePlayerPartyCount(void)
     return gPlayerPartyCount;
 }
 
+u8 CalculatePlayerPartnerPartyCount(void)
+{
+    gPlayerPartnerPartyCount = 0;
+
+    while (gPlayerPartnerPartyCount < PARTY_SIZE
+        && GetMonData(&gPlayerPartnerParty[gPlayerPartnerPartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+    {
+        gPlayerPartnerPartyCount++;
+    }
+
+    return gPlayerPartnerPartyCount;
+}
+
 u8 CalculateEnemyPartyCount(void)
 {
     gEnemyPartyCount = CalculatePartyCount(gEnemyParty);
     return gEnemyPartyCount;
+}
+
+u8 CalculateEnemy2PartyCount(void)
+{
+    gEnemy2PartyCount = 0;
+
+    while (gEnemy2PartyCount < PARTY_SIZE
+        && GetMonData(&gEnemy2Party[gEnemy2PartyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+    {
+        gEnemy2PartyCount++;
+    }
+
+    return gEnemy2PartyCount;
 }
 
 // Basically GetMonsStateToDoubles, but includes fainted Pokemon
@@ -3476,7 +3525,7 @@ void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst)
 void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex)
 {
     PokemonToBattleMon(&gPlayerParty[partyIndex], &gBattleMons[battlerId]);
-    gBattleStruct->hpOnSwitchout[GetBattlerSide(battlerId)] = gBattleMons[battlerId].hp;
+    gBattleStruct->hpOnSwitchout[GetBattlerPosition(battlerId)] = gBattleMons[battlerId].hp;
     UpdateSentPokesToOpponentValue(battlerId);
     ClearTemporarySpeciesSpriteData(battlerId, FALSE);
 }
@@ -6481,9 +6530,9 @@ bool32 SpeciesHasGenderDifferences(u16 species)
     return FALSE;
 }
 
-bool32 TryFormChange(u32 monId, u32 side, u16 method)
+bool32 TryFormChange(u32 monId, u32 battlerId, u16 method)
 {
-    struct Pokemon *party = (side == B_SIDE_PLAYER) ? gPlayerParty : gEnemyParty;
+    struct Pokemon *party = GetBattlerParty(battlerId);
     u16 targetSpecies;
 
     if (GetMonData(&party[monId], MON_DATA_SPECIES_OR_EGG, 0) == SPECIES_NONE
@@ -6493,7 +6542,7 @@ bool32 TryFormChange(u32 monId, u32 side, u16 method)
     targetSpecies = GetFormChangeTargetSpecies(&party[monId], method, 0);
 
     if (targetSpecies == SPECIES_NONE && gBattleStruct != NULL)
-        targetSpecies = gBattleStruct->changedSpecies[side][monId];
+        targetSpecies = gBattleStruct->changedSpecies[battlerId][monId];
 
     if (targetSpecies != SPECIES_NONE)
     {

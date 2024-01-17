@@ -774,6 +774,7 @@ void LoadBattleBarGfx(u8 unused)
 bool8 BattleInitAllSprites(u8 *state1, u8 *battler)
 {
     bool8 retVal = FALSE;
+    struct Pokemon *party;
 
     switch (*state1)
     {
@@ -823,14 +824,15 @@ bool8 BattleInitAllSprites(u8 *state1, u8 *battler)
         }
         break;
     case 5:
+        party = GetBattlerParty(*battler);
         if (GetBattlerSide(*battler) == B_SIDE_PLAYER)
         {
             if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
-                UpdateHealthboxAttribute(gHealthboxSpriteIds[*battler], &gPlayerParty[gBattlerPartyIndexes[*battler]], HEALTHBOX_ALL);
+                UpdateHealthboxAttribute(gHealthboxSpriteIds[*battler], &party[gBattlerPartyIndexes[*battler]], HEALTHBOX_ALL);
         }
         else
         {
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[*battler], &gEnemyParty[gBattlerPartyIndexes[*battler]], HEALTHBOX_ALL);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[*battler], &party[gBattlerPartyIndexes[*battler]], HEALTHBOX_ALL);
         }
         SetHealthboxSpriteInvisible(gHealthboxSpriteIds[*battler]);
         (*battler)++;
@@ -881,6 +883,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
     bool8 isShiny;
     const void *lzPaletteData, *src;
     void *dst;
+    struct Pokemon *partyDef, *partyAtk;
 
     if (IsContest())
     {
@@ -897,11 +900,10 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
     else
     {
         position = GetBattlerPosition(battlerAtk);
+        partyDef = GetBattlerParty(battlerDef);
+        partyAtk = GetBattlerParty(battlerAtk);
 
-        if (GetBattlerSide(battlerDef) == B_SIDE_OPPONENT)
-            targetSpecies = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
-        else
-            targetSpecies = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
+        targetSpecies = GetMonData(&partyDef[gBattlerPartyIndexes[battlerDef]], MON_DATA_SPECIES);
 
         if (GetBattlerSide(battlerAtk) == B_SIDE_PLAYER)
         {
@@ -912,9 +914,10 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
             }
             else
             {
-                personalityValue = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
-                isShiny = GetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_IS_SHINY);
+                personalityValue = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
+                isShiny = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_IS_SHINY);
             }
+            isShiny = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_IS_SHINY); // hum?
 
             HandleLoadSpecialPokePic(FALSE,
                                      gMonSpritesGfxPtr->sprites.ptr[position],
@@ -930,8 +933,8 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
             }
             else
             {
-                personalityValue = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
-                isShiny = GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_IS_SHINY);
+                personalityValue = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_PERSONALITY);
+                isShiny = GetMonData(&partyAtk[gBattlerPartyIndexes[battlerAtk]], MON_DATA_IS_SHINY);
             }
 
             HandleLoadSpecialPokePic(TRUE,
@@ -972,6 +975,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
 void BattleLoadSubstituteOrMonSpriteGfx(u8 battler, bool8 loadMonSprite)
 {
     s32 i, position, palOffset;
+    struct Pokemon *party;
 
     if (!loadMonSprite)
     {
@@ -1085,11 +1089,13 @@ void HandleBattleLowHpMusicChange(void)
         u8 playerBattler2 = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
         u8 battler1PartyId = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[playerBattler1]);
         u8 battler2PartyId = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[playerBattler2]);
+        struct Pokemon *party1 = GetBattlerParty(playerBattler1);
+        struct Pokemon *party2 = GetBattlerParty(playerBattler2);
 
-        if (GetMonData(&gPlayerParty[battler1PartyId], MON_DATA_HP) != 0)
-            HandleLowHpMusicChange(&gPlayerParty[battler1PartyId], playerBattler1);
-        if (IsDoubleBattle() && GetMonData(&gPlayerParty[battler2PartyId], MON_DATA_HP) != 0)
-            HandleLowHpMusicChange(&gPlayerParty[battler2PartyId], playerBattler2);
+        if (GetMonData(&party1[battler1PartyId], MON_DATA_HP) != 0)
+            HandleLowHpMusicChange(&party1[battler1PartyId], playerBattler1);
+        if (IsDoubleBattle() && GetMonData(&party2[battler2PartyId], MON_DATA_HP) != 0)
+            HandleLowHpMusicChange(&party2[battler2PartyId], playerBattler2);
     }
 }
 
