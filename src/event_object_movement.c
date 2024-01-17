@@ -2005,9 +2005,16 @@ void UpdateFollowingPokemon(void) { // Update following pokemon if any
     sprite = &gSprites[objEvent->spriteId];
     // Follower appearance changed; move to player and set invisible
     if (species != OW_SPECIES(objEvent) || shiny != objEvent->shiny || form != OW_FORM(objEvent)) {
-      MoveObjectEventToMapCoords(objEvent, gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.x, gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y);
-      FollowerSetGraphics(objEvent, species, form, shiny, TRUE);
-      objEvent->invisible = TRUE;
+      
+      if (SpeciesToGraphicsInfo(species, 0)->height != SpeciesToGraphicsInfo(OW_SPECIES(objEvent), 0)->height || SpeciesToGraphicsInfo(species, 0)->width != SpeciesToGraphicsInfo(OW_SPECIES(objEvent), 0)->width)
+      {
+        RemoveFollowingPokemon();
+        UpdateFollowingPokemon();
+      } else {
+       MoveObjectEventToMapCoords(objEvent, gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.x, gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y);
+       FollowerSetGraphics(objEvent, species, form, shiny, TRUE);
+       objEvent->invisible = TRUE;
+      }
     }
     sprite->data[6] = 0; // set animation data
   } else {
