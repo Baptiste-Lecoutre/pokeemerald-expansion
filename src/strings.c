@@ -2244,3 +2244,59 @@ const u8 gText_TeamPreviewSingleDoubleLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s 
 // berries
 const u8 gText_Fertilize[] = _("Fertilize");
 const u8 gText_PlantBerry[] = _("Plant Berry");
+
+//Summary Screen Move Effects
+const u8 gText_Effect[]                 = _("Effect");
+const u8 gText_Chance[]                 = _("Chance");
+const u8 gText_Contact[]                = _("Contact");
+const u8 gText_Target[]                 = _("Target");
+const u8 gText_Priority[]               = _("Priority");
+const u8 gText_Critical[]               = _("High Critical");
+const u8 gText_Effect_None[]            = _("---");
+
+//Summary Screen Move Effects
+const u8 gText_Effect_Multi_Hit[]                = _("Multi Hit");
+const u8 gText_Effect_Three_Hits[]               = _("Three Hits");
+const u8 gText_Effect_Two_Hits[]                 = _("Two Hits");
+
+const u8 gText_Effect_Burn_Hit[]                 = _("Burn");
+const u8 gText_Effect_Poison_Hit[]               = _("Poison");
+const u8 gText_Effect_Paralyze_Hit[]             = _("Paralyze");
+const u8 gText_Effect_Freeze_Hit[]               = _("Freeze");
+const u8 gText_Effect_Confuse_Hit[]              = _("Confuse");
+
+const u8 gText_Effect_All_Stats_Up[]             = _("All+");
+const u8 gText_Effect_Attack_Up[]                = _("Atk+");
+const u8 gText_Effect_Attack_Down[]              = _("Atk-");
+const u8 gText_Effect_Defense_Up[]               = _("Def+");
+const u8 gText_Effect_Defense_Down[]             = _("Def-");
+const u8 gText_Effect_Sp_Attack_Up[]             = _("Sp.Atk+");
+const u8 gText_Effect_Sp_Attack_Down[]           = _("Sp.Atk-");
+const u8 gText_Effect_Sp_Defense_Up[]            = _("Sp.Def+");
+const u8 gText_Effect_Sp_Defense_Down[]          = _("Sp.Def-");
+const u8 gText_Effect_Speed_Up[]                 = _("Spd+");
+const u8 gText_Effect_Speed_Down[]               = _("Spd-");
+const u8 gText_Effect_Accuracy_Up[]              = _("Acc-");
+const u8 gText_Effect_Accuracy_Down[]            = _("Acc-");
+
+const u8 gText_Effect_Heal_HP[]                  = _("Heal HP");
+const u8 gText_Effect_Heal[]                     = _("Heal");
+const u8 gText_Effect_HP_Drain[]                 = _("Drain HP");
+
+const u8 gText_Effect_Hit[]                      = _("Hit");
+const u8 gText_Effect_Flinch[]                   = _("Flinch");
+const u8 gText_Effect_Recoil[]                   = _("Recoil");
+const u8 gText_Effect_Misc[]                     = _("Other");
+const u8 gText_Effect_Always_Crit[]              = _("Crit");
+const u8 gText_Effect_Protect[]                  = _("Protect");
+
+//Summary Screen Target
+const u8 gText_Effect_FoeAndAlly[]            = _("All");
+const u8 gText_Effect_BothFoes[]              = _("Both");
+const u8 gText_Effect_OneFoe[]                = _("One");
+const u8 gText_Effect_Self[]                  = _("Self");
+const u8 gText_Effect_Field[]                 = _("Field");
+
+//Summary Screen Makes Contact
+const u8 gText_Effect_ContactYes[]            = _("Yes");
+const u8 gText_Effect_ContactNo[]             = _("No");

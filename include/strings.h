@@ -3563,4 +3563,60 @@ extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
 extern const u8 gText_Fertilize[];
 extern const u8 gText_PlantBerry[];
 
+extern const u8 gText_Effect[];
+extern const u8 gText_Chance[];
+extern const u8 gText_Contact[];
+extern const u8 gText_Target[];
+extern const u8 gText_Priority[];
+extern const u8 gText_Critical[];
+extern const u8 gText_EVs[];
+extern const u8 gText_Stats[];
+extern const u8 gText_BaseStats[];
+extern const u8 gText_Effect_None[];
+
+extern const u8 gText_Effect_FoeAndAlly[];
+extern const u8 gText_Effect_BothFoes[];
+extern const u8 gText_Effect_OneFoe[];
+extern const u8 gText_Effect_Self[];
+extern const u8 gText_Effect_Field[];
+
+extern const u8 gText_Effect_ContactYes[];
+extern const u8 gText_Effect_ContactNo[];
+
+//Summary Screen Move Effects
+//Multi Hits
+extern const u8 gText_Effect_Multi_Hit[];
+extern const u8 gText_Effect_Three_Hits[];
+extern const u8 gText_Effect_Two_Hits[];
+//Status
+extern const u8 gText_Effect_Burn_Hit[];
+extern const u8 gText_Effect_Poison_Hit[];
+extern const u8 gText_Effect_Paralyze_Hit[];
+extern const u8 gText_Effect_Freeze_Hit[];
+extern const u8 gText_Effect_Confuse_Hit[];
+//Stat Up/Down
+extern const u8 gText_Effect_All_Stats_Up[];
+extern const u8 gText_Effect_Attack_Up[];
+extern const u8 gText_Effect_Attack_Down[];
+extern const u8 gText_Effect_Defense_Up[];
+extern const u8 gText_Effect_Defense_Down[];
+extern const u8 gText_Effect_Sp_Attack_Up[];
+extern const u8 gText_Effect_Sp_Attack_Down[];
+extern const u8 gText_Effect_Sp_Defense_Up[];
+extern const u8 gText_Effect_Sp_Defense_Down[];
+extern const u8 gText_Effect_Speed_Up[];
+extern const u8 gText_Effect_Speed_Down[];
+extern const u8 gText_Effect_Accuracy_Up[];
+extern const u8 gText_Effect_Accuracy_Down[];
+extern const u8 gText_Effect_Heal_HP[];
+extern const u8 gText_Effect_Heal[];
+extern const u8 gText_Effect_HP_Drain[];
+//Misc
+extern const u8 gText_Effect_Hit[];
+extern const u8 gText_Effect_Misc[];
+extern const u8 gText_Effect_Flinch[];
+extern const u8 gText_Effect_Recoil[];
+extern const u8 gText_Effect_Always_Crit[];
+extern const u8 gText_Effect_Protect[];
+
 #endif // GUARD_STRINGS_H
