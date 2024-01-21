@@ -36,8 +36,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Ember_Path_ItemCharizarditeY",
+      "trainer_sight_or_berry_tree_id": "ITEM_CHARIZARDITE_Y",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_EMBER_PATH_CHARIZARDITE_Y"
     },
     {
@@ -62,8 +62,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Ember_Path_ItemSmack_Down",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM87_SMACK_DOWN",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_EMBER_PATH_SMACK_DOWN"
     }
   ],

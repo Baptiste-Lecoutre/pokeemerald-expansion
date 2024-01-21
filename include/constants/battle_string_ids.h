@@ -698,11 +698,14 @@
 #define STRINGID_PKMNTELLCHILLINGRECEPTIONJOKE        696
 #define STRINGID_HOSPITALITYRESTORATION               697
 #define STRINGID_ELECTROSHOCKCHARGING                 698
-#define STRINGID_PKMNGAINEDEXPSHARE                   699
-#define STRINGID_PKMNDROPPEDITEM                      700
-#define STRINGID_BAGISFULL                            701
+#define STRINGID_ITEMWASUSEDUP                        699
+#define STRINGID_ATTACKERLOSTITSTYPE                  700
+#define STRINGID_SHEDITSTAIL                          701
+#define STRINGID_PKMNGAINEDEXPSHARE                   702
+#define STRINGID_PKMNDROPPEDITEM                      703
+#define STRINGID_BAGISFULL                            704
 
-#define BATTLESTRINGS_COUNT                           702
+#define BATTLESTRINGS_COUNT                           705
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

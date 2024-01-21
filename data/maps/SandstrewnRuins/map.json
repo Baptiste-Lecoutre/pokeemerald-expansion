@@ -23,8 +23,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemGarchompite",
+      "trainer_sight_or_berry_tree_id": "ITEM_GARCHOMPITE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_GARCHOMPITE"
     },
     {
@@ -36,8 +36,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemSailFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_SAIL_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_SAIL_FOSSIL"
     },
     {
@@ -49,8 +49,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemOldAmber",
+      "trainer_sight_or_berry_tree_id": "ITEM_OLD_AMBER",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_OLD_AMBER"
     },
     {
@@ -62,8 +62,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemArmorFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_ARMOR_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_ARMOR_FOSSIL"
     },
     {
@@ -75,8 +75,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemPlumeFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_PLUME_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_PLUME_FOSSIL"
     },
     {
@@ -88,8 +88,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemSkullFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_SKULL_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_SKULL_FOSSIL"
     },
     {
@@ -101,8 +101,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemCoverFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_COVER_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_COVER_FOSSIL"
     },
     {
@@ -114,8 +114,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemHelixFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_HELIX_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_HELX_FOSSIL"
     },
     {
@@ -127,8 +127,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemDomeFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_DOME_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_DOME_FOSSIL"
     },
     {
@@ -140,8 +140,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemJawFossil",
+      "trainer_sight_or_berry_tree_id": "ITEM_JAW_FOSSIL",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_JAW_FOSSIL"
     },
     {
@@ -270,8 +270,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Sandstrewn_Ruins_ItemLeechLife",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM56_LEECH_LIFE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SANDSTREWN_RUINS_LEECH_LIFE"
     }
   ],
