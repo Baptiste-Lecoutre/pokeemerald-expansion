@@ -114,8 +114,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "AquaHideout_B1F_EventScript_ItemSharpedonite",
+      "trainer_sight_or_berry_tree_id": "ITEM_SHARPEDONITE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_AQUA_HIDEOUT_B1F_SHARPEDONITE"
     },
     {
@@ -140,8 +140,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "AquaHideout_B1F_EventScript_ItemTM97DarkPulse",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM97_DARK_PULSE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_AQUA_HIDEOUT_B1F_TM97_DARK_PULSE"
     }
   ],
