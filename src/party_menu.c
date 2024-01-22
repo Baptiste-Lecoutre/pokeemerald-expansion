@@ -5716,17 +5716,8 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     s16 *arrayPtr = ptr->data;
     u16 *itemPtr = &gSpecialVar_ItemId;
     bool8 cannotUseEffect;
-    u8 lvlCap = MAX_LEVEL, holdEffectParam = ItemId_GetHoldEffectParam(*itemPtr);
+    u8 lvlCap = GetCurrentLevelCap(), holdEffectParam = ItemId_GetHoldEffectParam(*itemPtr);
     u32 i;
-
-    for (i = 0; i < NUM_SOFT_CAPS; i++)
-    {
-        if (!FlagGet(gLevelCapFlags[i]))
-        {
-            lvlCap = gLevelCaps[i];
-            break;
-        }
-    }
 
     sInitialLevel = GetMonData(mon, MON_DATA_LEVEL);
     if (sInitialLevel < lvlCap) //if (!(B_RARE_CANDY_CAP && sInitialLevel >= GetCurrentLevelCap()))

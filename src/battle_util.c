@@ -34,6 +34,7 @@
 #include "pokedex.h"
 #include "mail.h"
 #include "field_weather.h"
+#include "level_caps.h"
 #include "constants/abilities.h"
 #include "constants/battle_anim.h"
 #include "constants/battle_move_effects.h"
@@ -7894,16 +7895,7 @@ u8 IsMonDisobedient(void)
     u32 i;
     u8 obedienceLevel = 0;
     u8 levelReferenced;
-    u8 lvlCap = MAX_LEVEL;
-
-    for (i = 0; i < NUM_SOFT_CAPS; i++)
-    {
-        if (!FlagGet(gLevelCapFlags[i]))
-        {
-            lvlCap = gLevelCaps[i];
-            break;
-        }
-    }
+    u8 lvlCap = GetCurrentLevelCap();
 
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
         return 0;
