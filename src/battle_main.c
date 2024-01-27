@@ -2038,13 +2038,11 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *train
             }
             CalculateMonStats(&party[i]);
 
-        #if B_TRAINER_CLASS_POKE_BALLS >= GEN_7
-            if (ball == -1)
+            if (B_TRAINER_CLASS_POKE_BALLS >= GEN_7 && ball == -1)
             {
                 ball = gTrainerClasses[trainer->trainerClass].ball ?: ITEM_POKE_BALL;
                 SetMonData(&party[i], MON_DATA_POKEBALL, &ball);
             }
-        #endif
         }
     }
 
@@ -4868,7 +4866,6 @@ s32 GetWhichBattlerFasterArgs(u32 battler1, u32 battler2, bool32 ignoreChosenMov
     {
         strikesFirst = 1; // battler1's move has greater priority
     }
-
     return strikesFirst;
 }
 
