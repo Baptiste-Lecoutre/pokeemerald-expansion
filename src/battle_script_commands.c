@@ -10996,7 +10996,7 @@ static void Cmd_various(void)
                 gBattleCommunication[MULTISTRING_CHOOSER] = 1;
 
             MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
-            HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gBattlerPartyIndexes[gBattlerTarget], STATUS1_ANY, gBattlerTarget);
+            HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], STATUS1_ANY, gBattlerTarget);
             RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
             gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
             SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp);
@@ -11021,7 +11021,7 @@ static void Cmd_various(void)
         {
             if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
                 continue;
-            if (!gAbilities[gBattleMons[i].ability].cantBeSuppressed)
+            if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
             {
                 if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
                     gSpecialStatuses[i].neutralizingGasRemoved = TRUE;

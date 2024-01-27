@@ -2496,7 +2496,7 @@ static void Task_KeyItemWheel(u8 taskId) {
     case 0:
     {
         LoadSpritePalette(&sSpritePalette_KeyItemBox);
-        LoadSpriteSheetByTemplate(&sSpriteTemplate_KeyItemBox, 0);
+        LoadSpriteSheetByTemplate(&sSpriteTemplate_KeyItemBox, 0, 0);
 
         for (i = 0; i < MAX_REGISTERED_ITEMS; i++) {
             // Create box sprite
@@ -3208,7 +3208,7 @@ static void TintPartyMonIcons(u16 itemId)
     for (i = 0; i < gPlayerPartyCount; i++)
     {
         if (!CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), ItemIdToBattleMoveId(itemId))
-            || gItems[itemId].pocket != POCKET_TM_HM)
+            || gItemsInfo[itemId].pocket != POCKET_TM_HM)
             gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
         else
             gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
