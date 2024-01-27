@@ -939,9 +939,11 @@ u8 AddNewGameBirchObject(s16 x, s16 y, u8 subpriority)
     return CreateSprite(&sSpriteTemplate_NewGameBirch, x, y, subpriority);
 }
 
-u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x, s16 y, u8 subpriority)
 {
-    s32 spriteId = CreateMonPicSprite(species, FALSE, 0x8000, TRUE, x, y, 0, species);
+    // force load unique tag here to avoid collision with follower pokemon
+    u32 paletteSlot = AllocSpritePalette(FLDEFF_PAL_TAG_FIELD_MOVE_MON);
+    u16 spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, x, y, paletteSlot, species);
     PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);
     if (spriteId == 0xFFFF)
         return MAX_SPRITES;
@@ -949,19 +951,10 @@ u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
         return spriteId;
 }
 
-u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
 {
-    // force load unique tag here to avoid collision with follower pokemon
-/*    UNUSED u8 paletteSlot = AllocSpritePalette(species);
-    u16 spriteId = CreateMonPicSprite(species, otId, personality, TRUE, x, y, 0, species);
-    PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);*/
-    u16 spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, x, y, 0, species);
-//    PreservePaletteInWeather(gSprites[spriteId].oam.paletteNum + 0x10);
-    PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);
-    if (spriteId == 0xFFFF)
-        return MAX_SPRITES;
-    else
-        return spriteId;
+    // Reuse logic; (otId ^ pid) >= SHINY_ODDS ensures non-shiny
+    return CreateMonSprite_FieldMove(species, 0, SHINY_ODDS, x, y, subpriority);
 }
 
 void FreeResourcesAndDestroySprite(struct Sprite *sprite, u8 spriteId)

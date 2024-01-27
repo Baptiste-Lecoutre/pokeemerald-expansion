@@ -30,6 +30,9 @@
 // We define these when using certain IDEs to fool preproc
 #define _(x)        {x}
 #define __(x)       {x}
+// Like the above, but prepends a fixed-case character
+#define _C(x)       {x}
+#define __C(x)      {x}
 #define INCBIN(...) {0}
 #define INCBIN_U8   INCBIN
 #define INCBIN_U16  INCBIN
@@ -37,6 +40,7 @@
 #define INCBIN_S8   INCBIN
 #define INCBIN_S16  INCBIN
 #define INCBIN_S32  INCBIN
+#define INCBIN_COMP INCBIN
 #endif // IDE support
 
 #define ARRAY_COUNT(array) (size_t)(sizeof(array) / sizeof((array)[0]))
@@ -1127,5 +1131,11 @@ struct MapPosition
     s16 y;
     s8 elevation;
 };
+
+// Adds support for compressed OW graphics,
+// (Also compresses pokemon follower graphics)
+#define OW_GFX_COMPRESS FALSE
+
+extern u8 gStackBase[]; // Start of stack-allocated IWRAM
 
 #endif // GUARD_GLOBAL_H

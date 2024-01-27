@@ -10,14 +10,15 @@ u32 GetCurrentLevelCap(void)
     static const u32 sLevelCapFlagMap[][2] =
     {
         {FLAG_BADGE01_GET, 15},
-        {FLAG_BADGE02_GET, 19},
-        {FLAG_BADGE03_GET, 24},
-        {FLAG_BADGE04_GET, 29},
-        {FLAG_BADGE05_GET, 31},
-        {FLAG_BADGE06_GET, 33},
-        {FLAG_BADGE07_GET, 42},
-        {FLAG_BADGE08_GET, 46},
-        {FLAG_IS_CHAMPION, 58},
+        {FLAG_BADGE02_GET, 21},
+        {FLAG_BADGE03_GET, 32},
+        {FLAG_MET_ARCHIE_METEOR_FALLS, 43},
+        {FLAG_BADGE04_GET, 47},
+        {FLAG_BADGE05_GET, 50},
+        {FLAG_BADGE06_GET, 60},
+        {FLAG_BADGE07_GET, 70},
+        {FLAG_BADGE08_GET, 80},
+        {FLAG_IS_CHAMPION, 90},
     };
 
     u32 i;
@@ -40,7 +41,7 @@ u32 GetCurrentLevelCap(void)
 
 u32 GetSoftLevelCapExpValue(u32 level, u32 expValue)
 {
-    static const u32 sExpScalingDown[5] = { 4, 8, 16, 32, 64 };
+    static const u32 sExpScalingDown[7] = { 2, 3, 4, 8, 16, 32, 64 };
     static const u32 sExpScalingUp[5]   = { 16, 8, 4, 2, 1 };
 
     u32 levelDifference;
@@ -52,20 +53,55 @@ u32 GetSoftLevelCapExpValue(u32 level, u32 expValue)
     if (B_LEVEL_CAP_EXP_UP && level < currentLevelCap)
     {
         levelDifference = currentLevelCap - level;
-        if (levelDifference > ARRAY_COUNT(sExpScalingDown))
-            return expValue + (expValue / sExpScalingUp[ARRAY_COUNT(sExpScalingDown) - 1]);
+        if (levelDifference > ARRAY_COUNT(sExpScalingUp) - 1)
+            return expValue + (expValue / sExpScalingUp[ARRAY_COUNT(sExpScalingUp) - 1]);
         else
             return expValue + (expValue / sExpScalingUp[levelDifference]);
     }
     else if (B_EXP_CAP_TYPE == EXP_CAP_SOFT && level >= currentLevelCap)
     {
         levelDifference = level - currentLevelCap;
-        if (levelDifference > ARRAY_COUNT(sExpScalingDown))
+        if (levelDifference > ARRAY_COUNT(sExpScalingDown) - 1)
             return expValue / sExpScalingDown[ARRAY_COUNT(sExpScalingDown) - 1];
         else
             return expValue / sExpScalingDown[levelDifference];
     }
     else
-        return 0;
+        return 0; // really? does it fuck up everything if not in the previous cases?
+}
 
+u32 GetRelativePartyScalingExpValue(u32 level, u32 expValue)
+{
+    static const double sRelativePartyScaling[27] = {
+        3.00, 2.75, 2.50, 2.33, 2.25,
+        2.00, 1.80, 1.70, 1.60, 1.50,
+        1.40, 1.30, 1.20, 1.10, 1.00,
+        0.95, 0.90, 0.85, 0.80, 0.75,
+        0.70, 0.65, 0.60, 0.55, 0.55,
+        0.50, 0.50,
+    };
+
+    s32 avgDiff;
+    u32 avgLevel, i;
+
+    if (!B_EXP_RELATIVE_PARTY)
+        return expValue;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) != SPECIES_NONE)
+            avgLevel += gPlayerParty[i].level;
+        else
+            break;
+    }
+    avgLevel /= i+1;
+
+    avgDiff = level - avgLevel;
+    if (avgDiff >= 12)
+        avgDiff = 12;
+    else if (avgDiff <= -14)
+        avgDiff = -14;
+    avgDiff += 14;
+
+    return expValue * sRelativePartyScaling[avgDiff];
 }
