@@ -10,7 +10,8 @@ EventScript_Dresser::
 	case 1, EventScript_JohtoCostumes
 	case 2, EventScript_HoennCostumes
 	case 3, EventScript_SinnohCostumes
-	case 4, EventScript_Dresser_Exit
+	case 4, EventScript_LGPECostumes
+	case 5, EventScript_Dresser_Exit
 	case MULTI_B_PRESSED, EventScript_Dresser_Exit
 	end
 
@@ -48,6 +49,7 @@ EventScript_Dresser_Loop::
 	case 2, EventScript_HoennCostumes
 	case 3, EventScript_SinnohCostumes
 	case 4, EventScript_LGPECostumes
+	case 5, EventScript_Dresser_Exit
 	case MULTI_B_PRESSED, EventScript_Dresser_Exit
 	end
 
