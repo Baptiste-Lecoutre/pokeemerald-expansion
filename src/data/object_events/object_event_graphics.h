@@ -866,8 +866,9 @@ const u32 gObjectEventPic_RedFieldMove[] = INCBIN_U32("graphics/object_events/pi
 const u32 gObjectEventPic_RedFishing[] = INCBIN_U32("graphics/object_events/pics/people/red/fishing.4bpp");
 const u32 gObjectEventPic_RedWatering[] = INCBIN_U32("graphics/object_events/pics/people/red/watering.4bpp");
 const u32 gObjectEventPic_RedDecorating[] = INCBIN_U32("graphics/object_events/pics/people/red/decorating.4bpp");
-const u16 gObjectEventPal_Red[] = INCBIN_U16("graphics/object_events/palettes/red.gbapal");
+//const u16 gObjectEventPal_Red[] = INCBIN_U16("graphics/object_events/palettes/red.gbapal");
 //const u16 gObjectEventPal_Red[] = INCBIN_U16("graphics/object_events/palettes/red_leaf.gbapal");
+const u16 gObjectEventPal_Red[] = INCBIN_U16("graphics/object_events/pics/people/red/walking.gbapal");
 
 const u32 gObjectEventPic_LeafNormal[] = INCBIN_U32("graphics/object_events/pics/people/leaf/walking.4bpp");
 const u32 gObjectEventPic_LeafRunning[] = INCBIN_U32("graphics/object_events/pics/people/leaf/running.4bpp");
@@ -880,7 +881,8 @@ const u32 gObjectEventPic_LeafFishing[] = INCBIN_U32("graphics/object_events/pic
 const u32 gObjectEventPic_LeafWatering[] = INCBIN_U32("graphics/object_events/pics/people/leaf/watering.4bpp");
 const u32 gObjectEventPic_LeafDecorating[] = INCBIN_U32("graphics/object_events/pics/people/leaf/decorating.4bpp");
 //const u16 gObjectEventPal_Leaf[] = INCBIN_U16("graphics/object_events/palettes/leaf.gbapal");
-const u16 gObjectEventPal_Leaf[] = INCBIN_U16("graphics/object_events/palettes/red_leaf.gbapal");
+//const u16 gObjectEventPal_Leaf[] = INCBIN_U16("graphics/object_events/palettes/red_leaf.gbapal");
+const u16 gObjectEventPal_Leaf[] = INCBIN_U16("graphics/object_events/pics/people/leaf/walking.gbapal");
 
 const u32 gObjectEventPic_EthanNormal[] = INCBIN_U32("graphics/object_events/pics/people/ethan/walking.4bpp");
 const u32 gObjectEventPic_EthanRunning[] = INCBIN_U32("graphics/object_events/pics/people/ethan/running.4bpp");
@@ -892,7 +894,8 @@ const u32 gObjectEventPic_EthanFieldMove[] = INCBIN_U32("graphics/object_events/
 const u32 gObjectEventPic_EthanFishing[] = INCBIN_U32("graphics/object_events/pics/people/ethan/fishing.4bpp");
 const u32 gObjectEventPic_EthanWatering[] = INCBIN_U32("graphics/object_events/pics/people/ethan/watering.4bpp");
 const u32 gObjectEventPic_EthanDecorating[] = INCBIN_U32("graphics/object_events/pics/people/ethan/decorating.4bpp");
-const u16 gObjectEventPal_Ethan[] = INCBIN_U16("graphics/object_events/palettes/ethan.gbapal");
+//const u16 gObjectEventPal_Ethan[] = INCBIN_U16("graphics/object_events/palettes/ethan.gbapal");
+const u16 gObjectEventPal_Ethan[] = INCBIN_U16("graphics/object_events/pics/people/ethan/walking.gbapal");
 
 const u32 gObjectEventPic_LyraNormal[] = INCBIN_U32("graphics/object_events/pics/people/lyra/walking.4bpp");
 const u32 gObjectEventPic_LyraRunning[] = INCBIN_U32("graphics/object_events/pics/people/lyra/running.4bpp");
@@ -904,7 +907,8 @@ const u32 gObjectEventPic_LyraFieldMove[] = INCBIN_U32("graphics/object_events/p
 const u32 gObjectEventPic_LyraFishing[] = INCBIN_U32("graphics/object_events/pics/people/lyra/fishing.4bpp");
 const u32 gObjectEventPic_LyraWatering[] = INCBIN_U32("graphics/object_events/pics/people/lyra/watering.4bpp");
 const u32 gObjectEventPic_LyraDecorating[] = INCBIN_U32("graphics/object_events/pics/people/lyra/decorating.4bpp");
-const u16 gObjectEventPal_Lyra[] = INCBIN_U16("graphics/object_events/palettes/lyra.gbapal");
+//const u16 gObjectEventPal_Lyra[] = INCBIN_U16("graphics/object_events/palettes/lyra.gbapal");
+const u16 gObjectEventPal_Lyra[] = INCBIN_U16("graphics/object_events/pics/people/lyra/walking.gbapal");
 
 const u32 gObjectEventPic_KrisNormal[] = INCBIN_U32("graphics/object_events/pics/people/kris/walking.4bpp");
 const u32 gObjectEventPic_KrisRunning[] = INCBIN_U32("graphics/object_events/pics/people/kris/running.4bpp");
@@ -916,7 +920,8 @@ const u32 gObjectEventPic_KrisFieldMove[] = INCBIN_U32("graphics/object_events/p
 const u32 gObjectEventPic_KrisFishing[] = INCBIN_U32("graphics/object_events/pics/people/kris/fishing.4bpp");
 const u32 gObjectEventPic_KrisWatering[] = INCBIN_U32("graphics/object_events/pics/people/kris/watering.4bpp");
 const u32 gObjectEventPic_KrisDecorating[] = INCBIN_U32("graphics/object_events/pics/people/kris/decorating.4bpp");
-const u16 gObjectEventPal_Kris[] = INCBIN_U16("graphics/object_events/palettes/kris.gbapal");
+//const u16 gObjectEventPal_Kris[] = INCBIN_U16("graphics/object_events/palettes/kris.gbapal");
+const u16 gObjectEventPal_Kris[] = INCBIN_U16("graphics/object_events/pics/people/kris/walking.gbapal");
 
 const u32 gObjectEventPic_LucasNormal[] = INCBIN_U32("graphics/object_events/pics/people/lucas/walking.4bpp");
 const u32 gObjectEventPic_LucasRunning[] = INCBIN_U32("graphics/object_events/pics/people/lucas/running.4bpp");
@@ -928,7 +933,8 @@ const u32 gObjectEventPic_LucasFieldMove[] = INCBIN_U32("graphics/object_events/
 const u32 gObjectEventPic_LucasFishing[] = INCBIN_U32("graphics/object_events/pics/people/lucas/fishing.4bpp");
 const u32 gObjectEventPic_LucasWatering[] = INCBIN_U32("graphics/object_events/pics/people/lucas/watering.4bpp");
 const u32 gObjectEventPic_LucasDecorating[] = INCBIN_U32("graphics/object_events/pics/people/lucas/decorating.4bpp");
-const u16 gObjectEventPal_Lucas[] = INCBIN_U16("graphics/object_events/palettes/lucas.gbapal");
+//const u16 gObjectEventPal_Lucas[] = INCBIN_U16("graphics/object_events/palettes/lucas.gbapal");
+const u16 gObjectEventPal_Lucas[] = INCBIN_U16("graphics/object_events/pics/people/lucas/walking.gbapal");
 
 const u32 gObjectEventPic_DawnNormal[] = INCBIN_U32("graphics/object_events/pics/people/dawn/walking.4bpp");
 const u32 gObjectEventPic_DawnRunning[] = INCBIN_U32("graphics/object_events/pics/people/dawn/running.4bpp");
@@ -964,4 +970,5 @@ const u32 gObjectEventPic_DawnPlatinumFieldMove[] = INCBIN_U32("graphics/object_
 const u32 gObjectEventPic_DawnPlatinumFishing[] = INCBIN_U32("graphics/object_events/pics/people/dawn_platinum/fishing.4bpp");
 const u32 gObjectEventPic_DawnPlatinumWatering[] = INCBIN_U32("graphics/object_events/pics/people/dawn_platinum/watering.4bpp");
 const u32 gObjectEventPic_DawnPlatinumDecorating[] = INCBIN_U32("graphics/object_events/pics/people/dawn_platinum/decorating.4bpp");
-const u16 gObjectEventPal_DawnPlatinum[] = INCBIN_U16("graphics/object_events/palettes/dawn_platinum.gbapal");
+//const u16 gObjectEventPal_DawnPlatinum[] = INCBIN_U16("graphics/object_events/palettes/dawn_platinum.gbapal");
+const u16 gObjectEventPal_DawnPlatinum[] = INCBIN_U16("graphics/object_events/pics/people/dawn_platinum/walking.gbapal");
