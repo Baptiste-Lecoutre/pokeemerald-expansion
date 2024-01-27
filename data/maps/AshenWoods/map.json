@@ -23,8 +23,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Ashen_Woods_ItemPinsirite",
+      "trainer_sight_or_berry_tree_id": "ITEM_PINSIRITE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ASHEN_WOODS_PINSIRITE"
     },
     {
@@ -36,8 +36,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Ashen_Woods_ItemU_Turn",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM89_U_TURN",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ASHEN_WOODS_U_TURN"
     }
   ],

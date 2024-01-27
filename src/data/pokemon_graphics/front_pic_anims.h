@@ -279,7 +279,6 @@ static const union AnimCmd sAnim_Raticate_1[] =
 
 #if P_ALOLAN_FORMS
 PLACEHOLDER_ANIM_SINGLE_FRAME(RattataAlolan);
-
 PLACEHOLDER_ANIM_SINGLE_FRAME(RaticateAlolan);
 #endif //P_ALOLAN_FORMS
 #endif //P_FAMILY_RATTATA
@@ -353,6 +352,7 @@ static const union AnimCmd sAnim_Pikachu_1[] =
     ANIMCMD_END,
 };
 
+#if P_COSPLAY_PIKACHU_FORMS
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuCosplay);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuRockStar);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuBelle);
@@ -361,6 +361,8 @@ PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuPhD);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuLibre);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuSurfing);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuFlying);
+#endif //P_COSPLAY_PIKACHU_FORMS
+#if P_CAP_PIKACHU_FORMS
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuOriginalCap);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuHoennCap);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuSinnohCap);
@@ -369,6 +371,7 @@ PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuKalosCap);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuAlolaCap);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuPartnerCap);
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuWorldCap);
+#endif //P_CAP_PIKACHU_FORMS
 
 #if P_GIGANTAMAX_FORMS
 PLACEHOLDER_ANIM_SINGLE_FRAME(PikachuGigantamax);
@@ -4687,7 +4690,9 @@ static const union AnimCmd sAnim_Milotic_1[] =
     ANIMCMD_FRAME(0, 15),
     ANIMCMD_END,
 };
+#endif //P_FAMILY_FEEBAS
 
+#if P_FAMILY_CASTFORM
 static const union AnimCmd sAnim_CastformNormal_1[] =
 {
     ANIMCMD_FRAME(0, 12),
@@ -4729,7 +4734,7 @@ static const union AnimCmd sAnim_CastformSnowy_1[] =
     ANIMCMD_FRAME(0, 12),
     ANIMCMD_END,
 };
-#endif //P_FAMILY_FEEBAS
+#endif //P_FAMILY_CASTFORM
 
 #if P_FAMILY_KECLEON
 static const union AnimCmd sAnim_Kecleon_1[] =
@@ -5775,13 +5780,16 @@ static const union AnimCmd sAnim_Chatot_1[] =
     ANIMCMD_FRAME(0, 5),
     ANIMCMD_END,
 };
+#endif //P_FAMILY_CHATOT
+
+#if P_FAMILY_SPIRITOMB
 static const union AnimCmd sAnim_Spiritomb_1[] =
 {
     ANIMCMD_FRAME(1, 20),
     ANIMCMD_FRAME(0, 10),
     ANIMCMD_END,
 };
-#endif //P_FAMILY_CHATOT
+#endif //P_FAMILY_SPIRITOMB
 
 #if P_FAMILY_GIBLE
 static const union AnimCmd sAnim_Gible_1[] =
@@ -7846,7 +7854,9 @@ static const union AnimCmd sAnim_Virizion_1[] =
     ANIMCMD_FRAME(0, 20),
     ANIMCMD_END,
 };
+#endif //P_FAMILY_VIRIZION
 
+#if P_FAMILY_TORNADUS
 static const union AnimCmd sAnim_TornadusIncarnate_1[] =
 {
     ANIMCMD_FRAME(1, 2),
@@ -7883,7 +7893,9 @@ static const union AnimCmd sAnim_TornadusTherian_1[] =
     ANIMCMD_FRAME(0, 5),
     ANIMCMD_END,
 };
+#endif //P_FAMILY_TORNADUS
 
+#if P_FAMILY_THUNDURUS
 static const union AnimCmd sAnim_ThundurusIncarnate_1[] =
 {
     ANIMCMD_FRAME(1, 2),
@@ -7931,7 +7943,7 @@ static const union AnimCmd sAnim_ThundurusTherian_1[] =
     ANIMCMD_FRAME(0, 5),
     ANIMCMD_END,
 };
-#endif //P_FAMILY_VIRIZION
+#endif //P_FAMILY_THUNDURUS
 
 #if P_FAMILY_RESHIRAM
 static const union AnimCmd sAnim_Reshiram_1[] =
@@ -7949,7 +7961,9 @@ static const union AnimCmd sAnim_Zekrom_1[] =
     ANIMCMD_FRAME(0, 5),
     ANIMCMD_END,
 };
+#endif //P_FAMILY_ZEKROM
 
+#if P_FAMILY_LANDORUS
 static const union AnimCmd sAnim_LandorusIncarnate_1[] =
 {
     ANIMCMD_FRAME(1, 2),
@@ -7986,7 +8000,7 @@ static const union AnimCmd sAnim_LandorusTherian_1[] =
     ANIMCMD_FRAME(0, 15),
     ANIMCMD_END,
 };
-#endif //P_FAMILY_ZEKROM
+#endif //P_FAMILY_LANDORUS
 
 #if P_FAMILY_KYUREM
 static const union AnimCmd sAnim_Kyurem_1[] =
@@ -8015,7 +8029,9 @@ static const union AnimCmd sAnim_KyuremBlack_1[] =
     ANIMCMD_END,
 };
 #endif //P_FUSION_FORMS
+#endif //P_FAMILY_KYUREM
 
+#if P_FAMILY_KELDEO
 static const union AnimCmd sAnim_KeldeoOrdinary_1[] =
 {
     ANIMCMD_FRAME(1, 32),
@@ -8030,7 +8046,9 @@ static const union AnimCmd sAnim_KeldeoResolute_1[] =
     ANIMCMD_FRAME(0, 10),
     ANIMCMD_END,
 };
+#endif //P_FAMILY_KELDEO
 
+#if P_FAMILY_MELOETTA
 static const union AnimCmd sAnim_MeloettaAria_1[] =
 {
     ANIMCMD_FRAME(0, 15),
@@ -8053,7 +8071,7 @@ static const union AnimCmd sAnim_MeloettaPirouette_1[] =
     ANIMCMD_FRAME(0, 15),
     ANIMCMD_END,
 };
-#endif //P_FAMILY_KYUREM
+#endif //P_FAMILY_MELOETTA
 
 #if P_FAMILY_GENESECT
 static const union AnimCmd sAnim_Genesect_1[] =
@@ -9069,10 +9087,12 @@ static const union AnimCmd sAnim_LycanrocDusk_1[] =
     ANIMCMD_FRAME(0, 5),
     ANIMCMD_END,
 };
+#endif //P_FAMILY_ROCKRUFF
 
+#if P_FAMILY_WISHIWASHI
 PLACEHOLDER_ANIM_SINGLE_FRAME(WishiwashiSolo);
 PLACEHOLDER_ANIM_SINGLE_FRAME(WishiwashiSchool);
-#endif //P_FAMILY_ROCKRUFF
+#endif //P_FAMILY_WISHIWASHI
 
 #if P_FAMILY_MAREANIE
 PLACEHOLDER_ANIM_SINGLE_FRAME(Mareanie);
@@ -10224,6 +10244,8 @@ SINGLE_ANIMATION(PikachuPhD);
 SINGLE_ANIMATION(PikachuLibre);
 SINGLE_ANIMATION(PikachuSurfing);
 SINGLE_ANIMATION(PikachuFlying);
+#endif //P_COSPLAY_PIKACHU_FORMS
+#if P_CAP_PIKACHU_FORMS
 SINGLE_ANIMATION(PikachuOriginalCap);
 SINGLE_ANIMATION(PikachuHoennCap);
 SINGLE_ANIMATION(PikachuSinnohCap);
