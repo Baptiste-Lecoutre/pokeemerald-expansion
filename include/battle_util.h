@@ -222,6 +222,10 @@ void CopyMonAbilityAndTypesToBattleMon(u32 battler, struct Pokemon *mon);
 void RecalcBattlerStats(u32 battler, struct Pokemon *mon);
 bool32 IsAlly(u32 battlerAtk, u32 battlerDef);
 bool32 IsGen6ExpShareEnabled(void);
+bool32 MoveHasMoveEffect(u32 move, u32 moveEffect);
+bool32 MoveHasMoveEffectWithChance(u32 move, u32 moveEffect, u32 chance);
+bool32 MoveHasMoveEffectSelf(u32 move, u32 moveEffect);
+bool32 MoveHasMoveEffectSelfArg(u32 move, u32 moveEffect, u32 argument);
 
 bool32 CanSleep(u32 battler);
 bool32 CanBePoisoned(u32 battlerAttacker, u32 battlerTarget);
@@ -239,12 +243,14 @@ void RemoveConfusionStatus(u32 battler);
 u8 GetBattlerGender(u32 battler);
 bool32 AreBattlersOfOppositeGender(u32 battler1, u32 battler2);
 bool32 AreBattlersOfSameGender(u32 battler1, u32 battler2);
-u32 CalcSecondaryEffectChance(u32 battler, u8 secondaryEffectChance, u16 moveEffect);
+u32 CalcSecondaryEffectChance(u32 battler, u32 battlerAbility, const struct AdditionalEffect *additionalEffect);
+bool32 MoveEffectIsGuaranteed(u32 battler, u32 battlerAbility, const struct AdditionalEffect *additionalEffect);
 u8 GetBattlerType(u32 battler, u8 typeIndex);
 bool8 CanMonParticipateInSkyBattle(struct Pokemon *mon);
 bool8 IsMonBannedFromSkyBattles(u16 species);
 u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 battlerDef, u32 moveType, bool32 updateFlags, u32 atkAbility, u32 defAbility, u32 holdEffectAtk, u32 weather);
 u32 GetWeather(void);
+void RemoveBattlerType(u32 battler, u8 type);
 
 bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId);
 static inline u32 ApplyModifier(uq4_12_t modifier, u32 val)

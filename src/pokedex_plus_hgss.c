@@ -199,7 +199,7 @@ static const u8 sText_Dex_OWN[] = _("OWN");
 static const u8 sText_EVO_Buttons[] = _("{DPAD_UPDOWN}EVOs  {A_BUTTON}CHECK");
 static const u8 sText_EVO_Buttons_Decapped[] = _("{DPAD_UPDOWN}Evos  {A_BUTTON}Check");
 static const u8 sText_EVO_Buttons_PE[] = _("{DPAD_UPDOWN}EVOs  {A_BUTTON}CHECK  {START_BUTTON}FORMs");
-static const u8 sText_EVO_Buttons_Decapped_PE[] = _("{DPAD_UPDOWN}Evos  {A_BUTTON}Check  {START_BUTTON}Froms");
+static const u8 sText_EVO_Buttons_Decapped_PE[] = _("{DPAD_UPDOWN}Evos  {A_BUTTON}Check  {START_BUTTON}Forms");
 static const u8 sText_EVO_Name[] = _("{STR_VAR_3}:");
 static const u8 sText_EVO_PreEvo[] = _("{STR_VAR_1} evolves from {STR_VAR_2}");
 static const u8 sText_EVO_PreEvo_PE_Mega[] = _("{STR_VAR_1} Mega Evolves with {STR_VAR_2}");
@@ -6002,21 +6002,21 @@ static void PrintStatsScreen_Abilities(u8 taskId)
     if (gTasks[taskId].data[5] == 0)
     {
         ability0 = sPokedexView->sPokemonStats.ability0;
-        PrintStatsScreenTextSmallWhite(WIN_STATS_ABILITIES, gAbilities[ability0].name, abilities_x, abilities_y);
-        PrintStatsScreenTextSmall(WIN_STATS_ABILITIES, gAbilities[ability0].description, abilities_x, abilities_y + 14);
+        PrintStatsScreenTextSmallWhite(WIN_STATS_ABILITIES, gAbilitiesInfo[ability0].name, abilities_x, abilities_y);
+        PrintStatsScreenTextSmall(WIN_STATS_ABILITIES, gAbilitiesInfo[ability0].description, abilities_x, abilities_y + 14);
 
         ability1 = sPokedexView->sPokemonStats.ability1;
         if (ability1 != ABILITY_NONE && ability1 != ability0)
         {
-            PrintStatsScreenTextSmallWhite(WIN_STATS_ABILITIES, gAbilities[ability1].name, abilities_x, abilities_y + 30);
-            PrintStatsScreenTextSmall(WIN_STATS_ABILITIES, gAbilities[ability1].description, abilities_x, abilities_y + 44);
+            PrintStatsScreenTextSmallWhite(WIN_STATS_ABILITIES, gAbilitiesInfo[ability1].name, abilities_x, abilities_y + 30);
+            PrintStatsScreenTextSmall(WIN_STATS_ABILITIES, gAbilitiesInfo[ability1].description, abilities_x, abilities_y + 44);
         }
     }
     else //Hidden abilities
     {
         abilityHidden = sPokedexView->sPokemonStats.abilityHidden;
-        PrintStatsScreenTextSmallWhite(WIN_STATS_ABILITIES, gAbilities[abilityHidden].name, abilities_x, abilities_y);
-        PrintStatsScreenTextSmall(WIN_STATS_ABILITIES, gAbilities[abilityHidden].description, abilities_x, abilities_y + 14);
+        PrintStatsScreenTextSmallWhite(WIN_STATS_ABILITIES, gAbilitiesInfo[abilityHidden].name, abilities_x, abilities_y);
+        PrintStatsScreenTextSmall(WIN_STATS_ABILITIES, gAbilitiesInfo[abilityHidden].description, abilities_x, abilities_y + 14);
     }
 }
 
@@ -6440,13 +6440,37 @@ static u8 PrintPreEvolutions(u8 taskId, u16 species)
     u16 preEvolutionTwo = 0;
     u8 numPreEvolutions = 0;
 
-    bool8 isMega = FALSE;
+    u16 baseFormSpecies;
     sPokedexView->sEvoScreenData.isMega = FALSE;
+
+    //Check if it's a mega
+    baseFormSpecies = GetFormSpeciesId(species, 0);
+    if (baseFormSpecies != species)
+    {
+        const struct FormChange *formChanges = GetSpeciesFormChanges(baseFormSpecies);
+        for (i = 0; formChanges != NULL && formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
+        {
+            if (formChanges[i].method == FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM
+                && formChanges[i].targetSpecies == species)
+            {
+                preEvolutionOne = baseFormSpecies;
+                numPreEvolutions += 1;
+                sPokedexView->numPreEvolutions = numPreEvolutions;
+                sPokedexView->sEvoScreenData.numAllEvolutions += numPreEvolutions;
+                sPokedexView->sEvoScreenData.isMega = TRUE;
+
+                CopyItemName(GetSpeciesFormChanges(species)->param1, gStringVar2); //item
+                CreateCaughtBallEvolutionScreen(preEvolutionOne, base_x - 9 - 8, base_y + base_y_offset*(numPreEvolutions - 1), 0);
+                HandlePreEvolutionSpeciesPrint(taskId, preEvolutionOne, species, base_x - 8, base_y, base_y_offset, numPreEvolutions - 1);
+                return numPreEvolutions;
+            }
+        }
+    }
 
     //Calculate previous evolution
     for (i = 0; i < NUM_SPECIES; i++)
     {
-        const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+        const struct Evolution *evolutions = GetSpeciesEvolutions(i);
         if (evolutions == NULL)
             continue;
 
@@ -6456,27 +6480,9 @@ static u8 PrintPreEvolutions(u8 taskId, u16 species)
             {
                 preEvolutionOne = i;
                 numPreEvolutions += 1;
-                
-                if (GetSpeciesFormChanges(species) != NULL
-                 && GetSpeciesFormChanges(species)->method == FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM)
-                {
-                    CopyItemName(GetSpeciesFormChanges(species)->param1, gStringVar2); //item
-                    isMega = TRUE;
-                }
                 break;
             }
         }
-    }
-
-    if (isMega)
-    {
-        sPokedexView->numPreEvolutions = numPreEvolutions;
-        sPokedexView->sEvoScreenData.numAllEvolutions += numPreEvolutions;
-        sPokedexView->sEvoScreenData.isMega = isMega;
-
-        CreateCaughtBallEvolutionScreen(preEvolutionOne, base_x - 9 - 8, base_y + base_y_offset*(numPreEvolutions - 1), 0);
-        HandlePreEvolutionSpeciesPrint(taskId, preEvolutionOne, species, base_x - 8, base_y, base_y_offset, numPreEvolutions - 1);
-        return numPreEvolutions;
     }
 
     //Calculate if previous evolution also has a previous evolution
@@ -6484,7 +6490,7 @@ static u8 PrintPreEvolutions(u8 taskId, u16 species)
     {
         for (i = 0; i < NUM_SPECIES; i++)
         {
-            const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+            const struct Evolution *evolutions = GetSpeciesEvolutions(i);
             if (evolutions == NULL)
                 continue;
 

@@ -871,6 +871,9 @@ static const u8 sText_SwampEnvelopedSide[] = _("A swamp enveloped\n{B_DEF_TEAM2}
 static const u8 sText_TheSwampDisappeared[] = _("The swamp around {B_ATK_TEAM2}\nteam disappeared!");
 static const u8 sText_HospitalityRestoration[] = _("The {B_ATK_PARTNER_NAME} drank down all\nthe matcha that Sinistcha made!");
 static const u8 sText_ElectroShockCharging[] = _("{B_ATK_NAME_WITH_PREFIX} absorbed\nelectricity!");
+static const u8 sText_ItemWasUsedUp[] = _("The {B_LAST_ITEM}\nwas used up...");
+static const u8 sText_AttackerLostItsType[] = _("{B_ATK_NAME_WITH_PREFIX} lost\nits {B_BUFF1} type!");
+static const u8 sText_ShedItsTail[] = _("{B_ATK_NAME_WITH_PREFIX} shed its tail\nto create a decoy!");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
@@ -904,6 +907,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_STORMGETTINGTOOSTRONG - BATTLESTRINGS_TABLE_START] = sText_StormIsGettingTooStrong,
     [STRINGID_BLOWNOUTOFDEN - BATTLESTRINGS_TABLE_START] = sText_BlownOutOfDen,
     [STRINGID_CATCHRAIDMON - BATTLESTRINGS_TABLE_START] = sText_CatchRaidMon,
+    [STRINGID_SHEDITSTAIL - BATTLESTRINGS_TABLE_START] = sText_ShedItsTail,
     [STRINGID_ELECTROSHOCKCHARGING - BATTLESTRINGS_TABLE_START] = sText_ElectroShockCharging,
     [STRINGID_HOSPITALITYRESTORATION - BATTLESTRINGS_TABLE_START] = sText_HospitalityRestoration,
     [STRINGID_THESWAMPDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_TheSwampDisappeared,
@@ -1592,6 +1596,8 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_ULTRABURSTCOMPLETED - BATTLESTRINGS_TABLE_START] = sText_UltraBurstCompleted,
     [STRINGID_TEAMGAINEDEXP - BATTLESTRINGS_TABLE_START] = sText_TeamGainedEXP,
     [STRINGID_TARGETCOVEREDINSTICKYCANDYSYRUP - BATTLESTRINGS_TABLE_START] = sText_TargetCoveredInStickyCandySyrup,
+    [STRINGID_ITEMWASUSEDUP - BATTLESTRINGS_TABLE_START] = sText_ItemWasUsedUp,
+    [STRINGID_ATTACKERLOSTITSTYPE - BATTLESTRINGS_TABLE_START] = sText_AttackerLostItsType,
 };
 
 const u16 gTrainerUsedItemStringIds[] =
@@ -3334,6 +3340,13 @@ static const u8 *BattleStringGetPlayerName(u8 *text, u8 battler)
         break;
     }
 
+    if (DECAP_ENABLED && !DECAP_NICKNAMES && toCpy != text && *toCpy != CHAR_FIXED_CASE)
+    {
+        *text = CHAR_FIXED_CASE;
+        StringCopyN(text+1, toCpy, PLAYER_NAME_LENGTH);
+        toCpy = text;
+    }
+
     return toCpy;
 }
 
@@ -3390,7 +3403,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
         if (*src == PLACEHOLDER_BEGIN)
         {
             src++;
-            switch (*src)
+            switch (*src & ~PLACEHOLDER_FIXED_MASK)
             {
             case B_TXT_BUFF1:
                 if (gBattleTextBuff1[0] == B_BUFF_PLACEHOLDER_BEGIN)
@@ -3546,19 +3559,19 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 }
                 break;
             case B_TXT_LAST_ABILITY: // last used ability
-                toCpy = gAbilities[gLastUsedAbility].name;
+                toCpy = gAbilitiesInfo[gLastUsedAbility].name;
                 break;
             case B_TXT_ATK_ABILITY: // attacker ability
-                toCpy = gAbilities[sBattlerAbilities[gBattlerAttacker]].name;
+                toCpy = gAbilitiesInfo[sBattlerAbilities[gBattlerAttacker]].name;
                 break;
             case B_TXT_DEF_ABILITY: // target ability
-                toCpy = gAbilities[sBattlerAbilities[gBattlerTarget]].name;
+                toCpy = gAbilitiesInfo[sBattlerAbilities[gBattlerTarget]].name;
                 break;
             case B_TXT_SCR_ACTIVE_ABILITY: // scripting active ability
-                toCpy = gAbilities[sBattlerAbilities[gBattleScripting.battler]].name;
+                toCpy = gAbilitiesInfo[sBattlerAbilities[gBattleScripting.battler]].name;
                 break;
             case B_TXT_EFF_ABILITY: // effect battler ability
-                toCpy = gAbilities[sBattlerAbilities[gEffectBattler]].name;
+                toCpy = gAbilitiesInfo[sBattlerAbilities[gEffectBattler]].name;
                 break;
             case B_TXT_TRAINER1_CLASS: // trainer class name
                 toCpy = BattleStringGetOpponentClassByTrainerId(gTrainerBattleOpponent_A);
@@ -3765,11 +3778,28 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
 
             if (toCpy != NULL)
             {
-                while (*toCpy != EOS)
+                if (DECAP_ENABLED)
                 {
-                    dst[dstID] = *toCpy;
-                    dstID++;
-                    toCpy++;
+                    bool32 fixedCase = *src & PLACEHOLDER_FIXED_MASK;
+
+                    if (fixedCase)
+                        dst[dstID++] = CHAR_FIXED_CASE;
+
+                    while (*toCpy != EOS)
+                    {
+                        if (*toCpy == CHAR_FIXED_CASE)
+                            fixedCase = TRUE;
+                        else if (*toCpy == CHAR_UNFIX_CASE)
+                            fixedCase = FALSE;
+                        dst[dstID++] = *toCpy++;
+                    }
+                    if (fixedCase)
+                        dst[dstID++] = CHAR_UNFIX_CASE;
+                }
+                else
+                {
+                    while (*toCpy != EOS)
+                        dst[dstID++] = *toCpy++;
                 }
             }
 
@@ -3920,7 +3950,7 @@ void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             srcID += 2;
             break;
         case B_BUFF_ABILITY: // ability names
-            StringAppend(dst, gAbilities[T1_READ_16(&src[srcID + 1])].name);
+            StringAppend(dst, gAbilitiesInfo[T1_READ_16(&src[srcID + 1])].name);
             srcID += 3;
             break;
         case B_BUFF_ITEM: // item name

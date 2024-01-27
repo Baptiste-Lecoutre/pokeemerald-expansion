@@ -438,11 +438,10 @@ static u8 GetMaxPowerTier(u16 move)
         case EFFECT_TERRAIN_PULSE:
         case EFFECT_PUNISHMENT:
         case EFFECT_TRUMP_CARD:
-        case EFFECT_SONICBOOM:
+        case EFFECT_FIXED_DAMAGE_ARG:
         case EFFECT_SPIT_UP:
         case EFFECT_NATURAL_GIFT:
         case EFFECT_MIRROR_COAT:
-        case EFFECT_DRAGON_RAGE:
         case EFFECT_FINAL_GAMBIT:
         //case EFFECT_DRAGON_DARTS:
             return MAX_POWER_TIER_2;
@@ -949,11 +948,10 @@ void BS_TrySetStatus1(void)
         case STATUS1_SLEEP:
             if (CanSleep(gBattlerTarget))
             {
-            #if B_SLEEP_TURNS >= GEN_5
-                gBattleMons[gBattlerTarget].status1 |=  STATUS1_SLEEP_TURN((Random() % 3) + 2);
-            #else
-                gBattleMons[gBattlerTarget].status1 |=  STATUS1_SLEEP_TURN((Random() % 4) + 3);
-            #endif
+                if (B_SLEEP_TURNS >= GEN_5)
+                    gBattleMons[gBattlerTarget].status1 |=  STATUS1_SLEEP_TURN((Random() % 3) + 2);
+                else
+                    gBattleMons[gBattlerTarget].status1 |=  STATUS1_SLEEP_TURN((Random() % 4) + 3);
                 gBattleCommunication[MULTISTRING_CHOOSER] = 4;
                 effect++;
             }

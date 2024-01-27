@@ -44,6 +44,7 @@
 #include "constants/songs.h"
 #include "constants/trainers.h"
 #include "constants/rgb.h"
+#include "level_caps.h"
 
 static void PlayerBufferExecCompleted(u32 battler);
 static void PlayerHandleLoadMonSprite(u32 battler);
@@ -1049,7 +1050,7 @@ void HandleInputChooseMove(u32 battler)
             PlaySE(SE_SELECT);
         }
     }
-    else if( JOY_NEW(L_BUTTON)) // Additional Battle Info
+    else if(B_BATTLE_MOVE_INFO == TRUE && (JOY_NEW(B_BATTLE_MOVE_INFO_BUTTON) || gPlayerDpadHoldFrames > 59)) // Additional Battle Info
     {
         gDescriptionSubmenu = TRUE;
         MoveSelectionDisplayMoveDescription(battler);
@@ -1933,7 +1934,8 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     StringCopy(txtPtr, gTypeNames[type]);
     BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, battler, targetId));
 
-    MoveSelectionDisplaySplitIcon(battler);
+    if (B_PSS_SPLIT_ICONS == TRUE)
+        MoveSelectionDisplaySplitIcon(battler);
 }
 
 static void MoveSelectionDisplayMoveType(u32 battler)
@@ -1962,9 +1964,18 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
     u16 move = moveInfo->moves[gMoveSelectionCursor[battler]];
-    u16 pwr = gBattleMoves[move].power;
-    u16 acc = gBattleMoves[move].accuracy;
+    u16 pwr = 0;//gBattleMoves[move].power;
+    u16 acc = 0;//gBattleMoves[move].accuracy;
     u16 pri = gBattleMoves[move].priority;
+    u32 battlerAtk = battler;
+    u32 battlerDef = BATTLE_OPPOSITE(battlerAtk);
+    u32 moveType = gBattleMoves[move].type;
+    u32 atkAbility = GetBattlerAbility(battlerAtk);
+    u32 defAbility = GetBattlerAbility(battlerDef);
+    u32 holdEffectAtk = GetBattlerHoldEffect(battlerAtk, TRUE);
+    u32 holdEffectDef = GetBattlerHoldEffect(battlerDef, TRUE);
+    u32 weather = gBattleWeather;
+    bool32 updateFlags = FALSE;
     u8 pwr_num[3], acc_num[3], pri_num[3];
     u8 pwr_desc[7] = _("PWR: ");
     u8 acc_desc[7] = _("ACC: ");
@@ -1974,6 +1985,18 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
     u8 pri_start[] = _("{CLEAR_TO 0x6D}");
     LoadMessageBoxAndBorderGfx();
     DrawStdWindowFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
+
+    if (B_UPDATED_BATTLE_MOVE_INFO == TRUE) // in include/config/battle.h
+    {
+        pwr = CalcMoveBasePowerAfterModifiers(move, battlerAtk, battlerDef, moveType, updateFlags, atkAbility, defAbility, holdEffectAtk, weather);  // shows real base power after modifiers
+        acc = GetTotalAccuracy(battlerAtk, battlerDef, move, atkAbility, defAbility, holdEffectAtk, holdEffectDef);                               // shows real accuracy after modifiers
+    }
+    else
+    {
+        pwr = gBattleMoves[move].power; // for base power without modifiers
+        acc = gBattleMoves[move].accuracy; // for base accuracy without modifiers
+    }
+
     if (pwr < 2)
         StringCopy(pwr_num, gText_BattleSwitchWhich5);
     else
@@ -2393,7 +2416,7 @@ void PlayerHandleExpUpdate(u32 battler)
     u8 monId = gBattleResources->bufferA[battler][1];
     s32 taskId, expPointsToGive;
 
-    if (GetMonData(&gPlayerParty[monId], MON_DATA_LEVEL) >= MAX_LEVEL)
+    if (GetMonData(&gPlayerParty[monId], MON_DATA_LEVEL) >= GetCurrentLevelCap())
     {
         PlayerBufferExecCompleted(battler);
     }

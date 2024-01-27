@@ -103,8 +103,8 @@ enum UtilDebugMenu
 
 enum GivePCBagDebugMenu
 {
-    DEBUG_PCBAG_MENU_ITEM_FILL,
     DEBUG_PCBAG_MENU_ITEM_ACCESS_PC,
+    DEBUG_PCBAG_MENU_ITEM_FILL,
     DEBUG_PCBAG_MENU_ITEM_CLEAR_BAG,
     DEBUG_PCBAG_MENU_ITEM_CLEAR_BOXES,
 };
@@ -715,8 +715,8 @@ static const struct ListMenuItem sDebugMenu_Items_Utilities[] =
 
 static const struct ListMenuItem sDebugMenu_Items_PCBag[] =
 {
-    [DEBUG_PCBAG_MENU_ITEM_FILL]                  = {sDebugText_PCBag_Fill,                 DEBUG_PCBAG_MENU_ITEM_FILL},
     [DEBUG_PCBAG_MENU_ITEM_ACCESS_PC]             = {sDebugText_PCBag_AccessPC,             DEBUG_PCBAG_MENU_ITEM_ACCESS_PC},
+    [DEBUG_PCBAG_MENU_ITEM_FILL]                  = {sDebugText_PCBag_Fill,                 DEBUG_PCBAG_MENU_ITEM_FILL},
     [DEBUG_PCBAG_MENU_ITEM_CLEAR_BAG]             = {sDebugText_PCBag_ClearBag,             DEBUG_PCBAG_MENU_ITEM_CLEAR_BAG},
     [DEBUG_PCBAG_MENU_ITEM_CLEAR_BOXES]           = {sDebugText_PCBag_ClearBoxes,           DEBUG_PCBAG_MENU_ITEM_CLEAR_BOXES},
 };
@@ -882,8 +882,8 @@ static void (*const sDebugMenu_Actions_Utilities[])(u8) =
 
 static void (*const sDebugMenu_Actions_PCBag[])(u8) =
 {
-    [DEBUG_PCBAG_MENU_ITEM_FILL]                  = DebugAction_OpenPCBagFillMenu,
     [DEBUG_PCBAG_MENU_ITEM_ACCESS_PC]             = DebugAction_PCBag_AccessPC,
+    [DEBUG_PCBAG_MENU_ITEM_FILL]                  = DebugAction_OpenPCBagFillMenu,
     [DEBUG_PCBAG_MENU_ITEM_CLEAR_BAG]             = DebugAction_PCBag_ClearBag,
     [DEBUG_PCBAG_MENU_ITEM_CLEAR_BOXES]           = DebugAction_PCBag_ClearBoxes,
 };
@@ -1574,8 +1574,16 @@ static void DebugTask_HandleMenuInput_FlagsVars(u8 taskId)
         PlaySE(SE_SELECT);
         if ((func = sDebugMenu_Actions_Flags[input]) != NULL)
         {
-            Debug_RedrawListMenu(taskId);
-            func(taskId);
+            if (input == DEBUG_FLAGVAR_MENU_ITEM_FLAGS || input == DEBUG_FLAGVAR_MENU_ITEM_VARS)
+            {
+                Debug_RedrawListMenu(taskId);
+                func(taskId);
+            }
+            else
+            {
+                func(taskId);
+                Debug_RedrawListMenu(taskId);
+            }
 
             // Remove TRUE/FALSE window for functions that haven't been assigned flags
             if (gTasks[taskId].tInput == 0xFF)
@@ -3005,10 +3013,9 @@ static void DebugAction_Give_Item_SelectQuantity(u8 taskId)
 
         if (JOY_NEW(DPAD_UP))
         {
-            u32 maxCapacity = (ItemId_GetPocket(itemId) - 1 == BERRIES_POCKET) ? MAX_BERRY_CAPACITY : MAX_BAG_ITEM_CAPACITY;
             gTasks[taskId].tInput += sPowersOfTen[gTasks[taskId].tDigit];
-            if (gTasks[taskId].tInput > maxCapacity)
-                gTasks[taskId].tInput = maxCapacity;
+            if (gTasks[taskId].tInput > MAX_BAG_ITEM_CAPACITY)
+                gTasks[taskId].tInput = MAX_BAG_ITEM_CAPACITY;
         }
         if (JOY_NEW(DPAD_DOWN))
         {
@@ -3023,7 +3030,7 @@ static void DebugAction_Give_Item_SelectQuantity(u8 taskId)
         }
         if (JOY_NEW(DPAD_RIGHT))
         {
-            if (gTasks[taskId].tDigit < 2)
+            if (gTasks[taskId].tDigit < MAX_ITEM_DIGITS)
                 gTasks[taskId].tDigit += 1;
         }
 
@@ -3041,7 +3048,7 @@ static void DebugAction_Give_Item_SelectQuantity(u8 taskId)
         FreeSpriteOamMatrix(&gSprites[gTasks[taskId].tSpriteId]);   //Destroy item icon
         DestroySprite(&gSprites[gTasks[taskId].tSpriteId]);         //Destroy item icon
 
-        PlaySE(MUS_OBTAIN_ITEM);
+        PlaySE(MUS_LEVEL_UP);
         AddBagItem(itemId, gTasks[taskId].tInput);
         DebugAction_DestroyExtraWindow(taskId);
     }
@@ -3399,7 +3406,7 @@ static void DebugAction_Give_Pokemon_SelectNature(u8 taskId)
         ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 2);
         StringCopyPadded(gStringVar3, gStringVar3, CHAR_SPACE, 15);
         abilityId = GetAbilityBySpecies(sDebugMonData->species, 0);
-        StringCopy(gStringVar1, gAbilities[abilityId].name);
+        StringCopy(gStringVar1, gAbilitiesInfo[abilityId].name);
         StringExpandPlaceholders(gStringVar4, sDebugText_PokemonAbility);
         AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 1, 1, 0, NULL);
 
@@ -3444,7 +3451,7 @@ static void DebugAction_Give_Pokemon_SelectAbility(u8 taskId)
         StringCopy(gStringVar2, gText_DigitIndicator[gTasks[taskId].tDigit]);
         ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 2);
         StringCopyPadded(gStringVar3, gStringVar3, CHAR_SPACE, 15);
-        StringCopy(gStringVar1, gAbilities[abilityId].name);
+        StringCopy(gStringVar1, gAbilitiesInfo[abilityId].name);
         StringExpandPlaceholders(gStringVar4, sDebugText_PokemonAbility);
         AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 1, 1, 0, NULL);
     }
@@ -4175,8 +4182,8 @@ static void DebugAction_PCBag_Fill_PocketBerries(u8 taskId)
 
     for (itemId = FIRST_BERRY_INDEX; itemId < LAST_BERRY_INDEX; itemId++)
     {
-        if (CheckBagHasSpace(itemId, MAX_BERRY_CAPACITY))
-            AddBagItem(itemId, MAX_BERRY_CAPACITY);
+        if (CheckBagHasSpace(itemId, MAX_BAG_ITEM_CAPACITY))
+            AddBagItem(itemId, MAX_BAG_ITEM_CAPACITY);
     }
 }
 
