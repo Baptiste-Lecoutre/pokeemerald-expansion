@@ -3771,7 +3771,7 @@ static void DebugAction_Give_Pokemon_SelectEVs(u8 taskId)
             else
             {
                 StringCopy(gStringVar2, gText_DigitIndicator[gTasks[taskId].tDigit]);
-                StringCopy(gStringVar1, gMoveNames[gTasks[taskId].tInput]);
+                StringCopy(gStringVar1, GetMoveName(gTasks[taskId].tInput));
                 StringCopyPadded(gStringVar1, gStringVar1, CHAR_SPACE, 15);
                 ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 3);
                 StringExpandPlaceholders(gStringVar4, sDebugText_PokemonMove_0);
@@ -3819,7 +3819,7 @@ static void DebugAction_Give_Pokemon_Move(u8 taskId)
         }
 
         StringCopy(gStringVar2, gText_DigitIndicator[gTasks[taskId].tDigit]);
-        StringCopy(gStringVar1, gMoveNames[gTasks[taskId].tInput]);
+        StringCopy(gStringVar1, GetMoveName(gTasks[taskId].tInput));
         StringCopyPadded(gStringVar1, gStringVar1, CHAR_SPACE, 15);
         ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 3);
         switch (gTasks[taskId].tIterator)
@@ -3871,7 +3871,7 @@ static void DebugAction_Give_Pokemon_Move(u8 taskId)
             gTasks[taskId].tDigit = 0;
 
             StringCopy(gStringVar2, gText_DigitIndicator[gTasks[taskId].tDigit]);
-            StringCopy(gStringVar1, gMoveNames[gTasks[taskId].tInput]);
+            StringCopy(gStringVar1, GetMoveName(gTasks[taskId].tInput));
             StringCopyPadded(gStringVar1, gStringVar1, CHAR_SPACE, 15);
             ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 3);
             switch (gTasks[taskId].tIterator)

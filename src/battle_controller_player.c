@@ -828,13 +828,13 @@ void HandleInputChooseMove(u32 battler)
 
             QueueZMove(battler, chosenMove);
             gBattleStruct->zmove.viewing = FALSE;
-            if (gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].category != BATTLE_CATEGORY_STATUS)
+            if (gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].category != DAMAGE_CATEGORY_STATUS)
                 moveTarget = MOVE_TARGET_SELECTED;  //damaging z moves always have selected target
         }
 
         // Status moves turn into Max Guard when Dynamaxed, targets user.
         if ((IsDynamaxed(battler) || gBattleStruct->dynamax.playerSelect))
-            moveTarget = gBattleMoves[GetMaxMove(battler, moveInfo->moves[gMoveSelectionCursor[battler]])].target;
+            moveTarget = gMovesInfo[GetMaxMove(battler, moveInfo->moves[gMoveSelectionCursor[battler]])].target;
 
         if (moveTarget & MOVE_TARGET_USER)
             gMultiUsePlayerCursor = battler;
@@ -1825,9 +1825,9 @@ static void MoveSelectionDisplayMoveNames(u32 battler)
         MoveSelectionDestroyCursorAt(i);
         if ((gBattleStruct->dynamax.playerSelect && CanDynamax(battler))
             || IsDynamaxed(battler))
-            StringCopy(gDisplayedStringBattle, gMoveNames[GetMaxMove(battler, moveInfo->moves[i])]);
+            StringCopy(gDisplayedStringBattle, GetMoveName(GetMaxMove(battler, moveInfo->moves[i])));
         else
-            StringCopy(gDisplayedStringBattle, gMoveNames[moveInfo->moves[i]]);
+            StringCopy(gDisplayedStringBattle, GetMoveName(moveInfo->moves[i]));
         // Prints on windows B_WIN_MOVE_NAME_1, B_WIN_MOVE_NAME_2, B_WIN_MOVE_NAME_3, B_WIN_MOVE_NAME_4
         BattlePutTextOnWindow(gDisplayedStringBattle, i + B_WIN_MOVE_NAME_1);
         if (moveInfo->moves[i] != MOVE_NONE)
@@ -1862,11 +1862,11 @@ static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u32 battler, 
 {
     u16 selectedMove = moveInfo->moves[gMoveSelectionCursor[battler]];
 
-    if (gBattleMoves[selectedMove].power == 0 || !gSaveBlock2Ptr->optionsShowTypeEffectiveness)
+    if (gMovesInfo[selectedMove].power == 0 || !gSaveBlock2Ptr->optionsShowTypeEffectiveness)
         return B_WIN_MOVE_TYPE;
     else
     {
-        uq4_12_t typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gBattleMoves[selectedMove].type, battler, targetId, GetBattlerAbility(targetId), FALSE);
+        uq4_12_t typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gMovesInfo[selectedMove].type, battler, targetId, GetBattlerAbility(targetId), FALSE);
 
         if (typeEffectiveness == UQ_4_12(0.0))
             return B_WIN_NO_EFFECT;
@@ -1902,10 +1902,10 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
             || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK_TERA)
             type = gBattleMons[battler].type2;
         else
-            type = gBattleMoves[MOVE_IVY_CUDGEL].type;
+            type = gMovesInfo[MOVE_IVY_CUDGEL].type;
     }
     else
-        type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
+        type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
 
     StringCopy(txtPtr, gTypeNames[type]);
     BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, battler, targetId));
@@ -1926,7 +1926,7 @@ static void MoveSelectionDisplaySplitIcon(u32 battler){
 	int icon;
 
 	moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
-	icon = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].category;
+	icon = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].category;
 	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
 	BlitBitmapToWindow(B_WIN_DUMMY, sSplitIcons_Gfx + 0x80 * icon, 0, 0, 16, 16);
 	PutWindowTilemap(B_WIN_DUMMY);
@@ -1937,12 +1937,12 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
     u16 move = moveInfo->moves[gMoveSelectionCursor[battler]];
-    u16 pwr = 0;//gBattleMoves[move].power;
-    u16 acc = 0;//gBattleMoves[move].accuracy;
-    u16 pri = gBattleMoves[move].priority;
+    u16 pwr = 0; //gMovesInfo[move].power;
+    u16 acc = 0; //gMovesInfo[move].accuracy;
+    u16 pri = gMovesInfo[move].priority;
     u32 battlerAtk = battler;
     u32 battlerDef = BATTLE_OPPOSITE(battlerAtk);
-    u32 moveType = gBattleMoves[move].type;
+    u32 moveType = gMovesInfo[move].type;
     u32 atkAbility = GetBattlerAbility(battlerAtk);
     u32 defAbility = GetBattlerAbility(battlerDef);
     u32 holdEffectAtk = GetBattlerHoldEffect(battlerAtk, TRUE);
@@ -1966,8 +1966,8 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
     }
     else
     {
-        pwr = gBattleMoves[move].power; // for base power without modifiers
-        acc = gBattleMoves[move].accuracy; // for base accuracy without modifiers
+        pwr = gMovesInfo[move].power; // for base power without modifiers
+        acc = gMovesInfo[move].accuracy; // for base accuracy without modifiers
     }
 
     if (pwr < 2)
@@ -1989,7 +1989,7 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
     StringAppend(gDisplayedStringBattle, pri_desc);
     StringAppend(gDisplayedStringBattle, pri_num);
     StringAppend(gDisplayedStringBattle, gText_NewLine);
-    StringAppend(gDisplayedStringBattle, gMoveDescriptionPointers[move -1]);
+    StringAppend(gDisplayedStringBattle, gMovesInfo[move].description);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_DESCRIPTION);
     CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_FULL);
 }

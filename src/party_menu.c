@@ -2901,8 +2901,14 @@ static u8 DisplaySelectionWindow(u8 windowType)
 
     for (i = 0; i < sPartyMenuInternal->numActions; i++)
     {
+        const u8 *text;
         u8 fontColorsId = (sPartyMenuInternal->actions[i] >= MENU_FIELD_MOVES) ? 4 : 3;
-        AddTextPrinterParameterized4(sPartyMenuInternal->windowId[0], FONT_NORMAL, cursorDimension, (i * 16) + 1, letterSpacing, 0, sFontColorTable[fontColorsId], 0, sCursorOptions[sPartyMenuInternal->actions[i]].text);
+        if (sPartyMenuInternal->actions[i] >= MENU_FIELD_MOVES)
+            text = gMovesInfo[sFieldMoves[sPartyMenuInternal->actions[i] - MENU_FIELD_MOVES]].name;
+        else
+            text = sCursorOptions[sPartyMenuInternal->actions[i]].text;
+
+        AddTextPrinterParameterized4(sPartyMenuInternal->windowId[0], FONT_NORMAL, cursorDimension, (i * 16) + 1, letterSpacing, 0, sFontColorTable[fontColorsId], 0, text);
     }
 
     InitMenuInUpperLeftCorner(sPartyMenuInternal->windowId[0], sPartyMenuInternal->numActions, 0, TRUE);
@@ -3126,11 +3132,17 @@ static void Task_HandleSelectionMenuInput(u8 taskId)
         case MENU_B_PRESSED:
             PlaySE(SE_SELECT);
             PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[2]);
-            sCursorOptions[sPartyMenuInternal->actions[sPartyMenuInternal->numActions - 1]].func(taskId);
+            if (sPartyMenuInternal->actions[sPartyMenuInternal->numActions - 1] >= MENU_FIELD_MOVES)
+                CursorCb_FieldMove(taskId);
+            else
+                sCursorOptions[sPartyMenuInternal->actions[sPartyMenuInternal->numActions - 1]].func(taskId);
             break;
         default:
             PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[2]);
-            sCursorOptions[sPartyMenuInternal->actions[input]].func(taskId);
+            if (sPartyMenuInternal->actions[input] >= MENU_FIELD_MOVES)
+                CursorCb_FieldMove(taskId);
+            else
+                sCursorOptions[sPartyMenuInternal->actions[input]].func(taskId);
             break;
         }
     }
@@ -5314,7 +5326,7 @@ static void ShowMoveSelectWindow(u8 slot)
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         move = GetMonData(&gPlayerParty[slot], MON_DATA_MOVE1 + i);
-        AddTextPrinterParameterized(windowId, fontId, gMoveNames[move], 8, (i * 16) + 1, TEXT_SKIP_DRAW, NULL);
+        AddTextPrinterParameterized(windowId, fontId, GetMoveName(move), 8, (i * 16) + 1, TEXT_SKIP_DRAW, NULL);
         if (move != MOVE_NONE)
             moveCount++;
     }
@@ -5420,7 +5432,7 @@ static void TryUseItemOnMove(u8 taskId)
             PlaySE(SE_USE_ITEM);
             RemoveBagItem(item, 1);
             move = GetMonData(mon, MON_DATA_MOVE1 + *moveSlot);
-            StringCopy(gStringVar1, gMoveNames[move]);
+            StringCopy(gStringVar1, GetMoveName(move));
             GetMedicineItemEffectMessage(item, 0);
             DisplayPartyMenuMessage(gStringVar4, TRUE);
             ScheduleBgCopyTilemapToVram(2);
@@ -5494,7 +5506,7 @@ void ItemUseCB_TMHM(u8 taskId, TaskFunc task)
     mon = &gPlayerParty[gPartyMenu.slotId];
 
     GetMonNickname(mon, gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[move]);
+    StringCopy(gStringVar2, GetMoveName(move));
 
     switch (CanTeachMove(mon, move))
     {
@@ -5530,7 +5542,7 @@ static void Task_LearnedMove(u8 taskId)
             RemoveBagItem(item, 1);
     }
     GetMonNickname(mon, gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[move[0]]);
+    StringCopy(gStringVar2, GetMoveName(move[0]));
     StringExpandPlaceholders(gStringVar4, gText_PkmnLearnedMove3);
     DisplayPartyMenuMessage(gStringVar4, TRUE);
     ScheduleBgCopyTilemapToVram(2);
@@ -5628,7 +5640,7 @@ static void DisplayPartyMenuForgotMoveMessage(u8 taskId)
     u16 move = GetMonData(mon, MON_DATA_MOVE1 + GetMoveSlotToReplace());
 
     GetMonNickname(mon, gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[move]);
+    StringCopy(gStringVar2, GetMoveName(move));
     DisplayLearnMoveMessage(gText_12PoofForgotMove);
     gTasks[taskId].func = Task_PartyMenuReplaceMove;
 }
@@ -5653,7 +5665,7 @@ static void StopLearningMovePrompt(u8 taskId)
     struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
 
     GetMonNickname(mon, gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[gPartyMenu.data1]);
+    StringCopy(gStringVar2, GetMoveName(gPartyMenu.data1));
     StringExpandPlaceholders(gStringVar4, gText_MoveNotLearned);
     DisplayPartyMenuMessage(gStringVar4, TRUE);
 
@@ -5668,7 +5680,7 @@ static void StopLearningMovePrompt(u8 taskId)
         gTasks[taskId].func = Task_ClosePartyMenuAfterText;
     }
 
-/*    StringCopy(gStringVar2, gMoveNames[gPartyMenu.data1]);
+/*    StringCopy(gStringVar2, GetMoveName(gPartyMenu.data1));
     StringExpandPlaceholders(gStringVar4, gText_StopLearningMove2);
     DisplayPartyMenuMessage(gStringVar4, TRUE);
     ScheduleBgCopyTilemapToVram(2);
@@ -5692,7 +5704,7 @@ static void Task_HandleStopLearningMoveYesNoInput(u8 taskId)
     {
     case 0:
         GetMonNickname(mon, gStringVar1);
-        StringCopy(gStringVar2, gMoveNames[gPartyMenu.data1]);
+        StringCopy(gStringVar2, GetMoveName(gPartyMenu.data1));
         StringExpandPlaceholders(gStringVar4, gText_MoveNotLearned);
         DisplayPartyMenuMessage(gStringVar4, TRUE);
         if (gPartyMenu.learnMoveState == 1)
@@ -5711,7 +5723,7 @@ static void Task_HandleStopLearningMoveYesNoInput(u8 taskId)
         // fallthrough
     case 1:
         GetMonNickname(mon, gStringVar1);
-        StringCopy(gStringVar2, gMoveNames[gPartyMenu.data1]);
+        StringCopy(gStringVar2, GetMoveName(gPartyMenu.data1));
         DisplayLearnMoveMessage(gText_PkmnNeedsToReplaceMove);
         gTasks[taskId].func = Task_ReplaceMoveYesNo;
         break;
@@ -5975,7 +5987,7 @@ static void PartyMenuTryEvolution(u8 taskId)
 static void DisplayMonNeedsToReplaceMove(u8 taskId)
 {
     GetMonNickname(&gPlayerParty[gPartyMenu.slotId], gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[gMoveToLearn]);
+    StringCopy(gStringVar2, GetMoveName(gMoveToLearn));
     StringExpandPlaceholders(gStringVar4, gText_PkmnNeedsToReplaceMove);
     DisplayPartyMenuMessage(gStringVar4, TRUE);
     ScheduleBgCopyTilemapToVram(2);
@@ -5986,7 +5998,7 @@ static void DisplayMonNeedsToReplaceMove(u8 taskId)
 static void DisplayMonLearnedMove(u8 taskId, u16 move)
 {
     GetMonNickname(&gPlayerParty[gPartyMenu.slotId], gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[move]);
+    StringCopy(gStringVar2, GetMoveName(move));
     StringExpandPlaceholders(gStringVar4, gText_PkmnLearnedMove3);
     DisplayPartyMenuMessage(gStringVar4, TRUE);
     ScheduleBgCopyTilemapToVram(2);
@@ -6224,7 +6236,7 @@ void FormChangeTeachMove(u8 taskId, u32 move, u32 slot)
     PlaySE(SE_SELECT);
     mon = &gPlayerParty[slot];
     GetMonNickname(mon, gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[move]);
+    StringCopy(gStringVar2, GetMoveName(move));
 
     if (GiveMoveToMon(mon, move) != MON_HAS_MAX_MOVES)
     {
@@ -6858,7 +6870,7 @@ static void TryTutorSelectedMon(u8 taskId)
         move = &gPartyMenu.data1;
         GetMonNickname(mon, gStringVar1);
         gPartyMenu.data1 = gSpecialVar_0x8005;
-        StringCopy(gStringVar2, gMoveNames[gPartyMenu.data1]);
+        StringCopy(gStringVar2, GetMoveName(gPartyMenu.data1));
         move[1] = 2;
         if (gPartyMenu.data1 == MOVE_DRACO_METEOR)
         {
@@ -7911,7 +7923,7 @@ void BufferMoveDeleterNicknameAndMove(void)
     u16 move = GetMonData(mon, MON_DATA_MOVE1 + gSpecialVar_0x8005);
 
     GetMonNickname(mon, gStringVar1);
-    StringCopy(gStringVar2, gMoveNames[move]);
+    StringCopy(gStringVar2, GetMoveName(move));
 }
 
 void MoveDeleterForgetMove(void)
