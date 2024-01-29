@@ -9611,7 +9611,7 @@ static inline uq4_12_t GetSynergyModifier(u32 move, u32 battlerAtk)
     struct Pokemon *party = GetBattlerParty(battlerAtk);
     u32 i;
     u16 species;
-    u8 moveType = gBattleMoves[move].type;
+    u8 moveType = gMovesInfo[move].type;
     uq4_12_t modifier = UQ_4_12(1.0);
 
     for (i = 0; i < PARTY_SIZE; i++)

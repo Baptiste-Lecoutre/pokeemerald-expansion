@@ -1827,11 +1827,11 @@ static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u32 battler, 
 {
     u16 selectedMove = moveInfo->moves[gMoveSelectionCursor[battler]];
 
-    if (gBattleMoves[selectedMove].power == 0 || !gSaveBlock2Ptr->optionsShowTypeEffectiveness)
+    if (gMovesInfo[selectedMove].power == 0 || !gSaveBlock2Ptr->optionsShowTypeEffectiveness)
         return B_WIN_MOVE_TYPE;
     else
     {
-        uq4_12_t typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gBattleMoves[selectedMove].type, battler, targetId, GetBattlerAbility(targetId), FALSE);
+        uq4_12_t typeEffectiveness = CalcTypeEffectivenessMultiplier(selectedMove, gMovesInfo[selectedMove].type, battler, targetId, GetBattlerAbility(targetId), FALSE);
 
         if (typeEffectiveness == UQ_4_12(0.0))
             return B_WIN_NO_EFFECT;
@@ -1890,7 +1890,7 @@ static void MoveSelectionDisplaySplitIcon(u32 battler){
 	int icon;
 
 	moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
-	icon = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[battler]]].category;
+	icon = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].category;
 	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
 	BlitBitmapToWindow(B_WIN_DUMMY, sSplitIcons_Gfx + 0x80 * icon, 0, 0, 16, 16);
 	PutWindowTilemap(B_WIN_DUMMY);
@@ -1901,9 +1901,9 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
     u16 move = moveInfo->moves[gMoveSelectionCursor[battler]];
-    u16 pwr = gBattleMoves[move].power;
-    u16 acc = gBattleMoves[move].accuracy;
-    u16 pri = gBattleMoves[move].priority;
+    u16 pwr = gMovesInfo[move].power;
+    u16 acc = gMovesInfo[move].accuracy;
+    u16 pri = gMovesInfo[move].priority;
     u8 pwr_num[3], acc_num[3], pri_num[3];
     u8 pwr_desc[7] = _("PWR: ");
     u8 acc_desc[7] = _("ACC: ");
@@ -1932,7 +1932,7 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
     StringAppend(gDisplayedStringBattle, pri_desc);
     StringAppend(gDisplayedStringBattle, pri_num);
     StringAppend(gDisplayedStringBattle, gText_NewLine);
-    StringAppend(gDisplayedStringBattle, gMoveDescriptionPointers[move -1]);
+    StringAppend(gDisplayedStringBattle, gMovesInfo[move].description);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_DESCRIPTION);
     CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_FULL);
 }
