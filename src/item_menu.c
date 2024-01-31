@@ -401,11 +401,11 @@ static const struct YesNoFuncTable sYesNoSellItemFunctions = {ConfirmSell, Cance
 
 static const struct ScrollArrowsTemplate sBagScrollArrowsTemplate = {
     .firstArrowType = SCROLL_ARROW_LEFT,
-    .firstX = 28,
-    .firstY = 16,
+    .firstX = 3,//28,
+    .firstY = 8,//16,
     .secondArrowType = SCROLL_ARROW_RIGHT,
-    .secondX = 100,
-    .secondY = 16,
+    .secondX = 79,//100,
+    .secondY = 8,//16,
     .fullyUpThreshold = -1,
     .fullyDownThreshold = -1,
     .tileTag = TAG_BAG_SCROLL_ARROW,
@@ -454,8 +454,8 @@ static const struct WindowTemplate sDefaultBagWindows[] =
     },
     [WIN_POCKET_NAME] = {
         .bg = 0,
-        .tilemapLeft = 4,
-        .tilemapTop = 1,
+        .tilemapLeft = 1, //4,
+        .tilemapTop = 0, //1,
         .width = 8,
         .height = 2,
         .paletteNum = 1,
@@ -1422,7 +1422,7 @@ static void SwitchBagPocket(u8 taskId, s16 deltaBagPocketId, bool16 skipEraseLis
     }
     DrawPocketIndicatorSquare(gBagPosition.pocket, FALSE);
     DrawPocketIndicatorSquare(newPocket, TRUE);
-    FillBgTilemapBufferRect_Palette0(2, 11, 14, 2, 15, 16);
+    FillBgTilemapBufferRect_Palette0(2, 13/*11*/, 14, 2, 15, 16);
     ScheduleBgCopyTilemapToVram(2);
 
     if (newPocket + 1 == POCKET_TM_HM)
@@ -1442,7 +1442,7 @@ static void SwitchBagPocket(u8 taskId, s16 deltaBagPocketId, bool16 skipEraseLis
         SetBagVisualPocketId(newPocket, TRUE);
 
     RemoveBagSprite(ITEMMENUSPRITE_BALL);
-    AddSwitchPocketRotatingBallSprite(deltaBagPocketId);
+//    AddSwitchPocketRotatingBallSprite(deltaBagPocketId);
     SetTaskFuncWithFollowupFunc(taskId, Task_SwitchBagPocket, gTasks[taskId].func);
 }
 
@@ -1497,17 +1497,17 @@ static void Task_SwitchBagPocket(u8 taskId)
 // When the pocket is switched this lighter background is redrawn row by row
 static void DrawItemListBgRow(u8 y)
 {
-    FillBgTilemapBufferRect_Palette0(2, 17, 14, y + 2, 15, 1);
+    FillBgTilemapBufferRect_Palette0(2, 13/*17*/, 14, y + 2, 15, 1);
     ScheduleBgCopyTilemapToVram(2);
 }
 
 static void DrawPocketIndicatorSquare(u8 x, bool8 isCurrentPocket)
 {
-    if (!isCurrentPocket)
+/*    if (!isCurrentPocket)
         FillBgTilemapBufferRect_Palette0(2, 0x1017, x + 3, 3, 1, 1);
     else
         FillBgTilemapBufferRect_Palette0(2, 0x102B, x + 3, 3, 1, 1);
-    ScheduleBgCopyTilemapToVram(2);
+    ScheduleBgCopyTilemapToVram(2);*/
 }
 
 static bool8 CanSwapItems(void)
@@ -2556,12 +2556,12 @@ static void PrintPocketNames(const u8 *pocketName1, const u8 *pocketName2)
     window.height = 2;
     windowId = AddWindow(&window);
     FillWindowPixelBuffer(windowId, PIXEL_FILL(0));
-    offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName1, 0x40);
-    BagMenu_Print(windowId, FONT_NORMAL, pocketName1, offset, 1, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
+    offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName1, 0x42);
+    BagMenu_Print(windowId, FONT_NORMAL, pocketName1, offset, 0/*1*/, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
     if (pocketName2)
     {
-        offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName2, 0x40);
-        BagMenu_Print(windowId, FONT_NORMAL, pocketName2, offset + 0x40, 1, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
+        offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName2, 0x42);
+        BagMenu_Print(windowId, FONT_NORMAL, pocketName2, offset + 0x40, 0/*1*/, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
     }
     CpuCopy32((u8 *)GetWindowAttribute(windowId, WINDOW_TILE_DATA), gBagMenu->pocketNameBuffer, sizeof(gBagMenu->pocketNameBuffer));
     RemoveWindow(windowId);
@@ -2572,8 +2572,8 @@ static void CopyPocketNameToWindow(u32 a)
     u8 (*tileDataBuffer)[32][32];
     u8 *windowTileData;
     int b;
-    if (a > 8)
-        a = 8;
+    if (a > 10)
+        a = 10;
     tileDataBuffer = &gBagMenu->pocketNameBuffer;
     windowTileData = (u8 *)GetWindowAttribute(2, WINDOW_TILE_DATA);
     CpuCopy32(&tileDataBuffer[0][a], windowTileData, 0x100); // Top half of pocket name
@@ -3048,7 +3048,7 @@ static void DrawPartyMonIcons(void)
         else
         {
             icon_x = 20 + 32 * (i < 3 ? i : i - 3);
-            icon_y = i < 3 ? 40 : 60;
+            icon_y = i < 3 ? 33 : 60;
         }
 
         species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);
