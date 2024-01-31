@@ -54,7 +54,8 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	checkplayergender
 	call_if_eq VAR_RESULT, MALE, HauntedMansion_3F_EventScript_MayGoBack
 	call_if_eq VAR_RESULT, FEMALE, HauntedMansion_3F_EventScript_BrendanGoBack
-	setvar VAR_POKE_VIAL_MAX_CHARGES, 2
+	addvar VAR_POKE_VIAL_MAX_CHARGES, 1
+	addvar VAR_POKE_VIAL_CHARGES, 1
 	setvar VAR_LAVARIDGE_TOWN_STATE, 4
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	call_if_eq VAR_PETALBURG_GYM_STATE, 7, Common_EventScript_ReadyPetalburgGymForBattle
