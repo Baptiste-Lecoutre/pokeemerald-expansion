@@ -3714,7 +3714,8 @@ static void PrintMoveDetails(u16 move)
             FillBgTilemapBufferRect(1, TILE_FILLED_JAM_HEART, 9, 11, heartRow2, 1, 3);
             CopyBgTilemapBufferToVram(1);
 
-            PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gContestEffectFourLineDescriptionPointers[gMovesInfo[move].contestEffect], 8, 64, 0, 0);
+            //PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gContestEffectFourLineDescriptionPointers[gMovesInfo[move].contestEffect], 8, 64, 0, 0);
+            PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gContestEffectDescriptionPointers[gMovesInfo[move].contestEffect], 8, 64, 0, 0);
         }
 
         PutWindowTilemap(PSS_LABEL_PANE_LEFT_MOVE);
