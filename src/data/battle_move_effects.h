@@ -817,9 +817,9 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
         .encourageEncore = TRUE,
     },
 
-    [EFFECT_FAKE_OUT] =
+    [EFFECT_FIRST_TURN_ONLY] =
     {
-        .battleScript = BattleScript_EffectFakeOut,
+        .battleScript = BattleScript_EffectFirstTurnOnly,
         .battleTvScore = 4,
         .encourageEncore = TRUE,
     },
@@ -2222,5 +2222,18 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
     {
         .battleScript = BattleScript_EffectShedTail,
         .battleTvScore = 0, // TODO: Assign points
+    },
+
+    [EFFECT_UPPER_HAND] =
+    {
+        .battleScript = BattleScript_EffectUpperHand,
+        .battleTvScore = 0, // TODO: Assign points
+    },
+
+    [EFFECT_DRAGON_CHEER] =
+    {
+        .battleScript = BattleScript_EffectFocusEnergy,
+        .battleTvScore = 1,
+        .encourageEncore = TRUE,
     },
 };

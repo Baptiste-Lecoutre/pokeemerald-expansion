@@ -128,7 +128,7 @@ enum {
     EFFECT_SEMI_INVULNERABLE,
     EFFECT_DEFENSE_CURL,
     EFFECT_SOFTBOILED, // differences vs Recover - can be used outside of battle to restore HP
-    EFFECT_FAKE_OUT,
+    EFFECT_FIRST_TURN_ONLY,
     EFFECT_UPROAR,
     EFFECT_STOCKPILE,
     EFFECT_SPIT_UP,
@@ -351,6 +351,8 @@ enum {
     EFFECT_BLIZZARD,
     EFFECT_RAIN_ALWAYS_HIT, // Unlike EFFECT_THUNDER, it doesn't get its accuracy reduced under sun.
     EFFECT_SHED_TAIL,
+    EFFECT_UPPER_HAND,
+    EFFECT_DRAGON_CHEER,
     NUM_BATTLE_MOVE_EFFECTS,
 };
 
