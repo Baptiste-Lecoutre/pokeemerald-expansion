@@ -380,11 +380,11 @@ static const struct YesNoFuncTable sYesNoSellItemFunctions = {ConfirmSell, Cance
 
 static const struct ScrollArrowsTemplate sBagScrollArrowsTemplate = {
     .firstArrowType = SCROLL_ARROW_LEFT,
-    .firstX = 28,
-    .firstY = 16,
+    .firstX = 3,//28,
+    .firstY = 8,//16,
     .secondArrowType = SCROLL_ARROW_RIGHT,
-    .secondX = 100,
-    .secondY = 16,
+    .secondX = 79,//100,
+    .secondY = 8,//16,
     .fullyUpThreshold = -1,
     .fullyDownThreshold = -1,
     .tileTag = TAG_BAG_SCROLL_ARROW,
@@ -593,8 +593,8 @@ static const struct WindowTemplate sDefaultBagWindows[] =
     },
     [WIN_POCKET_NAME] = {
         .bg = 0,
-        .tilemapLeft = 4,
-        .tilemapTop = 1,
+        .tilemapLeft = 1, //4,
+        .tilemapTop = 0, //1,
         .width = 8,
         .height = 2,
         .paletteNum = 1,
@@ -947,11 +947,6 @@ static bool8 SetupBagMenu(void)
     case 13:
         PrintPocketNames(gPocketNamesStringsTable[gBagPosition.pocket], 0);
         CopyPocketNameToWindow(0);
-        DrawPocketIndicatorSquare(0, FALSE);
-        DrawPocketIndicatorSquare(1, FALSE);
-        DrawPocketIndicatorSquare(7, FALSE);
-        DrawPocketIndicatorSquare(8, FALSE);
-        DrawPocketIndicatorSquare(9, FALSE);
         DrawPocketIndicatorSquare(gBagPosition.pocket, TRUE);
         gMain.state++;
         break;
@@ -1117,7 +1112,7 @@ static void GetItemName(u8 *dest, u16 itemId)
     switch (gBagPosition.pocket)
     {
     case TMHM_POCKET:
-        StringCopy(gStringVar2, gMoveNames[ItemIdToBattleMoveId(itemId)]);
+        StringCopy(gStringVar2, GetMoveName(ItemIdToBattleMoveId(itemId)));
         if (itemId >= ITEM_HM01)
         {
             // Get HM number
@@ -1572,7 +1567,7 @@ static void SwitchBagPocket(u8 taskId, s16 deltaBagPocketId, bool16 skipEraseLis
     }
     DrawPocketIndicatorSquare(gBagPosition.pocket, FALSE);
     DrawPocketIndicatorSquare(newPocket, TRUE);
-    FillBgTilemapBufferRect_Palette0(2, 11, 14, 2, 15, 16);
+    FillBgTilemapBufferRect_Palette0(2, 13, 14, 2, 15, 16);
     ScheduleBgCopyTilemapToVram(2);
 
     if (newPocket + 1 == POCKET_TM_HM)
@@ -1593,7 +1588,6 @@ static void SwitchBagPocket(u8 taskId, s16 deltaBagPocketId, bool16 skipEraseLis
         SetBagVisualPocketId(newPocket, TRUE);
 
     RemoveBagSprite(ITEMMENUSPRITE_BALL);
-    AddSwitchPocketRotatingBallSprite(deltaBagPocketId);
     SetTaskFuncWithFollowupFunc(taskId, Task_SwitchBagPocket, gTasks[taskId].func);
 }
 
@@ -1648,16 +1642,21 @@ static void Task_SwitchBagPocket(u8 taskId)
 // When the pocket is switched this lighter background is redrawn row by row
 static void DrawItemListBgRow(u8 y)
 {
-    FillBgTilemapBufferRect_Palette0(2, 17, 14, y + 2, 15, 1);
+    FillBgTilemapBufferRect_Palette0(2, 13, 14, y + 2, 15, 1);
     ScheduleBgCopyTilemapToVram(2);
 }
 
 static void DrawPocketIndicatorSquare(u8 x, bool8 isCurrentPocket)
 {
-    if (!isCurrentPocket)
-        FillBgTilemapBufferRect_Palette0(2, 0x1017, x + 3, 3, 1, 1);
+    u16 tileNum;
+
+    if (x < 6)
+        tileNum = 0x29;
+    else if (x == 6)
+        tileNum = 0x2D;
     else
-        FillBgTilemapBufferRect_Palette0(2, 0x102B, x + 3, 3, 1, 1);
+        tileNum = 0x2B;
+    FillBgTilemapBufferRect_Palette0(2, tileNum + isCurrentPocket, x, 2, 1, 1);
     ScheduleBgCopyTilemapToVram(2);
 }
 
@@ -2925,12 +2924,12 @@ static void PrintPocketNames(const u8 *pocketName1, const u8 *pocketName2)
     window.height = 2;
     windowId = AddWindow(&window);
     FillWindowPixelBuffer(windowId, PIXEL_FILL(0));
-    offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName1, 0x40);
-    BagMenu_Print(windowId, FONT_NORMAL, pocketName1, offset, 1, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
+    offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName1, 0x42);
+    BagMenu_Print(windowId, FONT_NORMAL, pocketName1, offset, 0, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
     if (pocketName2)
     {
-        offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName2, 0x40);
-        BagMenu_Print(windowId, FONT_NORMAL, pocketName2, offset + 0x40, 1, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
+        offset = GetStringCenterAlignXOffset(FONT_NORMAL, pocketName2, 0x42);
+        BagMenu_Print(windowId, FONT_NORMAL, pocketName2, offset + 0x40, 0, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
     }
     CpuCopy32((u8 *)GetWindowAttribute(windowId, WINDOW_TILE_DATA), gBagMenu->pocketNameBuffer, sizeof(gBagMenu->pocketNameBuffer));
     RemoveWindow(windowId);
@@ -2941,8 +2940,8 @@ static void CopyPocketNameToWindow(u32 a)
     u8 (*tileDataBuffer)[32][32];
     u8 *windowTileData;
     int b;
-    if (a > 8)
-        a = 8;
+    if (a > 10)
+        a = 10;
     tileDataBuffer = &gBagMenu->pocketNameBuffer;
     windowTileData = (u8 *)GetWindowAttribute(2, WINDOW_TILE_DATA);
     CpuCopy32(&tileDataBuffer[0][a], windowTileData, 0x100); // Top half of pocket name
@@ -3104,44 +3103,44 @@ static void PrintTMHMMoveData(u16 itemId)
         LoadCompressedPalette(gMoveTypes_Pal, 0x1C0, 0x60);
 
         moveId = ItemIdToBattleMoveId(itemId);
-//        BlitMenuInfoIcon(WIN_TMHM_INFO, gBattleMoves[moveId].type + 1, 0, 0);
+//        BlitMenuInfoIcon(WIN_TMHM_INFO, gMovesInfo[moveId].type + 1, 0, 0);
 
         if (gBagMenu->typeIconSpriteId == 0xFF)
         {
 		    gBagMenu->typeIconSpriteId = CreateSpriteAtEnd(&gSpriteTemplate_MoveTypes, 72, 109, 0);
 
 		    sprite = &gSprites[gBagMenu->typeIconSpriteId];
-		    StartSpriteAnim(sprite, gBattleMoves[moveId].type);
-		    sprite->oam.paletteNum = sMoveTypeToOamPaletteNum[gBattleMoves[moveId].type];
+		    StartSpriteAnim(sprite, gMovesInfo[moveId].type);
+		    sprite->oam.paletteNum = sMoveTypeToOamPaletteNum[gMovesInfo[moveId].type];
         }
 
         // Print TMHM power
-        if (gBattleMoves[moveId].power <= 1)
+        if (gMovesInfo[moveId].power <= 1)
         {
             text = gText_ThreeDashes;
         }
         else
         {
-            ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveId].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[moveId].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
             text = gStringVar1;
         }
         BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, text, 7, 12, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
 
         // Print TMHM accuracy
-        if (gBattleMoves[moveId].accuracy == 0)
+        if (gMovesInfo[moveId].accuracy == 0)
         {
             text = gText_ThreeDashes;
         }
         else
         {
-            ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveId].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[moveId].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
             text = gStringVar1;
         }
         BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, text, 7, 24, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
 
         // Print TMHM pp
-        ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveId].pp, STR_CONV_MODE_RIGHT_ALIGN, 3);
-        BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, gStringVar1, 7, 36, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
+        ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[moveId].pp, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, gStringVar1, 7, 36, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO); //35
 
         CopyWindowToVram(WIN_TMHM_INFO, COPYWIN_GFX);
     }
@@ -3188,7 +3187,7 @@ static void DrawPartyMonIcons(void)
         else
         {
             icon_x = 20 + 32 * (i < 3 ? i : i - 3);
-            icon_y = i < 3 ? 40 : 60;
+            icon_y = i < 3 ? 33 : 60;
         }
 
         species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG);

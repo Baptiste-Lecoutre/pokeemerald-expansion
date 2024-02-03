@@ -21,6 +21,11 @@
 
 	.section script_data, "aw", %progbits
 
+BattleScript_EffectUpperHand::
+	attackcanceler
+	tryupperhand BattleScript_FailedFromAtkString
+	goto BattleScript_HitFromAccCheck
+
 BattleScript_EffectShedTail::
 	attackcanceler
 	attackstring
@@ -180,7 +185,7 @@ BattleScript_MoveSwitchOpenPartyScreen:
 	switchoutabilities BS_ATTACKER
 	waitstate
 	switchhandleorder BS_ATTACKER, 2
-	returntoball BS_ATTACKER
+	returntoball BS_ATTACKER, FALSE
 	getswitchedmondata BS_ATTACKER
 	switchindataupdate BS_ATTACKER
 	hpthresholds BS_ATTACKER
@@ -3575,7 +3580,7 @@ BattleScript_EffectFocusEnergy::
 	attackcanceler
 	attackstring
 	ppreduce
-	jumpifstatus2 BS_ATTACKER, STATUS2_FOCUS_ENERGY, BattleScript_ButItFailed
+	jumpifstatus2 BS_ATTACKER, STATUS2_FOCUS_ENERGY_ANY, BattleScript_ButItFailed
 	setfocusenergy
 	attackanimation
 	waitanimation
@@ -4483,7 +4488,7 @@ BattleScript_EffectBatonPass::
 	switchoutabilities BS_ATTACKER
 	waitstate
 	switchhandleorder BS_ATTACKER, 2
-	returntoball BS_ATTACKER
+	returntoball BS_ATTACKER, FALSE
 	getswitchedmondata BS_ATTACKER
 	switchindataupdate BS_ATTACKER
 	hpthresholds BS_ATTACKER
@@ -4835,7 +4840,7 @@ BattleScript_AlreadyAtFullHp::
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
 
-BattleScript_EffectFakeOut::
+BattleScript_EffectFirstTurnOnly::
 	attackcanceler
 	jumpifnotfirstturn BattleScript_FailedFromAtkString
 	goto BattleScript_EffectHit
@@ -5974,6 +5979,7 @@ BattleScript_PrintFullBox::
 
 BattleScript_ActionSwitch::
 	hpthresholds2 BS_ATTACKER
+	copybyte sSAVED_BATTLER, gBattlerAttacker
 	printstring STRINGID_RETURNMON
 	jumpifbattletype BATTLE_TYPE_DOUBLE, BattleScript_PursuitSwitchDmgSetMultihit
 	setmultihit 1
@@ -5991,6 +5997,7 @@ BattleScript_DoSwitchOut::
 	switchoutabilities BS_ATTACKER
 	updatedynamax
 	waitstate
+	copybyte gBattlerAttacker, sSAVED_BATTLER
 	returnatktoball
 	waitstate
 	drawpartystatussummary BS_ATTACKER
@@ -6319,7 +6326,7 @@ BattleScript_RoarSuccessRet:
 	waitanimation
 BattleScript_RoarSuccessRet_Ret:
 	switchoutabilities BS_TARGET
-	returntoball BS_TARGET
+	returntoball BS_TARGET, FALSE
 	waitstate
 	return
 
@@ -7705,6 +7712,7 @@ BattleScript_DoRecoil::
 	datahpupdate BS_ATTACKER
 	printstring STRINGID_PKMNHITWITHRECOIL
 	waitmessage B_WAIT_TIME_LONG
+	tryupdaterecoiltracker
 	tryfaintmon BS_ATTACKER
 BattleScript_RecoilEnd::
 	return
@@ -7791,7 +7799,7 @@ BattleScript_EmergencyExitNoPopUp::
 	switchoutabilities BS_TARGET
 	waitstate
 	switchhandleorder BS_TARGET, 2
-	returntoball BS_TARGET
+	returntoball BS_TARGET, FALSE
 	getswitchedmondata BS_TARGET
 	switchindataupdate BS_TARGET
 	hpthresholds BS_TARGET
@@ -7982,6 +7990,49 @@ BattleScript_IntimidateInReverse:
 	modifybattlerstatstage BS_TARGET, STAT_ATK, INCREASE, 1, BattleScript_IntimidateLoopIncrement, ANIM_ON
 	call BattleScript_TryAdrenalineOrb
 	goto BattleScript_IntimidateLoopIncrement
+
+BattleScript_SupersweetSyrupActivates::
+	showabilitypopup BS_ATTACKER
+	pause B_WAIT_TIME_LONG
+	destroyabilitypopup
+	printstring STRINGID_SUPERSWEETAROMAWAFTS
+	waitmessage B_WAIT_TIME_LONG
+	setbyte gBattlerTarget, 0
+BattleScript_SupersweetSyrupLoop:
+	jumpifbyteequal gBattlerTarget, gBattlerAttacker, BattleScript_SupersweetSyrupLoopIncrement
+	jumpiftargetally BattleScript_SupersweetSyrupLoopIncrement
+	jumpifabsent BS_TARGET, BattleScript_SupersweetSyrupLoopIncrement
+	jumpifstatus2 BS_TARGET, STATUS2_SUBSTITUTE, BattleScript_SupersweetSyrupLoopIncrement
+BattleScript_SupersweetSyrupEffect:
+	copybyte sBATTLER, gBattlerAttacker
+	setstatchanger STAT_EVASION, 1, TRUE
+	statbuffchange STAT_CHANGE_NOT_PROTECT_AFFECTED | STAT_CHANGE_ALLOW_PTR, BattleScript_SupersweetSyrupLoopIncrement
+	setgraphicalstatchangevalues
+	jumpifability BS_TARGET, ABILITY_CONTRARY, BattleScript_SupersweetSyrupContrary
+	playanimation BS_TARGET, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
+	printfromtable gStatDownStringIds
+BattleScript_SupersweetSyrupEffect_WaitString:
+	waitmessage B_WAIT_TIME_LONG
+	copybyte sBATTLER, gBattlerTarget
+	call BattleScript_TryAdrenalineOrb
+BattleScript_SupersweetSyrupLoopIncrement:
+	addbyte gBattlerTarget, 1
+	jumpifbytenotequal gBattlerTarget, gBattlersCount, BattleScript_SupersweetSyrupLoop
+BattleScript_SupersweetSyrupEnd:
+	copybyte sBATTLER, gBattlerAttacker
+	destroyabilitypopup
+	pause B_WAIT_TIME_MED
+	end3
+
+BattleScript_SupersweetSyrupContrary:
+	call BattleScript_AbilityPopUpTarget
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_SupersweetSyrupContrary_WontIncrease
+	playanimation BS_TARGET, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
+	printfromtable gStatUpStringIds
+	goto BattleScript_SupersweetSyrupEffect_WaitString
+BattleScript_SupersweetSyrupContrary_WontIncrease:
+	printstring STRINGID_TARGETSTATWONTGOHIGHER
+	goto BattleScript_SupersweetSyrupEffect_WaitString
 
 BattleScript_DroughtActivates::
 	pause B_WAIT_TIME_SHORT
@@ -9602,7 +9653,7 @@ BattleScript_EjectButtonActivates::
 	switchoutabilities BS_SCRIPTING
 	waitstate
 	switchhandleorder BS_SCRIPTING 0x2
-	returntoball BS_SCRIPTING
+	returntoball BS_SCRIPTING, FALSE
 	getswitchedmondata BS_SCRIPTING
 	switchindataupdate BS_SCRIPTING
 	hpthresholds BS_SCRIPTING
@@ -9898,10 +9949,8 @@ BattleScript_RaiseCritAlliesLoop:
 	setstatchanger STAT_ATK, 0, FALSE @ for animation
 	setgraphicalstatchangevalues
 	playanimation BS_TARGET, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
-	swapattackerwithtarget
 	printstring STRINGID_PKMNGETTINGPUMPED
 	waitmessage B_WAIT_TIME_LONG
-	swapattackerwithtarget
 BattleScript_RaiseCritAlliesIncrement:
 	setbyte sSTAT_ANIM_PLAYED, FALSE
 	jumpifbytenotequal gBattlerTarget, gBattlerAttacker, BattleScript_RaiseCritAlliesEnd
@@ -9988,7 +10037,7 @@ BattleScript_DynamaxBegins::
 	trytrainerslidedynamaxmsg
 	returnatktoball
 	pause B_WAIT_TIME_SHORT
-	returntoball BS_SCRIPTING
+	returntoball BS_SCRIPTING, TRUE
 	switchinanim BS_SCRIPTING, TRUE
 	updatedynamax
 	playanimation BS_SCRIPTING, B_ANIM_DYNAMAX_GROWTH

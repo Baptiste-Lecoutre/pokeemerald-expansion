@@ -244,6 +244,9 @@ static const u8 sText_EVO_WATER_SCROLL[] = _("ScrollOfWatrs is used");
 static const u8 sText_EVO_ITEM_NIGHT[] = _("{STR_VAR_2} is used, night");
 static const u8 sText_EVO_ITEM_DAY[] = _("{STR_VAR_2} is used, day");
 static const u8 sText_EVO_ITEM_HOLD[] = _("{LV}{UP_ARROW}, holds {STR_VAR_2}");
+static const u8 sText_EVO_LEVEL_MOVE_TWENTY_TIMES[] = _("{LV}{UP_ARROW} after 20x {STR_VAR_2}");
+static const u8 sText_EVO_LEVEL_RECOIL_DAMAGE_MALE[] = _("{LV}{UP_ARROW} with {STR_VAR_2} recoil, male");
+static const u8 sText_EVO_LEVEL_RECOIL_DAMAGE_FEMALE[] = _("{LV}{UP_ARROW} with {STR_VAR_2} recoil, female");
 static const u8 sText_EVO_UNKNOWN[] = _("Method unknown");
 static const u8 sText_EVO_NONE[] = _("{STR_VAR_1} has no evolution.");
 
@@ -317,7 +320,7 @@ static EWRAM_DATA struct PokedexListItem *sPokedexListItem = NULL;
 #define MOVES_COUNT_TOTAL (EGG_MOVES_ARRAY_COUNT + MAX_LEVEL_UP_MOVES + NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES)
 EWRAM_DATA static u16 sStatsMoves[MOVES_COUNT_TOTAL] = {0};
 EWRAM_DATA static u16 sStatsMovesTMHM_ID[NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES] = {0};
-
+EWRAM_DATA u16 gSpeciesToLoad = SPECIES_NONE;
 
 struct SearchOptionText
 {
@@ -618,6 +621,7 @@ static u8 ShowCategoryIcon(u32 category);
 static void DestroyCategoryIcon(void);
 
 static u16 NationalPokedexNumToSpeciesHGSS(u16 nationalNum);
+static u16 SpeciesToDexListNum(u16 species);
 
 #define TAG_CATEGORY_ICONS 30004
 
@@ -2135,6 +2139,11 @@ void CB2_OpenPokedexPlusHGSS(void)
         SetMainCallback2(CB2_Pokedex);
         CreatePokedexList(sPokedexView->dexMode, sPokedexView->dexOrder);
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x80);
+
+        // force load species from party menu
+        if (gSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->selectedPokemon = SpeciesToDexListNum(gSpeciesToLoad);
+
         break;
     }
 }
@@ -2219,6 +2228,21 @@ static void Task_OpenPokedexMainPage(u8 taskId)
 static void Task_HandlePokedexInput(u8 taskId)
 {
     SetGpuReg(REG_OFFSET_BG0VOFS, sPokedexView->menuY);
+
+    // force load species from party menu
+    if (gSpeciesToLoad != SPECIES_NONE)
+    {
+        if (GetFormIdFromFormSpeciesId(gSpeciesToLoad) != 0)
+            sPokedexView->formSpecies = gSpeciesToLoad;
+
+        TryDestroyStatBars();
+        UpdateSelectedMonSpriteId();
+        BeginNormalPaletteFade(~(1 << (gSprites[sPokedexView->selectedMonSpriteId].oam.paletteNum + 16)), 0, 0, 0x10, RGB_BLACK);
+        gSprites[sPokedexView->selectedMonSpriteId].callback = SpriteCB_MoveMonForInfoScreen;
+        gTasks[taskId].func = Task_OpenInfoScreenAfterMonMovement;
+        PlaySE(SE_PIN);
+        FreeWindowAndBgBuffers();
+    }
 
     if (sPokedexView->menuY)
     {
@@ -2373,10 +2397,18 @@ static void Task_WaitForExitInfoScreen(u8 taskId)
     }
     else
     {
-        // Exiting, back to list view
-        sLastSelectedPokemon = sPokedexView->selectedPokemon;
-        sPokeBallRotation = sPokedexView->pokeBallRotation;
-        gTasks[taskId].func = Task_OpenPokedexMainPage;
+        // close directly to party menu if opened from party menu
+        if (gSpeciesToLoad != SPECIES_NONE)
+        {
+            gTasks[taskId].func = Task_ClosePokedex;
+        }
+        else
+        {
+            // Exiting, back to list view
+            sLastSelectedPokemon = sPokedexView->selectedPokemon;
+            sPokeBallRotation = sPokedexView->pokeBallRotation;
+            gTasks[taskId].func = Task_OpenPokedexMainPage;
+        }
     }
 }
 
@@ -2392,7 +2424,14 @@ static void Task_ClosePokedex(u8 taskId)
         ClearMonSprites();
         FreeWindowAndBgBuffers();
         DestroyTask(taskId);
-        SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
+        
+        if (gSpeciesToLoad != SPECIES_NONE)
+            SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
+        else
+            SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
+
+        gSpeciesToLoad = SPECIES_NONE;
+
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
         Free(sPokedexView);
     }
@@ -2842,6 +2881,10 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
     u16 dexNum;
     u8 spriteId;
 
+    // if we load in a particular form from the party menu, we need to load the sprite for it
+    // but only for the middle mon
+    bool8 loadForm = gSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gSpeciesToLoad) != 0;
+
     gPaletteFade.bufferTransferDisabled = TRUE;
 
     for (i = 0; i < MAX_MONS_ON_SCREEN; i++)
@@ -2861,9 +2904,15 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
     dexNum = GetPokemonSpriteToDisplay(selectedMon);
     if (dexNum != 0xFFFF)
     {
+        if (loadForm)
+            sPokedexView->formSpecies = gSpeciesToLoad;
+
         spriteId = CreatePokedexMonSprite(dexNum, SCROLLING_MON_X, 0x50);
         gSprites[spriteId].callback = SpriteCB_PokedexListMonSprite;
         gSprites[spriteId].data[5] = 0;
+
+        if (loadForm)
+            sPokedexView->formSpecies = 0;
     }
 
     // Create bottom mon sprite
@@ -5340,19 +5389,19 @@ static void PrintStatsScreen_Moves_Top(u8 taskId)
     PrintStatsScreenTextSmallWhite(WIN_STATS_MOVES_TOP, gStringVar1, moves_x-1, moves_y+1);
 
     //Move name
-    StringCopy(gStringVar3, gMoveNames[move]);
+    StringCopy(gStringVar3, GetMoveName(move));
     StringCopyPadded(gStringVar3, gStringVar3, CHAR_SPACE, 20);
     PrintStatsScreenTextSmall(WIN_STATS_MOVES_TOP, gStringVar3, moves_x, moves_y + 17);
 
     //Draw move type icon
     if (gTasks[taskId].data[5] == 0)
     {
-        SetTypeIconPosAndPal(gBattleMoves[move].type, moves_x + 146, moves_y + 17, 0);
+        SetTypeIconPosAndPal(gMovesInfo[move].type, moves_x + 146, moves_y + 17, 0);
         SetSpriteInvisibility(1, TRUE);
     }
     else
     {
-        SetTypeIconPosAndPal(NUMBER_OF_MON_TYPES + gContestMoves[move].contestCategory, moves_x + 146, moves_y + 17, 1);
+        SetTypeIconPosAndPal(NUMBER_OF_MON_TYPES + gMovesInfo[move].contestCategory, moves_x + 146, moves_y + 17, 1);
         SetSpriteInvisibility(0, TRUE);
     }
 
@@ -5408,12 +5457,12 @@ static void PrintStatsScreen_Moves_Description(u8 taskId)
     //Move description
     if (gTasks[taskId].data[5] == 0)
     {
-        StringCopy(gStringVar4, gMoveDescriptionPointers[(move - 1)]);
+        StringCopy(gStringVar4, gMovesInfo[move].description);
         PrintStatsScreenTextSmall(WIN_STATS_MOVES_DESCRIPTION, gStringVar4, moves_x, moves_y);
     }
     else
     {
-        StringCopy(gStringVar4, gContestEffectDescriptionPointers[gContestMoves[move].effect]);
+        StringCopy(gStringVar4, gContestEffectDescriptionPointers[gMovesInfo[move].contestEffect]);
         PrintStatsScreenTextSmall(WIN_STATS_MOVES_DESCRIPTION, gStringVar4, moves_x, moves_y);
     }
 }
@@ -5452,19 +5501,19 @@ static void PrintStatsScreen_Moves_Bottom(u8 taskId)
     if (gTasks[taskId].data[5] == 0)
     {
         //Power
-        if (gBattleMoves[move].power < 2)
+        if (gMovesInfo[move].power < 2)
             StringCopy(gStringVar1, gText_ThreeDashes);
         else
-            ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[move].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[move].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
         PrintStatsScreenTextSmall(WIN_STATS_MOVES_BOTTOM, gStringVar1, moves_x + 45, moves_y);
         //Physical/Special/Status Category
         DestroyCategoryIcon();
         ShowCategoryIcon(GetBattleMoveCategory(move));
         //Accuracy
-        if (gBattleMoves[move].accuracy == 0)
+        if (gMovesInfo[move].accuracy == 0)
             StringCopy(gStringVar1, gText_ThreeDashes);
         else
-            ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[move].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[move].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
         PrintStatsScreenTextSmall(WIN_STATS_MOVES_BOTTOM, gStringVar1,  moves_x + 114, moves_y);
     }
     else //Appeal + Jam
@@ -5472,7 +5521,7 @@ static void PrintStatsScreen_Moves_Bottom(u8 taskId)
         DestroyCategoryIcon();
         gSprites[sPokedexView->categoryIconSpriteId].invisible = TRUE;
         //Appeal
-        contest_effectValue = gContestEffects[gContestMoves[move].effect].appeal;
+        contest_effectValue = gContestEffects[gMovesInfo[move].contestEffect].appeal;
         if (contest_effectValue != 0xFF)
             contest_appeal = contest_effectValue / 10;
         ConvertIntToDecimalStringN(gStringVar1, contest_appeal, STR_CONV_MODE_RIGHT_ALIGN, 1);
@@ -5481,7 +5530,7 @@ static void PrintStatsScreen_Moves_Bottom(u8 taskId)
         PrintStatsScreenTextSmall(WIN_STATS_MOVES_BOTTOM, gStringVar2, moves_x + 45, moves_y);
 
         //Jam
-        contest_effectValue = gContestEffects[gContestMoves[move].effect].jam;
+        contest_effectValue = gContestEffects[gMovesInfo[move].contestEffect].jam;
         if (contest_effectValue != 0xFF)
             contest_jam = contest_effectValue / 10;
         ConvertIntToDecimalStringN(gStringVar1, contest_jam, STR_CONV_MODE_RIGHT_ALIGN, 1);
@@ -6688,7 +6737,7 @@ static u8 PrintEvolutionTargetSpeciesAndMethod(u8 taskId, u16 species, u8 depth,
             StringExpandPlaceholders(gStringVar4, sText_EVO_ITEM_HOLD_NIGHT );
             break;
         case EVO_MOVE:
-            StringCopy(gStringVar2, gMoveNames[evolutions[i].param]);
+            StringCopy(gStringVar2, GetMoveName(evolutions[i].param));
             StringExpandPlaceholders(gStringVar4, sText_EVO_MOVE );
             break;
         case EVO_FRIENDSHIP_MOVE_TYPE:
@@ -6769,6 +6818,18 @@ static u8 PrintEvolutionTargetSpeciesAndMethod(u8 taskId, u16 species, u8 depth,
             item = evolutions[i].param;
             CopyItemName(item, gStringVar2);
             StringExpandPlaceholders(gStringVar4, sText_EVO_ITEM_HOLD );
+            break;
+        case EVO_LEVEL_MOVE_TWENTY_TIMES:
+            StringCopy(gStringVar2, GetMoveName(evolutions[i].param));
+            StringExpandPlaceholders(gStringVar4, sText_EVO_LEVEL_MOVE_TWENTY_TIMES );
+            break;
+        case EVO_LEVEL_RECOIL_DAMAGE_MALE:
+            ConvertIntToDecimalStringN(gStringVar2, evolutions[i].param, STR_CONV_MODE_LEADING_ZEROS, 3);
+            StringExpandPlaceholders(gStringVar4, sText_EVO_LEVEL_RECOIL_DAMAGE_MALE);
+            break;
+        case EVO_LEVEL_RECOIL_DAMAGE_FEMALE:
+            ConvertIntToDecimalStringN(gStringVar2, evolutions[i].param, STR_CONV_MODE_LEADING_ZEROS, 3);
+            StringExpandPlaceholders(gStringVar4, sText_EVO_LEVEL_RECOIL_DAMAGE_FEMALE);
             break;
         default:
             StringExpandPlaceholders(gStringVar4, sText_EVO_UNKNOWN );
@@ -8717,4 +8778,18 @@ static void PrintSearchParameterTitle(u32 y, const u8 *str)
 static void ClearSearchParameterBoxText(void)
 {
     ClearSearchMenuRect(144, 8, 96, 96);
+}
+
+static u16 SpeciesToDexListNum(u16 species)
+{
+    int i;
+    u16 targetNum = SpeciesToPokedexNum(species);
+
+    for (i = 0; i < NATIONAL_DEX_COUNT; i++)
+    {
+        if (sPokedexView->pokedexList[i].dexNum == targetNum)
+            return i;
+    }
+
+    return SPECIES_NONE;
 }
