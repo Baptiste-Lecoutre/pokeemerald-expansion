@@ -798,11 +798,11 @@ static bool8 SetupBagMenu(void)
     case 13:
         PrintPocketNames(gPocketNamesStringsTable[gBagPosition.pocket], 0);
         CopyPocketNameToWindow(0);
-        DrawPocketIndicatorSquare(0, FALSE);
+        /*DrawPocketIndicatorSquare(0, FALSE);
         DrawPocketIndicatorSquare(1, FALSE);
         DrawPocketIndicatorSquare(7, FALSE);
         DrawPocketIndicatorSquare(8, FALSE);
-        DrawPocketIndicatorSquare(9, FALSE);
+        DrawPocketIndicatorSquare(9, FALSE);*/
         DrawPocketIndicatorSquare(gBagPosition.pocket, TRUE);
         gMain.state++;
         break;
@@ -1508,6 +1508,16 @@ static void DrawPocketIndicatorSquare(u8 x, bool8 isCurrentPocket)
     else
         FillBgTilemapBufferRect_Palette0(2, 0x102B, x + 3, 3, 1, 1);
     ScheduleBgCopyTilemapToVram(2);*/
+    u16 tileNum;
+
+    if (x < 6)
+        tileNum = 0x29;
+    else if (x == 6)
+        tileNum = 0x2D;
+    else
+        tileNum = 0x2B;
+    FillBgTilemapBufferRect_Palette0(2, tileNum + isCurrentPocket, x, 2, 1, 1);
+    ScheduleBgCopyTilemapToVram(2);
 }
 
 static bool8 CanSwapItems(void)
