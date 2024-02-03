@@ -4447,6 +4447,17 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 effect++;
             }
             break;
+        case ABILITY_SUPERSWEET_SYRUP:
+            if (!gSpecialStatuses[battler].switchInAbilityDone
+                    && !(gBattleStruct->abilityActivated[GetBattlerSide(battler)] & gBitTable[gBattlerPartyIndexes[battler]]))
+            {
+                gBattleStruct->abilityActivated[GetBattlerSide(battler)] |= gBitTable[gBattlerPartyIndexes[battler]];
+                gBattlerAttacker = battler;
+                gSpecialStatuses[battler].switchInAbilityDone = TRUE;
+                BattleScriptPushCursorAndCallback(BattleScript_SupersweetSyrupActivates);
+                effect++;
+            }
+            break;
         case ABILITY_TRACE:
             if (!(gSpecialStatuses[battler].traced))
             {
@@ -4478,12 +4489,12 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             break;
         case ABILITY_INTREPID_SWORD:
             if (!gSpecialStatuses[battler].switchInAbilityDone && CompareStat(battler, STAT_ATK, MAX_STAT_STAGE, CMP_LESS_THAN)
-                 && !(gBattleStruct->intrepidSwordBoost[GetBattlerSide(battler)] & gBitTable[gBattlerPartyIndexes[battler]]))
+                 && !(gBattleStruct->abilityActivated[GetBattlerSide(battler)] & gBitTable[gBattlerPartyIndexes[battler]]))
             {
                 gBattleScripting.savedBattler = gBattlerAttacker;
                 gBattlerAttacker = battler;
                 if (B_INTREPID_SWORD == GEN_9)
-                    gBattleStruct->intrepidSwordBoost[GetBattlerSide(battler)] |= gBitTable[gBattlerPartyIndexes[battler]];
+                    gBattleStruct->abilityActivated[GetBattlerSide(battler)] |= gBitTable[gBattlerPartyIndexes[battler]];
                 gSpecialStatuses[battler].switchInAbilityDone = TRUE;
                 SET_STATCHANGER(STAT_ATK, 1, FALSE);
                 BattleScriptPushCursorAndCallback(BattleScript_BattlerAbilityStatRaiseOnSwitchIn);
@@ -4492,12 +4503,12 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             break;
         case ABILITY_DAUNTLESS_SHIELD:
             if (!gSpecialStatuses[battler].switchInAbilityDone && CompareStat(battler, STAT_DEF, MAX_STAT_STAGE, CMP_LESS_THAN)
-                 && !(gBattleStruct->dauntlessShieldBoost[GetBattlerSide(battler)] & gBitTable[gBattlerPartyIndexes[battler]]))
+                 && !(gBattleStruct->abilityActivated[GetBattlerSide(battler)] & gBitTable[gBattlerPartyIndexes[battler]]))
             {
                 gBattleScripting.savedBattler = gBattlerAttacker;
                 gBattlerAttacker = battler;
                 if (B_DAUNTLESS_SHIELD == GEN_9)
-                    gBattleStruct->dauntlessShieldBoost[GetBattlerSide(battler)] |= gBitTable[gBattlerPartyIndexes[battler]];
+                    gBattleStruct->abilityActivated[GetBattlerSide(battler)] |= gBitTable[gBattlerPartyIndexes[battler]];
                 gSpecialStatuses[battler].switchInAbilityDone = TRUE;
                 SET_STATCHANGER(STAT_DEF, 1, FALSE);
                 BattleScriptPushCursorAndCallback(BattleScript_BattlerAbilityStatRaiseOnSwitchIn);
@@ -5639,7 +5650,8 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             switch (GetBattlerAbility(battler))
             {
             case ABILITY_OPPORTUNIST:
-                if (gProtectStructs[battler].activateOpportunist == 2) {
+                if (gProtectStructs[battler].activateOpportunist == 2)
+                {
                     gBattleScripting.savedBattler = gBattlerAttacker;
                     gBattleScripting.battler = gBattlerAttacker = gBattlerAbility = battler;
                     gProtectStructs[battler].activateOpportunist--;
@@ -6550,7 +6562,7 @@ static u8 ItemHealHp(u32 battler, u32 itemId, bool32 end2, bool32 percentHeal)
             gBattlescriptCurrInstr = BattleScript_ItemHealHP_RemoveItemRet;
         }
         if (gBattleResources->flags->flags[battler] & RESOURCE_FLAG_EMERGENCY_EXIT
-         && GetNonDynamaxMaxHP(battler) > gBattleMons[battler].maxHP / 2)
+         && GetNonDynamaxHP(battler) >= GetNonDynamaxMaxHP(battler)  / 2)
             gBattleResources->flags->flags[battler] &= ~RESOURCE_FLAG_EMERGENCY_EXIT;
 
         return ITEM_HP_CHANGE;
@@ -6625,14 +6637,18 @@ static u8 TryConsumeMirrorHerb(u32 battler, bool32 execute)
 {
     u8 effect = 0;
 
-    if (gProtectStructs[battler].eatMirrorHerb) {
+    if (gProtectStructs[battler].eatMirrorHerb)
+    {
         gLastUsedItem = gBattleMons[battler].item;
         gBattleScripting.savedBattler = gBattlerAttacker;
         gBattleScripting.battler = gBattlerAttacker = battler;
         gProtectStructs[battler].eatMirrorHerb = 0;
-        if (execute) {
+        if (execute)
+        {
             BattleScriptExecute(BattleScript_MirrorHerbCopyStatChangeEnd2);
-        } else {
+        }
+        else
+        {
             BattleScriptPushCursor();
             gBattlescriptCurrInstr = BattleScript_MirrorHerbCopyStatChange;
         }
@@ -6844,7 +6860,7 @@ static u8 ItemEffectMoveEnd(u32 battler, u16 holdEffect)
         break;
     case HOLD_EFFECT_CRITICAL_UP: // lansat berry
         if (B_BERRIES_INSTANT >= GEN_4
-            && !(gBattleMons[battler].status2 & STATUS2_FOCUS_ENERGY)
+            && !(gBattleMons[battler].status2 & STATUS2_FOCUS_ENERGY_ANY)
             && HasEnoughHpToEatBerry(battler, GetBattlerItemHoldEffectParam(battler, gLastUsedItem), gLastUsedItem))
         {
             gBattleMons[battler].status2 |= STATUS2_FOCUS_ENERGY;
@@ -6886,7 +6902,8 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
     u8 atkHoldEffectParam;
     u16 atkItem;
 
-    if (caseID != ITEMEFFECT_USE_LAST_ITEM) {
+    if (caseID != ITEMEFFECT_USE_LAST_ITEM)
+    {
         gLastUsedItem = gBattleMons[battler].item;
         battlerHoldEffect = GetBattlerHoldEffect(battler, TRUE);
     }
@@ -6968,7 +6985,7 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 break;
             case HOLD_EFFECT_CRITICAL_UP:
                 if (B_BERRIES_INSTANT >= GEN_4
-                    && !(gBattleMons[battler].status2 & STATUS2_FOCUS_ENERGY)
+                    && !(gBattleMons[battler].status2 & STATUS2_FOCUS_ENERGY_ANY)
                     && HasEnoughHpToEatBerry(battler, GetBattlerItemHoldEffectParam(battler, gLastUsedItem), gLastUsedItem))
                 {
                     gBattleMons[battler].status2 |= STATUS2_FOCUS_ENERGY;
@@ -7279,7 +7296,7 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                     effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPDEF, TRUE);
                 break;
             case HOLD_EFFECT_CRITICAL_UP:
-                if (!moveTurn && !(gBattleMons[battler].status2 & STATUS2_FOCUS_ENERGY)
+                if (!moveTurn && !(gBattleMons[battler].status2 & STATUS2_FOCUS_ENERGY_ANY)
                     && HasEnoughHpToEatBerry(battler, GetBattlerItemHoldEffectParam(battler, gLastUsedItem), gLastUsedItem))
                 {
                     gBattleMons[battler].status2 |= STATUS2_FOCUS_ENERGY;
