@@ -751,7 +751,7 @@ void HandleAction_ActionFinished(void)
             chosenMoveId = Random() % MAX_MON_MOVES;
         
         chosenMoveTarget = GetMoveTarget(gBattleMons[gBattlerAttacker].moves[chosenMoveId], NO_TARGET_OVERRIDE);
-        if (gBattleMoves[gBattleMons[gBattlerAttacker].moves[chosenMoveId]].target == MOVE_TARGET_BOTH) // override to fix bug
+        if (gMovesInfo[gBattleMons[gBattlerAttacker].moves[chosenMoveId]].target == MOVE_TARGET_BOTH) // override to fix bug
             chosenMoveTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
 
         *(gBattleStruct->chosenMovePositions + gBattlerAttacker) = chosenMoveId;
