@@ -346,6 +346,7 @@ static void PrintInfoBar(u8 pageIndex, bool8 detailsShown);
 static u8 WhatRegionWasMonCaughtIn(struct Pokemon *mon);
 static u8 *GetMapNameHoennKanto(u8 *dest, u16 mapSecId);
 static u8 *GetMapNameOrre(u8 *dest, u16 mapSecId, bool8 isXD);
+static u8 ReformatMoveDescription(u16 move, u8 *dest, bool8 isContest);
 
 // const rom data
 #include "data/text/characteristics.h"
@@ -3606,6 +3607,7 @@ static void PrintMoveDetails(u16 move)
     u32 heartRow1, heartRow2;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
+    u8 *dst = gStringVar3;
 
     SetSpriteInvisibility(SPRITE_ARR_ID_MON, TRUE);
     SetSpriteInvisibility(SPRITE_ARR_ID_ITEM, TRUE);
@@ -3671,7 +3673,9 @@ static void PrintMoveDetails(u16 move)
 
             PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gStringVar1, 84, POWER_AND_ACCURACY_Y_2, 0, 0);
 
-            PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gMovesInfo[move].description, 2, 64, 0, 0); //gMoveFourLineDescriptionPointers[move]
+            ReformatMoveDescription(move, dst, FALSE);
+            PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, dst, 2, 64, 0, 0);
+//            PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gMovesInfo[move].description, 2, 64, 0, 0); //gMoveFourLineDescriptionPointers[move]
 
             #if CONFIG_PHYSICAL_SPECIAL_SPLIT
             ShowSplitIcon(GetBattleMoveSplit(move));
@@ -3715,7 +3719,10 @@ static void PrintMoveDetails(u16 move)
             CopyBgTilemapBufferToVram(1);
 
             //PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gContestEffectFourLineDescriptionPointers[gMovesInfo[move].contestEffect], 8, 64, 0, 0);
-            PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gContestEffectDescriptionPointers[gMovesInfo[move].contestEffect], 8, 64, 0, 0);
+            //PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gContestEffectDescriptionPointers[gMovesInfo[move].contestEffect], 8, 64, 0, 0);
+
+            ReformatMoveDescription(move, dst, TRUE);
+            PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, dst, 2, 64, 0, 0);
         }
 
         PutWindowTilemap(PSS_LABEL_PANE_LEFT_MOVE);
@@ -5073,4 +5080,46 @@ static u8 *GetMapNameOrre(u8 *dest, u16 regionMapId, bool8 isXD)
     {
         StringCopy(dest, gOrreMapNamePointers[MAPSEC_DISTANT_LAND]);
     }
+}
+
+static u8 ReformatMoveDescription(u16 move, u8 *dest, bool8 isContest)
+{
+    u8 count = 0;
+    u8 numLines = 1;
+    u8 maxChars = 13;//20;
+    u8 *desc = isContest ? (u8 *)gContestEffectDescriptionPointers[gMovesInfo[move].contestEffect] : (u8 *)gMovesInfo[move].description;
+
+    while (*desc != EOS)
+    {
+        if (count >= maxChars)
+        {
+            while (*desc != CHAR_SPACE && *desc != CHAR_NEWLINE)
+            {
+                *dest = *desc;  //finish word
+                dest++;
+                desc++;
+            }
+
+            *dest = CHAR_NEWLINE;
+            count = 0;
+            numLines++;
+            dest++;
+            desc++;
+            continue;
+        }
+
+        *dest = *desc;
+        if (*desc == CHAR_NEWLINE)
+        {
+            *dest = CHAR_SPACE;
+        }
+
+        dest++;
+        desc++;
+        count++;
+    }
+
+    // finish string
+    *dest = EOS;
+    return numLines;
 }
