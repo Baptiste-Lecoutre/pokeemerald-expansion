@@ -2157,6 +2157,14 @@ void DoSpecialTrainerBattle(void)
                 PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
                 BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);
                 break;
+            case SPECIES_KYOGRE:
+                PlayMapChosenOrBattleBGM(MUS_VS_KYOGRE_GROUDON);
+                BattleTransition_StartOnField(B_TRANSITION_KYOGRE);
+                break;
+            case SPECIES_GROUDON:
+                PlayMapChosenOrBattleBGM(MUS_VS_KYOGRE_GROUDON);
+                BattleTransition_StartOnField(B_TRANSITION_GROUDON);
+                break;
             default:
                 PlayMapChosenOrBattleBGM(0);
                 BattleTransition_StartOnField(GetRaidBattleTransition());
