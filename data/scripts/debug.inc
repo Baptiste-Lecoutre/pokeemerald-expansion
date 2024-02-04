@@ -125,7 +125,7 @@ Debug_EventScript_Script_5::
 	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_7, SPECIES_SALAMENCE, 90, ITEM_SALAMENCITE
 	special InitRaidIntro
 	waitstate
-	goto_if_eq VAR_RESULT, TRUE, Debug_DoFixedRaid
+	goto_if_ne VAR_RESULT, FALSE, Debug_DoFixedRaid
 	releaseall
 	end
 
