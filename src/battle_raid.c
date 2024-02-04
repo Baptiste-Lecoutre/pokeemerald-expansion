@@ -44,6 +44,12 @@ const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
         .rules = RAID_GEN_8,
         .gimmick = GIMMICK_MEGA,
     },
+    [RAID_TYPE_PRIMAL] = {
+        .shield = RAID_GEN_8,
+        .shockwave = RAID_GEN_8,
+        .rules = RAID_GEN_8,
+        .gimmick = GIMMICK_PRIMAL,
+    },
 };
 
 // Rank-based HP Multipliers

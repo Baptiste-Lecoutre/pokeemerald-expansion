@@ -10120,6 +10120,7 @@ BattleScript_ItemDropped::
 @@@ RAID SCRIPTS @@@
 BattleScript_RaidIntro::
 	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_MEGA, BattleScript_MegaRaidIntro
+	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_PRIMAL, BattleScript_PrimalRaidIntro
 	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_DYNAMAX, BattleScript_MaxRaidIntro
 	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_TERA, BattleScript_RaidIntroEnd
 BattleScript_RaidIntroEnd:
@@ -10140,6 +10141,18 @@ BattleScript_MegaRaidIntro:
 	waitanimation
 	handlemegaevo BS_ATTACKER, 2
 	printstring STRINGID_MEGAEVOEVOLVED
+	waitmessage B_WAIT_TIME_LONG
+	switchinabilities BS_ATTACKER
+	goto BattleScript_RaidIntroEnd
+
+BattleScript_PrimalRaidIntro:
+	setbyte gIsCriticalHit, 0
+	handleprimalreversion BS_ATTACKER, 0
+	handleprimalreversion BS_ATTACKER, 1
+	playanimation BS_ATTACKER, B_ANIM_PRIMAL_REVERSION
+	waitanimation
+	handleprimalreversion BS_ATTACKER, 2
+	printstring STRINGID_PKMNREVERTEDTOPRIMAL
 	waitmessage B_WAIT_TIME_LONG
 	switchinabilities BS_ATTACKER
 	goto BattleScript_RaidIntroEnd
