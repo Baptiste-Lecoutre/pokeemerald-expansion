@@ -10,11 +10,16 @@
 #define RAID_SHIELD_TERA    1
 #define RAID_SHIELD_MEGA    2
 
+// Raid rules IDs
+#define RAID_RULES_MAX  0
+#define RAID_RULES_TERA 1
+#define RAID_RULES_MEGA 2
+
 // Gimmick IDs
-#define GIMMICK_MEGA    0
-#define GIMMICK_PRIMAL  1
-#define GIMMICK_DYNAMAX 2
-#define GIMMICK_TERA    3
+#define GIMMICK_DYNAMAX 0
+#define GIMMICK_TERA    1
+#define GIMMICK_MEGA    2
+#define GIMMICK_PRIMAL  3
 
 // Raid Type IDs
 #define RAID_TYPE_MAX    0
