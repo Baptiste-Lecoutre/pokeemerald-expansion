@@ -195,7 +195,7 @@
 // Terrain settings
 #define B_TERRAIN_BG_CHANGE         TRUE       // If set to TRUE, terrain moves permanently change the default battle background until the effect fades.
 #define B_THUNDERSTORM_TERRAIN      TRUE       // If TRUE, overworld Thunderstorm generates Rain and Electric Terrain as in Gen 8.
-#define B_FOG_TERRAIN               TRUE       // If TRUE, overworld Fog generates Misty Terrain as in Gen 8.
+#define B_FOG_TERRAIN               FALSE      // If TRUE, overworld Fog generates Misty Terrain as in Gen 8.
 #define B_TERRAIN_TYPE_BOOST        GEN_LATEST // In Gen8, damage is boosted by 30% instead of 50%.
 #define B_SECRET_POWER_EFFECT       GEN_LATEST // Secret Power's effects change depending on terrain and generation. See MOVE_EFFECT_SECRET_POWER's case in `SetMoveEffect`.
 #define B_SECRET_POWER_ANIMATION    GEN_LATEST // Secret Power's animations change depending on terrain and generation.
@@ -209,8 +209,8 @@
 #define B_SHOW_TARGETS              TRUE  // If set to TRUE, all available targets, for moves hitting 2 or 3 Pokémon, will be shown before selecting a move.
 #define B_SHOW_CATEGORY_ICON        TRUE  // If set to TRUE, it will show an icon in the summary showing the move's category.
 #define B_HIDE_HEALTHBOX_IN_ANIMS   TRUE  // If set to TRUE, hides healthboxes during move animations.
-#define B_EXPANDED_MOVE_NAMES       FALSE // If set to TRUE, move names are increased from 12 characters to 16 characters.
-#define B_WAIT_TIME_MULTIPLIER      16    // This determines how long text pauses in battle last. Vanilla is 16. Lower values result in faster battles.
+#define B_EXPANDED_MOVE_NAMES       TRUE // If set to TRUE, move names are increased from 12 characters to 16 characters.
+#define B_WAIT_TIME_MULTIPLIER      8    // This determines how long text pauses in battle last. Vanilla is 16. Lower values result in faster battles.
 #define B_QUICK_MOVE_CURSOR_TO_RUN  TRUE // If set to TRUE, pushing B in the battle options against a wild encounter will move the cursor to the run option
 
 // Catching settings
