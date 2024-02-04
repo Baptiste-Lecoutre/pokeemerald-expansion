@@ -2182,7 +2182,7 @@ END:
     }
 
     // Mega Raid shields prevent being KO'd 
-    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && gRaidData.raidType == RAID_TYPE_MEGA
+    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && (gRaidData.raidType == RAID_TYPE_MEGA || gRaidData.raidType == RAID_TYPE_PRIMAL)
         && gBattleMoveDamage >= gBattleMons[gBattlerTarget].hp)
     {
         gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - 1;

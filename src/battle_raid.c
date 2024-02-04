@@ -460,7 +460,8 @@ void InitRaidBattleData(void)
         gBattleStruct->raid.barrierSpriteIds[i] = MAX_SPRITES;
 
     // Mega Raids start off with a shield at the beginning.
-    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    if (gRaidData.raidType == RAID_TYPE_MEGA
+        || gRaidData.raidType == RAID_TYPE_PRIMAL)
     {
         gBattleStruct->raid.shield = GetShieldAmount();
         CreateAllRaidBarrierSprites();
@@ -485,7 +486,8 @@ u8 GetRaidBattleTransition(void)
 {
     if (gRaidData.raidType == RAID_TYPE_TERA)
         return B_TRANSITION_TERA_RAID;
-    else if (gRaidData.raidType == RAID_TYPE_MEGA)
+    else if (gRaidData.raidType == RAID_TYPE_MEGA
+            || gRaidData.raidType == RAID_TYPE_PRIMAL)
         return B_TRANSITION_MEGA_RAID;
     else
         return B_TRANSITION_MAX_RAID;
@@ -646,7 +648,8 @@ static u16 GetShieldAmount(void)
     u8 spDef = gSpeciesInfo[species].baseSpDefense;
     u8 retVal;
 
-    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    if (gRaidData.raidType == RAID_TYPE_MEGA
+        || gRaidData.raidType == RAID_TYPE_PRIMAL)
     {
         switch (gRaidData.rank)
         {
@@ -690,7 +693,8 @@ static u16 GetShieldAmount(void)
 
 static u8 GetRaidShieldThresholdTotalNumber(void)
 {
-    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    if (gRaidData.raidType == RAID_TYPE_MEGA
+        || gRaidData.raidType == RAID_TYPE_PRIMAL)
         return 0;
 
     switch (gRaidData.rank)
@@ -754,7 +758,8 @@ bool32 UpdateRaidShield(void)
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
         }
 
-        if (gRaidData.raidType == RAID_TYPE_MEGA)
+        if (gRaidData.raidType == RAID_TYPE_MEGA
+            || gRaidData.raidType == RAID_TYPE_PRIMAL)
         {
             u32 i;
             gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - gBattleMons[gBattlerTarget].maxHP;
@@ -928,7 +933,8 @@ static u32 CreateRaidBarrierSprite(u8 index)
 
     GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
 
-    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    if (gRaidData.raidType == RAID_TYPE_MEGA
+        || gRaidData.raidType == RAID_TYPE_PRIMAL)
     {
         x += sMegaBarrierPosition[0] - (index * 25);
         y += sMegaBarrierPosition[1];

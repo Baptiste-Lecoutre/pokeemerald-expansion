@@ -10168,6 +10168,7 @@ BattleScript_RaidShieldDisappeared::
 	playanimation BS_TARGET, B_ANIM_RAID_SHIELD_DISAPPEARED
 	waitanimation
 	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_MEGA, BattleScript_MegaRaidHealBarrier
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_PRIMAL, BattleScript_MegaRaidHealBarrier
 	printstring STRINGID_RAIDSHIELDDISAPPEARED
 	waitmessage B_WAIT_TIME_LONG
 	jumpifstat BS_TARGET, CMP_GREATER_THAN, STAT_DEF, MIN_STAT_STAGE, BattleScript_RaidDefenseDrop
@@ -10193,6 +10194,7 @@ BattleScript_RaidBarrierBroken::
 	playanimation BS_TARGET, B_ANIM_RAID_BARRIER_BROKEN
 	waitanimation
 	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_MEGA, BattleScript_MegaRaidHealBarrier
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_PRIMAL, BattleScript_MegaRaidHealBarrier
 	return
 
 BattleScript_MegaRaidHealBarrier::

@@ -743,7 +743,7 @@ void HandleAction_ActionFinished(void)
         && !gBattleStruct->raid.movedTwice
         && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_RECHARGE)
         && ((gRaidData.raidType == RAID_TYPE_MAX && (IS_MOVE_STATUS(gLastLandedMoves[gBattlerAttacker]) || IsMaxMove(gLastLandedMoves[gBattlerAttacker])) && (Random() % 100 <= GetRaidRepeatedAttackChance()))
-            || (gRaidData.raidType == RAID_TYPE_MEGA && (Random() % 100 <= GetRaidRepeatedAttackChance()))
+            || ((gRaidData.raidType == RAID_TYPE_MEGA || gRaidData.raidType == RAID_TYPE_PRIMAL)&& (Random() % 100 <= GetRaidRepeatedAttackChance()))
             || (IsBattlerAlive(BATTLE_OPPOSITE(gBattlerAttacker)) && gChosenActionByBattler[BATTLE_OPPOSITE(gBattlerAttacker)] == B_ACTION_USE_ITEM)
             || (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))) && gChosenActionByBattler[BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))] == B_ACTION_USE_ITEM)))
     {
@@ -10247,7 +10247,7 @@ bool32 IsBattlerMegaEvolved(u32 battler)
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
     return (gSpeciesInfo[gBattleMons[battler].species].isMegaEvolution
-        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_MEGA));
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_MEGA && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerPrimalReverted(u32 battler)
@@ -10256,7 +10256,7 @@ bool32 IsBattlerPrimalReverted(u32 battler)
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
     return (gSpeciesInfo[gBattleMons[battler].species].isPrimalReversion
-        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_PRIMAL));
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_PRIMAL && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerUltraBursted(u32 battler)
