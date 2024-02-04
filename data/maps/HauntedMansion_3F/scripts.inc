@@ -35,7 +35,7 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	waitmovement 0
 	msgbox HauntedMansion_3F_Text_WhatWasThatNoise, MSGBOX_DEFAULT
 	closemessage
-	preparefixedraid 2, 4, SPECIES_GENGAR, 40, ITEM_GENGARITE
+	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_4, SPECIES_GENGAR, 40, ITEM_GENGARITE
 	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
 	special InitStoryRaid
 	doraidbattle

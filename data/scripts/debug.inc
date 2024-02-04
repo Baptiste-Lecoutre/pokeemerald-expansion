@@ -122,7 +122,7 @@ Debug_EventScript_Script_4::
 
 Debug_EventScript_Script_5::
 	lockall
-	preparefixedraid 2, 7, SPECIES_SALAMENCE, 90, ITEM_SALAMENCITE
+	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_7, SPECIES_SALAMENCE, 90, ITEM_SALAMENCITE
 	special InitRaidIntro
 	waitstate
 	goto_if_eq VAR_RESULT, TRUE, Debug_DoFixedRaid
