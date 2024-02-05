@@ -70,7 +70,7 @@ TerraCave_End_EventScript_RanFromGroudon::
 	goto Common_EventScript_LegendaryFlewAway
 	end
 
-TerraCave_End_Movement_GroudonApproach:
+TerraCave_End_Movement_GroudonApproachBroken:
 	init_affine_anim
 	walk_down_start_affine
 	delay_16
@@ -81,3 +81,12 @@ TerraCave_End_Movement_GroudonApproach:
 	walk_down_affine
 	step_end
 
+TerraCave_End_Movement_GroudonApproach:
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	step_end

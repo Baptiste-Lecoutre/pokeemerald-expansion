@@ -70,7 +70,7 @@ MarineCave_End_EventScript_RanFromKyogre::
 	goto Common_EventScript_LegendaryFlewAway
 	end
 
-MarineCave_End_Movement_KyogreApproach:
+MarineCave_End_Movement_KyogreApproachBroken:
 	init_affine_anim
 	walk_down_start_affine
 	delay_16
@@ -81,3 +81,12 @@ MarineCave_End_Movement_KyogreApproach:
 	walk_down_affine
 	step_end
 
+MarineCave_End_Movement_KyogreApproach:
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	step_end
