@@ -879,6 +879,8 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
 {
     struct TextPrinterSubStruct *subStruct = (struct TextPrinterSubStruct *)(&textPrinter->subStructFields);
     const u8 *arrowTiles;
+    u32 x = gTextFlags.useAlternateDownArrow ? ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 8) : ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 12);
+    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 12);
 
     if (gTextFlags.autoScroll == 0)
     {
@@ -891,8 +893,8 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
             FillWindowPixelRect(
                 textPrinter->printerTemplate.windowId,
                 textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-                textPrinter->printerTemplate.currentX,
-                textPrinter->printerTemplate.currentY,
+                x,
+                y,
                 8,
                 16);
 
@@ -914,8 +916,8 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
                 sDownArrowYCoords[subStruct->downArrowYPosIdx],
                 8,
                 16,
-                textPrinter->printerTemplate.currentX,
-                textPrinter->printerTemplate.currentY,
+                x,
+                y,
                 8,
                 16);
             CopyWindowToVram(textPrinter->printerTemplate.windowId, COPYWIN_GFX);
@@ -928,11 +930,13 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
 
 void TextPrinterClearDownArrow(struct TextPrinter *textPrinter)
 {
+    u32 x = gTextFlags.useAlternateDownArrow ? ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 8) : ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 12);
+    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 12);
     FillWindowPixelRect(
         textPrinter->printerTemplate.windowId,
         textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-        textPrinter->printerTemplate.currentX,
-        textPrinter->printerTemplate.currentY,
+        x,
+        y,
         8,
         16);
     CopyWindowToVram(textPrinter->printerTemplate.windowId, COPYWIN_GFX);
@@ -993,6 +997,8 @@ bool16 TextPrinterWait(struct TextPrinter *textPrinter)
 void DrawDownArrow(u8 windowId, u16 x, u16 y, u8 bgColor, bool8 drawArrow, u8 *counter, u8 *yCoordIndex)
 {
     const u8 *arrowTiles;
+    u32 x2 = gTextFlags.useAlternateDownArrow ? ((gWindows[windowId].window.width * 8) - 8) : ((gWindows[windowId].window.width * 8) - 12);
+    u32 y2 = ((gWindows[windowId].window.height * 8) - 12);
 
     if (*counter != 0)
     {
@@ -1014,7 +1020,7 @@ void DrawDownArrow(u8 windowId, u16 x, u16 y, u8 bgColor, bool8 drawArrow, u8 *c
                 break;
             }
 
-            BlitBitmapRectToWindow(windowId, arrowTiles, 0, sDownArrowYCoords[*yCoordIndex & 3], 8, 16, x, y - 2, 8, 16);
+            BlitBitmapRectToWindow(windowId, arrowTiles, 0, sDownArrowYCoords[*yCoordIndex & 3], 8, 16, x2, y2, 8, 12);
             CopyWindowToVram(windowId, COPYWIN_GFX);
             *counter = 8;
             ++*yCoordIndex;
