@@ -697,16 +697,17 @@
 #define STRINGID_THESWAMPDISAPPEARED                  695
 #define STRINGID_PKMNTELLCHILLINGRECEPTIONJOKE        696
 #define STRINGID_HOSPITALITYRESTORATION               697
-#define STRINGID_ELECTROSHOCKCHARGING                 698
+#define STRINGID_ELECTROSHOTCHARGING                  698
 #define STRINGID_ITEMWASUSEDUP                        699
 #define STRINGID_ATTACKERLOSTITSTYPE                  700
 #define STRINGID_SHEDITSTAIL                          701
-#define STRINGID_SUPERSWEETAROMAWAFTS                 702
-#define STRINGID_PKMNGAINEDEXPSHARE                   703
-#define STRINGID_PKMNDROPPEDITEM                      704
-#define STRINGID_BAGISFULL                            705
+#define STRINGID_CLOAKEDINAHARSHLIGHT                 702
+#define STRINGID_SUPERSWEETAROMAWAFTS                 703
+#define STRINGID_PKMNGAINEDEXPSHARE                   704
+#define STRINGID_PKMNDROPPEDITEM                      705
+#define STRINGID_BAGISFULL                            706
 
-#define BATTLESTRINGS_COUNT                           706
+#define BATTLESTRINGS_COUNT                           707
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -749,22 +750,6 @@
 #define B_MSG_LEECH_SEED_FAIL  2
 #define B_MSG_LEECH_SEED_DRAIN 3
 #define B_MSG_LEECH_SEED_OOZE  4
-
-// gFirstTurnOfTwoStringIds
-#define B_MSG_TURN1_RAZOR_WIND     0
-#define B_MSG_TURN1_SOLAR_BEAM     1
-#define B_MSG_TURN1_SKULL_BASH     2
-#define B_MSG_TURN1_SKY_ATTACK     3
-#define B_MSG_TURN1_FLY            4
-#define B_MSG_TURN1_DIG            5
-#define B_MSG_TURN1_DIVE           6
-#define B_MSG_TURN1_BOUNCE         7
-#define B_MSG_TURN1_PHANTOM_FORCE  8
-#define B_MSG_TURN1_GEOMANCY       9
-#define B_MSG_TURN1_FREEZE_SHOCK   10
-#define B_MSG_TURN1_SKY_DROP       11
-#define B_MSG_TURN1_METEOR_BEAM    12
-#define B_MSG_TURN1_ELECTRO_SHOCK  13
 
 // gMoveWeatherChangeStringIds
 #define B_MSG_STARTED_RAIN      0
