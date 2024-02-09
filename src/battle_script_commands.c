@@ -526,7 +526,7 @@ static void Cmd_setdrainedhp(void);
 static void Cmd_statbuffchange(void);
 static void Cmd_normalisebuffs(void);
 static void Cmd_setbide(void);
-static void Cmd_unused0x8C(void);
+static void Cmd_twoturnmoveschargestringandanimation(void);
 static void Cmd_setmultihitcounter(void);
 static void Cmd_initmultihitstring(void);
 static void Cmd_forcerandomswitch(void);
@@ -584,7 +584,7 @@ static void Cmd_selectfirstvalidtarget(void);
 static void Cmd_trysetfutureattack(void);
 static void Cmd_trydobeatup(void);
 static void Cmd_setsemiinvulnerablebit(void);
-static void Cmd_clearsemiinvulnerablebit(void);
+static void Cmd_tryfiretwoturnmovenowbyeffect(void);
 static void Cmd_setminimize(void);
 static void Cmd_sethail(void);
 static void Cmd_trymemento(void);
@@ -785,7 +785,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_statbuffchange,                          //0x89
     Cmd_normalisebuffs,                          //0x8A
     Cmd_setbide,                                 //0x8B
-    Cmd_unused0x8C,                              //0x8C
+    Cmd_twoturnmoveschargestringandanimation,    //0x8C
     Cmd_setmultihitcounter,                      //0x8D
     Cmd_initmultihitstring,                      //0x8E
     Cmd_forcerandomswitch,                       //0x8F
@@ -843,7 +843,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_trysetfutureattack,                      //0xC3
     Cmd_trydobeatup,                             //0xC4
     Cmd_setsemiinvulnerablebit,                  //0xC5
-    Cmd_clearsemiinvulnerablebit,                //0xC6
+    Cmd_tryfiretwoturnmovenowbyeffect,           //0xC6
     Cmd_setminimize,                             //0xC7
     Cmd_sethail,                                 //0xC8
     Cmd_trymemento,                              //0xC9
@@ -873,7 +873,7 @@ void (* const gBattleScriptingCommandsTable[])(void) =
     Cmd_unused2,                                 //0xE1
     Cmd_switchoutabilities,                      //0xE2
     Cmd_jumpifhasnohp,                           //0xE3
-    Cmd_jumpifnotcurrentmoveargtype,                              //0xE4
+    Cmd_jumpifnotcurrentmoveargtype,             //0xE4
     Cmd_pickup,                                  //0xE5
     Cmd_unused3,                                 //0xE6
     Cmd_unused4,                                 //0xE7
@@ -2699,7 +2699,7 @@ static void Cmd_printstring(void)
 
     if (gBattleControllerExecFlags == 0)
     {
-        u16 id = cmd->id;
+        u16 id = (cmd->id == 0 ? gBattleScripting.savedStringId : cmd->id);
 
         gBattlescriptCurrInstr = cmd->nextInstr;
         PrepareStringBattle(id, gBattlerAttacker);
@@ -2883,11 +2883,9 @@ void SetMoveEffect(bool32 primary, bool32 certain)
      // Just in case this flag is still set
     gBattleScripting.moveEffect &= ~MOVE_EFFECT_CERTAIN;
 
-    if ((battlerAbility == ABILITY_SHIELD_DUST
-     || GetBattlerHoldEffect(gEffectBattler, TRUE) == HOLD_EFFECT_COVERT_CLOAK)
+    if (!primary && affectsUser != MOVE_EFFECT_AFFECTS_USER
       && !(gHitMarker & HITMARKER_STATUS_ABILITY_EFFECT)
-      && !primary
-      && (gBattleScripting.moveEffect <= MOVE_EFFECT_TRI_ATTACK || gBattleScripting.moveEffect >= MOVE_EFFECT_SMACK_DOWN)) // Exclude stat lowering effects
+      && (battlerAbility == ABILITY_SHIELD_DUST || GetBattlerHoldEffect(gEffectBattler, TRUE) == HOLD_EFFECT_COVERT_CLOAK))
     {
         if (battlerAbility == ABILITY_SHIELD_DUST)
             RecordAbilityBattle(gEffectBattler, battlerAbility);
@@ -4428,7 +4426,11 @@ static u32 GetMonHoldEffect(struct Pokemon *mon)
     u32 item = GetMonData(mon, MON_DATA_HELD_ITEM);
 
     if (item == ITEM_ENIGMA_BERRY_E_READER)
+    #if FREE_ENIGMA_BERRY == FALSE
         holdEffect = gSaveBlock1Ptr->enigmaBerry.holdEffect;
+    #else
+        holdEffect = 0;
+    #endif //FREE_ENIGMA_BERRY
     else
         holdEffect = ItemId_GetHoldEffect(item);
 
@@ -8926,16 +8928,19 @@ static void Cmd_various(void)
         }
         return;
     }
-    case VARIOUS_JUMP_IF_NO_HOLD_EFFECT:
+    case VARIOUS_JUMP_IF_HOLD_EFFECT:
     {
-        VARIOUS_ARGS(u8 holdEffect, const u8 *jumpInstr);
-        if (GetBattlerHoldEffect(battler, TRUE) != cmd->holdEffect)
+        VARIOUS_ARGS(u8 holdEffect, const u8 *jumpInstr, u8 equal);
+        if ((GetBattlerHoldEffect(battler, TRUE) == cmd->holdEffect) == cmd->equal)
         {
+            if (cmd->equal)
+                gLastUsedItem = gBattleMons[battler].item; // For B_LAST_USED_ITEM
             gBattlescriptCurrInstr = cmd->jumpInstr;
         }
         else
         {
-            gLastUsedItem = gBattleMons[battler].item;   // For B_LAST_USED_ITEM
+            if (!cmd->equal)
+                gLastUsedItem = gBattleMons[battler].item; // For B_LAST_USED_ITEM
             gBattlescriptCurrInstr = cmd->nextInstr;
         }
         return;
@@ -12028,8 +12033,15 @@ static void Cmd_setbide(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-static void Cmd_unused0x8C(void)
+static void Cmd_twoturnmoveschargestringandanimation(void)
 {
+    CMD_ARGS(const u8 *animationThenStringPtr);
+
+    gBattleScripting.savedStringId = LOHALF(gMovesInfo[gCurrentMove].argument);
+    if (B_UPDATED_MOVE_DATA < GEN_5 || MoveHasChargeTurnMoveEffect(gCurrentMove))
+        gBattlescriptCurrInstr = cmd->animationThenStringPtr;
+    else
+        gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
 static void Cmd_setmultihitcounter(void)
@@ -13998,36 +14010,51 @@ static void Cmd_trydobeatup(void)
 
 static void Cmd_setsemiinvulnerablebit(void)
 {
-    CMD_ARGS();
+    CMD_ARGS(bool8 clear);
 
-    switch (gCurrentMove)
+    if (gBattleMoveEffects[gMovesInfo[gCurrentMove].effect].semiInvulnerableEffect == TRUE)
     {
-    case MOVE_FLY:
-    case MOVE_BOUNCE:
-    case MOVE_SKY_DROP:
-        gStatuses3[gBattlerAttacker] |= STATUS3_ON_AIR;
-        break;
-    case MOVE_DIG:
-        gStatuses3[gBattlerAttacker] |= STATUS3_UNDERGROUND;
-        break;
-    case MOVE_DIVE:
-        gStatuses3[gBattlerAttacker] |= STATUS3_UNDERWATER;
-        break;
-    case MOVE_PHANTOM_FORCE:
-    case MOVE_SHADOW_FORCE:
-        gStatuses3[gBattlerAttacker] |= STATUS3_PHANTOM_FORCE;
-        break;
+        u32 semiInvulnerableEffect = UNCOMPRESS_BITS(HIHALF(gMovesInfo[gCurrentMove].argument));
+        if (cmd->clear)
+            gStatuses3[gBattlerAttacker] &= ~semiInvulnerableEffect;
+        else
+            gStatuses3[gBattlerAttacker] |= semiInvulnerableEffect;
     }
 
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
-static void Cmd_clearsemiinvulnerablebit(void)
+static bool32 CheckIfCanFireTwoTurnMoveNow(u8 battler, bool8 checkChargeTurnEffects)
 {
-    CMD_ARGS();
+    // Semi-invulnerable moves cannot skip their charge turn (except with Power Herb)
+    if (gBattleMoveEffects[gMovesInfo[gCurrentMove].effect].semiInvulnerableEffect == TRUE)
+        return FALSE;
 
-    gStatuses3[gBattlerAttacker] &= ~STATUS3_SEMI_INVULNERABLE;
-    gBattlescriptCurrInstr = cmd->nextInstr;
+    // If this move has charge turn effects, it must charge, activate them, then try to fire
+    if (checkChargeTurnEffects && MoveHasChargeTurnMoveEffect(gCurrentMove))
+        return FALSE;
+
+    // Insert custom conditions here
+
+    // Certain two-turn moves may fire on the first turn in the right weather (Solar Beam, Electro Shot)
+    // By default, all two-turn moves have the option of adding weather to their argument
+    if (IsBattlerWeatherAffected(battler, HIHALF(gMovesInfo[gCurrentMove].argument)))
+        return TRUE;
+
+    return FALSE;
+}
+
+static void Cmd_tryfiretwoturnmovenowbyeffect(void)
+{
+    CMD_ARGS(u8 battler, bool8 checkChargeTurnEffects, const u8 *jumpInstr);
+
+    if (CheckIfCanFireTwoTurnMoveNow(cmd->battler, cmd->checkChargeTurnEffects) == TRUE)
+    {
+        gBattleScripting.animTurn = 1;
+        gBattlescriptCurrInstr = cmd->jumpInstr;
+    }
+    else
+        gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
 static void Cmd_setminimize(void)
@@ -15942,23 +15969,6 @@ void BS_JumpIfMoreThanHalfHP(void)
         gBattlescriptCurrInstr = cmd->jumpInstr;
     else
         gBattlescriptCurrInstr = cmd->nextInstr;
-}
-
-void BS_JumpIfHoldEffect(void)
-{
-    u8 battler = gBattlescriptCurrInstr[5];
-    u16 holdEffect = T1_READ_16(gBattlescriptCurrInstr + 6);
-
-    if (GetBattlerHoldEffect(battler, TRUE) == holdEffect)
-    {
-        gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 8);
-    }
-    else
-    {
-        RecordItemEffectBattle(battler, holdEffect);
-        gLastUsedItem = gBattleMons[battler].item;   // For B_LAST_USED_ITEM
-        gBattlescriptCurrInstr += 12;
-    }
 }
 
 void BS_DoStockpileStatChangesWearOff(void)
