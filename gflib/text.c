@@ -886,7 +886,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
     struct TextPrinterSubStruct *subStruct = (struct TextPrinterSubStruct *)(&textPrinter->subStructFields);
     const u8 *arrowTiles;
     u32 x = gTextFlags.useAlternateDownArrow ? ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 8) : ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 12);
-    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 12);
+    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 14);
 
     if (gTextFlags.autoScroll == 0)
     {
@@ -899,7 +899,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
             FillWindowPixelRect(
                 textPrinter->printerTemplate.windowId,
                 textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-                x + 2,
+                x,
                 y,
                 8,
                 16);
@@ -922,7 +922,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
                 sDownArrowYCoords[subStruct->downArrowYPosIdx],
                 8,
                 16,
-                x + 2,
+                x,
                 y,
                 8,
                 16);
@@ -937,11 +937,11 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
 void TextPrinterClearDownArrow(struct TextPrinter *textPrinter)
 {
     u32 x = gTextFlags.useAlternateDownArrow ? ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 8) : ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 12);
-    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 12);
+    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 14);
     FillWindowPixelRect(
         textPrinter->printerTemplate.windowId,
         textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
-        x + 2,
+        x,
         y,
         8,
         16);
