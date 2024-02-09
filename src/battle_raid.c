@@ -833,6 +833,8 @@ static const u16 sMaxRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/ra
 static const u16 sMaxRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/misc_indicator.gbapal");
 static const u16 sMegaRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/mega_shield.4bpp");
 static const u16 sMegaRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/mega_trigger.gbapal");
+static const u16 sOmegaRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/omega_shield.4bpp");
+static const u16 sAlphaRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/alpha_shield.4bpp");
 
 static const struct SpriteSheet sSpriteSheet_MaxRaidBarrier =
 {
@@ -842,6 +844,16 @@ static const struct SpriteSheet sSpriteSheet_MaxRaidBarrier =
 static const struct SpriteSheet sSpriteSheet_MegaRaidBarrier =
 {
     sMegaRaidBarrierGfx, sizeof(sMegaRaidBarrierGfx), TAG_RAID_BARRIER_TILE
+};
+
+static const struct SpriteSheet sSpriteSheet_OmegaRaidBarrier =
+{
+    sOmegaRaidBarrierGfx, sizeof(sOmegaRaidBarrierGfx), TAG_RAID_BARRIER_TILE
+};
+
+static const struct SpriteSheet sSpriteSheet_AlphaRaidBarrier =
+{
+    sAlphaRaidBarrierGfx, sizeof(sAlphaRaidBarrierGfx), TAG_RAID_BARRIER_TILE
 };
 
 // Max Raid Barriers share a palette with the Alpha, Omega, and Dynamax indicators.
@@ -922,6 +934,17 @@ static const struct SpriteTemplate sSpriteTemplate_MegaRaidBarrier =
     .callback = SpriteCb_RaidBarrier,
 };
 
+static const struct SpriteTemplate sSpriteTemplate_PrimalRaidBarrier =
+{
+    .tileTag = TAG_RAID_BARRIER_TILE,
+    .paletteTag = TAG_MISC_INDICATOR_PAL,
+    .oam = &sOamData_MegaRaidBarrier,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCb_RaidBarrier,
+};
+
 #define tBattler    data[0]
 #define tHide       data[1]
 #define hOther_IndicatorSpriteId data[6]
@@ -933,8 +956,7 @@ static u32 CreateRaidBarrierSprite(u8 index)
 
     GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
 
-    if (gRaidData.raidType == RAID_TYPE_MEGA
-        || gRaidData.raidType == RAID_TYPE_PRIMAL)
+    if (gRaidData.raidType == RAID_TYPE_MEGA)
     {
         x += sMegaBarrierPosition[0] - (index * 25);
         y += sMegaBarrierPosition[1];
@@ -942,6 +964,15 @@ static u32 CreateRaidBarrierSprite(u8 index)
    	    LoadSpritePalette(&sSpritePalette_MegaRaidBarrier);
    	    LoadSpriteSheet(&sSpriteSheet_MegaRaidBarrier);
         spriteId = CreateSprite(&sSpriteTemplate_MegaRaidBarrier, x, y, 0);
+    }
+    else if (gRaidData.raidType == RAID_TYPE_PRIMAL)
+    {
+        x += sMegaBarrierPosition[0] - (index * 25);
+        y += sMegaBarrierPosition[1];
+
+   	    LoadSpritePalette(&sSpritePalette_MaxRaidBarrier);
+   	    LoadSpriteSheet((gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON || gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON_PRIMAL)? &sSpriteSheet_OmegaRaidBarrier : &sSpriteSheet_AlphaRaidBarrier);
+        spriteId = CreateSprite(&sSpriteTemplate_PrimalRaidBarrier, x, y, 0);
     }
     else // MAX RAIDS & TERA RAIDS
     {
