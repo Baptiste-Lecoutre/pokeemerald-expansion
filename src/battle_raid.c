@@ -27,27 +27,27 @@
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
     [RAID_TYPE_MAX] = {
-        .shield = RAID_GEN_8,
+        .shield = RAID_SHIELD_MAX,
         .shockwave = RAID_GEN_8,
-        .rules = RAID_GEN_8,
+        .rules = RAID_RULES_MAX,
         .gimmick = GIMMICK_DYNAMAX,
     },
     [RAID_TYPE_TERA] = {
-        .shield = RAID_GEN_9,
+        .shield = RAID_SHIELD_TERA,
         .shockwave = RAID_GEN_9,
-        .rules = RAID_GEN_9,
+        .rules = RAID_RULES_TERA,
         .gimmick = GIMMICK_TERA,
     },
     [RAID_TYPE_MEGA] = {
-        .shield = RAID_GEN_8,
+        .shield = RAID_SHIELD_MEGA,
         .shockwave = RAID_GEN_8,
-        .rules = RAID_GEN_8,
+        .rules = RAID_RULES_MEGA,
         .gimmick = GIMMICK_MEGA,
     },
     [RAID_TYPE_PRIMAL] = {
-        .shield = RAID_GEN_8,
+        .shield = RAID_SHIELD_MEGA,
         .shockwave = RAID_GEN_8,
-        .rules = RAID_GEN_8,
+        .rules = RAID_RULES_MEGA,
         .gimmick = GIMMICK_PRIMAL,
     },
 };
@@ -460,8 +460,7 @@ void InitRaidBattleData(void)
         gBattleStruct->raid.barrierSpriteIds[i] = MAX_SPRITES;
 
     // Mega Raids start off with a shield at the beginning.
-    if (gRaidData.raidType == RAID_TYPE_MEGA
-        || gRaidData.raidType == RAID_TYPE_PRIMAL)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
         gBattleStruct->raid.shield = GetShieldAmount();
         CreateAllRaidBarrierSprites();
@@ -486,8 +485,8 @@ u8 GetRaidBattleTransition(void)
 {
     if (gRaidData.raidType == RAID_TYPE_TERA)
         return B_TRANSITION_TERA_RAID;
-    else if (gRaidData.raidType == RAID_TYPE_MEGA
-            || gRaidData.raidType == RAID_TYPE_PRIMAL)
+    else if (gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_MEGA
+            || gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_PRIMAL)
         return B_TRANSITION_MEGA_RAID;
     else
         return B_TRANSITION_MAX_RAID;
@@ -497,7 +496,8 @@ u8 GetRaidBattleTransition(void)
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 {
     u16 mult;
-    if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX
+        || gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA)
         mult = sGen8RaidHPMultipliers[gRaidData.rank];
     else
         mult = sGen9RaidHPMultipliers[gRaidData.rank];
@@ -514,7 +514,8 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 bool32 ShouldRaidKickPlayer(void)
 {
     // Gen 8-style raids are capped at 10 turns.
-    if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX
+        || gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA)
     {
         switch (gBattleResults.battleTurnCounter)
         {
@@ -531,7 +532,7 @@ bool32 ShouldRaidKickPlayer(void)
                 BattleScriptExecute(BattleScript_MaxRaidStormBrews);
                 break;
             case RAID_STORM_TURNS_MAX:
-                gBattleCommunication[MULTIUSE_STATE] = RAID_GEN_8;
+                gBattleCommunication[MULTIUSE_STATE] = RAID_RULES_MAX;
                 gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_GETTING_TOO_STRONG;
                 BattleScriptExecute(BattleScript_RaidDefeat);
                 return TRUE;
@@ -540,7 +541,7 @@ bool32 ShouldRaidKickPlayer(void)
     // Gen 9-style raids are capped at 7.5 minutes.
     else if (gBattleStruct->battleTimer >= RAID_STORM_TIMER_MAX)
     {
-        gBattleCommunication[MULTIUSE_STATE] = RAID_GEN_9;
+        gBattleCommunication[MULTIUSE_STATE] = RAID_RULES_TERA;
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_PKMN_RELEASED_ENERGY;
         BattleScriptExecute(BattleScript_RaidDefeat);
         return TRUE;
@@ -554,7 +555,7 @@ bool32 ShouldRaidKickPlayer(void)
 
 bool32 ShouldMoveDynamaxEnergy(void)
 {
-    if (gRaidData.raidType == RAID_TYPE_MAX)
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
     {
         gBattleStruct->raid.energy ^= BIT_FLANK;
         gBattlerAttacker = gBattleStruct->raid.energy;
@@ -648,8 +649,7 @@ static u16 GetShieldAmount(void)
     u8 spDef = gSpeciesInfo[species].baseSpDefense;
     u8 retVal;
 
-    if (gRaidData.raidType == RAID_TYPE_MEGA
-        || gRaidData.raidType == RAID_TYPE_PRIMAL)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
         switch (gRaidData.rank)
         {
@@ -693,8 +693,7 @@ static u16 GetShieldAmount(void)
 
 static u8 GetRaidShieldThresholdTotalNumber(void)
 {
-    if (gRaidData.raidType == RAID_TYPE_MEGA
-        || gRaidData.raidType == RAID_TYPE_PRIMAL)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
         return 0;
 
     switch (gRaidData.rank)
@@ -734,7 +733,8 @@ bool32 UpdateRaidShield(void)
         // Set up shield data.
         gBattleStruct->raid.shield = GetShieldAmount();
         gBattleStruct->raid.nextShield = GetNextShieldThreshold();
-        if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
             CreateAllRaidBarrierSprites();
 
         // Play animation and message.
@@ -747,7 +747,8 @@ bool32 UpdateRaidShield(void)
         gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
         // Destroy an extra barrier with a Max Move.
         // TODO: Tera STAB moves will probably break 2 barriers, too.
-        if (IsMaxMove(gLastUsedMove) && gRaidData.raidType == RAID_TYPE_MAX && gBattleStruct->raid.shield > 1)
+        // TODO: Z-moves will destroy another barrier, up to 3 barriers at the same time
+        if (IsMaxMove(gLastUsedMove) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 1)
         {
             gBattleStruct->raid.shield--;
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
@@ -758,8 +759,7 @@ bool32 UpdateRaidShield(void)
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
         }
 
-        if (gRaidData.raidType == RAID_TYPE_MEGA
-            || gRaidData.raidType == RAID_TYPE_PRIMAL)
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
         {
             u32 i;
             gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - gBattleMons[gBattlerTarget].maxHP;
@@ -780,7 +780,7 @@ bool32 UpdateRaidShield(void)
                 if (gBattleMons[gBattlerTarget].statStages[STAT_SPDEF] < MAX_STAT_STAGE)
                     ++gBattleMons[gBattlerTarget].statStages[STAT_SPDEF];
             }
-            gBattleCommunication[MULTIUSE_STATE] = RAID_TYPE_MEGA;
+            gBattleCommunication[MULTIUSE_STATE] = RAID_SHIELD_MEGA;
         }
 
         BattleScriptPushCursor();
@@ -793,7 +793,8 @@ bool32 UpdateRaidShield(void)
     else if (gBattleStruct->raid.state & RAID_RESHOW_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_RESHOW_SHIELD;
-        if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
             CreateAllRaidBarrierSprites();
         return TRUE;
     }
@@ -822,7 +823,8 @@ u16 GetShieldDamageRequired(u16 hp, u16 maxHP)
 u16 GetShieldDamageReduction(void)
 {
     // Gen 8-style shields reduce damage by a constant 95%.
-    if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
+        || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
         return UQ_4_12(1-0.95);
     }
@@ -953,26 +955,27 @@ static u32 CreateRaidBarrierSprite(u8 index)
 {
     u32 spriteId, position;
     s16 x, y;
+    u16 species = gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species;
 
     GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
 
-    if (gRaidData.raidType == RAID_TYPE_MEGA)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
         x += sMegaBarrierPosition[0] - (index * 25);
         y += sMegaBarrierPosition[1];
 
-   	    LoadSpritePalette(&sSpritePalette_MegaRaidBarrier);
-   	    LoadSpriteSheet(&sSpriteSheet_MegaRaidBarrier);
-        spriteId = CreateSprite(&sSpriteTemplate_MegaRaidBarrier, x, y, 0);
-    }
-    else if (gRaidData.raidType == RAID_TYPE_PRIMAL)
-    {
-        x += sMegaBarrierPosition[0] - (index * 25);
-        y += sMegaBarrierPosition[1];
-
-   	    LoadSpritePalette(&sSpritePalette_MaxRaidBarrier);
-   	    LoadSpriteSheet((gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON || gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON_PRIMAL) ? &sSpriteSheet_OmegaRaidBarrier : &sSpriteSheet_AlphaRaidBarrier);
-        spriteId = CreateSprite(&sSpriteTemplate_PrimalRaidBarrier, x, y, 0);
+        if (species == SPECIES_GROUDON || species == SPECIES_GROUDON_PRIMAL || species == SPECIES_KYOGRE || species == SPECIES_KYOGRE_PRIMAL)
+        {
+            LoadSpritePalette(&sSpritePalette_MaxRaidBarrier);
+   	        LoadSpriteSheet((species  == SPECIES_GROUDON || species  == SPECIES_GROUDON_PRIMAL) ? &sSpriteSheet_OmegaRaidBarrier : &sSpriteSheet_AlphaRaidBarrier);
+            spriteId = CreateSprite(&sSpriteTemplate_PrimalRaidBarrier, x, y, 0);
+        }
+        else
+        {
+            LoadSpritePalette(&sSpritePalette_MegaRaidBarrier);
+       	    LoadSpriteSheet(&sSpriteSheet_MegaRaidBarrier);
+            spriteId = CreateSprite(&sSpriteTemplate_MegaRaidBarrier, x, y, 0);
+        }
     }
     else // MAX RAIDS & TERA RAIDS
     {

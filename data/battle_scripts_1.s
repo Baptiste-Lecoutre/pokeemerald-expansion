@@ -9972,7 +9972,8 @@ BattleScript_RaidIntro::
 	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_DYNAMAX, BattleScript_MaxRaidIntro
 	jumpifbyte CMP_EQUAL, gBattleCommunication, GIMMICK_TERA, BattleScript_RaidIntroEnd
 BattleScript_RaidIntroEnd:
-	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_GEN_8, BattleScript_MaxRaidStormBrews
+	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_RULES_MAX, BattleScript_MaxRaidStormBrews
+	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_RULES_MEGA, BattleScript_MaxRaidStormBrews
 	end2
 
 BattleScript_MaxRaidIntro:
@@ -10015,8 +10016,7 @@ BattleScript_RaidShieldAppeared::
 BattleScript_RaidShieldDisappeared::
 	playanimation BS_TARGET, B_ANIM_RAID_SHIELD_DISAPPEARED
 	waitanimation
-	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_MEGA, BattleScript_MegaRaidHealBarrier
-	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_PRIMAL, BattleScript_MegaRaidHealBarrier
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_SHIELD_MEGA, BattleScript_MegaRaidHealBarrier
 	printstring STRINGID_RAIDSHIELDDISAPPEARED
 	waitmessage B_WAIT_TIME_LONG
 	jumpifstat BS_TARGET, CMP_GREATER_THAN, STAT_DEF, MIN_STAT_STAGE, BattleScript_RaidDefenseDrop
@@ -10041,8 +10041,7 @@ BattleScript_RaidShieldDisappearedEnd:
 BattleScript_RaidBarrierBroken::
 	playanimation BS_TARGET, B_ANIM_RAID_BARRIER_BROKEN
 	waitanimation
-	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_MEGA, BattleScript_MegaRaidHealBarrier
-	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_TYPE_PRIMAL, BattleScript_MegaRaidHealBarrier
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_SHIELD_MEGA, BattleScript_MegaRaidHealBarrier
 	return
 
 BattleScript_MegaRaidHealBarrier::
@@ -10099,8 +10098,8 @@ BattleScript_TeraRaidTimerLow::
 BattleScript_RaidDefeat::
 	printfromtable gRaidStateStringIds
 	waitmessage B_WAIT_TIME_LONG
-	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_GEN_8, BattleScript_MaxRaidDefeatAnim
-	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_GEN_9, BattleScript_TeraRaidDefeatAnim
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_RULES_MAX, BattleScript_MaxRaidDefeatAnim
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_RULES_TERA, BattleScript_TeraRaidDefeatAnim
 BattleScript_BlownOutMsg:
 	printstring STRINGID_BLOWNOUTOFDEN
 	waitmessage B_WAIT_TIME_LONG

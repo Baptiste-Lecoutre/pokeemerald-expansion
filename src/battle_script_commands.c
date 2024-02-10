@@ -2182,20 +2182,20 @@ END:
     }
 
     // Mega Raid shields prevent being KO'd 
-    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && (gRaidData.raidType == RAID_TYPE_MEGA || gRaidData.raidType == RAID_TYPE_PRIMAL)
+    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
         && gBattleMoveDamage >= gBattleMons[gBattlerTarget].hp)
     {
         gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - 1;
         gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
     }
     // Max Raid shields apply a damage reduction that can fully negate damage.
-    else if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && gBattleMoveDamage && gRaidData.raidType == RAID_TYPE_MAX)
+    else if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && gBattleMoveDamage && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX)
     {
         gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
         gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
     }
     // If an attack will trigger a Raid Boss's shield, it will not go past that threshold.
-    else if (IsRaidBoss(gBattlerTarget) && gRaidData.raidType == RAID_TYPE_MAX
+    else if (IsRaidBoss(gBattlerTarget) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
         && gBattleMoveDamage > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
     {
         gBattleMoveDamage = GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP);
