@@ -7784,6 +7784,7 @@ BattleScript_TryAdrenalineOrbRet:
 
 BattleScript_IntimidateActivates::
 	showabilitypopup BS_ATTACKER
+ 	copybyte sSAVED_BATTLER, gBattlerTarget
 	pause B_WAIT_TIME_LONG
 	destroyabilitypopup
 	setbyte gBattlerTarget, 0
@@ -7811,6 +7812,7 @@ BattleScript_IntimidateLoopIncrement:
 BattleScript_IntimidateEnd:
 	copybyte sBATTLER, gBattlerAttacker
 	destroyabilitypopup
+ 	copybyte gBattlerTarget, sSAVED_BATTLER
 	pause B_WAIT_TIME_MED
 	end3
 
