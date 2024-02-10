@@ -497,7 +497,7 @@ u8 GetRaidBattleTransition(void)
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 {
     u16 mult;
-    if (gRaidTypes[gRaidData.raidType].shield == RAID_GEN_8)
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_GEN_8)
         mult = sGen8RaidHPMultipliers[gRaidData.rank];
     else
         mult = sGen9RaidHPMultipliers[gRaidData.rank];
@@ -971,7 +971,7 @@ static u32 CreateRaidBarrierSprite(u8 index)
         y += sMegaBarrierPosition[1];
 
    	    LoadSpritePalette(&sSpritePalette_MaxRaidBarrier);
-   	    LoadSpriteSheet((gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON || gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON_PRIMAL)? &sSpriteSheet_OmegaRaidBarrier : &sSpriteSheet_AlphaRaidBarrier);
+   	    LoadSpriteSheet((gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON || gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species  == SPECIES_GROUDON_PRIMAL) ? &sSpriteSheet_OmegaRaidBarrier : &sSpriteSheet_AlphaRaidBarrier);
         spriteId = CreateSprite(&sSpriteTemplate_PrimalRaidBarrier, x, y, 0);
     }
     else // MAX RAIDS & TERA RAIDS
