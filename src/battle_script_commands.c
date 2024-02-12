@@ -1239,6 +1239,7 @@ static bool32 NoTargetPresent(u8 battler, u32 move)
     return FALSE;
 }
 
+// TODO: Convert this to a proper FORM_CHANGE type.
 static bool32 TryAegiFormChange(void)
 {
     // Only Aegislash with Stance Change can transform, transformed mons cannot.
@@ -2389,6 +2390,10 @@ static void Cmd_datahpupdate(void)
         }
         else if (DoesDisguiseBlockMove(gBattlerAttacker, battler, gCurrentMove))
         {
+            // TODO: Convert this to a proper FORM_CHANGE type.
+            u32 side = GetBattlerSide(battler);
+            if (gBattleStruct->changedSpecies[side][gBattlerPartyIndexes[battler]] == SPECIES_NONE)
+                gBattleStruct->changedSpecies[side][gBattlerPartyIndexes[battler]] = gBattleMons[battler].species;
             gBattleMons[battler].species = SPECIES_MIMIKYU_BUSTED;
             BattleScriptPush(cmd->nextInstr);
             gBattlescriptCurrInstr = BattleScript_TargetFormChange;
@@ -2565,6 +2570,7 @@ static void Cmd_resultmessage(void)
     if (gBattleControllerExecFlags)
         return;
 
+    // TODO: Convert this to a proper FORM_CHANGE type.
     // Do Ice Face form change which was set up in Cmd_adjustdamage.
     if (gBattleResources->flags->flags[gBattlerTarget] & RESOURCE_FLAG_ICE_FACE)
     {
@@ -7349,7 +7355,7 @@ static void Cmd_switchineffects(void)
 
         // Don't activate switch-in abilities if the opposing field is empty.
         // This could happen when a mon uses explosion and causes everyone to faint.
-        if ((battlerAbility == ABILITY_INTIMIDATE || battlerAbility == ABILITY_DOWNLOAD)
+        if ((battlerAbility == ABILITY_INTIMIDATE || battlerAbility == ABILITY_SUPERSWEET_SYRUP || battlerAbility == ABILITY_DOWNLOAD)
          && !IsBattlerAlive(BATTLE_OPPOSITE(battler))
          && !IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(battler))))
         {
@@ -10473,6 +10479,7 @@ static void Cmd_various(void)
         }
         return;
     }
+    // TODO: Convert this to a proper FORM_CHANGE type.
     case VARIOUS_TRY_ACTIVATE_BATTLE_BOND:
     {
         VARIOUS_ARGS();
@@ -16712,6 +16719,7 @@ void BS_SetGlaiveRush(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
+// TODO: Convert this to a proper FORM_CHANGE type.
 void BS_TryRelicSong(void)
 {
     NATIVE_ARGS();
