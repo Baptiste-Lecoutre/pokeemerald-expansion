@@ -333,10 +333,16 @@ void HideMapNamePopUpWindow(void)
 {
     if (FuncIsActiveTask(Task_MapNamePopUpWindow))
     {
-        ClearStdWindowAndFrame(GetPrimaryPopUpWindowId(), TRUE);
-        ClearStdWindowAndFrame(GetSecondaryPopUpWindowId(), TRUE);
-        RemovePrimaryPopUpWindow();
-        RemoveSecondaryPopUpWindow();
+        if (GetPrimaryPopUpWindowId() != WINDOW_NONE)
+        {
+            ClearStdWindowAndFrame(GetPrimaryPopUpWindowId(), TRUE);
+            RemovePrimaryPopUpWindow();
+        }
+        if (GetSecondaryPopUpWindowId() != WINDOW_NONE)
+        {
+            ClearStdWindowAndFrame(GetSecondaryPopUpWindowId(), TRUE);
+            RemoveSecondaryPopUpWindow();
+        }
         ScanlineEffect_Stop();
         SetGpuReg_ForcedBlank(REG_OFFSET_BG0VOFS, 0);
         SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN1_BG_ALL | WININ_WIN1_OBJ);
