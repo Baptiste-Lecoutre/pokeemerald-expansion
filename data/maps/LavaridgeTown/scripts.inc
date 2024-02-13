@@ -70,7 +70,8 @@ LavaridgeTown_EventScript_RivalGiveGoGoggles::
 	getplayerxy VAR_0x8008, VAR_0x8009
 	call_if_eq VAR_0x8008, 9, LavaridgeTown_EventScript_OldWomanNoticePlayerPokeCenter
 	call_if_ne VAR_0x8008, 9, LavaridgeTown_EventScript_OldWomanNoticePlayerGym
-	msgbox LavaridgeTown_Text_MyGrandDaughterDisappeared, MSGBOX_DEFAULT 
+	msgbox LavaridgeTown_Text_MyGrandDaughterDisappeared, MSGBOX_DEFAULT
+	closemessage
 	call_if_eq VAR_0x8008, 9, LavaridgeTown_EventScript_RivalNoticePlayer
 	call_if_ne VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExitHerbShop
 	delay 20
@@ -86,31 +87,19 @@ LavaridgeTown_EventScript_RivalGiveGoGoggles::
 
 LavaridgeTown_EventScript_MayGiveGoGoggles::
 	msgbox LavaridgeTown_Text_MayIheardThatLetsGo, MSGBOX_DEFAULT
-@	giveitem ITEM_GO_GOGGLES
-@	setflag FLAG_RECEIVED_GO_GOGGLES
-@	msgbox LavaridgeTown_Text_MayExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
 	end
 
 LavaridgeTown_EventScript_BrendanGiveGoGoggles::
 	msgbox LavaridgeTown_Text_BrendanIheardThatLetsGo, MSGBOX_DEFAULT
-@	giveitem ITEM_GO_GOGGLES
-@	setflag FLAG_RECEIVED_GO_GOGGLES
-@	msgbox LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
 	end
 
 LavaridgeTown_EventScript_RivalExit::
 	closemessage
 	loadword 0 LavaridgeTown_EventScript_FollowerScript
-	setfollower LOCALID_RIVAL 0x100 | FOLLOWER_FLAG_ALL_LAND
+	setfollower LOCALID_RIVAL FOLLOWER_FLAG_CUSTOM_FOLLOW_SCRIPT | FOLLOWER_FLAG_ALL_LAND
 	callnative UpdateFollowingPokemon
-@	removeobject LOCALID_RIVAL
-@	addobject LOCALID_RIVAL_ON_BIKE
-@	delay 30
-@	call_if_eq VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExit1
-@	call_if_ne VAR_0x8008, 9, LavaridgeTown_EventScript_RivalExit2
-@	removeobject LOCALID_RIVAL_ON_BIKE
 	setvar VAR_LAVARIDGE_TOWN_STATE, 2
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
 	savebgm MUS_DUMMY
@@ -138,10 +127,6 @@ LavaridgeTown_EventScript_OldWomanNoticePlayerGym::
 	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
 	waitmovement 0
 	applymovement LOCALID_OLD_WOMAN, Common_Movement_FaceRight
-	waitmovement 0
-	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
-	waitmovement 0
-	applymovement LOCALID_OLD_WOMAN, Common_Movement_FaceDown
 	waitmovement 0
 	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
 	waitmovement 0
@@ -491,11 +476,6 @@ LavaridgeTown_Text_MayIheardThatLetsGo:
 	.string "Oh? While I visited the hot springs,\n"
 	.string "you got the Lavaridge Gym Badge.\p"
 	.string "Anyway, let's go save this little girl!$"
-@	.string "You must have collected\n"
-@	.string "good Pokémon…\l"
-@	.string "No, I believe you raised some.\p"
-@	.string "I guess it would be okay for you to\n"
-@	.string "have this.$"
 
 LavaridgeTown_Text_BrendanIheardThatLetsGo:
 	.string "Brendan: {PLAYER}, hey, it's been a while.\n"
@@ -505,5 +485,3 @@ LavaridgeTown_Text_BrendanIheardThatLetsGo:
 	.string "Oh?\n"
 	.string "That's a decent collection of Badges.\p"
 	.string "Anyway, let's go save this little girl!$"
-@	.string "All right, then.\n"
-@	.string "You may as well have this.$"
