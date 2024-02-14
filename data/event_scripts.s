@@ -58,6 +58,7 @@
 #include "constants/weather.h"
 #include "constants/mirage_locations.h"
 #include "constants/follow_me.h"
+#include "constants/battle_raid.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -960,6 +961,10 @@ gText_ThankYouForAccessingMysteryGift::
 
 gText_PlayerFoundOneTMHM::
 	.string "{PLAYER} found one {STR_VAR_1}\n"
+	.string "{STR_VAR_2}!$"
+
+gText_PlayerFoundTMHMs::
+	.string "{PLAYER} found {STR_VAR_3} {STR_VAR_1}\n"
 	.string "{STR_VAR_2}!$"
 
 gText_Sudowoodo_Attacked::

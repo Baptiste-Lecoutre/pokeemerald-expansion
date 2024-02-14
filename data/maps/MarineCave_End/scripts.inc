@@ -35,11 +35,19 @@ MarineCave_End_EventScript_Kyogre::
 	delay 40
 	waitmoncry
 	setvar VAR_LAST_TALKED, LOCALID_KYOGRE
-	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
-	setwildbattle SPECIES_KYOGRE, VAR_RESULT
+@	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+@	setwildbattle SPECIES_KYOGRE, VAR_RESULT
+	specialvar VAR_RESULT, IsPokeballPocketEmpty
+	goto_if_eq VAR_RESULT, FALSE, MarineCave_End_EventScript_Kyogre_PrepareRaid
+	additem ITEM_POKE_BALL
+MarineCave_End_EventScript_Kyogre_PrepareRaid:
+	preparefixedraid RAID_TYPE_PRIMAL, 7, SPECIES_KYOGRE, 70, ITEM_BLUE_ORB
+	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
+	special InitStoryRaid
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special BattleSetup_StartLegendaryBattle
-	waitstate
+@	special BattleSetup_StartLegendaryBattle
+@	waitstate
+	doraidbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	setvar VAR_TEMP_1, 0
 	specialvar VAR_RESULT, GetBattleOutcome
@@ -62,7 +70,7 @@ MarineCave_End_EventScript_RanFromKyogre::
 	goto Common_EventScript_LegendaryFlewAway
 	end
 
-MarineCave_End_Movement_KyogreApproach:
+MarineCave_End_Movement_KyogreApproachBroken:
 	init_affine_anim
 	walk_down_start_affine
 	delay_16
@@ -73,3 +81,12 @@ MarineCave_End_Movement_KyogreApproach:
 	walk_down_affine
 	step_end
 
+MarineCave_End_Movement_KyogreApproach:
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	step_end

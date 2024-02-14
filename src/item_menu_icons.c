@@ -607,8 +607,8 @@ void AddBagItemIconSprite(u16 itemId, u8 id)
         if (iconSpriteId != MAX_SPRITES)
         {
             *spriteId = iconSpriteId;
-            gSprites[iconSpriteId].x2 = 24;
-            gSprites[iconSpriteId].y2 = 88;
+            gSprites[iconSpriteId].x2 = 18;//24;
+            gSprites[iconSpriteId].y2 = 95;//88;
         }
     }
 }

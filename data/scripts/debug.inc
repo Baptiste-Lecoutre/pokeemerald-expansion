@@ -24,6 +24,7 @@ Debug_CheatStart::
 	givemon SPECIES_LATIOS, 90, ITEM_LATIOSITE
 	givemon SPECIES_MEW, 1, ITEM_NONE
 	setflag FLAG_SYS_POKEDEX_GET
+	setflag FLAG_SYS_POKENAV_GET
 	special SetUnlockedPokedexFlags
 	setflag FLAG_RECEIVED_POKEDEX_FROM_BIRCH
 	setvar VAR_CABLE_CLUB_TUTORIAL_STATE, 2
@@ -101,6 +102,48 @@ Debug_BoxFilledMessage::
 Debug_BoxFilledMessage_Text:
 	.string "Storage boxes filled!$"
 
+Debug_EventScript_CheckEV::
+	lockall
+	getpartysize
+	goto_if_eq VAR_RESULT, 0, Debug_HatchAnEgg_NoPokemon
+	special ChoosePartyMon
+	waitstate
+	goto_if_ge VAR_0x8004, PARTY_SIZE, Debug_EventScript_CheckEV_End
+	callnative Script_GetChosenMonOffensiveEV
+	msgbox Debug_EventScript_Text_OffensiveEV, MSGBOX_DEFAULT
+	callnative Script_GetChosenMonDefensiveEV
+	msgbox Debug_EventScript_Text_DefensiveEV, MSGBOX_DEFAULT
+Debug_EventScript_CheckEV_End::
+	releaseall
+	end
+
+Debug_EventScript_Text_OffensiveEV:
+	.string "ATK EV: {STR_VAR_1}, SPATK EV: {STR_VAR_2}, SPEED EV: {STR_VAR_3}$"
+
+Debug_EventScript_Text_DefensiveEV:
+	.string "HP EV: {STR_VAR_1}, DEF EV: {STR_VAR_2}, SPDEF EV: {STR_VAR_3}$"
+
+Debug_EventScript_CheckIV::
+	lockall
+	getpartysize
+	goto_if_eq VAR_RESULT, 0, Debug_HatchAnEgg_NoPokemon
+	special ChoosePartyMon
+	waitstate
+	goto_if_ge VAR_0x8004, PARTY_SIZE, Debug_EventScript_CheckIV_End
+	callnative Script_GetChosenMonOffensiveIV
+	msgbox Debug_EventScript_Text_OffensiveIV, MSGBOX_DEFAULT
+	callnative Script_GetChosenMonDefensiveIV
+	msgbox Debug_EventScript_Text_DefensiveIV, MSGBOX_DEFAULT
+Debug_EventScript_CheckIV_End::
+	releaseall
+	end
+
+Debug_EventScript_Text_OffensiveIV:
+	.string "ATK IV: {STR_VAR_1}, SPATK IV: {STR_VAR_2}, SPEED IV: {STR_VAR_3}$"
+
+Debug_EventScript_Text_DefensiveIV:
+	.string "HP IV: {STR_VAR_1}, DEF IV: {STR_VAR_2}, SPDEF IV: {STR_VAR_3}$"
+
 Debug_EventScript_Script_1::
 	goto EventScript_DoWonderTrade
 	end
@@ -121,10 +164,10 @@ Debug_EventScript_Script_4::
 
 Debug_EventScript_Script_5::
 	lockall
-	preparefixedraid 2, 7, SPECIES_SALAMENCE, 90, ITEM_SALAMENCITE
+	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_7, SPECIES_SALAMENCE, 90, ITEM_SALAMENCITE
 	special InitRaidIntro
 	waitstate
-	goto_if_eq VAR_RESULT, TRUE, Debug_DoFixedRaid
+	goto_if_ne VAR_RESULT, FALSE, Debug_DoFixedRaid
 	releaseall
 	end
 
@@ -158,6 +201,8 @@ Debug_CheckSaveBlock::
 	msgbox Debug_SaveBlock1Size, MSGBOX_DEFAULT
 	callnative CheckSaveBlock2Size
 	msgbox Debug_SaveBlock2Size, MSGBOX_DEFAULT
+	callnative CheckSaveBlock3Size
+	msgbox Debug_SaveBlock3Size, MSGBOX_DEFAULT
 	callnative CheckPokemonStorageSize
 	msgbox Debug_PokemonStorageSize, MSGBOX_DEFAULT
 	release
@@ -169,6 +214,10 @@ Debug_SaveBlock1Size::
 
 Debug_SaveBlock2Size::
 	.string "SaveBlock2 size: {STR_VAR_1}b/{STR_VAR_2}b.\n"
+	.string "Free space: {STR_VAR_3}b.$"
+
+Debug_SaveBlock3Size::
+	.string "SaveBlock3 size: {STR_VAR_1}b/{STR_VAR_2}b.\n"
 	.string "Free space: {STR_VAR_3}b.$"
 
 Debug_PokemonStorageSize::
@@ -281,4 +330,3 @@ Debug_FlagsAndVarNotSetBattleConfigMessage_Text:
 	.string "Feature unavailable! Please define a\n"
 	.string "usable flag and a usable var in:\l"
 	.string "'include/config/battle.h'!$"
-

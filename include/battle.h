@@ -50,6 +50,18 @@
 // Special indicator value for shellBellDmg in SpecialStatus
 #define IGNORE_SHELL_BELL 0xFFFF
 
+// For defining EFFECT_HIT etc. with battle TV scores and flags etc.
+struct __attribute__((packed, aligned(2))) BattleMoveEffect
+{
+    const u8 *battleScript;
+    u16 battleTvScore:3;
+    u16 encourageEncore:1;
+    u16 semiInvulnerableEffect:1;
+    u16 flags:11; // coming soon...
+};
+
+#define GET_MOVE_BATTLESCRIPT(move) gBattleMoveEffects[gMovesInfo[move].effect].battleScript
+
 struct ResourceFlags
 {
     u32 flags[MAX_BATTLERS_COUNT];
@@ -213,7 +225,7 @@ struct SpecialStatus
     // End of byte
     u8 emergencyExited:1;
     u8 afterYou:1;
-    u8 magicianStolen:1; // So that Life Orb doesn't activate after Magician steals it.
+    u8 preventLifeOrbDamage:1; // So that Life Orb doesn't activate various effects.
 };
 
 struct SideTimer
@@ -328,7 +340,7 @@ struct AiLogicData
     bool8 shouldSwitchMon; // Because all available moves have no/little effect. Each bit per battler.
     u8 monToSwitchId[MAX_BATTLERS_COUNT]; // ID of the mon to switch.
     bool8 weatherHasEffect; // The same as WEATHER_HAS_EFFECT. Stored here, so it's called only once.
-    u8 mostSuitableMonId; // Stores result of GetMostSuitableMonToSwitchInto, which decides which generic mon the AI would switch into if they decide to switch. This can be overruled by specific mons found in ShouldSwitch; the final resulting mon is stored in AI_monToSwitchIntoId.
+    u8 mostSuitableMonId[MAX_BATTLERS_COUNT]; // Stores result of GetMostSuitableMonToSwitchInto, which decides which generic mon the AI would switch into if they decide to switch. This can be overruled by specific mons found in ShouldSwitch; the final resulting mon is stored in AI_monToSwitchIntoId.
     struct SwitchinCandidate switchinCandidate; // Struct used for deciding which mon to switch to in battle_ai_switch_items.c
 };
 
@@ -615,6 +627,7 @@ struct BattleStruct
     u32 expValue;
     u8 expGettersOrder[PARTY_SIZE]; // First battlers which were sent out, then via exp-share
     u8 expGetterMonId;
+    u8 additionalEffectsCounter:2;
     u8 expOrderId:3;
     u8 expGetterBattlerId:2;
     u8 teamGotExpMsgPrinted:1; // The 'Rest of your team got msg' has been printed.
@@ -734,7 +747,6 @@ struct BattleStruct
     u8 quickClawBattlerId;
     struct LostItem itemLost[PARTY_SIZE];  // Player's team that had items consumed or stolen (two bytes per party member)
     u8 forcedSwitch:4; // For each battler
-    u8 switchInAbilityPostponed:4; // To not activate against an empty field, each bit for battler
     u8 blunderPolicy:1; // should blunder policy activate
     u8 swapDamageCategory:1; // Photon Geyser, Shell Side Arm, Light That Burns the Sky
     u8 ballSpriteIds[2];    // item gfx, window gfx
@@ -752,7 +764,6 @@ struct BattleStruct
     u8 storedHealingWish:4; // Each battler as a bit.
     u8 storedLunarDance:4; // Each battler as a bit.
     u8 bonusCritStages[MAX_BATTLERS_COUNT]; // G-Max Chi Strike boosts crit stages of allies.
-    uq4_12_t supremeOverlordModifier[MAX_BATTLERS_COUNT];
     u8 itemPartyIndex[MAX_BATTLERS_COUNT];
     u8 itemMoveIndex[MAX_BATTLERS_COUNT];
     u8 trainerSlideFirstCriticalHitMsgState:2;
@@ -773,8 +784,11 @@ struct BattleStruct
     u8 timesGotHit[NUM_BATTLE_SIDES][PARTY_SIZE];
     u8 enduredDamage;
     u8 transformZeroToHero[NUM_BATTLE_SIDES];
+    u8 stickySyrupdBy[MAX_BATTLERS_COUNT];
     u8 intrepidSwordBoost[NUM_BATTLE_SIDES];
     u8 dauntlessShieldBoost[NUM_BATTLE_SIDES];
+    u8 supersweetSyrup[NUM_BATTLE_SIDES];
+    u8 supremeOverlordCounter[MAX_BATTLERS_COUNT];
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -791,16 +805,14 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
     if (gBattleStruct->dynamicMoveType)                               \
         typeArg = gBattleStruct->dynamicMoveType & DYNAMIC_TYPE_MASK; \
     else                                                              \
-        typeArg = gBattleMoves[move].type;                            \
+        typeArg = gMovesInfo[move].type;                            \
 }
 
-#define IS_MOVE_PHYSICAL(move)(GetBattleMoveCategory(move) == BATTLE_CATEGORY_PHYSICAL)
-#define IS_MOVE_SPECIAL(move)(GetBattleMoveCategory(move) == BATTLE_CATEGORY_SPECIAL)
-#define IS_MOVE_STATUS(move)(gBattleMoves[move].category == BATTLE_CATEGORY_STATUS)
+#define IS_MOVE_PHYSICAL(move)(GetBattleMoveCategory(move) == DAMAGE_CATEGORY_PHYSICAL)
+#define IS_MOVE_SPECIAL(move)(GetBattleMoveCategory(move) == DAMAGE_CATEGORY_SPECIAL)
+#define IS_MOVE_STATUS(move)(gMovesInfo[move].category == DAMAGE_CATEGORY_STATUS)
 
-#define IS_EFFECT_RECOIL(effect)(effect == EFFECT_RECOIL || effect == EFFECT_RECOIL_IF_MISS)
-
-#define IS_MOVE_RECOIL(move)(IS_EFFECT_RECOIL(gBattleMoves[move].effect))
+#define IS_MOVE_RECOIL(move)(gMovesInfo[move].recoil > 0 || gMovesInfo[move].effect == EFFECT_RECOIL_IF_MISS)
 
 #define BATTLER_MAX_HP(battlerId)(gBattleMons[battlerId].hp == gBattleMons[battlerId].maxHP)
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0) || (gBattleStruct->enduredDamage & gBitTable[gBattlerTarget]))
@@ -854,10 +866,10 @@ struct BattleScripting
     s32 bideDmg;
     u8 multihitString[6];
     bool8 expOnCatch;
-    u8 twoTurnsMoveStringId;
+    u8 unused;
     u8 animArg1;
     u8 animArg2;
-    u16 tripleKickPower;
+    u16 savedStringId;
     u8 moveendState;
     u8 savedStatChanger; // For further use, if attempting to change stat two times(ex. Moody)
     u8 shiftSwitched; // When the game tells you the next enemy's pokemon and you switch. Option for noobs but oh well.
@@ -1099,6 +1111,7 @@ extern struct FieldTimer gFieldTimers;
 extern u8 gBattlerAbility;
 extern u16 gPartnerSpriteId;
 extern struct QueuedStatBoost gQueuedStatBoosts[MAX_BATTLERS_COUNT];
+extern const struct BattleMoveEffect gBattleMoveEffects[];
 
 extern void (*gPreBattleCallback1)(void);
 extern void (*gBattleMainFunc)(void);

@@ -1207,7 +1207,8 @@ void CreateFollowerAvatar(void)
     }
 
     // Create NPC and store ID
-    gSaveBlock2Ptr->follower.objId = TrySpawnObjectEventTemplate(&clone, gSaveBlock2Ptr->follower.map.number, gSaveBlock2Ptr->follower.map.group, clone.x, clone.y);
+    //gSaveBlock2Ptr->follower.objId = TrySpawnObjectEventTemplate(&clone, gSaveBlock2Ptr->follower.map.number, gSaveBlock2Ptr->follower.map.group, clone.x, clone.y);
+    gSaveBlock2Ptr->follower.objId = TrySpawnObjectEventTemplate(&clone, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, clone.x, clone.y);
     if (gSaveBlock2Ptr->follower.objId == OBJECT_EVENTS_COUNT)
         gSaveBlock2Ptr->follower.inProgress = FALSE; //Cancel the following because couldn't load sprite
 

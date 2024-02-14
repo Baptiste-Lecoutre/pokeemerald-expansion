@@ -2,6 +2,7 @@
 #include "strings.h"
 #include "battle_pyramid_bag.h"
 #include "item_menu.h"
+#include "text.h"
 
 ALIGNED(4)
 const u8 gText_ExpandedPlaceholder_Empty[] = _("");
@@ -2039,7 +2040,7 @@ const u8 gText_OminousWind[] = _("Ominous Wind");
 const u8 gText_SuperFang[] = _("Super Fang");
 const u8 gText_HoneClaws[] = _("Hone Claws");
 const u8 gText_PsychUp[] = _("Psych Up");
-//const u8 gText_FocusEnergy[] = _("Focus Energy");
+const u8 gText_FocusEnergy[] = _("Focus Energy");
 const u8 gText_Spikes[] = _("Spikes");
 const u8 gText_Infestation[] = _("Infestation");
 
@@ -2047,7 +2048,7 @@ const u8 gText_Infestation[] = _("Infestation");
 const u8 gText_Counter[] = _("Counter");
 const u8 gText_Endeavor[] = _("Endeavor");
 const u8 gText_WorrySeed[] = _("Worry Seed");
-//const u8 gText_DefenseCurl[] = _("Defense Curl");
+const u8 gText_DefenseCurl[] = _("Defense Curl");
 const u8 gText_Defog[] = _("Defog");
 const u8 gText_MagicCoat[] = _("Magic Coat");
 const u8 gText_Uproar[] = _("Uproar");

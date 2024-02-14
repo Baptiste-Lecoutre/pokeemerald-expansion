@@ -5,16 +5,28 @@
 #define RAID_GEN_8  0
 #define RAID_GEN_9  1
 
+// Raid shield IDs
+#define RAID_SHIELD_MAX     0
+#define RAID_SHIELD_TERA    1
+#define RAID_SHIELD_MEGA    2
+
+// Raid rules IDs
+#define RAID_RULES_MAX  0
+#define RAID_RULES_TERA 1
+#define RAID_RULES_MEGA 2
+
 // Gimmick IDs
-#define GIMMICK_MEGA    0
-#define GIMMICK_DYNAMAX 1
-#define GIMMICK_TERA    2
+#define GIMMICK_DYNAMAX 0
+#define GIMMICK_TERA    1
+#define GIMMICK_MEGA    2
+#define GIMMICK_PRIMAL  3
 
 // Raid Type IDs
 #define RAID_TYPE_MAX    0
 #define RAID_TYPE_TERA   1
 #define RAID_TYPE_MEGA   2
-#define NUM_RAID_TYPES   3
+#define RAID_TYPE_PRIMAL 3
+#define NUM_RAID_TYPES   4
 
 // Raid Battle States
 #define RAID_INTRO_COMPLETE     (1 << 1)

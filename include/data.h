@@ -46,6 +46,8 @@ struct TrainerSprite
     struct CompressedSpriteSheet frontPic;
     struct CompressedSpritePalette palette;
     const union AnimCmd *const *const animation;
+    const struct Coords16 mugshotCoords;
+    s16 mugshotRotation;
 };
 
 struct TrainerBacksprite
@@ -80,6 +82,8 @@ struct TrainerMon
     bool8 isShiny : 1;
     u8 dynamaxLevel : 4;
     bool8 gigantamaxFactor : 1;
+    bool8 shouldDynamax : 1;
+    bool8 shouldTerastal : 1;
 };
 
 #define TRAINER_PARTY(partyArray) partyArray, .partySize = ARRAY_COUNT(partyArray)
@@ -94,8 +98,10 @@ struct Trainer
     /*0x12*/ u8 trainerPic;
     /*0x13*/ u8 trainerName[TRAINER_NAME_LENGTH + 1];
     /*0x1E*/ bool8 doubleBattle:1;
-             u8 padding:7;
-    /*0x1F*/ u8 partySize;
+             bool8 mugshotEnabled:1;
+             u8 padding:6;
+    /*0x1F*/ u8 mugshotColor;
+    /*0x20*/ u8 partySize;
 };
 
 struct TrainerClass
@@ -154,6 +160,7 @@ extern const union AffineAnimCmd *const gAffineAnims_BattleSpriteContest[];
 extern const union AnimCmd sAnim_GeneralFrame0[];
 extern const union AnimCmd sAnim_GeneralFrame3[];
 extern const union AnimCmd *const gAnims_MonPic[];
+extern const union AnimCmd *const sAnims_Trainer[];
 extern const struct TrainerSprite gTrainerSprites[];
 extern const struct TrainerBacksprite gTrainerBacksprites[];
 
@@ -161,9 +168,6 @@ extern const struct Trainer gTrainers[];
 extern const struct Trainer gBattlePartners[];
 
 extern const struct TrainerClass gTrainerClasses[TRAINER_CLASS_COUNT];
-extern const u8 gMoveNames[MOVES_COUNT_DYNAMAX][MOVE_NAME_LENGTH + 1];
-extern const u8 *const gZMoveNames[];
-extern const u8 *const gMaxMoveNames[];
 
 // Follower text messages
 extern const struct FollowerMsgInfo gFollowerHappyMessages[];

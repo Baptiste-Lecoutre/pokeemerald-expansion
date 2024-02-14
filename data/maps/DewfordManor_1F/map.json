@@ -23,8 +23,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "DewfordManor_EventScript_Banettite",
+      "trainer_sight_or_berry_tree_id": "ITEM_BANETTITE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_DEWFORD_MANOR_BANETTITE"
     },
     {
@@ -36,8 +36,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "DewfordManor_EventScript_TM100Curse",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM100_CURSE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_DEWFORD_MANOR_TM100"
     }
   ],

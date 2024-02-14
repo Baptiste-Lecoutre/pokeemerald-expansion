@@ -23,8 +23,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Seaspray_Cave_Blastoisinite",
+      "trainer_sight_or_berry_tree_id": "ITEM_BLASTOISINITE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SEASPRAY_CAVE_BLASTOISINITE"
     },
     {
@@ -36,8 +36,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Seaspray_Cave_ItemStoneEdge",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM71_STONE_EDGE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_SEASPRAY_CAVE_STONE_EDGE"
     }
   ],
