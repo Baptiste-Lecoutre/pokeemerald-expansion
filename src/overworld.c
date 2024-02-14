@@ -211,7 +211,6 @@ EWRAM_DATA static u16 sAmbientCrySpecies = 0;
 EWRAM_DATA static bool8 sIsAmbientCryWaterMon = FALSE;
 EWRAM_DATA struct LinkPlayerObjectEvent gLinkPlayerObjectEvents[4] = {0};
 
-
 static const struct WarpData sDummyWarpData =
 {
     .mapGroup = MAP_GROUP(UNDEFINED),
@@ -1686,9 +1685,10 @@ void CB2_Overworld(void)
     if (fading)
         SetVBlankCallback(NULL);
     OverworldBasic();
-    if (fading) {
-      SetFieldVBlankCallback();
-      return;
+    if (fading)
+    {
+        SetFieldVBlankCallback();
+        return;
     }
 }
 
@@ -2168,10 +2168,10 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_Fly) //optionsShowFollowerPokemon
-          RemoveFollowingPokemon();
+        if (gFieldCallback == FieldCallback_UseFly) //optionsShowFollowerPokemon
+            RemoveFollowingPokemon();
         else
-          UpdateFollowingPokemon();
+            UpdateFollowingPokemon();
         SetCameraToTrackPlayer();
         (*state)++;
         break;
@@ -2187,6 +2187,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
     case 3:
         return TRUE;
     }
+
     return FALSE;
 }
 

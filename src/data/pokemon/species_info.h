@@ -223,6 +223,36 @@ const u8 gOgerponCornerstoneMaskPokedexText[] = _(
 #define FOOTPRINT(sprite)
 #endif
 
+#define SIZE_32x32 1
+#define SIZE_64x64 0
+
+// Set .compressed = OW_GFX_COMPRESS
+#define COMP OW_GFX_COMPRESS
+
+#if P_FOLLOWERS
+#define FOLLOWER(name, _size, shadow, _tracks)                                              \
+.followerData = {                                                                           \
+    .tileTag = TAG_NONE,                                                                    \
+    .paletteTag = OBJ_EVENT_PAL_TAG_DYNAMIC,                                                \
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,                                         \
+    .size = (_size == SIZE_32x32 ? 512 : 2048),                                             \
+    .width = (_size == SIZE_32x32 ? 32 : 64),                                               \
+    .height = (_size == SIZE_32x32 ? 32 : 64),                                              \
+    .paletteSlot = PALSLOT_NPC_1,                                                           \
+    .shadowSize = shadow,                                                                   \
+    .inanimate = FALSE,                                                                     \
+    .compressed = COMP,                                                                     \
+    .tracks = _tracks,                                                                      \
+    .oam = (_size == SIZE_32x32 ? &gObjectEventBaseOam_32x32 : &gObjectEventBaseOam_64x64), \
+    .subspriteTables = (_size == SIZE_32x32 ? sOamTables_32x32 : sOamTables_64x64),         \
+    .anims = sAnimTable_Following,                                                          \
+    .images = sPicTable_##name,                                                             \
+    .affineAnims = gDummySpriteAffineAnimTable,                                             \
+},
+#else
+#define FOLLOWER(name, _size, shadow, _tracks)
+#endif
+
 // Maximum value for a female Pokémon is 254 (MON_FEMALE) which is 100% female.
 // 255 (MON_GENDERLESS) is reserved for genderless Pokémon.
 #define PERCENT_FEMALE(percent) min(254, ((percent * 255) / 100))
@@ -261,6 +291,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .backAnimId = BACK_ANIM_NONE,
         PALETTES(CircledQuestionMark),
         ICON(QuestionMark, 0),
+        .followerData = {TAG_NONE, OBJ_EVENT_PAL_TAG_DYNAMIC, OBJ_EVENT_PAL_TAG_NONE, 512, 32, 32, 2, SHADOW_SIZE_M, FALSE, COMP, TRACKS_FOOT, &gObjectEventBaseOam_32x32, sOamTables_32x32, sAnimTable_Following, sPicTable_None, gDummySpriteAffineAnimTable},
         LEARNSETS(None),
     },
 

@@ -727,7 +727,7 @@ Common_EventScript_OutOfCenterPartyHeal::
 	waitfanfare
 	special HealPlayerParty
 	callnative UpdateFollowingPokemon
-	fadescreenswapbuffers FADE_FROM_BLACK
+	fadescreen FADE_FROM_BLACK
 	return
 
 EventScript_RegionMap::
@@ -1103,7 +1103,7 @@ EventScript_VsSeekerChargingDone::
 	.include "data/scripts/move_tutors.inc"
 	.include "data/scripts/trainer_hill.inc"
 	.include "data/scripts/test_signpost.inc"
-  .include "data/scripts/follower.inc"
+	.include "data/scripts/follower.inc"
 	.include "data/text/frontier_brain.inc"
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"

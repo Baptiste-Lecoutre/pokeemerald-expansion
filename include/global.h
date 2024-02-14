@@ -576,7 +576,7 @@ struct SaveBlock2
 extern struct SaveBlock2 *gSaveBlock2Ptr;
 
 extern u8 UpdateSpritePaletteWithTime(u8);
-extern bool8 IsAccurateGBA(void);
+//extern bool8 IsAccurateGBA(void);
 
 struct SecretBaseParty
 {
@@ -1147,10 +1147,10 @@ struct MapPosition
     s8 elevation;
 };
 
+extern u8 gStackBase[]; // Start of stack-allocated IWRAM
+
 // Adds support for compressed OW graphics,
 // (Also compresses pokemon follower graphics)
 #define OW_GFX_COMPRESS FALSE
-
-extern u8 gStackBase[]; // Start of stack-allocated IWRAM
 
 #endif // GUARD_GLOBAL_H

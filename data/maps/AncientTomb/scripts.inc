@@ -55,7 +55,6 @@ AncientTomb_EventScript_CaveEntranceSide::
 	end
 
 AncientTomb_EventScript_Registeel::
-  bufferspeciesname 0, SPECIES_REGISTEEL
 	lock
 	faceplayer
 	waitse
@@ -85,3 +84,4 @@ AncientTomb_EventScript_RanFromRegisteel::
 	setvar VAR_0x8004, SPECIES_REGISTEEL
 	goto Common_EventScript_LegendaryFlewAway
 	end
+

@@ -54,11 +54,12 @@ u32 FldEff_Shadow(void);
 #define sReflectionVerticalOffset   data[2]
 #define sIsStillReflection          data[7]
 
-void SetUpShadow(struct ObjectEvent *objectEvent, struct Sprite *sprite) {
-  gFieldEffectArguments[0] = objectEvent->localId;
-  gFieldEffectArguments[1] = gSaveBlock1Ptr->location.mapNum;
-  gFieldEffectArguments[2] = gSaveBlock1Ptr->location.mapGroup;
-  FldEff_Shadow();
+void SetUpShadow(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    gFieldEffectArguments[0] = objectEvent->localId;
+    gFieldEffectArguments[1] = gSaveBlock1Ptr->location.mapNum;
+    gFieldEffectArguments[2] = gSaveBlock1Ptr->location.mapGroup;
+    FldEff_Shadow();
 }
 
 void SetUpReflection(struct ObjectEvent *objectEvent, struct Sprite *sprite, bool8 stillReflection)
@@ -267,7 +268,7 @@ u8 CreateWarpArrowSprite(void)
     {
         struct Sprite *sprite = &gSprites[spriteId];
         // Can use either gender's palette, so try to use the one that should be loaded
-        sprite->oam.paletteNum = LoadObjectEventPalette(gSaveBlock2Ptr->playerGender ? FLDEFF_PAL_TAG_MAY : FLDEFF_PAL_TAG_BRENDAN);
+        sprite->oam.paletteNum = LoadPlayerObjectEventPalette(gSaveBlock2Ptr->playerGender);
         sprite->oam.priority = 1;
         sprite->coordOffsetEnabled = TRUE;
         sprite->invisible = TRUE;
@@ -326,10 +327,11 @@ u32 FldEff_Shadow(void)
     const struct ObjectEventGraphicsInfo *graphicsInfo;
     u8 spriteId;
     s32 i;
-    for (i = MAX_SPRITES - 1; i > -1; i--) { // Search backwards, because of CreateSpriteAtEnd
-      // Return early if a shadow sprite already exists
-      if (gSprites[i].sLocalId == gFieldEffectArguments[0] && gSprites[i].callback == UpdateShadowFieldEffect)
-        return 0;
+    for (i = 0; i < MAX_SPRITES; i++)
+    {
+        // Return early if a shadow sprite already exists
+        if (gSprites[i].data[0] == gFieldEffectArguments[0] && gSprites[i].callback == UpdateShadowFieldEffect)
+            return 0;
     }
     objectEventId = GetObjectEventIdByLocalIdAndMap(gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
     graphicsInfo = GetObjectEventGraphicsInfo(gObjectEvents[objectEventId].graphicsId);
@@ -1182,7 +1184,7 @@ u32 FldEff_SurfBlob(void)
         sprite->coordOffsetEnabled = TRUE;
         sprite->sPlayerObjId = gFieldEffectArguments[2];
         // Can use either gender's palette, so try to use the one that should be loaded
-        sprite->oam.paletteNum = LoadObjectEventPalette(gSaveBlock2Ptr->playerGender ? FLDEFF_PAL_TAG_MAY : FLDEFF_PAL_TAG_BRENDAN);
+        sprite->oam.paletteNum = LoadPlayerObjectEventPalette(gSaveBlock2Ptr->playerGender);
         sprite->sVelocity = -1;
         sprite->sPrevX = -1;
         sprite->sPrevY = -1;

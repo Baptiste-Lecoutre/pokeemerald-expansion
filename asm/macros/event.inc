@@ -1815,8 +1815,14 @@
 	_dynmultichoice \left, \top, \ignoreBPress, \maxBeforeScroll, \shouldSort, \initialSelected, \callbacks, NULL
 	.endm
 
-	.macro showdescription
+	@ Like callnative, but function expects a ctx
+	.macro callfunc func:req
 	.byte 0xe5
+	.4byte \func
+	.endm
+
+	.macro showdescription
+	.byte 0xe6
 	.endm
 
 	.macro showitemdesc
@@ -1830,14 +1836,8 @@
 	.endm
 
 	.macro hideitemdesc
-	.byte 0xe6
+	.byte 0xe7
 	.endm
-
-  @ Like callnative, but function expects a ctx
-  .macro callfunc func:req
-  .byte 0xe7
-  .4byte \func
-  .endm
 
 	.macro checkPartyHasSpecies species:req
 	.byte 0xe8
@@ -1848,6 +1848,7 @@
 	.byte 0xe9
 	.2byte \species
 	.endm
+
 
 @ Supplementary
 

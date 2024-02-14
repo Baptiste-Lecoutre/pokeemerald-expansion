@@ -99,6 +99,10 @@ struct LockedAnimObjectEvents
 
 extern const struct OamData gObjectEventBaseOam_32x8;
 extern const struct OamData gObjectEventBaseOam_32x32;
+extern const struct OamData gObjectEventBaseOam_64x64;
+extern const struct SubspriteTable sOamTables_32x32[];
+extern const struct SubspriteTable sOamTables_64x64[];
+extern const union AnimCmd *const sAnimTable_Following[];
 extern const struct SpriteTemplate *const gFieldEffectObjectTemplatePointers[];
 extern const u8 gReflectionEffectPaletteMap[];
 
@@ -147,6 +151,7 @@ const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u16 graphicsId)
 void SetObjectInvisibility(u8 localId, u8 mapNum, u8 mapGroup, bool8 invisible);
 void FreeAndReserveObjectSpritePalettes(void);
 u8 LoadObjectEventPalette(u16 paletteTag);
+u8 LoadPlayerObjectEventPalette(u8 gender);
 void SetObjectEventSpritePosByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, s16 x, s16 y);
 void ResetObjectSubpriority(u8 localId, u8 mapNum, u8 mapGroup);
 void SetObjectSubpriority(u8 localId, u8 mapNum, u8 mapGroup, u8 subpriority);

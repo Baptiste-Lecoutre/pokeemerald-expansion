@@ -62,11 +62,10 @@ EWRAM_DATA u8 gApproachingTrainerId = 0;
 static const u8 sEmotion_ExclamationMarkGfx[] = INCBIN_U8("graphics/field_effects/pics/emotion_exclamation.4bpp");
 static const u8 sEmotion_QuestionMarkGfx[] = INCBIN_U8("graphics/field_effects/pics/emotion_question.4bpp");
 static const u8 sEmotion_HeartGfx[] = INCBIN_U8("graphics/field_effects/pics/emotion_heart.4bpp");
-// TODO: Credit https://www.spriters-resource.com/ds_dsi/pokemonheartgoldsoulsilver/sheet/30497/
-static const u8 sEmotion_Gfx[] = INCBIN_U8("graphics/misc/emotes.4bpp");
-
 static const u8 sEmotion_DoubleExclamationMarkGfx[] = INCBIN_U8("graphics/field_effects/pics/emotion_double_exclamation.4bpp");
 static const u8 sEmotion_XGfx[] = INCBIN_U8("graphics/field_effects/pics/emote_x.4bpp");
+// TODO: Credit https://www.spriters-resource.com/ds_dsi/pokemonheartgoldsoulsilver/sheet/30497/
+static const u8 sEmotion_Gfx[] = INCBIN_U8("graphics/misc/emotes.4bpp");
 
 static u8 (*const sDirectionalApproachDistanceFuncs[])(struct ObjectEvent *trainerObj, s16 range, s16 x, s16 y) =
 {
@@ -162,28 +161,28 @@ static const struct SpriteFrameImage sSpriteImageTable_HeartIcon[] =
 
 static const struct SpriteFrameImage sSpriteImageTable_Emotes[] =
 {
-  { .data = (u8 *)sEmotion_Gfx+0*0x80, .size = 0x80}, // FOLLOWER_EMOTION_HAPPY
-  { .data = (u8 *)sEmotion_Gfx+1*0x80, .size = 0x80}, // FOLLOWER_EMOTION_HAPPY
-  { .data = (u8 *)sEmotion_Gfx+2*0x80, .size = 0x80}, // FOLLOWER_EMOTION_NEUTRAL
-  { .data = (u8 *)sEmotion_Gfx+3*0x80, .size = 0x80}, // FOLLOWER_EMOTION_NEUTRAL
-  { .data = (u8 *)sEmotion_Gfx+4*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SAD
-  { .data = (u8 *)sEmotion_Gfx+5*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SAD
-  { .data = (u8 *)sEmotion_Gfx+6*0x80, .size = 0x80}, // FOLLOWER_EMOTION_UPSET
-  { .data = (u8 *)sEmotion_Gfx+7*0x80, .size = 0x80}, // FOLLOWER_EMOTION_UPSET
-  { .data = (u8 *)sEmotion_Gfx+8*0x80, .size = 0x80}, // FOLLOWER_EMOTION_ANGRY
-  { .data = (u8 *)sEmotion_Gfx+9*0x80, .size = 0x80}, // FOLLOWER_EMOTION_ANGRY
-  { .data = (u8 *)sEmotion_Gfx+10*0x80, .size = 0x80}, // FOLLOWER_EMOTION_PENSIVE
-  { .data = (u8 *)sEmotion_Gfx+11*0x80, .size = 0x80}, // FOLLOWER_EMOTION_PENSIVE
-  { .data = (u8 *)sEmotion_Gfx+12*0x80, .size = 0x80}, // FOLLOWER_EMOTION_LOVE
-  { .data = (u8 *)sEmotion_Gfx+13*0x80, .size = 0x80}, // FOLLOWER_EMOTION_LOVE
-  { .data = (u8 *)sEmotion_Gfx+14*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SURPRISE
-  { .data = (u8 *)sEmotion_Gfx+15*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SURPRISE
-  { .data = (u8 *)sEmotion_Gfx+16*0x80, .size = 0x80}, // FOLLOWER_EMOTION_CURIOUS
-  { .data = (u8 *)sEmotion_Gfx+17*0x80, .size = 0x80}, // FOLLOWER_EMOTION_CURIOUS
-  { .data = (u8 *)sEmotion_Gfx+18*0x80, .size = 0x80}, // FOLLOWER_EMOTION_MUSIC
-  { .data = (u8 *)sEmotion_Gfx+19*0x80, .size = 0x80}, // FOLLOWER_EMOTION_MUSIC
-  { .data = (u8 *)sEmotion_Gfx+20*0x80, .size = 0x80}, // FOLLOWER_EMOTION_POISONED
-  { .data = (u8 *)sEmotion_Gfx+21*0x80, .size = 0x80}, // FOLLOWER_EMOTION_POISONED
+    { .data = (u8 *)sEmotion_Gfx+0*0x80, .size = 0x80}, // FOLLOWER_EMOTION_HAPPY
+    { .data = (u8 *)sEmotion_Gfx+1*0x80, .size = 0x80}, // FOLLOWER_EMOTION_HAPPY
+    { .data = (u8 *)sEmotion_Gfx+2*0x80, .size = 0x80}, // FOLLOWER_EMOTION_NEUTRAL
+    { .data = (u8 *)sEmotion_Gfx+3*0x80, .size = 0x80}, // FOLLOWER_EMOTION_NEUTRAL
+    { .data = (u8 *)sEmotion_Gfx+4*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SAD
+    { .data = (u8 *)sEmotion_Gfx+5*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SAD
+    { .data = (u8 *)sEmotion_Gfx+6*0x80, .size = 0x80}, // FOLLOWER_EMOTION_UPSET
+    { .data = (u8 *)sEmotion_Gfx+7*0x80, .size = 0x80}, // FOLLOWER_EMOTION_UPSET
+    { .data = (u8 *)sEmotion_Gfx+8*0x80, .size = 0x80}, // FOLLOWER_EMOTION_ANGRY
+    { .data = (u8 *)sEmotion_Gfx+9*0x80, .size = 0x80}, // FOLLOWER_EMOTION_ANGRY
+    { .data = (u8 *)sEmotion_Gfx+10*0x80, .size = 0x80}, // FOLLOWER_EMOTION_PENSIVE
+    { .data = (u8 *)sEmotion_Gfx+11*0x80, .size = 0x80}, // FOLLOWER_EMOTION_PENSIVE
+    { .data = (u8 *)sEmotion_Gfx+12*0x80, .size = 0x80}, // FOLLOWER_EMOTION_LOVE
+    { .data = (u8 *)sEmotion_Gfx+13*0x80, .size = 0x80}, // FOLLOWER_EMOTION_LOVE
+    { .data = (u8 *)sEmotion_Gfx+14*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SURPRISE
+    { .data = (u8 *)sEmotion_Gfx+15*0x80, .size = 0x80}, // FOLLOWER_EMOTION_SURPRISE
+    { .data = (u8 *)sEmotion_Gfx+16*0x80, .size = 0x80}, // FOLLOWER_EMOTION_CURIOUS
+    { .data = (u8 *)sEmotion_Gfx+17*0x80, .size = 0x80}, // FOLLOWER_EMOTION_CURIOUS
+    { .data = (u8 *)sEmotion_Gfx+18*0x80, .size = 0x80}, // FOLLOWER_EMOTION_MUSIC
+    { .data = (u8 *)sEmotion_Gfx+19*0x80, .size = 0x80}, // FOLLOWER_EMOTION_MUSIC
+    { .data = (u8 *)sEmotion_Gfx+20*0x80, .size = 0x80}, // FOLLOWER_EMOTION_POISONED
+    { .data = (u8 *)sEmotion_Gfx+21*0x80, .size = 0x80}, // FOLLOWER_EMOTION_POISONED
 };
 
 static const union AnimCmd sSpriteAnim_Emotes0[] = {
@@ -296,7 +295,8 @@ static const union AnimCmd *const sSpriteAnimTable_Icons[] =
     sSpriteAnim_Icons4
 };
 
-static const union AnimCmd *const sSpriteAnimTable_Emotes[] = {
+static const union AnimCmd *const sSpriteAnimTable_Emotes[] =
+{
     sSpriteAnim_Emotes0,
     sSpriteAnim_Emotes1,
     sSpriteAnim_Emotes2,
@@ -626,7 +626,7 @@ static bool8 TrainerExclamationMark(u8 taskId, struct Task *task, struct ObjectE
     FieldEffectStart(FLDEFF_EXCLAMATION_MARK_ICON);
     direction = GetFaceDirectionMovementAction(trainerObj->facingDirection);
     ObjectEventSetHeldMovement(trainerObj, direction);
-    task->tFuncId++;
+    task->tFuncId++; // TRSEE_EXCLAMATION_WAIT
     return TRUE;
 }
 
@@ -859,9 +859,10 @@ u8 FldEff_ExclamationMarkIcon(void)
 {
     u8 spriteId = CreateSpriteAtEnd(&sSpriteTemplate_ExclamationQuestionMark, 0, 0, 0x53);
 
-    if (spriteId != MAX_SPRITES) {
-      SetIconSpriteData(&gSprites[spriteId], FLDEFF_EXCLAMATION_MARK_ICON, 0);
-      UpdateSpritePaletteByTemplate(&sSpriteTemplate_ExclamationQuestionMark, &gSprites[spriteId]);
+    if (spriteId != MAX_SPRITES)
+    {
+        SetIconSpriteData(&gSprites[spriteId], FLDEFF_EXCLAMATION_MARK_ICON, 0);
+        UpdateSpritePaletteByTemplate(&sSpriteTemplate_ExclamationQuestionMark, &gSprites[spriteId]);
     }
 
     return 0;
@@ -870,20 +871,23 @@ u8 FldEff_ExclamationMarkIcon(void)
 u8 FldEff_QuestionMarkIcon(void)
 {
     u8 spriteId;
-    if (gFieldEffectArguments[7] >= 0) { // Use follower emotes
-      u8 emotion = gFieldEffectArguments[7];
-      spriteId = CreateSpriteAtEnd(&sSpriteTemplate_Emote, 0, 0, 0x52);
-      if (spriteId == MAX_SPRITES)
+    if (gFieldEffectArguments[7] >= 0)
+    {
+        // Use follower emotes
+        u8 emotion = gFieldEffectArguments[7];
+        spriteId = CreateSpriteAtEnd(&sSpriteTemplate_Emote, 0, 0, 0x52);
+        if (spriteId == MAX_SPRITES)
+            return 0;
+        SetIconSpriteData(&gSprites[spriteId], FLDEFF_EMOTE, emotion); // Set animation based on emotion
+        UpdateSpritePaletteByTemplate(&sSpriteTemplate_Emote, &gSprites[spriteId]);
         return 0;
-      SetIconSpriteData(&gSprites[spriteId], FLDEFF_EMOTE, emotion); // Set animation based on emotion
-      UpdateSpritePaletteByTemplate(&sSpriteTemplate_Emote, &gSprites[spriteId]);
-      return 0;
     }
     spriteId = CreateSpriteAtEnd(&sSpriteTemplate_ExclamationQuestionMark, 0, 0, 0x52);
 
-    if (spriteId != MAX_SPRITES) {
-      SetIconSpriteData(&gSprites[spriteId], FLDEFF_QUESTION_MARK_ICON, 1);
-      UpdateSpritePaletteByTemplate(&sSpriteTemplate_ExclamationQuestionMark, &gSprites[spriteId]);
+    if (spriteId != MAX_SPRITES)
+    {
+        SetIconSpriteData(&gSprites[spriteId], FLDEFF_QUESTION_MARK_ICON, 1);
+        UpdateSpritePaletteByTemplate(&sSpriteTemplate_ExclamationQuestionMark, &gSprites[spriteId]);
     }
 
     return 0;
@@ -892,6 +896,7 @@ u8 FldEff_QuestionMarkIcon(void)
 u8 FldEff_HeartIcon(void)
 {
     u8 spriteId = CreateSpriteAtEnd(&sSpriteTemplate_HeartIcon, 0, 0, 0x52);
+
     if (spriteId != MAX_SPRITES)
     {
         struct Sprite *sprite = &gSprites[spriteId];
