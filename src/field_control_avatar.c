@@ -1159,5 +1159,6 @@ static bool8 SwapBike(void) {
         SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ACRO_BIKE);
         PlaySE(SE_BIKE_HOP);
     }
+    FollowMe_HandleBike();
     return FALSE;
 }
