@@ -1805,7 +1805,6 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .baseSpeed     = 90,                                                    \
         .baseSpAttack  = 50,                                                    \
         .baseSpDefense = P_UPDATED_STATS >= GEN_6 ? 50 : 40,                    \
-        .types = MON_TYPES(TYPE_ELECTRIC),                                      \
         .catchRate = 190,                                                       \
         .expYield = PIKACHU_EXP_YIELD,                                          \
         .evYield_Speed = 2,                                                     \
@@ -1833,8 +1832,9 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU] =
     {
-        PIKACHU_MISC_INFO,//(TYPE_ELECTRIC),
+        PIKACHU_MISC_INFO,
         PIKACHU_REGULAR_SIZE_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC),
         .genderRatio = PERCENT_FEMALE(50),
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FIELD, EGG_GROUP_FAIRY),
         .description = gPikachuPokedexText,
@@ -1868,7 +1868,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_COSPLAY]   =
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_ELECTRIC),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC),
         FRONT_PIC(PikachuCosplay, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuCosplay,
@@ -1882,7 +1883,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_ROCK_STAR] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_STEEL),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_STEEL),
         FRONT_PIC(PikachuRockStar, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuRockStar,
@@ -1896,7 +1898,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_BELLE] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_ICE),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_ICE),
         .noFlip = TRUE,
         FRONT_PIC(PikachuBelle, 48, 48),
         .frontPicYOffset = 9,
@@ -1911,7 +1914,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_POP_STAR] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_FAIRY),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_FAIRY),
         .noFlip = TRUE,
         FRONT_PIC(PikachuPopStar, 48, 48),
         .frontPicYOffset = 9,
@@ -1926,7 +1930,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_PH_D] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_PSYCHIC),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_PSYCHIC),
         FRONT_PIC(PikachuPhD, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuPhD,
@@ -1940,7 +1945,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_LIBRE] =
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_FIGHTING),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_FIGHTING),
         FRONT_PIC(PikachuLibre, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuLibre,
@@ -1954,7 +1960,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_FLYING] = 
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_FLYING),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_FLYING),
         FRONT_PIC(PikachuFlying, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuFlying,
@@ -1968,7 +1975,8 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 
     [SPECIES_PIKACHU_SURFING] = 
     {
-        PIKACHU_COSPLAY_MISC_INFO,//(TYPE_WATER),
+        PIKACHU_COSPLAY_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_WATER),
         FRONT_PIC(PikachuSurfing, 48, 48),
         .frontPicYOffset = 9,
         .frontAnimFrames = sAnims_PikachuSurfing,
@@ -1987,6 +1995,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
 #define PIKACHU_CAP_MISC_INFO                                                   \
     PIKACHU_MISC_INFO,                                                          \
     PIKACHU_REGULAR_SIZE_INFO,                                                  \
+    .types = MON_TYPES(TYPE_ELECTRIC),                                          \
     .genderRatio = MON_MALE,                                                    \
     .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED)
 
@@ -2150,6 +2159,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
     [SPECIES_PIKACHU_GIGANTAMAX] =
     {
         PIKACHU_MISC_INFO,
+        .types = MON_TYPES(TYPE_ELECTRIC),
         .genderRatio = PERCENT_FEMALE(50),
         .eggGroups = MON_EGG_GROUPS(EGG_GROUP_FIELD, EGG_GROUP_FAIRY),
         .height = 210,
