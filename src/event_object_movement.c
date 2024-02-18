@@ -1845,8 +1845,7 @@ static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool8 shiny)
         // Load compressed palette
         LoadCompressedSpritePaletteWithTag(palette, species);
         paletteNum = IndexOfSpritePaletteTag(species); // Tag is always present
-        if (gWeatherPtr->currWeather != WEATHER_FOG_HORIZONTAL) // don't want to weather blend in fog
-            UpdateSpritePaletteWithWeather(paletteNum, FALSE);
+        UpdateSpritePaletteWithWeather(paletteNum, FALSE);
     }
     return paletteNum;
 }
@@ -1867,10 +1866,6 @@ static void FollowerSetGraphics(struct ObjectEvent *objEvent, u16 species, u8 fo
         FieldEffectFreePaletteIfUnused(sprite->oam.paletteNum);
         sprite->inUse = TRUE;
         sprite->oam.paletteNum = LoadDynamicFollowerPalette(species, form, shiny);
-    }
-    else if (gWeatherPtr->currWeather != WEATHER_FOG_HORIZONTAL) // don't want to weather blend in fog
-    {
-        UpdateSpritePaletteWithWeather(gSprites[objEvent->spriteId].oam.paletteNum, FALSE);
     }
 }
 
@@ -1908,8 +1903,6 @@ static void RefreshFollowerGraphics(struct ObjectEvent *objEvent)
     else if (i != 0xFF)
     {
         UpdateSpritePalette(&sObjectEventSpritePalettes[i], sprite);
-        if (gWeatherPtr->currWeather != WEATHER_FOG_HORIZONTAL) // don't want to weather blend in fog
-            UpdateSpritePaletteWithWeather(sprite->oam.paletteNum, FALSE);
     }
     if (OW_GFX_COMPRESS)
         LoadSheetGraphicsInfo(graphicsInfo, objEvent->graphicsId, sprite);
