@@ -2860,6 +2860,10 @@ bool32 ShouldRecover(u32 battlerAtk, u32 battlerDef, u32 move, u32 healPercent)
 bool32 ShouldSetScreen(u32 battlerAtk, u32 battlerDef, u32 moveEffect)
 {
     u32 atkSide = GetBattlerSide(battlerAtk);
+
+    if (HasMoveEffect(battlerDef, EFFECT_BRICK_BREAK)) // Don't waste a turn if screens will be broken
+        return FALSE;
+
     switch (moveEffect)
     {
     case EFFECT_AURORA_VEIL:
@@ -3297,7 +3301,7 @@ void IncreaseStatUpScore(u32 battlerAtk, u32 battlerDef, u32 statId, s32 *score)
         return;
 
     // Don't set up if AI is dead to residual damage from weather
-    if (BattlerWillFaintFromWeather(battlerAtk, AI_DATA->abilities[battlerAtk]))
+    if (GetBattlerSecondaryDamage(battlerAtk) >= gBattleMons[battlerAtk].hp)
         return;
 
     // Don't increase stats if opposing battler has Opportunist
@@ -3312,10 +3316,15 @@ void IncreaseStatUpScore(u32 battlerAtk, u32 battlerDef, u32 statId, s32 *score)
         break;
     case STAT_CHANGE_DEF:
         if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL) || !HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL))
-            ADJUST_SCORE_PTR(DECENT_EFFECT);
+        {
+            if (AI_THINKING_STRUCT->aiFlags[battlerAtk] & AI_FLAG_STALL)
+                ADJUST_SCORE_PTR(DECENT_EFFECT);
+            else
+                ADJUST_SCORE_PTR(WEAK_EFFECT);
+        }
         break;
     case STAT_CHANGE_SPEED:
-        if ((noOfHitsToFaint >= 3 && !aiIsFaster) || noOfHitsToFaint == 0)
+        if ((noOfHitsToFaint >= 3 && !aiIsFaster) || noOfHitsToFaint == UNKNOWN_NO_OF_HITS)
             ADJUST_SCORE_PTR(DECENT_EFFECT);
         break;
     case STAT_CHANGE_SPATK:
@@ -3324,7 +3333,12 @@ void IncreaseStatUpScore(u32 battlerAtk, u32 battlerDef, u32 statId, s32 *score)
         break;
     case STAT_CHANGE_SPDEF:
         if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL) || !HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL))
-            ADJUST_SCORE_PTR(DECENT_EFFECT);
+        {
+            if (AI_THINKING_STRUCT->aiFlags[battlerAtk] & AI_FLAG_STALL)
+                ADJUST_SCORE_PTR(DECENT_EFFECT);
+            else
+                ADJUST_SCORE_PTR(WEAK_EFFECT);
+        }
         break;
     case STAT_CHANGE_ATK_2:
         if (HasMoveWithCategory(battlerAtk, DAMAGE_CATEGORY_PHYSICAL) && shouldSetUp)
@@ -3332,10 +3346,15 @@ void IncreaseStatUpScore(u32 battlerAtk, u32 battlerDef, u32 statId, s32 *score)
         break;
     case STAT_CHANGE_DEF_2:
         if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL) || !HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL))
-            ADJUST_SCORE_PTR(GOOD_EFFECT);
+        {
+            if (AI_THINKING_STRUCT->aiFlags[battlerAtk] & AI_FLAG_STALL)
+                ADJUST_SCORE_PTR(GOOD_EFFECT);
+            else
+                ADJUST_SCORE_PTR(DECENT_EFFECT);
+        }
         break;
     case STAT_CHANGE_SPEED_2:
-        if ((noOfHitsToFaint >= 3 && !aiIsFaster) || noOfHitsToFaint == 0)
+        if ((noOfHitsToFaint >= 3 && !aiIsFaster) || noOfHitsToFaint == UNKNOWN_NO_OF_HITS)
             ADJUST_SCORE_PTR(GOOD_EFFECT);
         break;
     case STAT_CHANGE_SPATK_2:
@@ -3344,14 +3363,19 @@ void IncreaseStatUpScore(u32 battlerAtk, u32 battlerDef, u32 statId, s32 *score)
         break;
     case STAT_CHANGE_SPDEF_2:
         if (HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_SPECIAL) || !HasMoveWithCategory(battlerDef, DAMAGE_CATEGORY_PHYSICAL))
-            ADJUST_SCORE_PTR(GOOD_EFFECT);
+        {
+            if (AI_THINKING_STRUCT->aiFlags[battlerAtk] & AI_FLAG_STALL)
+                ADJUST_SCORE_PTR(GOOD_EFFECT);
+            else
+                ADJUST_SCORE_PTR(DECENT_EFFECT);
+        }
         break;
     case STAT_CHANGE_ACC:
         if (gBattleMons[battlerAtk].statStages[STAT_ACC] <= 3) // Increase only if necessary
             ADJUST_SCORE_PTR(DECENT_EFFECT);
         break;
     case STAT_CHANGE_EVASION:
-        if (GetBattlerSecondaryDamage(battlerAtk) && ((noOfHitsToFaint > 3) || noOfHitsToFaint == 0))
+        if (noOfHitsToFaint > 3 || noOfHitsToFaint == UNKNOWN_NO_OF_HITS)
             ADJUST_SCORE_PTR(GOOD_EFFECT);
         else
             ADJUST_SCORE_PTR(DECENT_EFFECT);
@@ -3567,10 +3591,13 @@ bool32 AI_ShouldCopyStatChanges(u32 battlerAtk, u32 battlerDef)
 }
 
 //TODO - track entire opponent party data to determine hazard effectiveness
-s32 AI_ShouldSetUpHazards(u32 battlerAtk, u32 battlerDef, struct AiLogicData *aiData)
+bool32 AI_ShouldSetUpHazards(u32 battlerAtk, u32 battlerDef, struct AiLogicData *aiData)
 {
-    if (aiData->abilities[battlerDef] == ABILITY_MAGIC_BOUNCE || CountUsablePartyMons(battlerDef) == 0)
-        return 0;
+    if (aiData->abilities[battlerDef] == ABILITY_MAGIC_BOUNCE
+     || CountUsablePartyMons(battlerDef) == 0
+     || HasMoveWithMoveEffect(battlerDef, MOVE_EFFECT_RAPID_SPIN)
+     || HasMoveEffect(battlerDef, EFFECT_DEFOG))
+        return FALSE;
 
-    return 2 * gDisableStructs[battlerAtk].isFirstTurn;
+    return TRUE;
 }
