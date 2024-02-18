@@ -703,32 +703,35 @@
 #define STRINGID_SHEDITSTAIL                          701
 #define STRINGID_CLOAKEDINAHARSHLIGHT                 702
 #define STRINGID_SUPERSWEETAROMAWAFTS                 703
-#define STRINGID_PKMNAPPEARSMASSIVE                   704
-#define STRINGID_DYNAMAXENERGYGATHERED                705
-#define STRINGID_RAIDSHIELDAPPEARED                   706
-#define STRINGID_RAIDSHIELDDISAPPEARED                707
-#define STRINGID_CATCHRAIDMON                         708
-#define STRINGID_PKMNISTOOSTRONG                      709
-#define STRINGID_PKMNNULLIFIEDOTHERS                  710
-#define STRINGID_MOVEPREVENTEDBYDYNAMAX               711
-#define STRINGID_RAIDPKMNDISAPPEARED                  712
-#define STRINGID_STORMSTARTEDBREWING                  713
-#define STRINGID_STORMGETTINGSTRONGER                 714
-#define STRINGID_STORMGETTINGEVENSTRONGER             715
-#define STRINGID_STORMGETTINGTOOSTRONG                716
-#define STRINGID_BLOWNOUTOFDEN                        717
-#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           718
-#define STRINGID_ENERGYGATHEREDAROUNDPKMN             719
-#define STRINGID_PKMNBROKEITSSTANCE                   720
-#define STRINGID_RAIDNOTMUCHTIMELEFT                  721
-#define STRINGID_RAIDPKMNRELEASEDENERGY               722
-#define STRINGID_DYNAMAXENERGYSURROUNDS               723
-#define STRINGID_PKMNGAINEDEXPSHARE                   724
-#define STRINGID_PKMNDROPPEDITEM                      725
-#define STRINGID_BAGISFULL                            726
-#define STRINGID_NORUNNINGFROMTHISBATTLE              727
+#define STRINGID_DIMENSIONSWERETWISTED                704
+#define STRINGID_BIZARREARENACREATED                  705
+#define STRINGID_BIZARREAREACREATED                   706
+#define STRINGID_PKMNAPPEARSMASSIVE                   707
+#define STRINGID_DYNAMAXENERGYGATHERED                708
+#define STRINGID_RAIDSHIELDAPPEARED                   709
+#define STRINGID_RAIDSHIELDDISAPPEARED                710
+#define STRINGID_CATCHRAIDMON                         711
+#define STRINGID_PKMNISTOOSTRONG                      712
+#define STRINGID_PKMNNULLIFIEDOTHERS                  713
+#define STRINGID_MOVEPREVENTEDBYDYNAMAX               714
+#define STRINGID_RAIDPKMNDISAPPEARED                  715
+#define STRINGID_STORMSTARTEDBREWING                  716
+#define STRINGID_STORMGETTINGSTRONGER                 717
+#define STRINGID_STORMGETTINGEVENSTRONGER             718
+#define STRINGID_STORMGETTINGTOOSTRONG                719
+#define STRINGID_BLOWNOUTOFDEN                        720
+#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           721
+#define STRINGID_ENERGYGATHEREDAROUNDPKMN             722
+#define STRINGID_PKMNBROKEITSSTANCE                   723
+#define STRINGID_RAIDNOTMUCHTIMELEFT                  724
+#define STRINGID_RAIDPKMNRELEASEDENERGY               725
+#define STRINGID_DYNAMAXENERGYSURROUNDS               726
+#define STRINGID_PKMNGAINEDEXPSHARE                   727
+#define STRINGID_PKMNDROPPEDITEM                      728
+#define STRINGID_BAGISFULL                            729
+#define STRINGID_NORUNNINGFROMTHISBATTLE              730
 
-#define BATTLESTRINGS_COUNT                           728
+#define BATTLESTRINGS_COUNT                           731
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -990,6 +993,19 @@
 #define B_MSG_TERRAIN_END_PSYCHIC   6
 #define B_MSG_TERRAIN_END_GRASSY    7
 #define B_MSG_TERRAIN_COUNT         8
+
+// gStartingStatusStringIds
+#define B_MSG_TERRAIN_SET_MISTY     0
+#define B_MSG_TERRAIN_SET_ELECTRIC  1
+#define B_MSG_TERRAIN_SET_PSYCHIC   2
+#define B_MSG_TERRAIN_SET_GRASSY    3
+#define B_MSG_SET_TRICK_ROOM        4
+#define B_MSG_SET_MAGIC_ROOM        5
+#define B_MSG_SET_WONDER_ROOM       6
+#define B_MSG_SET_TAILWIND_PLAYER   7
+#define B_MSG_SET_TAILWIND_OPPONENT 8
+#define B_MSG_STARTING_STATUS_COUNT 9
+
 
 // gWrappedStringIds
 #define B_MSG_WRAPPED_BIND         0
