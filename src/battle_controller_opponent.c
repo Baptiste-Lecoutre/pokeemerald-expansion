@@ -551,9 +551,12 @@ static void OpponentHandleChooseMove(u32 battler)
                     u16 trainerId = isSecondTrainer ? gTrainerBattleOpponent_B : gTrainerBattleOpponent_A;
                     const struct TrainerMon *party = GetTrainerPartyFromId(trainerId);
                     bool32 shouldDynamax = FALSE;
+                    bool32 shouldTerastal = FALSE;
                     if (party != NULL)
+                    {
                         shouldDynamax = party[isSecondTrainer ? gBattlerPartyIndexes[battler] - MULTI_PARTY_SIZE : gBattlerPartyIndexes[battler]].shouldDynamax;
-
+                        shouldTerastal = party[isSecondTrainer ? gBattlerPartyIndexes[battler] - MULTI_PARTY_SIZE : gBattlerPartyIndexes[battler]].shouldTerastal;
+                    }
                     if (GetBattlerMoveTargetType(battler, chosenMove) & (MOVE_TARGET_USER_OR_SELECTED | MOVE_TARGET_USER))
                         gBattlerTarget = battler;
                     if (GetBattlerMoveTargetType(battler, chosenMove) & MOVE_TARGET_BOTH)
@@ -573,6 +576,9 @@ static void OpponentHandleChooseMove(u32 battler)
                     // If opponent can Dynamax and is allowed in the partydata, do it.
                     else if (CanDynamax(battler) && shouldDynamax)
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_DYNAMAX) | (gBattlerTarget << 8));
+                    // If opponent can Terastal and is allowed in the partydata, do it.
+                    else if (CanTerastallize(battler) && shouldTerastal)
+                        BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_TERASTAL) | (gBattlerTarget << 8));
                     else
                         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (gBattlerTarget << 8));
                 }

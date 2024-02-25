@@ -707,11 +707,12 @@
 #define STRINGID_BIZARREARENACREATED                  705
 #define STRINGID_BIZARREAREACREATED                   706
 #define STRINGID_TIDYINGUPCOMPLETE                    707
-#define STRINGID_PKMNGAINEDEXPSHARE                   708
-#define STRINGID_PKMNDROPPEDITEM                      709
-#define STRINGID_BAGISFULL                            710
+#define STRINGID_PKMNTERASTALLIZEDINTO                708
+#define STRINGID_PKMNGAINEDEXPSHARE                   709
+#define STRINGID_PKMNDROPPEDITEM                      710
+#define STRINGID_BAGISFULL                            711
 
-#define BATTLESTRINGS_COUNT                           711
+#define BATTLESTRINGS_COUNT                           712
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
