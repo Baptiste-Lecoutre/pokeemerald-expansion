@@ -3045,7 +3045,7 @@ static void BattleMainCB1(void)
         gBattlerControllerFuncs[battler](battler);
 }
 
-static bool8 IsMajorBattle(void)
+static bool32 IsMajorBattle(void)
 {
     if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_LEADER
         || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_LEADER
@@ -3060,6 +3060,66 @@ static bool8 IsMajorBattle(void)
         || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_RIVAL
         || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_RIVAL)
         return TRUE;
+    return FALSE;
+}
+
+static bool32 IsDynamaxBattle(void)
+{
+    u32 i;
+
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_DYNAMAX)
+        return TRUE;
+    
+    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+    {
+        for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_A); i++)
+        {
+            const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_A);
+            if (party[i].shouldDynamax)
+                return TRUE;
+        }
+
+        if ((gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && !BATTLE_TWO_VS_ONE_OPPONENT)
+        {
+            for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_B); i++)
+            {
+                const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_B);
+                if (party[i].shouldDynamax)
+                    return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+static bool32 IsTerastalBattle(void)
+{
+    u32 i;
+
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_TERA)
+        return TRUE;
+    
+    if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+    {
+        for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_A); i++)
+        {
+            const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_A);
+            if (party[i].shouldTerastal)
+                return TRUE;
+        }
+
+        if ((gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS) && !BATTLE_TWO_VS_ONE_OPPONENT)
+        {
+            for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_B); i++)
+            {
+                const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_B);
+                if (party[i].shouldTerastal)
+                    return TRUE;
+            }
+        }
+    }
+
     return FALSE;
 }
 
@@ -3130,15 +3190,16 @@ static void BattleStartClearSetData(void)
         gHitMarker |= HITMARKER_NO_ANIMATIONS;
     }
 
-    if((IsMajorBattle() && gBattleTypeFlags & BATTLE_TYPE_TRAINER) || gBattleTypeFlags & BATTLE_TYPE_RAID)
-    {
+    if((IsMajorBattle() && gBattleTypeFlags & BATTLE_TYPE_TRAINER))
         gBattleScripting.battleStyle = OPTIONS_BATTLE_STYLE_SET;
-        
-        //if (gTrainerBattleOpponent_A != TRAINER_ROXANNE_1)
-        FlagSet(B_FLAG_DYNAMAX_BATTLE);
-    }
     else
         gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
+
+    if (IsDynamaxBattle())
+        FlagSet(B_FLAG_DYNAMAX_BATTLE);
+//    if (IsTerastalBattle())
+//        FlagSet(B_FLAG_TERASTAL_BATTLE);
+
 	gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
 	gBattleScripting.monCaught = FALSE;
 
