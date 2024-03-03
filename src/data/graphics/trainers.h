@@ -216,9 +216,21 @@ const u32 gTrainerPalette_Wally[] = INCBIN_U32("graphics/trainers/palettes/wally
 
 const u32 gTrainerFrontPic_Brendan[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
 const u32 gTrainerPalette_Brendan[] = INCBIN_U32("graphics/trainers/palettes/brendan.gbapal.lz");
+const u32 gTrainerFrontPic_BrendanRed[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
+const u32 gTrainerPalette_BrendanRed[] = INCBIN_U32("graphics/trainers/palettes/brendan_red.gbapal.lz");
+const u32 gTrainerFrontPic_BrendanBlue[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
+const u32 gTrainerPalette_BrendanBlue[] = INCBIN_U32("graphics/trainers/palettes/brendan_blue.gbapal.lz");
+const u32 gTrainerFrontPic_BrendanYellow[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
+const u32 gTrainerPalette_BrendanYellow[] = INCBIN_U32("graphics/trainers/palettes/brendan_yellow.gbapal.lz");
 
 const u32 gTrainerFrontPic_May[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
 const u32 gTrainerPalette_May[] = INCBIN_U32("graphics/trainers/palettes/may.gbapal.lz");
+const u32 gTrainerFrontPic_MayRed[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
+const u32 gTrainerPalette_MayRed[] = INCBIN_U32("graphics/trainers/palettes/may_red.gbapal.lz");
+const u32 gTrainerFrontPic_MayBlue[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
+const u32 gTrainerPalette_MayBlue[] = INCBIN_U32("graphics/trainers/palettes/may_blue.gbapal.lz");
+const u32 gTrainerFrontPic_MayYellow[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
+const u32 gTrainerPalette_MayYellow[] = INCBIN_U32("graphics/trainers/palettes/may_yellow.gbapal.lz");
 
 const u32 gTrainerFrontPic_BugCatcher[] = INCBIN_U32("graphics/trainers/front_pics/bug_catcher.4bpp.lz");
 const u32 gTrainerPalette_BugCatcher[] = INCBIN_U32("graphics/trainers/front_pics/bug_catcher.gbapal.lz");
@@ -506,6 +518,12 @@ const struct TrainerSprite gTrainerSprites[] =
     TRAINER_SPRITE(MAGMA_ADMIN_F, MagmaAdminF),
     TRAINER_SPRITE(CHASE, Chase),
     TRAINER_SPRITE(ELAINE, Elaine),
+    TRAINER_SPRITE(BRENDAN_RED, BrendanRed),
+    TRAINER_SPRITE(BRENDAN_BLUE, BrendanBlue),
+    TRAINER_SPRITE(BRENDAN_YELLOW, BrendanYellow),
+    TRAINER_SPRITE(MAY_RED, MayRed),
+    TRAINER_SPRITE(MAY_BLUE, MayBlue),
+    TRAINER_SPRITE(MAY_YELLOW, MayYellow),
 };
 
 static const union AnimCmd sAnimCmd_Hoenn[] =
@@ -709,4 +727,10 @@ const struct TrainerBacksprite gTrainerBacksprites[] =
     TRAINER_BACK_SPRITE(DAWN_PLATINUM, 4, DawnPlatinum, BackPicPalette_DawnPlatinum, Hoenn),
     TRAINER_BACK_SPRITE(CHASE, 4, Chase, BackPicPalette_Chase, Hoenn),
     TRAINER_BACK_SPRITE(ELAINE, 4, Elaine, BackPicPalette_Elaine, Hoenn),
+    TRAINER_BACK_SPRITE(BRENDAN_RED, 4, Brendan, Palette_BrendanRed, Hoenn),
+    TRAINER_BACK_SPRITE(BRENDAN_BLUE, 4, Brendan, Palette_BrendanBlue, Hoenn),
+    TRAINER_BACK_SPRITE(BRENDAN_YELLOW, 4, Brendan, Palette_BrendanYellow, Hoenn),
+    TRAINER_BACK_SPRITE(MAY_RED, 4, May, Palette_MayRed, Hoenn),
+    TRAINER_BACK_SPRITE(MAY_BLUE, 4, May, Palette_MayBlue, Hoenn),
+    TRAINER_BACK_SPRITE(MAY_YELLOW, 4, May, Palette_MayYellow, Hoenn),
 };
