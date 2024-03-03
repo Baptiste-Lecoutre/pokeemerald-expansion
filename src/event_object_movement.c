@@ -512,6 +512,12 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define OBJ_EVENT_PAL_TAG_CHASE                   0x113E
 #define OBJ_EVENT_PAL_TAG_ELAINE                  0x113F
 #define OBJ_EVENT_PAL_TAG_WALLY                   0x1140
+#define OBJ_EVENT_PAL_TAG_BRENDAN_RED             0x1141
+#define OBJ_EVENT_PAL_TAG_BRENDAN_BLUE            0x1142
+#define OBJ_EVENT_PAL_TAG_BRENDAN_YELLOW          0x1143
+#define OBJ_EVENT_PAL_TAG_MAY_RED                 0x1144
+#define OBJ_EVENT_PAL_TAG_MAY_BLUE                0x1145
+#define OBJ_EVENT_PAL_TAG_MAY_YELLOW              0x1146
 
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
 #define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
@@ -601,6 +607,12 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Chase,                 OBJ_EVENT_PAL_TAG_CHASE},
     {gObjectEventPal_Elaine,                OBJ_EVENT_PAL_TAG_ELAINE},
     {gObjectEventPal_Wally,                 OBJ_EVENT_PAL_TAG_WALLY},
+    {gObjectEventPal_BrendanRed,            OBJ_EVENT_PAL_TAG_BRENDAN_RED},
+    {gObjectEventPal_BrendanBlue,           OBJ_EVENT_PAL_TAG_BRENDAN_BLUE},
+    {gObjectEventPal_BrendanYellow,         OBJ_EVENT_PAL_TAG_BRENDAN_YELLOW},
+    {gObjectEventPal_MayRed,                OBJ_EVENT_PAL_TAG_MAY_RED},
+    {gObjectEventPal_MayBlue,               OBJ_EVENT_PAL_TAG_MAY_BLUE},
+    {gObjectEventPal_MayYellow,             OBJ_EVENT_PAL_TAG_MAY_YELLOW},
     {gObjectEventPaletteLight,              OBJ_EVENT_PAL_TAG_LIGHT},
     {gObjectEventPaletteLight2,             OBJ_EVENT_PAL_TAG_LIGHT_2},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
