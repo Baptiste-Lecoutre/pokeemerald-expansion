@@ -6899,46 +6899,7 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
 
     switch (costumeId)
     {
-        /*case BRENDAN_COSTUME:
-            trainerPic = TRAINER_PIC_BRENDAN;
-            break;
-        case MAY_COSTUME:
-            trainerPic = TRAINER_PIC_MAY;
-            break;
-        case RED_COSTUME:
-            trainerPic = TRAINER_PIC_RED;
-            break;
-        case LEAF_COSTUME:
-            trainerPic = TRAINER_PIC_LEAF;
-            break;
-        case ETHAN_COSTUME:
-            trainerPic = TRAINER_PIC_ETHAN;
-            break;
-        case LYRA_COSTUME:
-            trainerPic = TRAINER_PIC_LYRA;
-            break;
-        case KRIS_COSTUME:
-            trainerPic = TRAINER_PIC_KRIS;
-            break;
-        case LUCAS_COSTUME:
-            trainerPic = TRAINER_PIC_LUCAS;
-            break;
-        case DAWN_COSTUME:
-            trainerPic = TRAINER_PIC_DAWN;
-            break;
-        case LUCAS_PLATINUM_COSTUME:
-            trainerPic = TRAINER_PIC_LUCAS_PLATINUM;
-            break;
-        case DAWN_PLATINUM_COSTUME:
-            trainerPic = TRAINER_PIC_DAWN_PLATINUM;
-            break;
-        case CHASE_COSTUME:
-            trainerPic = TRAINER_PIC_CHASE;
-            break;
-        case ELAINE_COSTUME:
-            trainerPic = TRAINER_PIC_ELAINE;
-            break;*/
-        case FRLG_COSTUME:
+        /*case FRLG_COSTUME:
             trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_RED : TRAINER_PIC_LEAF;
             break;
         default:
@@ -6956,6 +6917,19 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
             break;
         case LGPE_COSTUME:
             trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_CHASE : TRAINER_PIC_ELAINE;
+            break;*/
+        default:
+        case GREEN_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN : TRAINER_PIC_MAY;
+            break;
+        case RED_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN_RED : TRAINER_PIC_MAY_RED;
+            break;
+        case BLUE_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN_BLUE : TRAINER_PIC_MAY_BLUE;
+            break;
+        case YELLOW_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN_YELLOW : TRAINER_PIC_MAY_YELLOW;
             break;
     }
 

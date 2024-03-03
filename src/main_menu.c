@@ -1298,7 +1298,7 @@ static void Task_NewGameBirchSpeech_Init(u8 taskId)
     SetGpuReg(REG_OFFSET_BLDALPHA, 0);
     SetGpuReg(REG_OFFSET_BLDY, 0);
 
-    gTasks[taskId].tCostumeId = RSE_COSTUME;
+    gTasks[taskId].tCostumeId = GREEN_COSTUME;//RSE_COSTUME;
 
     LZ77UnCompVram(sBirchSpeechShadowGfx, (void *)VRAM);
     LZ77UnCompVram(sBirchSpeechBgMap, (void *)(BG_SCREEN_ADDR(7)));
@@ -1554,13 +1554,13 @@ static void Task_NewGameBirchSpeech_ChooseGender(u8 taskId)
         if (costumeId < COSTUME_COUNT - 1)
             costumeId++;
         else
-            costumeId = RSE_COSTUME;
+            costumeId = GREEN_COSTUME;//RSE_COSTUME;
     }
     else if (JOY_NEW(L_BUTTON))
     {
         PlaySE(SE_SELECT);
         gTasks[taskId].tChangeCostume = TRUE;
-        if (costumeId > RSE_COSTUME)
+        if (costumeId > GREEN_COSTUME) //RSE_COSTUME)
             costumeId--;
         else
             costumeId = COSTUME_COUNT - 1;
@@ -1946,7 +1946,7 @@ static void AddBirchSpeechObjects(u8 taskId)
     u8 facilityClassMale = FACILITY_CLASS_BRENDAN;
     u8 facilityClassFemale = FACILITY_CLASS_MAY;
 
-    switch (gTasks[taskId].tCostumeId)
+    /*switch (gTasks[taskId].tCostumeId)
     {
         case FRLG_COSTUME:
             facilityClassMale = FACILITY_CLASS_RED;
@@ -1972,7 +1972,7 @@ static void AddBirchSpeechObjects(u8 taskId)
             facilityClassMale = FACILITY_CLASS_CHASE;
             facilityClassFemale = FACILITY_CLASS_ELAINE;
             break;
-    }
+    }*/
 
     birchSpriteId = AddNewGameBirchObject(0x88, 0x3C, 1);
     gSprites[birchSpriteId].callback = SpriteCB_Null;
@@ -2003,7 +2003,7 @@ static void UpdateBirchSpeechObjects(u8 taskId)
     u8 facilityClassMale = FACILITY_CLASS_BRENDAN;
     u8 facilityClassFemale = FACILITY_CLASS_MAY;
 
-    switch (gTasks[taskId].tCostumeId)
+    /*switch (gTasks[taskId].tCostumeId)
     {
         case FRLG_COSTUME:
             facilityClassMale = FACILITY_CLASS_RED;
@@ -2029,7 +2029,7 @@ static void UpdateBirchSpeechObjects(u8 taskId)
             facilityClassMale = FACILITY_CLASS_CHASE;
             facilityClassFemale = FACILITY_CLASS_ELAINE;
             break;
-    }
+    }*/
 
     DestroySpriteAndFreeResources(&gSprites[gTasks[taskId].tBrendanSpriteId]);
     DestroySpriteAndFreeResources(&gSprites[gTasks[taskId].tMaySpriteId]);
