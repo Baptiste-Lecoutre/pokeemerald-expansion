@@ -13,11 +13,7 @@
   "show_map_name": true,
   "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
   "connections": [
-    {
-      "map": "MAP_UNDERWATER_METEOR_FALLS_DRACO_CHAMBER",
-      "offset": 0,
-      "direction": "dive"
-    }
+
   ],
   "object_events": [
     {
@@ -48,6 +44,13 @@
       "elevation": 3,
       "dest_map": "MAP_METEOR_FALLS_DRACO_CHAMBER",
       "dest_warp_id": "0"
+    },
+    {
+      "x": 8,
+      "y": 29,
+      "elevation": 0,
+      "dest_map": "MAP_METEOR_FALLS_1F_1R",
+      "dest_warp_id": "6"
     }
   ],
   "coord_events": [

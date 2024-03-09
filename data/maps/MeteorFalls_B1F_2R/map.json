@@ -13,11 +13,7 @@
   "show_map_name": true,
   "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
   "connections": [
-    {
-      "map": "MAP_UNDERWATER_METEOR_FALLS_B1F_2R",
-      "offset": 0,
-      "direction": "dive"
-    }
+
   ],
   "object_events": [
     {

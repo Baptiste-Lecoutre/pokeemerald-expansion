@@ -213,6 +213,13 @@
       "elevation": 0,
       "dest_map": "MAP_METEOR_FALLS_STEVENS_CAVE",
       "dest_warp_id": "0"
+    },
+    {
+      "x": 20,
+      "y": 14,
+      "elevation": 0,
+      "dest_map": "MAP_METEOR_FALLS_DRACO_CHAMBER",
+      "dest_warp_id": "2"
     }
   ],
   "coord_events": [

@@ -12,8 +12,16 @@ MeteorFalls_1F_1R_MapScripts::
 
 MeteorFalls_1F_1R_OnLoad:
 	call_if_set FLAG_SYS_GAME_CLEAR, MeteorFalls_1F_1R_EventScript_OpenStevensCave
+	call_if_unset FLAG_REGI_DOORS_OPENED, MeteorFalls_1F_1R_CloseRegiEntrance
 	call Common_EventScript_SetupRivalGfxId
 	end
+
+MeteorFalls_1F_1R_CloseRegiEntrance::
+	setmetatile 20, 13, 0x244, TRUE
+	setmetatile 19, 14, 0x22E, TRUE
+	setmetatile 20, 14, 0x244, TRUE
+	setmetatile 21, 14, 0x244, TRUE
+	return
 
 MeteorFalls_1F_1R_EventScript_OpenStevensCave::
 	setmetatile 4, 1, METATILE_MeteorFalls_CaveEntrance_Top, TRUE
