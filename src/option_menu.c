@@ -1145,7 +1145,7 @@ void Sound_DrawChoices(int selection, int y, u8 textSpeed)
 
 void FrameType_DrawChoices(int selection, int y, u8 textSpeed)
 {
-    u8 text[16];
+    u8 text[16] = {EOS};
     u8 n = selection + 1;
     u16 i;
 
