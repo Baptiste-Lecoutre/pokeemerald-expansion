@@ -1906,6 +1906,9 @@ bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
         case MOVE_DIVE:
             itemId = ITEM_HM08;
             break;
+        case MOVE_ROCK_CLIMB:
+            itemId = ITEM_HM08;
+            break;
     }
 
     if (gSpecialVar_Result == PARTY_SIZE && CheckBagHasItem(itemId, 1))
