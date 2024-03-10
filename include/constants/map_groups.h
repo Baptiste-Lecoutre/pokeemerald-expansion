@@ -623,6 +623,8 @@
 #define MAP_HAUNTED_MANSION_1F                    (5 | (34 << 8))
 #define MAP_HAUNTED_MANSION_2F                    (6 | (34 << 8))
 #define MAP_HAUNTED_MANSION_3F                    (7 | (34 << 8))
+#define MAP_METEOR_FALLS_B2F                      (8 | (34 << 8))
+#define MAP_METEOR_FALLS_B3F                      (9 | (34 << 8))
 
 #define MAP_GROUPS_COUNT 35
 

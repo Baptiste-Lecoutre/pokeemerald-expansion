@@ -1190,3 +1190,7 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/HauntedMansion_2F/scripts.inc"
 
 	.include "data/maps/HauntedMansion_3F/scripts.inc"
+
+	.include "data/maps/MeteorFalls_B2F/scripts.inc"
+
+	.include "data/maps/MeteorFalls_B3F/scripts.inc"

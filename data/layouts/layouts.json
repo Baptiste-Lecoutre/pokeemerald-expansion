@@ -4740,6 +4740,26 @@
       "secondary_tileset": "gTileset_InsideShip",
       "border_filepath": "data/layouts/HauntedMansion_3F/border.bin",
       "blockdata_filepath": "data/layouts/HauntedMansion_3F/map.bin"
+    },
+    {
+      "id": "LAYOUT_METEOR_FALLS_B2F",
+      "name": "MeteorFalls_B2F_Layout",
+      "width": 33,
+      "height": 46,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MeteorFalls",
+      "border_filepath": "data/layouts/MeteorFalls_B2F/border.bin",
+      "blockdata_filepath": "data/layouts/MeteorFalls_B2F/map.bin"
+    },
+    {
+      "id": "LAYOUT_METEOR_FALLS_B3F",
+      "name": "MeteorFalls_B3F_Layout",
+      "width": 19,
+      "height": 12,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MeteorFalls",
+      "border_filepath": "data/layouts/MeteorFalls_B3F/border.bin",
+      "blockdata_filepath": "data/layouts/MeteorFalls_B3F/map.bin"
     }
   ]
 }
