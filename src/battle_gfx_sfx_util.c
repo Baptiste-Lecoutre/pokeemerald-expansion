@@ -656,7 +656,7 @@ void DecompressGhostFrontPic(struct Pokemon *unused, u8 battler)
     u16 paletteOffset;
     u8 position = GetBattlerPosition(battler);
 
-    LZ77UnCompWram(gGhostFrontPic, gMonSpritesGfxPtr->sprites.ptr[position]);
+    LZ77UnCompWram(gGhostFrontPic, gMonSpritesGfxPtr->spritesGfx[position]);
     paletteOffset = OBJ_PLTT_ID(battler);
     LZDecompressWram(gGhostPalette, gDecompressionBuffer);
     LoadPalette(gDecompressionBuffer, paletteOffset, PLTT_SIZE_4BPP);
