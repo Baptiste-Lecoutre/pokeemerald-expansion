@@ -1658,9 +1658,8 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
     }
 
     //Sheer Force
-    if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_SHEER_FORCE)){
-        if (gMovesInfo[move].sheerForceBoost)
-           MulModifier(&modifier, UQ_4_12(1.3));
+    if(TestIfSheerForceAffected(battlerAtk, move)){
+        MulModifier(&modifier, UQ_4_12(1.3));
     }
 
     //Sand Force

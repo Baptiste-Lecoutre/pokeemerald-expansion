@@ -2503,11 +2503,11 @@ void ShowScrollableMultichoice(void)
         break;
     case SCROLL_MULTI_COSTUME:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 7;
+        task->tNumItems = 5;//7;
         task->tLeft = 22;
-        task->tTop = 1;
+        task->tTop = 3;//1;
         task->tWidth = 12;
-        task->tHeight = 12;
+        task->tHeight = 10;//12;
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
@@ -2942,8 +2942,8 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_SecondDrawer,
         gText_ThirdDrawer,
         gText_FourthDrawer,
-        gText_FifthDrawer,
-        gText_SixthDrawer,
+//        gText_FifthDrawer,
+//        gText_SixthDrawer,
         gText_Exit
     },
 };

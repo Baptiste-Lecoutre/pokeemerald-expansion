@@ -171,28 +171,19 @@
 #define CONNECTION_DIVE     5
 #define CONNECTION_EMERGE   6
 
-#define	RED_COSTUME					0
-#define	LEAF_COSTUME				1
-#define	ETHAN_COSTUME				2
-#define	LYRA_COSTUME				3
-#define	KRIS_COSTUME				4
-#define BRENDAN_COSTUME       		5
-#define MAY_COSTUME       			6
-#define	LUCAS_COSTUME				7
-#define	DAWN_COSTUME				8
-#define	LUCAS_PLATINUM_COSTUME		9
-#define	DAWN_PLATINUM_COSTUME		10
-#define CHASE_COSTUME               11
-#define ELAINE_COSTUME              12
-/*#define COSTUME_COUNT   			13*/
-
-#define RSE_COSTUME 0
+/*#define RSE_COSTUME 0
 #define FRLG_COSTUME 1
 #define HGSS_COSTUME 2
 #define DPEARL_COSTUME 3
 #define PLATINUM_COSTUME 4
 #define LGPE_COSTUME 5
-#define COSTUME_COUNT 6
+#define COSTUME_COUNT 6*/
+
+#define GREEN_COSTUME 0
+#define RED_COSTUME 1
+#define BLUE_COSTUME 2
+#define YELLOW_COSTUME 3
+#define COSTUME_COUNT 4
 
 #define SIDEWAYS_STAIRS_IMPLEMENTED         FALSE
 #define POST_BATTLE_FOLLOWER_FIX            FALSE   //if you experience the follower de-syncing with the player after battle, set to TRUE
