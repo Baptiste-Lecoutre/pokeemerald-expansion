@@ -1457,54 +1457,54 @@ static const union AffineAnimCmd *const sAffineAnimTable_KyogreGroudon[] = {
 
 static const union AnimCmd sAnim_RollSouth[] =
 {
-    ANIMCMD_FRAME(5, 4),
-    ANIMCMD_FRAME(8, 4),
-    ANIMCMD_FRAME(11, 4),
-    ANIMCMD_FRAME(14, 4),
-    ANIMCMD_FRAME(17, 4),
-    ANIMCMD_FRAME(20, 4),
-    ANIMCMD_FRAME(23, 4),
-    ANIMCMD_FRAME(2, 4),
+    ANIMCMD_FRAME(5, 3),
+    ANIMCMD_FRAME(8, 3),
+    ANIMCMD_FRAME(11, 3),
+    ANIMCMD_FRAME(14, 3),
+    ANIMCMD_FRAME(17, 3),
+    ANIMCMD_FRAME(20, 3),
+    ANIMCMD_FRAME(23, 3),
+    ANIMCMD_FRAME(2, 3),
     ANIMCMD_JUMP(0),
 };
 
 static const union AnimCmd sAnim_RollNorth[] =
 {
-    ANIMCMD_FRAME(3, 4),
-    ANIMCMD_FRAME(6, 4),
-    ANIMCMD_FRAME(9, 4),
-    ANIMCMD_FRAME(12, 4),
-    ANIMCMD_FRAME(15, 4),
-    ANIMCMD_FRAME(18, 4),
-    ANIMCMD_FRAME(21, 4),
-    ANIMCMD_FRAME(0, 4),
+    ANIMCMD_FRAME(3, 3),
+    ANIMCMD_FRAME(6, 3),
+    ANIMCMD_FRAME(9, 3),
+    ANIMCMD_FRAME(12, 3),
+    ANIMCMD_FRAME(15, 3),
+    ANIMCMD_FRAME(18, 3),
+    ANIMCMD_FRAME(21, 3),
+    ANIMCMD_FRAME(0, 3),
     ANIMCMD_JUMP(0),
 };
 
 static const union AnimCmd sAnim_RollWest[] =
 {
-    ANIMCMD_FRAME(4, 4),
-    ANIMCMD_FRAME(7, 4),
-    ANIMCMD_FRAME(10, 4),
-    ANIMCMD_FRAME(13, 4),
-    ANIMCMD_FRAME(16, 4),
-    ANIMCMD_FRAME(19, 4),
-    ANIMCMD_FRAME(22, 4),
-    ANIMCMD_FRAME(1, 4),
+    ANIMCMD_FRAME(4, 3),
+    ANIMCMD_FRAME(7, 3),
+    ANIMCMD_FRAME(10, 3),
+    ANIMCMD_FRAME(13, 3),
+    ANIMCMD_FRAME(16, 3),
+    ANIMCMD_FRAME(19, 3),
+    ANIMCMD_FRAME(22, 3),
+    ANIMCMD_FRAME(1, 3),
     ANIMCMD_JUMP(0),
 };
 
 static const union AnimCmd sAnim_RollEast[] =
 {
-    ANIMCMD_FRAME(4, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(7, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(10, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(10, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(13, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(16, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(19, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(22, 4, .hFlip = TRUE),
-    ANIMCMD_FRAME(1, 4, .hFlip = TRUE),
+    ANIMCMD_FRAME(4, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(7, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(10, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(10, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(13, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(16, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(19, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(22, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(1, 3, .hFlip = TRUE),
     ANIMCMD_JUMP(0),
 };
 
