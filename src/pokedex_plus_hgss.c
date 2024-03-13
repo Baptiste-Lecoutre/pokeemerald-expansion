@@ -2394,18 +2394,9 @@ static void Task_WaitForExitInfoScreen(u8 taskId)
     }
     else
     {
-        // close directly to party menu if opened from party menu
-        if (gSpeciesToLoad != SPECIES_NONE)
-        {
-            gTasks[taskId].func = Task_ClosePokedex;
-        }
-        else
-        {
-            // Exiting, back to list view
-            sLastSelectedPokemon = sPokedexView->selectedPokemon;
-            sPokeBallRotation = sPokedexView->pokeBallRotation;
-            gTasks[taskId].func = Task_OpenPokedexMainPage;
-        }
+        sLastSelectedPokemon = sPokedexView->selectedPokemon;
+        sPokeBallRotation = sPokedexView->pokeBallRotation;
+        gTasks[taskId].func = Task_OpenPokedexMainPage;
     }
 }
 
@@ -2421,14 +2412,7 @@ static void Task_ClosePokedex(u8 taskId)
         ClearMonSprites();
         FreeWindowAndBgBuffers();
         DestroyTask(taskId);
-        
-        if (gSpeciesToLoad != SPECIES_NONE)
-            SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
-        else
-            SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
-
-        gSpeciesToLoad = SPECIES_NONE;
-
+        SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
         Free(sPokedexView);
     }
@@ -4047,6 +4031,12 @@ static void Task_ExitInfoScreen(u8 taskId)
     {
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         FreeInfoScreenWindowAndBgBuffers();
+        if (gSpeciesToLoad != SPECIES_NONE)
+        {
+            SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
+            gSpeciesToLoad = SPECIES_NONE;
+            m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
+        }
         DestroyTask(taskId);
     }
 }
