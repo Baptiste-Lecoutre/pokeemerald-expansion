@@ -259,6 +259,7 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_SnorlaxSlee
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Regidrago;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Regieleki;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_RaidDen;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Spheal;
 // Begin pokemon event objects
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_AnimatedBall;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Follower;
@@ -690,6 +691,7 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_REGIDRAGO] =                &gObjectEventGraphicsInfo_Regidrago,
     [OBJ_EVENT_GFX_REGIELEKI] =                &gObjectEventGraphicsInfo_Regieleki,
     [OBJ_EVENT_GFX_RAID_DEN] =                 &gObjectEventGraphicsInfo_RaidDen,
+    [OBJ_EVENT_GFX_SPHEAL] =                 &gObjectEventGraphicsInfo_Spheal,
     [OBJ_EVENT_GFX_ANIMATED_BALL] =            &gObjectEventGraphicsInfo_AnimatedBall,
     [OBJ_EVENT_GFX_OW_MON] =                   &gObjectEventGraphicsInfo_Follower,
     [OBJ_EVENT_GFX_LIGHT_SPRITE] =             &gObjectEventGraphicsInfo_BallLight,

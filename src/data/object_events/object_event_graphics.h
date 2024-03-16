@@ -1305,6 +1305,8 @@ const u16 gObjectEventPaletteRegidrago[] = INCBIN_U16("graphics/object_events/pa
 const u32 gObjectEventPic_RegielekiOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/regieleki_OW.4bpp");
 const u16 gObjectEventPaletteRegieleki[] = INCBIN_U16("graphics/object_events/palettes/regieleki.gbapal");
 const u32 gObjectEventPic_RaidDen[] = INCBIN_U32("graphics/object_events/pics/misc/raid_den.4bpp");
+const u32 gObjectEventPic_SphealRoll[] = INCBIN_U32("graphics/object_events/pics/pokemon/spheal_roll.4bpp");
+const u16 gObjectEventPaletteSpheal[] = INCBIN_U16("graphics/object_events/palettes/spheal.gbapal");
 
 const u16 gObjectEventPaletteLight[] = INCBIN_U16("graphics/object_events/palettes/light.gbapal");
 const u16 gObjectEventPaletteLight2[] = INCBIN_U16("graphics/object_events/palettes/light2.gbapal");
