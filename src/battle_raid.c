@@ -350,7 +350,7 @@ bool32 InitRaidData(void)
     // determine raid species
     do
     {
-        species = ((randomNum + species) % FORMS_START) + 1;
+        species = ((randomNum + species) % SPECIES_VENUSAUR_MEGA) + 1;
     } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
