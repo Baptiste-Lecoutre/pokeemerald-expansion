@@ -1037,7 +1037,8 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         else if (P_LEGENDARY_PERFECT_IVS >= GEN_6
          && (gSpeciesInfo[species].isLegendary
           || gSpeciesInfo[species].isMythical
-          || gSpeciesInfo[species].isUltraBeast))
+          || gSpeciesInfo[species].isUltraBeast
+          || gSpeciesInfo[species].isTotem))
         {
             iv = MAX_PER_STAT_IVS;
             // Initialize a list of IV indices.
@@ -6771,7 +6772,7 @@ u16 GetRandomSpecies(u16 species, u8 mapBased, u8 type, u16 additionalOffset) //
             break;
     }
 
-    return RandomSeededModulo(species+offset*multiplier+additionalOffset, FORMS_START) + 1;
+    return RandomSeededModulo(species+offset*multiplier+additionalOffset, SPECIES_VENUSAUR_MEGA) + 1;
 }
 
 u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset)
