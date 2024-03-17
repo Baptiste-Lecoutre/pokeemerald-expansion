@@ -5727,7 +5727,7 @@ u16 GetSpeciesForRandomEgg(void)
 
     do
     {
-        species = (Random() % FORMS_START) + 1;
+        species = (Random() % SPECIES_VENUSAUR_MEGA) + 1;
     } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
 
     return GetEggSpecies(species);
