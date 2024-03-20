@@ -559,6 +559,7 @@ static const u8 sText_PkmnSwitchedStatChanges[] = _("{B_ATK_NAME_WITH_PREFIX} sw
 static const u8 sText_PkmnSurroundedWithVeilOfWater[] = _("{B_ATK_NAME_WITH_PREFIX} surrounded itself\nwith a veil of water!");
 static const u8 sText_PkmnLevitatedOnElectromagnetism[] = _("{B_ATK_NAME_WITH_PREFIX} levitated on\nelectromagnetism!");
 static const u8 sText_PkmnTwistedDimensions[] = _("{B_ATK_NAME_WITH_PREFIX} twisted\nthe dimensions!");
+static const u8 sText_DimensionsWereTwisted[] = _("The dimensions were\ntwisted!");
 static const u8 sText_PointedStonesFloat[] =_("Pointed stones float in the air\naround {B_DEF_TEAM2} team!");
 static const u8 sText_CloakedInMysticalMoonlight[] =_("It became cloaked in mystical\nmoonlight!");
 static const u8 sText_TrappedBySwirlingMagma[] =_("{B_DEF_NAME_WITH_PREFIX} became\ntrapped by swirling magma!");
@@ -567,9 +568,11 @@ static const u8 sText_ProtectedTeam[] =_("{B_CURRENT_MOVE} protected\n{B_ATK_TEA
 static const u8 sText_SharedItsGuard[] =_("{B_ATK_NAME_WITH_PREFIX} shared its\nguard with the target!");
 static const u8 sText_SharedItsPower[] =_("{B_ATK_NAME_WITH_PREFIX} shared its\npower with the target!");
 static const u8 sText_SwapsDefAndSpDefOfAllPkmn[] =_("It created a bizarre area in which the\nDefense and Sp. Def stats are swapped!");
+static const u8 sText_BizzareAreaCreated[] =_("A bizarre area was created in which the\nDefense and Sp. Def stats are swapped!");
 static const u8 sText_BecameNimble[] =_("{B_ATK_NAME_WITH_PREFIX} became nimble!");
 static const u8 sText_HurledIntoTheAir[] =_("{B_DEF_NAME_WITH_PREFIX} was hurled\ninto the air!");
 static const u8 sText_HeldItemsLoseEffects[] =_("It created a bizarre area in which\nPokémon's held items lose their effects!");
+static const u8 sText_BizarreArenaCreated[] =_("A bizarre area was created!\nHold items lost their effects!");
 static const u8 sText_FellStraightDown[] =_("{B_DEF_NAME_WITH_PREFIX} fell\nstraight down!");
 static const u8 sText_TargetChangedType[] =_("{B_DEF_NAME_WITH_PREFIX} transformed\ninto the {B_BUFF1} type!");
 static const u8 sText_PkmnAcquiredSimple[] =_("{B_DEF_NAME_WITH_PREFIX} acquired\nSimple!");
@@ -843,11 +846,13 @@ static const u8 sText_ItemWasUsedUp[] = _("The {B_LAST_ITEM}\nwas used up...");
 static const u8 sText_AttackerLostItsType[] = _("{B_ATK_NAME_WITH_PREFIX} lost\nits {B_BUFF1} type!");
 static const u8 sText_ShedItsTail[] = _("{B_ATK_NAME_WITH_PREFIX} shed its tail\nto create a decoy!");
 static const u8 sText_SupersweetAromaWafts[] = _("A supersweet aroma is wafting from\nthe syrup covering {B_ATK_NAME_WITH_PREFIX}!");
+static const u8 sText_TidyingUpComplete[] = _("Tidying up complete!");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
     [STRINGID_BAGISFULL - BATTLESTRINGS_TABLE_START] = sText_BagIsFull,
     [STRINGID_PKMNDROPPEDITEM - BATTLESTRINGS_TABLE_START] = sText_PkmnDroppedItem,
+    [STRINGID_TIDYINGUPCOMPLETE - BATTLESTRINGS_TABLE_START] = sText_TidyingUpComplete,
     [STRINGID_SUPERSWEETAROMAWAFTS - BATTLESTRINGS_TABLE_START] = sText_SupersweetAromaWafts,
     [STRINGID_SHEDITSTAIL - BATTLESTRINGS_TABLE_START] = sText_ShedItsTail,
     [STRINGID_ELECTROSHOTCHARGING - BATTLESTRINGS_TABLE_START] = sText_ElectroShotCharging,
@@ -1389,6 +1394,7 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_PKMNSURROUNDEDWITHVEILOFWATER - BATTLESTRINGS_TABLE_START] = sText_PkmnSurroundedWithVeilOfWater,
     [STRINGID_PKMNLEVITATEDONELECTROMAGNETISM - BATTLESTRINGS_TABLE_START] = sText_PkmnLevitatedOnElectromagnetism,
     [STRINGID_PKMNTWISTEDDIMENSIONS - BATTLESTRINGS_TABLE_START] = sText_PkmnTwistedDimensions,
+    [STRINGID_DIMENSIONSWERETWISTED - BATTLESTRINGS_TABLE_START] = sText_DimensionsWereTwisted,
     [STRINGID_POINTEDSTONESFLOAT - BATTLESTRINGS_TABLE_START] = sText_PointedStonesFloat,
     [STRINGID_CLOAKEDINMYSTICALMOONLIGHT - BATTLESTRINGS_TABLE_START] = sText_CloakedInMysticalMoonlight,
     [STRINGID_TRAPPEDBYSWIRLINGMAGMA - BATTLESTRINGS_TABLE_START] = sText_TrappedBySwirlingMagma,
@@ -1397,9 +1403,11 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_SHAREDITSGUARD - BATTLESTRINGS_TABLE_START] = sText_SharedItsGuard,
     [STRINGID_SHAREDITSPOWER - BATTLESTRINGS_TABLE_START] = sText_SharedItsPower,
     [STRINGID_SWAPSDEFANDSPDEFOFALLPOKEMON - BATTLESTRINGS_TABLE_START] = sText_SwapsDefAndSpDefOfAllPkmn,
+    [STRINGID_BIZARREAREACREATED - BATTLESTRINGS_TABLE_START] = sText_BizzareAreaCreated,
     [STRINGID_BECAMENIMBLE - BATTLESTRINGS_TABLE_START] = sText_BecameNimble,
     [STRINGID_HURLEDINTOTHEAIR - BATTLESTRINGS_TABLE_START] = sText_HurledIntoTheAir,
     [STRINGID_HELDITEMSLOSEEFFECTS - BATTLESTRINGS_TABLE_START] = sText_HeldItemsLoseEffects,
+    [STRINGID_BIZARREARENACREATED - BATTLESTRINGS_TABLE_START] = sText_BizarreArenaCreated,
     [STRINGID_FELLSTRAIGHTDOWN - BATTLESTRINGS_TABLE_START] = sText_FellStraightDown,
     [STRINGID_TARGETCHANGEDTYPE  - BATTLESTRINGS_TABLE_START] = sText_TargetChangedType,
     [STRINGID_PKMNACQUIREDSIMPLE - BATTLESTRINGS_TABLE_START] = sText_PkmnAcquiredSimple,
@@ -1567,6 +1575,19 @@ const u16 gMentalHerbCureStringIds[] =
     [B_MSG_MENTALHERBCURE_TORMENT]     = STRINGID_TORMENTEDNOMORE,
     [B_MSG_MENTALHERBCURE_HEALBLOCK]   = STRINGID_HEALBLOCKEDNOMORE,
     [B_MSG_MENTALHERBCURE_DISABLE]     = STRINGID_PKMNMOVEDISABLEDNOMORE,
+};
+
+const u16 gStartingStatusStringIds[B_MSG_STARTING_STATUS_COUNT] = 
+{
+    [B_MSG_TERRAIN_SET_MISTY]       = STRINGID_TERRAINBECOMESMISTY,
+    [B_MSG_TERRAIN_SET_ELECTRIC]    = STRINGID_TERRAINBECOMESELECTRIC,
+    [B_MSG_TERRAIN_SET_PSYCHIC]     = STRINGID_TERRAINBECOMESPSYCHIC,
+    [B_MSG_TERRAIN_SET_GRASSY]      = STRINGID_TERRAINBECOMESGRASSY,
+    [B_MSG_SET_TRICK_ROOM]          = STRINGID_DIMENSIONSWERETWISTED,
+    [B_MSG_SET_MAGIC_ROOM]          = STRINGID_BIZARREARENACREATED,
+    [B_MSG_SET_WONDER_ROOM]         = STRINGID_BIZARREAREACREATED,
+    [B_MSG_SET_TAILWIND_PLAYER]     = STRINGID_TAILWINDBLEW,
+    [B_MSG_SET_TAILWIND_OPPONENT]   = STRINGID_TAILWINDBLEW,
 };
 
 const u16 gTerrainStringIds[B_MSG_TERRAIN_COUNT] =
@@ -2090,32 +2111,7 @@ const u8 gText_Draw[] = _("{HIGHLIGHT TRANSPARENT}Draw");
 static const u8 sText_SpaceIs[] = _(" is");
 static const u8 sText_ApostropheS[] = _("'s");
 
-// For displaying names of invalid moves.
-// This is large enough that the text for TYPE_ELECTRIC will exceed TEXT_BUFF_ARRAY_COUNT.
-static const u8 sATypeMove_Table[NUMBER_OF_MON_TYPES][17] =
-{
-    [TYPE_NORMAL]   = _("a Normal move"),
-    [TYPE_FIGHTING] = _("a Fighting move"),
-    [TYPE_FLYING]   = _("a Flying move"),
-    [TYPE_POISON]   = _("a Poison move"),
-    [TYPE_GROUND]   = _("a Ground move"),
-    [TYPE_ROCK]     = _("a Rock move"),
-    [TYPE_BUG]      = _("a Bug move"),
-    [TYPE_GHOST]    = _("a Ghost move"),
-    [TYPE_STEEL]    = _("a Steel move"),
-    [TYPE_MYSTERY]  = _("a ??? move"),
-    [TYPE_FIRE]     = _("a Fire move"),
-    [TYPE_WATER]    = _("a Water move"),
-    [TYPE_GRASS]    = _("a Grass move"),
-    [TYPE_ELECTRIC] = _("an Electric move"),
-    [TYPE_PSYCHIC]  = _("a Psychic move"),
-    [TYPE_ICE]      = _("an Ice move"),
-    [TYPE_DRAGON]   = _("a Dragon move"),
-    [TYPE_DARK]     = _("a Dark move"),
-    [TYPE_FAIRY]    = _("a Fairy move"),
-};
-
-const u8 gText_BattleTourney[] = _("Battle Tourney");
+const u8 gText_BattleTourney[] = _("BATTLE TOURNEY");
 static const u8 sText_Round1[] = _("Round 1");
 static const u8 sText_Round2[] = _("Round 2");
 static const u8 sText_Semifinal[] = _("Semifinal");
@@ -2974,7 +2970,7 @@ void BufferStringBattle(u16 stringID, u32 battler)
         if (gBattleMsgDataPtr->currentMove >= MOVES_COUNT
          && !IsZMove(gBattleMsgDataPtr->currentMove)
          && !IsMaxMove(gBattleMsgDataPtr->currentMove))
-            StringCopy(gBattleTextBuff3, sATypeMove_Table[*(&gBattleStruct->stringMoveType)]);
+            StringCopy(gBattleTextBuff3, gTypesInfo[*(&gBattleStruct->stringMoveType)].generic);
         else
             StringCopy(gBattleTextBuff3, GetMoveName(gBattleMsgDataPtr->currentMove));
         stringPtr = sText_AttackerUsedX;
@@ -3181,7 +3177,7 @@ static const u8 *BattleStringGetOpponentNameByTrainerId(u16 trainerId, u8 *text,
     }
     else
     {
-        toCpy = gTrainers[trainerId].trainerName;
+        toCpy = GetTrainerNameFromId(trainerId);
     }
 
     return toCpy;
@@ -3244,7 +3240,7 @@ static const u8 *BattleStringGetPlayerName(u8 *text, u8 battler)
     if (DECAP_ENABLED && !DECAP_NICKNAMES && toCpy != text && *toCpy != CHAR_FIXED_CASE)
     {
         *text = CHAR_FIXED_CASE;
-        StringCopyN(text+1, toCpy, PLAYER_NAME_LENGTH);
+        StringCopyN(text+1, toCpy, PLAYER_NAME_LENGTH + 1);
         toCpy = text;
     }
 
@@ -3276,7 +3272,7 @@ static const u8 *BattleStringGetOpponentClassByTrainerId(u16 trainerId)
     else if (gBattleTypeFlags & BATTLE_TYPE_EREADER_TRAINER)
         toCpy = gTrainerClasses[GetEreaderTrainerClassId()].name;
     else
-        toCpy = gTrainerClasses[gTrainers[trainerId].trainerClass].name;
+        toCpy = gTrainerClasses[GetTrainerClassFromId(trainerId)].name;
 
     return toCpy;
 }
@@ -3404,7 +3400,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 if (gBattleMsgDataPtr->currentMove >= MOVES_COUNT
                  && !IsZMove(gBattleMsgDataPtr->currentMove)
                  && !IsMaxMove(gBattleMsgDataPtr->currentMove))
-                    toCpy = sATypeMove_Table[gBattleStruct->stringMoveType];
+                    toCpy = gTypesInfo[gBattleStruct->stringMoveType].generic;
                 else
                     toCpy = GetMoveName(gBattleMsgDataPtr->currentMove);
                 break;
@@ -3412,7 +3408,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 if (gBattleMsgDataPtr->originallyUsedMove >= MOVES_COUNT
                  && !IsZMove(gBattleMsgDataPtr->currentMove)
                  && !IsMaxMove(gBattleMsgDataPtr->currentMove))
-                    toCpy = sATypeMove_Table[gBattleStruct->stringMoveType];
+                    toCpy = gTypesInfo[gBattleStruct->stringMoveType].generic;
                 else
                     toCpy = GetMoveName(gBattleMsgDataPtr->originallyUsedMove);
                 break;
@@ -3796,7 +3792,7 @@ void ExpandBattleTextBuffPlaceholders(const u8 *src, u8 *dst)
             srcID += 3;
             break;
         case B_BUFF_TYPE: // type name
-            StringAppend(dst, gTypeNames[src[srcID + 1]]);
+            StringAppend(dst, gTypesInfo[src[srcID + 1]].name);
             srcID += 2;
             break;
         case B_BUFF_MON_NICK_WITH_PREFIX: // poke nick with prefix

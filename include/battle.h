@@ -54,8 +54,10 @@ struct __attribute__((packed, aligned(2))) BattleMoveEffect
     const u8 *battleScript;
     u16 battleTvScore:3;
     u16 encourageEncore:1;
+    u16 twoTurnEffect:1;
     u16 semiInvulnerableEffect:1;
-    u16 flags:11; // coming soon...
+    u16 usesProtectCounter:1;
+    u16 padding:9;
 };
 
 #define GET_MOVE_BATTLESCRIPT(move) gBattleMoveEffects[gMovesInfo[move].effect].battleScript
@@ -612,7 +614,6 @@ struct BattleStruct
     u32 expValue;
     u8 expGettersOrder[PARTY_SIZE]; // First battlers which were sent out, then via exp-share
     u8 expGetterMonId;
-    u8 additionalEffectsCounter:2;
     u8 expOrderId:3;
     u8 expGetterBattlerId:2;
     u8 teamGotExpMsgPrinted:1; // The 'Rest of your team got msg' has been printed.
@@ -682,9 +683,12 @@ struct BattleStruct
     } multiBuffer;
     u8 wishPerishSongState;
     u8 wishPerishSongBattlerId;
-    bool8 overworldWeatherDone;
-    bool8 terrainDone;
-    u8 isAtkCancelerForCalledMove; // Certain cases in atk canceler should only be checked once, when the original move is called, however others need to be checked the twice.
+    u8 overworldWeatherDone:1;
+    u8 startingStatusDone:1;
+    u8 isAtkCancelerForCalledMove:1; // Certain cases in atk canceler should only be checked once, when the original move is called, however others need to be checked the twice.
+    u8 terrainDone:1;
+    u8 startingStatus; // status to apply at battle start. defined in constants/battle.h
+    u8 startingStatusTimer;
     u8 atkCancellerTracker;
     struct BattleTvMovePoints tvMovePoints;
     struct BattleTv tv;
@@ -733,6 +737,7 @@ struct BattleStruct
     u8 forcedSwitch:4; // For each battler
     u8 blunderPolicy:1; // should blunder policy activate
     u8 swapDamageCategory:1; // Photon Geyser, Shell Side Arm, Light That Burns the Sky
+    u8 additionalEffectsCounter:4; // A counter for the additionalEffects applied by the current move in Cmd_setadditionaleffects
     u8 ballSpriteIds[2];    // item gfx, window gfx
     u8 appearedInBattle; // Bitfield to track which Pokemon appeared in battle. Used for Burmy's form change
     u8 skyDropTargets[MAX_BATTLERS_COUNT]; // For Sky Drop, to account for if multiple Pokemon use Sky Drop in a double battle.
@@ -771,6 +776,8 @@ struct BattleStruct
     u8 dauntlessShieldBoost[NUM_BATTLE_SIDES];
     u8 supersweetSyrup[NUM_BATTLE_SIDES];
     u8 supremeOverlordCounter[MAX_BATTLERS_COUNT];
+    u8 quickClawRandom[MAX_BATTLERS_COUNT];
+    u8 quickDrawRandom[MAX_BATTLERS_COUNT];
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -968,15 +975,10 @@ struct BattleSpriteData
 struct MonSpritesGfx
 {
     void *firstDecompressed; // ptr to the decompressed sprite of the first Pokémon
-    union {
-        void *ptr[MAX_BATTLERS_COUNT];
-        u8 *byte[MAX_BATTLERS_COUNT];
-    } sprites;
+    u8 *spritesGfx[MAX_BATTLERS_COUNT];
     struct SpriteTemplate templates[MAX_BATTLERS_COUNT];
     struct SpriteFrameImage frameImages[MAX_BATTLERS_COUNT][MAX_MON_PIC_FRAMES];
-    u8 unusedArr[0x80];
     u8 *barFontGfx;
-    void *unusedPtr;
     u16 *buffer;
 };
 
@@ -1005,7 +1007,6 @@ extern u8 gBattleTextBuff2[TEXT_BUFF_ARRAY_COUNT];
 extern u8 gBattleTextBuff3[TEXT_BUFF_ARRAY_COUNT + 13]; //to handle stupidly large z move names
 extern u32 gBattleTypeFlags;
 extern u8 gBattleTerrain;
-extern u32 gUnusedFirstBattleVar1;
 extern u8 *gBattleAnimBgTileBuffer;
 extern u8 *gBattleAnimBgTilemapBuffer;
 extern u32 gBattleControllerExecFlags;
@@ -1052,7 +1053,6 @@ extern u16 gChosenMoveByBattler[MAX_BATTLERS_COUNT];
 extern u16 gMoveResultFlags;
 extern u32 gHitMarker;
 extern u8 gBideTarget[MAX_BATTLERS_COUNT];
-extern u8 gUnusedFirstBattleVar2;
 extern u32 gSideStatuses[NUM_BATTLE_SIDES];
 extern struct SideTimer gSideTimers[NUM_BATTLE_SIDES];
 extern u32 gStatuses3[MAX_BATTLERS_COUNT];
@@ -1084,8 +1084,6 @@ extern bool8 gTransformedShininess[MAX_BATTLERS_COUNT];
 extern u8 gPlayerDpadHoldFrames;
 extern struct BattleSpriteData *gBattleSpritesDataPtr;
 extern struct MonSpritesGfx *gMonSpritesGfxPtr;
-extern struct BattleHealthboxInfo *gBattleControllerOpponentHealthboxData;
-extern struct BattleHealthboxInfo *gBattleControllerOpponentFlankHealthboxData;
 extern u16 gBattleMovePower;
 extern u16 gMoveToLearn;
 extern u32 gFieldStatuses;

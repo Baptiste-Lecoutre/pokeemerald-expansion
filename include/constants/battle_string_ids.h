@@ -703,11 +703,15 @@
 #define STRINGID_SHEDITSTAIL                          701
 #define STRINGID_CLOAKEDINAHARSHLIGHT                 702
 #define STRINGID_SUPERSWEETAROMAWAFTS                 703
-#define STRINGID_PKMNGAINEDEXPSHARE                   704
-#define STRINGID_PKMNDROPPEDITEM                      705
-#define STRINGID_BAGISFULL                            706
+#define STRINGID_DIMENSIONSWERETWISTED                704
+#define STRINGID_BIZARREARENACREATED                  705
+#define STRINGID_BIZARREAREACREATED                   706
+#define STRINGID_TIDYINGUPCOMPLETE                    707
+#define STRINGID_PKMNGAINEDEXPSHARE                   708
+#define STRINGID_PKMNDROPPEDITEM                      709
+#define STRINGID_BAGISFULL                            710
 
-#define BATTLESTRINGS_COUNT                           707
+#define BATTLESTRINGS_COUNT                           711
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -969,6 +973,19 @@
 #define B_MSG_TERRAIN_END_PSYCHIC   6
 #define B_MSG_TERRAIN_END_GRASSY    7
 #define B_MSG_TERRAIN_COUNT         8
+
+// gStartingStatusStringIds
+#define B_MSG_TERRAIN_SET_MISTY     0
+#define B_MSG_TERRAIN_SET_ELECTRIC  1
+#define B_MSG_TERRAIN_SET_PSYCHIC   2
+#define B_MSG_TERRAIN_SET_GRASSY    3
+#define B_MSG_SET_TRICK_ROOM        4
+#define B_MSG_SET_MAGIC_ROOM        5
+#define B_MSG_SET_WONDER_ROOM       6
+#define B_MSG_SET_TAILWIND_PLAYER   7
+#define B_MSG_SET_TAILWIND_OPPONENT 8
+#define B_MSG_STARTING_STATUS_COUNT 9
+
 
 // gWrappedStringIds
 #define B_MSG_WRAPPED_BIND         0

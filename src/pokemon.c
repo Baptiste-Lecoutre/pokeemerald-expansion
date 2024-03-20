@@ -426,23 +426,23 @@ const s8 gNatureStatTable[NUM_NATURES][NUM_NATURE_STATS] =
 #include "data/pokemon/experience_tables.h"
 
 #if P_LVL_UP_LEARNSETS >= GEN_9
-#include "data/pokemon/level_up_learnsets/gen_9.h"
+#include "data/pokemon/level_up_learnsets/gen_9.h" // Scarlet/Violet
 #elif P_LVL_UP_LEARNSETS >= GEN_8
-#include "data/pokemon/level_up_learnsets/gen_8.h"
+#include "data/pokemon/level_up_learnsets/gen_8.h" // Sword/Shield
 #elif P_LVL_UP_LEARNSETS >= GEN_7
-#include "data/pokemon/level_up_learnsets/gen_7.h"
+#include "data/pokemon/level_up_learnsets/gen_7.h" // Ultra Sun/ Ultra Moon
 #elif P_LVL_UP_LEARNSETS >= GEN_6
-#include "data/pokemon/level_up_learnsets/gen_6.h"
+#include "data/pokemon/level_up_learnsets/gen_6.h" // Omega Ruby/Alpha Sapphire
 #elif P_LVL_UP_LEARNSETS >= GEN_5
-#include "data/pokemon/level_up_learnsets/gen_5.h"
+#include "data/pokemon/level_up_learnsets/gen_5.h" // Black 2/White 2
 #elif P_LVL_UP_LEARNSETS >= GEN_4
-#include "data/pokemon/level_up_learnsets/gen_4.h"
+#include "data/pokemon/level_up_learnsets/gen_4.h" // HeartGold/SoulSilver
 #elif P_LVL_UP_LEARNSETS >= GEN_3
-#include "data/pokemon/level_up_learnsets/gen_3.h"
+#include "data/pokemon/level_up_learnsets/gen_3.h" // Ruby/Sapphire/Emerald
 #elif P_LVL_UP_LEARNSETS >= GEN_2
-#include "data/pokemon/level_up_learnsets/gen_2.h"
+#include "data/pokemon/level_up_learnsets/gen_2.h" // Crystal
 #elif P_LVL_UP_LEARNSETS >= GEN_1
-#include "data/pokemon/level_up_learnsets/gen_1.h"
+#include "data/pokemon/level_up_learnsets/gen_1.h" // Yellow
 #endif
 
 #include "data/pokemon/teachable_learnsets.h"
@@ -1022,7 +1022,8 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         else if (P_LEGENDARY_PERFECT_IVS >= GEN_6
          && (gSpeciesInfo[species].isLegendary
           || gSpeciesInfo[species].isMythical
-          || gSpeciesInfo[species].isUltraBeast))
+          || gSpeciesInfo[species].isUltraBeast
+          || gSpeciesInfo[species].isTotem))
         {
             iv = MAX_PER_STAT_IVS;
             // Initialize a list of IV indices.
@@ -1733,7 +1734,7 @@ static void SetMonMoveSlot_KeepPP(struct Pokemon *mon, u16 move, u8 slot)
     u8 ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES, NULL);
     u8 currPP = GetMonData(mon, MON_DATA_PP1 + slot, NULL);
     u8 newPP = CalculatePPWithBonus(move, ppBonuses, slot);
-    u8 finalPP = min(currPP, newPP);
+    u16 finalPP = min(currPP, newPP);
 
     SetMonData(mon, MON_DATA_MOVE1 + slot, &move);
     SetMonData(mon, MON_DATA_PP1 + slot, &finalPP);
@@ -4205,7 +4206,7 @@ static u32 GetGMaxTargetSpecies(u32 species)
 u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, struct Pokemon *tradePartner)
 {
     int i, j;
-    u16 targetSpecies = 0;
+    u16 targetSpecies = SPECIES_NONE;
     u16 species = GetMonData(mon, MON_DATA_SPECIES, 0);
     u16 heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, 0);
     u32 personality = GetMonData(mon, MON_DATA_PERSONALITY, 0);
@@ -4499,6 +4500,27 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
             }
         }
         break;
+    case EVO_MODE_CANT_STOP:
+        level = GetMonData(mon, MON_DATA_LEVEL, 0);
+        friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, 0);
+
+        for (i = 0; evolutions[i].method != EVOLUTIONS_END; i++)
+        {
+            if (SanitizeSpeciesId(evolutions[i].targetSpecies) == SPECIES_NONE)
+                continue;
+
+            switch (evolutions[i].method)
+            {
+            case EVO_LEVEL_ITEM_COUNT_999:
+                if (CheckBagHasItem(evolutions[i].param, 999))
+                {
+                    targetSpecies = evolutions[i].targetSpecies;
+                    RemoveBagItem(evolutions[i].param, 999);
+                }
+                break;
+            }
+        }
+        break;
     case EVO_MODE_TRADE:
         for (i = 0; evolutions[i].method != EVOLUTIONS_END; i++)
         {
@@ -4687,6 +4709,7 @@ u16 NationalToHoennOrder(u16 nationalNum)
 
 u16 SpeciesToNationalPokedexNum(u16 species)
 {
+    species = SanitizeSpeciesId(species);
     if (!species)
         return NATIONAL_DEX_NONE;
 
@@ -4864,7 +4887,7 @@ u8 GetTrainerEncounterMusicId(u16 trainerOpponentId)
     else if (InTrainerHillChallenge())
         return GetTrainerEncounterMusicIdInTrainerHill(trainerOpponentId);
     else
-        return TRAINER_ENCOUNTER_MUSIC(trainerOpponentId);
+        return gTrainers[SanitizeTrainerId(trainerOpponentId)].encounterMusic_gender & (F_TRAINER_FEMALE - 1);
 }
 
 u16 ModifyStatByNature(u8 nature, u16 stat, u8 statIndex)
@@ -4903,11 +4926,11 @@ u16 ModifyStatByNature(u8 nature, u16 stat, u8 statIndex)
     return retVal;
 }
 
-#define IS_LEAGUE_BATTLE                                                                \
-    ((gBattleTypeFlags & BATTLE_TYPE_TRAINER)                                           \
-    && (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_ELITE_FOUR    \
-     || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_LEADER        \
-     || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_CHAMPION))    \
+#define IS_LEAGUE_BATTLE(trainerClass)              \
+    ((gBattleTypeFlags & BATTLE_TYPE_TRAINER)       \
+    && (trainerClass == TRAINER_CLASS_ELITE_FOUR    \
+     || trainerClass == TRAINER_CLASS_LEADER        \
+     || trainerClass == TRAINER_CLASS_CHAMPION))    \
 
 void AdjustFriendship(struct Pokemon *mon, u8 event)
 {
@@ -4940,6 +4963,7 @@ void AdjustFriendship(struct Pokemon *mon, u8 event)
     {
         u8 friendshipLevel = 0;
         s16 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, 0);
+        u32 opponentTrainerClass = GetTrainerClassFromId(gTrainerBattleOpponent_A);
 
         if (friendship > 99)
             friendshipLevel++;
@@ -4947,7 +4971,7 @@ void AdjustFriendship(struct Pokemon *mon, u8 event)
             friendshipLevel++;
 
         if ((event != FRIENDSHIP_EVENT_WALKING || !(Random() & 1))
-         && (event != FRIENDSHIP_EVENT_LEAGUE_BATTLE || IS_LEAGUE_BATTLE))
+         && (event != FRIENDSHIP_EVENT_LEAGUE_BATTLE || IS_LEAGUE_BATTLE(opponentTrainerClass)))
         {
             s8 mod = sFriendshipEventModifiers[event][friendshipLevel];
             if (mod > 0 && holdEffect == HOLD_EFFECT_FRIENDSHIP_UP)
@@ -5574,7 +5598,7 @@ u16 GetBattleBGM(void)
         else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER_HILL)
             trainerClass = TRAINER_CLASS_EXPERT;
         else
-            trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+            trainerClass = GetTrainerClassFromId(gTrainerBattleOpponent_A);
 
         switch (trainerClass)
         {
@@ -5609,7 +5633,7 @@ u16 GetBattleBGM(void)
         case TRAINER_CLASS_RIVAL:
             if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
                 return MUS_VS_RIVAL;
-            if (!StringCompare(gTrainers[gTrainerBattleOpponent_A].trainerName, gText_BattleWallyName))
+            if (!StringCompare(GetTrainerNameFromId(gTrainerBattleOpponent_A), gText_BattleWallyName))
                 return MUS_VS_TRAINER;
             return MUS_VS_RIVAL;
         case TRAINER_CLASS_ELITE_FOUR:
@@ -5818,7 +5842,7 @@ static inline bool32 CanFirstMonBoostHeldItemRarity(void)
     u32 ability;
     if (GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG))
         return FALSE;
-    
+
     ability = GetMonAbility(&gPlayerParty[0]);
     if ((OW_COMPOUND_EYES < GEN_9) && ability == ABILITY_COMPOUND_EYES)
         return TRUE;
@@ -5900,7 +5924,7 @@ const u8 *GetTrainerPartnerName(void)
     {
         if (gPartnerTrainerId == TRAINER_PARTNER(PARTNER_STEVEN))
         {
-            return gTrainers[TRAINER_STEVEN].trainerName;
+            return GetTrainerNameFromId(TRAINER_STEVEN);
         }
         else
         {
@@ -6122,26 +6146,6 @@ void HandleSetPokedexFlag(u16 nationalNum, u8 caseId, u32 personality)
         if (NationalPokedexNumToSpecies(nationalNum) == SPECIES_SPINDA)
             gSaveBlock2Ptr->pokedex.spindaPersonality = personality;
     }
-}
-
-const u8 *GetTrainerClassNameFromId(u16 trainerId)
-{
-    if (trainerId > TRAINER_PARTNER(PARTNER_NONE))
-        return gTrainerClasses[gBattlePartners[trainerId].trainerClass].name;
-    else if (trainerId < TRAINERS_COUNT)
-        return gTrainerClasses[gTrainers[trainerId].trainerClass].name;
-
-    return gTrainerClasses[gTrainers[TRAINER_NONE].trainerClass].name;
-}
-
-const u8 *GetTrainerNameFromId(u16 trainerId)
-{
-    if (trainerId > TRAINER_PARTNER(PARTNER_NONE))
-        return gBattlePartners[trainerId].trainerName;
-    else if (trainerId < TRAINERS_COUNT)
-        return gTrainers[trainerId].trainerName;
-
-    return gTrainers[TRAINER_NONE].trainerName;
 }
 
 bool8 HasTwoFramesAnimation(u16 species)

@@ -20,6 +20,7 @@
 #define GEN_6_ORAS GEN_LATEST + 1
 
 #define OW_BERRY_MUTATIONS             FALSE      // If enabled, Berry plants can mutate based on berries planted next to them.
+#define OW_BERRY_MUTATION_CHANCE       25         // Determines the % chance of a mutation.
 #define OW_BERRY_MOISTURE              FALSE      // If enabled, Berry watering is not a matter of watering it once per stage, but rather of keeping the soil moist.
 #define OW_BERRY_ALWAYS_WATERABLE      FALSE      // If OW_BERRY_MOISTURE is enabled, this setting allows the player to continuously water soil; dry soil will cause a decrease in Berry Yield (like Gen4). When off, soil can only be watered when dry and watering increases yield (like Gen6).
 #define OW_BERRY_MULCH_USAGE           FALSE      // If enabled, Mulch can be used on soil to fertilize it. Otherwise, it is considered unusable. Note that moisture effects only work with OW_BERRY_MOISTURE enabled!
@@ -30,6 +31,16 @@
 #define OW_BERRY_GROWTH_RATE           GEN_3      // Presets for how long each Berry plant takes to grow.
 #define OW_BERRY_YIELD_RATE            GEN_3      // Presets for how many Berries each plant can yield.
 #define OW_BERRY_DRAIN_RATE            GEN_6_ORAS // If OW_BERRY_MOISTURE is enabled, this setting changes how fast the soil dries out. GEN_4 uses a Berry-dependent drain rate, GEN_6_XY dries out in 24 hours (4 hours with the relevant Mulch) and GEN_6_ORAS dries out in 4 hours. Other values are illegal.
+
+// Follower Pokémon
+#define OW_FOLLOWERS_ENABLED           TRUE       // Enables follower Pokémon, HGSS style.
+#define OW_MON_BOBBING                 TRUE       // If true, follower pokemon will bob up and down during their idle & walking animations
+#define LARGE_OW_SUPPORT               TRUE       // If true, adds a small amount of overhead to OW code so that large (48x48, 64x64) OWs will display correctly under bridges, etc.
+#define OW_MON_POKEBALLS               TRUE       // Followers will emerge from the pokeball they are stored in, instead of a normal pokeball
+#define OW_GFX_COMPRESS                TRUE       // Adds support for compressed OW graphics, (Also compresses pokemon follower graphics).
+                                                  // Compressed gfx are incompatible with non-power-of-two sprite sizes:
+                                                  // (You should not use 48x48 sprites/tables for compressed gfx)
+                                                  // 16x32, 32x32, 64x64 etc are fine
 
 // Out-of-battle Ability effects
 #define OW_SYNCHRONIZE_NATURE       GEN_LATEST // In Gen8, if a Pokémon with Synchronize is leading the party, it's 100% guaranteed that wild Pokémon will have the same Nature, as opposed to 50% previously. Stationary Pokémon are excluded in Gen3. In Gen6, all No Eggs Discovered gift Pokémon will have the same Nature, while in Gen7 all gift Pokémon will, regardless of Egg Group - In Gen 8, no gift Pokémon are affected. In Gen9, this ability has no out-of-battle effect.

@@ -650,3 +650,4 @@ BattleFrontier_BattlePalaceLobby_Text_ExplainRulesWhenInDanger:
 	.string "nature when it is in trouble.\p"
 	.string "If a Pokémon begins behaving oddly\n"
 	.string "in a pinch, watch it carefully.$"
+
