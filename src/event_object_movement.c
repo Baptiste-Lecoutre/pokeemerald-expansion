@@ -1892,6 +1892,7 @@ u8 CreateObjectGraphicsSpriteWithTag(u16 graphicsId, void (*callback)(struct Spr
     const struct ObjectEventGraphicsInfo *graphicsInfo;
     struct Sprite *sprite;
     u8 spriteId;
+    u32 paletteNum;
 
     spriteTemplate = Alloc(sizeof(struct SpriteTemplate));
     CopyObjectGraphicsInfoToSpriteTemplate(graphicsId, callback, spriteTemplate, &subspriteTables);
@@ -2034,25 +2035,33 @@ static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool32 shiny) {
     u32 paletteNum;
     // Note that the shiny palette tag is `species + SPECIES_SHINY_TAG`, which must be increased with more pokemon
     // so that palette tags do not overlap
-    struct SpritePalette spritePalette = {.tag = shiny ? (species + SPECIES_SHINY_TAG) : species};
+    const u32 *palette = GetMonSpritePalFromSpecies(species, shiny, FALSE); //ETODO
     // palette already loaded
-    if ((paletteNum = IndexOfSpritePaletteTag(spritePalette.tag)) < 16)
+    if ((paletteNum = IndexOfSpritePaletteTag(species)) < 16)
         return paletteNum;
 
-    // Use matching front sprite's normal/shiny palettes
-    spritePalette.data = (u16*)(shiny ? gSpeciesInfo[species].shinyPalette : gSpeciesInfo[species].palette);
     // Use standalone palette, unless entry is OOB or NULL (fallback to front-sprite-based)
-    if (species < ARRAY_COUNT(gFollowerPalettes) && gFollowerPalettes[species][shiny & 1])
+    if (gFollowerPalettes[species][shiny & 1])
+    {
+        struct SpritePalette spritePalette = {.tag = shiny ? (species + SPECIES_SHINY_TAG) : species};
         spritePalette.data = gFollowerPalettes[species][shiny & 1];
-
-    // Check if pal data must be decompressed
-    if (IsLZ77Data(spritePalette.data, PLTT_SIZE_4BPP, PLTT_SIZE_4BPP)) {
-        // IsLZ77Data guarantees word-alignment, so casting this is safe
-        LZ77UnCompWram((u32*)spritePalette.data, gDecompressionBuffer);
-        spritePalette.data = (void*)gDecompressionBuffer;
+        
+        // Check if pal data must be decompressed
+        if (IsLZ77Data(spritePalette.data, PLTT_SIZE_4BPP, PLTT_SIZE_4BPP)) {
+            // IsLZ77Data guarantees word-alignment, so casting this is safe
+            LZ77UnCompWram((u32*)spritePalette.data, gDecompressionBuffer);
+            spritePalette.data = (void*)gDecompressionBuffer;
+        }
+        paletteNum = LoadSpritePalette(&spritePalette);
+    }
+    else
+    {
+        // Use matching front sprite's normal/shiny palettes
+        // Load compressed palette
+        LoadCompressedSpritePaletteWithTag(palette, species);
+        paletteNum = IndexOfSpritePaletteTag(species); // Tag is always present
     }
 
-    paletteNum = LoadSpritePalette(&spritePalette);
     UpdateSpritePaletteWithWeather(paletteNum, FALSE);
     return paletteNum;
 }
@@ -5436,10 +5445,9 @@ static bool32 EndFollowerTransformEffect(struct ObjectEvent *objectEvent, struct
 
 static bool32 TryStartFollowerTransformEffect(struct ObjectEvent *objectEvent, struct Sprite *sprite) {
     u32 multi;
-    if (OW_SPECIES(objectEvent) == SPECIES_CASTFORM && OW_FORM(objectEvent) != (multi = GetOverworldCastformForm())) {
-        sprite->data[7] = TRANSFORM_TYPE_PERMANENT << 8;
-        objectEvent->graphicsId &= OBJ_EVENT_GFX_SPECIES_MASK;
-        objectEvent->graphicsId |= multi << OBJ_EVENT_GFX_SPECIES_BITS;
+    if (GET_BASE_SPECIES_ID(OW_SPECIES(objectEvent)) == SPECIES_CASTFORM
+        && OW_SPECIES(objectEvent) != (multi = GetOverworldCastformSpecies())) {
+        sprite->data[7] = TRANSFORM_TYPE_WEATHER << 8;
         return TRUE;
     } else if ((Random() & 0xFFFF) < 18 && GetLocalWildMon(FALSE)
             && (OW_SPECIES(objectEvent) == SPECIES_MEW || OW_SPECIES(objectEvent) == SPECIES_DITTO)) {

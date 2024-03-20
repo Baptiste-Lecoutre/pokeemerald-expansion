@@ -433,12 +433,12 @@ const struct ObjectEventGraphicsInfo gCastformObjectGraphics[] =
 // If not NULL, entries here override the front-sprite-based pals
 // used by OBJ_EVENT_PAL_TAG_DYNAMIC
 // Palette data may be compressed, or not
-const void* const gFollowerPalettes[][2] =
+/*const void* const gFollowerPalettes[][2] =
 {
     // Must have at least one entry, or ARRAY_COUNT comparison fails
     // (SPECIES_NONE does not use OBJ_EVENT_PAL_TAG_DYNAMIC anyway)
     [SPECIES_NONE] = {gMonPalette_CircledQuestionMark, gMonShinyPalette_CircledQuestionMark},
-};
+};*/
 
 #if OW_MON_POKEBALLS
 
