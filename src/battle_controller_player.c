@@ -1872,7 +1872,7 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     else
         type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
 
-    StringCopy(txtPtr, gTypeNames[type]);
+    StringCopy(txtPtr, gTypesInfo[type].name);
     BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, battler, targetId));
 
     MoveSelectionDisplaySplitIcon(battler);
