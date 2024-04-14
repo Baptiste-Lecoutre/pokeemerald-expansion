@@ -66,8 +66,14 @@ u32 GetSoftLevelCapExpValue(u32 level, u32 expValue)
         else
             return expValue / sExpScalingDown[levelDifference];
     }
+    else if (level < currentLevelCap)
+    {
+       return expValue;
+    }
     else
-        return 0; // really? does it fuck up everything if not in the previous cases?
+    {
+        return 0;
+    }
 }
 
 u32 GetRelativePartyScalingExpValue(u32 level, u32 expValue)

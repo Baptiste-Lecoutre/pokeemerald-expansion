@@ -324,7 +324,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_CHOPLE_BERRY,
         //.gem = ITEM_FIGHTING_GEM,
         //.zCrystal = ITEM_FIGHTINIUM_Z,
-        //.plate= ITEM_FIST_PLATE,
+        //.plate = ITEM_FIST_PLATE,
         //.memory = ITEM_FIGHTING_MEMORY,
         //.teraShard = ITEM_FIGHTING_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FIGHTING,
@@ -340,7 +340,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_COBA_BERRY,
         //.gem = ITEM_FLYING_GEM,
         //.zCrystal = ITEM_FLYINIUM_Z,
-        //.plate= ITEM_SKY_PLATE,
+        //.plate = ITEM_SKY_PLATE,
         //.memory = ITEM_FLYING_MEMORY,
         //.teraShard = ITEM_FLYING_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FLYING,
@@ -356,7 +356,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_KEBIA_BERRY,
         //.gem = ITEM_POISON_GEM,
         //.zCrystal = ITEM_POISONIUM_Z,
-        //.plate= ITEM_TOXIC_PLATE,
+        //.plate = ITEM_TOXIC_PLATE,
         //.memory = ITEM_POISON_MEMORY,
         //.teraShard = ITEM_POISON_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_POISON,
@@ -372,7 +372,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_SHUCA_BERRY,
         //.gem = ITEM_GROUND_GEM,
         //.zCrystal = ITEM_GROUNDIUM_Z,
-        //.plate= ITEM_EARTH_PLATE,
+        //.plate = ITEM_EARTH_PLATE,
         //.memory = ITEM_GROUND_MEMORY,
         //.teraShard = ITEM_GROUND_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_GROUND,
@@ -388,7 +388,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_CHARTI_BERRY,
         //.gem = ITEM_ROCK_GEM,
         //.zCrystal = ITEM_ROCKIUM_Z,
-        //.plate= ITEM_STONE_PLATE,
+        //.plate = ITEM_STONE_PLATE,
         //.memory = ITEM_ROCK_MEMORY,
         //.teraShard = ITEM_ROCK_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_ROCK,
@@ -404,7 +404,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_TANGA_BERRY,
         //.gem = ITEM_BUG_GEM,
         //.zCrystal = ITEM_BUGINIUM_Z,
-        //.plate= ITEM_INSECT_PLATE,
+        //.plate = ITEM_INSECT_PLATE,
         //.memory = ITEM_BUG_MEMORY,
         //.teraShard = ITEM_BUG_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_BUG,
@@ -420,7 +420,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_KASIB_BERRY,
         //.gem = ITEM_GHOST_GEM,
         //.zCrystal = ITEM_GHOSTIUM_Z,
-        //.plate= ITEM_SPOOKY_PLATE,
+        //.plate = ITEM_SPOOKY_PLATE,
         //.memory = ITEM_GHOST_MEMORY,
         //.teraShard = ITEM_GHOST_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_GHOST,
@@ -436,7 +436,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_BABIRI_BERRY,
         //.gem = ITEM_STEEL_GEM,
         //.zCrystal = ITEM_STEELIUM_Z,
-        //.plate= ITEM_IRON_PLATE,
+        //.plate = ITEM_IRON_PLATE,
         //.memory = ITEM_STEEL_MEMORY,
         //.teraShard = ITEM_STEEL_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_STEEL,
@@ -458,7 +458,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_OCCA_BERRY,
         //.gem = ITEM_FIRE_GEM,
         //.zCrystal = ITEM_FIRIUM_Z,
-        //.plate= ITEM_FLAME_PLATE,
+        //.plate = ITEM_FLAME_PLATE,
         //.memory = ITEM_FIRE_MEMORY,
         //.teraShard = ITEM_FIRE_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FIRE,
@@ -474,7 +474,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_PASSHO_BERRY,
         //.gem = ITEM_WATER_GEM,
         //.zCrystal = ITEM_WATERIUM_Z,
-        //.plate= ITEM_SPLASH_PLATE,
+        //.plate = ITEM_SPLASH_PLATE,
         //.memory = ITEM_WATER_MEMORY,
         //.teraShard = ITEM_WATER_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_WATER,
@@ -490,7 +490,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_RINDO_BERRY,
         //.gem = ITEM_GRASS_GEM,
         //.zCrystal = ITEM_GRASSIUM_Z,
-        //.plate= ITEM_MEADOW_PLATE,
+        //.plate = ITEM_MEADOW_PLATE,
         //.memory = ITEM_GRASS_MEMORY,
         //.teraShard = ITEM_GRASS_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_GRASS,
@@ -506,7 +506,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_WACAN_BERRY,
         //.gem = ITEM_ELECTRIC_GEM,
         //.zCrystal = ITEM_ELECTRIUM_Z,
-        //.plate= ITEM_ZAP_PLATE,
+        //.plate = ITEM_ZAP_PLATE,
         //.memory = ITEM_ELECTRIC_MEMORY,
         //.teraShard = ITEM_ELECTRIC_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_ELECTRIC,
@@ -522,7 +522,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_PAYAPA_BERRY,
         //.gem = ITEM_PSYCHIC_GEM,
         //.zCrystal = ITEM_PSYCHIUM_Z,
-        //.plate= ITEM_MIND_PLATE,
+        //.plate = ITEM_MIND_PLATE,
         //.memory = ITEM_PSYCHIC_MEMORY,
         //.teraShard = ITEM_PSYCHIC_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_PSYCHIC,
@@ -538,7 +538,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_YACHE_BERRY,
         //.gem = ITEM_ICE_GEM,
         //.zCrystal = ITEM_ICIUM_Z,
-        //.plate= ITEM_ICICLE_PLATE,
+        //.plate = ITEM_ICICLE_PLATE,
         //.memory = ITEM_ICE_MEMORY,
         //.teraShard = ITEM_ICE_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_ICE,
@@ -554,7 +554,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_HABAN_BERRY,
         //.gem = ITEM_DRAGON_GEM,
         //.zCrystal = ITEM_DRAGONIUM_Z,
-        //.plate= ITEM_DRACO_PLATE,
+        //.plate = ITEM_DRACO_PLATE,
         //.memory = ITEM_DRAGON_MEMORY,
         //.teraShard = ITEM_DRAGON_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_DRAGON,
@@ -570,7 +570,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_COLBUR_BERRY,
         //.gem = ITEM_DARK_GEM,
         //.zCrystal = ITEM_DARKINIUM_Z,
-        //.plate= ITEM_DREAD_PLATE,
+        //.plate = ITEM_DREAD_PLATE,
         //.memory = ITEM_DARK_MEMORY,
         //.teraShard = ITEM_DARK_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_DARK,
@@ -586,7 +586,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         //.berry = ITEM_ROSELI_BERRY,
         //.gem = ITEM_FAIRY_GEM,
         //.zCrystal = ITEM_FAIRIUM_Z,
-        //.plate= ITEM_PIXIE_PLATE,
+        //.plate = ITEM_PIXIE_PLATE,
         //.memory = ITEM_FAIRY_MEMORY,
         //.teraShard = ITEM_FAIRY_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FAIRY,
@@ -2183,7 +2183,9 @@ void ModifyPersonalityForNature(u32 *personality, u32 newNature)
 u32 GeneratePersonalityForGender(u32 gender, u32 species)
 {
     const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[species];
-    if (gender == MON_MALE)
+    if (gender == MON_GENDERLESS)
+        return 0;
+    else if (gender == MON_MALE)
         return ((255 - speciesInfo->genderRatio) / 2) + speciesInfo->genderRatio;
     else
         return speciesInfo->genderRatio / 2;
@@ -2265,6 +2267,8 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_MALE, partyData[i].species);
             else if (partyData[i].gender == TRAINER_MON_FEMALE)
                 personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[i].species);
+            else if (partyData[i].gender == TRAINER_MON_RANDOM_GENDER)
+                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(Random() & 1 ? MON_MALE : MON_FEMALE, partyData[i].species);
             ModifyPersonalityForNature(&personalityValue, partyData[i].nature);
             if (partyData[i].isShiny)
             {
@@ -3304,6 +3308,17 @@ static bool8 IsMajorBattle(void)
     return FALSE;
 }
 
+static void ClearSetBScriptingStruct(void)
+{
+    // windowsType is set up earlier in BattleInitBgsAndWindows, so we need to save the value
+    u32 temp = gBattleScripting.windowsType;
+    memset(&gBattleScripting, 0, sizeof(gBattleScripting));
+
+    gBattleScripting.windowsType = temp;
+    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
+    gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
+}
+
 static void BattleStartClearSetData(void)
 {
     s32 i;
@@ -3317,10 +3332,7 @@ static void BattleStartClearSetData(void)
     memset(&gSideTimers, 0, sizeof(gSideTimers));
     memset(&gWishFutureKnock, 0, sizeof(gWishFutureKnock));
     memset(&gBattleResults, 0, sizeof(gBattleResults));
-    memset(&gBattleScripting, 0, sizeof(gBattleScripting));
-
-    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
-    gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
+    ClearSetBScriptingStruct();
 
     for (i = 0; i < MAX_BATTLERS_COUNT; i++)
     {
@@ -3528,6 +3540,7 @@ void SwitchInClearSetData(u32 battler)
     gBattleStruct->lastTakenMoveFrom[battler][3] = 0;
     gBattleStruct->lastMoveFailed &= ~(gBitTable[battler]);
     gBattleStruct->palaceFlags &= ~(gBitTable[battler]);
+    gBattleStruct->boosterEnergyActivates &= ~(gBitTable[battler]);
 
     for (i = 0; i < ARRAY_COUNT(gSideTimers); i++)
     {
@@ -3659,6 +3672,7 @@ const u8* FaintClearSetData(u32 battler)
     gBattleStruct->lastTakenMoveFrom[battler][3] = 0;
 
     gBattleStruct->palaceFlags &= ~(gBitTable[battler]);
+    gBattleStruct->boosterEnergyActivates &= ~(gBitTable[battler]);
 
     for (i = 0; i < ARRAY_COUNT(gSideTimers); i++)
     {
@@ -4260,11 +4274,11 @@ void BattleTurnPassed(void)
         if (DoBattlerEndTurnEffects())
             return;
     }
+    if (HandleWishPerishSongOnTurnEnd())
+        return;
     if (HandleFaintedMonActions())
         return;
     gBattleStruct->faintedActionsState = 0;
-    if (HandleWishPerishSongOnTurnEnd())
-        return;
 
     TurnValuesCleanUp(FALSE);
     gHitMarker &= ~HITMARKER_NO_ATTACKSTRING;
@@ -5326,11 +5340,11 @@ static void TurnValuesCleanUp(bool8 var0)
             gProtectStructs[i].quash = FALSE;
             gProtectStructs[i].usedCustapBerry = FALSE;
             gProtectStructs[i].quickDraw = FALSE;
+            memset(&gQueuedStatBoosts[i], 0, sizeof(struct QueuedStatBoost));
         }
         else
         {
             memset(&gProtectStructs[i], 0, sizeof(struct ProtectStruct));
-            memset(&gQueuedStatBoosts[i], 0, sizeof(struct QueuedStatBoost));
 
             if (gDisableStructs[i].isFirstTurn)
                 gDisableStructs[i].isFirstTurn--;
