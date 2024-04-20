@@ -211,7 +211,6 @@ EWRAM_DATA static u16 sAmbientCrySpecies = 0;
 EWRAM_DATA static bool8 sIsAmbientCryWaterMon = FALSE;
 EWRAM_DATA struct LinkPlayerObjectEvent gLinkPlayerObjectEvents[4] = {0};
 
-
 static const struct WarpData sDummyWarpData =
 {
     .mapGroup = MAP_GROUP(UNDEFINED),
@@ -863,8 +862,17 @@ if (I_VS_SEEKER_CHARGING != 0)
     ResetFieldTasksArgs();
     RunOnResumeMapScript();
 
-    if (gMapHeader.regionMapSectionId != sLastMapSectionId)
-        ShowMapNamePopup();
+    if (OW_HIDE_REPEAT_MAP_POPUP)
+    {
+        if (gMapHeader.regionMapSectionId != sLastMapSectionId)
+            ShowMapNamePopup();
+    }
+    else
+    {
+        if (gMapHeader.regionMapSectionId != MAPSEC_BATTLE_FRONTIER
+         || gMapHeader.regionMapSectionId != sLastMapSectionId)
+            ShowMapNamePopup();
+    }
 }
 
 static void LoadMapFromWarp(bool32 a1)
@@ -1687,8 +1695,8 @@ void CB2_Overworld(void)
         SetVBlankCallback(NULL);
     OverworldBasic();
     if (fading) {
-      SetFieldVBlankCallback();
-      return;
+        SetFieldVBlankCallback();
+        return;
     }
 }
 
@@ -2169,9 +2177,9 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
         if (gFieldCallback == FieldCallback_Fly) //optionsShowFollowerPokemon
-          RemoveFollowingPokemon();
+            RemoveFollowingPokemon();
         else
-          UpdateFollowingPokemon();
+            UpdateFollowingPokemon();
         SetCameraToTrackPlayer();
         (*state)++;
         break;
@@ -2187,6 +2195,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
     case 3:
         return TRUE;
     }
+
     return FALSE;
 }
 
@@ -3252,7 +3261,7 @@ static void SetPlayerFacingDirection(u8 linkPlayerId, u8 facing)
     {
         if (facing > FACING_FORCED_RIGHT)
         {
-            objEvent->triggerGroundEffectsOnMove = 1;
+            objEvent->triggerGroundEffectsOnMove = TRUE;
         }
         else
         {
@@ -3401,7 +3410,7 @@ static void CreateLinkPlayerSprite(u8 linkPlayerId, u8 gameVersion)
         sprite = &gSprites[objEvent->spriteId];
         sprite->coordOffsetEnabled = TRUE;
         sprite->data[0] = linkPlayerId;
-        objEvent->triggerGroundEffectsOnMove = 0;
+        objEvent->triggerGroundEffectsOnMove = FALSE;
     }
 }
 
