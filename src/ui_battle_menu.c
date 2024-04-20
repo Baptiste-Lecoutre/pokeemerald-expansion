@@ -125,7 +125,7 @@ enum
     STATUS_INFO_ROOTED,
     STATUS_INFO_YAWN,
     STATUS_INFO_GRUDGE,
-    STATUS_INFO_CANT_CRIT,
+//    STATUS_INFO_CANT_CRIT,
     STATUS_INFO_GASTRO_ACID,
     STATUS_INFO_EMBARGO,
     STATUS_INFO_SMACKED_DOWN,
@@ -692,10 +692,10 @@ void UI_Battle_Menu_Init(MainCallback callback)
                     if(gStatuses3[j] & STATUS3_GRUDGE)
                         isExtraInfoShown = TRUE;
                 break;
-                case STATUS_INFO_CANT_CRIT:
+                /*case STATUS_INFO_CANT_CRIT:
                     if(gStatuses3[j] & STATUS3_CANT_SCORE_A_CRIT)
                         isExtraInfoShown = TRUE;
-                break;
+                break;*/
                 case STATUS_INFO_GASTRO_ACID:
                     if(gStatuses3[j] & STATUS3_GASTRO_ACID)
                         isExtraInfoShown = TRUE;
@@ -2543,7 +2543,7 @@ static void PrintStatusTab(void){
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, ((y + 1) * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_BLACK], 0xFF, gStringVar1);
                 printedInfo = TRUE;
             break;
-            case STATUS_INFO_CANT_CRIT:
+            /*case STATUS_INFO_CANT_CRIT:
                 StringCopy(gStringVar1, sText_Title_Status_Cant_Crit);
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar1);
 
@@ -2551,7 +2551,7 @@ static void PrintStatusTab(void){
                 StringCopy(gStringVar1, sText_Title_Status_Cant_Crit_Description);
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, ((y + 1) * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_BLACK], 0xFF, gStringVar1);
                 printedInfo = TRUE;
-            break;
+            break;*/
             case STATUS_INFO_GASTRO_ACID:
                 StringCopy(gStringVar1, sText_Title_Status_Gastro_Acid);
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar1);
