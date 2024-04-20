@@ -10342,7 +10342,7 @@ const struct Trainer gTrainers[] = {
         .party = TRAINER_PARTY(sParty_MayLilycoveTorchic),
     },
 
-    [MAY_MUDKIP_METEOR_FALLS] =
+    [TRAINER_MAY_MUDKIP_METEOR_FALLS] =
     {
         .trainerClass = TRAINER_CLASS_RIVAL,
         .encounterMusic_gender = F_TRAINER_FEMALE | TRAINER_ENCOUNTER_MUSIC_FEMALE,
@@ -10354,7 +10354,7 @@ const struct Trainer gTrainers[] = {
         .party = TRAINER_PARTY(sParty_MayMudkipMeteorFalls),
     },
 
-    [MAY_TORCHIC_METEOR_FALLS] =
+    [TRAINER_MAY_TORCHIC_METEOR_FALLS] =
     {
         .trainerClass = TRAINER_CLASS_RIVAL,
         .encounterMusic_gender = F_TRAINER_FEMALE | TRAINER_ENCOUNTER_MUSIC_FEMALE,
@@ -10366,7 +10366,7 @@ const struct Trainer gTrainers[] = {
         .party = TRAINER_PARTY(sParty_MayTorchicMeteorFalls),
     },
 
-    [MAY_TREECKO_METEOR_FALLS] =
+    [TRAINER_MAY_TREECKO_METEOR_FALLS] =
     {
         .trainerClass = TRAINER_CLASS_RIVAL,
         .encounterMusic_gender = F_TRAINER_FEMALE | TRAINER_ENCOUNTER_MUSIC_FEMALE,
@@ -10378,7 +10378,7 @@ const struct Trainer gTrainers[] = {
         .party = TRAINER_PARTY(sParty_MayTreeckoMeteorFalls),
     },
 
-    [BRENDAN_TREECKO_METEOR_FALLS] =
+    [TRAINER_BRENDAN_TREECKO_METEOR_FALLS] =
     {
         .trainerClass = TRAINER_CLASS_RIVAL,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
@@ -10390,7 +10390,7 @@ const struct Trainer gTrainers[] = {
         .party = TRAINER_PARTY(sParty_BrendanTreeckoMeteorFalls),
     },
 
-    [BRENDAN_MUDKIP_METEOR_FALLS] =
+    [TRAINER_BRENDAN_MUDKIP_METEOR_FALLS] =
     {
         .trainerClass = TRAINER_CLASS_RIVAL,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
@@ -10402,7 +10402,7 @@ const struct Trainer gTrainers[] = {
         .party = TRAINER_PARTY(sParty_BrendanMudkipMeteorFalls),
     },
 
-    [BRENDAN_TORCHIC_METEOR_FALLS] =
+    [TRAINER_BRENDAN_TORCHIC_METEOR_FALLS] =
     {
         .trainerClass = TRAINER_CLASS_RIVAL,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
