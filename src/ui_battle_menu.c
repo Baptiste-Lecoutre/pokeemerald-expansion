@@ -1248,11 +1248,11 @@ static void PrintStatsTab(){
     //Pokemon Types
     y++;
     x = 9;
-    StringCopy(gStringVar1, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type1]);
+    StringCopy(gStringVar1, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type1].name);
     //Check if there is a second type
     if(gBattleMons[sMenuDataPtr->battlerId].type1 != gBattleMons[sMenuDataPtr->battlerId].type2){
         numtypes++;
-        StringCopy(gStringVar2, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type2]);
+        StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type2].name);
     }
     //Check if there is a third type
     if(gBattleMons[sMenuDataPtr->battlerId].type3 != TYPE_MYSTERY && 
@@ -1260,9 +1260,9 @@ static void PrintStatsTab(){
        gBattleMons[sMenuDataPtr->battlerId].type3 != gBattleMons[sMenuDataPtr->battlerId].type2){
         numtypes++;
         if(numtypes == 2)
-            StringCopy(gStringVar2, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type3]);
+            StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type3].name);
         else
-            StringCopy(gStringVar3, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type3]);
+            StringCopy(gStringVar3, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type3].name);
     }   
 
     switch(numtypes){
@@ -1659,7 +1659,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
 
     //Sheer Force
     if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_SHEER_FORCE)){
-        if (gMovesInfo[move].sheerForceBoost)
+        if (MoveIsAffectedBySheerForce(move))
            MulModifier(&modifier, UQ_4_12(1.3));
     }
 
@@ -1884,7 +1884,7 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
     //Move Name
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, GetMoveName(move));
     //Type
-    StringCopy(gStringVar4, gTypeNames[moveType]);
+    StringCopy(gStringVar4, gTypesInfo[moveType].name);
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, ((x + 1) * 8) + SPACE_BETWEEN_ABILITY_AND_NAME + 16, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar4);
     y++;
 
