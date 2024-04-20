@@ -1675,6 +1675,7 @@ enum
     ENDTURN_SUN,
     ENDTURN_HAIL,
     ENDTURN_SNOW,
+    ENDTURN_FOG,
     ENDTURN_DAMAGE_NON_TYPES,
     ENDTURN_GRAVITY,
     ENDTURN_WATER_SPORT,
@@ -2055,6 +2056,24 @@ u8 DoFieldEndTurnEffects(void)
 
                 gBattleScripting.animArg1 = B_ANIM_SNOW_CONTINUES;
                 gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SNOW;
+                BattleScriptExecute(gBattlescriptCurrInstr);
+                effect++;
+            }
+            gBattleStruct->turnCountersTracker++;
+            break;
+        case ENDTURN_FOG:
+            if (gBattleWeather & B_WEATHER_FOG)
+            {
+                if (!(gBattleWeather & B_WEATHER_FOG_PERMANENT) && --gWishFutureKnock.weatherDuration == 0)
+                {
+                    gBattleWeather &= ~B_WEATHER_FOG_TEMPORARY;
+                    gBattlescriptCurrInstr = BattleScript_FogEnded;
+                }
+                else
+                {
+                    gBattlescriptCurrInstr = BattleScript_FogContinues;
+                }
+
                 BattleScriptExecute(gBattlescriptCurrInstr);
                 effect++;
             }
@@ -3814,6 +3833,7 @@ static const u16 sWeatherFlagsInfo[][3] =
     [ENUM_WEATHER_HAIL] = {B_WEATHER_HAIL_TEMPORARY, B_WEATHER_HAIL_PERMANENT, HOLD_EFFECT_ICY_ROCK},
     [ENUM_WEATHER_STRONG_WINDS] = {B_WEATHER_STRONG_WINDS, B_WEATHER_STRONG_WINDS, HOLD_EFFECT_NONE},
     [ENUM_WEATHER_SNOW] = {B_WEATHER_SNOW_TEMPORARY, B_WEATHER_SNOW_PERMANENT, HOLD_EFFECT_ICY_ROCK},
+    [ENUM_WEATHER_FOG] = {B_WEATHER_FOG_TEMPORARY, B_WEATHER_FOG_PERMANENT, HOLD_EFFECT_NONE},
 };
 
 static void ShouldChangeFormInWeather(u32 battler)
@@ -4154,7 +4174,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
             BattleScriptPushCursorAndCallback(BattleScript_OverworldTerrain);
             effect++;
         }
-        else if (B_FOG_TERRAIN == TRUE
+        else if (B_OVERWORLD_FOG >= GEN_8
               && (GetCurrentWeather() == WEATHER_FOG_HORIZONTAL || GetCurrentWeather() == WEATHER_FOG_DIAGONAL)
               && !(gFieldStatuses & STATUS_FIELD_MISTY_TERRAIN))
         {
@@ -4212,6 +4232,18 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     effect++;
                 }
                 break;
+            case WEATHER_FOG_DIAGONAL:
+            case WEATHER_FOG_HORIZONTAL:
+                if (B_OVERWORLD_FOG == GEN_4)
+                {
+                    if (!(gBattleWeather & B_WEATHER_FOG))
+                    {
+                        gBattleWeather = B_WEATHER_FOG;
+                        gBattleScripting.animArg1 = B_ANIM_FOG_CONTINUES;
+                        effect++;
+                    }
+                    break;
+                }
             }
         }
         if (effect != 0)
@@ -6143,7 +6175,9 @@ u32 GetBattlerAbility(u32 battler)
     if (gStatuses3[battler] & STATUS3_GASTRO_ACID)
         return ABILITY_NONE;
 
-    if (IsNeutralizingGasOnField() && gBattleMons[battler].ability != ABILITY_NEUTRALIZING_GAS)
+    if (IsNeutralizingGasOnField()
+     && gBattleMons[battler].ability != ABILITY_NEUTRALIZING_GAS
+     && GetBattlerHoldEffectIgnoreAbility(battler, TRUE) != HOLD_EFFECT_ABILITY_SHIELD)
         return ABILITY_NONE;
 
     if (IsMyceliumMightOnField())
@@ -7261,6 +7295,7 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
             case HOLD_EFFECT_EJECT_PACK:
                 if (gProtectStructs[battler].statFell
                  && gProtectStructs[battler].disableEjectPack == 0
+                 && CountUsablePartyMons(battler) > 0
                  && !(gCurrentMove == MOVE_PARTING_SHOT && CanBattlerSwitch(gBattlerAttacker))) // Does not activate if attacker used Parting Shot and can switch out
                 {
                     gProtectStructs[battler].statFell = FALSE;
@@ -8192,13 +8227,23 @@ u8 IsMonDisobedient(void)
 
 u32 GetBattlerHoldEffect(u32 battler, bool32 checkNegating)
 {
+    return GetBattlerHoldEffectInternal(battler, checkNegating, TRUE);
+}
+
+u32 GetBattlerHoldEffectIgnoreAbility(u32 battler, bool32 checkNegating)
+{
+    return GetBattlerHoldEffectInternal(battler, checkNegating, FALSE);
+}
+
+u32 GetBattlerHoldEffectInternal(u32 battler, bool32 checkNegating, bool32 checkAbility)
+{
     if (checkNegating)
     {
         if (gStatuses3[battler] & STATUS3_EMBARGO)
             return HOLD_EFFECT_NONE;
         if (gFieldStatuses & STATUS_FIELD_MAGIC_ROOM)
             return HOLD_EFFECT_NONE;
-        if (GetBattlerAbility(battler) == ABILITY_KLUTZ)
+        if (checkAbility && GetBattlerAbility(battler) == ABILITY_KLUTZ)
             return HOLD_EFFECT_NONE;
     }
 
@@ -8832,7 +8877,7 @@ static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 
             modifier = uq4_12_multiply(modifier, UQ_4_12(2.0));
         break;
     case EFFECT_SOLAR_BEAM:
-        if (IsBattlerWeatherAffected(battlerAtk, (B_WEATHER_HAIL | B_WEATHER_SANDSTORM | B_WEATHER_RAIN | B_WEATHER_SNOW)))
+        if (IsBattlerWeatherAffected(battlerAtk, (B_WEATHER_HAIL | B_WEATHER_SANDSTORM | B_WEATHER_RAIN | B_WEATHER_SNOW | B_WEATHER_FOG)))
             modifier = uq4_12_multiply(modifier, UQ_4_12(0.5));
         break;
     case EFFECT_STOMPING_TANTRUM:
@@ -10509,7 +10554,8 @@ u16 GetBattleFormChangeTargetSpecies(u32 battler, u16 method)
                         targetSpecies = formChanges[i].targetSpecies;
                     }
                     // Otherwise, just check for a match between the weather and the form change table.
-                    else if (gBattleWeather & formChanges[i].param1
+                    // Added a check for whether the weather is in effect to prevent end-of-turn soft locks with Cloud Nine / Air Lock
+                    else if (((gBattleWeather & formChanges[i].param1) && WEATHER_HAS_EFFECT)
                         || (gBattleWeather == B_WEATHER_NONE && formChanges[i].param1 == B_WEATHER_NONE))
                     {
                         targetSpecies = formChanges[i].targetSpecies;
