@@ -34,7 +34,7 @@
 #include "constants/trainer_hill.h"
 #include "constants/weather.h"
 
-struct BattleWindowText
+/*struct BattleWindowText
 {
     u8 fillValue;
     u8 fontId;
@@ -46,7 +46,7 @@ struct BattleWindowText
     u8 fgColor;
     u8 bgColor;
     u8 shadowColor;
-};
+};*/
 
 static void ChooseMoveUsedParticle(u8 *textPtr);
 static void ChooseTypeOfMoveUsedString(u8 *dst);
@@ -2252,7 +2252,7 @@ static const u16 sGrammarMoveUsedTable[] =
 
 static const u8 sText_EmptyStatus[] = _("$$$$$$$");
 
-static const struct BattleWindowText sTextOnWindowsInfo_Normal[] =
+const struct BattleWindowText gTextOnWindowsInfo_Normal[] =
 {
     [B_WIN_MSG] = {
         .fillValue = PIXEL_FILL(0xF),
@@ -2769,7 +2769,7 @@ static const struct BattleWindowText sTextOnWindowsInfo_Arena[] =
 
 static const struct BattleWindowText *const sBattleTextOnWindowsInfo[] =
 {
-    [B_WIN_TYPE_NORMAL] = sTextOnWindowsInfo_Normal,
+    [B_WIN_TYPE_NORMAL] = gTextOnWindowsInfo_Normal,
     [B_WIN_TYPE_ARENA]  = sTextOnWindowsInfo_Arena
 };
 

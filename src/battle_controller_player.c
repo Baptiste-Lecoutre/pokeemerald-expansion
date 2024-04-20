@@ -99,6 +99,7 @@ static void ReloadMoveNames(u32 battler);
 static void MoveSelectionDisplaySplitIcon(u32 battler);
 static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId);
 static void MoveSelectionDisplayMoveDescription(u32 battler);
+static u8 ShowTypeEffectiveness(u16 selectedMove, u32 battler, u8 targetId);
 static void HandleInputTeamPreview(u32 battler);
 static void Controller_WaitForUIBattleMenu(u32 battler);
 
@@ -946,6 +947,7 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionDestroyCursorAt(gMoveSelectionCursor[battler]);
             gMoveSelectionCursor[battler] ^= 1;
             PlaySE(SE_SELECT);
+            MoveSelectionDisplayMoveNames(battler); // Reload Moves
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
@@ -960,6 +962,7 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionDestroyCursorAt(gMoveSelectionCursor[battler]);
             gMoveSelectionCursor[battler] ^= 1;
             PlaySE(SE_SELECT);
+            MoveSelectionDisplayMoveNames(battler); // Reload Moves
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
@@ -973,6 +976,7 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionDestroyCursorAt(gMoveSelectionCursor[battler]);
             gMoveSelectionCursor[battler] ^= 2;
             PlaySE(SE_SELECT);
+            MoveSelectionDisplayMoveNames(battler); // Reload Moves
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
@@ -987,6 +991,7 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionDestroyCursorAt(gMoveSelectionCursor[battler]);
             gMoveSelectionCursor[battler] ^= 2;
             PlaySE(SE_SELECT);
+            MoveSelectionDisplayMoveNames(battler); // Reload Moves
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
@@ -1817,17 +1822,35 @@ static void PlayerHandleYesNoInput(u32 battler)
 static void MoveSelectionDisplayMoveNames(u32 battler)
 {
     s32 i;
+    u32 moveEffectiveness;
+    u8 *txtPtr;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
     gNumberOfMovesToChoose = 0;
 
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         MoveSelectionDestroyCursorAt(i);
+        txtPtr = gDisplayedStringBattle;
+
+        moveEffectiveness = ShowTypeEffectiveness(moveInfo->moves[i], battler, GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
+        if (i == gMoveSelectionCursor[battler])
+        {
+            if (moveEffectiveness != B_WIN_MOVE_TYPE)
+            {
+                *(txtPtr)++ = EXT_CTRL_CODE_BEGIN;
+                *(txtPtr)++ = EXT_CTRL_CODE_COLOR_HIGHLIGHT_SHADOW;
+                *(txtPtr)++ = gTextOnWindowsInfo_Normal[moveEffectiveness].fgColor;
+                *(txtPtr)++ = gTextOnWindowsInfo_Normal[moveEffectiveness].bgColor;
+                *(txtPtr)++ = gTextOnWindowsInfo_Normal[moveEffectiveness].shadowColor;
+            }
+        }
+
         if ((gBattleStruct->dynamax.playerSelect && CanDynamax(battler))
             || IsDynamaxed(battler))
-            StringCopy(gDisplayedStringBattle, GetMoveName(GetMaxMove(battler, moveInfo->moves[i])));
+            StringCopy(txtPtr, GetMoveName(GetMaxMove(battler, moveInfo->moves[i])));
         else
-            StringCopy(gDisplayedStringBattle, GetMoveName(moveInfo->moves[i]));
+            StringCopy(txtPtr, GetMoveName(moveInfo->moves[i]));
+
         // Prints on windows B_WIN_MOVE_NAME_1, B_WIN_MOVE_NAME_2, B_WIN_MOVE_NAME_3, B_WIN_MOVE_NAME_4
         BattlePutTextOnWindow(gDisplayedStringBattle, i + B_WIN_MOVE_NAME_1);
         if (moveInfo->moves[i] != MOVE_NONE)
@@ -1858,10 +1881,8 @@ static void MoveSelectionDisplayPpNumber(u32 battler)
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING);
 }
 
-static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u32 battler, u8 targetId)
+static u8 ShowTypeEffectiveness(u16 selectedMove, u32 battler, u8 targetId)
 {
-    u16 selectedMove = moveInfo->moves[gMoveSelectionCursor[battler]];
-
     if (gMovesInfo[selectedMove].power == 0 || !gSaveBlock2Ptr->optionsShowTypeEffectiveness)
         return B_WIN_MOVE_TYPE;
     else
@@ -1908,7 +1929,7 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
         type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
 
     StringCopy(txtPtr, gTypesInfo[type].name);
-    BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, battler, targetId));
+    BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
 
     if (B_PSS_SPLIT_ICONS == TRUE)
         MoveSelectionDisplaySplitIcon(battler);
