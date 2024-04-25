@@ -3776,11 +3776,11 @@ static void PrintMoveDetails(u16 move)
 
             PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gStringVar1, 84, POWER_AND_ACCURACY_Y_2, 0, 0);
 
-            if(gCurrentModifyIndex == 0) // show move description
-            {
+            //if(gCurrentModifyIndex == 0) // show move description
+            //{
                 ReformatMoveDescription(move, dst, FALSE);
                 PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, dst, 2, 64, 0, 0);
-            }    //PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gMoveFourLineDescriptionPointers[move - 1], 2, 64, 0, 0);
+            /*}    //PrintTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gMoveFourLineDescriptionPointers[move - 1], 2, 64, 0, 0);
             else if(gCurrentModifyIndex == 1)
             {
                 // Effect -------------------------------------------------------------------------------------------
@@ -3868,9 +3868,9 @@ static void PrintMoveDetails(u16 move)
 						StringCopy(gStringVar1, gText_Effect_Speed_Down);
 					break;
 					//Accuracy
-					/*/case EFFECT_ACCURACY_U:
-						StringCopy(gStringVar1, gText_Effect_Accuracy_Up);
-					break;/*/
+					//case EFFECT_ACCURACY_U:
+					//	StringCopy(gStringVar1, gText_Effect_Accuracy_Up);
+					//break;
 					case EFFECT_ACCURACY_DOWN_HIT:
 					case EFFECT_ACCURACY_DOWN:
 						StringCopy(gStringVar1, gText_Effect_Accuracy_Down);
@@ -3952,7 +3952,7 @@ static void PrintMoveDetails(u16 move)
 					PrintNarrowTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gText_Effect_Field,   MOVE_EFFECT_Y,  PosX, 0, 0);
 				else
 					PrintNarrowTextOnWindow(PSS_LABEL_PANE_LEFT_MOVE, gText_Effect_OneFoe,   MOVE_EFFECT_Y,  PosX, 0, 0);
-			}
+			}*/
 
             #if CONFIG_PHYSICAL_SPECIAL_SPLIT
             ShowSplitIcon(GetBattleMoveSplit(move));
