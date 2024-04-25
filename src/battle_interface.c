@@ -3860,9 +3860,14 @@ void TryLoadTypeIcons(u8 activeBattler)
             }
             else
             {
-                type1 = gBattleMons[GetBattlerAtPosition(position)].type1;
-                type2 = gBattleMons[GetBattlerAtPosition(position)].type2;
+                type1 = GetBattlerType(GetBattlerAtPosition(position), 0, FALSE);
+                type2 = GetBattlerType(GetBattlerAtPosition(position), 1, FALSE);
+
+                // also need to check for ghost battles and set to mystery type
             }
+
+            if (type1 == type2)
+                monNumTypes = 1;
 
 			for (typeNum = 0; typeNum < monNumTypes; ++typeNum) //Load each type
 			{
@@ -3870,7 +3875,7 @@ void TryLoadTypeIcons(u8 activeBattler)
                 u8 type = (typeNum == 0) ? type1 : type2;
 
                 s16 x = sTypeIconPositions[battleType][position].x;
-				s16 y = sTypeIconPositions[battleType][position].y + (11 * typeNum); //2nd type is 11px below
+				s16 y = sTypeIconPositions[battleType][position].y + ((monNumTypes == 1) ? 6 : (11 * typeNum)); //2nd type is 11px below
 
                 spriteId = CreateSpriteAtEnd(&sTypeIconSpriteTemplate, x, y, 0xFF);
                 
