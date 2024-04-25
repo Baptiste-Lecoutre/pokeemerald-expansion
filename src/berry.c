@@ -16,7 +16,6 @@
 #include "constants/event_object_movement.h"
 #include "constants/items.h"
 
-static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry);
 static u16 BerryTypeToItemId(u16 berry);
 static u8 BerryTreeGetNumStagesWatered(struct BerryTree *tree);
 static u8 GetNumStagesWateredByBerryTreeId(u8 id);
@@ -40,7 +39,7 @@ static void AddTreeBonus(struct BerryTree *tree, u8 bonus);
 #error "OW_BERRY_GROWTH_RATE must be between GEN_3 and GEN_7!"
 #endif
 
-#if OW_BERRY_YIELD_RATE < GEN_3 || (OW_BERRY_YIELD_RATE > GEN_6 && OW_BERRY_GROWTH_RATE != GEN_6_ORAS)
+#if OW_BERRY_YIELD_RATE < GEN_3 || (OW_BERRY_YIELD_RATE > GEN_6 && OW_BERRY_YIELD_RATE != GEN_6_ORAS)
 #error "OW_BERRY_YIELD_RATE must be between GEN_3 and GEN_6!"
 #elif OW_BERRY_YIELD_RATE == GEN_5
 #error "OW_BERRY_YIELD_RATE can not be GEN_5!"
@@ -1670,13 +1669,16 @@ const struct BerryTree gBlankBerryTree = {};
 
 void SetEnigmaBerry(u8 *src)
 {
+#if FREE_ENIGMA_BERRY == FALSE
     u32 i;
     u8 *dest = (u8 *)&gSaveBlock1Ptr->enigmaBerry;
 
     for (i = 0; i < sizeof(gSaveBlock1Ptr->enigmaBerry); i++)
         dest[i] = src[i];
+#endif //FREE_ENIGMA_BERRY
 }
 
+#if FREE_ENIGMA_BERRY == FALSE
 static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry)
 {
     u32 i;
@@ -1690,9 +1692,11 @@ static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry)
 
     return checksum;
 }
+#endif //FREE_ENIGMA_BERRY
 
 bool32 IsEnigmaBerryValid(void)
 {
+#if FREE_ENIGMA_BERRY == FALSE
     if (!gSaveBlock1Ptr->enigmaBerry.berry.growthDuration)
         return FALSE;
     if (!gSaveBlock1Ptr->enigmaBerry.berry.maxYield)
@@ -1700,12 +1704,19 @@ bool32 IsEnigmaBerryValid(void)
     if (GetEnigmaBerryChecksum(&gSaveBlock1Ptr->enigmaBerry) != gSaveBlock1Ptr->enigmaBerry.checksum)
         return FALSE;
     return TRUE;
+#else
+    return FALSE;
+#endif //FREE_ENIGMA_BERRY
 }
 
 const struct Berry *GetBerryInfo(u8 berry)
 {
     if (berry == ITEM_TO_BERRY(ITEM_ENIGMA_BERRY_E_READER) && IsEnigmaBerryValid())
+    #if FREE_ENIGMA_BERRY == FALSE
         return (struct Berry *)(&gSaveBlock1Ptr->enigmaBerry.berry);
+    #else
+        return &gBerries[0];    //never reached, but will appease the compiler gods
+    #endif //FREE_ENIGMA_BERRY
     else
     {
         if (berry == BERRY_NONE || berry > ITEM_TO_BERRY(LAST_BERRY_INDEX))
@@ -2081,11 +2092,6 @@ void GetBerryNameByBerryType(u8 berry, u8 *string)
     string[BERRY_NAME_LENGTH] = EOS;
 }
 
-void GetBerryCountStringByBerryType(u8 berry, u8 *dest, u32 berryCount)
-{
-    GetBerryCountString(dest, GetBerryInfo(berry)->name, berryCount);
-}
-
 void AllowBerryTreeGrowth(u8 id)
 {
     GetBerryTreeInfo(id)->stopGrowth = FALSE;
@@ -2228,7 +2234,7 @@ void ObjectEventInteractionGetBerryTreeData(void)
         gSpecialVar_0x8004 = GetStageByBerryTreeId(id);
     gSpecialVar_0x8005 = GetNumStagesWateredByBerryTreeId(id);
     gSpecialVar_0x8006 = GetBerryCountByBerryTreeId(id);
-    GetBerryCountStringByBerryType(berry, gStringVar1, gSpecialVar_0x8006);
+    CopyItemNameHandlePlural(BerryTypeToItemId(berry), gStringVar1, gSpecialVar_0x8006);
 }
 
 void ObjectEventInteractionGetBerryName(void)
@@ -2244,12 +2250,12 @@ void ObjectEventInteractionGetBerryCountString(void)
     u8 count = GetBerryCountByBerryTreeId(treeId);
     
     gSpecialVar_0x8006 = BerryTypeToItemId(berry);
-    GetBerryCountStringByBerryType(berry, gStringVar1, count);
+    CopyItemNameHandlePlural(BerryTypeToItemId(berry), gStringVar1, count);
     berry = GetTreeMutationValue(treeId);
     if (berry > 0)
     {
         count = 1;
-        GetBerryCountStringByBerryType(berry, gStringVar3, count);
+        CopyItemNameHandlePlural(BerryTypeToItemId(berry), gStringVar3, count);
         gSpecialVar_Result = TRUE;
     }
     else
@@ -2279,7 +2285,7 @@ void ObjectEventInteractionApplyMulch(void)
     u8 mulch = ITEM_TO_MULCH(gSpecialVar_ItemId);
 
     gSaveBlock1Ptr->berryTrees[GetObjectEventBerryTreeId(gSelectedObjectEvent)].mulch = mulch;
-    StringExpandPlaceholders(gStringVar1, gItems[gSpecialVar_ItemId].name);
+    StringExpandPlaceholders(gStringVar1, gItemsInfo[gSpecialVar_ItemId].name);
 }
 
 void ObjectEventInteractionPickBerryTree(void)
@@ -2400,8 +2406,6 @@ bool8 PlayerHasMulch(void)
 }
 
 #if OW_BERRY_MUTATIONS == TRUE
-#define BERRY_MUTATION_CHANCE 25
-
 static const u8 sBerryMutations[][3] = {
     {ITEM_TO_BERRY(ITEM_IAPAPA_BERRY), ITEM_TO_BERRY(ITEM_MAGO_BERRY),   ITEM_TO_BERRY(ITEM_POMEG_BERRY)},
     {ITEM_TO_BERRY(ITEM_CHESTO_BERRY), ITEM_TO_BERRY(ITEM_PERSIM_BERRY), ITEM_TO_BERRY(ITEM_KELPSY_BERRY)},
@@ -2458,7 +2462,7 @@ static u8 TryForMutation(u8 berryTreeId, u8 berry)
         {
             x2 = gObjectEvents[j].currentCoords.x;
             y2 = gObjectEvents[j].currentCoords.y;
-            if (Random() % 100 < (BERRY_MUTATION_CHANCE * (mulch == ITEM_TO_MULCH(ITEM_SURPRISE_MULCH) || mulch == ITEM_TO_MULCH(ITEM_AMAZE_MULCH))) && (
+            if (Random() % 100 < (OW_BERRY_MUTATION_CHANCE * (mulch == ITEM_TO_MULCH(ITEM_SURPRISE_MULCH) || mulch == ITEM_TO_MULCH(ITEM_AMAZE_MULCH))) && (
                 (x1 == x2 && y1 == y2 - 1) ||
                 (x1 == x2 && y1 == y2 + 1) ||
                 (x1 == x2 - 1 && y1 == y2) ||

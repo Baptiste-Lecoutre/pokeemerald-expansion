@@ -956,7 +956,7 @@ u16 determineEvolution(struct Pokemon *mon)
         case EVO_FRIENDSHIP_MOVE_TYPE:
             for (j = 0; j < 4; j++)
             {
-                if (gBattleMoves[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == evolutions[i].param)
+                if (gMovesInfo[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == evolutions[i].param)
                 {
                     targetSpecies = evolutions[i].targetSpecies;
                     break;

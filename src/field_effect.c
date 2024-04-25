@@ -940,9 +940,11 @@ u8 AddNewGameBirchObject(s16 x, s16 y, u8 subpriority)
     return CreateSprite(&sSpriteTemplate_NewGameBirch, x, y, subpriority);
 }
 
-u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x, s16 y, u8 subpriority)
 {
-    s32 spriteId = CreateMonPicSprite(species, FALSE, 0x8000, TRUE, x, y, 0, species);
+    // force load unique tag here to avoid collision with follower pokemon
+    u32 paletteSlot = AllocSpritePalette(FLDEFF_PAL_TAG_FIELD_MOVE_MON);
+    u16 spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, x, y, paletteSlot, species);
     PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);
     if (spriteId == 0xFFFF)
         return MAX_SPRITES;
@@ -950,19 +952,10 @@ u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
         return spriteId;
 }
 
-u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
 {
-    // force load unique tag here to avoid collision with follower pokemon
-/*    UNUSED u8 paletteSlot = AllocSpritePalette(species);
-    u16 spriteId = CreateMonPicSprite(species, otId, personality, TRUE, x, y, 0, species);
-    PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);*/
-    u16 spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, x, y, 0, species);
-//    PreservePaletteInWeather(gSprites[spriteId].oam.paletteNum + 0x10);
-    PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);
-    if (spriteId == 0xFFFF)
-        return MAX_SPRITES;
-    else
-        return spriteId;
+    // Reuse logic; (otId ^ pid) >= SHINY_ODDS ensures non-shiny
+    return CreateMonSprite_FieldMove(species, 0, SHINY_ODDS, x, y, subpriority);
 }
 
 void FreeResourcesAndDestroySprite(struct Sprite *sprite, u8 spriteId)
@@ -4050,12 +4043,12 @@ static u8 CreateRockClimbBlob(void)
     struct Sprite *sprite;
     
     SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
-    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_ROCK_CLIMB_BLOB], gFieldEffectArguments[0], gFieldEffectArguments[1], 0x96);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_ROCK_CLIMB_BLOB], gFieldEffectArguments[0], gFieldEffectArguments[1], 150);
     if (spriteId != MAX_SPRITES)
     {
         sprite = &gSprites[spriteId];
         sprite->coordOffsetEnabled = TRUE;
-        sprite->oam.paletteNum = 0;
+        sprite->oam.paletteNum = LoadObjectEventPalette(gSaveBlock2Ptr->playerGender ? FLDEFF_PAL_TAG_MAY : FLDEFF_PAL_TAG_BRENDAN);;
         sprite->data[2] = gFieldEffectArguments[2];
         sprite->data[3] = -1;
         sprite->data[6] = -1;
@@ -4096,6 +4089,8 @@ static bool8 RockClimb_Init(struct Task *task, struct ObjectEvent *objectEvent)
 {
     LockPlayerFieldControls();
     FreezeObjectEvents();
+    // Put follower into pokeball before using RockClimb
+    HideFollowerForFieldEffect();
     gPlayerAvatar.preventStep = TRUE;
     SetPlayerAvatarStateMask(PLAYER_AVATAR_FLAG_SURFING);
     PlayerGetDestCoords(&task->tDestX, &task->tDestY);
@@ -4256,10 +4251,13 @@ static bool8 RockClimb_StopRockClimbInit(struct Task *task, struct ObjectEvent *
 
 static bool8 RockClimb_WaitStopRockClimb(struct Task *task, struct ObjectEvent *objectEvent)
 {
+    struct ObjectEvent *followerObject = GetFollowerObject();
     if (ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         ObjectEventSetGraphicsId(objectEvent, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_NORMAL));
         ObjectEventSetHeldMovement(objectEvent, GetFaceDirectionMovementAction(objectEvent->facingDirection));
+        if (followerObject)
+          ObjectEventClearHeldMovementIfFinished(followerObject);
         gPlayerAvatar.preventStep = FALSE;
         UnfreezeObjectEvents();
         UnlockPlayerFieldControls();
@@ -4397,7 +4395,8 @@ static void UseVsSeeker_DoPlayerAnimation(struct Task *task)
     task->data[0]++;
 }
 
-static void UseVsSeeker_ResetPlayerGraphics(struct Task *task) {
+static void UseVsSeeker_ResetPlayerGraphics(struct Task *task)
+{
     struct ObjectEvent* playerObj = &gObjectEvents[gPlayerAvatar.objectEventId];
 
     if (!ObjectEventClearHeldMovementIfFinished(playerObj))

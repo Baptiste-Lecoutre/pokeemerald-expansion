@@ -962,6 +962,10 @@ gText_PlayerFoundOneTMHM::
 	.string "{PLAYER} found one {STR_VAR_1}\n"
 	.string "{STR_VAR_2}!$"
 
+gText_PlayerFoundTMHMs::
+	.string "{PLAYER} found {STR_VAR_3} {STR_VAR_1}\n"
+	.string "{STR_VAR_2}!$"
+
 gText_Sudowoodo_Attacked::
 	.string "The weird tree doesn't like the\n"
 	.string "Wailmer Pail!\p"
@@ -1186,3 +1190,7 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/HauntedMansion_2F/scripts.inc"
 
 	.include "data/maps/HauntedMansion_3F/scripts.inc"
+
+	.include "data/maps/MeteorFalls_B2F/scripts.inc"
+
+	.include "data/maps/MeteorFalls_B3F/scripts.inc"

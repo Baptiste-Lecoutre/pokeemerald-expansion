@@ -1769,7 +1769,7 @@ bool8 ScrCmd_buffermovename(struct ScriptContext *ctx)
     u8 stringVarIndex = ScriptReadByte(ctx);
     u16 moveId = VarGet(ScriptReadHalfword(ctx));
 
-    StringCopy(sScriptStringVars[stringVarIndex], gMoveNames[moveId]);
+    StringCopy(sScriptStringVars[stringVarIndex], GetMoveName(moveId));
     return FALSE;
 }
 
@@ -1835,19 +1835,6 @@ bool8 ScrCmd_bufferboxname(struct ScriptContext *ctx)
     u16 boxId = VarGet(ScriptReadHalfword(ctx));
 
     StringCopy(sScriptStringVars[stringVarIndex], GetBoxNamePtr(boxId));
-    return FALSE;
-}
-
-bool8 ScrCmd_givemon(struct ScriptContext *ctx)
-{
-    u16 species = VarGet(ScriptReadHalfword(ctx));
-    u16 level = VarGet(ScriptReadHalfword(ctx));
-    u16 item = VarGet(ScriptReadHalfword(ctx));
-    u32 unkParam1 = ScriptReadWord(ctx);
-    u32 unkParam2 = ScriptReadWord(ctx);
-    u8 unkParam3 = ScriptReadByte(ctx);
-
-    gSpecialVar_Result = ScriptGiveMon(species, level, item, unkParam1, unkParam2, unkParam3);
     return FALSE;
 }
 
@@ -1917,6 +1904,9 @@ bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
             itemId = ITEM_HM07;
             break;
         case MOVE_DIVE:
+            itemId = ITEM_HM08;
+            break;
+        case MOVE_ROCK_CLIMB:
             itemId = ITEM_HM08;
             break;
     }

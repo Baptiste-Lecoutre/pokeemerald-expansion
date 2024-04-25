@@ -296,6 +296,8 @@ extern const union AffineAnimCmd *const gSwiftStarAffineAnimTable[];
 extern const union AnimCmd *const gMetronomeThroughtBubbleAnimTable[];
 extern const union AffineAnimCmd *const gStockpileAbsorptionOrbAffineAnimTable[];
 extern const union AnimCmd *const gSlashSliceAnimTable[];
+extern const union AffineAnimCmd* const sSpriteAffineAnimTable_HydroCannonBall[];
+extern const union AffineAnimCmd sSpriteAffineAnim_HydroCannonBall[];
 
 // battle_anim_effects_2.c
 void AnimUproarRing(struct Sprite *sprite);
@@ -415,6 +417,7 @@ extern const struct OamData gOamData_AffineDouble_ObjNormal_64x64;
 extern const struct OamData gOamData_AffineDouble_ObjBlend_64x64;
 extern const struct OamData gOamData_AffineDouble_ObjBlend_64x32;
 extern const struct OamData gOamData_AffineDouble_ObjNormal_8x16;
+extern const struct OamData gOamData_AffineDouble_ObjNormal_64x32;
 extern const struct OamData gOamData_AffineOff_ObjBlend_16x16;
 extern const struct OamData gOamData_AffineDouble_ObjBlend_16x16;
 extern const struct OamData gOamData_AffineNormal_ObjNormal_8x8;
@@ -544,9 +547,11 @@ void AnimDragonFireToTarget(struct Sprite *sprite);
 void AnimDragonDanceOrb(struct Sprite *sprite);
 void AnimOverheatFlame(struct Sprite *sprite);
 void AnimOutrageFlame(struct Sprite *sprite);
+void AnimDracoMeteorRock(struct Sprite *sprite);
 
 // battle_anim_new.c
 void CoreEnforcerLoadBeamTarget(struct Sprite *sprite);
 void SpriteCB_RandomCentredHits(struct Sprite *sprite);
+void InitSpritePosToAnimTargetsCentre(struct Sprite *sprite, bool32 respectMonPicOffsets);
 
 #endif // GUARD_BATTLE_ANIM_H

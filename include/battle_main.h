@@ -68,7 +68,7 @@ void RunBattleScriptCommands(void);
 void SpecialStatusesClear(void);
 void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk);
 bool32 IsWildMonSmart(void);
-u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags);
+u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer *trainer, bool32 firstTrainer, u32 battleTypeFlags);
 void ModifyPersonalityForNature(u32 *personality, u32 newNature);
 u32 GeneratePersonalityForGender(u32 gender, u32 species);
 void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMon *partyEntry);
@@ -78,7 +78,7 @@ extern struct MultiPartnerMenuPokemon gMultiPartnerParty[MULTI_PARTY_SIZE];
 extern const struct SpriteTemplate gUnusedBattleInitSprite;
 extern const struct OamData gOamData_BattleSpriteOpponentSide;
 extern const struct OamData gOamData_BattleSpritePlayerSide;
-extern const u8 gTypeNames[NUMBER_OF_MON_TYPES][TYPE_NAME_LENGTH + 1];
+extern const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES];
 
 extern const u8 gStatusConditionString_PoisonJpn[8];
 extern const u8 gStatusConditionString_SleepJpn[8];

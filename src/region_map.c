@@ -123,8 +123,20 @@ const u32 sRegionMapBg_GfxLZ[] = INCBIN_U32("graphics/pokenav/region_map/map.8bp
 const u32 sRegionMapBg_TilemapLZ[] = INCBIN_U32("graphics/pokenav/region_map/map.bin.lz");
 static const u16 sRegionMapPlayerIcon_BrendanPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/brendan_icon.gbapal");
 static const u8 sRegionMapPlayerIcon_BrendanGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/brendan_icon.4bpp");
+static const u16 sRegionMapPlayerIcon_BrendanRedPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/brendan_icon_red.gbapal");
+static const u8 sRegionMapPlayerIcon_BrendanRedGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/brendan_icon_red.4bpp");
+static const u16 sRegionMapPlayerIcon_BrendanBluePal[] = INCBIN_U16("graphics/pokenav/region_map/icons/brendan_icon_blue.gbapal");
+static const u8 sRegionMapPlayerIcon_BrendanBlueGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/brendan_icon_blue.4bpp");
+static const u16 sRegionMapPlayerIcon_BrendanYellowPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/brendan_icon_yellow.gbapal");
+static const u8 sRegionMapPlayerIcon_BrendanYellowGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/brendan_icon_yellow.4bpp");
 static const u16 sRegionMapPlayerIcon_MayPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/may_icon.gbapal");
 static const u8 sRegionMapPlayerIcon_MayGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/may_icon.4bpp");
+static const u16 sRegionMapPlayerIcon_MayRedPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/may_icon_red.gbapal");
+static const u8 sRegionMapPlayerIcon_MayRedGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/may_icon_red.4bpp");
+static const u16 sRegionMapPlayerIcon_MayBluePal[] = INCBIN_U16("graphics/pokenav/region_map/icons/may_icon_blue.gbapal");
+static const u8 sRegionMapPlayerIcon_MayBlueGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/may_icon_blue.4bpp");
+static const u16 sRegionMapPlayerIcon_MayYellowPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/may_icon_yellow.gbapal");
+static const u8 sRegionMapPlayerIcon_MayYellowGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/may_icon_yellow.4bpp");
 static const u16 sRegionMapPlayerIcon_RedPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/red_icon.gbapal");
 static const u8 sRegionMapPlayerIcon_RedGfx[] = INCBIN_U8("graphics/pokenav/region_map/icons/red_icon.4bpp");
 static const u16 sRegionMapPlayerIcon_LeafPal[] = INCBIN_U16("graphics/pokenav/region_map/icons/leaf_icon.gbapal");
@@ -1479,53 +1491,7 @@ void CreateRegionMapPlayerIcon(u16 tileTag, u16 paletteTag)
 
     switch (gSaveBlock2Ptr->costumeId)
     {
-    /*case RED_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_RedGfx;
-        palette.data = sRegionMapPlayerIcon_RedPal;
-        break;
-    case LEAF_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_LeafGfx;
-        palette.data = sRegionMapPlayerIcon_LeafPal;
-        break;
-    case ETHAN_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_EthanGfx;
-        palette.data = sRegionMapPlayerIcon_EthanPal;
-        break;
-    case LYRA_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_LyraGfx;
-        palette.data = sRegionMapPlayerIcon_LyraPal;
-        break;
-    case KRIS_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_KrisGfx;
-        palette.data = sRegionMapPlayerIcon_KrisPal;
-        break;
-    case BRENDAN_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_BrendanGfx;
-        palette.data = sRegionMapPlayerIcon_BrendanPal;
-        break;
-    case MAY_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_MayGfx;
-        palette.data = sRegionMapPlayerIcon_MayPal;
-        break;
-    case LUCAS_COSTUME:
-    case LUCAS_PLATINUM_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_LucasGfx;
-        palette.data = sRegionMapPlayerIcon_LucasPal;
-        break;
-    case DAWN_COSTUME:
-    case DAWN_PLATINUM_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_DawnGfx;
-        palette.data = sRegionMapPlayerIcon_DawnPal;
-        break;
-    case CHASE_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_ChaseGfx;
-        palette.data = sRegionMapPlayerIcon_ChasePal;
-        break;
-    case ELAINE_COSTUME:
-        sheet.data = sRegionMapPlayerIcon_ElaineGfx;
-        palette.data = sRegionMapPlayerIcon_ElainePal;
-        break;*/
-    case FRLG_COSTUME:
+    /*case FRLG_COSTUME:
         sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_RedGfx : sRegionMapPlayerIcon_LeafGfx;
         palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_RedPal : sRegionMapPlayerIcon_LeafPal;
         break;
@@ -1545,6 +1511,23 @@ void CreateRegionMapPlayerIcon(u16 tileTag, u16 paletteTag)
     case LGPE_COSTUME:
         sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_ChaseGfx : sRegionMapPlayerIcon_ElaineGfx;
         palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_ChasePal : sRegionMapPlayerIcon_ElainePal;
+        break;*/
+    default:
+    case GREEN_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanGfx : sRegionMapPlayerIcon_MayGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanPal : sRegionMapPlayerIcon_MayPal;
+        break;
+    case RED_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanRedGfx : sRegionMapPlayerIcon_MayRedGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanRedPal : sRegionMapPlayerIcon_MayRedPal;
+        break;
+    case BLUE_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanBlueGfx : sRegionMapPlayerIcon_MayBlueGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanBluePal : sRegionMapPlayerIcon_MayBluePal;
+        break;
+    case YELLOW_COSTUME:
+        sheet.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanYellowGfx : sRegionMapPlayerIcon_MayYellowGfx;
+        palette.data = gSaveBlock2Ptr->playerGender == MALE ? sRegionMapPlayerIcon_BrendanYellowPal : sRegionMapPlayerIcon_MayYellowPal;
         break;
     }
     
@@ -1662,6 +1645,9 @@ u8 *GetMapName(u8 *dest, u16 regionMapId, u16 padLength)
 {
     u8 *str;
     u16 i;
+
+    if (DECAP_ENABLED && !DECAP_MAP_NAMES)
+        *dest++ = CHAR_FIXED_CASE;
 
     if (regionMapId == MAPSEC_SECRET_BASE)
     {

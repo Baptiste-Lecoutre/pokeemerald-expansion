@@ -362,10 +362,13 @@
 #define METATILE_Mauville_MirageTower_TileF   0x3E3
 
 // gTileset_MeteorFalls
-#define METATILE_MeteorFalls_CaveEntrance_Bottom  0x24E
-#define METATILE_MeteorFalls_CaveEntrance_Left    0x24D
-#define METATILE_MeteorFalls_CaveEntrance_Right   0x24F
-#define METATILE_MeteorFalls_CaveEntrance_Top     0x246
+#define METATILE_MeteorFalls_CaveEntrance_Bottom      0x24E
+#define METATILE_MeteorFalls_CaveEntrance_Left        0x24D
+#define METATILE_MeteorFalls_CaveEntrance_LeftPillar  0x291
+#define METATILE_MeteorFalls_CaveEntrance_Right       0x24F
+#define METATILE_MeteorFalls_CaveEntrance_Top         0x246
+#define METATILE_MeteorFalls_LeftPillar               0x244
+#define METATILE_MeteorFalls_MiddlePillar             0x292
 
 // gTileset_MossdeepGameCorner
 #define METATILE_MossdeepGameCorner_CounterClosed_Bottom  0x232

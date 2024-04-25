@@ -2,6 +2,7 @@
 #include "strings.h"
 #include "battle_pyramid_bag.h"
 #include "item_menu.h"
+#include "text.h"
 
 ALIGNED(4)
 const u8 gText_ExpandedPlaceholder_Empty[] = _("");
@@ -100,8 +101,10 @@ const u8 gText_DefaultNameHalie[] = _("Halie");
 const u8 gText_ThisIsAPokemon[] = _("This is what we call a “Pokémon.”{PAUSE 96}\p");
 const u8 gText_5MarksPokemon[] = _("????? Pokémon");
 const u8 gText_UnkHeight[] = _("{CLEAR_TO 0x0C}??'??”");
+const u8 gText_UnkHeightMetric[] = _("???.? m");
 const u8 gText_UnkWeight[] = _("????.? lbs.");
-const u8 gText_EmptyPkmnCategory[] = _("                       Pokémon"); // Unused
+const u8 gText_UnkWeightMetric[] = _("???.? kg.");
+const u8 gText_EmptyPkmnCategory[] = _("                       POKéMON"); // Unused
 const u8 gText_EmptyHeight[] = _("{CLEAR_TO 0x0C}    '    ”"); // Unused
 const u8 gText_EmptyWeight[] = _("        .   lbs."); // Unused
 const u8 gText_EmptyPokedexInfo1[] = _(""); // Unused
@@ -370,8 +373,8 @@ const u8 gText_NoMoreRoomForThis[] = _("You have no more room for this\nitem.{PA
 const u8 gText_SpaceForVar1Full[] = _("The space for {STR_VAR_1} is full.{PAUSE_UNTIL_PRESS}");
 const u8 gText_AnythingElseICanHelp[] = _("Is there anything else I can help\nyou with?");
 const u8 gText_CanIHelpWithAnythingElse[] = _("Can I help you with anything else?");
-const u8 gText_ThrowInPremierBall[] = _("I'll throw in a Premier Ball, too.{PAUSE_UNTIL_PRESS}");
-const u8 gText_ThrowInPremierBalls[] = _("I'll throw in some Premier Balls, too.{PAUSE_UNTIL_PRESS}");
+const u8 gText_ThrowInPremierBall[] = _("I'll throw in a PREMIER BALL, too.{PAUSE_UNTIL_PRESS}");
+const u8 gText_ThrowInPremierBalls[] = _("I'll throw in {STR_VAR_1} PREMIER BALLS, too.{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantBuyKeyItem[] = _("{STR_VAR_2}? Oh, no.\nI can't buy that.{PAUSE_UNTIL_PRESS}");
 const u8 gText_HowManyToSell[] = _("{STR_VAR_2}?\nHow many would you like to sell?");
 const u8 gText_ICanPayVar1[] = _("I can pay ¥{STR_VAR_1}.\nWould that be okay?");
@@ -2039,7 +2042,7 @@ const u8 gText_OminousWind[] = _("Ominous Wind");
 const u8 gText_SuperFang[] = _("Super Fang");
 const u8 gText_HoneClaws[] = _("Hone Claws");
 const u8 gText_PsychUp[] = _("Psych Up");
-//const u8 gText_FocusEnergy[] = _("Focus Energy");
+const u8 gText_FocusEnergy[] = _("Focus Energy");
 const u8 gText_Spikes[] = _("Spikes");
 const u8 gText_Infestation[] = _("Infestation");
 
@@ -2047,7 +2050,7 @@ const u8 gText_Infestation[] = _("Infestation");
 const u8 gText_Counter[] = _("Counter");
 const u8 gText_Endeavor[] = _("Endeavor");
 const u8 gText_WorrySeed[] = _("Worry Seed");
-//const u8 gText_DefenseCurl[] = _("Defense Curl");
+const u8 gText_DefenseCurl[] = _("Defense Curl");
 const u8 gText_Defog[] = _("Defog");
 const u8 gText_MagicCoat[] = _("Magic Coat");
 const u8 gText_Uproar[] = _("Uproar");
@@ -2170,12 +2173,16 @@ const u8 gText_TutorMoveSet6[] = _("Feather Badge");
 const u8 gText_TutorMoveSet7[] = _("Mind Badge");
 
 // Costumes
-const u8 gText_FirstDrawer[] = _("Hoenn");
-const u8 gText_SecondDrawer[] = _("Kanto");
-const u8 gText_ThirdDrawer[] = _("Johto");
-const u8 gText_FourthDrawer[] = _("Sinnoh");
-const u8 gText_FifthDrawer[] = _("Hisui");
-const u8 gText_SixthDrawer[] = _("Partner");
+//const u8 gText_FirstDrawer[] = _("Hoenn");
+//const u8 gText_SecondDrawer[] = _("Kanto");
+//const u8 gText_ThirdDrawer[] = _("Johto");
+//const u8 gText_FourthDrawer[] = _("Sinnoh");
+//const u8 gText_FifthDrawer[] = _("Hisui");
+//const u8 gText_SixthDrawer[] = _("Partner");
+const u8 gText_FirstDrawer[] = _("Emerald");
+const u8 gText_SecondDrawer[] = _("Ruby");
+const u8 gText_ThirdDrawer[] = _("Sapphire");
+const u8 gText_FourthDrawer[] = _("Amber");
 
 const u8 gText_RedCostume[] = _("Red");
 const u8 gText_LeafCostume[] = _("Green");
