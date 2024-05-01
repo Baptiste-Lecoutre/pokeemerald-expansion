@@ -2274,6 +2274,7 @@ static u8 RandomWeightedIndex(u8 *weights, u8 length) {
         if (random_value <= weightSum)
             return i;
     }
+    return 0;
 }
 
 // Display an emote above an object event

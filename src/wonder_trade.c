@@ -620,9 +620,9 @@ void CreateWonderTradePokemon(u8 whichPlayerMon)
     struct InGameTrade gIngameTrades[] = {
         {
             _(""), species,
-            (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32),
+            {(Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32)},
             (Random() % 2), OTID,
-            0, 0, 0, 0, 0,
+            {0, 0, 0, 0, 0},
             personality,
             heldItem, -1,
             _("ERROR"), FEMALE, 0,
