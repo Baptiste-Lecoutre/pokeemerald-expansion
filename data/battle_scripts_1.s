@@ -6329,6 +6329,21 @@ BattleScript_DmgHazardsOnTargetFainted::
 	moveendall
 	goto BattleScript_HandleFaintedMon
 
+BattleScript_DmgHazardsOnBattlerScripting::
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
+	healthbarupdate BS_SCRIPTING
+	datahpupdate BS_SCRIPTING
+	call BattleScript_PrintHurtByDmgHazards
+	tryfaintmon BS_SCRIPTING
+	tryfaintmon_spikes BS_SCRIPTING, BattleScript_DmgHazardsOnBattlerScriptingFainted
+	return
+
+BattleScript_DmgHazardsOnBattlerScriptingFainted::
+	setbyte sGIVEEXP_STATE, 0
+	getexp BS_SCRIPTING
+	moveendall
+	goto BattleScript_HandleFaintedMon
+
 BattleScript_DmgHazardsOnFaintedBattler::
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_FAINTED
@@ -6670,6 +6685,7 @@ BattleScript_DoFutureAttackResult:
 	checkteamslost BattleScript_FutureAttackEnd
 BattleScript_FutureAttackEnd::
 	moveendcase MOVEEND_RAGE
+	moveendcase MOVEEND_ABILITIES
 	moveendfromto MOVEEND_ITEM_EFFECTS_ALL, MOVEEND_UPDATE_LAST_MOVES
 	setbyte gMoveResultFlags, 0
 	end2
@@ -7079,6 +7095,29 @@ BattleScript_AttackerFormChangeEnd3::
 
 BattleScript_AttackerFormChangeEnd3NoPopup::
 	call BattleScript_AttackerFormChangeNoPopup
+	end3
+
+BattleScript_AttackerFormChangeWithString::
+	pause 5
+	copybyte gBattlerAbility, gBattlerAttacker
+	call BattleScript_AbilityPopUp
+	flushtextbox
+BattleScript_AttackerFormChangeWithStringNoPopup::
+	handleformchange BS_ATTACKER, 0
+	handleformchange BS_ATTACKER, 1
+	playanimation BS_ATTACKER, B_ANIM_FORM_CHANGE
+	waitanimation
+	handleformchange BS_ATTACKER, 2
+	printstring STRINGID_PKMNTRANSFORMED
+	waitmessage B_WAIT_TIME_LONG
+	return
+
+BattleScript_AttackerFormChangeWithStringEnd3::
+	call BattleScript_AttackerFormChangeWithString
+	end3
+
+BattleScript_AttackerFormChangeWithStringEnd3NoPopup::
+	call BattleScript_AttackerFormChangeWithStringNoPopup
 	end3
 
 BattleScript_AttackerFormChangeMoveEffect::
@@ -8359,6 +8398,13 @@ BattleScript_ProteanActivates::
 	waitmessage B_WAIT_TIME_LONG
 	return
 
+BattleScript_TeraShellDistortingTypeMatchups::
+	pause B_WAIT_TIME_SHORTEST
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_PKMNMADESHELLGLEAM
+	waitmessage B_WAIT_TIME_LONG
+	return
+
 BattleScript_CursedBodyActivates::
 	call BattleScript_AbilityPopUp
 	printstring STRINGID_CUSEDBODYDISABLED
@@ -9262,6 +9308,25 @@ BattleScript_AnnounceAirLockCloudNine::
 	printstring STRINGID_AIRLOCKACTIVATES
 	waitmessage B_WAIT_TIME_LONG
 	call BattleScript_ActivateWeatherAbilities
+	end3
+
+BattleScript_ActivateTeraformZero::
+	call BattleScript_AbilityPopUp
+	waitmessage B_WAIT_TIME_LONG
+	jumpifhalfword CMP_COMMON_BITS, gBattleWeather, B_WEATHER_ANY, BattleScript_ActivateTeraformZero_RemoveWeather
+	jumpifhalfword CMP_COMMON_BITS, gFieldStatuses, STATUS_FIELD_TERRAIN_ANY, BattleScript_ActivateTeraformZero_RemoveTerrain
+	goto BattleScript_ActivateTeraformZero_End
+BattleScript_ActivateTeraformZero_RemoveWeather:
+	removeweather
+	printfromtable gWeatherEndsStringIds
+	waitmessage B_WAIT_TIME_LONG
+	jumpifhalfword CMP_NO_COMMON_BITS, gFieldStatuses, STATUS_FIELD_TERRAIN_ANY, BattleScript_ActivateTeraformZero_End
+BattleScript_ActivateTeraformZero_RemoveTerrain:
+	removeterrain
+	playanimation BS_ATTACKER, B_ANIM_RESTORE_BG
+	printfromtable gTerrainStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_ActivateTeraformZero_End:
 	end3
 
 BattleScript_QuickClawActivation::
