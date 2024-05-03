@@ -9644,7 +9644,7 @@ static void SetBoxWallpaper(u8 boxId, u8 wallpaperId)
 // For moving to the next Pokémon while viewing the summary screen
 s16 AdvanceStorageMonIndex(struct BoxPokemon *boxMons, u8 currIndex, u8 maxIndex, u8 mode)
 {
-    s16 i, j;
+    s16 i, j = 0;
     s16 direction = -1;
 
     if (mode == 0 || mode == 1)

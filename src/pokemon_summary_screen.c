@@ -3128,7 +3128,7 @@ static void BufferCharacteristicString(void)
 {
     struct PokeSummary *sum = &sMonSummaryScreen->summary;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-    u8 index, highestIV, highestValue, i, j;
+    u8 index, highestIV = 0, highestValue, i, j;
     u8 iv[6];
     u8 ties[6] = { 0, 0, 0, 0, 0, 0 };
 
@@ -3526,7 +3526,7 @@ static void PrintBattleMoves(void)
 
 static void PrintMoveNameAndPP(u8 moveIndex)
 {
-    u32 pp, color, x;
+    u32 pp, color = 0, x;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
 
@@ -4630,6 +4630,7 @@ static u8 *GetMapNameHoennKanto(u8 *dest, u16 regionMapId)
     {
         StringCopy(dest, gOrreMapNamePointers[MAPSEC_DISTANT_LAND]);
     }
+    return dest;
 }
 
 static u8 *GetMapNameOrre(u8 *dest, u16 regionMapId, bool8 isXD)
@@ -5069,6 +5070,7 @@ static u8 *GetMapNameOrre(u8 *dest, u16 regionMapId, bool8 isXD)
     {
         StringCopy(dest, gOrreMapNamePointers[MAPSEC_DISTANT_LAND]);
     }
+    return dest;
 }
 
 static u8 ReformatMoveDescription(u16 move, u8 *dest, bool8 isContest)

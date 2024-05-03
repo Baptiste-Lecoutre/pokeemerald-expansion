@@ -709,7 +709,7 @@ inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, s64 i, u3
 {
     u32 xAdd, pixelData, bits, toOrr, dummyX, dummyY;
     s64 yAdd;
-    u8 *dst;
+    u8 *dst = 0;
 
     xAdd = j + width;
     yAdd = i + height;

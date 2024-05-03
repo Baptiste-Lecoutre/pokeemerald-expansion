@@ -1027,7 +1027,7 @@ static const u8 sText_Accuracy[]       = _("Acc");
 static const u8 sText_Evasion[]        = _("Eva");
 static const u8 sText_Critical[]       = _("Crt");
 
-static u8 statorder[NUM_BATTLE_STATS] = {
+static const u8 statorder[NUM_BATTLE_STATS] = {
     STAT_HP,
     STAT_ATK,
     STAT_DEF,
@@ -1047,7 +1047,7 @@ static u8 statorder[NUM_BATTLE_STATS] = {
 static const u32 gBattleFieldIconForest_Gfx[] = INCBIN_U32("graphics/battle_menu/fields/forest.4bpp.lz");
 static const u16 gBattleFieldIconForest_Pal[] = INCBIN_U16("graphics/battle_menu/fields/forest.gbapal");
 
-static const struct SpritePalette sBattleMenuFieldIconSpritePalette_Forest[] = {gBattleFieldIconForest_Pal, PAL_FIELD_ICON};
+static const struct SpritePalette sBattleMenuFieldIconSpritePalette_Forest = {gBattleFieldIconForest_Pal, PAL_FIELD_ICON};
 
 //Field Icon
 void FreeFieldSprite(void)
@@ -1075,7 +1075,7 @@ static void ShowFieldIcon(void)
     TempSpriteTemplate.callback = SpriteCallbackDummy;
 
     LoadCompressedSpriteSheet(&sSpriteSheet_FieldIcon);
-    LoadSpritePalette(sBattleMenuFieldIconSpritePalette_Forest);
+    LoadSpritePalette(&sBattleMenuFieldIconSpritePalette_Forest);
     TempSpriteTemplate.paletteTag = PAL_FIELD_ICON;
     spriteId = CreateSprite(&TempSpriteTemplate, 4, 68, 0);
     sMenuDataPtr->spriteIds[SPRITE_ARR_ID_FIELD_ICON] = spriteId;
@@ -1095,7 +1095,7 @@ static void SpriteCB_Selector(struct Sprite *sprite)
 static const u32 gBattleSelector_Gfx[] = INCBIN_U32("graphics/battle_menu/fields/selector.4bpp.lz");
 static const u16 gBattleSelector_Pal[] = INCBIN_U16("graphics/battle_menu/fields/selector.gbapal");
 
-static const struct SpritePalette sBattleMenuSelectorSpritePalette[] = {gBattleSelector_Pal, PAL_UI_SPRITES};
+static const struct SpritePalette sBattleMenuSelectorSpritePalette = {gBattleSelector_Pal, PAL_UI_SPRITES};
 //Selector
 void FreeSelectorSprite(void)
 {
@@ -1122,7 +1122,7 @@ static void CreateSelectorSprite(void)
     TempSpriteTemplate.callback = SpriteCB_Selector;
 
     LoadCompressedSpriteSheet(&sSpriteSheet_Selector);
-    LoadSpritePalette(sBattleMenuSelectorSpritePalette);
+    LoadSpritePalette(&sBattleMenuSelectorSpritePalette);
     TempSpriteTemplate.paletteTag = PAL_UI_SPRITES;
     spriteId = CreateSprite(&TempSpriteTemplate, 4, 4, 0);
     sMenuDataPtr->spriteIds[SPRITE_ARR_ID_SELECTOR] = spriteId;
@@ -2773,7 +2773,7 @@ const u8 gText_SmogonDamageCalculator_SixthPart_OHKO[] = _("{STR_VAR_1} OHKO");
 static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     u32 minDamage, maxDamage, midDamage, tempdamage;
     s32 dmg, critDmg, critChance, tempchance, minHits2KOChance;
-    u32 hits2KO, hits2KOmin, percentage;
+    u32 hits2KO = 0, hits2KOmin, percentage;
     u8 chance, moveType;
     u8 natureAtk, natureDef;
     u8 statUpAtk, statUpDef;
@@ -4077,6 +4077,7 @@ static u8 DestroyBattleMenuSprite(u8 spriteArrayId)
     struct Sprite *sprite = &gSprites[sMenuDataPtr->spriteIds[spriteArrayId]];
     sMenuDataPtr->spriteIds[spriteArrayId] = SPRITE_NONE;
     DestroySpriteAndFreeResources(sprite);
+    return 0;
 }
 
 static u8 ShowSpeciesIcon(u8 num)
@@ -4086,6 +4087,7 @@ static u8 ShowSpeciesIcon(u8 num)
 	LoadMonIconPalette(species);
 
     switch(num){
+        default:
         case 0:
             sMenuDataPtr->spriteIds[SPRITE_ARR_ID_MON_ICON_1] = CreateMonIcon(species, SpriteCallbackDummy, POKEMON_ICON_X, POKEMON_ICON_1_Y, 0, personality);
                     
@@ -4145,6 +4147,7 @@ static u8 ShowSpeciesIconSpeed(u8 battler, u8 x, u8 y)
 	LoadMonIconPalette(species);
 
     switch(battler){
+        default:
         case 0:
             sMenuDataPtr->spriteIds[SPRITE_ARR_ID_MON_ICON_1_SPEED] = CreateMonIcon(species, SpriteCallbackDummy, x, y, 0, personality);
                     
@@ -4241,7 +4244,7 @@ static void SetMonTypeIcons(void)
     }
 }*/
 
-static u8 tabColors[NUM_TABS] = {
+static const u8 tabColors[NUM_TABS] = {
     [TAB_STATS]             = MENU_COLOR_BLUE,
     //[TAB_ABILITIES]         = MENU_COLOR_RED,
     [TAB_MOVES]             = MENU_COLOR_GREEN,
@@ -4249,7 +4252,7 @@ static u8 tabColors[NUM_TABS] = {
     [TAB_DAMAGE_CALCULATOR] = MENU_COLOR_RED,
 };
 
-static u8 tabColorsField[NUM_FIELD_TABS + 2] = {
+static const u8 tabColorsField[NUM_FIELD_TABS + 2] = {
     [TAB_FIELD]             = MENU_COLOR_GREEN,
     [TAB_SPEED]             = MENU_COLOR_BLUE,
     [TAB_PLAYER_SIDE]       = MENU_COLOR_RED,
