@@ -567,12 +567,13 @@
 #define B_ANIM_WONDER_ROOM              46
 #define B_ANIM_MAGIC_ROOM               47
 #define B_ANIM_TAILWIND                 48
-#define B_ANIM_RAID_STORM_BREWS         49
-#define B_ANIM_RAID_SHIELD_APPEARED     50
-#define B_ANIM_RAID_SHIELD_DISAPPEARED  51
-#define B_ANIM_RAID_BARRIER_BROKEN      52
-#define B_ANIM_RAID_SHOCKWAVE           53
-#define B_ANIM_RAID_BOSS_EXPLOSION      54
+#define B_ANIM_FOG_CONTINUES            49
+#define B_ANIM_RAID_STORM_BREWS         50
+#define B_ANIM_RAID_SHIELD_APPEARED     51
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  52
+#define B_ANIM_RAID_BARRIER_BROKEN      53
+#define B_ANIM_RAID_SHOCKWAVE           54
+#define B_ANIM_RAID_BOSS_EXPLOSION      55
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0
@@ -622,6 +623,7 @@
 #define ANIM_WEATHER_SANDSTORM 3
 #define ANIM_WEATHER_HAIL 4
 #define ANIM_WEATHER_SNOW 5
+#define ANIM_WEATHER_FOG 6
 
 // horseshoe/fist frames
 #define ANIM_RIGHT_FIST  0

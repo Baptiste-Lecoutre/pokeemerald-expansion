@@ -707,32 +707,38 @@
 #define STRINGID_BIZARREARENACREATED                  705
 #define STRINGID_BIZARREAREACREATED                   706
 #define STRINGID_TIDYINGUPCOMPLETE                    707
-#define STRINGID_PKMNAPPEARSMASSIVE                   708
-#define STRINGID_DYNAMAXENERGYGATHERED                709
-#define STRINGID_RAIDSHIELDAPPEARED                   710
-#define STRINGID_RAIDSHIELDDISAPPEARED                711
-#define STRINGID_CATCHRAIDMON                         712
-#define STRINGID_PKMNISTOOSTRONG                      713
-#define STRINGID_PKMNNULLIFIEDOTHERS                  714
-#define STRINGID_MOVEPREVENTEDBYDYNAMAX               715
-#define STRINGID_RAIDPKMNDISAPPEARED                  716
-#define STRINGID_STORMSTARTEDBREWING                  717
-#define STRINGID_STORMGETTINGSTRONGER                 718
-#define STRINGID_STORMGETTINGEVENSTRONGER             719
-#define STRINGID_STORMGETTINGTOOSTRONG                720
-#define STRINGID_BLOWNOUTOFDEN                        721
-#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           722
-#define STRINGID_ENERGYGATHEREDAROUNDPKMN             723
-#define STRINGID_PKMNBROKEITSSTANCE                   724
-#define STRINGID_RAIDNOTMUCHTIMELEFT                  725
-#define STRINGID_RAIDPKMNRELEASEDENERGY               726
-#define STRINGID_DYNAMAXENERGYSURROUNDS               727
-#define STRINGID_PKMNGAINEDEXPSHARE                   728
-#define STRINGID_PKMNDROPPEDITEM                      729
-#define STRINGID_BAGISFULL                            730
-#define STRINGID_NORUNNINGFROMTHISBATTLE              731
+#define STRINGID_PKMNTERASTALLIZEDINTO                708
+#define STRINGID_BOOSTERENERGYACTIVATES               709
+#define STRINGID_FOGCREPTUP                           710
+#define STRINGID_FOGISDEEP                            711
+#define STRINGID_FOGLIFTED                            712
+#define STRINGID_PKMNMADESHELLGLEAM                   713
+#define STRINGID_PKMNAPPEARSMASSIVE                   714
+#define STRINGID_DYNAMAXENERGYGATHERED                715
+#define STRINGID_RAIDSHIELDAPPEARED                   716
+#define STRINGID_RAIDSHIELDDISAPPEARED                717
+#define STRINGID_CATCHRAIDMON                         718
+#define STRINGID_PKMNISTOOSTRONG                      719
+#define STRINGID_PKMNNULLIFIEDOTHERS                  720
+#define STRINGID_MOVEPREVENTEDBYDYNAMAX               721
+#define STRINGID_RAIDPKMNDISAPPEARED                  722
+#define STRINGID_STORMSTARTEDBREWING                  723
+#define STRINGID_STORMGETTINGSTRONGER                 724
+#define STRINGID_STORMGETTINGEVENSTRONGER             725
+#define STRINGID_STORMGETTINGTOOSTRONG                726
+#define STRINGID_BLOWNOUTOFDEN                        727
+#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           728
+#define STRINGID_ENERGYGATHEREDAROUNDPKMN             729
+#define STRINGID_PKMNBROKEITSSTANCE                   730
+#define STRINGID_RAIDNOTMUCHTIMELEFT                  731
+#define STRINGID_RAIDPKMNRELEASEDENERGY               732
+#define STRINGID_DYNAMAXENERGYSURROUNDS               733
+#define STRINGID_PKMNGAINEDEXPSHARE                   734
+#define STRINGID_PKMNDROPPEDITEM                      735
+#define STRINGID_BAGISFULL                            736
+#define STRINGID_NORUNNINGFROMTHISBATTLE              737
 
-#define BATTLESTRINGS_COUNT                           732
+#define BATTLESTRINGS_COUNT                           738
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -784,6 +790,17 @@
 #define B_MSG_STARTED_SUNLIGHT  4
 #define B_MSG_STARTED_HAIL      5
 #define B_MSG_STARTED_SNOW      6
+#define B_MSG_STARTED_FOG       7
+
+// gWeatherEndsStringIds
+#define B_MSG_WEATHER_END_RAIN         0
+#define B_MSG_WEATHER_END_SANDSTORM    1
+#define B_MSG_WEATHER_END_SUN          2
+#define B_MSG_WEATHER_END_HAIL         3
+#define B_MSG_WEATHER_END_STRONG_WINDS 4
+#define B_MSG_WEATHER_END_SNOW         5
+#define B_MSG_WEATHER_END_FOG          6
+#define B_MSG_WEATHER_END_COUNT        7
 
 // gRainContinuesStringIds
 #define B_MSG_RAIN_CONTINUES     0

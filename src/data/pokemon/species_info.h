@@ -21,6 +21,12 @@
 #define FLIP    0
 #define NO_FLIP 1
 
+#if POKEMON_NAME_LENGTH >= 12
+#define HANDLE_EXPANDED_SPECIES_NAME(_name, ...) _(DEFAULT(_name, __VA_ARGS__))
+#else
+#define HANDLE_EXPANDED_SPECIES_NAME(_name, ...) _(_name)
+#endif
+
 const struct SpeciesInfo gSpeciesInfo[] =
 {
     [SPECIES_NONE] =
@@ -151,4 +157,15 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .allPerfectIVs = TRUE,
     },
     */
+};
+
+// Standalone follower palettes
+// If not NULL, entries here override the front-sprite-based pals
+// used by OBJ_EVENT_PAL_TAG_DYNAMIC
+// Palette data may be compressed, or not
+const void* const gFollowerPalettes[][2] =
+{
+    // Must have at least one entry, or ARRAY_COUNT comparison fails
+    // (SPECIES_NONE does not use OBJ_EVENT_PAL_TAG_DYNAMIC anyway)
+    [SPECIES_NONE] = {gMonPalette_CircledQuestionMark, gMonShinyPalette_CircledQuestionMark},
 };

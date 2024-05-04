@@ -7,6 +7,7 @@
 #include "battle_tent.h"
 #include "battle_factory.h"
 #include "bg.h"
+#include "bw_summary_screen.h"
 #include "contest.h"
 #include "contest_effect.h"
 #include "data.h"
@@ -695,6 +696,10 @@ static const union AnimCmd sSpriteAnim_TypeFairy[] = {
     ANIMCMD_FRAME(TYPE_FAIRY * 8, 0, FALSE, FALSE),
     ANIMCMD_END
 };
+static const union AnimCmd sSpriteAnim_TypeStellar[] = {
+    ANIMCMD_FRAME(TYPE_STELLAR * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
 static const union AnimCmd sSpriteAnim_CategoryCool[] = {
     ANIMCMD_FRAME((CONTEST_CATEGORY_COOL + NUMBER_OF_MON_TYPES) * 8, 0, FALSE, FALSE),
     ANIMCMD_END
@@ -735,6 +740,7 @@ static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES
     sSpriteAnim_TypeDragon,
     sSpriteAnim_TypeDark,
     sSpriteAnim_TypeFairy,
+    sSpriteAnim_TypeStellar,
     sSpriteAnim_CategoryCool,
     sSpriteAnim_CategoryBeauty,
     sSpriteAnim_CategoryCute,
@@ -2825,7 +2831,10 @@ static void ShowCantForgetHMsWindow(u8 taskId)
 
 u8 GetMoveSlotToReplace(void)
 {
-    return sMoveSlotToReplace;
+    if (BW_SUMMARY_SCREEN)
+        return GetMoveSlotToReplace_BW();
+    else
+        return sMoveSlotToReplace;
 }
 
 static void ResetWindows(void)
@@ -3232,7 +3241,7 @@ static void BufferCharacteristicString(void)
 {
     struct PokeSummary *sum = &sMonSummaryScreen->summary;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-    u8 index, highestIV, highestValue, i, j;
+    u8 index, highestIV = 0, highestValue, i, j;
     u8 iv[6];
     u8 ties[6] = { 0, 0, 0, 0, 0, 0 };
 
@@ -3636,7 +3645,7 @@ static void PrintBattleMoves(void)
 
 static void PrintMoveNameAndPP(u8 moveIndex)
 {
-    u32 pp, color, x;
+    u32 pp, color = 0, x;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
 
@@ -4353,7 +4362,10 @@ static void SpriteCB_Pokemon(struct Sprite *sprite)
 // Normally destroys itself but it can be interrupted before the animation starts
 void SummaryScreen_SetAnimDelayTaskId(u8 taskId)
 {
-    sAnimDelayTaskId = taskId;
+    if (BW_SUMMARY_SCREEN)
+        SummaryScreen_SetAnimDelayTaskId_BW(taskId);
+    else
+        sAnimDelayTaskId = taskId;
 }
 
 static void SummaryScreen_DestroyAnimDelayTask(void)
@@ -4954,6 +4966,7 @@ static u8 *GetMapNameHoennKanto(u8 *dest, u16 regionMapId)
     {
         StringCopy(dest, gOrreMapNamePointers[MAPSEC_DISTANT_LAND]);
     }
+    return dest;
 }
 
 static u8 *GetMapNameOrre(u8 *dest, u16 regionMapId, bool8 isXD)
@@ -5393,6 +5406,7 @@ static u8 *GetMapNameOrre(u8 *dest, u16 regionMapId, bool8 isXD)
     {
         StringCopy(dest, gOrreMapNamePointers[MAPSEC_DISTANT_LAND]);
     }
+    return dest;
 }
 
 static u8 ReformatMoveDescription(u16 move, u8 *dest, bool8 isContest)
