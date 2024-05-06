@@ -2384,7 +2384,6 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
 static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 firstTrainer)
 {
     u8 retVal;
-    struct Trainer trainer;
     if (trainerNum == TRAINER_SECRET_BASE)
         return 0;
     retVal = CreateNPCTrainerPartyFromTrainer(party, GetTrainerStructFromId(trainerNum), firstTrainer, gBattleTypeFlags);
@@ -2393,7 +2392,6 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum, bool8 fir
 
 void CreateTrainerPartyForPlayer(void)
 {
-    struct Trainer trainer;
     ZeroPlayerPartyMons();
     gPartnerTrainerId = gSpecialVar_0x8004;
     CreateNPCTrainerPartyFromTrainer(gPlayerParty, GetTrainerStructFromId(gSpecialVar_0x8004), TRUE, BATTLE_TYPE_TRAINER);
@@ -3598,6 +3596,7 @@ void SwitchInClearSetData(u32 battler)
     // Reset damage to prevent things like red card activating if the switched-in mon is holding it
     gSpecialStatuses[battler].physicalDmg = 0;
     gSpecialStatuses[battler].specialDmg = 0;
+    gBattleStruct->enduredDamage &= ~gBitTable[battler];
 
     // Reset G-Max Chi Strike boosts.
     gBattleStruct->bonusCritStages[battler] = 0;
