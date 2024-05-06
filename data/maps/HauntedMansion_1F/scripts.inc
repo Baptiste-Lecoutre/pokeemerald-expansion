@@ -14,6 +14,7 @@ HauntedMansion_1F_EventScript_DragapultGhost::
 	call_if_eq VAR_RESULT, MALE, HauntedMansion_1F_EventScript_MayUseDevonScope
 	call_if_eq VAR_RESULT, FEMALE, HauntedMansion_1F_EventScript_BrendanUseDevonScope
 	closemessage
+HauntedMansion_1F_EventScript_DragapultGhostBattle:
 	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
 	setwildbattle SPECIES_DRAGAPULT, VAR_RESULT
 	dowildbattle
@@ -25,6 +26,15 @@ HauntedMansion_1F_EventScript_DragapultGhost::
 	waitmovement 0
 	releaseall
 	end
+
+HauntedMansion_1F_EventScript_DragapultGhostNoFollower::
+	lockall
+	msgbox HauntedMansion_1F_Text_BeGoneIntruders
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	goto HauntedMansion_1F_EventScript_DragapultGhostBattle
 
 HauntedMansion_1F_EventScript_DefeatedDragapultGhost::
 	checkplayergender
