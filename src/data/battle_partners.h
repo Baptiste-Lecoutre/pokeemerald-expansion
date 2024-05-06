@@ -1,4 +1,3 @@
-const struct Trainer gBattlePartners[] = {
     [PARTNER_NONE] =
     {
         .party = NULL,
@@ -413,4 +412,3 @@ const struct Trainer gBattlePartners[] = {
         .trainerName = _("Wally"),
         .party = TRAINER_PARTY(sParty_WallyVictoryRoadPartner),
     },
-};

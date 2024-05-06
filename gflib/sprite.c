@@ -52,7 +52,6 @@ static void SortSprites(u32 *spritePriorities, s32 n);
 static u32 CreateSpriteAt(u32 index, const struct SpriteTemplate *template, s16 x, s16 y, u32 subpriority);
 static void ResetOamMatrices(void);
 static void ResetSprite(struct Sprite *sprite);
-static s16 AllocSpriteTiles(u16 tileCount);
 static void ResetAllSprites(void);
 static void BeginAnim(struct Sprite *sprite);
 static void ContinueAnim(struct Sprite *sprite);

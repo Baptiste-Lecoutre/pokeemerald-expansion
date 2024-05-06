@@ -3249,10 +3249,10 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .backAnimId = BACK_ANIM_SHAKE_FLASH_YELLOW,
         .palette = gMonPalette_Pikachu,
         .shinyPalette = gMonShinyPalette_Pikachu,
-        .iconSprite = gMonIcon_Pikachu,
+        .iconSprite = gMonIcon_PikachuPartner,
         .iconPalIndex = 2,
     #if P_CUSTOM_GENDER_DIFF_ICONS == TRUE
-        .iconSpriteFemale = gMonIcon_PikachuF,
+        .iconSpriteFemale = gMonIcon_PikachuPartnerF,
         .iconPalIndexFemale = 2,
     #endif
         FOOTPRINT(Pikachu)
@@ -9359,6 +9359,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .abilities = GENGAR_ABILITIES,
         .bodyColor = BODY_COLOR_PURPLE,
         .speciesName = _("Gengar"),
+        .cryId = CRY_GENGAR,
         .natDexNum = NATIONAL_DEX_GENGAR,
         .categoryName = _("Shadow"),
         .height = 15,
@@ -9413,6 +9414,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .abilities = { ABILITY_SHADOW_TAG, ABILITY_SHADOW_TAG, ABILITY_SHADOW_TAG },
         .bodyColor = BODY_COLOR_PURPLE,
         .speciesName = _("Gengar"),
+        .cryId = CRY_GENGAR_MEGA,
         .natDexNum = NATIONAL_DEX_GENGAR,
         .categoryName = _("Shadow"),
         .height = 14,
@@ -9469,6 +9471,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .abilities = GENGAR_ABILITIES,
         .bodyColor = BODY_COLOR_PURPLE,
         .speciesName = _("Gengar"),
+        .cryId = CRY_GENGAR,
         .natDexNum = NATIONAL_DEX_GENGAR,
         .categoryName = _("Shadow"),
         .height = 200,
@@ -13838,8 +13841,12 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .backAnimId = BACK_ANIM_CONCAVE_ARC_SMALL,
         .palette = gMonPalette_Eevee,
         .shinyPalette = gMonShinyPalette_Eevee,
-        .iconSprite = gMonIcon_Eevee,
+        .iconSprite = gMonIcon_EeveePartner,
         .iconPalIndex = 2,
+    #if P_CUSTOM_GENDER_DIFF_ICONS == TRUE
+        .iconSpriteFemale = gMonIcon_EeveePartnerF,
+        .iconPalIndexFemale = 2,
+    #endif
         FOOTPRINT(Eevee)
         .cannotBeTraded = TRUE,
         .allPerfectIVs = TRUE,
@@ -15554,6 +15561,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .iconPalIndex = 2,
         FOOTPRINT(Mewtwo)
         .isLegendary = TRUE,
+        .isFrontierBanned = TRUE,
         .levelUpLearnset = sMewtwoLevelUpLearnset,
         .teachableLearnset = sMewtwoTeachableLearnset,
         .formSpeciesIdTable = sMewtwoFormSpeciesIdTable,
@@ -15611,6 +15619,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         FOOTPRINT(Mewtwo)
         .isLegendary = TRUE,
         .isMegaEvolution = TRUE,
+        .isFrontierBanned = TRUE,
         .levelUpLearnset = sMewtwoLevelUpLearnset,
         .teachableLearnset = sMewtwoTeachableLearnset,
         .formSpeciesIdTable = sMewtwoFormSpeciesIdTable,
@@ -15668,6 +15677,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         FOOTPRINT(Mewtwo)
         .isLegendary = TRUE,
         .isMegaEvolution = TRUE,
+        .isFrontierBanned = TRUE,
         .levelUpLearnset = sMewtwoLevelUpLearnset,
         .teachableLearnset = sMewtwoTeachableLearnset,
         .formSpeciesIdTable = sMewtwoFormSpeciesIdTable,
@@ -15735,6 +15745,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .iconPalIndex = 0,
         FOOTPRINT(Mew)
         .isMythical = TRUE,
+        .isFrontierBanned = TRUE,
         .levelUpLearnset = sMewLevelUpLearnset,
         .teachableLearnset = sMewTeachableLearnset,
     },

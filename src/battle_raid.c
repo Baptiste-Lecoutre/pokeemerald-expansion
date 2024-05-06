@@ -828,6 +828,7 @@ u16 GetShieldDamageReduction(void)
     {
         return UQ_4_12(1-0.95);
     }
+    return UQ_4_12(1);
 }
 
 // SHIELD SPRITE DATA:

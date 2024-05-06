@@ -1723,7 +1723,9 @@ static bool8 StartMenuTownMapCallback(void)
     {
         CleanupOverworldWindowsAndTilemaps();
         OpenPokenavForTownMap(CB2_ReturnToField);
+        return TRUE;
     }
+    return FALSE;
 }
 
 static bool8 StartMenuMatchCallCallback(void)
@@ -1732,7 +1734,9 @@ static bool8 StartMenuMatchCallCallback(void)
     {
         CleanupOverworldWindowsAndTilemaps();
         OpenPokenavForMatchCall(CB2_ReturnToField);
+        return TRUE;
     }
+    return FALSE;
 }
 
 static bool8 StartMenuTrainerRadarCallback(void)
