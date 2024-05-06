@@ -3910,8 +3910,6 @@ void TryLoadTypeIcons(u8 activeBattler)
 
             if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
-            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && GetBattlerSide(GetBattlerAtPosition(position)) == B_SIDE_OPPONENT)
-                continue;
 
             if (illusionMon != NULL)
             {

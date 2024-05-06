@@ -56,5 +56,6 @@ void HoneyWildEncounter(void);
 void ResetChainFishingDexNavStreak(void);
 bool32 IsCurrentEncounterFishing(void);
 u32 CalculateChainFishingShinyRolls(void);
+bool32 CheckDevonScopeInHauntedMansion(u16 mapGroup, u16 mapNum);
 
 #endif // GUARD_WILD_ENCOUNTER_H

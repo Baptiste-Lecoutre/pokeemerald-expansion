@@ -11542,6 +11542,10 @@ u8 GetBattlerType(u32 battler, u8 typeIndex, bool32 ignoreTera)
     types[1] = gBattleMons[battler].type2;
     types[2] = gBattleMons[battler].type3;
 
+    // Handle Ghost battles
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost() && GetBattlerSide(battler) == B_SIDE_OPPONENT)
+        return TYPE_MYSTERY;
+    
     // Handle Terastallization
     if (IsTerastallized(battler) && teraType != TYPE_STELLAR && !ignoreTera)
         return GetBattlerTeraType(battler);

@@ -1300,9 +1300,20 @@ static void ApplyCleanseTagEncounterRateMod(u32 *encRate)
         *encRate = *encRate * 2 / 3;
 }
 
+bool32 CheckDevonScopeInHauntedMansion(u16 mapGroup, u16 mapNum)
+{
+    if (mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
+     && (u16)(mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
+        return TRUE;
+    else
+        return FALSE;
+}
+
 bool8 TryDoDoubleWildBattle(void)
 {
-    if (GetSafariZoneFlag()
+    if (CheckDevonScopeInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
+        return FALSE;
+    else if (GetSafariZoneFlag()
       || (B_DOUBLE_WILD_REQUIRE_2_MONS == TRUE && GetMonsStateToDoubles() != PLAYER_HAS_TWO_USABLE_MONS))
         return FALSE;
     else if (B_FLAG_FORCE_DOUBLE_WILD != 0 && FlagGet(B_FLAG_FORCE_DOUBLE_WILD))

@@ -6999,7 +6999,7 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
 
 bool8 CheckBattleTypeGhost(struct Pokemon *mon, u8 battlerId)
 {
-    u8 buffer[12];
+    u8 buffer[POKEMON_NAME_BUFFER_SIZE];
 
     if (gBattleTypeFlags & BATTLE_TYPE_GHOST && GetBattlerSide(battlerId) != B_SIDE_PLAYER)
     {
