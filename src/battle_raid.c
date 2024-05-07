@@ -6,6 +6,7 @@
 #include "battle_scripts.h"
 #include "battle_setup.h"
 #include "battle_transition.h"
+#include "battle_z_move.h"
 #include "data.h"
 #include "daycare.h"
 #include "event_data.h"
@@ -768,8 +769,12 @@ bool32 UpdateRaidShield(void)
         gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
         // Destroy an extra barrier with a Max Move.
         // TODO: Tera STAB moves will probably break 2 barriers, too.
-        // TODO: Z-moves will destroy another barrier, up to 3 barriers at the same time
-        if (IsMaxMove(gLastUsedMove) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 1)
+        if (IsZMove(gLastUsedMove) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 2)
+        {
+            gBattleStruct->raid.shield--;
+            DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
+        }
+        if ((IsMaxMove(gLastUsedMove) || IsZMove(gLastUsedMove)) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 1)
         {
             gBattleStruct->raid.shield--;
             DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
