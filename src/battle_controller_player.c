@@ -166,25 +166,16 @@ static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 
 static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] = 
 {
-    /*[RED_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_RED},
-    [LEAF_COSTUME]              = {TRAINER_BACK_PIC_LEAF, TRAINER_BACK_PIC_LEAF},
-    [BRENDAN_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_BRENDAN},
-    [MAY_COSTUME]               = {TRAINER_BACK_PIC_MAY, TRAINER_BACK_PIC_MAY},
-    [ETHAN_COSTUME]             = {TRAINER_BACK_PIC_ETHAN, TRAINER_BACK_PIC_ETHAN},
-    [LYRA_COSTUME]              = {TRAINER_BACK_PIC_LYRA, TRAINER_BACK_PIC_LYRA},
-    [KRIS_COSTUME]              = {TRAINER_BACK_PIC_KRIS, TRAINER_BACK_PIC_KRIS},
-    [LUCAS_COSTUME]             = {TRAINER_BACK_PIC_LUCAS, TRAINER_BACK_PIC_LUCAS},
-    [DAWN_COSTUME]              = {TRAINER_BACK_PIC_DAWN, TRAINER_BACK_PIC_DAWN},
-    [LUCAS_PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_LUCAS_PLATINUM},
-    [DAWN_PLATINUM_COSTUME]     = {TRAINER_BACK_PIC_DAWN_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
-    [CHASE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_CHASE},
-    [ELAINE_COSTUME]            = {TRAINER_BACK_PIC_ELAINE, TRAINER_BACK_PIC_ELAINE},*/
-    [FRLG_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_LEAF},
+    /*[FRLG_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_LEAF},
     [RSE_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_MAY},
     [HGSS_COSTUME]             = {TRAINER_BACK_PIC_ETHAN, TRAINER_BACK_PIC_KRIS},
     [DPEARL_COSTUME]             = {TRAINER_BACK_PIC_LUCAS, TRAINER_BACK_PIC_DAWN},
     [PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
-    [LGPE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_ELAINE},
+    [LGPE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_ELAINE},*/
+    [GREEN_COSTUME] = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_MAY},
+    [RED_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_RED, TRAINER_BACK_PIC_MAY_RED},
+    [BLUE_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_BLUE, TRAINER_BACK_PIC_MAY_BLUE},
+    [YELLOW_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_YELLOW, TRAINER_BACK_PIC_MAY_YELLOW},
 };
 
 EWRAM_DATA bool8 gDescriptionSubmenu = 0;
@@ -564,6 +555,8 @@ void HandleInputChooseTarget(u32 battler)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->dynamax.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->tera.playerSelect)
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_TERASTAL | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         EndBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX);
@@ -733,6 +726,8 @@ static void HandleInputShowEntireFieldTargets(u32 battler)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->dynamax.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->tera.playerSelect)
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_TERASTAL | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         HideTriggerSprites();
@@ -765,6 +760,8 @@ static void HandleInputShowTargets(u32 battler)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
         else if (gBattleStruct->dynamax.playerSelect)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+        else if (gBattleStruct->tera.playerSelect)
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_TERASTAL | (gMultiUsePlayerCursor << 8));
         else
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         HideTriggerSprites();
@@ -818,17 +815,8 @@ void HandleInputChooseMove(u32 battler)
     else if (JOY_NEW(A_BUTTON))
     {
         PlaySE(SE_SELECT);
-        if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_CURSE)
-        {
-            if (moveInfo->monType1 != TYPE_GHOST && moveInfo->monType2 != TYPE_GHOST && moveInfo->monType3 != TYPE_GHOST)
-                moveTarget = MOVE_TARGET_USER;
-            else
-                moveTarget = MOVE_TARGET_SELECTED;
-        }
-        else
-        {
-            moveTarget = GetBattlerMoveTargetType(battler, moveInfo->moves[gMoveSelectionCursor[battler]]);
-        }
+
+        moveTarget = GetBattlerMoveTargetType(battler, moveInfo->moves[gMoveSelectionCursor[battler]]);
 
         if (gBattleStruct->zmove.viewing)
         {
@@ -903,6 +891,8 @@ void HandleInputChooseMove(u32 battler)
                 BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_ULTRA_BURST | (gMultiUsePlayerCursor << 8));
             else if (gBattleStruct->dynamax.playerSelect)
                 BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_DYNAMAX | (gMultiUsePlayerCursor << 8));
+            else if (gBattleStruct->tera.playerSelect)
+                BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | RET_TERASTAL | (gMultiUsePlayerCursor << 8));
             else
                 BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
             HideTriggerSprites();
@@ -941,6 +931,7 @@ void HandleInputChooseMove(u32 battler)
             gBattleStruct->mega.playerSelect = FALSE;
             gBattleStruct->burst.playerSelect = FALSE;
             gBattleStruct->dynamax.playerSelect = FALSE;
+            gBattleStruct->tera.playerSelect = FALSE;
             gBattleStruct->zmove.viable = FALSE;
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, 0xFFFF);
             HideTriggerSprites();
@@ -1049,6 +1040,13 @@ void HandleInputChooseMove(u32 battler)
             ChangeDynamaxTriggerSprite(gBattleStruct->dynamax.triggerSpriteId, gBattleStruct->dynamax.playerSelect);
             PlaySE(SE_SELECT);
         }
+        else if (CanTerastallize(battler))
+        {
+            gBattleStruct->tera.playerSelect ^= 1;
+            ChangeTeraTriggerSprite(gBattleStruct->tera.triggerSpriteId, gBattleStruct->tera.playerSelect);
+            MoveSelectionDisplayMoveType(battler); // For Tera Blast / Tera Starstorm
+            PlaySE(SE_SELECT);
+        }
     }
     else if(B_BATTLE_MOVE_INFO == TRUE && (JOY_NEW(B_BATTLE_MOVE_INFO_BUTTON) || gPlayerDpadHoldFrames > 59)) // Additional Battle Info
     {
@@ -1062,6 +1060,7 @@ static void ReloadMoveNames(u32 battler)
     gBattleStruct->mega.playerSelect = FALSE;
     gBattleStruct->burst.playerSelect = FALSE;
     gBattleStruct->dynamax.playerSelect = FALSE;
+    gBattleStruct->tera.playerSelect = FALSE;
     gBattleStruct->zmove.viewing = FALSE;
     MoveSelectionDestroyCursorAt(battler);
     MoveSelectionDisplayMoveNames(battler);
@@ -1905,33 +1904,38 @@ static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u32 battler, 
 
 static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
 {
-    u8 *txtPtr;
+    u8 *txtPtr, *end;
     u8 type;
     u32 speciesId;
-    struct Pokemon *mon;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
 
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
-    *(txtPtr)++ = EXT_CTRL_CODE_BEGIN;
-    *(txtPtr)++ = EXT_CTRL_CODE_FONT;
-    *(txtPtr)++ = FONT_NORMAL;
 
-    if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_IVY_CUDGEL)
+    type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
+
+    if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_TERA_BLAST)
     {
-        mon = &GetSideParty(GetBattlerSide(battler))[gBattlerPartyIndexes[battler]];
-        speciesId = GetMonData(mon, MON_DATA_SPECIES);
+        if (gBattleStruct->tera.playerSelect || IsTerastallized(battler))
+            type = GetBattlerTeraType(battler);
+    }
+    else if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_IVY_CUDGEL)
+    {
+        speciesId = gBattleMons[battler].species;
 
         if (speciesId == SPECIES_OGERPON_WELLSPRING_MASK || speciesId == SPECIES_OGERPON_WELLSPRING_MASK_TERA
             || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK_TERA
             || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK_TERA)
             type = gBattleMons[battler].type2;
-        else
-            type = gMovesInfo[MOVE_IVY_CUDGEL].type;
     }
-    else
-        type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
+    else if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_TERA_STARSTORM)
+    {
+        if (gBattleMons[battler].species == SPECIES_TERAPAGOS_STELLAR
+        || (gBattleStruct->tera.playerSelect && gBattleMons[battler].species == SPECIES_TERAPAGOS_TERASTAL))
+            type = TYPE_STELLAR;
+    }
 
-    StringCopy(txtPtr, gTypeNames[type]);
+    end = StringCopy(txtPtr, gTypesInfo[type].name);
+    PrependFontIdToFit(txtPtr, end, FONT_NORMAL, WindowWidthPx(B_WIN_MOVE_TYPE) - 25);
     BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, battler, targetId));
 
     if (B_PSS_SPLIT_ICONS == TRUE)
@@ -2321,6 +2325,7 @@ void PlayerHandleChooseMove(u32 battler)
         gBattleStruct->mega.playerSelect = FALSE;
         gBattleStruct->burst.playerSelect = FALSE;
         gBattleStruct->dynamax.playerSelect = FALSE;
+        gBattleStruct->tera.playerSelect = FALSE;
         if (!IsMegaTriggerSpriteActive())
             gBattleStruct->mega.triggerSpriteId = 0xFF;
         if (CanMegaEvolve(battler))
@@ -2335,6 +2340,11 @@ void PlayerHandleChooseMove(u32 battler)
             CreateDynamaxTriggerSprite(battler, 0);
         if (!IsZMoveTriggerSpriteActive())
             gBattleStruct->zmove.triggerSpriteId = 0xFF;
+        if (!IsTeraTriggerSpriteActive())
+            gBattleStruct->tera.triggerSpriteId = 0xFF;
+        if (CanTerastallize(battler))
+            CreateTeraTriggerSprite(battler, 0);
+
         GetUsableZMoves(battler, moveInfo->moves);
         gBattleStruct->zmove.viable = IsZMoveUsable(battler, gMoveSelectionCursor[battler]);
         CreateZMoveTriggerSprite(battler, gBattleStruct->zmove.viable);
@@ -2416,7 +2426,7 @@ void PlayerHandleExpUpdate(u32 battler)
     u8 monId = gBattleResources->bufferA[battler][1];
     s32 taskId, expPointsToGive;
 
-    if (GetMonData(&gPlayerParty[monId], MON_DATA_LEVEL) >= GetCurrentLevelCap())
+    if (GetMonData(&gPlayerParty[monId], MON_DATA_LEVEL) >= MAX_LEVEL)
     {
         PlayerBufferExecCompleted(battler);
     }

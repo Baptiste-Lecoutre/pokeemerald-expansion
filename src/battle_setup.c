@@ -40,6 +40,7 @@
 #include "data.h"
 #include "vs_seeker.h"
 #include "item.h"
+#include "wild_encounter.h"
 #include "constants/battle_frontier.h"
 #include "constants/battle_setup.h"
 #include "constants/game_stat.h"
@@ -425,15 +426,6 @@ static void CreateBattleStartTask_Debug(u8 transition, u16 song)
 
 #undef tState
 #undef tTransition
-
-static bool8 CheckDevonScopeInHauntedMansion(u16 mapGroup, u16 mapNum)
-{
-    if (mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
-     && (u16)(mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
-        return TRUE;
-    else
-        return FALSE;
-}
 
 void BattleSetup_StartWildBattle(void)
 {

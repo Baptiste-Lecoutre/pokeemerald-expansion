@@ -2698,6 +2698,10 @@ extern const u32 gBattleAnimSpriteGfx_Punishment[];
 extern const u32 gBattleAnimSpritePal_Punishment[];
 extern const u32 gBattleAnimSpriteGfx_QuickGuard[];
 extern const u32 gBattleAnimSpritePal_QuickGuard[];
+extern const u32 gBattleAnimSpriteGfx_TeraCrystal[];
+extern const u32 gBattleAnimSpritePal_TeraCrystal[];
+extern const u32 gBattleAnimSpriteGfx_TeraShatter[];
+extern const u32 gBattleAnimSpritePal_TeraShatter[];
 
 // New Battle Anim Particles
 extern const u32 gBattleAnimSpriteGfx_AlphaStone[];
@@ -3305,7 +3309,13 @@ extern const u16 gFrontierFactoryMenu_Pal[];
 
 // Object event pals
 extern const u16 gObjectEventPal_Brendan[];
+extern const u16 gObjectEventPal_BrendanRed[];
+extern const u16 gObjectEventPal_BrendanBlue[];
+extern const u16 gObjectEventPal_BrendanYellow[];
 extern const u16 gObjectEventPal_May[];
+extern const u16 gObjectEventPal_MayRed[];
+extern const u16 gObjectEventPal_MayBlue[];
+extern const u16 gObjectEventPal_MayYellow[];
 extern const u16 gObjectEventPal_RubySapphireBrendan[];
 extern const u16 gObjectEventPal_RubySapphireMay[];
 

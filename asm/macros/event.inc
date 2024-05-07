@@ -2248,3 +2248,24 @@
 		setvar VAR_RESULT, TRUE
 	2:
 	.endm
+
+	@ Inflicts \status1 to the Pokémon in \slot.
+	@ If \slot is greater or equal than PARTY_SIZE, the status is inflicted on each of the Player's Pokémon.
+	.macro setstatus1 status1:req, slot:req
+	callnative Script_SetStatus1
+	.2byte \status1
+	.2byte \slot
+	.endm
+
+	@ Sets VAR_RESULT to the Pokémon in \slot's Tera Type
+	.macro checkteratype slot:req
+	callnative CheckTeraType
+	.2byte \slot
+	.endm
+
+	@ Sets the Pokémon in \slot's Tera Type
+	.macro setteratype type:req, slot:req
+	callnative SetTeraType
+	.byte \type
+	.2byte \slot
+	.endm

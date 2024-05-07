@@ -405,6 +405,8 @@
 #define ANIM_TAG_SYRUP_SHELL_YELLOW         (ANIM_SPRITES_START + 391)
 #define ANIM_TAG_SYRUP_SPLAT_RED            (ANIM_SPRITES_START + 392)
 #define ANIM_TAG_SYRUP_SPLAT_YELLOW         (ANIM_SPRITES_START + 393)
+#define ANIM_TAG_TERA_CRYSTAL               (ANIM_SPRITES_START + 394)
+#define ANIM_TAG_TERA_SHATTER               (ANIM_SPRITES_START + 395)
 
 // battlers
 #define ANIM_ATTACKER         0
@@ -567,15 +569,18 @@
 #define B_ANIM_WONDER_ROOM              46
 #define B_ANIM_MAGIC_ROOM               47
 #define B_ANIM_TAILWIND                 48
-#define B_ANIM_RAID_STORM_BREWS         49
-#define B_ANIM_RAID_SHIELD_APPEARED     50
-#define B_ANIM_RAID_SHIELD_DISAPPEARED  51
-#define B_ANIM_RAID_BARRIER_BROKEN      52
-#define B_ANIM_RAID_SHOCKWAVE           53
-#define B_ANIM_RAID_BOSS_EXPLOSION      54
-#define B_ANIM_MON_SCARED               55
-#define B_ANIM_GHOST_GET_OUT            56
-#define B_ANIM_GO_GOGGLED               57
+#define B_ANIM_FOG_CONTINUES            49
+#define B_ANIM_TERA_CHARGE              50
+#define B_ANIM_TERA_ACTIVATE            51
+#define B_ANIM_RAID_STORM_BREWS         52
+#define B_ANIM_RAID_SHIELD_APPEARED     53
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  54
+#define B_ANIM_RAID_BARRIER_BROKEN      55
+#define B_ANIM_RAID_SHOCKWAVE           56
+#define B_ANIM_RAID_BOSS_EXPLOSION      57
+#define B_ANIM_MON_SCARED               58
+#define B_ANIM_GHOST_GET_OUT            59
+#define B_ANIM_GO_GOGGLED               60
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0
@@ -625,6 +630,7 @@
 #define ANIM_WEATHER_SANDSTORM 3
 #define ANIM_WEATHER_HAIL 4
 #define ANIM_WEATHER_SNOW 5
+#define ANIM_WEATHER_FOG 6
 
 // horseshoe/fist frames
 #define ANIM_RIGHT_FIST  0

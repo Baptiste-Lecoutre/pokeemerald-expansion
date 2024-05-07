@@ -843,6 +843,9 @@ $(OBJEVENTGFXDIR)/pokemon/articuno_OW.4bpp: %.4bpp: %.png
 $(OBJEVENTGFXDIR)/pokemon/snorlax_sleep.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 6 -mheight 6
 
+$(OBJEVENTGFXDIR)/pokemon/spheal_roll.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 4 -mheight 4
+
 $(OBJEVENTGFXDIR)/misc/animated_ball.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 4
 
@@ -1113,6 +1116,9 @@ $(FLDEFFGFXDIR)/secret_power_tree.4bpp: %.4bpp: %.png
 
 $(FLDEFFGFXDIR)/record_mix_lights.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 1
+
+$(OBJEVENTGFXDIR)/pokemon/substitute.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 4 -mheight 4
 
 $(OBJEVENTGFXDIR)/pokemon/bulbasaur.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
@@ -3696,6 +3702,9 @@ $(OBJEVENTGFXDIR)/pokemon/meowstic_female.4bpp: %.4bpp: %.png
 
 $(MISCGFXDIR)/emotes.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 2
+
+# All pokeballs are 16x32
+$(OBJEVENTGFXDIR)/misc/ball_%.4bpp: $(OBJEVENTGFXDIR)/misc/ball_%.png ; $(GFX) $< $@ -mwidth 2 -mheight 4
 
 graphics/door_anims/battle_tower_multi_corridor.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 4

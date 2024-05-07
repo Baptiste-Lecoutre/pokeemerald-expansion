@@ -107,7 +107,7 @@ enum {
 
 static u8 GetDomeTrainerMonIvs(u16);
 static void SwapDomeTrainers(int, int, u16 *);
-static void CalcDomeMonStats(u16, int, int, u8, u8, int *);
+static void CalcDomeMonStats(const struct TrainerMon *fmon, int level, u8 ivs, int *stats);
 static void CreateDomeOpponentMons(u16);
 static int SelectOpponentMons_Good(u16, bool8);
 static int SelectOpponentMons_Bad(u16, bool8);
@@ -197,17 +197,6 @@ static const u8 sBattleStyleThresholds[NUM_BATTLE_STYLES - 1][NUM_MOVE_POINT_TYP
     [DOME_BATTLE_STYLE_UNUSED2]         = {0},
     [DOME_BATTLE_STYLE_UNUSED3]         = {0},
   //[DOME_BATTLE_STYLE_UNUSED4]         = {0}, // Excluded here, presumably was meant to be a style just for Dome Ace Tucker
-};
-static const u8 sUnusedArray[] =
-{
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0,
-    0, 0, 3, 0, 0, 0, 0, 0, 3, 2, 0, 0, 0, 0, 0, 2,
-    0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0,
-    0, 2, 253, 0, 0, 0, 0, 0, 253, 0, 0, 0, 0, 0, 253, 0,
-    0, 0, 0, 0, 253, 0, 0, 0, 0, 0, 253, 254, 0, 0, 0, 0,
-    0, 254, 0, 0, 0, 0, 0, 254, 0, 0, 0, 0, 0, 254, 0, 0,
-    0, 0, 0, 254, 0, 0, 0, 0, 0,
 };
 
 // 1st array is for cursor position (sprite id): cursor can be on a trainer info button, a match info button, or the exit/cancel button
@@ -2011,7 +2000,7 @@ static void InitDomeTrainers(void)
                     if (alreadySelectedMonId == monId
                         || species[0] == gFacilityTrainerMons[monId].species
                         || species[1] == gFacilityTrainerMons[monId].species
-                        || gFacilityTrainerMons[alreadySelectedMonId].itemTableId == gFacilityTrainerMons[monId].itemTableId)
+                        || gFacilityTrainerMons[alreadySelectedMonId].heldItem == gFacilityTrainerMons[monId].heldItem)
                         break;
                 }
             } while (k != j);
@@ -2064,11 +2053,8 @@ static void InitDomeTrainers(void)
         ivs = GetDomeTrainerMonIvs(DOME_TRAINERS[i].trainerId);
         for (j = 0; j < FRONTIER_PARTY_SIZE; j++)
         {
-            CalcDomeMonStats(gFacilityTrainerMons[DOME_MONS[i][j]].species,
-                             monLevel, ivs,
-                             gFacilityTrainerMons[DOME_MONS[i][j]].evSpread,
-                             gFacilityTrainerMons[DOME_MONS[i][j]].nature,
-                             statValues);
+            CalcDomeMonStats(&gFacilityTrainerMons[DOME_MONS[i][j]],
+                             monLevel, ivs, statValues);
 
             rankingScores[i] += statValues[STAT_ATK];
             rankingScores[i] += statValues[STAT_DEF];
@@ -2141,40 +2127,31 @@ static void InitDomeTrainers(void)
 
 #define CALC_STAT(base, statIndex)                                                          \
 {                                                                                           \
-    u8 baseStat = gSpeciesInfo[species].base;                                                 \
+    u8 baseStat = gSpeciesInfo[fmon->species].base;                                                 \
     stats[statIndex] = (((2 * baseStat + ivs + evs[statIndex] / 4) * level) / 100) + 5;     \
-    stats[statIndex] = (u8) ModifyStatByNature(nature, stats[statIndex], statIndex);        \
+    stats[statIndex] = (u8) ModifyStatByNature(fmon->nature, stats[statIndex], statIndex);        \
 }
 
-static void CalcDomeMonStats(u16 species, int level, int ivs, u8 evBits, u8 nature, int *stats)
+static void CalcDomeMonStats(const struct TrainerMon *fmon, int level, u8 ivs, int *stats)
 {
-    int i, count;
-    u8 bits;
-    u16 resultingEvs;
     int evs[NUM_STATS];
-
-    count = 0, bits = evBits;
-    for (i = 0; i < NUM_STATS; bits >>= 1, i++)
+    int i;
+    
+    for (i = 0; i < NUM_STATS; i++)
     {
-        if (bits & 1)
-            count++;
+        if (fmon->ev != NULL)
+            evs[i] = fmon->ev[i];
+        else
+            evs[i] = 0;
     }
-
-    resultingEvs = MAX_TOTAL_EVS / count;
-    for (i = 0; i < NUM_STATS; bits <<= 1, i++)
-    {
-        evs[i] = 0;
-        if (evBits & bits)
-            evs[i] = resultingEvs;
-    }
-
-    if (species == SPECIES_SHEDINJA)
+    
+    if (fmon->species == SPECIES_SHEDINJA)
     {
         stats[STAT_HP] = 1;
     }
     else
     {
-        int n = 2 * gSpeciesInfo[species].baseHP;
+        int n = 2 * gSpeciesInfo[fmon->species].baseHP;
         stats[STAT_HP] = (((n + ivs + evs[STAT_HP] / 4) * level) / 100) + level + 10;
     }
 
@@ -2216,33 +2193,15 @@ static void InitDomeOpponentParty(void)
 
 static void CreateDomeOpponentMon(u8 monPartyId, u16 tournamentTrainerId, u8 tournamentMonId, u32 otId)
 {
-    int i;
-    u8 friendship = MAX_FRIENDSHIP;
     #ifdef BUGFIX
     u8 fixedIv = GetDomeTrainerMonIvs(DOME_TRAINERS[tournamentTrainerId].trainerId);
     #else
     u8 fixedIv = GetDomeTrainerMonIvs(tournamentTrainerId); // BUG: Using the wrong ID. As a result, all Pokémon have ivs of 3.
     #endif
     u8 level = SetFacilityPtrsGetLevel();
-    CreateMonWithEVSpreadNatureOTID(&gEnemyParty[monPartyId],
-                                         gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]].species,
-                                         level,
-                                         gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]].nature,
-                                         fixedIv,
-                                         gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]].evSpread, otId);
-
-    friendship = MAX_FRIENDSHIP;
-    for (i = 0; i < MAX_MON_MOVES; i++)
-    {
-        SetMonMoveSlot(&gEnemyParty[monPartyId],
-                       gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]].moves[i], i);
-        if (gMovesInfo[gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]].moves[i]].effect == EFFECT_FRUSTRATION)
-            friendship = 0;
-    }
-
-    SetMonData(&gEnemyParty[monPartyId], MON_DATA_FRIENDSHIP, &friendship);
-    SetMonData(&gEnemyParty[monPartyId], MON_DATA_HELD_ITEM,
-               &gBattleFrontierHeldItems[gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]].itemTableId]);
+    
+    CreateFacilityMon(&gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]],
+                      level, fixedIv, otId, 0, &gEnemyParty[monPartyId]);
 }
 
 static void CreateDomeOpponentMons(u16 tournamentTrainerId)
@@ -4059,7 +4018,7 @@ static bool32 IsDomeStatusMoveEffect(u32 move)
     case EFFECT_CURSE:
         return TRUE;
     default:
-        return MoveHasMoveEffect(move, MOVE_EFFECT_WRAP);
+        return MoveHasAdditionalEffect(move, MOVE_EFFECT_WRAP);
     }
 }
 
@@ -4297,6 +4256,7 @@ static void DisplayTrainerInfoOnCard(u8 flags, u8 trainerTourneyId)
             textPrinter.currentChar = GetSpeciesName(DOME_MONS[trainerTourneyId][i]);
         else
             textPrinter.currentChar = GetSpeciesName(gFacilityTrainerMons[DOME_MONS[trainerTourneyId][i]].species);
+        textPrinter.fontId = GetFontIdToFit(textPrinter.currentChar, FONT_SHORT, 0, 60);
 
         textPrinter.windowId = WIN_TRAINER_MON1_NAME + i + windowId;
         if (i == 1)
@@ -4308,6 +4268,7 @@ static void DisplayTrainerInfoOnCard(u8 flags, u8 trainerTourneyId)
         CopyWindowToVram(WIN_TRAINER_MON1_NAME + i + windowId, COPYWIN_FULL);
         AddTextPrinter(&textPrinter, 0, NULL);
     }
+    textPrinter.fontId = FONT_SHORT;
 
     PutWindowTilemap(windowId + WIN_TRAINER_FLAVOR_TEXT);
     CopyWindowToVram(windowId + WIN_TRAINER_FLAVOR_TEXT, COPYWIN_FULL);
@@ -4388,7 +4349,7 @@ static void DisplayTrainerInfoOnCard(u8 flags, u8 trainerTourneyId)
                     allocatedArray[k] = (gMovesInfo[move].pp <= 5) ? 1 : 0;
                     break;
                 case MOVE_POINTS_EFFECT:
-                    allocatedArray[k] = gMovesInfo[move].sheerForceBoost;
+                    allocatedArray[k] = MoveIsAffectedBySheerForce(move);
                     break;
                 }
             }
@@ -4474,23 +4435,14 @@ static void DisplayTrainerInfoOnCard(u8 flags, u8 trainerTourneyId)
     {
         for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
         {
-            int evBits = gFacilityTrainerMons[DOME_MONS[trainerTourneyId][i]].evSpread;
-            for (k = 0, j = 0; j < NUM_STATS; j++)
-            {
-                allocatedArray[j] = 0;
-                if (evBits & 1)
-                    k++;
-                evBits >>= 1;
-            }
-            k = MAX_TOTAL_EVS / k;
-            evBits = gFacilityTrainerMons[DOME_MONS[trainerTourneyId][i]].evSpread;
             for (j = 0; j < NUM_STATS; j++)
             {
-                if (evBits & 1)
-                    allocatedArray[j] = k;
-                evBits >>= 1;
+                if (gFacilityTrainerMons[DOME_MONS[trainerTourneyId][i]].ev != NULL)
+                    allocatedArray[j] = gFacilityTrainerMons[DOME_MONS[trainerTourneyId][i]].ev[j];
+                else
+                    allocatedArray[j] = 0;
             }
-
+            
             allocatedArray[NUM_STATS] += allocatedArray[STAT_HP];
             for (j = 0; j < NUM_NATURE_STATS; j++)
             {
@@ -5811,7 +5763,7 @@ static void InitRandomTourneyTreeResults(void)
                     if (alreadySelectedMonId == monId
                         || species[0] == gFacilityTrainerMons[monId].species
                         || species[1] == gFacilityTrainerMons[monId].species
-                        || gFacilityTrainerMons[alreadySelectedMonId].itemTableId == gFacilityTrainerMons[monId].itemTableId)
+                        || gFacilityTrainerMons[alreadySelectedMonId].heldItem == gFacilityTrainerMons[monId].heldItem)
                         break;
                 }
             } while (k != j);
@@ -5832,11 +5784,8 @@ static void InitRandomTourneyTreeResults(void)
         ivs = GetDomeTrainerMonIvs(DOME_TRAINERS[i].trainerId);
         for (j = 0; j < FRONTIER_PARTY_SIZE; j++)
         {
-            CalcDomeMonStats(gFacilityTrainerMons[DOME_MONS[i][j]].species,
-                             monLevel, ivs,
-                             gFacilityTrainerMons[DOME_MONS[i][j]].evSpread,
-                             gFacilityTrainerMons[DOME_MONS[i][j]].nature,
-                             statValues);
+            CalcDomeMonStats(&gFacilityTrainerMons[DOME_MONS[i][j]],
+                             monLevel, ivs, statValues);
 
             statSums[i] += statValues[STAT_ATK];
             statSums[i] += statValues[STAT_DEF];

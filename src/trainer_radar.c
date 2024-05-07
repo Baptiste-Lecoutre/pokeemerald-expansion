@@ -953,14 +953,14 @@ static void TrainerRadarAddRouteScrollIndicatorArows(void)
 {
     const struct RouteTrainers* routeTrainersStruct = &gRouteTrainers[sTrainerRadarPtr->mapsec];
     
-    if (sTrainerRadarPtr->routeScrollIndicatorsTaskId == TASK_NONE && routeTrainersStruct->numTrainers > 6)
+    if (sTrainerRadarPtr->routeScrollIndicatorsTaskId == TASK_NONE /*&& routeTrainersStruct->numTrainers > 6*/)
     {
         sTrainerRadarPtr->routeScrollIndicatorsTaskId = AddScrollIndicatorArrowPairParameterized(
             SCROLL_ARROW_UP,
             52,
             42,
             142,
-            routeTrainersStruct->numTrainers - 6,
+            max(routeTrainersStruct->numTrainers - 6, 0),
             TAG_SCROLL_ARROW,
             TAG_SCROLL_ARROW,
             &sTrainerRadarPtr->scrollOffsetRoute

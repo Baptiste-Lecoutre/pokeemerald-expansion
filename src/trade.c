@@ -3,6 +3,7 @@
 #include "battle_anim.h"
 #include "battle_interface.h"
 #include "bg.h"
+#include "bw_summary_screen.h"
 #include "cable_club.h"
 #include "data.h"
 #include "daycare.h"
@@ -1548,9 +1549,19 @@ static void CB_ShowTradeMonSummaryScreen(void)
     if (!gPaletteFade.active)
     {
         if (sTradeMenu->cursorPosition < PARTY_SIZE)
-            ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gPlayerParty, sTradeMenu->cursorPosition, sTradeMenu->partyCounts[TRADE_PLAYER] - 1, CB2_ReturnToTradeMenu);
+        {
+            if (BW_SUMMARY_SCREEN)
+                ShowPokemonSummaryScreen_BW(SUMMARY_MODE_LOCK_MOVES, gPlayerParty, sTradeMenu->cursorPosition, sTradeMenu->partyCounts[TRADE_PLAYER] - 1, CB2_ReturnToTradeMenu);
+            else
+                ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gPlayerParty, sTradeMenu->cursorPosition, sTradeMenu->partyCounts[TRADE_PLAYER] - 1, CB2_ReturnToTradeMenu);
+        }
         else
-            ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gEnemyParty, sTradeMenu->cursorPosition - PARTY_SIZE, sTradeMenu->partyCounts[TRADE_PARTNER] - 1, CB2_ReturnToTradeMenu);
+        {
+            if (BW_SUMMARY_SCREEN)
+                ShowPokemonSummaryScreen_BW(SUMMARY_MODE_LOCK_MOVES, gEnemyParty, sTradeMenu->cursorPosition - PARTY_SIZE, sTradeMenu->partyCounts[TRADE_PARTNER] - 1, CB2_ReturnToTradeMenu);
+            else
+                ShowPokemonSummaryScreen(SUMMARY_MODE_LOCK_MOVES, gEnemyParty, sTradeMenu->cursorPosition - PARTY_SIZE, sTradeMenu->partyCounts[TRADE_PARTNER] - 1, CB2_ReturnToTradeMenu);
+        }
         FreeAllWindowBuffers();
     }
 }
@@ -2788,7 +2799,7 @@ static void LoadTradeMonPic(u8 whichParty, u8 state)
     case 0:
         personality = GetMonData(mon, MON_DATA_PERSONALITY);
 
-        HandleLoadSpecialPokePic(TRUE, gMonSpritesGfxPtr->sprites.ptr[whichParty * 2 + B_POSITION_OPPONENT_LEFT], species, personality);
+        HandleLoadSpecialPokePic(TRUE, gMonSpritesGfxPtr->spritesGfx[whichParty * 2 + B_POSITION_OPPONENT_LEFT], species, personality);
 
         LoadCompressedSpritePaletteWithTag(GetMonFrontSpritePal(mon), species);
         sTradeAnim->monSpecies[whichParty] = species;
@@ -3784,7 +3795,7 @@ static bool8 DoTradeAnim_Cable(void)
         if (gSprites[sTradeAnim->bouncingPokeballSpriteId].callback == SpriteCallbackDummy)
         {
             HandleLoadSpecialPokePic(TRUE,
-                                     gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_RIGHT],
+                                     gMonSpritesGfxPtr->spritesGfx[B_POSITION_OPPONENT_RIGHT],
                                      sTradeAnim->monSpecies[TRADE_PARTNER],
                                      sTradeAnim->monPersonalities[TRADE_PARTNER]);
             sTradeAnim->state++;
@@ -4281,7 +4292,7 @@ static bool8 DoTradeAnim_Wireless(void)
         if (gSprites[sTradeAnim->bouncingPokeballSpriteId].callback == SpriteCallbackDummy)
         {
             HandleLoadSpecialPokePic(TRUE,
-                                      gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_RIGHT],
+                                      gMonSpritesGfxPtr->spritesGfx[B_POSITION_OPPONENT_RIGHT],
                                       sTradeAnim->monSpecies[TRADE_PARTNER],
                                       sTradeAnim->monPersonalities[TRADE_PARTNER]);
             sTradeAnim->state++;

@@ -70,7 +70,7 @@
       "elevation": 0,
       "var": "VAR_LAVARIDGE_TOWN_STATE",
       "var_value": "1",
-      "script": "HauntedMansion_1F_EventScript_DragapultGhost"
+      "script": "HauntedMansion_1F_EventScript_DragapultGhostNoFollower"
     },
     {
       "type": "trigger",
@@ -79,7 +79,7 @@
       "elevation": 0,
       "var": "VAR_LAVARIDGE_TOWN_STATE",
       "var_value": "0",
-      "script": "HauntedMansion_1F_EventScript_DragapultGhost"
+      "script": "HauntedMansion_1F_EventScript_DragapultGhostNoFollower"
     }
   ],
   "bg_events": [

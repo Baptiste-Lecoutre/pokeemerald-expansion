@@ -526,6 +526,59 @@ AI_SINGLE_BATTLE_TEST("AI will choose either Rock Tomb or Bulldoze if Stat drop 
     }
 }
 
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_MON_CHOICES: Number of hits to KO calculation checks whether incoming damage is less than recurring healing to avoid an infinite loop")
+{
+    GIVEN {
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_SWITCHING | AI_FLAG_SMART_MON_CHOICES);
+        PLAYER(SPECIES_VENUSAUR) { Level(30); Moves(MOVE_TACKLE); }
+        // Opponent party courtesy of Skolgrahd, who triggered the bug in the first place
+        OPPONENT(SPECIES_PIKACHU) { Level(100); Moves(MOVE_ZIPPY_ZAP, MOVE_EXTREME_SPEED, MOVE_IRON_TAIL, MOVE_KNOCK_OFF); }
+        OPPONENT(SPECIES_NINETALES_ALOLAN) { Level(100); Moves(MOVE_AURORA_VEIL, MOVE_BLIZZARD, MOVE_MOONBLAST, MOVE_DISABLE); }
+        OPPONENT(SPECIES_WEAVILE) { Level(100); Moves(MOVE_NIGHT_SLASH, MOVE_TRIPLE_AXEL, MOVE_ICE_SHARD, MOVE_FAKE_OUT); }
+        OPPONENT(SPECIES_DITTO) { Level(100); Moves(MOVE_TRANSFORM); }
+        OPPONENT(SPECIES_TYPHLOSION) { Level(100); Moves(MOVE_ERUPTION, MOVE_HEAT_WAVE, MOVE_FOCUS_BLAST, MOVE_EXTRASENSORY); }
+        OPPONENT(SPECIES_UMBREON) { Level(100); Item(ITEM_LEFTOVERS); Moves(MOVE_FOUL_PLAY, MOVE_SNARL, MOVE_HELPING_HAND, MOVE_THUNDER_WAVE); }
+    } WHEN {
+            TURN { MOVE(player, MOVE_TACKLE); EXPECT_MOVES(opponent, MOVE_ZIPPY_ZAP, MOVE_EXTREME_SPEED, MOVE_IRON_TAIL, MOVE_KNOCK_OFF); }
+    } SCENE {
+        MESSAGE("Venusaur fainted!");
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_MON_CHOICES: Number of hits to KO calculation checks whether incoming damage is zero to avoid an infinite loop")
+{
+    GIVEN {
+        ASSUME(gItemsInfo[ITEM_LEFTOVERS].holdEffect == HOLD_EFFECT_LEFTOVERS);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_SWITCHING | AI_FLAG_SMART_MON_CHOICES);
+        PLAYER(SPECIES_BULBASAUR) { Level(5); Moves(MOVE_SWORDS_DANCE, MOVE_WHIRLWIND, MOVE_SAND_ATTACK, MOVE_TAIL_WHIP); }
+        // Scenario courtesy of Duke, who triggered the bug in the first place
+        OPPONENT(SPECIES_GEODUDE) { Level(100); Moves(MOVE_TACKLE); }
+        OPPONENT(SPECIES_GEODUDE) { Level(100); Moves(MOVE_TACKLE); }
+        OPPONENT(SPECIES_NOSEPASS) { Level(100); Moves(MOVE_TACKLE); }
+    } WHEN {
+            TURN { MOVE(player, MOVE_SWORDS_DANCE); EXPECT_MOVES(opponent, MOVE_TACKLE); }
+    } SCENE {
+        MESSAGE("Bulbasaur fainted!");
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_MON_CHOICES: Avoid infinite loop if damage taken is equal to recurring healing")
+{
+    GIVEN {
+        ASSUME(gItemsInfo[ITEM_LEFTOVERS].holdEffect == HOLD_EFFECT_LEFTOVERS);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_SWITCHING | AI_FLAG_SMART_MON_CHOICES);
+        PLAYER(SPECIES_MEOWTH_GALARIAN) { Level(100); Moves(MOVE_GROWL, MOVE_FAKE_OUT, MOVE_HONE_CLAWS); }
+        // Scenario courtesy of Duke, who triggered the bug in the first place
+        OPPONENT(SPECIES_MEOWTH_GALARIAN) { Level(5); Moves(MOVE_GROWL, MOVE_FAKE_OUT, MOVE_HONE_CLAWS); }
+        OPPONENT(SPECIES_GEODUDE) { Level(5); Moves(MOVE_DOUBLE_EDGE); }
+        OPPONENT(SPECIES_GEODUDE) { Level(5); Moves(MOVE_DOUBLE_EDGE); }
+        OPPONENT(SPECIES_NOSEPASS) { Level(5); Moves(MOVE_DOUBLE_EDGE); }
+        OPPONENT(SPECIES_HOUNDSTONE) { Level(5); Moves(MOVE_NIGHT_SHADE, MOVE_BODY_PRESS, MOVE_WILL_O_WISP, MOVE_PROTECT); Item(ITEM_LEFTOVERS); }
+    } WHEN {
+            TURN { MOVE(player, MOVE_FAKE_OUT); EXPECT_MOVES(opponent, MOVE_FAKE_OUT); }
+    }
+}
+
 AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_MON_CHOICES: AI will not switch in a Pokemon which is slower and gets 1HKOed after fainting")
 {
     bool32 alakazamFirst;
@@ -750,5 +803,30 @@ AI_DOUBLE_BATTLE_TEST("AI will not try to switch for the same pokemon for 2 spot
             MESSAGE("{PKMN} TRAINER LEAF withdrew Haunter!");
             MESSAGE("{PKMN} TRAINER LEAF sent out Raticate!");
         }
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI will not choose Burn Up if the user lost the Fire typing")
+{
+    GIVEN {
+        ASSUME(gMovesInfo[MOVE_BURN_UP].effect == EFFECT_FAIL_IF_NOT_ARG_TYPE);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_CYNDAQUIL) { Moves(MOVE_BURN_UP, MOVE_EXTRASENSORY, MOVE_FLAMETHROWER); }
+    } WHEN {
+        TURN { EXPECT_MOVE(opponent, MOVE_BURN_UP); }
+        TURN { EXPECT_MOVE(opponent, MOVE_FLAMETHROWER); }
+    }
+}
+
+AI_SINGLE_BATTLE_TEST("AI will choose Surf over Thunderbolt and Ice Beam if the opposing mon has Volt Absorb")
+{
+    GIVEN {
+        ASSUME(gMovesInfo[MOVE_THUNDERBOLT].type == TYPE_ELECTRIC);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
+        PLAYER(SPECIES_LANTURN) { Ability(ABILITY_VOLT_ABSORB); };
+        OPPONENT(SPECIES_LANTURN) { Moves(MOVE_THUNDERBOLT, MOVE_ICE_BEAM, MOVE_SURF); }
+    } WHEN {
+        TURN { EXPECT_MOVE(opponent, MOVE_SURF); }
     }
 }

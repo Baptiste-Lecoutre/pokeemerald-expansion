@@ -228,14 +228,14 @@ const u8 gText_NoPokemon[] = _("There is no\nPokémon.");
 const u8 gText_MoveVar1Where[] = _("Move the\n{STR_VAR_1}\nwhere?");
 const u8 gText_Var1CantBeHeld[] = _("The {STR_VAR_1} can't be held.");
 const u8 gText_Var1CantBeHeldHere[] = _("The {STR_VAR_1} can't be held\nhere.");
-const u8 gText_DepositHowManyVar1[] = _("Deposit how many\n{STR_VAR_1}(s)?");
-const u8 gText_DepositedVar2Var1s[] = _("Deposited {STR_VAR_2}\n{STR_VAR_1}(s).");
+const u8 gText_DepositHowManyVar1[] = _("Deposit how many\n{STR_VAR_1}?");
+const u8 gText_DepositedVar2Var1s[] = _("Deposited {STR_VAR_2}\n{STR_VAR_1}.");
 const u8 gText_NoRoomForItems[] = _("There's no room to\nstore items.");
 const u8 gText_CantStoreImportantItems[] = _("Important items\ncan't be stored in\nthe PC!");
 const u8 gText_TooImportantToToss[] = _("That's much too\nimportant to toss\nout!");
-const u8 gText_TossHowManyVar1s[] = _("Toss out how many\n{STR_VAR_1}(s)?");
-const u8 gText_ThrewAwayVar2Var1s[] = _("Threw away {STR_VAR_2}\n{STR_VAR_1}(s).");
-const u8 gText_ConfirmTossItems[] = _("Is it okay to\nthrow away {STR_VAR_2}\n{STR_VAR_1}(s)?");
+const u8 gText_TossHowManyVar1s[] = _("Toss out how many\n{STR_VAR_1}?");
+const u8 gText_ThrewAwayVar2Var1s[] = _("Threw away {STR_VAR_2}\n{STR_VAR_1}.");
+const u8 gText_ConfirmTossItems[] = _("Is it okay to\nthrow away {STR_VAR_2}\n{STR_VAR_1}?");
 const u8 gText_PressAnyDpadKey[] = _("Press any {DPAD_NONE} key\nto register item\nin that slot.");
 const u8 gText_DadsAdvice[] = _("Dad's advice…\n{PLAYER}, there's a time and place for\leverything!{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantDismountBike[] = _("You can't dismount your bike here.{PAUSE_UNTIL_PRESS}");
@@ -373,8 +373,8 @@ const u8 gText_NoMoreRoomForThis[] = _("You have no more room for this\nitem.{PA
 const u8 gText_SpaceForVar1Full[] = _("The space for {STR_VAR_1} is full.{PAUSE_UNTIL_PRESS}");
 const u8 gText_AnythingElseICanHelp[] = _("Is there anything else I can help\nyou with?");
 const u8 gText_CanIHelpWithAnythingElse[] = _("Can I help you with anything else?");
-const u8 gText_ThrowInPremierBall[] = _("I'll throw in a Premier Ball, too.{PAUSE_UNTIL_PRESS}");
-const u8 gText_ThrowInPremierBalls[] = _("I'll throw in some Premier Balls, too.{PAUSE_UNTIL_PRESS}");
+const u8 gText_ThrowInPremierBall[] = _("I'll throw in a PREMIER BALL, too.{PAUSE_UNTIL_PRESS}");
+const u8 gText_ThrowInPremierBalls[] = _("I'll throw in {STR_VAR_1} PREMIER BALLS, too.{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantBuyKeyItem[] = _("{STR_VAR_2}? Oh, no.\nI can't buy that.{PAUSE_UNTIL_PRESS}");
 const u8 gText_HowManyToSell[] = _("{STR_VAR_2}?\nHow many would you like to sell?");
 const u8 gText_ICanPayVar1[] = _("I can pay ¥{STR_VAR_1}.\nWould that be okay?");
@@ -612,8 +612,8 @@ const u8 gText_TakeOutItemsFromPC[] = _("Take out items from the PC.");
 const u8 gText_ThrowAwayItemsInPC[] = _("Throw away items stored in the PC.");
 const u8 gText_NoItems[] = _("There are no items.{PAUSE_UNTIL_PRESS}");
 const u8 gText_NoRoomInBag[] = _("There is no more\nroom in the Bag.");
-const u8 gText_WithdrawHowManyItems[] = _("Withdraw how many\n{STR_VAR_1}(s)?");
-const u8 gText_WithdrawXItems[] = _("Withdrew {STR_VAR_2}\n{STR_VAR_1}(s).");
+const u8 gText_WithdrawHowManyItems[] = _("Withdraw how many\n{STR_VAR_1}?");
+const u8 gText_WithdrawXItems[] = _("Withdrew {STR_VAR_2}\n{STR_VAR_1}.");
 const u8 gText_Read[] = _("Read");
 const u8 gText_MoveToBag[] = _("Move to Bag");
 const u8 gText_Give2[] = _("Give");
@@ -2173,12 +2173,16 @@ const u8 gText_TutorMoveSet6[] = _("Feather Badge");
 const u8 gText_TutorMoveSet7[] = _("Mind Badge");
 
 // Costumes
-const u8 gText_FirstDrawer[] = _("Hoenn");
-const u8 gText_SecondDrawer[] = _("Kanto");
-const u8 gText_ThirdDrawer[] = _("Johto");
-const u8 gText_FourthDrawer[] = _("Sinnoh");
-const u8 gText_FifthDrawer[] = _("Hisui");
-const u8 gText_SixthDrawer[] = _("Partner");
+//const u8 gText_FirstDrawer[] = _("Hoenn");
+//const u8 gText_SecondDrawer[] = _("Kanto");
+//const u8 gText_ThirdDrawer[] = _("Johto");
+//const u8 gText_FourthDrawer[] = _("Sinnoh");
+//const u8 gText_FifthDrawer[] = _("Hisui");
+//const u8 gText_SixthDrawer[] = _("Partner");
+const u8 gText_FirstDrawer[] = _("Emerald");
+const u8 gText_SecondDrawer[] = _("Ruby");
+const u8 gText_ThirdDrawer[] = _("Sapphire");
+const u8 gText_FourthDrawer[] = _("Amber");
 
 const u8 gText_RedCostume[] = _("Red");
 const u8 gText_LeafCostume[] = _("Green");
@@ -2250,3 +2254,59 @@ ALIGNED(4) const u8 gText_Ghost[] = _("Ghost");
 // berries
 const u8 gText_Fertilize[] = _("Fertilize");
 const u8 gText_PlantBerry[] = _("Plant Berry");
+
+//Summary Screen Move Effects
+const u8 gText_Effect[]                 = _("Effect");
+const u8 gText_Chance[]                 = _("Chance");
+const u8 gText_Contact[]                = _("Contact");
+const u8 gText_Target[]                 = _("Target");
+const u8 gText_Priority[]               = _("Priority");
+const u8 gText_Critical[]               = _("High Critical");
+const u8 gText_Effect_None[]            = _("---");
+
+//Summary Screen Move Effects
+const u8 gText_Effect_Multi_Hit[]                = _("Multi Hit");
+const u8 gText_Effect_Three_Hits[]               = _("Three Hits");
+const u8 gText_Effect_Two_Hits[]                 = _("Two Hits");
+
+const u8 gText_Effect_Burn_Hit[]                 = _("Burn");
+const u8 gText_Effect_Poison_Hit[]               = _("Poison");
+const u8 gText_Effect_Paralyze_Hit[]             = _("Paralyze");
+const u8 gText_Effect_Freeze_Hit[]               = _("Freeze");
+const u8 gText_Effect_Confuse_Hit[]              = _("Confuse");
+
+const u8 gText_Effect_All_Stats_Up[]             = _("All+");
+const u8 gText_Effect_Attack_Up[]                = _("Atk+");
+const u8 gText_Effect_Attack_Down[]              = _("Atk-");
+const u8 gText_Effect_Defense_Up[]               = _("Def+");
+const u8 gText_Effect_Defense_Down[]             = _("Def-");
+const u8 gText_Effect_Sp_Attack_Up[]             = _("Sp.Atk+");
+const u8 gText_Effect_Sp_Attack_Down[]           = _("Sp.Atk-");
+const u8 gText_Effect_Sp_Defense_Up[]            = _("Sp.Def+");
+const u8 gText_Effect_Sp_Defense_Down[]          = _("Sp.Def-");
+const u8 gText_Effect_Speed_Up[]                 = _("Spd+");
+const u8 gText_Effect_Speed_Down[]               = _("Spd-");
+const u8 gText_Effect_Accuracy_Up[]              = _("Acc-");
+const u8 gText_Effect_Accuracy_Down[]            = _("Acc-");
+
+const u8 gText_Effect_Heal_HP[]                  = _("Heal HP");
+const u8 gText_Effect_Heal[]                     = _("Heal");
+const u8 gText_Effect_HP_Drain[]                 = _("Drain HP");
+
+const u8 gText_Effect_Hit[]                      = _("Hit");
+const u8 gText_Effect_Flinch[]                   = _("Flinch");
+const u8 gText_Effect_Recoil[]                   = _("Recoil");
+const u8 gText_Effect_Misc[]                     = _("Other");
+const u8 gText_Effect_Always_Crit[]              = _("Crit");
+const u8 gText_Effect_Protect[]                  = _("Protect");
+
+//Summary Screen Target
+const u8 gText_Effect_FoeAndAlly[]            = _("All");
+const u8 gText_Effect_BothFoes[]              = _("Both");
+const u8 gText_Effect_OneFoe[]                = _("One");
+const u8 gText_Effect_Self[]                  = _("Self");
+const u8 gText_Effect_Field[]                 = _("Field");
+
+//Summary Screen Makes Contact
+const u8 gText_Effect_ContactYes[]            = _("Yes");
+const u8 gText_Effect_ContactNo[]             = _("No");

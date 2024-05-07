@@ -312,7 +312,7 @@ u16 FreeAndDestroyMonPicSprite(u16 spriteId)
 
 u16 FreeAndDestroyMonPicSpriteNoPalette(u16 spriteId)
 {
-      return FreeAndDestroyPicSpriteInternal(spriteId, FALSE);
+    return FreeAndDestroyPicSpriteInternal(spriteId, FALSE);
 }
 
 static u16 UNUSED LoadMonPicInWindow(u16 species, bool8 isShiny, u32 personality, bool8 isFrontPic, u8 paletteSlot, u8 windowId)

@@ -64,6 +64,8 @@ struct TrainerBacksprite
 #define TRAINER_PARTY_IVS(hp, atk, def, speed, spatk, spdef) (hp | (atk << 5) | (def << 10) | (speed << 15) | (spatk << 20) | (spdef << 25))
 #define TRAINER_PARTY_EVS(hp, atk, def, speed, spatk, spdef) ((const u8[6]){hp,atk,def,spatk,spdef,speed})
 
+// Shared by both trainer and frontier mons
+// See CreateNPCTrainerPartyFromTrainer and CreateFacilityMon
 struct TrainerMon
 {
     const u8 *nickname;
@@ -76,13 +78,14 @@ struct TrainerMon
     u8 lvl;
     u8 ball;
     u8 friendship;
-    u8 nature : 5;
-    bool8 gender : 2;
-    bool8 isShiny : 1;
-    u8 dynamaxLevel : 4;
-    bool8 gigantamaxFactor : 1;
-    bool8 shouldDynamax : 1;
-    bool8 shouldTerastal : 1;
+    u8 nature:5;
+    bool8 gender:2;
+    bool8 isShiny:1;
+    u8 dynamaxLevel:4;
+    u8 teraType:5;
+    bool8 gigantamaxFactor:1;
+    bool8 shouldDynamax:1;
+    bool8 shouldTerastal:1;
 };
 
 #define TRAINER_PARTY(partyArray) partyArray, .partySize = ARRAY_COUNT(partyArray)
@@ -111,8 +114,6 @@ struct TrainerClass
     s8 levelOffset;
 };
 
-#define TRAINER_ENCOUNTER_MUSIC(trainer)((gTrainers[trainer].encounterMusic_gender & 0x7F))
-
 struct FollowerMsgInfo {
     const u8 *text;
     const u8 *script;
@@ -125,6 +126,24 @@ struct FollowerMessagePool
     u16 length;
 };
 
+
+struct TypeInfo
+{
+    u8 name[TYPE_NAME_LENGTH + 1];
+    u8 generic[17];
+    u8 palette;
+    u16 zMove;
+    u16 maxMove;
+    const u32 *const paletteTMHM;
+    //u16 enhanceItem;
+    //u16 berry;
+    //u16 gem;
+    //u16 plate;
+    //u16 memory;
+    //u16 zCrystal;
+    //u16 teraShard;
+    //u16 arceusForm;
+};
 
 extern const u16 gMinigameDigits_Pal[];
 extern const u32 gMinigameDigits_Gfx[];
@@ -188,14 +207,14 @@ static inline const u8 GetTrainerClassFromId(u16 trainerId)
 static inline const u8 *GetTrainerClassNameFromId(u16 trainerId)
 {
     if (trainerId > TRAINER_PARTNER(PARTNER_NONE))
-        return gTrainerClasses[gBattlePartners[trainerId].trainerClass].name;
+        return gTrainerClasses[gBattlePartners[trainerId - TRAINER_PARTNER(PARTNER_NONE)].trainerClass].name;
     return gTrainerClasses[GetTrainerClassFromId(trainerId)].name;
 }
 
 static inline const u8 *GetTrainerNameFromId(u16 trainerId)
 {
     if (trainerId > TRAINER_PARTNER(PARTNER_NONE))
-        return gBattlePartners[trainerId].trainerName;
+        return gBattlePartners[trainerId - TRAINER_PARTNER(PARTNER_NONE)].trainerName;
     return gTrainers[SanitizeTrainerId(trainerId)].trainerName;
 }
 

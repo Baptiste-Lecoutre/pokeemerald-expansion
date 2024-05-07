@@ -66,7 +66,7 @@ u8 *StringCopy_Nickname(u8 *dest, const u8 *src)
 
 u8 *StringGet_Nickname(u8 *str)
 {
-    u8 i;
+    u32 i;
     u32 limit = POKEMON_NAME_LENGTH;
 
     if (DECAP_ENABLED && !DECAP_NICKNAMES && *str == CHAR_FIXED_CASE)
@@ -127,7 +127,7 @@ u8 *StringAppend(u8 *dest, const u8 *src)
 
 u8 *StringCopyN(u8 *dest, const u8 *src, u8 n)
 {
-    u16 i;
+    u32 i;
 
     for (i = 0; i < n; i++)
         dest[i] = src[i];
@@ -199,7 +199,7 @@ s32 StringCompareN(const u8 *str1, const u8 *str2, u32 n)
 
 bool8 IsStringLengthAtLeast(const u8 *str, s32 n)
 {
-    u8 i;
+    u32 i;
 
     for (i = 0; i < n; i++)
         if (str[i] && str[i] != EOS)
@@ -323,7 +323,7 @@ u8 *ConvertUIntToDecimalStringN(u8 *dest, u32 value, enum StringConvertMode mode
 u8 *ConvertIntToHexStringN(u8 *dest, s32 value, enum StringConvertMode mode, u8 n)
 {
     enum { WAITING_FOR_NONZERO_DIGIT, WRITING_DIGITS, WRITING_SPACES } state;
-    u8 i;
+    u32 i;
     s32 powerOfSixteen;
     s32 largestPowerOfSixteen = 1;
 
@@ -617,7 +617,7 @@ const u8 *GetExpandedPlaceholder(u32 id)
 
 u8 *StringFill(u8 *dest, u8 c, u16 n)
 {
-    u16 i;
+    u32 i;
 
     for (i = 0; i < n; i++)
         *dest++ = c;
@@ -834,7 +834,7 @@ void ConvertInternationalString(u8 *s, u8 language)
 {
     if (language == LANGUAGE_JAPANESE)
     {
-        u8 i;
+        u32 i;
 
         StripExtCtrlCodes(s);
         i = StringLength(s);
@@ -844,7 +844,7 @@ void ConvertInternationalString(u8 *s, u8 language)
 
         i--;
 
-        while (i != (u8)-1)
+        while (i != -1)
         {
             s[i + 2] = s[i];
             i--;
