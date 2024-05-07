@@ -25,6 +25,14 @@ However, it reuses the original pocket sprites.
 ### Important: DO NOT use GitHub's "Download Zip" option. Using this option will not download the commit history required to update your expansion version or merge other feature branches. Instead, please read [this guide](https://github.com/Pawkkie/Team-Aquas-Asset-Repo/wiki/The-Basics-of-GitHub) to learn how to fork the repository and clone locally from there.
 
 ## What is pokeemerald-expansion?
+**followers** branch:
+* [HGSS-style pokémon followers](https://bulbapedia.bulbagarden.net/wiki/Walking_Pok%C3%A9mon#Pok.C3.A9mon_HeartGold_and_SoulSilver) for all 386 pokémon (including forms & shinies)
+* Includes follower emotes and a majority of the HGSS messages
+* Custom pokeball sprites for Gen 1-7 pokéballs
+* Followers can use field moves in the overworld
+* Overworld form changes for Ditto, Mew, Castform, etc.
+* Asymmetrical & 64x64 OW support
+* Dynamic Overworld Palette System (DOWP) & reflections compatible with berry trees, etc.
 
 pokeemerald-expansion is a decomp hack base project based off pret's [pokeemerald](https://github.com/pret/pokeemerald) decompilation project. It's recommended that any new projects that plan on using it, to clone this repository instead of pret's vanilla repository, as we regurlarly incorporate pret's documentation changes. This is ***NOT*** a standalone romhack, and as such, most features will be unavailable and/or unbalanced if played as is.
 

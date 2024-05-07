@@ -707,7 +707,7 @@ static void MarkFogSpritePalToLighten(u8 paletteIndex)
 
 static bool8 LightenSpritePaletteInFog(u8 paletteIndex)
 {
-    u16 i;
+    u16 i=0;
 
     if (paletteIndex >= 16 && (GetSpritePaletteTagByPaletteNum(i - 16) >> 15)) // don't blend specialpalette tags
         return FALSE;
@@ -871,6 +871,15 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
         }
         break;
     }
+    // If faded out, i.e due to fadescreenswapbuffers,
+    // Copy unfaded palette to pal decomp buffer
+    // so it will be restored on fade-in
+    if (gPaletteFade.y == 16)
+        CpuFastCopy(
+            gPlttBufferUnfaded + OBJ_PLTT_ID(spritePaletteIndex),
+            gPaletteDecompressionBuffer + 2*OBJ_PLTT_ID(spritePaletteIndex),
+            PLTT_SIZE_4BPP
+        );
 }
 
 void ApplyWeatherColorMapToPal(u8 paletteIndex) // now unused / obselete

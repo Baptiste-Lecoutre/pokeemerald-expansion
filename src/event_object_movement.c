@@ -1788,7 +1788,7 @@ u8 CreateObjectGraphicsSpriteWithTag(u16 graphicsId, void (*callback)(struct Spr
             LoadObjectEventPaletteWithTag(spriteTemplate->paletteTag, paletteTag);
             spriteTemplate->paletteTag = paletteTag;
         }
-    }
+    }   
 
     if (OW_GFX_COMPRESS)
     {
@@ -1954,7 +1954,7 @@ static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool32 shiny)
         // Load compressed palette
         LoadCompressedSpritePaletteWithTag(palette, species);
         paletteNum = IndexOfSpritePaletteTag(species); // Tag is always present
-        //UpdateSpritePaletteWithWeather(paletteNum, FALSE); //testing here
+        UpdateSpritePaletteWithWeather(paletteNum, FALSE); //testing here
     }
 
 //    if (gWeatherPtr->currWeather != WEATHER_FOG_HORIZONTAL) // don't want to weather blend in fog
@@ -2087,7 +2087,7 @@ void UpdateFollowingPokemon(void)
     if (OW_FOLLOWERS_ENABLED == FALSE
         || !GetFollowerInfo(&species, &form, &shiny)
         || (gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->oam->size > ST_OAM_SIZE_2)
-        || FlagGet(FLAG_TEMP_HIDE_FOLLOWER))
+        || FlagGet(FLAG_TEMP_HIDE_FOLLOWER)) //optionsShowFollowerPokemon
     {
         RemoveFollowingPokemon();
         return;
@@ -2259,9 +2259,8 @@ bool32 CheckMsgCondition(const struct MsgCondition *cond, struct Pokemon *mon, u
         return (multi == cond->data.bytes[0] || multi == cond->data.bytes[1]);
     case MSG_COND_MUSIC:
         return (cond->data.raw == GetCurrentMapMusic());
-    // Added on `lighting` branch
-    // case MSG_COND_TIME_OF_DAY:
-    //     break;
+    case MSG_COND_TIME_OF_DAY:
+        return (cond->data.raw == gTimeOfDay);
     case MSG_COND_NEAR_MB:
         multi = FindMetatileBehaviorWithinRange(
                     obj->currentCoords.x, obj->currentCoords.y, 
@@ -9853,9 +9852,8 @@ static void DoGroundEffects_OnSpawn(struct ObjectEvent *objEvent, struct Sprite 
 #endif
     {
         flags = 0;
-        #if LARGE_OW_SUPPORT
-        sprite->subspriteMode = SUBSPRITES_ON;
-        #endif
+        if (LARGE_OW_SUPPORT && !sprite->oam.affineMode)
+            sprite->subspriteMode = SUBSPRITES_ON;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
         GetAllGroundEffectFlags_OnSpawn(objEvent, &flags);
         SetObjectEventSpriteOamTableForLongGrass(objEvent, sprite);
@@ -9876,9 +9874,8 @@ static void DoGroundEffects_OnBeginStep(struct ObjectEvent *objEvent, struct Spr
 #endif
     {
         flags = 0;
-        #if LARGE_OW_SUPPORT
-        sprite->subspriteMode = SUBSPRITES_ON;
-        #endif
+        if (LARGE_OW_SUPPORT && !sprite->oam.affineMode)
+            sprite->subspriteMode = SUBSPRITES_ON;
         UpdateObjectEventElevationAndPriority(objEvent, sprite);
         GetAllGroundEffectFlags_OnBeginStep(objEvent, &flags);
         SetObjectEventSpriteOamTableForLongGrass(objEvent, sprite);
