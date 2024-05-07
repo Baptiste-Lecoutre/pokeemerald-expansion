@@ -218,7 +218,7 @@ const struct SpeciesInfo gSpeciesInfoGen7[] =
         .iconPalIndex = 0,
         FOOTPRINT(Decidueye)
         //FOLLOWER(DecidueyeHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_DecidueyeHisuian, gShinyFollowerPalette_DecidueyeHisuian)
-        FOLLOWER(DecidueyeHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_DecidueyeHisuian)
+        FOLLOWER(DecidueyeHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_DecidueyeHisuian, gFollowerPalette_DecidueyeHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sDecidueyeHisuianLevelUpLearnset,
         .teachableLearnset = sDecidueyeHisuianTeachableLearnset,

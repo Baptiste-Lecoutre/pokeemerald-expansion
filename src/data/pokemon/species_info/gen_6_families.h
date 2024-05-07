@@ -3770,7 +3770,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         .iconPalIndex = 2,
         FOOTPRINT(Sliggoo)
         //FOLLOWER(SliggooHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SliggooHisuian, gShinyFollowerPalette_SliggooHisuian)
-        FOLLOWER(SliggooHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SliggooHisuian)
+        FOLLOWER(SliggooHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SliggooHisuian, gFollowerPalette_SliggooHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sSliggooHisuianLevelUpLearnset,
         .teachableLearnset = sSliggooHisuianTeachableLearnset,
@@ -3828,7 +3828,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         .iconPalIndex = 2,
         FOOTPRINT(Goodra)
         //FOLLOWER(GoodraHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GoodraHisuian, gShinyFollowerPalette_GoodraHisuian)
-        FOLLOWER(GoodraHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GoodraHisuian)
+        FOLLOWER(GoodraHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GoodraHisuian, gFollowerPalette_GoodraHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sGoodraHisuianLevelUpLearnset,
         .teachableLearnset = sGoodraHisuianTeachableLearnset,
@@ -4607,7 +4607,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         .iconPalIndex = 5,
         FOOTPRINT(Avalugg)
         //FOLLOWER(AvaluggHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_AvaluggHisuian, gShinyFollowerPalette_AvaluggHisuian)
-        FOLLOWER(AvaluggHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_AvaluggHisuian)
+        FOLLOWER(AvaluggHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_AvaluggHisuian, gFollowerPalette_AvaluggHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sAvaluggHisuianLevelUpLearnset,
         .teachableLearnset = sAvaluggHisuianTeachableLearnset,
