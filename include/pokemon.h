@@ -823,5 +823,6 @@ u16 GetSpeciesPreEvolution(u16 species);
 void HealPokemon(struct Pokemon *mon);
 void HealBoxPokemon(struct BoxPokemon *boxMon);
 const u8 *GetMoveName(u16 moveId);
+u32 GetGMaxTargetSpecies(u32 species);
 
 #endif // GUARD_POKEMON_H

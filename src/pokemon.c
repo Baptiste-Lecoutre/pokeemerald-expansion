@@ -1152,8 +1152,7 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         }
     }
 
-#if P_FLAG_FORCE_HIDDEN_ABILITY != 0
-    if (FlagGet(P_FLAG_FORCE_HIDDEN_ABILITY))
+    if (P_FLAG_FORCE_HIDDEN_ABILITY != 0 && FlagGet(P_FLAG_FORCE_HIDDEN_ABILITY))
     {
         if (gSpeciesInfo[species].abilities[2])
             value = 2;
@@ -1164,9 +1163,7 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         FlagClear(P_FLAG_FORCE_HIDDEN_ABILITY);
         SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
     }
-    else
-#endif
-    if (gSpeciesInfo[species].abilities[1])
+    else if (gSpeciesInfo[species].abilities[1])
     {
         value = personality & 1;
         SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
@@ -4305,7 +4302,7 @@ u8 GetNatureFromPersonality(u32 personality)
     return personality % NUM_NATURES;
 }
 
-static u32 GetGMaxTargetSpecies(u32 species)
+u32 GetGMaxTargetSpecies(u32 species)
 {
     const struct FormChange *formChanges = GetSpeciesFormChanges(species);
     u32 i;

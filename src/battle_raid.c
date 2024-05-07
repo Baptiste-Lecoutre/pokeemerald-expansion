@@ -101,7 +101,7 @@ const u8 gRaidBattleLevelRanges[MAX_RAID_RANK + 1][2] =
     [RAID_RANK_7] = {90, 100},
 };
 
-//The chance that each move is replaced with an Egg Move
+// The chance that each move is replaced with an Egg Move
 const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK + 1] =
 {
 	[NO_RAID]     = 0,
@@ -125,6 +125,19 @@ const u8 gRaidBattleHiddenAbilityChances[MAX_RAID_RANK + 1] =
 	[RAID_RANK_5] = 30,
 	[RAID_RANK_6] = 40,
     [RAID_RANK_7] = 50,
+};
+
+// The chance that the raid boss to be gigantamax
+const u8 gRaidBattleGigantamaxChances[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 0,
+	[RAID_RANK_2] = 0,
+	[RAID_RANK_3] = 5,
+	[RAID_RANK_4] = 10,
+	[RAID_RANK_5] = 50,
+	[RAID_RANK_6] = 90,
+    [RAID_RANK_7] = 100,
 };
 
 // The number of perfect IVs the raid boss is certain to have
@@ -318,6 +331,7 @@ bool32 InitRaidData(void)
     u8 statIDs[NUM_STATS] = {STAT_HP, STAT_ATK, STAT_DEF, STAT_SPEED, STAT_SPATK, STAT_SPDEF};
     u16 eggMoves[EGG_MOVES_ARRAY_COUNT] = {0};
     struct Pokemon* mon = &gEnemyParty[0];
+    bool32 boolTrue = TRUE;
 
     // determine raid type
     gRaidData.raidType = RAID_TYPE_MAX;
@@ -393,10 +407,12 @@ bool32 InitRaidData(void)
     }*/
 
     // Hidden ability
-#if P_FLAG_FORCE_HIDDEN_ABILITY != 0
-    if (randomNum % 100 < gRaidBattleHiddenAbilityChances[gRaidData.rank])
+    if (P_FLAG_FORCE_HIDDEN_ABILITY != 0 && randomNum % 100 < gRaidBattleHiddenAbilityChances[gRaidData.rank])
         FlagSet(P_FLAG_FORCE_HIDDEN_ABILITY);
-#endif
+
+    // Raid bosses have increased shiny odds: +1% for each rank
+    if (P_FLAG_FORCE_SHINY != 0 && randomNum % 100 < gRaidData.rank)
+        FlagSet(P_FLAG_FORCE_SHINY);
 
     // Free previous enemy party in case
     ZeroEnemyPartyMons();
@@ -422,6 +438,11 @@ bool32 InitRaidData(void)
         if (!MonKnowsMove(mon, eggMove) && GiveMoveToMon(mon, eggMove) == MON_HAS_MAX_MOVES)
             DeleteFirstMoveAndGiveMoveToMon(mon, eggMove);
     }
+
+    // Gigantamax factor
+    if (gRaidData.raidType == RAID_TYPE_MAX && GetGMaxTargetSpecies(species) != SPECIES_NONE
+        && randomNum % 100 < gRaidBattleGigantamaxChances[gRaidData.rank])
+        SetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR, &boolTrue);
 
     return TRUE;
 }
