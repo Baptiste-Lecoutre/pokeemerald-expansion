@@ -296,6 +296,12 @@ const struct OamData gOamData_BattleSpritePlayerSide =
 
 static const s8 sCenterToCornerVecXs[8] ={-32, -16, -16, -32, -32};
 
+#if B_EXPANDED_TYPE_NAMES == TRUE
+#define HANDLE_EXPANDED_TYPE_NAME(_name, ...) _(DEFAULT(_name, __VA_ARGS__))
+#else
+#define HANDLE_EXPANDED_TYPE_NAME(_name, ...) _(_name)
+#endif
+
 // .generic is large enough that the text for TYPE_ELECTRIC will exceed TEXT_BUFF_ARRAY_COUNT.
 const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
 {
@@ -306,6 +312,7 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 13,
         .zMove = MOVE_BREAKNECK_BLITZ,
         .maxMove = MOVE_MAX_STRIKE,
+        .paletteTMHM = gItemIconPalette_NormalTMHM,
         //.enhanceItem = ITEM_SILK_SCARF,
         //.berry = ITEM_CHILAN_BERRY,
         //.gem = ITEM_NORMAL_GEM,
@@ -315,16 +322,17 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
     },
     [TYPE_FIGHTING] =
     {
-        .name = _("Fight"),
+        .name = HANDLE_EXPANDED_TYPE_NAME("Fight", "Fighting"),
         .generic = _("a FIGHTING move"),
         .palette = 13,
         .zMove = MOVE_ALL_OUT_PUMMELING,
         .maxMove = MOVE_MAX_KNUCKLE,
+        .paletteTMHM = gItemIconPalette_FightingTMHM,
         //.enhanceItem = ITEM_BLACK_BELT,
         //.berry = ITEM_CHOPLE_BERRY,
         //.gem = ITEM_FIGHTING_GEM,
         //.zCrystal = ITEM_FIGHTINIUM_Z,
-        //.plate= ITEM_FIST_PLATE,
+        //.plate = ITEM_FIST_PLATE,
         //.memory = ITEM_FIGHTING_MEMORY,
         //.teraShard = ITEM_FIGHTING_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FIGHTING,
@@ -336,11 +344,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 14,
         .zMove = MOVE_SUPERSONIC_SKYSTRIKE,
         .maxMove = MOVE_MAX_AIRSTREAM,
+        .paletteTMHM = gItemIconPalette_FlyingTMHM,
         //.enhanceItem = ITEM_SHARP_BEAK,
         //.berry = ITEM_COBA_BERRY,
         //.gem = ITEM_FLYING_GEM,
         //.zCrystal = ITEM_FLYINIUM_Z,
-        //.plate= ITEM_SKY_PLATE,
+        //.plate = ITEM_SKY_PLATE,
         //.memory = ITEM_FLYING_MEMORY,
         //.teraShard = ITEM_FLYING_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FLYING,
@@ -352,11 +361,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 14,
         .zMove = MOVE_ACID_DOWNPOUR,
         .maxMove = MOVE_MAX_OOZE,
+        .paletteTMHM = gItemIconPalette_PoisonTMHM,
         //.enhanceItem = ITEM_POISON_BARB,
         //.berry = ITEM_KEBIA_BERRY,
         //.gem = ITEM_POISON_GEM,
         //.zCrystal = ITEM_POISONIUM_Z,
-        //.plate= ITEM_TOXIC_PLATE,
+        //.plate = ITEM_TOXIC_PLATE,
         //.memory = ITEM_POISON_MEMORY,
         //.teraShard = ITEM_POISON_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_POISON,
@@ -368,11 +378,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 13,
         .zMove = MOVE_TECTONIC_RAGE,
         .maxMove = MOVE_MAX_QUAKE,
+        .paletteTMHM = gItemIconPalette_GroundTMHM,
         //.enhanceItem = ITEM_SOFT_SAND,
         //.berry = ITEM_SHUCA_BERRY,
         //.gem = ITEM_GROUND_GEM,
         //.zCrystal = ITEM_GROUNDIUM_Z,
-        //.plate= ITEM_EARTH_PLATE,
+        //.plate = ITEM_EARTH_PLATE,
         //.memory = ITEM_GROUND_MEMORY,
         //.teraShard = ITEM_GROUND_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_GROUND,
@@ -384,11 +395,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 13,
         .zMove = MOVE_CONTINENTAL_CRUSH,
         .maxMove = MOVE_MAX_ROCKFALL,
+        .paletteTMHM = gItemIconPalette_RockTMHM,
         //.enhanceItem = ITEM_HARD_STONE,
         //.berry = ITEM_CHARTI_BERRY,
         //.gem = ITEM_ROCK_GEM,
         //.zCrystal = ITEM_ROCKIUM_Z,
-        //.plate= ITEM_STONE_PLATE,
+        //.plate = ITEM_STONE_PLATE,
         //.memory = ITEM_ROCK_MEMORY,
         //.teraShard = ITEM_ROCK_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_ROCK,
@@ -400,11 +412,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 15,
         .zMove = MOVE_SAVAGE_SPIN_OUT,
         .maxMove = MOVE_MAX_FLUTTERBY,
+        .paletteTMHM = gItemIconPalette_BugTMHM,
         //.enhanceItem = ITEM_SILVER_POWDER,
         //.berry = ITEM_TANGA_BERRY,
         //.gem = ITEM_BUG_GEM,
         //.zCrystal = ITEM_BUGINIUM_Z,
-        //.plate= ITEM_INSECT_PLATE,
+        //.plate = ITEM_INSECT_PLATE,
         //.memory = ITEM_BUG_MEMORY,
         //.teraShard = ITEM_BUG_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_BUG,
@@ -416,11 +429,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 14,
         .zMove = MOVE_NEVER_ENDING_NIGHTMARE,
         .maxMove = MOVE_MAX_PHANTASM,
+        .paletteTMHM = gItemIconPalette_GhostTMHM,
         //.enhanceItem = ITEM_SPELL_TAG,
         //.berry = ITEM_KASIB_BERRY,
         //.gem = ITEM_GHOST_GEM,
         //.zCrystal = ITEM_GHOSTIUM_Z,
-        //.plate= ITEM_SPOOKY_PLATE,
+        //.plate = ITEM_SPOOKY_PLATE,
         //.memory = ITEM_GHOST_MEMORY,
         //.teraShard = ITEM_GHOST_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_GHOST,
@@ -432,11 +446,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 13,
         .zMove = MOVE_CORKSCREW_CRASH,
         .maxMove = MOVE_MAX_STEELSPIKE,
+        .paletteTMHM = gItemIconPalette_SteelTMHM,
         //.enhanceItem = ITEM_METAL_COAT,
         //.berry = ITEM_BABIRI_BERRY,
         //.gem = ITEM_STEEL_GEM,
         //.zCrystal = ITEM_STEELIUM_Z,
-        //.plate= ITEM_IRON_PLATE,
+        //.plate = ITEM_IRON_PLATE,
         //.memory = ITEM_STEEL_MEMORY,
         //.teraShard = ITEM_STEEL_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_STEEL,
@@ -454,11 +469,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 13,
         .zMove = MOVE_INFERNO_OVERDRIVE,
         .maxMove = MOVE_MAX_FLARE,
+        .paletteTMHM = gItemIconPalette_FireTMHM,
         //.enhanceItem = ITEM_CHARCOAL,
         //.berry = ITEM_OCCA_BERRY,
         //.gem = ITEM_FIRE_GEM,
         //.zCrystal = ITEM_FIRIUM_Z,
-        //.plate= ITEM_FLAME_PLATE,
+        //.plate = ITEM_FLAME_PLATE,
         //.memory = ITEM_FIRE_MEMORY,
         //.teraShard = ITEM_FIRE_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FIRE,
@@ -470,11 +486,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 14,
         .zMove = MOVE_HYDRO_VORTEX,
         .maxMove = MOVE_MAX_GEYSER,
+        .paletteTMHM = gItemIconPalette_WaterTMHM,
         //.enhanceItem = ITEM_MYSTIC_WATER,
         //.berry = ITEM_PASSHO_BERRY,
         //.gem = ITEM_WATER_GEM,
         //.zCrystal = ITEM_WATERIUM_Z,
-        //.plate= ITEM_SPLASH_PLATE,
+        //.plate = ITEM_SPLASH_PLATE,
         //.memory = ITEM_WATER_MEMORY,
         //.teraShard = ITEM_WATER_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_WATER,
@@ -486,43 +503,46 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 15,
         .zMove = MOVE_BLOOM_DOOM,
         .maxMove = MOVE_MAX_OVERGROWTH,
+        .paletteTMHM = gItemIconPalette_GrassTMHM,
         //.enhanceItem = ITEM_MIRACLE_SEED,
         //.berry = ITEM_RINDO_BERRY,
         //.gem = ITEM_GRASS_GEM,
         //.zCrystal = ITEM_GRASSIUM_Z,
-        //.plate= ITEM_MEADOW_PLATE,
+        //.plate = ITEM_MEADOW_PLATE,
         //.memory = ITEM_GRASS_MEMORY,
         //.teraShard = ITEM_GRASS_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_GRASS,
     },
     [TYPE_ELECTRIC] =
     {
-        .name = _("Electr"),
+        .name = HANDLE_EXPANDED_TYPE_NAME("Electr", "Electric"),
         .generic = _("an ELECTRIC move"),
         .palette = 13,
         .zMove = MOVE_GIGAVOLT_HAVOC,
         .maxMove = MOVE_MAX_LIGHTNING,
+        .paletteTMHM = gItemIconPalette_ElectricTMHM,
         //.enhanceItem = ITEM_MAGNET,
         //.berry = ITEM_WACAN_BERRY,
         //.gem = ITEM_ELECTRIC_GEM,
         //.zCrystal = ITEM_ELECTRIUM_Z,
-        //.plate= ITEM_ZAP_PLATE,
+        //.plate = ITEM_ZAP_PLATE,
         //.memory = ITEM_ELECTRIC_MEMORY,
         //.teraShard = ITEM_ELECTRIC_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_ELECTRIC,
     },
     [TYPE_PSYCHIC] =
     {
-        .name = _("Psychc"),
+        .name = HANDLE_EXPANDED_TYPE_NAME("Psychc", "Psychic"),
         .generic = _("a PSYCHIC move"),
         .palette = 14,
         .zMove = MOVE_SHATTERED_PSYCHE,
         .maxMove = MOVE_MAX_MINDSTORM,
+        .paletteTMHM = gItemIconPalette_PsychicTMHM,
         //.enhanceItem = ITEM_TWISTED_SPOON,
         //.berry = ITEM_PAYAPA_BERRY,
         //.gem = ITEM_PSYCHIC_GEM,
         //.zCrystal = ITEM_PSYCHIUM_Z,
-        //.plate= ITEM_MIND_PLATE,
+        //.plate = ITEM_MIND_PLATE,
         //.memory = ITEM_PSYCHIC_MEMORY,
         //.teraShard = ITEM_PSYCHIC_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_PSYCHIC,
@@ -534,11 +554,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 14,
         .zMove = MOVE_SUBZERO_SLAMMER,
         .maxMove = MOVE_MAX_HAILSTORM,
+        .paletteTMHM = gItemIconPalette_IceTMHM,
         //.enhanceItem = ITEM_NEVER_MELT_ICE,
         //.berry = ITEM_YACHE_BERRY,
         //.gem = ITEM_ICE_GEM,
         //.zCrystal = ITEM_ICIUM_Z,
-        //.plate= ITEM_ICICLE_PLATE,
+        //.plate = ITEM_ICICLE_PLATE,
         //.memory = ITEM_ICE_MEMORY,
         //.teraShard = ITEM_ICE_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_ICE,
@@ -550,11 +571,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 15,
         .zMove = MOVE_DEVASTATING_DRAKE,
         .maxMove = MOVE_MAX_WYRMWIND,
+        .paletteTMHM = gItemIconPalette_DragonTMHM,
         //.enhanceItem = ITEM_DRAGON_FANG,
         //.berry = ITEM_HABAN_BERRY,
         //.gem = ITEM_DRAGON_GEM,
         //.zCrystal = ITEM_DRAGONIUM_Z,
-        //.plate= ITEM_DRACO_PLATE,
+        //.plate = ITEM_DRACO_PLATE,
         //.memory = ITEM_DRAGON_MEMORY,
         //.teraShard = ITEM_DRAGON_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_DRAGON,
@@ -566,11 +588,12 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 13,
         .zMove = MOVE_BLACK_HOLE_ECLIPSE,
         .maxMove = MOVE_MAX_DARKNESS,
+        .paletteTMHM = gItemIconPalette_DarkTMHM,
         //.enhanceItem = ITEM_BLACK_GLASSES,
         //.berry = ITEM_COLBUR_BERRY,
         //.gem = ITEM_DARK_GEM,
         //.zCrystal = ITEM_DARKINIUM_Z,
-        //.plate= ITEM_DREAD_PLATE,
+        //.plate = ITEM_DREAD_PLATE,
         //.memory = ITEM_DARK_MEMORY,
         //.teraShard = ITEM_DARK_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_DARK,
@@ -582,22 +605,26 @@ const struct TypeInfo gTypesInfo[NUMBER_OF_MON_TYPES] =
         .palette = 14,
         .zMove = MOVE_TWINKLE_TACKLE,
         .maxMove = MOVE_MAX_STARFALL,
+        .paletteTMHM = gItemIconPalette_FairyTMHM,
         //.enhanceItem = ITEM_FAIRY_FEATHER,
         //.berry = ITEM_ROSELI_BERRY,
         //.gem = ITEM_FAIRY_GEM,
         //.zCrystal = ITEM_FAIRIUM_Z,
-        //.plate= ITEM_PIXIE_PLATE,
+        //.plate = ITEM_PIXIE_PLATE,
         //.memory = ITEM_FAIRY_MEMORY,
         //.teraShard = ITEM_FAIRY_TERA_SHARD,
         //.arceusForm = SPECIES_ARCEUS_FAIRY,
     },
-    /*
     [TYPE_STELLAR] =
     {
-        .name = _("Stellar"),
-        .teraShard = ITEM_STELLAR_TERA_SHARD,
+        .name = HANDLE_EXPANDED_TYPE_NAME("Stellr", "Stellar"),
+        .generic = _("a STELLAR move"),
+        .palette = 15,
+        .zMove = MOVE_BREAKNECK_BLITZ,
+        .maxMove = MOVE_MAX_STRIKE,
+        .paletteTMHM = gItemIconPalette_NormalTMHM, // failsafe
+        // .teraShard = ITEM_STELLAR_TERA_SHARD,
     },
-    */
 };
 
 // extra args are money and ball
@@ -613,62 +640,62 @@ const struct TrainerClass gTrainerClasses[TRAINER_CLASS_COUNT] =
 {
     TRAINER_CLASS(PKMN_TRAINER_1, "{PKMN} TRAINER"),
     TRAINER_CLASS(PKMN_TRAINER_2, "{PKMN} TRAINER"),
-    TRAINER_CLASS(HIKER, "HIKER", 10),
+    TRAINER_CLASS(HIKER, "HIKER", 10, ITEM_POKE_BALL),
     TRAINER_CLASS(TEAM_AQUA, "TEAM AQUA"),
     TRAINER_CLASS(PKMN_BREEDER, "{PKMN} BREEDER", 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? ITEM_HEAL_BALL : ITEM_FRIEND_BALL),
     TRAINER_CLASS(COOLTRAINER, "COOLTRAINER", 12, ITEM_ULTRA_BALL),
-    TRAINER_CLASS(BIRD_KEEPER, "BIRD KEEPER", 8),
+    TRAINER_CLASS(BIRD_KEEPER, "BIRD KEEPER", 8, ITEM_POKE_BALL),
     TRAINER_CLASS(COLLECTOR, "COLLECTOR", 15, ITEM_PREMIER_BALL),
     TRAINER_CLASS(SWIMMER_M, "SWIMMER♂", 2, ITEM_DIVE_BALL),
     TRAINER_CLASS(TEAM_MAGMA, "TEAM MAGMA"),
-    TRAINER_CLASS(EXPERT, "EXPERT", 10),
-    TRAINER_CLASS(AQUA_ADMIN, "AQUA ADMIN", 10),
+    TRAINER_CLASS(EXPERT, "EXPERT", 10, ITEM_POKE_BALL),
+    TRAINER_CLASS(AQUA_ADMIN, "AQUA ADMIN", 10, ITEM_POKE_BALL),
     TRAINER_CLASS(BLACK_BELT, "BLACK BELT", 8, ITEM_ULTRA_BALL),
     TRAINER_CLASS(AQUA_LEADER, "AQUA LEADER", 20, ITEM_MASTER_BALL),
-    TRAINER_CLASS(HEX_MANIAC, "HEX MANIAC", 6),
-    TRAINER_CLASS(AROMA_LADY, "AROMA LADY", 10),
-    TRAINER_CLASS(RUIN_MANIAC, "RUIN MANIAC", 15),
-    TRAINER_CLASS(INTERVIEWER, "INTERVIEWER", 12),
-    TRAINER_CLASS(TUBER_F, "TUBER", 1),
-    TRAINER_CLASS(TUBER_M, "TUBER", 1),
-    TRAINER_CLASS(LADY, "LADY", 50),
-    TRAINER_CLASS(BEAUTY, "BEAUTY", 20),
-    TRAINER_CLASS(RICH_BOY, "RICH BOY", 50),
-    TRAINER_CLASS(POKEMANIAC, "POKéMANIAC", 15),
-    TRAINER_CLASS(GUITARIST, "GUITARIST", 8),
-    TRAINER_CLASS(KINDLER, "KINDLER", 8),
-    TRAINER_CLASS(CAMPER, "CAMPER", 4),
-    TRAINER_CLASS(PICNICKER, "PICNICKER", 4),
-    TRAINER_CLASS(BUG_MANIAC, "BUG MANIAC", 15),
-    TRAINER_CLASS(PSYCHIC, "PSYCHIC", 6),
+    TRAINER_CLASS(HEX_MANIAC, "HEX MANIAC", 6, ITEM_POKE_BALL),
+    TRAINER_CLASS(AROMA_LADY, "AROMA LADY", 10, ITEM_POKE_BALL),
+    TRAINER_CLASS(RUIN_MANIAC, "RUIN MANIAC", 15, ITEM_POKE_BALL),
+    TRAINER_CLASS(INTERVIEWER, "INTERVIEWER", 12, ITEM_POKE_BALL),
+    TRAINER_CLASS(TUBER_F, "TUBER", 1, ITEM_POKE_BALL),
+    TRAINER_CLASS(TUBER_M, "TUBER", 1, ITEM_POKE_BALL),
+    TRAINER_CLASS(LADY, "LADY", 50, ITEM_POKE_BALL),
+    TRAINER_CLASS(BEAUTY, "BEAUTY", 20, ITEM_POKE_BALL),
+    TRAINER_CLASS(RICH_BOY, "RICH BOY", 50, ITEM_POKE_BALL),
+    TRAINER_CLASS(POKEMANIAC, "POKéMANIAC", 15, ITEM_POKE_BALL),
+    TRAINER_CLASS(GUITARIST, "GUITARIST", 8, ITEM_POKE_BALL),
+    TRAINER_CLASS(KINDLER, "KINDLER", 8, ITEM_POKE_BALL),
+    TRAINER_CLASS(CAMPER, "CAMPER", 4, ITEM_POKE_BALL),
+    TRAINER_CLASS(PICNICKER, "PICNICKER", 4, ITEM_POKE_BALL),
+    TRAINER_CLASS(BUG_MANIAC, "BUG MANIAC", 15, ITEM_POKE_BALL),
+    TRAINER_CLASS(PSYCHIC, "PSYCHIC", 6, ITEM_POKE_BALL),
     TRAINER_CLASS(GENTLEMAN, "GENTLEMAN", 20, ITEM_LUXURY_BALL),
     TRAINER_CLASS(ELITE_FOUR, "ELITE FOUR", 25, ITEM_ULTRA_BALL),
-    TRAINER_CLASS(LEADER, "LEADER", 25),
+    TRAINER_CLASS(LEADER, "LEADER", 25, ITEM_POKE_BALL),
     TRAINER_CLASS(SCHOOL_KID, "SCHOOL KID"),
-    TRAINER_CLASS(SR_AND_JR, "SR. AND JR.", 4),
-    TRAINER_CLASS(WINSTRATE, "WINSTRATE", 10),
-    TRAINER_CLASS(POKEFAN, "POKéFAN", 20),
-    TRAINER_CLASS(YOUNGSTER, "YOUNGSTER", 4),
-    TRAINER_CLASS(CHAMPION, "CHAMPION", 50),
+    TRAINER_CLASS(SR_AND_JR, "SR. AND JR.", 4, ITEM_POKE_BALL),
+    TRAINER_CLASS(WINSTRATE, "WINSTRATE", 10, ITEM_POKE_BALL),
+    TRAINER_CLASS(POKEFAN, "POKéFAN", 20, ITEM_POKE_BALL),
+    TRAINER_CLASS(YOUNGSTER, "YOUNGSTER", 4, ITEM_POKE_BALL),
+    TRAINER_CLASS(CHAMPION, "CHAMPION", 50, ITEM_POKE_BALL),
     TRAINER_CLASS(FISHERMAN, "FISHERMAN", 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? ITEM_DIVE_BALL : ITEM_LURE_BALL),
-    TRAINER_CLASS(TRIATHLETE, "TRIATHLETE", 10),
-    TRAINER_CLASS(DRAGON_TAMER, "DRAGON TAMER", 12),
-    TRAINER_CLASS(NINJA_BOY, "NINJA BOY", 3),
-    TRAINER_CLASS(BATTLE_GIRL, "BATTLE GIRL", 6),
-    TRAINER_CLASS(PARASOL_LADY, "PARASOL LADY", 10),
+    TRAINER_CLASS(TRIATHLETE, "TRIATHLETE", 10, ITEM_POKE_BALL),
+    TRAINER_CLASS(DRAGON_TAMER, "DRAGON TAMER", 12, ITEM_POKE_BALL),
+    TRAINER_CLASS(NINJA_BOY, "NINJA BOY", 3, ITEM_POKE_BALL),
+    TRAINER_CLASS(BATTLE_GIRL, "BATTLE GIRL", 6, ITEM_POKE_BALL),
+    TRAINER_CLASS(PARASOL_LADY, "PARASOL LADY", 10, ITEM_POKE_BALL),
     TRAINER_CLASS(SWIMMER_F, "SWIMMER♀", 2, ITEM_DIVE_BALL),
-    TRAINER_CLASS(TWINS, "TWINS", 3),
-    TRAINER_CLASS(SAILOR, "SAILOR", 8),
+    TRAINER_CLASS(TWINS, "TWINS", 3, ITEM_POKE_BALL),
+    TRAINER_CLASS(SAILOR, "SAILOR", 8, ITEM_POKE_BALL),
     TRAINER_CLASS(COOLTRAINER_2, "COOLTRAINER", 5, ITEM_ULTRA_BALL),
-    TRAINER_CLASS(MAGMA_ADMIN, "MAGMA ADMIN", 10),
-    TRAINER_CLASS(RIVAL, "{PKMN} TRAINER", 15),
-    TRAINER_CLASS(BUG_CATCHER, "BUG CATCHER", 4),
-    TRAINER_CLASS(PKMN_RANGER, "{PKMN} RANGER", 12),
+    TRAINER_CLASS(MAGMA_ADMIN, "MAGMA ADMIN", 10, ITEM_POKE_BALL),
+    TRAINER_CLASS(RIVAL, "{PKMN} TRAINER", 15, ITEM_POKE_BALL),
+    TRAINER_CLASS(BUG_CATCHER, "BUG CATCHER", 4, ITEM_POKE_BALL),
+    TRAINER_CLASS(PKMN_RANGER, "{PKMN} RANGER", 12, ITEM_POKE_BALL),
     TRAINER_CLASS(MAGMA_LEADER, "MAGMA LEADER", 20, ITEM_MASTER_BALL),
-    TRAINER_CLASS(LASS, "LASS", 4),
-    TRAINER_CLASS(YOUNG_COUPLE, "YOUNG COUPLE", 8),
-    TRAINER_CLASS(OLD_COUPLE, "OLD COUPLE", 10),
-    TRAINER_CLASS(SIS_AND_BRO, "SIS AND BRO", 3),
+    TRAINER_CLASS(LASS, "LASS", 4, ITEM_POKE_BALL),
+    TRAINER_CLASS(YOUNG_COUPLE, "YOUNG COUPLE", 8, ITEM_POKE_BALL),
+    TRAINER_CLASS(OLD_COUPLE, "OLD COUPLE", 10, ITEM_POKE_BALL),
+    TRAINER_CLASS(SIS_AND_BRO, "SIS AND BRO", 3, ITEM_POKE_BALL),
     TRAINER_CLASS(SALON_MAIDEN, "SALON MAIDEN"),
     TRAINER_CLASS(DOME_ACE, "DOME ACE"),
     TRAINER_CLASS(PALACE_MAVEN, "PALACE MAVEN"),
@@ -677,7 +704,7 @@ const struct TrainerClass gTrainerClasses[TRAINER_CLASS_COUNT] =
     TRAINER_CLASS(PIKE_QUEEN, "PIKE QUEEN"),
     TRAINER_CLASS(PYRAMID_KING, "PYRAMID KING"),
     TRAINER_CLASS(RS_PROTAG, "{PKMN} TRAINER"),
-    TRAINER_CLASS(TEAM_ROCKET, "TEAM ROCKET", 10),
+    TRAINER_CLASS(TEAM_ROCKET, "TEAM ROCKET", 10, ITEM_POKE_BALL),
     TRAINER_CLASS(BOSS, "BOSS", 20, ITEM_MASTER_BALL),
 };
 
@@ -2183,7 +2210,9 @@ void ModifyPersonalityForNature(u32 *personality, u32 newNature)
 u32 GeneratePersonalityForGender(u32 gender, u32 species)
 {
     const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[species];
-    if (gender == MON_MALE)
+    if (gender == MON_GENDERLESS)
+        return 0;
+    else if (gender == MON_MALE)
         return ((255 - speciesInfo->genderRatio) / 2) + speciesInfo->genderRatio;
     else
         return speciesInfo->genderRatio / 2;
@@ -2265,6 +2294,8 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_MALE, partyData[i].species);
             else if (partyData[i].gender == TRAINER_MON_FEMALE)
                 personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[i].species);
+            else if (partyData[i].gender == TRAINER_MON_RANDOM_GENDER)
+                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(Random() & 1 ? MON_MALE : MON_FEMALE, partyData[i].species);
             ModifyPersonalityForNature(&personalityValue, partyData[i].nature);
             if (partyData[i].isShiny)
             {
@@ -2331,6 +2362,11 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
             {
                 u32 data = partyData[i].gigantamaxFactor;
                 SetMonData(&party[i], MON_DATA_GIGANTAMAX_FACTOR, &data);
+            }
+            if (partyData[i].teraType > 0)
+            {
+                u32 data = partyData[i].teraType;
+                SetMonData(&party[i], MON_DATA_TERA_TYPE, &data);
             }
             CalculateMonStats(&party[i]);
 
@@ -3304,6 +3340,17 @@ static bool8 IsMajorBattle(void)
     return FALSE;
 }
 
+static void ClearSetBScriptingStruct(void)
+{
+    // windowsType is set up earlier in BattleInitBgsAndWindows, so we need to save the value
+    u32 temp = gBattleScripting.windowsType;
+    memset(&gBattleScripting, 0, sizeof(gBattleScripting));
+
+    gBattleScripting.windowsType = temp;
+    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
+    gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
+}
+
 static void BattleStartClearSetData(void)
 {
     s32 i;
@@ -3317,10 +3364,7 @@ static void BattleStartClearSetData(void)
     memset(&gSideTimers, 0, sizeof(gSideTimers));
     memset(&gWishFutureKnock, 0, sizeof(gWishFutureKnock));
     memset(&gBattleResults, 0, sizeof(gBattleResults));
-    memset(&gBattleScripting, 0, sizeof(gBattleScripting));
-
-    gBattleScripting.battleStyle = gSaveBlock2Ptr->optionsBattleStyle;
-    gBattleScripting.expOnCatch = (B_EXP_CATCH >= GEN_6);
+    ClearSetBScriptingStruct();
 
     for (i = 0; i < MAX_BATTLERS_COUNT; i++)
     {
@@ -3528,6 +3572,7 @@ void SwitchInClearSetData(u32 battler)
     gBattleStruct->lastTakenMoveFrom[battler][3] = 0;
     gBattleStruct->lastMoveFailed &= ~(gBitTable[battler]);
     gBattleStruct->palaceFlags &= ~(gBitTable[battler]);
+    gBattleStruct->boosterEnergyActivates &= ~(gBitTable[battler]);
 
     for (i = 0; i < ARRAY_COUNT(gSideTimers); i++)
     {
@@ -3552,6 +3597,7 @@ void SwitchInClearSetData(u32 battler)
     // Reset damage to prevent things like red card activating if the switched-in mon is holding it
     gSpecialStatuses[battler].physicalDmg = 0;
     gSpecialStatuses[battler].specialDmg = 0;
+    gBattleStruct->enduredDamage &= ~gBitTable[battler];
 
     // Reset G-Max Chi Strike boosts.
     gBattleStruct->bonusCritStages[battler] = 0;
@@ -3634,7 +3680,6 @@ const u8* FaintClearSetData(u32 battler)
     gProtectStructs[battler].flinchImmobility = FALSE;
     gProtectStructs[battler].notFirstStrike = FALSE;
     gProtectStructs[battler].usedHealBlockedMove = FALSE;
-    gProtectStructs[battler].usesBouncedMove = FALSE;
     gProtectStructs[battler].usedGravityPreventedMove = FALSE;
     gProtectStructs[battler].usedThroatChopPreventedMove = FALSE;
     gProtectStructs[battler].statRaised = FALSE;
@@ -3659,6 +3704,7 @@ const u8* FaintClearSetData(u32 battler)
     gBattleStruct->lastTakenMoveFrom[battler][3] = 0;
 
     gBattleStruct->palaceFlags &= ~(gBitTable[battler]);
+    gBattleStruct->boosterEnergyActivates &= ~(gBitTable[battler]);
 
     for (i = 0; i < ARRAY_COUNT(gSideTimers); i++)
     {
@@ -4260,11 +4306,11 @@ void BattleTurnPassed(void)
         if (DoBattlerEndTurnEffects())
             return;
     }
+    if (HandleWishPerishSongOnTurnEnd())
+        return;
     if (HandleFaintedMonActions())
         return;
     gBattleStruct->faintedActionsState = 0;
-    if (HandleWishPerishSongOnTurnEnd())
-        return;
 
     TurnValuesCleanUp(FALSE);
     gHitMarker &= ~HITMARKER_NO_ATTACKSTRING;
@@ -4655,6 +4701,7 @@ static void HandleTurnActionSelectionState(void)
                     gBattleStruct->mega.toEvolve &= ~(gBitTable[BATTLE_PARTNER(GetBattlerPosition(battler))]);
                     gBattleStruct->burst.toBurst &= ~(gBitTable[BATTLE_PARTNER(GetBattlerPosition(battler))]);
                     gBattleStruct->dynamax.toDynamax &= ~(gBitTable[BATTLE_PARTNER(GetBattlerPosition(battler))]);
+                    gBattleStruct->tera.toTera &= ~(gBitTable[BATTLE_PARTNER(GetBattlerPosition(battler))]);
                     gBattleStruct->dynamax.usingMaxMove[BATTLE_PARTNER(GetBattlerPosition(battler))] = FALSE;
                     gBattleStruct->zmove.toBeUsed[BATTLE_PARTNER(GetBattlerPosition(battler))] = MOVE_NONE;
                     BtlController_EmitEndBounceEffect(battler, BUFFER_A);
@@ -4744,7 +4791,7 @@ static void HandleTurnActionSelectionState(void)
                             }
 
                             // Get the chosen move position (and thus the chosen move) and target from the returned buffer.
-                            gBattleStruct->chosenMovePositions[battler] = gBattleResources->bufferB[battler][2] & ~(RET_MEGA_EVOLUTION | RET_ULTRA_BURST | RET_DYNAMAX);
+                            gBattleStruct->chosenMovePositions[battler] = gBattleResources->bufferB[battler][2] & ~(RET_MEGA_EVOLUTION | RET_ULTRA_BURST | RET_DYNAMAX | RET_TERASTAL);
                             gChosenMoveByBattler[battler] = gBattleMons[battler].moves[gBattleStruct->chosenMovePositions[battler]];
                             gBattleStruct->moveTarget[battler] = gBattleResources->bufferB[battler][3];
 
@@ -4755,6 +4802,8 @@ static void HandleTurnActionSelectionState(void)
                                 gBattleStruct->burst.toBurst |= gBitTable[battler];
                             else if (gBattleResources->bufferB[battler][2] & RET_DYNAMAX)
                                 gBattleStruct->dynamax.toDynamax |= gBitTable[battler];
+                            else if (gBattleResources->bufferB[battler][2] & RET_TERASTAL)
+                                gBattleStruct->tera.toTera |= gBitTable[battler];
 
                             // Max Move check
                             if (ShouldUseMaxMove(battler, gChosenMoveByBattler[battler]))
@@ -5326,11 +5375,11 @@ static void TurnValuesCleanUp(bool8 var0)
             gProtectStructs[i].quash = FALSE;
             gProtectStructs[i].usedCustapBerry = FALSE;
             gProtectStructs[i].quickDraw = FALSE;
+            memset(&gQueuedStatBoosts[i], 0, sizeof(struct QueuedStatBoost));
         }
         else
         {
             memset(&gProtectStructs[i], 0, sizeof(struct ProtectStruct));
-            memset(&gQueuedStatBoosts[i], 0, sizeof(struct QueuedStatBoost));
 
             if (gDisableStructs[i].isFirstTurn)
                 gDisableStructs[i].isFirstTurn--;
@@ -5372,7 +5421,8 @@ static void PopulateArrayWithBattlers(u8 *battlers)
 static bool32 TryDoGimmicksBeforeMoves(void)
 {
     if (!(gHitMarker & HITMARKER_RUN)
-        && (gBattleStruct->mega.toEvolve || gBattleStruct->burst.toBurst || gBattleStruct->dynamax.toDynamax))
+        && (gBattleStruct->mega.toEvolve || gBattleStruct->burst.toBurst
+            || gBattleStruct->dynamax.toDynamax || gBattleStruct->tera.toTera))
     {
         u32 i, battler;
         u8 order[MAX_BATTLERS_COUNT];
@@ -5381,6 +5431,17 @@ static bool32 TryDoGimmicksBeforeMoves(void)
         SortBattlersBySpeed(order, FALSE);
         for (i = 0; i < gBattlersCount; i++)
         {
+            // Tera Check
+            if (gBattleStruct->tera.toTera & gBitTable[order[i]])
+            {
+                gBattlerAttacker = order[i];
+                gBattleScripting.battler = gBattlerAttacker;
+                gBattleStruct->tera.toTera &= ~(gBitTable[gBattlerAttacker]);
+                PrepareBattlerForTera(gBattlerAttacker);
+                PREPARE_TYPE_BUFFER(gBattleTextBuff1, GetBattlerTeraType(gBattlerAttacker));
+                BattleScriptExecute(BattleScript_Terastallization);
+                return TRUE;
+            }
             // Dynamax Check
             if (gBattleStruct->dynamax.toDynamax & gBitTable[order[i]])
             {
@@ -5797,7 +5858,7 @@ static void HandleEndTurn_FinishBattle(void)
             TestRunner_Battle_AfterLastTurn();
         BeginFastPaletteFade(3);
         FadeOutMapMusic(5);
-        if (B_TRAINERS_KNOCK_OFF_ITEMS == TRUE || B_RESTORE_HELD_BATTLE_ITEMS == TRUE)
+        if (B_TRAINERS_KNOCK_OFF_ITEMS == TRUE || B_RESTORE_HELD_BATTLE_ITEMS >= GEN_9)
             TryRestoreHeldItems();
 
         // Undo Dynamax HP multiplier before recalculating stats.
@@ -6022,7 +6083,7 @@ void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk)
                 gBattleStruct->dynamicMoveType = TYPE_ROCK | F_DYNAMIC_TYPE_SET;
             else if (gBattleWeather & B_WEATHER_SUN && holdEffect != HOLD_EFFECT_UTILITY_UMBRELLA)
                 gBattleStruct->dynamicMoveType = TYPE_FIRE | F_DYNAMIC_TYPE_SET;
-            else if (gBattleWeather & (B_WEATHER_HAIL |B_WEATHER_SNOW))
+            else if (gBattleWeather & (B_WEATHER_HAIL | B_WEATHER_SNOW))
                 gBattleStruct->dynamicMoveType = TYPE_ICE | F_DYNAMIC_TYPE_SET;
             else
                 gBattleStruct->dynamicMoveType = TYPE_NORMAL | F_DYNAMIC_TYPE_SET;
@@ -6050,7 +6111,9 @@ void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk)
     }
     else if (gMovesInfo[move].effect == EFFECT_REVELATION_DANCE)
     {
-        if (gBattleMons[battlerAtk].type1 != TYPE_MYSTERY)
+        if (IsTerastallized(battlerAtk) && GetBattlerTeraType(battlerAtk) != TYPE_STELLAR)
+            gBattleStruct->dynamicMoveType = GetBattlerTeraType(battlerAtk);
+        else if (gBattleMons[battlerAtk].type1 != TYPE_MYSTERY)
             gBattleStruct->dynamicMoveType = gBattleMons[battlerAtk].type1 | F_DYNAMIC_TYPE_SET;
         else if (gBattleMons[battlerAtk].type2 != TYPE_MYSTERY)
             gBattleStruct->dynamicMoveType = gBattleMons[battlerAtk].type2 | F_DYNAMIC_TYPE_SET;
@@ -6092,6 +6155,14 @@ void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk)
                 gBattleStruct->dynamicMoveType = TYPE_NORMAL | F_DYNAMIC_TYPE_SET;
         }
     }
+    else if (gMovesInfo[move].effect == EFFECT_TERA_BLAST && IsTerastallized(battlerAtk))
+    {
+        gBattleStruct->dynamicMoveType = GetBattlerTeraType(battlerAtk) | F_DYNAMIC_TYPE_SET;
+    }
+    else if (gMovesInfo[move].effect == EFFECT_TERA_STARSTORM && gBattleMons[battlerAtk].species == SPECIES_TERAPAGOS_STELLAR)
+    {
+        gBattleStruct->dynamicMoveType = TYPE_STELLAR | F_DYNAMIC_TYPE_SET;
+    }
 
     attackerAbility = GetBattlerAbility(battlerAtk);
 
@@ -6100,6 +6171,8 @@ void SetTypeBeforeUsingMove(u32 move, u32 battlerAtk)
              && gMovesInfo[move].effect != EFFECT_WEATHER_BALL
              && gMovesInfo[move].effect != EFFECT_CHANGE_TYPE_ON_ITEM
              && gMovesInfo[move].effect != EFFECT_NATURAL_GIFT
+             && !(gMovesInfo[move].effect == EFFECT_TERA_BLAST && IsTerastallized(battlerAtk))
+             && !(gMovesInfo[move].effect == EFFECT_TERA_STARSTORM && gBattleMons[battlerAtk].species == SPECIES_TERAPAGOS_STELLAR)
              && ((attackerAbility == ABILITY_PIXILATE && (ateType = TYPE_FAIRY))
                  || (attackerAbility == ABILITY_REFRIGERATE && (ateType = TYPE_ICE))
                  || (attackerAbility == ABILITY_AERILATE && (ateType = TYPE_FLYING))
