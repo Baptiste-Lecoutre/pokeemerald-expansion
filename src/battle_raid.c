@@ -17,6 +17,8 @@
 #include "pokemon.h"
 #include "random.h"
 #include "rtc.h"
+#include "script.h"
+#include "sound.h"
 #include "sprite.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
@@ -24,6 +26,7 @@
 #include "constants/item.h"
 #include "constants/items.h"
 #include "constants/moves.h"
+#include "constants/songs.h"
 
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
@@ -338,20 +341,14 @@ bool32 InitRaidData(void)
     gRaidData.raidType = RAID_TYPE_MAX;
 
     // determine raid rank based on number of badges
-    numBadges = 0;
-    for (i = 0; i < 8; i++)
-    {
-        if (FlagGet(FLAG_BADGE01_GET + i))
-            numBadges++;
-    }
-
-    min = gRaidBattleStarsByBadges[numBadges][0];
-	max = gRaidBattleStarsByBadges[numBadges][1];
-
-    if (min == max)
-        gRaidData.rank = min;
-    else
-        gRaidData.rank = (randomNum % ((max + 1) - min)) + min;
+    gRaidData.rank = gRaidBattleStarsByBadges[GetNumberOfBadges()][randomNum & 1];
+    //numBadges = GetNumberOfBadges();
+    //min = gRaidBattleStarsByBadges[numBadges][0];
+	//max = gRaidBattleStarsByBadges[numBadges][1];
+    //if (min == max)
+    //    gRaidData.rank = min;
+    //else
+    //    gRaidData.rank = (randomNum % ((max + 1) - min)) + min;
     
     // determine raid boss level based on raid rank
     min = gRaidBattleLevelRanges[gRaidData.rank][0];
@@ -441,10 +438,18 @@ bool32 InitRaidData(void)
     }
 
     // Gigantamax factor
-    if (gRaidData.raidType == RAID_TYPE_MAX && GetGMaxTargetSpecies(species) != SPECIES_NONE
-        && randomNum % 100 < gRaidBattleGigantamaxChances[gRaidData.rank])
-        SetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR, &boolTrue);
-    
+    if (gRaidData.raidType == RAID_TYPE_MAX)
+    {
+        postEvoSpecies = GetGMaxTargetSpecies(species);
+
+        if(postEvoSpecies != SPECIES_NONE && randomNum % 100 < gRaidBattleGigantamaxChances[gRaidData.rank])
+        {
+            SetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR, &boolTrue);
+            SetMonData(mon, MON_DATA_SPECIES, &postEvoSpecies);
+            SetMonData(mon, MON_DATA_SPECIES_OR_EGG, &postEvoSpecies);
+        }
+    }
+
     // Tera type
     if (gRaidData.raidType == RAID_TYPE_TERA)
     {

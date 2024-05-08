@@ -684,7 +684,7 @@ static bool8 HasRaidBattleAlreadyBeenDone(void)
 
 void IsRaidBattleAvailable(void)
 {
-	if (!HasRaidBattleAlreadyBeenDone() && GetRaidBattleData())
+	if (!HasRaidBattleAlreadyBeenDone()/* && GetRaidBattleData()*/)
 		gSpecialVar_Result = TRUE;
 	else
 		gSpecialVar_Result = FALSE;
@@ -724,7 +724,7 @@ static bool32 GetRaidBattleData(void)
 	}
 	else if (InitRaidData())
 		success = TRUE;
-	
+
 	if (success)
 	{
 		const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];

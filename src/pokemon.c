@@ -4309,10 +4309,14 @@ u32 GetGMaxTargetSpecies(u32 species)
 {
     const struct FormChange *formChanges = GetSpeciesFormChanges(species);
     u32 i;
-    for (i = 0; formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
+
+    if (formChanges != NULL)
     {
-        if (formChanges[i].method == FORM_CHANGE_BATTLE_GIGANTAMAX)
-            return formChanges[i].targetSpecies;
+        for (i = 0; formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
+        {
+            if (formChanges[i].method == FORM_CHANGE_BATTLE_GIGANTAMAX)
+                return formChanges[i].targetSpecies;
+        }
     }
     return SPECIES_NONE;
 }
