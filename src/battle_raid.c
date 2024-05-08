@@ -444,6 +444,15 @@ bool32 InitRaidData(void)
     if (gRaidData.raidType == RAID_TYPE_MAX && GetGMaxTargetSpecies(species) != SPECIES_NONE
         && randomNum % 100 < gRaidBattleGigantamaxChances[gRaidData.rank])
         SetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR, &boolTrue);
+    
+    // Tera type
+    if (gRaidData.raidType == RAID_TYPE_TERA)
+    {
+        u32 teraType = randomNum % (NUMBER_OF_MON_TYPES - 2);
+        if (teraType >= TYPE_MYSTERY)
+            teraType++;
+        SetMonData(mon, MON_DATA_TERA_TYPE, &teraType);
+    }
 
     return TRUE;
 }

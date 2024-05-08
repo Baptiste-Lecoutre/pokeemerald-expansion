@@ -4398,6 +4398,7 @@ static void TryDoEventsBeforeFirstTurn(void)
     gBattleScripting.moveendState = 0;
     gBattleStruct->faintedActionsState = 0;
     gBattleStruct->turnCountersTracker = 0;
+    gBattleStruct->battleTimer = 0;
     gMoveResultFlags = 0;
 
     memset(gQueuedStatBoosts, 0, sizeof(gQueuedStatBoosts));  // erase all totem boosts just to be safe

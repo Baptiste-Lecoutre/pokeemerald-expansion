@@ -196,6 +196,7 @@ Debug_EventScript_Script_7::
 	end
 
 Debug_EventScript_Script_8::
+	setTeraType TYPE_STELLAR, 4
 	end
 
 Debug_CheckSaveBlock::
