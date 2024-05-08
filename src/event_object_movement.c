@@ -1954,11 +1954,11 @@ static u8 LoadDynamicFollowerPalette(u16 species, u8 form, bool32 shiny)
         // Load compressed palette
         LoadCompressedSpritePaletteWithTag(palette, species);
         paletteNum = IndexOfSpritePaletteTag(species); // Tag is always present
-        UpdateSpritePaletteWithWeather(paletteNum, FALSE); //testing here
     }
 
 //    if (gWeatherPtr->currWeather != WEATHER_FOG_HORIZONTAL) // don't want to weather blend in fog
 //        UpdateSpritePaletteWithWeather(paletteNum);
+    UpdateSpritePaletteWithWeather(paletteNum, FALSE);
     return paletteNum;
 }
 
