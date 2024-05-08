@@ -601,7 +601,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .iconPalIndex = 0,
         FOOTPRINT(Samurott)
         //FOLLOWER(SamurottHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SamurottHisuian, gShinyFollowerPalette_SamurottHisuian)
-        FOLLOWER(SamurottHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SamurottHisuian, gFollowerPalette_SamurottHisuian)
+        FOLLOWER(SamurottHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SamurottHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sSamurottHisuianLevelUpLearnset,
         .teachableLearnset = sSamurottHisuianTeachableLearnset,
@@ -3326,7 +3326,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .iconPalIndex = 1,
         FOOTPRINT(Lilligant)
         //FOLLOWER(LilligantHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_LilligantHisuian, gShinyFollowerPalette_LilligantHisuian)
-        FOLLOWER(LilligantHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_LilligantHisuian, gFollowerPalette_LilligantHisuian)
+        FOLLOWER(LilligantHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_LilligantHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sLilligantHisuianLevelUpLearnset,
         .teachableLearnset = sLilligantHisuianTeachableLearnset,
@@ -3558,7 +3558,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .iconPalIndex = 1,
         //FOOTPRINT(Basculegion),
         //FOLLOWER(BasculegionMale, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BasculegionMale, gShinyFollowerPalette_BasculegionMale)
-        FOLLOWER(BasculegionMale, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BasculegionMale, gFollowerPalette_BasculegionMale)
+        FOLLOWER(BasculegionMale, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BasculegionMale)
         .levelUpLearnset = sBasculegionLevelUpLearnset,
         .teachableLearnset = sBasculegionTeachableLearnset,
         .formSpeciesIdTable = sBasculegionFormSpeciesIdTable,
@@ -3613,7 +3613,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .iconPalIndex = 0,
         //FOOTPRINT(Basculegion),
         //FOLLOWER(BasculegionFemale, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BasculegionFemale, gShinyFollowerPalette_BasculegionFemale)
-        FOLLOWER(BasculegionFemale, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BasculegionFemale, gFollowerPalette_BasculegionFemale)
+        FOLLOWER(BasculegionFemale, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BasculegionFemale)
         .levelUpLearnset = sBasculegionLevelUpLearnset,
         .teachableLearnset = sBasculegionTeachableLearnset,
         .formSpeciesIdTable = sBasculegionFormSpeciesIdTable,
@@ -5241,7 +5241,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .iconPalIndex = 0,
         FOOTPRINT(Zorua)
         //FOLLOWER(ZoruaHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ZoruaHisuian, gShinyFollowerPalette_ZoruaHisuian)
-        FOLLOWER(ZoruaHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ZoruaHisuian, gFollowerPalette_ZoruaHisuian)
+        FOLLOWER(ZoruaHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ZoruaHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sZoruaHisuianLevelUpLearnset,
         .teachableLearnset = sZoruaHisuianTeachableLearnset,
@@ -5298,7 +5298,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .iconPalIndex = 0,
         FOOTPRINT(Zoroark)
         //FOLLOWER(ZoroarkHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ZoroarkHisuian, gShinyFollowerPalette_ZoroarkHisuian)
-        FOLLOWER(ZoroarkHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ZoroarkHisuian, gFollowerPalette_ZoroarkHisuian)
+        FOLLOWER(ZoroarkHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ZoroarkHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sZoroarkHisuianLevelUpLearnset,
         .teachableLearnset = sZoroarkHisuianTeachableLearnset,
@@ -8974,7 +8974,7 @@ const struct SpeciesInfo gSpeciesInfoGen5[] =
         .iconPalIndex = 2,
         FOOTPRINT(Braviary)
         //FOLLOWER(BraviaryHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BraviaryHisuian, gShinyFollowerPalette_BraviaryHisuian)
-        FOLLOWER(BraviaryHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BraviaryHisuian, gFollowerPalette_BraviaryHisuian)
+        FOLLOWER(BraviaryHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_BraviaryHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sBraviaryHisuianLevelUpLearnset,
         .teachableLearnset = sBraviaryHisuianTeachableLearnset,

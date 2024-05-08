@@ -6223,7 +6223,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .iconPalIndex = 0,
         FOOTPRINT(Growlithe)
         //FOLLOWER(GrowlitheHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GrowlitheHisuian, gShinyFollowerPalette_GrowlitheHisuian)
-        FOLLOWER(GrowlitheHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GrowlitheHisuian, gFollowerPalette_GrowlitheHisuian)
+        FOLLOWER(GrowlitheHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GrowlitheHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sGrowlitheHisuianLevelUpLearnset,
         .teachableLearnset = sGrowlitheHisuianTeachableLearnset,
@@ -6280,7 +6280,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .iconPalIndex = 0,
         FOOTPRINT(Arcanine)
         //FOLLOWER(ArcanineHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ArcanineHisuian, gShinyFollowerPalette_ArcanineHisuian)
-        FOLLOWER(ArcanineHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ArcanineHisuian, gFollowerPalette_ArcanineHisuian)
+        FOLLOWER(ArcanineHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ArcanineHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sArcanineHisuianLevelUpLearnset,
         .teachableLearnset = sArcanineHisuianTeachableLearnset,
@@ -10172,7 +10172,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .iconPalIndex = 0,
         FOOTPRINT(Voltorb)
         //FOLLOWER(VoltorbHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_VoltorbHisuian, gShinyFollowerPalette_VoltorbHisuian)
-        FOLLOWER(VoltorbHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_VoltorbHisuian, gFollowerPalette_VoltorbHisuian)
+        FOLLOWER(VoltorbHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_VoltorbHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sVoltorbHisuianLevelUpLearnset,
         .teachableLearnset = sVoltorbHisuianTeachableLearnset,
@@ -10229,7 +10229,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .iconPalIndex = 1,
         FOOTPRINT(Electrode)
         //FOLLOWER(ElectrodeHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ElectrodeHisuian, gShinyFollowerPalette_ElectrodeHisuian)
-        FOLLOWER(ElectrodeHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ElectrodeHisuian, gFollowerPalette_ElectrodeHisuian)
+        FOLLOWER(ElectrodeHisuian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_ElectrodeHisuian)
         .isHisuianForm = TRUE,
         .levelUpLearnset = sElectrodeHisuianLevelUpLearnset,
         .teachableLearnset = sElectrodeHisuianTeachableLearnset,
@@ -12603,7 +12603,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .iconPalIndex = 2,
         //FOOTPRINT(Kleavor)
         //FOLLOWER(Kleavor, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Kleavor, gShinyFollowerPalette_Kleavor)
-        FOLLOWER(Kleavor, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Kleavor, gFollowerPalette_Kleavor)
+        FOLLOWER(Kleavor, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Kleavor)
         .levelUpLearnset = sKleavorLevelUpLearnset,
         .teachableLearnset = sKleavorTeachableLearnset,
     },

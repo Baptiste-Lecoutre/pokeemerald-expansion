@@ -4921,7 +4921,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .iconPalIndex = 0,
         FOOTPRINT(Dialga)
         //FOLLOWER(DialgaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_NONE, gFollowerPalette_DialgaOrigin, gShinyFollowerPalette_DialgaOrigin)
-        FOLLOWER(DialgaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_NONE, gFollowerPalette_DialgaOrigin, gFollowerPalette_DialgaOrigin)
+        FOLLOWER(DialgaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_NONE, gFollowerPalette_DialgaOrigin)
         .isLegendary = TRUE,
         .isFrontierBanned = TRUE,
         .levelUpLearnset = sDialgaLevelUpLearnset,
@@ -5046,7 +5046,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .iconPalIndex = 2,
         FOOTPRINT(Palkia)
         //FOLLOWER(PalkiaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_NONE, gFollowerPalette_PalkiaOrigin, gShinyFollowerPalette_PalkiaOrigin)
-        FOLLOWER(PalkiaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_NONE, gFollowerPalette_PalkiaOrigin, gFollowerPalette_PalkiaOrigin)
+        FOLLOWER(PalkiaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_NONE, gFollowerPalette_PalkiaOrigin)
         .isLegendary = TRUE,
         .isFrontierBanned = TRUE,
         .levelUpLearnset = sPalkiaLevelUpLearnset,
@@ -5296,7 +5296,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .iconPalIndex = 0,
         FOOTPRINT(Giratina)
         //FOLLOWER(GiratinaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GiratinaOrigin, gShinyFollowerPalette_GiratinaOrigin)
-        FOLLOWER(GiratinaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GiratinaOrigin, gFollowerPalette_GiratinaOrigin)
+        FOLLOWER(GiratinaOrigin, SIZE_64x64, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_GiratinaOrigin)
         .isLegendary = TRUE,
         .isFrontierBanned = TRUE,
         .levelUpLearnset = sGiratinaLevelUpLearnset,
