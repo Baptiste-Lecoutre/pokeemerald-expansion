@@ -532,6 +532,9 @@
 #define OBJ_EVENT_PAL_TAG_DAWN                    0x1139
 #define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113A
 #define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113B
+#define OBJ_EVENT_PAL_TAG_CHASE                   0x113C
+#define OBJ_EVENT_PAL_TAG_ELAINE                  0x113D
+#define OBJ_EVENT_PAL_TAG_WALLY                   0x113E
 
 #if OW_MON_POKEBALLS
 // Vanilla
