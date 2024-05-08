@@ -826,13 +826,13 @@ $(OBJEVENTGFXDIR)/pokemon_old/registeel_OW.4bpp: %.4bpp: %.png
 $(OBJEVENTGFXDIR)/pokemon_old/regigigas_OW.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 8 -mheight 8
 
-$(OBJEVENTGFXDIR)/pokemon/regidrago_OW.4bpp: %.4bpp: %.png
+$(OBJEVENTGFXDIR)/pokemon_old/regidrago_OW.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
-$(OBJEVENTGFXDIR)/pokemon/regieleki_OW.4bpp: %.4bpp: %.png
+$(OBJEVENTGFXDIR)/pokemon_old/regieleki_OW.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
-$(OBJEVENTGFXDIR)/pokemon/moltres_OW.4bpp: %.4bpp: %.png
+$(OBJEVENTGFXDIR)/pokemon_old/moltres_OW.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
 $(OBJEVENTGFXDIR)/pokemon_old/zapdos_OW.4bpp: %.4bpp: %.png
@@ -844,7 +844,7 @@ $(OBJEVENTGFXDIR)/pokemon_old/articuno_OW.4bpp: %.4bpp: %.png
 $(OBJEVENTGFXDIR)/pokemon_old/snorlax_sleep.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 6 -mheight 6
 
-$(OBJEVENTGFXDIR)/pokemon/spheal_roll.4bpp: %.4bpp: %.png
+$(OBJEVENTGFXDIR)/pokemon_old/spheal_roll.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
 $(OBJEVENTGFXDIR)/misc/animated_ball.4bpp: %.4bpp: %.png
