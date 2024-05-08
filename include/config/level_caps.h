@@ -1,7 +1,8 @@
 #ifndef GUARD_CONFIG_LEVEL_CAP_H
 #define GUARD_CONFIG_LEVEL_CAP_H
 
-// Constants
+// experience (soft-)caps
+
 #define EXP_CAP_NONE                    0 // Regular behavior, no level caps are applied
 #define EXP_CAP_HARD                    1 // Pokémon with a level >= the level cap cannot gain any experience
 #define EXP_CAP_SOFT                    2 // Pokémon with a level >= the level cap will gain reduced experience

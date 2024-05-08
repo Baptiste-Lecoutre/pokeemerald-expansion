@@ -1702,7 +1702,8 @@ void CB2_Overworld(void)
     if (fading)
         SetVBlankCallback(NULL);
     OverworldBasic();
-    if (fading) {
+    if (fading)
+    {
         SetFieldVBlankCallback();
         return;
     }
@@ -2184,7 +2185,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_Fly || !gSaveBlock2Ptr->optionsShowFollowerPokemon || PlayerHasFollower())
+        if (gFieldCallback == FieldCallback_UseFly || !gSaveBlock2Ptr->optionsShowFollowerPokemon || PlayerHasFollower())
             RemoveFollowingPokemon();
         else
             UpdateFollowingPokemon();

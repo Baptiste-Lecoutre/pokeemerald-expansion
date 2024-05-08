@@ -447,6 +447,13 @@ struct SpeciesInfo /*0x8C*/
  /* 0x88 */ const struct Evolution *evolutions;
  /* 0x84 */ const u16 *formSpeciesIdTable;
  /* 0x84 */ const struct FormChange *formChangeTable;
+#if OW_FOLLOWERS_ENABLED
+            struct ObjectEventGraphicsInfo followerData;
+#if OW_FOLLOWERS_SHARE_PALETTE == FALSE
+            const void* followerPalette;
+            const void* followerShinyPalette;
+#endif //OW_FOLLOWERS_SHARE_PALETTE
+#endif //OW_FOLLOWERS_ENABLED
 };
 
 struct MoveInfo

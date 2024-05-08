@@ -264,8 +264,8 @@
 #define OBJ_EVENT_GFX_RAID_DEN                   260
 #define OBJ_EVENT_GFX_SPHEAL                     261
 
-#define OBJ_EVENT_GFX_ANIMATED_BALL              OBJ_EVENT_GFX_ITEM_BALL // replaces ITEM_BALL
-#define OBJ_EVENT_GFX_OW_MON                     262
+#define OBJ_EVENT_GFX_ANIMATED_BALL              262//OBJ_EVENT_GFX_ITEM_BALL // replaces ITEM_BALL
+#define OBJ_EVENT_GFX_OW_MON                     263
 #define OBJ_EVENT_GFX_LIGHT_SPRITE               OBJ_EVENT_GFX_QUINTY_PLUMP
 
 #define	COSTUME_GFX									OBJ_EVENT_GFX_OW_MON 
@@ -471,38 +471,22 @@
 #define OBJ_EVENT_GFX_VAR_C  (OBJ_EVENT_GFX_VARS + 0xC)
 #define OBJ_EVENT_GFX_VAR_D  (OBJ_EVENT_GFX_VARS + 0xD)
 #define OBJ_EVENT_GFX_VAR_E  (OBJ_EVENT_GFX_VARS + 0xE)
-#define OBJ_EVENT_GFX_VAR_F  (OBJ_EVENT_GFX_VARS + 0xF) // 255
+#define OBJ_EVENT_GFX_VAR_F  (OBJ_EVENT_GFX_VARS + 0xF)
 
 #define OBJ_EVENT_GFX_MON_BASE  0x200 // 512
 #define OBJ_EVENT_GFX_SPECIES_BITS 11
 #define OBJ_EVENT_GFX_SPECIES_MASK ((1 << OBJ_EVENT_GFX_SPECIES_BITS) - 1)
 
+// Used to call a specific species' follower graphics. Useful for static encounters.
+#define OBJ_EVENT_GFX_SPECIES(name) (OBJ_EVENT_GFX_MON_BASE + SPECIES_##name)
+
 #define OW_SPECIES(x) (((x)->graphicsId & OBJ_EVENT_GFX_SPECIES_MASK) - OBJ_EVENT_GFX_MON_BASE)
 #define OW_FORM(x) ((x)->graphicsId >> OBJ_EVENT_GFX_SPECIES_BITS)
 
-// If true, follower pokemon will bob up and down
-// during their idle & walking animations
-#define OW_MON_BOBBING  TRUE
-
-// If true, adds a small amount of overhead
-// to OW code so that large (48x48, 64x64) OWs
-// will display correctly under bridges, etc.
-#define LARGE_OW_SUPPORT TRUE
-
-// See global.h for the toggle of OW_GFX_COMPRESS
-// Compressed gfx are incompatible with non-power-of-two sprite sizes:
-// (You should not use 48x48 sprites/tables for compressed gfx)
-// 16x32, 32x32, 64x64 etc are fine
-
-// Followers will emerge from the pokeball they are stored in,
-// instead of a normal pokeball
-#define OW_MON_POKEBALLS TRUE
-
-#define SHADOW_SIZE_S   0
-#define SHADOW_SIZE_M   1
-#define SHADOW_SIZE_L   2
-#define SHADOW_SIZE_XL  3 // unused; repurposed to mean no shadow
-#define SHADOW_SIZE_NONE 3
+#define SHADOW_SIZE_S    0
+#define SHADOW_SIZE_M    1
+#define SHADOW_SIZE_L    2
+#define SHADOW_SIZE_NONE 3   // Originally SHADOW_SIZE_XL, which went unused due to shadowSize in ObjectEventGraphicsInfo being only 2 bits.
 
 #define F_INANIMATE                        (1 << 6)
 #define F_DISABLE_REFLECTION_PALETTE_LOAD  (1 << 7)
@@ -554,5 +538,128 @@
 #define LOCALID_SOOTOPOLIS_MART_CLERK 1
 #define LOCALID_BATTLE_FRONTIER_MART_CLERK 1
 #define LOCALID_SLATEPORT_ENERGY_GURU 25
+
+#define OBJ_EVENT_PAL_TAG_BRENDAN                 0x1100
+#define OBJ_EVENT_PAL_TAG_BRENDAN_REFLECTION      0x1101
+#define OBJ_EVENT_PAL_TAG_BRIDGE_REFLECTION       0x1102
+#define OBJ_EVENT_PAL_TAG_NPC_1                   0x1103
+#define OBJ_EVENT_PAL_TAG_NPC_2                   0x1104
+#define OBJ_EVENT_PAL_TAG_NPC_3                   0x1105
+#define OBJ_EVENT_PAL_TAG_NPC_4                   0x1106
+#define OBJ_EVENT_PAL_TAG_NPC_1_REFLECTION        0x1107
+#define OBJ_EVENT_PAL_TAG_NPC_2_REFLECTION        0x1108
+#define OBJ_EVENT_PAL_TAG_NPC_3_REFLECTION        0x1109
+#define OBJ_EVENT_PAL_TAG_NPC_4_REFLECTION        0x110A
+#define OBJ_EVENT_PAL_TAG_QUINTY_PLUMP            0x110B
+#define OBJ_EVENT_PAL_TAG_QUINTY_PLUMP_REFLECTION 0x110C
+#define OBJ_EVENT_PAL_TAG_TRUCK                   0x110D
+#define OBJ_EVENT_PAL_TAG_VIGOROTH                0x110E
+#define OBJ_EVENT_PAL_TAG_ZIGZAGOON               0x110F
+#define OBJ_EVENT_PAL_TAG_MAY                     0x1110
+#define OBJ_EVENT_PAL_TAG_MAY_REFLECTION          0x1111
+#define OBJ_EVENT_PAL_TAG_MOVING_BOX              0x1112
+#define OBJ_EVENT_PAL_TAG_CABLE_CAR               0x1113
+#define OBJ_EVENT_PAL_TAG_SSTIDAL                 0x1114
+#define OBJ_EVENT_PAL_TAG_PLAYER_UNDERWATER       0x1115
+#define OBJ_EVENT_PAL_TAG_KYOGRE                  0x1116
+#define OBJ_EVENT_PAL_TAG_KYOGRE_REFLECTION       0x1117
+#define OBJ_EVENT_PAL_TAG_GROUDON                 0x1118
+#define OBJ_EVENT_PAL_TAG_GROUDON_REFLECTION      0x1119
+#define OBJ_EVENT_PAL_TAG_UNUSED                  0x111A
+#define OBJ_EVENT_PAL_TAG_SUBMARINE_SHADOW        0x111B
+#define OBJ_EVENT_PAL_TAG_POOCHYENA               0x111C
+#define OBJ_EVENT_PAL_TAG_RED_LEAF                0x111D
+#define OBJ_EVENT_PAL_TAG_DEOXYS                  0x111E
+#define OBJ_EVENT_PAL_TAG_BIRTH_ISLAND_STONE      0x111F
+#define OBJ_EVENT_PAL_TAG_HO_OH                   0x1120
+#define OBJ_EVENT_PAL_TAG_LUGIA                   0x1121
+#define OBJ_EVENT_PAL_TAG_RS_BRENDAN              0x1122
+#define OBJ_EVENT_PAL_TAG_RS_MAY                  0x1123
+#define OBJ_EVENT_PAL_TAG_DYNAMIC                 0x1124
+#define OBJ_EVENT_PAL_TAG_REGIGIGAS               0x1128
+#define OBJ_EVENT_PAL_TAG_CYNTHIA                 0x1129
+#define OBJ_EVENT_PAL_TAG_NPC_5                   0x112A
+#define OBJ_EVENT_PAL_TAG_NPC_6                   0x112B
+#define OBJ_EVENT_PAL_TAG_NPC_7                   0x112C
+#define OBJ_EVENT_PAL_TAG_NPC_8                   0x112D
+#define OBJ_EVENT_PAL_TAG_NPC_5_REFLECTION        0x112E
+#define OBJ_EVENT_PAL_TAG_NPC_6_REFLECTION        0x112F
+#define OBJ_EVENT_PAL_TAG_NPC_7_REFLECTION        0x1130
+#define OBJ_EVENT_PAL_TAG_NPC_8_REFLECTION        0x1131
+#define OBJ_EVENT_PAL_TAG_SNORLAX                 0x1132
+
+#define OBJ_EVENT_PAL_TAG_REGIDRAGO               0x1133
+#define OBJ_EVENT_PAL_TAG_REGIELEKI               0x1134
+
+#define OBJ_EVENT_PAL_TAG_RED                     0x1135
+#define OBJ_EVENT_PAL_TAG_LEAF                    0x1136
+#define OBJ_EVENT_PAL_TAG_ETHAN                   0x1137
+#define OBJ_EVENT_PAL_TAG_LYRA                    0x1138
+#define OBJ_EVENT_PAL_TAG_KRIS                    0x1139
+#define OBJ_EVENT_PAL_TAG_LUCAS                   0x113A
+#define OBJ_EVENT_PAL_TAG_DAWN                    0x113B
+#define OBJ_EVENT_PAL_TAG_LUCAS_PLATINUM          0x113C
+#define OBJ_EVENT_PAL_TAG_DAWN_PLATINUM           0x113D
+#define OBJ_EVENT_PAL_TAG_CHASE                   0x113E
+#define OBJ_EVENT_PAL_TAG_ELAINE                  0x113F
+#define OBJ_EVENT_PAL_TAG_WALLY                   0x1140
+#define OBJ_EVENT_PAL_TAG_BRENDAN_RED             0x1141
+#define OBJ_EVENT_PAL_TAG_BRENDAN_BLUE            0x1142
+#define OBJ_EVENT_PAL_TAG_BRENDAN_YELLOW          0x1143
+#define OBJ_EVENT_PAL_TAG_MAY_RED                 0x1144
+#define OBJ_EVENT_PAL_TAG_MAY_BLUE                0x1145
+#define OBJ_EVENT_PAL_TAG_MAY_YELLOW              0x1146
+
+#define OBJ_EVENT_PAL_TAG_SPHEAL                  0x1147
+
+#if OW_MON_POKEBALLS
+// Vanilla
+#define OBJ_EVENT_PAL_TAG_BALL_MASTER             0x1150
+#define OBJ_EVENT_PAL_TAG_BALL_ULTRA              0x1151
+#define OBJ_EVENT_PAL_TAG_BALL_GREAT              0x1152
+#define OBJ_EVENT_PAL_TAG_BALL_SAFARI             0x1153
+#define OBJ_EVENT_PAL_TAG_BALL_NET                0x1154
+#define OBJ_EVENT_PAL_TAG_BALL_DIVE               0x1155
+#define OBJ_EVENT_PAL_TAG_BALL_NEST               0x1156
+#define OBJ_EVENT_PAL_TAG_BALL_REPEAT             0x1157
+#define OBJ_EVENT_PAL_TAG_BALL_TIMER              0x1158
+#define OBJ_EVENT_PAL_TAG_BALL_LUXURY             0x1159
+#define OBJ_EVENT_PAL_TAG_BALL_PREMIER            0x115A
+// Gen IV/Sinnoh
+#define OBJ_EVENT_PAL_TAG_BALL_DUSK               0x115B
+#define OBJ_EVENT_PAL_TAG_BALL_HEAL               0x115C
+#define OBJ_EVENT_PAL_TAG_BALL_QUICK              0x115D
+#define OBJ_EVENT_PAL_TAG_BALL_CHERISH            0x115E
+#define OBJ_EVENT_PAL_TAG_BALL_PARK               0x115F
+// Gen II/Johto Apricorns
+#define OBJ_EVENT_PAL_TAG_BALL_FAST               0x1160
+#define OBJ_EVENT_PAL_TAG_BALL_LEVEL              0x1161
+#define OBJ_EVENT_PAL_TAG_BALL_LURE               0x1162
+#define OBJ_EVENT_PAL_TAG_BALL_HEAVY              0x1163
+#define OBJ_EVENT_PAL_TAG_BALL_LOVE               0x1164
+#define OBJ_EVENT_PAL_TAG_BALL_FRIEND             0x1165
+#define OBJ_EVENT_PAL_TAG_BALL_MOON               0x1166
+#define OBJ_EVENT_PAL_TAG_BALL_SPORT              0x1167
+// Gen V
+#define OBJ_EVENT_PAL_TAG_BALL_DREAM              0x1168
+// Gen VII
+#define OBJ_EVENT_PAL_TAG_BALL_BEAST              0x1169
+// Gen VIII
+#define OBJ_EVENT_PAL_TAG_BALL_STRANGE            0x116A
+#endif
+// Used as a placeholder follower graphic
+#define OBJ_EVENT_PAL_TAG_SUBSTITUTE              0x7611
+#define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
+#define OBJ_EVENT_PAL_TAG_LIGHT_2                 0x8002
+#define OBJ_EVENT_PAL_TAG_EMOTES                  0x8003
+#define OBJ_EVENT_PAL_TAG_NEON_LIGHT              0x8004
+// Not a real OW palette tag; used for the white flash applied to followers
+#define OBJ_EVENT_PAL_TAG_WHITE                   (OBJ_EVENT_PAL_TAG_NONE - 1)
+#define OBJ_EVENT_PAL_TAG_NONE 0x11FF
+
+// This + localId is used as the tileTag
+// for compressed graphicsInfos
+// '(C)ompressed (E)vent'
+#define COMP_OW_TILE_TAG_BASE 0xCE00
 
 #endif  // GUARD_CONSTANTS_EVENT_OBJECTS_H
