@@ -528,32 +528,41 @@ static void ShowRaidPokemonTypes(void)
 	u8 type2 = gSpeciesInfo[species].types[1];
 	struct Sprite *sprite;
 
-	/*BlitMenuInfoIcon(WIN_TYPE_1, type1 + 1, 0, 2);
-	if (type1 != type2)
-		BlitMenuInfoIcon(WIN_TYPE_2, type2 + 1, 0, 2);*/
-
-
-
-    LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
+	LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
     LoadCompressedPalette(gMoveTypes_Pal, 0x1D0, 0x60);
 
-    if (sRaidBattleIntro->typeIconSpriteIds[0] == 0xFF)
-    {
-		sRaidBattleIntro->typeIconSpriteIds[0] = CreateSprite(&gSpriteTemplate_MoveTypes, 80, 7, 0);
+    if (gRaidData.raidType == RAID_TYPE_TERA)
+	{
+		type1 = GetMonData(&gEnemyParty[0], MON_DATA_TERA_TYPE);
+		if (sRaidBattleIntro->typeIconSpriteIds[0] == 0xFF)
+		{
+			sRaidBattleIntro->typeIconSpriteIds[0] = CreateSprite(&gSpriteTemplate_MoveTypes, 96, 7, 0);
 
-		sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[0]];
-		StartSpriteAnim(sprite, type1);
-		sprite->oam.paletteNum = gTypesInfo[type1].palette;
-    }
+			sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[0]];
+			StartSpriteAnim(sprite, type1);
+			sprite->oam.paletteNum = gTypesInfo[type1].palette;
+		}
+	}
+	else
+	{
+		if (sRaidBattleIntro->typeIconSpriteIds[0] == 0xFF)
+    	{
+			sRaidBattleIntro->typeIconSpriteIds[0] = CreateSprite(&gSpriteTemplate_MoveTypes, 80, 7, 0);
 
-	if (sRaidBattleIntro->typeIconSpriteIds[1] == 0xFF && type2 != type1)
-    {
-		sRaidBattleIntro->typeIconSpriteIds[1] = CreateSprite(&gSpriteTemplate_MoveTypes, 112, 7, 0);
+			sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[0]];
+			StartSpriteAnim(sprite, type1);
+			sprite->oam.paletteNum = gTypesInfo[type1].palette;
+    	}
 
-		sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[1]];
-		StartSpriteAnim(sprite, type2);
-		sprite->oam.paletteNum = gTypesInfo[type2].palette;
-    }
+		if (sRaidBattleIntro->typeIconSpriteIds[1] == 0xFF && type2 != type1)
+    	{
+			sRaidBattleIntro->typeIconSpriteIds[1] = CreateSprite(&gSpriteTemplate_MoveTypes, 112, 7, 0);
+
+			sprite = &gSprites[sRaidBattleIntro->typeIconSpriteIds[1]];
+			StartSpriteAnim(sprite, type2);
+			sprite->oam.paletteNum = gTypesInfo[type2].palette;
+    	}
+	}
 }
 
 static void ShowPartnerTeams(void)
