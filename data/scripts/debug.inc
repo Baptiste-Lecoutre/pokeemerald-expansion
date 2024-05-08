@@ -43,6 +43,8 @@ Debug_CheatStart::
 	additem ITEM_Z_POWER_RING
 	additem ITEM_DYNAMAX_BAND
 	additem ITEM_EXP_SHARE
+	additem ITEM_TERA_ORB
+	setflag B_FLAG_TERA_ORB_CHARGED
 	setvar VAR_BRINEY_HOUSE_STATE, 1
 	setvar VAR_ROUTE116_STATE, 2
 	setflag FLAG_HIDE_ROUTE_116_MR_BRINEY

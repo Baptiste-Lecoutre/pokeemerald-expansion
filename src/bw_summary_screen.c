@@ -4692,7 +4692,7 @@ static void SetMonTypeIcons(void)
         SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 68, 46, SPRITE_ARR_ID_TYPE);
         if (gSpeciesInfo[summary->species].types[0] != gSpeciesInfo[summary->species].types[1])
         {
-            SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 108, 46, SPRITE_ARR_ID_TYPE + 1);
+            SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 104, 46, SPRITE_ARR_ID_TYPE + 1);
             SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, FALSE);
         }
         else
@@ -4700,9 +4700,9 @@ static void SetMonTypeIcons(void)
             SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, TRUE);
         }
         //ravetodo not yet implemented
-        if (P_SHOW_TERA_TYPE >= GEN_9)
+        if (P_SHOW_TERA_TYPE >= GEN_9 && CheckBagHasItem(ITEM_TERA_ORB, 1))
         {
-            SetTypeSpritePosAndPal(summary->teraType, 200, 48, SPRITE_ARR_ID_TYPE + 2);
+            SetTypeSpritePosAndPal(summary->teraType, 140, 46, SPRITE_ARR_ID_TYPE + 2);
         }
     }
 }
