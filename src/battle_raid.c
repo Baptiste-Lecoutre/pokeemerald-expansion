@@ -338,7 +338,14 @@ bool32 InitRaidData(void)
     bool32 boolTrue = TRUE;
 
     // determine raid type
-    gRaidData.raidType = RAID_TYPE_MAX;
+    if (CheckBagHasItem(ITEM_DYNAMAX_BAND, 1) && CheckBagHasItem(ITEM_TERA_ORB, 1))
+        gRaidData.raidType = (randomNum & 1) ? RAID_TYPE_MAX : RAID_TYPE_MAX;//RAID_TYPE_TERA;
+    else if (CheckBagHasItem(ITEM_DYNAMAX_BAND, 1))
+        gRaidData.raidType = RAID_TYPE_MAX;
+    else if (CheckBagHasItem(ITEM_TERA_ORB, 1))
+        gRaidData.raidType = RAID_TYPE_TERA;
+    else
+        gRaidData.raidType = RAID_TYPE_MAX;
 
     // determine raid rank based on number of badges
     gRaidData.rank = gRaidBattleStarsByBadges[GetNumberOfBadges()][randomNum & 1];

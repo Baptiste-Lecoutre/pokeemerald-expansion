@@ -97,7 +97,8 @@ u32 GetBattlerTeraType(u32 battler)
 // Returns whether a battler is terastallized.
 bool32 IsTerastallized(u32 battler)
 {
-    return gBattleStruct->tera.isTerastallized[GetBattlerSide(battler)] & gBitTable[gBattlerPartyIndexes[battler]];
+    return (gBattleStruct->tera.isTerastallized[GetBattlerSide(battler)] & gBitTable[gBattlerPartyIndexes[battler]])
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_TERA);
 }
 
 
