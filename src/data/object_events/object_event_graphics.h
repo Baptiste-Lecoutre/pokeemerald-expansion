@@ -414,10 +414,10 @@ const u32 gFieldEffectObjectPic_CaveDust[] = INCBIN_U32("graphics/field_effects/
 const u16 gFieldEffectObjectPalette_CaveDust[] = INCBIN_U16("graphics/field_effects/palettes/cave_dust.gbapal");
 const u16 gObjectEventPal_Lugia[] = INCBIN_U16("graphics/object_events/palettes/lugia.gbapal");
 
-const u32 gObjectEventPic_RegirockOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/regirock_OW.4bpp");
-const u32 gObjectEventPic_RegiceOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/regice_OW.4bpp");
-const u32 gObjectEventPic_RegisteelOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/registeel_OW.4bpp");
-const u32 gObjectEventPic_RegigigasOW[] = INCBIN_U32("graphics/object_events/pics/pokemon/regigigas_OW.4bpp");
+const u32 gObjectEventPic_RegirockOW[] = INCBIN_U32("graphics/object_events/pics/pokemon_old/regirock_OW.4bpp");
+const u32 gObjectEventPic_RegiceOW[] = INCBIN_U32("graphics/object_events/pics/pokemon_old/regice_OW.4bpp");
+const u32 gObjectEventPic_RegisteelOW[] = INCBIN_U32("graphics/object_events/pics/pokemon_old/registeel_OW.4bpp");
+const u32 gObjectEventPic_RegigigasOW[] = INCBIN_U32("graphics/object_events/pics/pokemon_old/regigigas_OW.4bpp");
 const u16 gObjectEventPaletteRegigigas[] = INCBIN_U16("graphics/object_events/palettes/regigigas.gbapal");
 const u32 gObjectEventPic_MoltresOW[] = INCBIN_U32("graphics/object_events/pics/pokemon_old/moltres_OW.4bpp");
 const u32 gObjectEventPic_ZapdosOW[] = INCBIN_U32("graphics/object_events/pics/pokemon_old/zapdos_OW.4bpp");
@@ -427,7 +427,7 @@ const u16 gObjectEventPal_Snorlax[] = INCBIN_U16("graphics/object_events/palette
 
 const u16 gObjectEventPaletteLight[] = INCBIN_U16("graphics/object_events/palettes/light.gbapal");
 const u16 gObjectEventPaletteLight2[] = INCBIN_U16("graphics/object_events/palettes/light2.gbapal");
-const u16 gObjectEventPal_Substitute[] = INCBIN_U16("graphics/object_events/pics/pokemon/substitute.gbapal");
+const u16 gObjectEventPal_Substitute[] = INCBIN_U16("graphics/object_events/pics/pokemon_old/substitute.gbapal");
 
 const u16 gObjectEventPaletteEmotes[] = INCBIN_U16("graphics/misc/emotes.gbapal");
 const u16 gObjectEventPaletteNeonLight[] = INCBIN_U16("graphics/object_events/palettes/neon_light.gbapal");

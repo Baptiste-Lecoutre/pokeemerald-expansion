@@ -162,7 +162,7 @@ Route117_PokemonDayCare_EventScript_OneMonInDaycare::
 	end
 
 Route117_PokemonDayCare_EventScript_TryRetrieveMon::
-	specialvar VAR_RESULT, CalculatePlayerPartyCount
+	callnative IsPartyAndBoxesFull
 	goto_if_eq VAR_RESULT, PARTY_SIZE, Route117_PokemonDayCare_EventScript_NoRoom
 	specialvar VAR_RESULT, GetDaycareState
 	setvar VAR_0x8004, 0
@@ -189,9 +189,10 @@ Route117_PokemonDayCare_EventScript_CheckEnoughMoney::
 	end
 
 Route117_PokemonDayCare_EventScript_RetrieveMon::
+	specialvar VAR_RESULT, TakePokemonFromDaycare
+	goto_if_eq VAR_RESULT, 9999, Route117_PokemonDayCare_EventScript_NoRoom
 	applymovement LOCALID_DAYCARE_LADY, Route117_PokemonDayCare_Movement_RetrieveDaycareMon
 	waitmovement 0
-	specialvar VAR_RESULT, TakePokemonFromDaycare
 	special SubtractMoneyFromVar0x8005
 	playse SE_SHOP
 	msgbox Route117_PokemonDayCare_Text_HeresYourMon, MSGBOX_DEFAULT
@@ -199,10 +200,24 @@ Route117_PokemonDayCare_EventScript_RetrieveMon::
 	playmoncry VAR_RESULT, CRY_MODE_NORMAL
 	msgbox Route117_PokemonDayCare_Text_TookBackMon, MSGBOX_DEFAULT
 	waitmoncry
+	call_if_ne VAR_MON_BOX_ID, 9999, Route117_PokemonDayCare_EventScript_SentToPC @sent to PC
 	specialvar VAR_RESULT, GetDaycareState
 	goto_if_eq VAR_RESULT, DAYCARE_ONE_MON, Route117_PokemonDayCare_EventScript_AskRetrieveOtherMon
 	goto Route117_PokemonDayCare_EventScript_ComeAgain
 	end
+
+Route117_PokemonDayCare_EventScript_SentToPC::
+	call_if_unset FLAG_SYS_PC_LANETTE, Route117_PokemonDayCare_EventScript_SentToSomeonesPC
+	call_if_set FLAG_SYS_PC_LANETTE, Route117_PokemonDayCare_EventScript_SentToLanettesPC
+	return
+
+Route117_PokemonDayCare_EventScript_SentToSomeonesPC::
+	msgbox Route117_PokemonDayCare_Text_MonWasSentToSomeonesPC, MSGBOX_DEFAULT
+	return
+
+Route117_PokemonDayCare_EventScript_SentToLanettesPC::
+	msgbox Route117_PokemonDayCare_Text_MonWasSentToLanettesPC, MSGBOX_DEFAULT
+	return
 
 Route117_PokemonDayCare_EventScript_AskRetrieveOtherMon::
 	msgbox Route117_PokemonDayCare_Text_TakeOtherOneBackToo, MSGBOX_YESNO
@@ -390,6 +405,14 @@ Route117_PokemonDayCare_Text_HeresYourMon:
 Route117_PokemonDayCare_Text_TookBackMon:
 	.string "{PLAYER} took back {STR_VAR_1} from\n"
 	.string "the Day-Care Lady.$"
+
+Route117_PokemonDayCare_Text_MonWasSentToSomeonesPC:
+	.string "{STR_VAR_1} was sent to\n"
+	.string "Someone's PC.$"
+
+Route117_PokemonDayCare_Text_MonWasSentToLanettesPC:
+	.string "{STR_VAR_1} was sent to\n"
+	.string "Lanette's PC.$"
 
 Route117_PokemonDayCare_Text_YouHaveJustOneMon:
 	.string "Oh? But you have just one\n"
