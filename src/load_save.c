@@ -13,8 +13,8 @@
 #include "gba/flash_internal.h"
 #include "decoration_inventory.h"
 #include "agb_flash.h"
-#include "constants/event_objects.h"
 #include "event_data.h"
+#include "constants/event_objects.h"
 
 static void ApplyNewEncryptionKeyToAllEncryptedData(u32 encryptionKey);
 
@@ -206,7 +206,8 @@ void SaveObjectEvents(void)
     int i;
     u16 graphicsId;
 
-    for (i = 0; i < OBJECT_EVENTS_COUNT; i++) {
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
         gSaveBlock1Ptr->objectEvents[i] = gObjectEvents[i];
         // Swap graphicsId bytes when saving and loading
         // This keeps compatibility with vanilla,
@@ -225,7 +226,8 @@ void LoadObjectEvents(void)
     int i;
     u16 graphicsId;
 
-    for (i = 0; i < OBJECT_EVENTS_COUNT; i++) {
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
         gObjectEvents[i] = gSaveBlock1Ptr->objectEvents[i];
         // Swap graphicsId bytes when saving and loading
         // This keeps compatibility with vanilla,

@@ -4263,7 +4263,7 @@ static void TryDoEventsBeforeFirstTurn(void)
         {
             struct Pokemon *party = GetBattlerParty(i);
             struct Pokemon *mon = &party[gBattlerPartyIndexes[i]];
-            if (gBattleMons[i].hp == 0 || gBattleMons[i].species == SPECIES_NONE || GetMonData(mon, MON_DATA_IS_EGG))
+            if (!IsBattlerAlive(i) || gBattleMons[i].species == SPECIES_NONE || GetMonData(mon, MON_DATA_IS_EGG))
                 gAbsentBattlerFlags |= gBitTable[i];
         }
     }
@@ -4398,6 +4398,7 @@ static void TryDoEventsBeforeFirstTurn(void)
     gBattleScripting.moveendState = 0;
     gBattleStruct->faintedActionsState = 0;
     gBattleStruct->turnCountersTracker = 0;
+    gBattleStruct->battleTimer = 0;
     gMoveResultFlags = 0;
 
     memset(gQueuedStatBoosts, 0, sizeof(gQueuedStatBoosts));  // erase all totem boosts just to be safe

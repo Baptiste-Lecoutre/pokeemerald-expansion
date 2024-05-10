@@ -3064,35 +3064,6 @@ static void PrepareTMHMMoveWindow(void)
     CopyWindowToVram(WIN_TMHM_INFO_ICONS, COPYWIN_GFX);
 }
 
-// different from pokemon_summary_screen
-#define TYPE_ICON_PAL_NUM_0     12
-#define TYPE_ICON_PAL_NUM_1     13
-#define TYPE_ICON_PAL_NUM_2     14
-static const u8 sMoveTypeToOamPaletteNum[NUMBER_OF_MON_TYPES] =
-{
-    [TYPE_NORMAL] = TYPE_ICON_PAL_NUM_0,
-    [TYPE_FIGHTING] = TYPE_ICON_PAL_NUM_0,
-    [TYPE_FLYING] = TYPE_ICON_PAL_NUM_1,
-    [TYPE_POISON] = TYPE_ICON_PAL_NUM_1,
-    [TYPE_GROUND] = TYPE_ICON_PAL_NUM_0,
-    [TYPE_ROCK] = TYPE_ICON_PAL_NUM_0,
-    [TYPE_BUG] = TYPE_ICON_PAL_NUM_2,
-    [TYPE_GHOST] = TYPE_ICON_PAL_NUM_1,
-    [TYPE_STEEL] = TYPE_ICON_PAL_NUM_0,
-    [TYPE_MYSTERY] = TYPE_ICON_PAL_NUM_2,
-    [TYPE_FIRE] = TYPE_ICON_PAL_NUM_0,
-    [TYPE_WATER] = TYPE_ICON_PAL_NUM_1,
-    [TYPE_GRASS] = TYPE_ICON_PAL_NUM_2,
-    [TYPE_ELECTRIC] = TYPE_ICON_PAL_NUM_0,
-    [TYPE_PSYCHIC] = TYPE_ICON_PAL_NUM_1,
-    [TYPE_ICE] = TYPE_ICON_PAL_NUM_1,
-    [TYPE_DRAGON] = TYPE_ICON_PAL_NUM_2,
-    [TYPE_DARK] = TYPE_ICON_PAL_NUM_0,
-    #ifdef TYPE_FAIRY
-    [TYPE_FAIRY] = TYPE_ICON_PAL_NUM_1, //based on battle_engine
-    #endif
-};
-
 static void PrintTMHMMoveData(u16 itemId)
 {
     u8 i;
@@ -3121,7 +3092,7 @@ static void PrintTMHMMoveData(u16 itemId)
 
 		    sprite = &gSprites[gBagMenu->typeIconSpriteId];
 		    StartSpriteAnim(sprite, gMovesInfo[moveId].type);
-		    sprite->oam.paletteNum = sMoveTypeToOamPaletteNum[gMovesInfo[moveId].type];
+		    sprite->oam.paletteNum = gTypesInfo[gMovesInfo[moveId].type].palette;
         }
 
         // Print TMHM power

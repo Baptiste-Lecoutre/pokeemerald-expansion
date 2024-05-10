@@ -17,6 +17,8 @@
 #include "pokemon.h"
 #include "random.h"
 #include "rtc.h"
+#include "script.h"
+#include "sound.h"
 #include "sprite.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
@@ -24,6 +26,7 @@
 #include "constants/item.h"
 #include "constants/items.h"
 #include "constants/moves.h"
+#include "constants/songs.h"
 
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
@@ -65,15 +68,15 @@ static const u16 sGen8RaidHPMultipliers[] = {
     [RAID_RANK_7] = UQ_4_12(3.0),
 };
 
-static const u16 sGen9RaidHPMultipliers[] = {
-    [NO_RAID]     = UQ_4_12(1.0),
-    [RAID_RANK_1] = UQ_4_12(5.0),
-    [RAID_RANK_2] = UQ_4_12(5.0),
-    [RAID_RANK_3] = UQ_4_12(8.0),
-    [RAID_RANK_4] = UQ_4_12(12.0),
-    [RAID_RANK_5] = UQ_4_12(13.0), //UQ_4_12(20.0),
-    [RAID_RANK_6] = UQ_4_12(14.0), //UQ_4_12(25.0),
-    [RAID_RANK_7] = UQ_4_12(15.0), //UQ_4_12(30.0),
+static const u16 sGen9RaidHPMultipliers[] = { // should bave been UQ_4_12() as well, but it's limited to 16...
+    [NO_RAID]     = 1,
+    [RAID_RANK_1] = 5,
+    [RAID_RANK_2] = 5,
+    [RAID_RANK_3] = 8,
+    [RAID_RANK_4] = 12,
+    [RAID_RANK_5] = 20,
+    [RAID_RANK_6] = 25,
+    [RAID_RANK_7] = 30,
 };
 
 const u8 gRaidBattleStarsByBadges[][2] =
@@ -335,23 +338,24 @@ bool32 InitRaidData(void)
     bool32 boolTrue = TRUE;
 
     // determine raid type
-    gRaidData.raidType = RAID_TYPE_MAX;
+    if (CheckBagHasItem(ITEM_DYNAMAX_BAND, 1) && CheckBagHasItem(ITEM_TERA_ORB, 1))
+        gRaidData.raidType = (randomNum & 1) ? RAID_TYPE_MAX : RAID_TYPE_MAX;//RAID_TYPE_TERA;
+    else if (CheckBagHasItem(ITEM_DYNAMAX_BAND, 1))
+        gRaidData.raidType = RAID_TYPE_MAX;
+    else if (CheckBagHasItem(ITEM_TERA_ORB, 1))
+        gRaidData.raidType = RAID_TYPE_TERA;
+    else
+        gRaidData.raidType = RAID_TYPE_MAX;
 
     // determine raid rank based on number of badges
-    numBadges = 0;
-    for (i = 0; i < 8; i++)
-    {
-        if (FlagGet(FLAG_BADGE01_GET + i))
-            numBadges++;
-    }
-
-    min = gRaidBattleStarsByBadges[numBadges][0];
-	max = gRaidBattleStarsByBadges[numBadges][1];
-
-    if (min == max)
-        gRaidData.rank = min;
-    else
-        gRaidData.rank = (randomNum % ((max + 1) - min)) + min;
+    gRaidData.rank = gRaidBattleStarsByBadges[GetNumberOfBadges()][randomNum & 1];
+    //numBadges = GetNumberOfBadges();
+    //min = gRaidBattleStarsByBadges[numBadges][0];
+	//max = gRaidBattleStarsByBadges[numBadges][1];
+    //if (min == max)
+    //    gRaidData.rank = min;
+    //else
+    //    gRaidData.rank = (randomNum % ((max + 1) - min)) + min;
     
     // determine raid boss level based on raid rank
     min = gRaidBattleLevelRanges[gRaidData.rank][0];
@@ -441,9 +445,26 @@ bool32 InitRaidData(void)
     }
 
     // Gigantamax factor
-    if (gRaidData.raidType == RAID_TYPE_MAX && GetGMaxTargetSpecies(species) != SPECIES_NONE
-        && randomNum % 100 < gRaidBattleGigantamaxChances[gRaidData.rank])
-        SetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR, &boolTrue);
+    if (gRaidData.raidType == RAID_TYPE_MAX)
+    {
+        postEvoSpecies = GetGMaxTargetSpecies(species);
+
+        if(postEvoSpecies != SPECIES_NONE && randomNum % 100 < gRaidBattleGigantamaxChances[gRaidData.rank])
+        {
+            SetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR, &boolTrue);
+            SetMonData(mon, MON_DATA_SPECIES, &postEvoSpecies);
+            SetMonData(mon, MON_DATA_SPECIES_OR_EGG, &postEvoSpecies);
+        }
+    }
+
+    // Tera type
+    if (gRaidData.raidType == RAID_TYPE_TERA)
+    {
+        u32 teraType = randomNum % (NUMBER_OF_MON_TYPES - 2);
+        if (teraType >= TYPE_MYSTERY)
+            teraType++;
+        SetMonData(mon, MON_DATA_TERA_TYPE, &teraType);
+    }
 
     return TRUE;
 }
@@ -515,18 +536,29 @@ u8 GetRaidBattleTransition(void)
 }
 
 // Applies the HP multiplier for Raid Bosses.
+// Ideally, I should have used UQ_4_12 all the way, but the possible values are to low for tera multipliers (limited to 16).
+// Hence the redundancy in the code below
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
 {
-    u16 mult;
+    u16 mult, hp, maxHP;
+
+    if (GetMonData(mon, MON_DATA_SPECIES) == SPECIES_SHEDINJA)
+        return;
+
     if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX
         || gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA)
+    {
         mult = sGen8RaidHPMultipliers[gRaidData.rank];
-    else
+        hp = UQ_4_12_TO_INT((GetMonData(mon, MON_DATA_HP) * mult) + UQ_4_12_ROUND);
+        maxHP = UQ_4_12_TO_INT((GetMonData(mon, MON_DATA_MAX_HP) * mult) + UQ_4_12_ROUND);
+        SetMonData(mon, MON_DATA_HP, &hp);
+        SetMonData(mon, MON_DATA_MAX_HP, &maxHP);
+    }
+    else if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
+    {
         mult = sGen9RaidHPMultipliers[gRaidData.rank];
-
-    if (GetMonData(mon, MON_DATA_SPECIES) != SPECIES_SHEDINJA) {
-        u16 hp = UQ_4_12_TO_INT((GetMonData(mon, MON_DATA_HP) * mult) + UQ_4_12_ROUND);
-        u16 maxHP = UQ_4_12_TO_INT((GetMonData(mon, MON_DATA_MAX_HP) * mult) + UQ_4_12_ROUND);
+        hp = GetMonData(mon, MON_DATA_HP) * mult;
+        maxHP = GetMonData(mon, MON_DATA_MAX_HP) * mult;
         SetMonData(mon, MON_DATA_HP, &hp);
         SetMonData(mon, MON_DATA_MAX_HP, &maxHP);
     }
@@ -853,6 +885,20 @@ u16 GetShieldDamageReduction(void)
         || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
         return UQ_4_12(1-0.95);
+    }
+    else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+    {
+        if (IsTerastallized(gBattlerAttacker))
+        {
+            if (GetBattlerType(gBattlerAttacker, 0, FALSE) == gMovesInfo[gCurrentMove].type)
+                return UQ_4_12(0.75); // tera & stab
+            else
+                return UQ_4_12(0.35); // tera but no stab
+        }
+        else
+        {
+            return UQ_4_12(0.2); // not tera
+        }
     }
     return UQ_4_12(1);
 }
