@@ -340,7 +340,21 @@ static u16 TakeSelectedPokemonFromDaycare(struct DaycareMon *daycareMon)
         ApplyDaycareExperience(&pokemon);
     }
 
-    gPlayerParty[PARTY_SIZE - 1] = pokemon;
+    if(CalculatePlayerPartyCount() != PARTY_SIZE)
+    {
+        gSpecialVar_MonBoxId = 9999;
+        gSpecialVar_MonBoxPos = 9999;
+        gPlayerParty[PARTY_SIZE - 1] = pokemon;
+    }
+    else //convert back to boxmon and send to box
+    {
+       u32 sentPC = CopyMonToPC(&pokemon);
+       if(sentPC == MON_CANT_GIVE)
+       {
+           return 9999; //error! Can't retrieve!
+       }
+    }
+
     if (daycareMon->mail.message.itemId)
     {
         GiveMailToMon(&gPlayerParty[PARTY_SIZE - 1], &daycareMon->mail.message);
@@ -1640,3 +1654,7 @@ static u8 ModifyBreedingScoreForOvalCharm(u8 score)
     return score;
 }
 
+void IsPartyAndBoxesFull(void)
+{
+    gSpecialVar_Result = IsPlayerPartyAndPokemonStorageFull();
+} 
