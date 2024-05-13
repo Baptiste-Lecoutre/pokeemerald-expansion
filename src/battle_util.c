@@ -8151,7 +8151,6 @@ u8 IsMonDisobedient(void)
 {
     s32 rnd;
     s32 calc;
-    u32 i;
     u8 obedienceLevel = 0;
     u8 levelReferenced;
     u8 lvlCap = GetCurrentLevelCap();
