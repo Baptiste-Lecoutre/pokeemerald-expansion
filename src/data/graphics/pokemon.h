@@ -12427,7 +12427,7 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
 #endif //OW_FOLLOWERS_SHARE_PALETTE
 #endif //OW_FOLLOWERS_ENABLED
 
-    const u32 gMonFrontPic_BasculinBlueStriped[] = INCBIN_U32("graphics/pokemon/basculin/blue_striped/front.4bpp.lz");
+    const u32 gMonFrontPic_BasculinBlueStriped[] = INCBIN_U32("graphics/pokemon/basculin/blue_striped/anim_front.4bpp.lz");
     const u32 gMonPalette_BasculinBlueStriped[] = INCBIN_U32("graphics/pokemon/basculin/blue_striped/normal.gbapal.lz");
     const u32 gMonBackPic_BasculinBlueStriped[] = INCBIN_U32("graphics/pokemon/basculin/blue_striped/back.4bpp.lz");
     const u32 gMonShinyPalette_BasculinBlueStriped[] = INCBIN_U32("graphics/pokemon/basculin/blue_striped/shiny.gbapal.lz");
@@ -12441,7 +12441,7 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
 #endif //OW_FOLLOWERS_ENABLED
 
 #if P_HISUIAN_FORMS
-    const u32 gMonFrontPic_BasculinWhiteStriped[] = INCBIN_U32("graphics/pokemon/basculin/white_striped/front.4bpp.lz");
+    const u32 gMonFrontPic_BasculinWhiteStriped[] = INCBIN_U32("graphics/pokemon/basculin/white_striped/anim_front.4bpp.lz");
     const u32 gMonPalette_BasculinWhiteStriped[] = INCBIN_U32("graphics/pokemon/basculin/white_striped/normal.gbapal.lz");
     const u32 gMonBackPic_BasculinWhiteStriped[] = INCBIN_U32("graphics/pokemon/basculin/white_striped/back.4bpp.lz");
     const u32 gMonShinyPalette_BasculinWhiteStriped[] = INCBIN_U32("graphics/pokemon/basculin/white_striped/shiny.gbapal.lz");
@@ -14517,7 +14517,7 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
 #endif //OW_FOLLOWERS_SHARE_PALETTE
 #endif //OW_FOLLOWERS_ENABLED
 
-    const u32 gMonFrontPic_KeldeoResolute[] = INCBIN_U32("graphics/pokemon/keldeo/resolute/front.4bpp.lz");
+    const u32 gMonFrontPic_KeldeoResolute[] = INCBIN_U32("graphics/pokemon/keldeo/resolute/anim_front.4bpp.lz");
     const u32 gMonPalette_KeldeoResolute[] = INCBIN_U32("graphics/pokemon/keldeo/resolute/normal.gbapal.lz");
     const u32 gMonBackPic_KeldeoResolute[] = INCBIN_U32("graphics/pokemon/keldeo/resolute/back.4bpp.lz");
     const u32 gMonShinyPalette_KeldeoResolute[] = INCBIN_U32("graphics/pokemon/keldeo/resolute/shiny.gbapal.lz");
@@ -14548,7 +14548,7 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
 #endif //OW_FOLLOWERS_SHARE_PALETTE
 #endif //OW_FOLLOWERS_ENABLED
 
-    const u32 gMonFrontPic_MeloettaPirouette[] = INCBIN_U32("graphics/pokemon/meloetta/pirouette/front.4bpp.lz");
+    const u32 gMonFrontPic_MeloettaPirouette[] = INCBIN_U32("graphics/pokemon/meloetta/pirouette/anim_front.4bpp.lz");
     const u32 gMonPalette_MeloettaPirouette[] = INCBIN_U32("graphics/pokemon/meloetta/pirouette/normal.gbapal.lz");
     const u32 gMonBackPic_MeloettaPirouette[] = INCBIN_U32("graphics/pokemon/meloetta/pirouette/back.4bpp.lz");
     const u32 gMonShinyPalette_MeloettaPirouette[] = INCBIN_U32("graphics/pokemon/meloetta/pirouette/shiny.gbapal.lz");
@@ -16332,7 +16332,7 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
 #endif //P_FAMILY_NOIBAT
 
 #if P_FAMILY_XERNEAS
-    const u32 gMonFrontPic_XerneasNeutral[] = INCBIN_U32("graphics/pokemon/xerneas/front.4bpp.lz");
+    const u32 gMonFrontPic_XerneasNeutral[] = INCBIN_U32("graphics/pokemon/xerneas/anim_front.4bpp.lz");
     const u32 gMonPalette_XerneasNeutral[] = INCBIN_U32("graphics/pokemon/xerneas/normal.gbapal.lz");
     const u32 gMonBackPic_XerneasNeutral[] = INCBIN_U32("graphics/pokemon/xerneas/back.4bpp.lz");
     const u32 gMonShinyPalette_XerneasNeutral[] = INCBIN_U32("graphics/pokemon/xerneas/shiny.gbapal.lz");
