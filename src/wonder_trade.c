@@ -1043,7 +1043,6 @@ bool32 IsMegaPreEvolution(u16 species, u16 heldStone, bool32 found)
 u16 GetValidWonderTradeItem(u16 item)
 {
     u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES);
-    int i;
 
     ROLL:
         item = Random() % ITEMS_COUNT;
