@@ -356,7 +356,7 @@ u16 AddTextPrinterParameterized(u8 windowId, u8 fontId, const u8 *str, u8 x, u8 
     return AddTextPrinter(&printerTemplate, speed, callback);
 }
 
-static bool32 HasScrollChars(const u8 *text)
+UNUSED static bool32 HasScrollChars(const u8 *text)
 {
     u32 i;
     for (i = 0; text[i] != EOS; i++)
