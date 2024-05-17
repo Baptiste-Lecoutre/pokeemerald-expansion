@@ -2729,6 +2729,8 @@ static void MoveBattleBarGraphically(u8 battlerId, u8 whichBar)
 
         if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
             barElementId = HEALTHBOX_GFX_HP_BAR_RED;
+        else if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
+            barElementId = HEALTHBOX_GFX_12; // Exp bar for blue color
         else if (filledPixelsCount > (B_HEALTHBAR_PIXELS * 50 / 100)) // more than 50 % hp
             barElementId = HEALTHBOX_GFX_HP_BAR_GREEN;
         else if (filledPixelsCount > (B_HEALTHBAR_PIXELS * 20 / 100)) // more than 20% hp
