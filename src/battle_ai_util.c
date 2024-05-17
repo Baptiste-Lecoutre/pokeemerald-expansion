@@ -3288,12 +3288,16 @@ s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct Battl
     if (isPartyMonAttacker)
     {
         gBattleMons[battlerAtk] = switchinCandidate;
+        AI_THINKING_STRUCT->saved[battlerDef].saved = TRUE;
         SetBattlerData(battlerDef); // set known opposing battler data
+        AI_THINKING_STRUCT->saved[battlerDef].saved = FALSE;
     }
     else
     {
         gBattleMons[battlerDef] = switchinCandidate;
+        AI_THINKING_STRUCT->saved[battlerAtk].saved = TRUE;
         SetBattlerData(battlerAtk); // set known opposing battler data
+        AI_THINKING_STRUCT->saved[battlerAtk].saved = FALSE;
     }
     
     dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE, AI_GetWeather(AI_DATA));
@@ -3818,4 +3822,43 @@ void IncreaseTidyUpScore(u32 battlerAtk, u32 battlerDef, u32 move, s32 *score)
         ADJUST_SCORE_PTR(DECENT_EFFECT);
     if (gStatuses3[battlerDef] & STATUS3_LEECHSEED)
         ADJUST_SCORE_PTR(-2);
+}
+
+bool32 AI_ShouldSpicyExtract(u32 battlerAtk, u32 battlerAtkPartner, u32 move, struct AiLogicData *aiData)
+{
+    u32 preventsStatLoss;
+    u32 partnerAbility;
+    u32 partnerHoldEffect = aiData->holdEffects[battlerAtkPartner];
+
+    if (DoesBattlerIgnoreAbilityChecks(aiData->abilities[battlerAtk], move))
+        partnerAbility = ABILITY_NONE;
+    else
+        partnerAbility = aiData->abilities[battlerAtkPartner];
+
+    if (gBattleMons[battlerAtkPartner].statStages[STAT_ATK] == MAX_STAT_STAGE
+     || partnerAbility == ABILITY_CONTRARY
+     || partnerAbility == ABILITY_GOOD_AS_GOLD
+     || HasMoveEffect(BATTLE_OPPOSITE(battlerAtk), EFFECT_FOUL_PLAY)
+     || HasMoveEffect(BATTLE_OPPOSITE(battlerAtkPartner), EFFECT_FOUL_PLAY))
+        return FALSE;
+
+    preventsStatLoss = (partnerAbility == ABILITY_CLEAR_BODY
+                     || partnerAbility == ABILITY_FULL_METAL_BODY
+                     || partnerAbility == ABILITY_WHITE_SMOKE
+                     || partnerHoldEffect == HOLD_EFFECT_CLEAR_AMULET);
+
+    switch (gMovesInfo[aiData->partnerMove].effect)
+    {
+    case EFFECT_DEFENSE_UP:
+    case EFFECT_DEFENSE_UP_2:
+    case EFFECT_DEFENSE_UP_3:
+    case EFFECT_BULK_UP:
+    case EFFECT_STOCKPILE:
+        if (!preventsStatLoss)
+            return FALSE;
+    }
+
+    return (preventsStatLoss
+         && AI_STRIKES_FIRST(battlerAtk, battlerAtkPartner, TRUE)
+         && HasMoveWithCategory(battlerAtkPartner, DAMAGE_CATEGORY_PHYSICAL));
 }
