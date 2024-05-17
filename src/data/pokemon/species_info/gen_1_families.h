@@ -8281,7 +8281,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .palette = gMonPalette_SlowpokeGalarian,
         .shinyPalette = gMonShinyPalette_SlowpokeGalarian,
         .iconSprite = gMonIcon_SlowpokeGalarian,
-        .iconPalIndex = 1,
+        .iconPalIndex = 0,
         FOOTPRINT(Slowpoke)
         FOLLOWER(SlowpokeGalarian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SlowpokeGalarian, gShinyFollowerPalette_SlowpokeGalarian)
         .isGalarianForm = TRUE,
@@ -8395,7 +8395,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .palette = gMonPalette_SlowkingGalarian,
         .shinyPalette = gMonShinyPalette_SlowkingGalarian,
         .iconSprite = gMonIcon_SlowkingGalarian,
-        .iconPalIndex = 2,
+        .iconPalIndex = 0,
         FOOTPRINT(Slowking)
         FOLLOWER(SlowkingGalarian, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_SlowkingGalarian, gShinyFollowerPalette_SlowkingGalarian)
         .isGalarianForm = TRUE,

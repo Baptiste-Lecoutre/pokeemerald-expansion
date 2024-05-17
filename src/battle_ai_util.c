@@ -143,10 +143,11 @@ void ClearBattlerItemEffectHistory(u32 battlerId)
 
 void SaveBattlerData(u32 battlerId)
 {
-    if (!BattlerHasAi(battlerId))
+    if (!BattlerHasAi(battlerId) && !AI_THINKING_STRUCT->saved[battlerId].saved)
     {
         u32 i;
 
+        AI_THINKING_STRUCT->saved[battlerId].saved = TRUE;
         AI_THINKING_STRUCT->saved[battlerId].ability = gBattleMons[battlerId].ability;
         AI_THINKING_STRUCT->saved[battlerId].heldItem = gBattleMons[battlerId].item;
         AI_THINKING_STRUCT->saved[battlerId].species = gBattleMons[battlerId].species;
@@ -196,7 +197,7 @@ static bool32 ShouldFailForIllusion(u32 illusionSpecies, u32 battlerId)
 
 void SetBattlerData(u32 battlerId)
 {
-    if (!BattlerHasAi(battlerId))
+    if (!BattlerHasAi(battlerId) && AI_THINKING_STRUCT->saved[battlerId].saved)
     {
         u32 i, species, illusionSpecies, side;
         side = GetBattlerSide(battlerId);
@@ -240,10 +241,11 @@ void SetBattlerData(u32 battlerId)
 
 void RestoreBattlerData(u32 battlerId)
 {
-    if (!BattlerHasAi(battlerId))
+    if (!BattlerHasAi(battlerId) && AI_THINKING_STRUCT->saved[battlerId].saved)
     {
         u32 i;
 
+        AI_THINKING_STRUCT->saved[battlerId].saved = FALSE;
         gBattleMons[battlerId].ability = AI_THINKING_STRUCT->saved[battlerId].ability;
         gBattleMons[battlerId].item = AI_THINKING_STRUCT->saved[battlerId].heldItem;
         gBattleMons[battlerId].species = AI_THINKING_STRUCT->saved[battlerId].species;
@@ -274,7 +276,7 @@ bool32 IsBattlerTrapped(u32 battler, bool32 checkSwitch)
         return FALSE;
     if (checkSwitch && holdEffect == HOLD_EFFECT_SHED_SHELL)
         return FALSE;
-    else if (!checkSwitch && GetBattlerAbility(battler) == ABILITY_RUN_AWAY)
+    else if (!checkSwitch && AI_DATA->abilities[battler] == ABILITY_RUN_AWAY)
         return FALSE;
     else if (!checkSwitch && holdEffect == HOLD_EFFECT_CAN_ALWAYS_RUN)
         return FALSE;
@@ -354,9 +356,15 @@ bool32 MovesWithCategoryUnusable(u32 attacker, u32 target, u32 category)
 // To save computation time this function has 2 variants. One saves, sets and restores battlers, while the other doesn't.
 s32 AI_CalcDamageSaveBattlers(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectiveness, bool32 considerZPower)
 {
+    s32 dmg = 0;
     SaveBattlerData(battlerAtk);
     SaveBattlerData(battlerDef);
-    return AI_CalcDamage(move, battlerAtk, battlerDef, typeEffectiveness, considerZPower, AI_GetWeather(AI_DATA));
+    SetBattlerData(battlerAtk);
+    SetBattlerData(battlerDef);
+    dmg = AI_CalcDamage(move, battlerAtk, battlerDef, typeEffectiveness, considerZPower, AI_GetWeather(AI_DATA));
+    RestoreBattlerData(battlerAtk);
+    RestoreBattlerData(battlerDef);
+    return dmg;
 }
 
 static inline s32 LowestRollDmg(s32 dmg)
@@ -456,9 +464,6 @@ s32 AI_CalcDamage(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectivenes
     bool32 toggledDynamax = FALSE;
     bool32 toggledTera = FALSE;
     struct AiLogicData *aiData = AI_DATA;
-
-    SetBattlerData(battlerAtk);
-    SetBattlerData(battlerDef);
 
     // Temporarily enable Z-Moves for damage calcs
     if (considerZPower && IsViableZMove(battlerAtk, move))
@@ -591,9 +596,6 @@ s32 AI_CalcDamage(u32 move, u32 battlerAtk, u32 battlerDef, u8 *typeEffectivenes
     {
         dmg = 0;
     }
-
-    RestoreBattlerData(battlerAtk);
-    RestoreBattlerData(battlerDef);
 
     // convert multiper to AI_EFFECTIVENESS_xX
     *typeEffectiveness = AI_GetEffectiveness(effectivenessMultiplier);
@@ -1107,10 +1109,26 @@ bool32 AI_IsAbilityOnSide(u32 battlerId, u32 ability)
         return FALSE;
 }
 
+u32 AI_GetBattlerAbility(u32 battler)
+{
+    if (gAbilitiesInfo[gBattleMons[battler].ability].cantBeSuppressed)
+        return gBattleMons[battler].ability;
+
+    if (gStatuses3[battler] & STATUS3_GASTRO_ACID)
+        return ABILITY_NONE;
+
+    if (IsNeutralizingGasOnField()
+     && gBattleMons[battler].ability != ABILITY_NEUTRALIZING_GAS
+     && GetBattlerHoldEffectIgnoreAbility(battler, TRUE) != HOLD_EFFECT_ABILITY_SHIELD)
+        return ABILITY_NONE;
+
+    return gBattleMons[battler].ability;
+}
+
 // does NOT include ability suppression checks
 s32 AI_DecideKnownAbilityForTurn(u32 battlerId)
 {
-    u32 knownAbility = GetBattlerAbility(battlerId);
+    u32 knownAbility = AI_GetBattlerAbility(battlerId);
 
     // We've had ability overwritten by e.g. Worry Seed. It is not part of AI_PARTY in case of switching
     if (gBattleStruct->overwrittenAbilities[battlerId])
@@ -3266,11 +3284,24 @@ s32 AI_CalcPartyMonDamage(u32 move, u32 battlerAtk, u32 battlerDef, struct Battl
     s32 dmg;
     u8 effectiveness;
     struct BattlePokemon *savedBattleMons = AllocSaveBattleMons();
-    if(isPartyMonAttacker)
+    
+    if (isPartyMonAttacker)
+    {
         gBattleMons[battlerAtk] = switchinCandidate;
+        AI_THINKING_STRUCT->saved[battlerDef].saved = TRUE;
+        SetBattlerData(battlerDef); // set known opposing battler data
+        AI_THINKING_STRUCT->saved[battlerDef].saved = FALSE;
+    }
     else
+    {
         gBattleMons[battlerDef] = switchinCandidate;
+        AI_THINKING_STRUCT->saved[battlerAtk].saved = TRUE;
+        SetBattlerData(battlerAtk); // set known opposing battler data
+        AI_THINKING_STRUCT->saved[battlerAtk].saved = FALSE;
+    }
+    
     dmg = AI_CalcDamage(move, battlerAtk, battlerDef, &effectiveness, FALSE, AI_GetWeather(AI_DATA));
+    // restores original gBattleMon struct
     FreeRestoreBattleMons(savedBattleMons);
     return dmg;
 }
@@ -3791,4 +3822,43 @@ void IncreaseTidyUpScore(u32 battlerAtk, u32 battlerDef, u32 move, s32 *score)
         ADJUST_SCORE_PTR(DECENT_EFFECT);
     if (gStatuses3[battlerDef] & STATUS3_LEECHSEED)
         ADJUST_SCORE_PTR(-2);
+}
+
+bool32 AI_ShouldSpicyExtract(u32 battlerAtk, u32 battlerAtkPartner, u32 move, struct AiLogicData *aiData)
+{
+    u32 preventsStatLoss;
+    u32 partnerAbility;
+    u32 partnerHoldEffect = aiData->holdEffects[battlerAtkPartner];
+
+    if (DoesBattlerIgnoreAbilityChecks(aiData->abilities[battlerAtk], move))
+        partnerAbility = ABILITY_NONE;
+    else
+        partnerAbility = aiData->abilities[battlerAtkPartner];
+
+    if (gBattleMons[battlerAtkPartner].statStages[STAT_ATK] == MAX_STAT_STAGE
+     || partnerAbility == ABILITY_CONTRARY
+     || partnerAbility == ABILITY_GOOD_AS_GOLD
+     || HasMoveEffect(BATTLE_OPPOSITE(battlerAtk), EFFECT_FOUL_PLAY)
+     || HasMoveEffect(BATTLE_OPPOSITE(battlerAtkPartner), EFFECT_FOUL_PLAY))
+        return FALSE;
+
+    preventsStatLoss = (partnerAbility == ABILITY_CLEAR_BODY
+                     || partnerAbility == ABILITY_FULL_METAL_BODY
+                     || partnerAbility == ABILITY_WHITE_SMOKE
+                     || partnerHoldEffect == HOLD_EFFECT_CLEAR_AMULET);
+
+    switch (gMovesInfo[aiData->partnerMove].effect)
+    {
+    case EFFECT_DEFENSE_UP:
+    case EFFECT_DEFENSE_UP_2:
+    case EFFECT_DEFENSE_UP_3:
+    case EFFECT_BULK_UP:
+    case EFFECT_STOCKPILE:
+        if (!preventsStatLoss)
+            return FALSE;
+    }
+
+    return (preventsStatLoss
+         && AI_STRIKES_FIRST(battlerAtk, battlerAtkPartner, TRUE)
+         && HasMoveWithCategory(battlerAtkPartner, DAMAGE_CATEGORY_PHYSICAL));
 }
