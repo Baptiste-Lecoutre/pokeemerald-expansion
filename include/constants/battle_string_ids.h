@@ -1085,4 +1085,6 @@
 #define B_MSG_GETTING_TOO_STRONG        3
 #define B_MSG_PKMN_RELEASED_ENERGY      4
 
+// gRaidShockwaveStringIds
+
 #endif // GUARD_CONSTANTS_BATTLE_STRING_IDS_H

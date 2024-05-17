@@ -1638,6 +1638,11 @@ const u16 gRaidStateStringIds[] =
     [B_MSG_PKMN_RELEASED_ENERGY] = STRINGID_RAIDPKMNRELEASEDENERGY,
 };
 
+const u16 gRaidShockwaveStringIds[] =
+{
+    [0] = STRINGID_PKMNNULLIFIEDOTHERS,
+};
+
 const u16 gZEffectStringIds[] =
 {
     [B_MSG_Z_RESET_STATS] = STRINGID_ZMOVERESETSSTATS,

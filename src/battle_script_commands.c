@@ -1293,6 +1293,7 @@ static void Cmd_attackcanceler(void)
     if (IsRaidBoss(gBattlerAttacker) && !gBattleStruct->raid.usedShockwave && Random() % 100 <= GetRaidShockwaveChance())
     {
         gBattleStruct->raid.usedShockwave = TRUE;
+        gBattleCommunication[MULTISTRING_CHOOSER] = 0;
         BattleScriptPushCursor();
         gBattlescriptCurrInstr = BattleScript_RaidShockwave;
         return;
@@ -11235,6 +11236,7 @@ static void Cmd_various(void)
     case VARIOUS_DO_RAID_SHOCKWAVE:
     {
         VARIOUS_ARGS();
+        // switch (gBattleCommunication[MULTISTRING_CHOOSER])
         for (i = 0; i < gBattlersCount; i++)
         {
             if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
