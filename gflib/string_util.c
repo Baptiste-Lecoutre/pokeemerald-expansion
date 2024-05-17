@@ -29,28 +29,10 @@ static const s32 sPowersOfTen[] =
     1000000000,
 };
 
-// Tries to determine whether `str` is safe to prepend a ctrl char to
-// gStringVarX are always safe, as well as stack allocated IWRAM
-// (if `length mod 4` is 1 or 2)
-bool32 IsStringAddrSafe(u8 *str, u32 length)
-{
-    if (((u32)str) >> 24 == 3)
-        return (str >= gStackBase && (length & 3) && (length & 3) <= 2);
-    return (str >= gStringVar1 && str < sUnknownStringVar);
-}
-
 u8 *StringCopy_Nickname(u8 *dest, const u8 *src)
 {
-    u32 i;
+    u8 i;
     u32 limit = POKEMON_NAME_LENGTH;
-
-    if (DECAP_ENABLED && !DECAP_NICKNAMES)
-    {
-        if (IsStringAddrSafe(dest, limit) && *src != CHAR_FIXED_CASE)
-            *dest++ = CHAR_FIXED_CASE;
-        else if (*src == CHAR_FIXED_CASE)
-            *dest++ = *src++;
-    }
 
     for (i = 0; i < limit; i++)
     {
@@ -69,9 +51,6 @@ u8 *StringGet_Nickname(u8 *str)
     u32 i;
     u32 limit = POKEMON_NAME_LENGTH;
 
-    if (DECAP_ENABLED && !DECAP_NICKNAMES && *str == CHAR_FIXED_CASE)
-        str++;
-
     for (i = 0; i < limit; i++)
         if (str[i] == EOS)
             return &str[i];
@@ -84,9 +63,6 @@ u8 *StringCopy_PlayerName(u8 *dest, const u8 *src)
 {
     s32 i;
     s32 limit = PLAYER_NAME_LENGTH;
-
-    if (DECAP_ENABLED && !DECAP_NICKNAMES && IsStringAddrSafe(dest, limit) && *src != CHAR_FIXED_CASE)
-        *dest++ = CHAR_FIXED_CASE;
 
     for (i = 0; i < limit; i++)
     {
@@ -102,10 +78,6 @@ u8 *StringCopy_PlayerName(u8 *dest, const u8 *src)
 
 u8 *StringCopy(u8 *dest, const u8 *src)
 {
-    // If `src` is mirrored, prepend fixed-case char
-    if (DECAP_ENABLED && DECAP_MIRRORING && IsMirrorPtr(src) && *src != CHAR_FIXED_CASE)
-        *dest++ = CHAR_FIXED_CASE;
-
     while (*src != EOS)
     {
         *dest = *src;
@@ -155,14 +127,6 @@ u16 StringLength(const u8 *str)
 
 s32 StringCompare(const u8 *str1, const u8 *str2)
 {
-    // Ignore leading fixed-case char
-    if (DECAP_ENABLED)
-    {
-        if (*str1 == CHAR_FIXED_CASE)
-            str1++;
-        if (*str2 == CHAR_FIXED_CASE)
-            str2++;
-    }
     while (*str1 == *str2)
     {
         if (*str1 == EOS)
@@ -176,14 +140,6 @@ s32 StringCompare(const u8 *str1, const u8 *str2)
 
 s32 StringCompareN(const u8 *str1, const u8 *str2, u32 n)
 {
-    // Ignore leading fixed-case char
-    if (DECAP_ENABLED)
-    {
-        if (*str1 == CHAR_FIXED_CASE)
-            str1++;
-        if (*str2 == CHAR_FIXED_CASE)
-            str2++;
-    }
     while (*str1 == *str2)
     {
         if (*str1 == EOS)
@@ -382,7 +338,6 @@ u8 *ConvertIntToHexStringN(u8 *dest, s32 value, enum StringConvertMode mode, u8 
 
 u8 *StringExpandPlaceholders(u8 *dest, const u8 *src)
 {
-    bool32 fixedCase = FALSE;
     for (;;)
     {
         u8 c = *src++;
@@ -393,20 +348,7 @@ u8 *StringExpandPlaceholders(u8 *dest, const u8 *src)
         {
         case PLACEHOLDER_BEGIN:
             placeholderId = *src++;
-            if (DECAP_ENABLED)
-            {
-                // Handle fixed-case versions of placeholders
-                if (!fixedCase && (placeholderId & PLACEHOLDER_FIXED_MASK || placeholderId == PLACEHOLDER_ID_PLAYER))
-                {
-                    *dest++ = CHAR_FIXED_CASE;
-                    expandedString = GetExpandedPlaceholder(placeholderId & ~PLACEHOLDER_FIXED_MASK);
-                    dest = StringExpandPlaceholders(dest, expandedString);
-                    *dest++ = CHAR_UNFIX_CASE;
-                    *dest = EOS;
-                    break;
-                }
-            }
-            expandedString = GetExpandedPlaceholder(placeholderId & ~PLACEHOLDER_FIXED_MASK);
+            expandedString = GetExpandedPlaceholder(placeholderId);
             dest = StringExpandPlaceholders(dest, expandedString);
             break;
         case EXT_CTRL_CODE_BEGIN:
@@ -433,19 +375,8 @@ u8 *StringExpandPlaceholders(u8 *dest, const u8 *src)
             }
             break;
         case EOS:
-            if (DECAP_ENABLED && fixedCase)
-                *dest++ = CHAR_UNFIX_CASE;
             *dest = EOS;
             return dest;
-        #if DECAP_ENABLED
-        case CHAR_UNFIX_CASE:
-            fixedCase = FALSE;
-            *dest++ = c;
-            break;
-        case CHAR_FIXED_CASE:
-            fixedCase = TRUE;
-        // fallthrough
-        #endif
         case CHAR_PROMPT_SCROLL:
         case CHAR_PROMPT_CLEAR:
         case CHAR_NEWLINE:
@@ -789,9 +720,6 @@ static const u8 *SkipExtCtrlCode(const u8 *s)
         s++;
         s += GetExtCtrlCodeLength(*s);
     }
-
-    while (DECAP_ENABLED && (*s == CHAR_FIXED_CASE || *s == CHAR_UNFIX_CASE))
-        s++;
 
     return s;
 }

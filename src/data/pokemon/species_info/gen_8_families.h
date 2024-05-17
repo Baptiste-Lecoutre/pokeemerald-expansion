@@ -4409,7 +4409,7 @@ const struct SpeciesInfo gSpeciesInfoGen8[] =
         .palette = gMonPalette_Pincurchin,
         .shinyPalette = gMonShinyPalette_Pincurchin,
         .iconSprite = gMonIcon_Pincurchin,
-        .iconPalIndex = 0,
+        .iconPalIndex = 2,
         FOOTPRINT(Pincurchin)
         FOLLOWER(Pincurchin, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT)
         .levelUpLearnset = sPincurchinLevelUpLearnset,
@@ -5185,7 +5185,7 @@ const struct SpeciesInfo gSpeciesInfoGen8[] =
         .palette = gMonPalette_Arctozolt,
         .shinyPalette = gMonShinyPalette_Arctozolt,
         .iconSprite = gMonIcon_Arctozolt,
-        .iconPalIndex = 2,
+        .iconPalIndex = 0,
         FOOTPRINT(Arctozolt)
         FOLLOWER(Arctozolt, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT)
         .levelUpLearnset = sArctozoltLevelUpLearnset,
