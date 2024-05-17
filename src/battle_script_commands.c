@@ -11990,17 +11990,18 @@ static u32 ChangeStatBuffs(s8 statValue, u32 statId, u32 flags, const u8 *BS_ptr
                 }
                 else
                 {
-                    BattleScriptPush(BS_ptr);
                     gBattleScripting.battler = battler;
                     if (battlerHoldEffect == HOLD_EFFECT_CLEAR_AMULET)
                     {
                         gLastUsedItem = gBattleMons[battler].item;
+                        BattleScriptPush(BS_ptr);
                         gBattlescriptCurrInstr = BattleScript_ItemNoStatLoss;
                         RecordItemEffectBattle(battler, HOLD_EFFECT_CLEAR_AMULET);
                     }
                     else
                     {
                         gBattlerAbility = battler;
+                        BattleScriptPush(BS_ptr);
                         gBattlescriptCurrInstr = BattleScript_AbilityNoStatLoss;
                         gLastUsedAbility = battlerAbility;
                         RecordAbilityBattle(battler, gLastUsedAbility);
@@ -16218,7 +16219,8 @@ bool32 IsMoveAffectedByParentalBond(u32 move, u32 battler)
     if (move != MOVE_NONE && move != MOVE_UNAVAILABLE && move != MOVE_STRUGGLE
         && !gMovesInfo[move].parentalBondBanned
         && gMovesInfo[move].category != DAMAGE_CATEGORY_STATUS
-        && gMovesInfo[move].strikeCount < 2)
+        && gMovesInfo[move].strikeCount < 2
+        && gMovesInfo[move].effect != EFFECT_MULTI_HIT)
     {
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
         {

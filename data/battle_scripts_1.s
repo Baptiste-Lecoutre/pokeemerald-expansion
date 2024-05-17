@@ -53,6 +53,43 @@ BattleScript_LowerAtkSpAtkTrySpAtk::
 BattleScript_LowerAtkSpAtkEnd:
 	return
 
+BattleScript_EffectSpicyExtract::
+	attackcanceler
+	jumpifsubstituteblocks BattleScript_ButItFailed
+	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
+	jumpifstat BS_TARGET, CMP_LESS_THAN, STAT_ATK, MAX_STAT_STAGE BattleScript_SpicyExtract_CheckShouldSkipAttackAnim
+	jumpifstat BS_TARGET, CMP_GREATER_THAN, STAT_DEF, MIN_STAT_STAGE, BattleScript_SpicyExtract_CheckShouldSkipAttackAnim
+	goto BattleScript_ButItFailed
+BattleScript_SpicyExtract_CheckShouldSkipAttackAnim:
+	jumpifbyte CMP_NOT_EQUAL, gBattleCommunication, 0, BattleScript_SpicyExtract_RaiseAtk
+	attackstring
+	ppreduce
+	bicword gHitMarker, HITMARKER_NO_ATTACKSTRING | HITMARKER_NO_PPDEDUCT
+	goto BattleScript_SpicyExtract_SkipAttackAnim
+BattleScript_SpicyExtract_RaiseAtk:
+	attackstring
+	ppreduce
+	attackanimation
+	waitanimation
+BattleScript_SpicyExtract_SkipAttackAnim:
+	setbyte sSTAT_ANIM_PLAYED, FALSE
+	playstatchangeanimation BS_TARGET, BIT_ATK, STAT_CHANGE_BY_TWO
+	setstatchanger STAT_ATK, 2, FALSE
+	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_EffectSpicyExtractDefenseDown
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_EffectSpicyExtractDefenseDown
+	printfromtable gStatUpStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_EffectSpicyExtractDefenseDown:
+	setbyte sSTAT_ANIM_PLAYED, FALSE
+	playstatchangeanimation BS_TARGET, BIT_DEF, STAT_CHANGE_NEGATIVE | STAT_CHANGE_BY_TWO
+	setstatchanger STAT_DEF, 2, TRUE
+	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_EffectSpicyExtract_End
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_DECREASE, BattleScript_EffectSpicyExtract_End
+	printfromtable gStatDownStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_EffectSpicyExtract_End:
+	goto BattleScript_MoveEnd
+
 BattleScript_EffectTidyUp::
 	attackcanceler
 	attackstring
@@ -3133,6 +3170,7 @@ BattleScript_EffectStatDown:
 BattleScript_StatDownFromAttackString:
 	attackstring
 	ppreduce
+BattleScript_EffectStatDownFromStatBuffChange:
 	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_StatDownEnd
 	jumpifbyte CMP_LESS_THAN, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_DECREASE, BattleScript_StatDownDoAnim
 	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_FELL_EMPTY, BattleScript_StatDownEnd
@@ -3143,6 +3181,7 @@ BattleScript_StatDownDoAnim::
 	waitanimation
 	setgraphicalstatchangevalues
 	playanimation BS_TARGET, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
+	bicword gHitMarker, HITMARKER_DISABLE_ANIMATION
 BattleScript_StatDownPrintString::
 	printfromtable gStatDownStringIds
 	waitmessage B_WAIT_TIME_LONG
@@ -7063,6 +7102,13 @@ BattleScript_CudChewActivates::
 	setbyte sBERRY_OVERRIDE, 0
 	end3
 
+BattleScript_ApplyDisguiseFormChangeHPLoss::
+.if B_DISGUISE_HP_LOSS >= GEN_8
+	healthbarupdate BS_SCRIPTING
+	datahpupdate BS_SCRIPTING
+.endif
+	return
+
 BattleScript_TargetFormChangeNoPopup:
 	flushtextbox
 	handleformchange BS_SCRIPTING, 0
@@ -7070,10 +7116,7 @@ BattleScript_TargetFormChangeNoPopup:
 	playanimation BS_TARGET, B_ANIM_FORM_CHANGE
 	waitanimation
 	handleformchange BS_SCRIPTING, 2
-.if B_DISGUISE_HP_LOSS >= GEN_8
-	healthbarupdate BS_SCRIPTING
-	datahpupdate BS_SCRIPTING
-.endif
+	jumpifability BS_TARGET, ABILITY_DISGUISE, BattleScript_ApplyDisguiseFormChangeHPLoss
 	return
 
 BattleScript_TargetFormChange::
