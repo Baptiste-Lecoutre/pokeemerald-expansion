@@ -10131,6 +10131,8 @@ BattleScript_RaidBarrierBroken::
 	return
 
 BattleScript_MegaRaidHealBarrier::
+	playanimation BS_TARGET, B_ANIM_HELD_ITEM_EFFECT
+	waitanimation
 	healthbar_update BS_TARGET
 	datahpupdate BS_TARGET
 	printstring STRINGID_BARRIERRESTOREDENERGY
