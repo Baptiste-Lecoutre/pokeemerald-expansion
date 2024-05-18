@@ -444,8 +444,8 @@ bool32 InitRaidData(void)
             DeleteFirstMoveAndGiveMoveToMon(mon, eggMove);
     }
 
-    // Gigantamax factor
-    if (gRaidData.raidType == RAID_TYPE_MAX)
+    // Gigantamax factor & dynamax level
+    if (gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_DYNAMAX)
     {
         postEvoSpecies = GetGMaxTargetSpecies(species);
 
@@ -455,10 +455,13 @@ bool32 InitRaidData(void)
             SetMonData(mon, MON_DATA_SPECIES, &postEvoSpecies);
             SetMonData(mon, MON_DATA_SPECIES_OR_EGG, &postEvoSpecies);
         }
+
+        raidBossLevel = randomNum % 4 + gRaidData.rank;
+        SetMonData(mon, MON_DATA_DYNAMAX_LEVEL, &raidBossLevel);
     }
 
     // Tera type
-    if (gRaidData.raidType == RAID_TYPE_TERA)
+    if (gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_TERA)
     {
         u32 teraType = randomNum % (NUMBER_OF_MON_TYPES - 2);
         if (teraType >= TYPE_MYSTERY)
