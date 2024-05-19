@@ -425,6 +425,7 @@ bool32 InitRaidData(void)
     // Create raid boss
     CreateMon(mon, species, raidBossLevel, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
 
+    // Set a certain number of perfect IVs
     if (gRaidBattlePerfectIVsNumber[gRaidData.rank])
     {
         ShuffleStatArray(statIDs);
@@ -432,6 +433,7 @@ bool32 InitRaidData(void)
             SetMonData(mon, MON_DATA_HP_IV + statIDs[i], &maxIV);
     }
 
+    // Give egg moves
     numEggMoves = GetEggMovesSpecies(species, eggMoves);
     if (numEggMoves && Random() % 100 < eggMoveChance)
     {

@@ -1293,7 +1293,8 @@ static void Cmd_attackcanceler(void)
     if (IsRaidBoss(gBattlerAttacker) && !gBattleStruct->raid.usedShockwave && Random() % 100 <= GetRaidShockwaveChance())
     {
         gBattleStruct->raid.usedShockwave = TRUE;
-        gBattleCommunication[MULTISTRING_CHOOSER] = 0;
+//        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
+//        gBattleCommunication[MULTIUSE_STATE] = 0;
         BattleScriptPushCursor();
         gBattlescriptCurrInstr = BattleScript_RaidShockwave;
         return;
@@ -11236,19 +11237,40 @@ static void Cmd_various(void)
     case VARIOUS_DO_RAID_SHOCKWAVE:
     {
         VARIOUS_ARGS();
-        // switch (gBattleCommunication[MULTISTRING_CHOOSER])
-        for (i = 0; i < gBattlersCount; i++)
+        
+        if (TRUE || gBattleCommunication[MULTIUSE_STATE] == 0)
         {
-            if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
-                continue;
-            if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
+            for (i = 0; i < gBattlersCount; i++)
             {
-                if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
-                    gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
-                gStatuses3[i] |= STATUS3_GASTRO_ACID;
+                if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
+                    continue;
+                if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
+                {
+                    if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
+                        gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
+                    gStatuses3[i] |= STATUS3_GASTRO_ACID;
+                }
+                TryResetBattlerStatChanges(i);
             }
-            TryResetBattlerStatChanges(i);
         }
+        /*switch (gBattleCommunication[MULTIUSE_STATE])
+        {
+        default:
+        case 0:
+            for (i = 0; i < gBattlersCount; i++)
+            {
+                if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
+                    continue;
+                if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
+                {
+                    if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
+                        gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
+                    gStatuses3[i] |= STATUS3_GASTRO_ACID;
+                }
+                TryResetBattlerStatChanges(i);
+            }
+            break;
+        } // end of switch shockwave type*/
         break;
     }
     } // End of switch (cmd->id)

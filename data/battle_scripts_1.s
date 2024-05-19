@@ -10140,8 +10140,8 @@ BattleScript_MegaRaidHealBarrier::
 	return
 
 BattleScript_RaidShockwave::
-	@printstring STRINGID_PKMNNULLIFIEDOTHERS
-	printfromtable gRaidShockwaveStringIds
+	printstring STRINGID_PKMNNULLIFIEDOTHERS
+@	printfromtable gRaidShockwaveStringIds
 	waitmessage B_WAIT_TIME_LONG
 	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE
 	waitanimation
