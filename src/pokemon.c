@@ -5655,7 +5655,7 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
 
     if (FlagGet(FLAG_TEMP_A))
     {
-        species = GetEggSpecies(species);
+/*        species = GetEggSpecies(species);
         k = GetEggMovesArraySize() - 1;
 
         for (i = 0; i < k; i++)
@@ -5677,7 +5677,7 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
             
             if (k == MAX_MON_MOVES)
                 moves[numMoves++] = gEggMoves[j + i];
-        }
+        }*/
     }
     else
     {
@@ -5749,7 +5749,7 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
 
     if (FlagGet(FLAG_TEMP_A))
     {
-        species = GetEggSpecies(species);
+/*        species = GetEggSpecies(species);
         k = GetEggMovesArraySize() - 1;
 
         for (i = 0; i < k; i++)
@@ -5771,7 +5771,7 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
             
             if (k == MAX_MON_MOVES)
                 moves[numMoves++] = gEggMoves[j + i];
-        }
+        }*/
     }
     else
     {

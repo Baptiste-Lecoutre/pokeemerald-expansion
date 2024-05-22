@@ -5660,7 +5660,7 @@ void BufferChosenMonNature (void)
     u8 nature = 0;
 
     nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HIDDEN_NATURE);
-    StringCopy (gStringVar2, gNatureNamePointers[nature]);
+    StringCopy (gStringVar2, gNaturesInfo[nature].name);
 }
 
 // Changes the selected Pokemon's nature.

@@ -40,6 +40,6 @@ u8 GetEggMovesSpecies(u16 species, u16 *eggMoves);
 bool8 SpeciesCanLearnEggMove(u16 species, u16 move);
 void IsPartyAndBoxesFull(void);
 
-extern const u16 gEggMoves[];
+//extern const u16 gEggMoves[];
 
 #endif // GUARD_DAYCARE_H
