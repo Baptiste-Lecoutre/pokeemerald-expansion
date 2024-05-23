@@ -13,5 +13,7 @@ u8 AddItemIconSprite(u16 tilesTag, u16 paletteTag, u16 itemId);
 u8 AddCustomItemIconSprite(const struct SpriteTemplate *customSpriteTemplate, u16 tilesTag, u16 paletteTag, u16 itemId);
 const void *GetItemIconPicOrPalette(u16 itemId, u8 which);
 u8 AddBallIconSprite(u16 tilesTag, u16 paletteTag, u8 ballId);
+const void *GetItemIconPic(u16 itemId);
+const void *GetItemIconPalette(u16 itemId);
 
 #endif //GUARD_ITEM_ICON_H
