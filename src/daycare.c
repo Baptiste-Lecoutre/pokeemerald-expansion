@@ -955,12 +955,6 @@ static void BuildEggMoveset(struct Pokemon *egg, struct BoxPokemon *father, stru
     }
 }
 
-// For egg move reminder in pokemon.c
-//u16 GetEggMovesArraySize(void) 
-//{
-//	return ARRAY_COUNT(gEggMoves);
-//}
-
 static void RemoveEggFromDayCare(struct DayCare *daycare)
 {
     daycare->offspringPersonality = 0;

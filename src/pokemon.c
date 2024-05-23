@@ -5656,29 +5656,6 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
 
     if (FlagGet(FLAG_TEMP_A))
     {
-/*        species = GetEggSpecies(species);
-        k = GetEggMovesArraySize() - 1;
-
-        for (i = 0; i < k; i++)
-        {
-            if (gEggMoves[i] == species + EGG_MOVES_SPECIES_OFFSET)
-            {
-                j = i + 1;
-                break;
-            }
-        }
-
-        for (i = 0; i < EGG_MOVES_ARRAY_COUNT; i++)
-        {
-            if (gEggMoves[j + i] > EGG_MOVES_SPECIES_OFFSET)
-                break;
-        
-            for (k = 0; k < MAX_MON_MOVES && learnedMoves[k] != gEggMoves[j + i]; k++)
-                ;
-            
-            if (k == MAX_MON_MOVES)
-                moves[numMoves++] = gEggMoves[j + i];
-        }*/
         for (i = 0; eggMoveLearnset[i] != MOVE_UNAVAILABLE; i++)
         {
             for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != eggMoveLearnset[i]; j++)
@@ -5759,30 +5736,6 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
 
     if (FlagGet(FLAG_TEMP_A))
     {
-/*        species = GetEggSpecies(species);
-        k = GetEggMovesArraySize() - 1;
-
-        for (i = 0; i < k; i++)
-        {
-            if (gEggMoves[i] == species + EGG_MOVES_SPECIES_OFFSET)
-            {
-                j = i + 1;
-                break;
-            }
-        }
-
-        for (i = 0; i < EGG_MOVES_ARRAY_COUNT; i++)
-        {
-            if (gEggMoves[j + i] > EGG_MOVES_SPECIES_OFFSET)
-                break;
-        
-            for (k = 0; k < MAX_MON_MOVES && learnedMoves[k] != gEggMoves[j + i]; k++)
-                ;
-            
-            if (k == MAX_MON_MOVES)
-                moves[numMoves++] = gEggMoves[j + i];
-        }*/
-
         for (i = 0; eggMoveLearnset[i] != MOVE_UNAVAILABLE; i++)
         {
             for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != eggMoveLearnset[i]; j++)
