@@ -3728,7 +3728,7 @@ static void PrintMonTrainerMemo(void)
 static void BufferNatureString(void)
 {
     struct PokemonSummaryScreenData *sumStruct = sMonSummaryScreen;
-    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, gNatureNamePointers[sumStruct->summary.nature]);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, gNaturesInfo[sumStruct->summary.nature].name);
     DynamicPlaceholderTextUtil_SetPlaceholderPtr(5, gText_EmptyString5);
 }
 
@@ -3973,7 +3973,7 @@ static void BufferAndPrintStats_HandleState(u8 mode)
     u16 hp, hp2, atk, def, spA, spD, spe;
     u8 *currentHPString = Alloc(20);
     u8 *maxHPString = Alloc(20);
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.mintNature];
+    //const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.mintNature];
 
     switch (mode)
     {
@@ -4019,11 +4019,11 @@ static void BufferAndPrintStats_HandleState(u8 mode)
         PrintHPStats(mode);
 
         DynamicPlaceholderTextUtil_Reset();
-        BufferStat(gStringVar1, natureMod[STAT_ATK - 1], atk, 0, 3);
-        BufferStat(gStringVar2, natureMod[STAT_DEF - 1], def, 1, 3);
-        BufferStat(gStringVar3, natureMod[STAT_SPATK - 1], spA, 2, 3);
-        BufferStat(gStringVar4, natureMod[STAT_SPDEF - 1], spD, 3, 3);
-        BufferStat(sStringVar5, natureMod[STAT_SPEED - 1], spe, 4, 3);
+        BufferStat(gStringVar1, 0/*natureMod[STAT_ATK - 1]*/, atk, 0, 3);
+        BufferStat(gStringVar2, 0/*natureMod[STAT_DEF - 1]*/, def, 1, 3);
+        BufferStat(gStringVar3, 0/*natureMod[STAT_SPATK - 1]*/, spA, 2, 3);
+        BufferStat(gStringVar4, 0/*natureMod[STAT_SPDEF - 1]*/, spD, 3, 3);
+        BufferStat(sStringVar5, 0/*natureMod[STAT_SPEED - 1]*/, spe, 4, 3);
         PrintNonHPStats();
     }
     else
@@ -4074,13 +4074,13 @@ static void PrintHPStats(u8 mode)
 
 static void BufferNonHPStats(void)
 {
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.mintNature];
+    //const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.mintNature];
     DynamicPlaceholderTextUtil_Reset();
-    BufferStat(gStringVar1, natureMod[STAT_ATK - 1], sMonSummaryScreen->summary.atk, 0, 3);
-    BufferStat(gStringVar2, natureMod[STAT_DEF - 1], sMonSummaryScreen->summary.def, 1, 3);
-    BufferStat(gStringVar3, natureMod[STAT_SPATK - 1], sMonSummaryScreen->summary.spatk, 2, 3);
-    BufferStat(gStringVar4, natureMod[STAT_SPDEF - 1], sMonSummaryScreen->summary.spdef, 3, 3);
-    BufferStat(sStringVar5, natureMod[STAT_SPEED - 1], sMonSummaryScreen->summary.speed, 4, 3);
+    BufferStat(gStringVar1, 0/*natureMod[STAT_ATK - 1]*/, sMonSummaryScreen->summary.atk, 0, 3);
+    BufferStat(gStringVar2, 0/*natureMod[STAT_DEF - 1]*/, sMonSummaryScreen->summary.def, 1, 3);
+    BufferStat(gStringVar3, 0/*natureMod[STAT_SPATK - 1]*/, sMonSummaryScreen->summary.spatk, 2, 3);
+    BufferStat(gStringVar4, 0/*natureMod[STAT_SPDEF - 1]*/, sMonSummaryScreen->summary.spdef, 3, 3);
+    BufferStat(sStringVar5, 0/*natureMod[STAT_SPEED - 1]*/, sMonSummaryScreen->summary.speed, 4, 3);
 }
 
 static void PrintNonHPStats(void)

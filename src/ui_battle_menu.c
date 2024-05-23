@@ -1394,11 +1394,11 @@ static void PrintStatsTab(){
     
     nature = GetMonData(&party[gBattlerPartyIndexes[sMenuDataPtr->battlerId]], MON_DATA_HIDDEN_NATURE, NULL);
 
-    StringCopy(gStringVar1, gNatureNamePointers[nature]);
-    if(nature == NATURE_HARDY || nature == NATURE_DOCILE || nature == NATURE_SERIOUS || nature == NATURE_BASHFUL || nature == NATURE_QUIRKY){
+    StringCopy(gStringVar1, gNaturesInfo[nature].name);
+    //if(nature == NATURE_HARDY || nature == NATURE_DOCILE || nature == NATURE_SERIOUS || nature == NATURE_BASHFUL || nature == NATURE_QUIRKY){
         //No Stat Up or Down
         StringExpandPlaceholders(gStringVar4, sText_Title_Nature_NoStat);
-    }
+    /*}
     else{
         natureMod = gNatureStatTable[nature];
         for(i = 0; i < NUM_NATURE_STATS; i++){
@@ -1444,7 +1444,7 @@ static void PrintStatsTab(){
             }
         }
         StringExpandPlaceholders(gStringVar4, sText_Title_Nature);
-    }
+    }*/
     
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
 
@@ -2848,10 +2848,10 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     natureDef = GetMonData(&targetParty[gBattlerPartyIndexes[target]], MON_DATA_HIDDEN_NATURE, NULL);
 
     //Attacker
-    if(natureAtk == NATURE_HARDY || natureAtk == NATURE_DOCILE || natureAtk == NATURE_SERIOUS || natureAtk == NATURE_BASHFUL || natureAtk == NATURE_QUIRKY){
+    //if(natureAtk == NATURE_HARDY || natureAtk == NATURE_DOCILE || natureAtk == NATURE_SERIOUS || natureAtk == NATURE_BASHFUL || natureAtk == NATURE_QUIRKY){
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].attackerNatureUp   = NUM_NATURE_STATS;
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].attackerNatureDown = NUM_NATURE_STATS;
-    }
+    /*}
     else{
         natureMod = gNatureStatTable[natureAtk];
         for(i = 0; i < NUM_NATURE_STATS; i++){
@@ -2860,13 +2860,13 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
             else if (natureMod[i] < 0)
                 sMenuDataPtr->damageCalculation[battler][target][moveIndex].attackerNatureDown = i + 1; //Nature Down
         }
-    }
+    }*/
 
     //Target
-    if(natureDef == NATURE_HARDY || natureDef == NATURE_DOCILE || natureDef == NATURE_SERIOUS || natureDef == NATURE_BASHFUL || natureDef == NATURE_QUIRKY){
+    //if(natureDef == NATURE_HARDY || natureDef == NATURE_DOCILE || natureDef == NATURE_SERIOUS || natureDef == NATURE_BASHFUL || natureDef == NATURE_QUIRKY){
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].targetNatureUp   = NUM_NATURE_STATS;
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].targetNatureDown = NUM_NATURE_STATS;
-    }
+    /*}
     else{
         natureMod = gNatureStatTable[natureDef];
         for(i = 0; i < NUM_NATURE_STATS; i++){
@@ -2875,7 +2875,7 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
             else if (natureMod[i] < 0)
                 sMenuDataPtr->damageCalculation[battler][target][moveIndex].targetNatureDown = i + 1; //Nature Down
         }
-    }
+    }*/
 
     //Evs
     party = GetBattlerParty(battler);
