@@ -13,7 +13,7 @@ EWRAM_DATA u8 *gItemIconDecompressionBuffer = NULL;
 EWRAM_DATA u8 *gItemIcon4x4Buffer = NULL;
 
 // const rom data
-#include "data/item_icon_table.h"
+//#include "data/item_icon_table.h"
 
 static const struct OamData sOamData_ItemIcon =
 {

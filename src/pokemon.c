@@ -5648,6 +5648,7 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
     u8 level = GetMonData(mon, MON_DATA_LEVEL, 0);
     u8 preEvLvl = (level > MAX_LEVEL_DIFF_PRE_EV) ? (level - MAX_LEVEL_DIFF_PRE_EV) : 1;
     const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(species);
+    const u16 *eggMoveLearnset = GetSpeciesEggMoves(species);
     int i = 0, j = 0, k = 0;
 
     for (i = 0; i < MAX_MON_MOVES; i++)
@@ -5678,6 +5679,14 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
             if (k == MAX_MON_MOVES)
                 moves[numMoves++] = gEggMoves[j + i];
         }*/
+        for (i = 0; eggMoveLearnset[i] != MOVE_UNAVAILABLE; i++)
+        {
+            for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != eggMoveLearnset[i]; j++)
+                ;
+            
+            if (j == MAX_MON_MOVES)
+                moves[numMoves++] = eggMoveLearnset[i];
+        }
     }
     else
     {
@@ -5739,6 +5748,7 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
     u8 level = GetMonData(mon, MON_DATA_LEVEL, 0);
     u8 preEvLvl = (level > MAX_LEVEL_DIFF_PRE_EV) ? (level - MAX_LEVEL_DIFF_PRE_EV) : 1;
     const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(species);
+    const u16 *eggMoveLearnset = GetSpeciesEggMoves(species);
     int i = 0, j = 0, k = 0;
 
     if (species == SPECIES_EGG)
@@ -5772,6 +5782,15 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
             if (k == MAX_MON_MOVES)
                 moves[numMoves++] = gEggMoves[j + i];
         }*/
+
+        for (i = 0; eggMoveLearnset[i] != MOVE_UNAVAILABLE; i++)
+        {
+            for (j = 0; j < MAX_MON_MOVES && learnedMoves[j] != eggMoveLearnset[i]; j++)
+                ;
+            
+            if (j == MAX_MON_MOVES)
+                moves[numMoves++] = eggMoveLearnset[i];
+        }
     }
     else
     {
