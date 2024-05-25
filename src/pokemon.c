@@ -7143,31 +7143,21 @@ u16 GetSpeciesRandomSeeded(u16 species, u8 type, u16 additionalOffset)
 
 u16 GetNextRegionalForm(u16 species)
 {
-    u8 targetFormId = 0;
+    u8 targetFormId = 0, currentFormId = 0;
     u16 targetSpecies = SPECIES_NONE;
-    bool8 isNextForm = FALSE;
 
-    if (GetSpeciesFormTable(species) != NULL)
+    if (GetSpeciesFormTable(species) == NULL)
+        return SPECIES_NONE;
+    
+    currentFormId = GetFormIdFromFormSpeciesId(species);
+
+    for (targetFormId = currentFormId + 1; (targetSpecies = GetFormSpeciesId(species, targetFormId)) != FORM_SPECIES_END; targetFormId++)
     {
-        for (targetFormId = 0; GetSpeciesFormTable(species)[targetFormId] != FORM_SPECIES_END; targetFormId++)
-        {
-            targetSpecies = GetSpeciesFormTable(species)[targetFormId];
-
-            if (targetSpecies == species)
-            {
-                isNextForm = TRUE;
-                continue;
-            }
-            else if ((gSpeciesInfo[targetSpecies].isAlolanForm || gSpeciesInfo[targetSpecies].isGalarianForm || gSpeciesInfo[targetSpecies].isHisuianForm || gSpeciesInfo[targetSpecies].isPaldeanForm)
-                && isNextForm)
-                break;
-        }
-        if (targetSpecies == species
-            && (gSpeciesInfo[targetSpecies].isAlolanForm || gSpeciesInfo[targetSpecies].isGalarianForm || gSpeciesInfo[targetSpecies].isHisuianForm || gSpeciesInfo[targetSpecies].isPaldeanForm))
-            targetSpecies = GetSpeciesFormTable(species)[0];
-
+        if (gSpeciesInfo[targetSpecies].isAlolanForm || gSpeciesInfo[targetSpecies].isGalarianForm || gSpeciesInfo[targetSpecies].isHisuianForm || gSpeciesInfo[targetSpecies].isPaldeanForm)
+            return targetSpecies;
     }
-    return targetSpecies;
+
+    return (GetFormSpeciesId(species, 0) != species) ? GetFormSpeciesId(species, 0) : SPECIES_NONE;
 }
 
 u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGender)
