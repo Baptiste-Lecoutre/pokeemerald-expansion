@@ -2785,9 +2785,25 @@ static bool8 CanReplaceMove(void)
     //    return FALSE;
 }
 
+static void PrintTextOnWindowWithFont(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId, u32 fontId)
+{
+    AddTextPrinterParameterized4(windowId, fontId, x, y, 0, lineSpacing, sTextColors[colorId], 0, string);
+}
+
 static void PrintTextOnWindow(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId)
 {
-    AddTextPrinterParameterized4(windowId, 1, x, y, 0, lineSpacing, sTextColors[colorId], 0, string);
+    PrintTextOnWindowWithFont(windowId, string, x, y, lineSpacing, colorId, FONT_NORMAL);
+}
+
+static void PrintTextOnWindowToFitPx(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId, u32 width)
+{
+    u32 fontId = GetFontIdToFit(string, FONT_NORMAL, 0, width);
+    PrintTextOnWindowWithFont(windowId, string, x, y, lineSpacing, colorId, fontId);
+}
+
+static void PrintTextOnWindowToFit(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId)
+{
+    PrintTextOnWindowToFitPx(windowId, string, x, y, lineSpacing, colorId, WindowWidthPx(windowId));
 }
 
 static void PrintNarrowTextOnWindow(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId)
@@ -3234,7 +3250,7 @@ static void BufferMonTrainerMemo(void)
 static void BufferNatureString(void)
 {
     struct PokemonSummaryScreenData *sumStruct = sMonSummaryScreen;
-    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, gNatureNamePointers[sumStruct->summary.nature]);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, gNaturesInfo[sumStruct->summary.nature].name);
 }
 
 static void BufferCharacteristicString(void)
@@ -3467,7 +3483,7 @@ static void PrintSkillsPage(void)
     u16 *dst;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.nature];
+    u8 statUp = gNaturesInfo[sMonSummaryScreen->summary.nature].statUp, statDown = gNaturesInfo[sMonSummaryScreen->summary.nature].statDown;
 
     FillWindowPixelBuffer(PSS_LABEL_PANE_RIGHT, PIXEL_FILL(0));
 
@@ -3496,9 +3512,9 @@ static void PrintSkillsPage(void)
         numHPBarTicks = 1;
 
     // Attack ----------------------------------------------------------------------------------------------------
-    if (natureMod[STAT_ATK - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
+    if (statUp == STAT_ATK && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 24, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_ATK - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
+    else if (statDown == STAT_ATK && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 24, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Attack, 12, 24, 0, 1);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3511,9 +3527,9 @@ static void PrintSkillsPage(void)
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 24, 0, 0);
 
     // Defense ----------------------------------------------------------------------------------------------------
-    if (natureMod[STAT_DEF - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
+    if (statUp == STAT_DEF && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 40, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_DEF - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
+    else if (statDown == STAT_DEF && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 40, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Defense, 12, 40, 0, 1);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3526,9 +3542,9 @@ static void PrintSkillsPage(void)
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 40, 0, 0);
 
     // Sp.Atk ----------------------------------------------------------------------------------------------------
-	if (natureMod[STAT_SPATK - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
+	if (statUp == STAT_SPATK && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 56, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_SPATK - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
+    else if (statDown == STAT_SPATK && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 56, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_SpecialAttack, 12, 56, 0, PSS_COLOR_WHITE_BLACK_SHADOW);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3541,9 +3557,9 @@ static void PrintSkillsPage(void)
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 56, 0, 0);
 
     // Sp.Def ----------------------------------------------------------------------------------------------------
-	if (natureMod[STAT_SPDEF - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
+	if (statUp == STAT_SPDEF && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 72, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_SPDEF - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
+    else if (statDown == STAT_SPDEF && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 72, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_SpecialDefense, 12, 72, 0, 1);
     if (sMonSummaryScreen->currStatIndex == 0)
@@ -3556,9 +3572,9 @@ static void PrintSkillsPage(void)
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, gStringVar1, x, 72, 0, PSS_COLOR_BLACK_GRAY_SHADOW);
 
     // Speed ----------------------------------------------------------------------------------------------------
-	if (natureMod[STAT_SPEED - 1] > 0 && sMonSummaryScreen->currStatIndex == 0)
+	if (statUp == STAT_SPEED && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureUp, 0, 88, 0, COLOR_STAT_ARROWS);
-    else if (natureMod[STAT_SPEED - 1] < 0 && sMonSummaryScreen->currStatIndex == 0)
+    else if (statDown == STAT_SPEED && sMonSummaryScreen->currStatIndex == 0)
         PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_NatureDown, 0, 88, 0, COLOR_STAT_ARROWS);
     PrintTextOnWindow(PSS_LABEL_PANE_RIGHT, sText_Speed, 12, 88, 0, PSS_COLOR_WHITE_BLACK_SHADOW);
     if (sMonSummaryScreen->currStatIndex == 0)
