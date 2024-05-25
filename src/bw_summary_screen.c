@@ -3806,7 +3806,7 @@ static void PrintMonTrainerMemo(void)
 static void BufferNatureString(void)
 {
     struct PokemonSummaryScreenData *sumStruct = sMonSummaryScreen;
-    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, gNatureNamePointers[sumStruct->summary.nature]);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, gNaturesInfo[sumStruct->summary.nature].name);
     DynamicPlaceholderTextUtil_SetPlaceholderPtr(5, gText_EmptyString5);
 }
 
@@ -4016,7 +4016,7 @@ static void UNUSED PrintRibbonCount(void)
     PrintTextOnWindow(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_RIBBON_COUNT), text, x, 1, 0, 0);
 }
 
-static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 align)
+static void BufferStat(u8 *dst, u8 statIndex, u32 stat, u32 strId, u32 align)
 {
     static const u8 sTextNatureDown[] = _("{COLOR}{08}");
     static const u8 sTextNatureUp[] = _("{COLOR}{05}");
@@ -4025,20 +4025,22 @@ static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 align)
     static const u8 sTextDownArrow[] = _(" {DOWN_ARROW}");
     u8 *txtPtr;
 
-    if (natureMod == 0 || !BW_SUMMARY_NATURE_COLORS)
+    if (statIndex == 0 || !BW_SUMMARY_NATURE_COLORS || gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statDown)
         txtPtr = StringCopy(dst, sTextNatureNeutral);
-    else if (natureMod > 0)
+    else if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp)
         txtPtr = StringCopy(dst, sTextNatureUp);
-    else
+    else if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statDown)
         txtPtr = StringCopy(dst, sTextNatureDown);
+    else
+        txtPtr = StringCopy(dst, sTextNatureNeutral);
 
     ConvertIntToDecimalStringN(txtPtr, stat, STR_CONV_MODE_RIGHT_ALIGN, align);
 
     if (BW_SUMMARY_NATURE_ARROWS)
     {
-        if (natureMod > 0)
+        if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp)
             StringAppend(txtPtr, sTextUpArrow);
-        else if (natureMod < 0)
+        else if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statDown)
             StringAppend(txtPtr, sTextDownArrow);
     }
 
@@ -4051,7 +4053,6 @@ static void BufferAndPrintStats_HandleState(u8 mode)
     u16 hp, hp2, atk, def, spA, spD, spe;
     u8 *currentHPString = Alloc(20);
     u8 *maxHPString = Alloc(20);
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.mintNature];
 
     switch (mode)
     {
@@ -4097,11 +4098,11 @@ static void BufferAndPrintStats_HandleState(u8 mode)
         PrintHPStats(mode);
 
         DynamicPlaceholderTextUtil_Reset();
-        BufferStat(gStringVar1, natureMod[STAT_ATK - 1], atk, 0, 3);
-        BufferStat(gStringVar2, natureMod[STAT_DEF - 1], def, 1, 3);
-        BufferStat(gStringVar3, natureMod[STAT_SPATK - 1], spA, 2, 3);
-        BufferStat(gStringVar4, natureMod[STAT_SPDEF - 1], spD, 3, 3);
-        BufferStat(sStringVar5, natureMod[STAT_SPEED - 1], spe, 4, 3);
+        BufferStat(gStringVar1, STAT_ATK, atk, 0, 3);
+        BufferStat(gStringVar2, STAT_DEF, def, 1, 3);
+        BufferStat(gStringVar3, STAT_SPATK, spA, 2, 3);
+        BufferStat(gStringVar4, STAT_SPDEF, spD, 3, 3);
+        BufferStat(sStringVar5, STAT_SPEED, spe, 4, 3);
         PrintNonHPStats();
     }
     else
@@ -4152,13 +4153,12 @@ static void PrintHPStats(u8 mode)
 
 static void BufferNonHPStats(void)
 {
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.mintNature];
     DynamicPlaceholderTextUtil_Reset();
-    BufferStat(gStringVar1, natureMod[STAT_ATK - 1], sMonSummaryScreen->summary.atk, 0, 3);
-    BufferStat(gStringVar2, natureMod[STAT_DEF - 1], sMonSummaryScreen->summary.def, 1, 3);
-    BufferStat(gStringVar3, natureMod[STAT_SPATK - 1], sMonSummaryScreen->summary.spatk, 2, 3);
-    BufferStat(gStringVar4, natureMod[STAT_SPDEF - 1], sMonSummaryScreen->summary.spdef, 3, 3);
-    BufferStat(sStringVar5, natureMod[STAT_SPEED - 1], sMonSummaryScreen->summary.speed, 4, 3);
+    BufferStat(gStringVar1, STAT_ATK, sMonSummaryScreen->summary.atk, 0, 3);
+    BufferStat(gStringVar2, STAT_DEF, sMonSummaryScreen->summary.def, 1, 3);
+    BufferStat(gStringVar3, STAT_SPATK, sMonSummaryScreen->summary.spatk, 2, 3);
+    BufferStat(gStringVar4, STAT_SPDEF, sMonSummaryScreen->summary.spdef, 3, 3);
+    BufferStat(sStringVar5, STAT_SPEED, sMonSummaryScreen->summary.speed, 4, 3);
 }
 
 static void PrintNonHPStats(void)

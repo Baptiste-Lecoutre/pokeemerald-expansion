@@ -476,8 +476,6 @@ static void Task_TrainerRadarRoute(u8 taskId)
 
 static bool8 TrainerRadar_DoGfxSetup(void)
 {
-    u8 taskId;
-
     switch (gMain.state)
     {
         case 0:
@@ -528,7 +526,7 @@ static bool8 TrainerRadar_DoGfxSetup(void)
         PrintLeftHeader();
         PrintInstructions();
         TrainerRadarAddMainScrollIndicatorArows();
-        taskId = CreateTask(Task_TrainerRadarMainWaitFadeIn, 0);
+        CreateTask(Task_TrainerRadarMainWaitFadeIn, 0);
         sTrainerRadarPtr->listTaskId = ListMenuInit(&gMultiuseListMenuTemplate, 0, 0);
         gMain.state++;
         break;
@@ -802,7 +800,6 @@ static void TrainerRadarBuildMainListMenuTemplate(void)
 static void TrainerRadarMainListMenuMoveCursorFunc(s32 listItem, bool8 onInit, struct ListMenu *list)
 {
     const struct RouteTrainers* routeTrainersStruct;
-    u16 trainerId;
 
     if (onInit != TRUE)
         PlaySE(SE_SELECT);
@@ -927,7 +924,7 @@ static void TrainerRadarRouteListMenuMoveCursorFunc(s32 listItem, bool8 onInit, 
     }
 }
 
-static void TrainerRadarRouteListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y)
+UNUSED static void TrainerRadarRouteListMenuItemPrintFunc(u8 windowId, u32 listItem, u8 y)
 {
     // print stuff? nothing?
 }
