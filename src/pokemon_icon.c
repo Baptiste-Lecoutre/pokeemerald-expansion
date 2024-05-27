@@ -6,6 +6,7 @@
 #include "pokemon_icon.h"
 #include "sprite.h"
 #include "data.h"
+#include "constants/pokemon_icon.h"
 
 struct MonIconSpriteTemplate
 {
