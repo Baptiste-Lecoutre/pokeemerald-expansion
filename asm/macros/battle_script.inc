@@ -2468,7 +2468,7 @@
 	.endm
 
 	.macro doraidshockwave
-	various 0, VARIOUS_DO_RAID_SHOCKWAVE
+	callnative BS_DoRaidShockwave @various 0, VARIOUS_DO_RAID_SHOCKWAVE
 	.endm
 
 	@ Tries to increase or decrease a battler's stat's stat stage by a specified amount. If impossible, jumps to \script.

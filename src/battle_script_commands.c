@@ -17349,3 +17349,23 @@ void BS_ApplyTerastallization(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
+void BS_DoRaidShockwave(void)
+{
+    NATIVE_ARGS();
+    u32 i;
+
+    for (i = 0; i < gBattlersCount; i++)
+    {
+        if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
+            continue;
+        if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
+        {
+            if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
+                gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
+            gStatuses3[i] |= STATUS3_GASTRO_ACID;
+        }
+        TryResetBattlerStatChanges(i);
+    }
+
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
