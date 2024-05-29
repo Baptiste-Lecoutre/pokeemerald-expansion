@@ -661,7 +661,7 @@ u8 GetRaidRepeatedAttackChance(void)
 	}
 }
 
-u8 GetRaidShockwaveChance(void)
+u8 GetRaidShockwaveChance(void) // to be adjusted
 {
     u8 numStars = gRaidData.rank;
 

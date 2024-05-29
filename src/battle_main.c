@@ -5650,6 +5650,16 @@ static bool32 TryDoGimmicksBeforeMoves(void)
         }
     }
 
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID  && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
+    {
+        gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+        gBattleStruct->raid.usedShockwave = TRUE;
+        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
+        gBattleCommunication[MULTIUSE_STATE] = 0;
+        BattleScriptExecute(BattleScript_RaidShockwave);
+        return TRUE;
+    }
+
     if (B_MEGA_EVO_TURN_ORDER >= GEN_7)
         TryChangeTurnOrder(); // This will just do nothing if no mon has mega evolved.
     return FALSE;

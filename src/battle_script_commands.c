@@ -1225,9 +1225,9 @@ static void Cmd_attackcanceler(void)
     GET_MOVE_TYPE(gCurrentMove, moveType);
 
     // Raid bosses try to do a shockwave before moving.
-    if (IsRaidBoss(gBattlerAttacker) && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
-    {
-        gBattleStruct->raid.usedShockwave = TRUE;
+//    if (IsRaidBoss(gBattlerAttacker) && !gBattleStruct->raid.usedShockwave /*&& Random() % 100 < GetRaidShockwaveChance()*/)
+//    {
+//        gBattleStruct->raid.usedShockwave = TRUE;
         /*if (gRaidData.raidType == RAID_TYPE_MEGA) // fonctionne. Un seul ZMove par combat. à voir ce que je veux en faire.
         { // probablement unset gBattleStruct->zmove.used[gBattlerAttacker]
             gBattleStruct->zmove.chosenZMove = GetTypeBasedZMove(gCurrentMove, gBattlerAttacker);
@@ -1237,10 +1237,10 @@ static void Cmd_attackcanceler(void)
 
 //        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
 //        gBattleCommunication[MULTIUSE_STATE] = 0;
-        BattleScriptPushCursor();
-        gBattlescriptCurrInstr = BattleScript_RaidShockwave;
-        return;
-    }
+        //BattleScriptPushCursor();
+        //gBattlescriptCurrInstr = BattleScript_RaidShockwave;
+//        return;
+//    }
 
     // Weight-based moves are blocked by Dynamax.
     if (IsDynamaxed(gBattlerTarget) && IsMoveBlockedByDynamax(gCurrentMove))
@@ -4128,7 +4128,9 @@ static void Cmd_cleareffectsonfaint(void)
             if (!gBattleStruct->raid.statIncreased) // always increase stats on kill
             {
                 u8 statId, increase;
-                increase = GetRaidBossKOStatIncrease(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
+                if (!IsRaidBoss(gBattlerAttacker))
+                    gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+                increase = GetRaidBossKOStatIncrease(gBattlerAttacker);
 
                 if (increase > 0)
                 {
@@ -4137,7 +4139,7 @@ static void Cmd_cleareffectsonfaint(void)
                     else
                         statId = STAT_SPATK;
                     
-                    if (GetBattlerAbility(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)) == ABILITY_CONTRARY)
+                    if (GetBattlerAbility(gBattlerAttacker) == ABILITY_CONTRARY)
                         SET_STATCHANGER(statId, increase, TRUE);
                     else
                         SET_STATCHANGER(statId, increase, FALSE);

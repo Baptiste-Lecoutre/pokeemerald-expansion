@@ -10164,7 +10164,8 @@ BattleScript_RaidShockwave::
 	doraidshockwave
 	clearstatus BS_ATTACKER
 	updatestatusicon BS_ATTACKER
-	return
+	end3
+@	return
 
 BattleScript_RaidVictory::
 	hidehealthboxes
