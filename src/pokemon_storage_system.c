@@ -42,6 +42,7 @@
 #include "constants/moves.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "constants/pokemon_icon.h"
 
 /*
     NOTE: This file is large. Some general groups of functions have
@@ -228,7 +229,7 @@ enum {
 #define BOXID_CANCELED    201
 
 enum {
-    PALTAG_MON_ICON_0 = 56000,
+    PALTAG_MON_ICON_0 = POKE_ICON_BASE_PAL_TAG,
     PALTAG_MON_ICON_1, // Used implicitly in CreateMonIconSprite
     PALTAG_MON_ICON_2, // Used implicitly in CreateMonIconSprite
     PALTAG_MON_ICON_3, // Used implicitly in CreateMonIconSprite
@@ -727,8 +728,6 @@ static void MultiMove_DeselectColumn(u8, u8, u8);
 
 // Move Items mode
 static bool32 IsItemIconAtPosition(u8, u8);
-static const u32 *GetItemIconPic(u16);
-static const u32 *GetItemIconPalette(u16);
 static u8 GetNewItemIconIdx(void);
 static void SetItemIconPosition(u8, u8, u8);
 static void LoadItemIconGfx(u8, const u32 *, const u32 *);
@@ -9284,16 +9283,6 @@ static void SetItemIconActive(u8 id, bool8 active)
 
     sStorage->itemIcons[id].active = active;
     sStorage->itemIcons[id].sprite->invisible = (active == FALSE);
-}
-
-static const u32 *GetItemIconPic(u16 itemId)
-{
-    return GetItemIconPicOrPalette(itemId, 0);
-}
-
-static const u32 *GetItemIconPalette(u16 itemId)
-{
-    return GetItemIconPicOrPalette(itemId, 1);
 }
 
 static void PrintItemDescription(void)

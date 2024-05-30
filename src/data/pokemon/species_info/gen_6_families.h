@@ -55,6 +55,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Chespin, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Chespin, gShinyFollowerPalette_Chespin)
         .levelUpLearnset = sChespinLevelUpLearnset,
         .teachableLearnset = sChespinTeachableLearnset,
+        .eggMoveLearnset = sChespinEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 16, SPECIES_QUILLADIN}),
     },
 
@@ -218,6 +219,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Fennekin, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Fennekin, gShinyFollowerPalette_Fennekin)
         .levelUpLearnset = sFennekinLevelUpLearnset,
         .teachableLearnset = sFennekinTeachableLearnset,
+        .eggMoveLearnset = sFennekinEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 16, SPECIES_BRAIXEN}),
     },
 
@@ -381,6 +383,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Froakie, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Froakie, gShinyFollowerPalette_Froakie)
         .levelUpLearnset = sFroakieLevelUpLearnset,
         .teachableLearnset = sFroakieTeachableLearnset,
+        .eggMoveLearnset = sFroakieEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 16, SPECIES_FROGADIER}),
     },
 
@@ -649,6 +652,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Bunnelby, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Bunnelby, gShinyFollowerPalette_Bunnelby)
         .levelUpLearnset = sBunnelbyLevelUpLearnset,
         .teachableLearnset = sBunnelbyTeachableLearnset,
+        .eggMoveLearnset = sBunnelbyEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 20, SPECIES_DIGGERSBY}),
     },
 
@@ -758,6 +762,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Fletchling, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Fletchling, gShinyFollowerPalette_Fletchling)
         .levelUpLearnset = sFletchlingLevelUpLearnset,
         .teachableLearnset = sFletchlingTeachableLearnset,
+        .eggMoveLearnset = sFletchlingEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 17, SPECIES_FLETCHINDER}),
     },
 
@@ -920,6 +925,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         .tmIlliterate = TRUE,                                                               \
         .levelUpLearnset = sScatterbugLevelUpLearnset,                                      \
         .teachableLearnset = sScatterbugTeachableLearnset,                                  \
+        .eggMoveLearnset = sScatterbugEggMoveLearnset,                                      \
         .formSpeciesIdTable = sScatterbugFormSpeciesIdTable,                                \
         .evolutions = EVOLUTION({EVO_LEVEL, 9, SPECIES_SPEWPA_##evolution}),                \
     }                                                                                       \
@@ -1308,6 +1314,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Litleo, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Litleo, gShinyFollowerPalette_Litleo)
         .levelUpLearnset = sLitleoLevelUpLearnset,
         .teachableLearnset = sLitleoTeachableLearnset,
+        .eggMoveLearnset = sLitleoEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 35, SPECIES_PYROAR}),
     },
 
@@ -1424,6 +1431,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
             gShinyFollowerPalette_Flabebe##Form##Flower)                        \
         .levelUpLearnset = sFlabebeLevelUpLearnset,                             \
         .teachableLearnset = sFlabebeTeachableLearnset,                         \
+        .eggMoveLearnset = sFlabebeEggMoveLearnset,                             \
         .formSpeciesIdTable = sFlabebeFormSpeciesIdTable,                       \
         .evolutions = EVOLUTION({EVO_LEVEL, 19, SPECIES_FLOETTE_ ##FORM##_FLOWER})
 
@@ -1755,6 +1763,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Skiddo, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Skiddo, gShinyFollowerPalette_Skiddo)
         .levelUpLearnset = sSkiddoLevelUpLearnset,
         .teachableLearnset = sSkiddoTeachableLearnset,
+        .eggMoveLearnset = sSkiddoEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 32, SPECIES_GOGOAT}),
     },
 
@@ -1865,6 +1874,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Pancham, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Pancham, gShinyFollowerPalette_Pancham)
         .levelUpLearnset = sPanchamLevelUpLearnset,
         .teachableLearnset = sPanchamTeachableLearnset,
+        .eggMoveLearnset = sPanchamEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL_DARK_TYPE_MON_IN_PARTY, 32, SPECIES_PANGORO}),
     },
 
@@ -1978,6 +1988,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
             gShinyFollowerPalette_Furfrou##_form)                                                       \
         .levelUpLearnset = sFurfrouLevelUpLearnset,                                                     \
         .teachableLearnset = sFurfrouTeachableLearnset,                                                 \
+        .eggMoveLearnset = sFurfrouEggMoveLearnset,                                                     \
         .formSpeciesIdTable = sFurfrouFormSpeciesIdTable,                                               \
     }
 
@@ -2045,6 +2056,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Espurr, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Espurr, gShinyFollowerPalette_Espurr)
         .levelUpLearnset = sEspurrLevelUpLearnset,
         .teachableLearnset = sEspurrTeachableLearnset,
+        .eggMoveLearnset = sEspurrEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL_MALE, 25, SPECIES_MEOWSTIC_MALE},
                                 {EVO_LEVEL_FEMALE, 25, SPECIES_MEOWSTIC_FEMALE}),
     },
@@ -2211,6 +2223,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Honedge, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Honedge, gShinyFollowerPalette_Honedge)
         .levelUpLearnset = sHonedgeLevelUpLearnset,
         .teachableLearnset = sHonedgeTeachableLearnset,
+        .eggMoveLearnset = sHonedgeEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 35, SPECIES_DOUBLADE}),
     },
 
@@ -2443,6 +2456,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Spritzee, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Spritzee, gShinyFollowerPalette_Spritzee)
         .levelUpLearnset = sSpritzeeLevelUpLearnset,
         .teachableLearnset = sSpritzeeTeachableLearnset,
+        .eggMoveLearnset = sSpritzeeEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_TRADE_ITEM, ITEM_SACHET, SPECIES_AROMATISSE},
                                 {EVO_ITEM, ITEM_SACHET, SPECIES_AROMATISSE}),
     },
@@ -2553,6 +2567,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Swirlix, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Swirlix, gShinyFollowerPalette_Swirlix)
         .levelUpLearnset = sSwirlixLevelUpLearnset,
         .teachableLearnset = sSwirlixTeachableLearnset,
+        .eggMoveLearnset = sSwirlixEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_TRADE_ITEM, ITEM_WHIPPED_DREAM, SPECIES_SLURPUFF},
                                 {EVO_ITEM, ITEM_WHIPPED_DREAM, SPECIES_SLURPUFF}),
     },
@@ -2664,6 +2679,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Inkay, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Inkay, gShinyFollowerPalette_Inkay)
         .levelUpLearnset = sInkayLevelUpLearnset,
         .teachableLearnset = sInkayTeachableLearnset,
+        .eggMoveLearnset = sInkayEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 30, SPECIES_MALAMAR}),
     },
 
@@ -2773,6 +2789,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Binacle, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Binacle, gShinyFollowerPalette_Binacle)
         .levelUpLearnset = sBinacleLevelUpLearnset,
         .teachableLearnset = sBinacleTeachableLearnset,
+        .eggMoveLearnset = sBinacleEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 39, SPECIES_BARBARACLE}),
     },
 
@@ -2883,6 +2900,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Skrelp, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Skrelp, gShinyFollowerPalette_Skrelp)
         .levelUpLearnset = sSkrelpLevelUpLearnset,
         .teachableLearnset = sSkrelpTeachableLearnset,
+        .eggMoveLearnset = sSkrelpEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 48, SPECIES_DRAGALGE}),
     },
 
@@ -2993,6 +3011,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Clauncher, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Clauncher, gShinyFollowerPalette_Clauncher)
         .levelUpLearnset = sClauncherLevelUpLearnset,
         .teachableLearnset = sClauncherTeachableLearnset,
+        .eggMoveLearnset = sClauncherEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 37, SPECIES_CLAWITZER}),
     },
 
@@ -3103,6 +3122,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Helioptile, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Helioptile, gShinyFollowerPalette_Helioptile)
         .levelUpLearnset = sHelioptileLevelUpLearnset,
         .teachableLearnset = sHelioptileTeachableLearnset,
+        .eggMoveLearnset = sHelioptileEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_ITEM, ITEM_SUN_STONE, SPECIES_HELIOLISK}),
     },
 
@@ -3213,6 +3233,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Tyrunt, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Tyrunt, gShinyFollowerPalette_Tyrunt)
         .levelUpLearnset = sTyruntLevelUpLearnset,
         .teachableLearnset = sTyruntTeachableLearnset,
+        .eggMoveLearnset = sTyruntEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL_DAY, 39, SPECIES_TYRANTRUM}),
     },
 
@@ -3322,6 +3343,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Amaura, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Amaura, gShinyFollowerPalette_Amaura)
         .levelUpLearnset = sAmauraLevelUpLearnset,
         .teachableLearnset = sAmauraTeachableLearnset,
+        .eggMoveLearnset = sAmauraEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL_NIGHT, 39, SPECIES_AURORUS}),
     },
 
@@ -3436,6 +3458,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Hawlucha, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Hawlucha, gShinyFollowerPalette_Hawlucha)
         .levelUpLearnset = sHawluchaLevelUpLearnset,
         .teachableLearnset = sHawluchaTeachableLearnset,
+        .eggMoveLearnset = sHawluchaEggMoveLearnset,
     },
 #endif //P_FAMILY_HAWLUCHA
 
@@ -3491,6 +3514,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Dedenne, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Dedenne, gShinyFollowerPalette_Dedenne)
         .levelUpLearnset = sDedenneLevelUpLearnset,
         .teachableLearnset = sDedenneTeachableLearnset,
+        .eggMoveLearnset = sDedenneEggMoveLearnset,
     },
 #endif //P_FAMILY_DEDENNE
 
@@ -3604,6 +3628,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Goomy, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Goomy, gShinyFollowerPalette_Goomy)
         .levelUpLearnset = sGoomyLevelUpLearnset,
         .teachableLearnset = sGoomyTeachableLearnset,
+        .eggMoveLearnset = sGoomyEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 40, SPECIES_SLIGGOO},
                                 {EVO_NONE, 0, SPECIES_SLIGGOO_HISUIAN}),
     },
@@ -3891,6 +3916,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Klefki, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Klefki, gShinyFollowerPalette_Klefki)
         .levelUpLearnset = sKlefkiLevelUpLearnset,
         .teachableLearnset = sKlefkiTeachableLearnset,
+        .eggMoveLearnset = sKlefkiEggMoveLearnset,
     },
 #endif //P_FAMILY_KLEFKI
 
@@ -3947,6 +3973,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Phantump, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Phantump, gShinyFollowerPalette_Phantump)
         .levelUpLearnset = sPhantumpLevelUpLearnset,
         .teachableLearnset = sPhantumpTeachableLearnset,
+        .eggMoveLearnset = sPhantumpEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_TRADE, 0, SPECIES_TREVENANT},
                                 {EVO_ITEM, ITEM_LINKING_CORD, SPECIES_TREVENANT}),
     },
@@ -4057,6 +4084,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(PumpkabooAverage, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Pumpkaboo, gShinyFollowerPalette_Pumpkaboo)
         .levelUpLearnset = sPumpkabooLevelUpLearnset,
         .teachableLearnset = sPumpkabooTeachableLearnset,
+        .eggMoveLearnset = sPumpkabooEggMoveLearnset,
         .formSpeciesIdTable = sPumpkabooFormSpeciesIdTable,
         .evolutions = EVOLUTION({EVO_TRADE, 0, SPECIES_GOURGEIST_AVERAGE},
                                 {EVO_ITEM, ITEM_LINKING_CORD, SPECIES_GOURGEIST_AVERAGE}),
@@ -4111,6 +4139,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOOTPRINT(Pumpkaboo)
         .levelUpLearnset = sPumpkabooLevelUpLearnset,
         .teachableLearnset = sPumpkabooTeachableLearnset,
+        .eggMoveLearnset = sPumpkabooEggMoveLearnset,
         .formSpeciesIdTable = sPumpkabooFormSpeciesIdTable,
         .evolutions = EVOLUTION({EVO_TRADE, 0, SPECIES_GOURGEIST_SMALL},
                                 {EVO_ITEM, ITEM_LINKING_CORD, SPECIES_GOURGEIST_SMALL}),
@@ -4165,6 +4194,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOOTPRINT(Pumpkaboo)
         .levelUpLearnset = sPumpkabooLevelUpLearnset,
         .teachableLearnset = sPumpkabooTeachableLearnset,
+        .eggMoveLearnset = sPumpkabooEggMoveLearnset,
         .formSpeciesIdTable = sPumpkabooFormSpeciesIdTable,
         .evolutions = EVOLUTION({EVO_TRADE, 0, SPECIES_GOURGEIST_LARGE},
                                 {EVO_ITEM, ITEM_LINKING_CORD, SPECIES_GOURGEIST_LARGE}),
@@ -4221,6 +4251,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOOTPRINT(Pumpkaboo)
         .levelUpLearnset = sPumpkabooLevelUpLearnset,
         .teachableLearnset = sPumpkabooTeachableLearnset,
+        .eggMoveLearnset = sPumpkabooEggMoveLearnset,
         .formSpeciesIdTable = sPumpkabooFormSpeciesIdTable,
         .evolutions = EVOLUTION({EVO_TRADE, 0, SPECIES_GOURGEIST_SUPER},
                                 {EVO_ITEM, ITEM_LINKING_CORD, SPECIES_GOURGEIST_SUPER}),
@@ -4500,6 +4531,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Bergmite, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Bergmite, gShinyFollowerPalette_Bergmite)
         .levelUpLearnset = sBergmiteLevelUpLearnset,
         .teachableLearnset = sBergmiteTeachableLearnset,
+        .eggMoveLearnset = sBergmiteEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 37, SPECIES_AVALUGG},
                                 {EVO_NONE, 0, SPECIES_AVALUGG_HISUIAN}),
     },
@@ -4673,6 +4705,7 @@ const struct SpeciesInfo gSpeciesInfoGen6[] =
         FOLLOWER(Noibat, SIZE_32x32, SHADOW_SIZE_M, TRACKS_FOOT, gFollowerPalette_Noibat, gShinyFollowerPalette_Noibat)
         .levelUpLearnset = sNoibatLevelUpLearnset,
         .teachableLearnset = sNoibatTeachableLearnset,
+        .eggMoveLearnset = sNoibatEggMoveLearnset,
         .evolutions = EVOLUTION({EVO_LEVEL, 48, SPECIES_NOIVERN}),
     },
 

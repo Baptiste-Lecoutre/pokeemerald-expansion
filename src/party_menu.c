@@ -8322,7 +8322,7 @@ static void Task_Mints(u8 taskId)
 
         gPartyMenuUseExitCallback = TRUE;
         GetMonNickname(&gPlayerParty[tMonId], gStringVar1);
-        StringCopy(gStringVar2, gNatureNamePointers[tNewNature]);
+        StringCopy(gStringVar2, gNaturesInfo[tNewNature].name);
         StringExpandPlaceholders(gStringVar4, sText_AskMint);
         PlaySE(SE_SELECT);
         DisplayPartyMenuMessage(gStringVar4, 1);
