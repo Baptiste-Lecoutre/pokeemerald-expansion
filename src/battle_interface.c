@@ -3783,6 +3783,7 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows)
 #define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (2 * 2 * frame * 32), .size = 2 * 2 * 32}
 static const struct SpriteFrameImage sTypeIconPicTable[] = 
 {
+    [TYPE_NONE] =       type_icon_frame(TypeIconsTiles, TYPE_NONE),
     [TYPE_NORMAL] =		type_icon_frame(TypeIconsTiles, TYPE_NORMAL),
 	[TYPE_FIGHTING] =	type_icon_frame(TypeIconsTiles, TYPE_FIGHTING),
 	[TYPE_FLYING] =		type_icon_frame(TypeIconsTiles, TYPE_FLYING),
@@ -3802,6 +3803,7 @@ static const struct SpriteFrameImage sTypeIconPicTable[] =
 	[TYPE_DRAGON] =		type_icon_frame(TypeIconsTiles, TYPE_DRAGON),
 	[TYPE_DARK] =		type_icon_frame(TypeIconsTiles, TYPE_DARK),
     [TYPE_FAIRY] =      type_icon_frame(TypeIconsTiles, TYPE_FAIRY),
+    [TYPE_STELLAR] =    type_icon_frame(TypeIconsTiles, TYPE_STELLAR),
 };
 
 #define ICON_MOVE_X 10
@@ -3906,7 +3908,7 @@ void TryLoadTypeIcons(u8 activeBattler)
                     else
                         sprite->x += 2 - typeNum * 2; 
 					
-                    RequestSpriteFrameImageCopy(type-1, sprite->oam.tileNum, sprite->images);
+                    RequestSpriteFrameImageCopy(type, sprite->oam.tileNum, sprite->images);
 				}
 			}
 		}
