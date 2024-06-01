@@ -4073,3 +4073,9 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
     if (sprite->y > MOVE_INFO_WIN_Y_F) 
         sprite->y -= 1;
 }
+
+void CategoryIcons_LoadSpritesGfx(void)
+{
+    LoadCompressedSpriteSheet(&gSpriteSheet_CategoryIcons);
+    LoadSpritePalette(&gSpritePal_CategoryIcons);
+}

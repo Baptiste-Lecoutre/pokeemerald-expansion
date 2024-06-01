@@ -146,5 +146,6 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows);
 void UpdateAbilityPopup(u8 battlerId);
 void TryLoadTypeIcons(u8 activeBattler);
 void TryLoadMoveInfoWindow(u32 battler);
+void CategoryIcons_LoadSpritesGfx(void);
 
 #endif // GUARD_BATTLE_INTERFACE_H
