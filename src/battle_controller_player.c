@@ -186,7 +186,6 @@ static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] =
 
 EWRAM_DATA bool8 gDescriptionSubmenu = 0;
 EWRAM_DATA u8 sLastUsedBallHoldFrames = 0;
-static EWRAM_DATA bool8 sDescriptionSubmenu = 0;
 
 static EWRAM_DATA bool8 sAckBallUseBtn = FALSE;
 static EWRAM_DATA bool8 sBallSwapped = FALSE;
@@ -804,22 +803,7 @@ void HandleInputChooseMove(u32 battler)
     else
         gPlayerDpadHoldFrames = 0;
 
-    /*if (gDescriptionSubmenu)
-    {
-        if (JOY_NEW(L_BUTTON) || JOY_NEW(R_BUTTON) || JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON) || JOY_NEW(START_BUTTON))
-        {
-            gDescriptionSubmenu = FALSE;
-            FillWindowPixelBuffer(B_WIN_MOVE_DESCRIPTION, PIXEL_FILL(0));
-            ClearStdWindowAndFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
-            CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_GFX);
-            PlaySE(SE_SELECT);
-            MoveSelectionDisplayPpNumber(battler);
-            MoveSelectionDisplayMoveType(battler);
-            TryLoadMoveInfoWindow(battler);
-        }
-    }
-    else if (JOY_NEW(A_BUTTON))*/
-    if (JOY_NEW(A_BUTTON) && !sDescriptionSubmenu)
+    if (JOY_NEW(A_BUTTON) && !gDescriptionSubmenu)
     {
         PlaySE(SE_SELECT);
 
@@ -926,7 +910,7 @@ void HandleInputChooseMove(u32 battler)
             break;
         }
     }
-    else if ((JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)  && !sDescriptionSubmenu)
+    else if ((JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)  && !gDescriptionSubmenu)
     {
         PlaySE(SE_SELECT);
         if (gBattleStruct->zmove.viewing)
@@ -955,7 +939,7 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
-            if (sDescriptionSubmenu)
+            if (gDescriptionSubmenu)
                 MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
@@ -971,7 +955,7 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
-            if (sDescriptionSubmenu)
+            if (gDescriptionSubmenu)
                 MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
@@ -986,7 +970,7 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
-            if (sDescriptionSubmenu)
+            if (gDescriptionSubmenu)
                 MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
@@ -1002,12 +986,12 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionCreateCursorAt(gMoveSelectionCursor[battler], 0);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
-            if (sDescriptionSubmenu)
+            if (gDescriptionSubmenu)
                 MoveSelectionDisplayMoveDescription(battler);
             TryChangeZIndicator(battler, gMoveSelectionCursor[battler]);
         }
     }
-    else if (JOY_NEW(SELECT_BUTTON) && !gBattleStruct->zmove.viewing && !sDescriptionSubmenu)
+    else if (JOY_NEW(SELECT_BUTTON) && !gBattleStruct->zmove.viewing && !gDescriptionSubmenu)
     {
         if (gNumberOfMovesToChoose > 1 && !(gBattleTypeFlags & BATTLE_TYPE_LINK))
         {
@@ -1023,11 +1007,11 @@ void HandleInputChooseMove(u32 battler)
             gBattlerControllerFuncs[battler] = HandleMoveSwitching;
         }
     }
-    else if (sDescriptionSubmenu)
+    else if (gDescriptionSubmenu)
     {
         if (JOY_NEW(L_BUTTON) || JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
         {
-            sDescriptionSubmenu = FALSE;
+            gDescriptionSubmenu = FALSE;
             if (gCategoryIconSpriteId != 0xFF)
             {
                 DestroySprite(&gSprites[gCategoryIconSpriteId]);
@@ -1040,11 +1024,12 @@ void HandleInputChooseMove(u32 battler)
             PlaySE(SE_SELECT);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
+            TryLoadMoveInfoWindow(battler);
         }
     }
     else if (JOY_NEW(L_BUTTON))
     {
-        sDescriptionSubmenu = TRUE;
+        gDescriptionSubmenu = TRUE;
         MoveSelectionDisplayMoveDescription(battler);
     }
     else if (JOY_NEW(START_BUTTON))
@@ -1086,11 +1071,6 @@ void HandleInputChooseMove(u32 battler)
             MoveSelectionDisplayMoveType(battler); // For Tera Blast / Tera Starstorm
             PlaySE(SE_SELECT);
         }
-    }
-    else if(B_BATTLE_MOVE_INFO == TRUE && (JOY_NEW(B_BATTLE_MOVE_INFO_BUTTON) || gPlayerDpadHoldFrames > 59)) // Additional Battle Info
-    {
-        gDescriptionSubmenu = TRUE;
-        MoveSelectionDisplayMoveDescription(battler);
     }
 }
 
