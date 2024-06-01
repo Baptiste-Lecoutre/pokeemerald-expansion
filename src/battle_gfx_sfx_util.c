@@ -720,6 +720,7 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
             MegaIndicator_LoadSpritesGfx();
             TeraIndicator_LoadSpriteGfx();
+            CategoryIcons_LoadSpritesGfx();
         }
         else if (!IsDoubleBattle())
         {

@@ -3827,6 +3827,7 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows)
 #define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (2 * 2 * frame * 32), .size = 2 * 2 * 32}
 static const struct SpriteFrameImage sTypeIconPicTable[] = 
 {
+    [TYPE_NONE] =       type_icon_frame(gTypeIconsTiles, TYPE_NONE),
     [TYPE_NORMAL] =		type_icon_frame(gTypeIconsTiles, TYPE_NORMAL),
 	[TYPE_FIGHTING] =	type_icon_frame(gTypeIconsTiles, TYPE_FIGHTING),
 	[TYPE_FLYING] =		type_icon_frame(gTypeIconsTiles, TYPE_FLYING),
@@ -3846,6 +3847,7 @@ static const struct SpriteFrameImage sTypeIconPicTable[] =
 	[TYPE_DRAGON] =		type_icon_frame(gTypeIconsTiles, TYPE_DRAGON),
 	[TYPE_DARK] =		type_icon_frame(gTypeIconsTiles, TYPE_DARK),
     [TYPE_FAIRY] =      type_icon_frame(gTypeIconsTiles, TYPE_FAIRY),
+    [TYPE_STELLAR] =    type_icon_frame(gTypeIconsTiles, TYPE_STELLAR),
 };
 
 #define ICON_MOVE_X 10
@@ -4393,4 +4395,10 @@ void HideInBattleTeamPreview(void)
 
 	//Clear Textbox
 	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
+}
+
+void CategoryIcons_LoadSpritesGfx(void)
+{
+    LoadCompressedSpriteSheet(&gSpriteSheet_CategoryIcons);
+    LoadSpritePalette(&gSpritePal_CategoryIcons);
 }
