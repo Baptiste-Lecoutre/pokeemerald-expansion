@@ -5778,7 +5778,7 @@ BattleScript_PrintFullBox::
 
 BattleScript_ActionSwitch::
 	hpthresholds2 BS_ATTACKER
-	copybyte sSAVED_BATTLER, gBattlerAttacker
+	saveattacker
 	printstring STRINGID_RETURNMON
 	jumpifbattletype BATTLE_TYPE_DOUBLE, BattleScript_PursuitSwitchDmgSetMultihit
 	setmultihit 1
@@ -5796,7 +5796,7 @@ BattleScript_DoSwitchOut::
 	switchoutabilities BS_ATTACKER
 	updatedynamax
 	waitstate
-	copybyte gBattlerAttacker, sSAVED_BATTLER
+	restoreattacker
 	returnatktoball
 	waitstate
 	drawpartystatussummary BS_ATTACKER
@@ -7823,7 +7823,7 @@ BattleScript_TryIntimidateHoldEffectsRet:
 	return
 
 BattleScript_IntimidateActivates::
-	copybyte sSAVED_BATTLER, gBattlerTarget
+	savetarget
 .if B_ABILITY_POP_UP == TRUE
 	showabilitypopup BS_ATTACKER
 	pause B_WAIT_TIME_LONG
@@ -7861,7 +7861,7 @@ BattleScript_IntimidateLoopIncrement:
 BattleScript_IntimidateEnd:
 	copybyte sBATTLER, gBattlerAttacker
 	destroyabilitypopup
-	copybyte gBattlerTarget, sSAVED_BATTLER
+	restoretarget
 	pause B_WAIT_TIME_MED
 	end3
 
@@ -7894,7 +7894,7 @@ BattleScript_IntimidateInReverse:
 	goto BattleScript_IntimidateLoopIncrement
 
 BattleScript_SupersweetSyrupActivates::
- 	copybyte sSAVED_BATTLER, gBattlerTarget
+ 	savetarget
 .if B_ABILITY_POP_UP == TRUE
 	showabilitypopup BS_ATTACKER
 	pause B_WAIT_TIME_LONG
@@ -7927,7 +7927,7 @@ BattleScript_SupersweetSyrupLoopIncrement:
 BattleScript_SupersweetSyrupEnd:
 	copybyte sBATTLER, gBattlerAttacker
 	destroyabilitypopup
- 	copybyte gBattlerTarget, sSAVED_BATTLER
+ 	restoretarget
 	pause B_WAIT_TIME_MED
 	end3
 
@@ -8318,7 +8318,7 @@ BattleScript_DazzlingProtected::
 	attackstring
 	ppreduce
 	pause B_WAIT_TIME_SHORT
-	call BattleScript_AbilityPopUp
+	call BattleScript_AbilityPopUpScripting
 	printstring STRINGID_POKEMONCANNOTUSEMOVE
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd

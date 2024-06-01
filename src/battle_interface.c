@@ -3906,7 +3906,7 @@ void TryLoadTypeIcons(u8 activeBattler)
                     else
                         sprite->x += 2 - typeNum * 2; 
 					
-                    RequestSpriteFrameImageCopy(type, sprite->oam.tileNum, sprite->images);
+                    RequestSpriteFrameImageCopy(type-1, sprite->oam.tileNum, sprite->images);
 				}
 			}
 		}
@@ -4337,4 +4337,10 @@ void HideInBattleTeamPreview(void)
 
 	//Clear Textbox
 	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
+}
+
+void CategoryIcons_LoadSpritesGfx(void)
+{
+    LoadCompressedSpriteSheet(&gSpriteSheet_CategoryIcons);
+    LoadSpritePalette(&gSpritePal_CategoryIcons);
 }
