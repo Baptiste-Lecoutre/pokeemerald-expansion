@@ -10362,12 +10362,21 @@ uq4_12_t GetTypeEffectiveness(struct Pokemon *mon, u8 moveType)
         if (type2 != type1)
             MulByTypeEffectiveness(&modifier, MOVE_POUND, moveType, 0, type2, 0, FALSE);
 
-        if (moveType == TYPE_GROUND && abilityDef == ABILITY_LEVITATE)
+        if ((modifier <= UQ_4_12(1.0)  &&  abilityDef == ABILITY_WONDER_GUARD)
+         || (moveType == TYPE_FIRE     &&  abilityDef == ABILITY_FLASH_FIRE)
+         || (moveType == TYPE_GRASS    &&  abilityDef == ABILITY_SAP_SIPPER)
+         || (moveType == TYPE_GROUND   && (abilityDef == ABILITY_LEVITATE
+                                       ||  abilityDef == ABILITY_EARTH_EATER))
+         || (moveType == TYPE_WATER    && (abilityDef == ABILITY_WATER_ABSORB
+                                       || abilityDef == ABILITY_DRY_SKIN
+                                       || abilityDef == ABILITY_STORM_DRAIN))
+         || (moveType == TYPE_ELECTRIC && (abilityDef == ABILITY_LIGHTNING_ROD // TODO: Add Gen 3/4 config check
+                                       || abilityDef == ABILITY_VOLT_ABSORB
+                                       || abilityDef == ABILITY_MOTOR_DRIVE)))
+        {
             modifier = UQ_4_12(0.0);
-        if (abilityDef == ABILITY_WONDER_GUARD && modifier <= UQ_4_12(1.0))
-            modifier = UQ_4_12(0.0);
+        }
     }
-    
     return modifier;
 }
 

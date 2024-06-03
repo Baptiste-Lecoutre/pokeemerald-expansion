@@ -199,6 +199,7 @@ struct ObjectEvent
              u32 fixedPriority:1;
              u32 hideReflection:1;
              u32 shiny:1; // OW mon shininess
+             u32 padding:3;
     /*0x04*/ u16 graphicsId; // 11 bits for species; high 5 bits for form
     /*0x06*/ u8 movementType;
     /*0x07*/ u8 trainerType;
@@ -270,7 +271,7 @@ enum {
 #define PLAYER_AVATAR_FLAG_DASH         (1 << 7)
 
 #define PLAYER_AVATAR_FLAG_BIKE        (PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE)
-// Player avatar flags for which follower pokemon are hidden
+// Player avatar flags for which follower Pokémon are hidden
 #define FOLLOWER_INVISIBLE_FLAGS       (PLAYER_AVATAR_FLAG_SURFING | PLAYER_AVATAR_FLAG_UNDERWATER | \
                                         PLAYER_AVATAR_FLAG_BIKE | PLAYER_AVATAR_FLAG_FORCED_MOVE)
 
