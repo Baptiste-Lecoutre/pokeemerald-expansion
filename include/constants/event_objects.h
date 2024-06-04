@@ -260,7 +260,7 @@
 #define OBJ_EVENT_GFX_BLUE                       256
 #define OBJ_EVENT_GFX_SNORLAX_SLEEPING           257
 
-#define OBJ_EVENT_GFX_ANIMATED_BALL              258//OBJ_EVENT_GFX_ITEM_BALL // replaces ITEM_BALL
+#define OBJ_EVENT_GFX_POKE_BALL                  258//OBJ_EVENT_GFX_ITEM_BALL // replaces ITEM_BALL
 #define OBJ_EVENT_GFX_OW_MON                     259//258
 #define OBJ_EVENT_GFX_LIGHT_SPRITE               OBJ_EVENT_GFX_QUINTY_PLUMP
 
@@ -474,6 +474,7 @@
 #define LOCALID_BATTLE_FRONTIER_MART_CLERK 1
 #define LOCALID_SLATEPORT_ENERGY_GURU 25
 
+// Moved from src/event_object_movement.c so that they're accesible from other files.
 #define OBJ_EVENT_PAL_TAG_BRENDAN                 0x1100
 #define OBJ_EVENT_PAL_TAG_BRENDAN_REFLECTION      0x1101
 #define OBJ_EVENT_PAL_TAG_BRIDGE_REFLECTION       0x1102
@@ -570,7 +571,7 @@
 #define OBJ_EVENT_PAL_TAG_BALL_BEAST              0x1169
 // Gen VIII
 #define OBJ_EVENT_PAL_TAG_BALL_STRANGE            0x116A
-#endif
+#endif //OW_MON_POKEBALLS
 // Used as a placeholder follower graphic
 #define OBJ_EVENT_PAL_TAG_SUBSTITUTE              0x7611
 #define OBJ_EVENT_PAL_TAG_LIGHT                   0x8001
@@ -579,7 +580,7 @@
 #define OBJ_EVENT_PAL_TAG_NEON_LIGHT              0x8004
 // Not a real OW palette tag; used for the white flash applied to followers
 #define OBJ_EVENT_PAL_TAG_WHITE                   (OBJ_EVENT_PAL_TAG_NONE - 1)
-#define OBJ_EVENT_PAL_TAG_NONE 0x11FF
+#define OBJ_EVENT_PAL_TAG_NONE                    0x11FF
 
 // This + localId is used as the tileTag
 // for compressed graphicsInfos
