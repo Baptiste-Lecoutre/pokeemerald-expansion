@@ -2069,7 +2069,7 @@ static void Cmd_adjustdamage(void)
         gLastUsedItem = gBattleMons[gBattlerTarget].item;
         gSpecialStatuses[gBattlerTarget].focusBanded = FALSE;
         gSpecialStatuses[gBattlerTarget].focusSashed = FALSE;
-        
+
     }
     else if (gSpecialStatuses[gBattlerTarget].sturdied)
     {
@@ -3191,8 +3191,8 @@ void SetMoveEffect(bool32 primary, bool32 certain)
                 {
                     gBattleMons[gEffectBattler].status2 |= sStatusFlagsForMoveEffects[gBattleScripting.moveEffect];
                     gBattlescriptCurrInstr++;
-                } 
-                else 
+                }
+                else
                 {
                     gBattlescriptCurrInstr++;
                 }
@@ -6358,7 +6358,7 @@ static void Cmd_moveend(void)
                         break;
                     }
                 }
-                
+
                 if (!(gBattleStruct->lastMoveFailed & gBitTable[gBattlerAttacker]
                     || (!gSpecialStatuses[gBattlerAttacker].dancerUsedMove
                         && gBattleStruct->bouncedMoveIsUsed)))
@@ -6456,9 +6456,9 @@ static void Cmd_moveend(void)
               && (gMoveResultFlags & MOVE_RESULT_NO_EFFECT)         // And it is unusable
               && (gBattleMons[gBattlerAttacker].status2 & STATUS2_LOCK_CONFUSE) != STATUS2_LOCK_CONFUSE_TURN(1))  // And won't end this turn
                 CancelMultiTurnMoves(gBattlerAttacker); // Cancel it
-            
-            
-        
+
+
+
             if (gBattleStruct->savedAttackerCount > 0)
             {
                 // #if TESTING
@@ -16985,8 +16985,8 @@ void BS_AllySwitchFailChance(void)
 void BS_SetPhotonGeyserCategory(void)
 {
     NATIVE_ARGS();
-    if (!(gMovesInfo[gCurrentMove].effect == EFFECT_TERA_BLAST && !IsTerastallized(gBattlerAttacker))
-     && !(gMovesInfo[gCurrentMove].effect == EFFECT_TERA_STARSTORM && gBattleMons[gBattlerAttacker].species != SPECIES_TERAPAGOS_STELLAR))
+    if (!((gMovesInfo[gCurrentMove].effect == EFFECT_TERA_BLAST && !IsTerastallized(gBattlerAttacker))
+            || (gMovesInfo[gCurrentMove].effect == EFFECT_TERA_STARSTORM && !(IsTerastallized(gBattlerAttacker) && gBattleMons[gBattlerAttacker].species == SPECIES_TERAPAGOS_STELLAR))))
         gBattleStruct->swapDamageCategory = (GetCategoryBasedOnStats(gBattlerAttacker) == DAMAGE_CATEGORY_PHYSICAL);
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
