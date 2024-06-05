@@ -1815,14 +1815,8 @@
 	_dynmultichoice \left, \top, \ignoreBPress, \maxBeforeScroll, \shouldSort, \initialSelected, \callbacks, NULL
 	.endm
 
-	@ Like callnative, but function expects a ctx
-	.macro callfunc func:req
-	.byte 0xe5
-	.4byte \func
-	.endm
-
 	.macro showdescription
-	.byte 0xe6
+	.byte 0xe5
 	.endm
 
 	.macro showitemdesc
@@ -1836,7 +1830,17 @@
 	.endm
 
 	.macro hideitemdesc
+	.byte 0xe6
+	.endm
+
+	.macro checkPartyHasSpecies species:req
 	.byte 0xe7
+	.2byte \species
+	.endm
+
+	.macro isChosenMonSpecies species:req
+	.byte 0xe8
+	.2byte \species
 	.endm
 
 @ Prepares to start a wild battle against a 'species' at 'level' holding 'item'.
@@ -1845,7 +1849,7 @@
 	@ Running this command will not affect normal wild battles. You start the prepared battle with multi_wild.
 	@ If the player only has one Pokemon, a scripted double battle will be buggy.
 	.macro setsootopolisbattle species:req, level:req, item=ITEM_NONE, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE
-	.byte 0xe8
+	.byte 0xe9
 	.2byte \species
 	.byte \level
 	.2byte \item
@@ -1854,37 +1858,27 @@
 	.2byte \item2
 	.endm
 
-	.macro checkPartyHasSpecies species:req
-	.byte 0xe9
-	.2byte \species
-	.endm
-
-	.macro isChosenMonSpecies species:req
-	.byte 0xea
-	.2byte \species
-	.endm
-
 @NPC follower macros
     @ sets an NPC up to follow the player
     .macro setfollower localId:req, flags:req
-    .byte 0xeb
+    .byte 0xea
     .byte \localId
     .2byte \flags
     .endm
     
     @ remove the following NPC (assumes there will only ever be one)
     .macro destroyfollower
-    .byte 0xec
+    .byte 0xeb
     .endm
     
     @ makes the player and follower face one another
     .macro facefollower
-    .byte 0xed
+    .byte 0xec
     .endm
     
     @ checks if you have a follower. returns the result to VAR_RESULT
     .macro checkfollower
-    .byte 0xee
+    .byte 0xed
     .endm
 
 @ Supplementary
@@ -2268,4 +2262,43 @@
 	callnative SetTeraType
 	.byte \type
 	.2byte \slot
+	.endm
+
+	@ Saves species and forms of Daycare Pokémon to specific vars. Saves the amount of Daycare mon to VAR_RESULT.
+	.macro getdaycaregfx varSpecies1:req varSpecies2:req varForm1:req varForm2:req
+	callnative GetDaycareGraphics
+	.2byte \varSpecies1
+	.2byte \varSpecies2
+	.2byte \varForm1
+	.2byte \varForm2
+	.endm
+
+	@ Plays the cry of the first alive party member.
+	.macro playfirstmoncry
+	callnative PlayFirstMonCry
+	.endm
+
+	@ Buffers the nickname of the first alive party member.
+	.macro bufferlivemonnickname out:req
+	callnative BufferFirstLiveMonNickname
+	.byte \out
+	.endm
+
+	@ Executes Follower actions
+	.macro getfolloweraction
+	callnative GetFollowerAction
+	.endm
+
+	@ Checks if Field move is being used by the current follower.
+	.macro isfollowerfieldmoveuser var:req
+	callnative IsFollowerFieldMoveUser
+	.2byte \var
+	.endm
+
+	@ Saves the direction from where source object event would need to turn to to face the target into the specified var.
+	.macro getdirectiontoface var:req, sourceId:req, targetId:req
+	callnative GetDirectionToFaceScript
+	.2byte \var
+	.byte \sourceId
+	.byte \targetId
 	.endm

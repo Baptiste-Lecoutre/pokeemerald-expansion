@@ -86,10 +86,13 @@ ELF = $(ROM:.gba=.elf)
 MAP = $(ROM:.gba=.map)
 SYM = $(ROM:.gba=.sym)
 
+TEST_OBJ_DIR_NAME_MODERN := build/modern-test
+TEST_OBJ_DIR_NAME_AGBCC := build/test
+
 ifeq ($(MODERN),0)
-TEST_OBJ_DIR_NAME := build/test
+TEST_OBJ_DIR_NAME := $(TEST_OBJ_DIR_NAME_AGBCC)
 else
-TEST_OBJ_DIR_NAME := build/modern-test
+TEST_OBJ_DIR_NAME := $(TEST_OBJ_DIR_NAME_MODERN)
 endif
 TESTELF = $(ROM:.gba=-test.elf)
 HEADLESSELF = $(ROM:.gba=-test-headless.elf)
@@ -310,7 +313,9 @@ tidymodern:
 
 tidycheck:
 	rm -f $(TESTELF) $(HEADLESSELF)
-	rm -rf $(TEST_OBJ_DIR_NAME)
+	rm -rf $(TEST_OBJ_DIR_NAME_MODERN)
+	rm -rf $(TEST_OBJ_DIR_NAME_AGBCC)
+
 
 ifneq ($(MODERN),0)
 $(C_BUILDDIR)/berry_crush.o: override CFLAGS += -Wno-address-of-packed-member
@@ -368,11 +373,6 @@ endif
 
 ifeq ($(DINFO),1)
 override CFLAGS += -g
-endif
-
-ifeq ($(DDEBUG),1)
-override ASFLAGS += --defsym DEBUG=1
-override CPPFLAGS += -D DEBUG=1
 endif
 
 # The dep rules have to be explicit or else missing files won't be reported.
@@ -507,7 +507,7 @@ $(ELF): $(OBJ_DIR)/ld_script.ld $(OBJS) libagbsyscall
 
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
-	$(FIX) $@ --silent
+	$(FIX) $@ -p --silent
 
 agbcc: all
 

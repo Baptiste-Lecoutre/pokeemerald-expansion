@@ -17,21 +17,25 @@ enum {
 };
 
 // Can be either 3 bytes, a u16 and a byte, or a 24-bit value
-union __attribute__((packed)) MsgConditionData {
+union __attribute__((packed)) MsgConditionData
+{
     u8 bytes[3];
-    struct __attribute__((packed)) {
+    struct __attribute__((packed))
+    {
         u16 hw;
         u8 b;
     } split;
     u32 raw:24;
 }; // size = 0x3
 
-struct __attribute__((packed)) MsgCondition {
+struct __attribute__((packed)) MsgCondition
+{
     u32 type:8;
     union MsgConditionData data;
 }; // size = 0x4
 
-struct FollowerMsgInfoExtended {
+struct FollowerMsgInfoExtended
+{
     const u8 *text;
     const u8 *script;
 
@@ -65,7 +69,7 @@ struct FollowerMsgInfoExtended {
 #define MATCH_SPECIES(species) MATCH_U24(MSG_COND_SPECIES, species)
 #define MATCH_TYPES(type1, type2) MATCH_U8(MSG_COND_TYPE, type1, type2, 0)
 // Checks that follower has *neither* of the two types
-#define MATCH_NOT_TYPES(type1, type2) MATCH_U8(MSG_COND_TYPE, type1, type2, TYPE_NONE)
+#define MATCH_NOT_TYPES(type1, type2) MATCH_U8(MSG_COND_TYPE, type1, type2, TYPE_NONE | 1)
 #define MATCH_STATUS(status) MATCH_U24(MSG_COND_STATUS, status)
 #define MATCH_MAPSEC(mapsec) MATCH_U24(MSG_COND_MAPSEC, mapsec)
 #define MATCH_MAP_RAW(mapGroup, mapNum) MATCH_U8(MSG_COND_MAP, mapGroup, mapNum, 0)
