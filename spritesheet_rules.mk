@@ -851,7 +851,7 @@ $(OBJEVENTGFXDIR)/pokemon_old/snorlax_sleep.4bpp: %.4bpp: %.png
 $(OBJEVENTGFXDIR)/pokemon_old/spheal_roll.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
-$(OBJEVENTGFXDIR)/misc/animated_ball.4bpp: %.4bpp: %.png
+$(OBJEVENTGFXDIR)/misc/ball_poke.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 4
 
 $(OBJEVENTGFXDIR)/berry_trees/aguav.4bpp: %.4bpp: %.png
@@ -3837,7 +3837,7 @@ $(POKEMONGFXDIR)/runerigus/follower.4bpp: %.4bpp: %.png
 $(POKEMONGFXDIR)/milcery/follower.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
-$(POKEMONGFXDIR)/alcremie/follower.4bpp: %.4bpp: %.png
+$(POKEMONGFXDIR)/alcremie/strawberry/follower.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
 $(POKEMONGFXDIR)/falinks/follower.4bpp: %.4bpp: %.png
@@ -3907,7 +3907,7 @@ $(POKEMONGFXDIR)/zamazenta/crowned_shield/follower.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4
 
 $(POKEMONGFXDIR)/eternatus/follower.4bpp: %.4bpp: %.png
-	$(GFX) $< $@ -mwidth 8 -mheight 8
+	$(GFX) $< $@ -mwidth 4 -mheight 4
 
 $(POKEMONGFXDIR)/kubfu/follower.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 4 -mheight 4

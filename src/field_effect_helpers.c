@@ -112,16 +112,17 @@ static void LoadObjectReflectionPalette(struct ObjectEvent *objectEvent, struct 
 }
 
 // Apply a blue tint effect to a palette
-static void ApplyPondFilter(u8 paletteNum, u16 *dest) {
-    u32 i;
-    s32 r, g, b;
+static void ApplyPondFilter(u8 paletteNum, u16 *dest)
+{
+    u32 i, r, g, b;
+    // CpuCopy16(gPlttBufferUnfaded + 0x100 + paletteNum * 16, dest, 32);
     u16 *src = gPlttBufferUnfaded + OBJ_PLTT_ID(paletteNum);
     *dest++ = *src++; // copy transparency
-    for (i = 0; i < 16 - 1; i++) {
-        u32 color = *src++;
-        r = (color << 27) >> 27;
-        g = (color << 22) >> 27;
-        b = (color << 17) >> 27;
+    for (i = 0; i < 16 - 1; i++)
+    {
+        r = GET_R(src[i]);
+        g = GET_G(src[i]);
+        b = GET_B(src[i]);
         b += 10;
         if (b > 31)
             b = 31;
@@ -130,22 +131,23 @@ static void ApplyPondFilter(u8 paletteNum, u16 *dest) {
 }
 
 // Apply a ice tint effect to a palette
-static void ApplyIceFilter(u8 paletteNum, u16 *dest) {
-    u32 i;
-    s32 r, g, b;
+static void ApplyIceFilter(u8 paletteNum, u16 *dest)
+{
+    u32 i, r, g, b;
+    // CpuCopy16(gPlttBufferUnfaded + 0x100 + paletteNum * 16, dest, 32);
     u16 *src = gPlttBufferUnfaded + OBJ_PLTT_ID(paletteNum);
     *dest++ = *src++; // copy transparency
-    for (i = 0; i < 16 - 1; i++) {
-        u32 color = *src++;
-        r = (color << 27) >> 27;
-        g = (color << 22) >> 27;
-        b = (color << 17) >> 27;
+    for (i = 0; i < 16 - 1; i++)
+    {
+        r = GET_R(src[i]);
         r -= 5;
         if (r < 0)
             r = 0;
+        g = GET_G(src[i]);
         g += 3;
         if (g > 31)
             g = 31;
+        b = GET_B(src[i]);
         b += 16;
         if (b > 31)
             b = 31;
@@ -159,7 +161,9 @@ static void LoadObjectRegularReflectionPalette(struct ObjectEvent *objectEvent, 
     u16 baseTag = GetSpritePaletteTagByPaletteNum(mainSprite->oam.paletteNum);
     u16 paletteTag = REFLECTION_PAL_TAG(baseTag, mainSprite->oam.paletteNum);
     u8 paletteNum = IndexOfSpritePaletteTag(paletteTag);
-    if (paletteNum <= 16) { // Load filtered palette
+    if (paletteNum <= 16)
+    {
+        // Load filtered palette
         u16 filteredData[16];
         struct SpritePalette filteredPal = {.tag = paletteTag, .data = filteredData};
         if (sprite->sIsStillReflection == FALSE)
@@ -198,22 +202,24 @@ static void UpdateObjectReflectionSprite(struct Sprite *reflectionSprite)
 
     // Only filter palette if not using the high bridge blue palette
     // This is basically a copy of LoadObjectRegularReflectionPalette
-    if (IndexOfSpritePaletteTag(HIGH_BRIDGE_PAL_TAG) != reflectionSprite->oam.paletteNum) {
+    if (IndexOfSpritePaletteTag(HIGH_BRIDGE_PAL_TAG) != reflectionSprite->oam.paletteNum)
+    {
         u16 baseTag = GetSpritePaletteTagByPaletteNum(mainSprite->oam.paletteNum);
         u16 paletteTag = REFLECTION_PAL_TAG(baseTag, mainSprite->oam.paletteNum);
         u8 paletteNum = IndexOfSpritePaletteTag(paletteTag);
-        if (paletteNum >= 16) { // Build filtered palette
+        if (paletteNum >= 16)
+        {
+            // Build filtered palette
             u16 filteredData[16];
             struct SpritePalette filteredPal = {.tag = paletteTag, .data = filteredData};
             // Free palette if unused
             reflectionSprite->inUse = FALSE;
             FieldEffectFreePaletteIfUnused(reflectionSprite->oam.paletteNum);
             reflectionSprite->inUse = TRUE;
-            if (reflectionSprite->sIsStillReflection == FALSE) {
+            if (reflectionSprite->sIsStillReflection == FALSE)
                 ApplyPondFilter(mainSprite->oam.paletteNum, filteredData);
-            } else {
+            else
                 ApplyIceFilter(mainSprite->oam.paletteNum, filteredData);
-            }
             paletteNum = LoadSpritePalette(&filteredPal);
             UpdateSpritePaletteWithWeather(paletteNum, TRUE);
         }
@@ -238,7 +244,8 @@ static void UpdateObjectReflectionSprite(struct Sprite *reflectionSprite)
         reflectionSprite->invisible = TRUE;
 
     // Support "virtual" sprites which can't be rotated via affines
-    if (reflectionSprite->subspriteTables[0].subsprites) {
+    if (reflectionSprite->subspriteTables[0].subsprites)
+    {
         reflectionSprite->oam.affineMode = ST_OAM_AFFINE_OFF;
         return;
     }
@@ -706,38 +713,38 @@ u32 FldEff_DeepSandFootprints(void)
 
 u32 FldEff_TracksBug(void)
 {
-	u8 spriteId;
-	struct Sprite *sprite;
+    u8 spriteId;
+    struct Sprite *sprite;
 
-	SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
-	spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_TRACKS_BUG], gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
-	if (spriteId != MAX_SPRITES)
-	{
-		sprite = &gSprites[spriteId];
-		sprite->coordOffsetEnabled = TRUE;
-		sprite->oam.priority = gFieldEffectArguments[3];
-		sprite->data[7] = FLDEFF_TRACKS_BUG;
-		StartSpriteAnim(sprite, gFieldEffectArguments[4]);
-	}
-	return 0;
+    SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_TRACKS_BUG], gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->data[7] = FLDEFF_TRACKS_BUG;
+        StartSpriteAnim(sprite, gFieldEffectArguments[4]);
+    }
+    return 0;
 }
 
 u32 FldEff_TracksSpot(void)
 {
-	u8 spriteId;
-	struct Sprite *sprite;
+    u8 spriteId;
+    struct Sprite *sprite;
 
-	SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
-	spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_TRACKS_SPOT], gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
-	if (spriteId != MAX_SPRITES)
-	{
-		sprite = &gSprites[spriteId];
-		sprite->coordOffsetEnabled = TRUE;
-		sprite->oam.priority = gFieldEffectArguments[3];
-		sprite->data[7] = FLDEFF_TRACKS_SPOT;
-		StartSpriteAnim(sprite, gFieldEffectArguments[4]);
-	}
-	return 0;
+    SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_TRACKS_SPOT], gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->data[7] = FLDEFF_TRACKS_SPOT;
+        StartSpriteAnim(sprite, gFieldEffectArguments[4]);
+    }
+    return 0;
 }
 
 u32 FldEff_BikeTireTracks(void)
@@ -759,20 +766,20 @@ u32 FldEff_BikeTireTracks(void)
 
 u32 FldEff_TracksSlither(void)
 {
-	u8 spriteId;
-	struct Sprite *sprite;
+    u8 spriteId;
+    struct Sprite *sprite;
 
-	SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
-	spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_TRACKS_SLITHER], gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
-	if (spriteId != MAX_SPRITES)
-	{
-		sprite = &gSprites[spriteId];
-		sprite->coordOffsetEnabled = TRUE;
-		sprite->oam.priority = gFieldEffectArguments[3];
-		sprite->data[7] = FLDEFF_TRACKS_SLITHER;
-		StartSpriteAnim(sprite, gFieldEffectArguments[4]);
-	}
-	return spriteId;
+    SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_TRACKS_SLITHER], gFieldEffectArguments[0], gFieldEffectArguments[1], gFieldEffectArguments[2]);
+    if (spriteId != MAX_SPRITES)
+    {
+        sprite = &gSprites[spriteId];
+        sprite->coordOffsetEnabled = TRUE;
+        sprite->oam.priority = gFieldEffectArguments[3];
+        sprite->data[7] = FLDEFF_TRACKS_SLITHER;
+        StartSpriteAnim(sprite, gFieldEffectArguments[4]);
+    }
+    return spriteId;
 }
 
 void (*const gFadeFootprintsTireTracksFuncs[])(struct Sprite *) = {
