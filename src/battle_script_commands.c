@@ -2179,7 +2179,7 @@ END:
         gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
     }
     // Max Raid shields apply a damage reduction that can fully negate damage.
-    else if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && gBattleMoveDamage && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX)
+    else if (IsRaidBoss(gBattlerTarget) && !IsRaidBoss(gBattlerAttacker) && gBattleStruct->raid.shield > 0 && gBattleMoveDamage && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX)
     {
         gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
         gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
@@ -4126,8 +4126,6 @@ static void Cmd_cleareffectsonfaint(void)
             MarkBattlerForControllerExec(battler);
         }
 
-        clearDataResult = FaintClearSetData(battler); // Effects like attractions, trapping, etc.
-
         if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerSide(battler) == B_SIDE_PLAYER && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
         {
             if (gCurrentMove != MOVE_STRUGGLE) // don't apply repeated attack probability twice
@@ -4140,28 +4138,29 @@ static void Cmd_cleareffectsonfaint(void)
                     gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
                 increase = GetRaidBossKOStatIncrease(gBattlerAttacker);
 
-                if (increase > 0)
+                if (increase)
                 {
-                    if ((Random() & 1) == 0)
+                    if (Random() & 1)
                         statId = STAT_ATK;
                     else
                         statId = STAT_SPATK;
-                    
-                    if (GetBattlerAbility(gBattlerAttacker) == ABILITY_CONTRARY)
-                        SET_STATCHANGER(statId, increase, TRUE);
-                    else
-                        SET_STATCHANGER(statId, increase, FALSE);
 
-                    if (ChangeStatBuffs(GET_STAT_BUFF_VALUE_WITH_SIGN(gBattleScripting.statChanger), statId, MOVE_EFFECT_CERTAIN | MOVE_EFFECT_AFFECTS_USER, NULL) == STAT_CHANGE_WORKED)
-                    {
-                        gBattleStruct->raid.statIncreased = TRUE;
-                        BattleScriptPushCursor();
-                        clearDataResult = BattleScript_StatUpMsg; 
-                    }
+                    if (!CompareStat(gBattlerAttacker, statId, MAX_STAT_STAGE, CMP_LESS_THAN))
+                        statId = (statId == STAT_ATK) ? STAT_SPATK : STAT_ATK;
+                    
+                    SET_STATCHANGER(statId, increase, GetBattlerAbility(gBattlerAttacker) == ABILITY_CONTRARY);
+                    PREPARE_STAT_BUFFER(gBattleTextBuff1, statId);
+
+                    gBattleStruct->raid.statIncreased = TRUE;
+                    BattleScriptPush(cmd->nextInstr);
+                    gBattlescriptCurrInstr = BattleScript_RaidBossRaiseStat;
+                    return;
                 }
             }
         }
         gBattleStruct->raid.statIncreased = FALSE;
+
+        clearDataResult = FaintClearSetData(battler); // Effects like attractions, trapping, etc.
 
         if (clearDataResult)
             gBattlescriptCurrInstr = clearDataResult;

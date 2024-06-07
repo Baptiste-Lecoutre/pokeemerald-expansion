@@ -10250,6 +10250,16 @@ BattleScript_RaidMoveDynamaxEnergy::
 	waitmessage B_WAIT_TIME_LONG
 	end2
 
+BattleScript_RaidBossRaiseStat::
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_RaidBossRaiseStat_End
+	setgraphicalstatchangevalues
+	playanimation BS_ATTACKER, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
+	waitanimation
+	printfromtable gStatUpStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_RaidBossRaiseStat_End:
+	return
+
 @ Ghosts
 BattleScript_GhostGetOutGetOut::
 	printstring STRINGID_GHOSTGETOUTGETOUT
