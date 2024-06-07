@@ -3191,7 +3191,7 @@ u8 FldEff_RayquazaSpotlight(void)
     struct Sprite *sprite = &gSprites[spriteId];
 
     sprite->oam.priority = 1;
-    sprite->oam.paletteNum = 4; // TODO: What (dynamic) palette should this Raquaza use?
+    sprite->oam.paletteNum = 4;
     sprite->data[0] = 0;
     sprite->data[1] = 0;
     sprite->data[2] = 0;
@@ -4049,7 +4049,7 @@ static u8 CreateRockClimbBlob(void)
     {
         sprite = &gSprites[spriteId];
         sprite->coordOffsetEnabled = TRUE;
-        sprite->oam.paletteNum = LoadObjectEventPalette(gSaveBlock2Ptr->playerGender ? FLDEFF_PAL_TAG_MAY : FLDEFF_PAL_TAG_BRENDAN);;
+        sprite->oam.paletteNum = LoadPlayerObjectEventPalette(gSaveBlock2Ptr->playerGender);
         sprite->data[2] = gFieldEffectArguments[2];
         sprite->data[3] = -1;
         sprite->data[6] = -1;

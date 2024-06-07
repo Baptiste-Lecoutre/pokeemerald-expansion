@@ -4090,9 +4090,6 @@ static void Task_DeoxysRockInteraction(u8 taskId)
     }
 }
 
-// duplicate of event_object_movement
-#define OBJ_EVENT_PAL_TAG_BIRTH_ISLAND_STONE      0x111F
-
 static void ChangeDeoxysRockLevel(u8 rockLevel)
 {
     u8 paletteNum = IndexOfSpritePaletteTag(OBJ_EVENT_PAL_TAG_BIRTH_ISLAND_STONE);
@@ -5346,7 +5343,7 @@ void SwapPlayersCostume(void)
     BlendPalettes(0xFFFFFFFF, 16, 0);
 }
 
-u8 GetPlayerCostumeId(void)
+u16 GetPlayerCostumeId(void)
 {
     return GetPlayerAvatarGraphicsIdByStateIdAndGender(PLAYER_AVATAR_STATE_NORMAL, gSaveBlock2Ptr->playerGender);
 }

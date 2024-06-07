@@ -240,6 +240,7 @@ const void *RandomElementArrayDefault(enum RandomTag tag, const void *array, siz
 {
     return (const u8 *)array + size * RandomUniformDefault(tag, 0, count - 1);
 }
+
 // NEW
 u16 RandRange(u16 min, u16 max)
 {    
@@ -287,4 +288,24 @@ u16 RandomSeededModulo(u32 value, u16 modulo)
     while ((result >= RAND_MAX) && (++i != I_MAX));
 
     return (result % modulo);
+}
+
+
+// Returns a random index according to a list of weights
+u8 RandomWeightedIndex(u8 *weights, u8 length)
+{
+    u32 i;
+    u16 randomValue;
+    u16 weightSum = 0;
+    for (i = 0; i < length; i++)
+        weightSum += weights[i];
+    randomValue = weightSum > 0 ? Random() % weightSum : 0;
+    weightSum = 0;
+    for (i = 0; i < length; i++)
+    {
+        weightSum += weights[i];
+        if (randomValue <= weightSum)
+            return i;
+    }
+    return 0;
 }
