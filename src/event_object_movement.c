@@ -3079,14 +3079,20 @@ u8 LoadObjectEventPalette(u16 paletteTag)
 u8 LoadPlayerObjectEventPalette(u8 gender)
 {
     u16 paletteTag;
-    switch (gender)
+    switch (gSaveBlock2Ptr->costumeId)
     {
         default:
-        case MALE:
-            paletteTag = OBJ_EVENT_PAL_TAG_BRENDAN;
+        case GREEN_COSTUME:
+            paletteTag = (gender == MALE) ? OBJ_EVENT_PAL_TAG_BRENDAN : OBJ_EVENT_PAL_TAG_MAY;
             break;
-        case FEMALE:
-            paletteTag = OBJ_EVENT_PAL_TAG_MAY;
+        case RED_COSTUME:
+            paletteTag = (gender == MALE) ? OBJ_EVENT_PAL_TAG_BRENDAN_RED : OBJ_EVENT_PAL_TAG_MAY_RED;
+            break;
+        case BLUE_COSTUME:
+            paletteTag = (gender == MALE) ? OBJ_EVENT_PAL_TAG_BRENDAN_BLUE : OBJ_EVENT_PAL_TAG_MAY_BLUE;
+            break;
+        case YELLOW_COSTUME:
+            paletteTag = (gender == MALE) ? OBJ_EVENT_PAL_TAG_BRENDAN_YELLOW : OBJ_EVENT_PAL_TAG_MAY_YELLOW;
             break;
     }
     return LoadObjectEventPalette(paletteTag);
