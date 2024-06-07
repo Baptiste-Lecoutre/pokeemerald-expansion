@@ -5343,7 +5343,7 @@ void SwapPlayersCostume(void)
     BlendPalettes(0xFFFFFFFF, 16, 0);
 }
 
-u8 GetPlayerCostumeId(void)
+u16 GetPlayerCostumeId(void)
 {
     return GetPlayerAvatarGraphicsIdByStateIdAndGender(PLAYER_AVATAR_STATE_NORMAL, gSaveBlock2Ptr->playerGender);
 }
