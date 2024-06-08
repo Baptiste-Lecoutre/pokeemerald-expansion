@@ -128,6 +128,7 @@ enum BWSummarySprites
     SPRITE_ARR_ID_MON,
     SPRITE_ARR_ID_BALL,
     SPRITE_ARR_ID_HEART,
+    SPRITE_ARR_ID_GIGANTAMAX,
     SPRITE_ARR_ID_STATUS,
     SPRITE_ARR_ID_SHINY,
     SPRITE_ARR_ID_POKERUS_CURED,
@@ -436,6 +437,8 @@ static const u16 sStatGrades_Pal[]                          = INCBIN_U16("graphi
 static const u32 sStatGrades_Gfx[]                          = INCBIN_U32("graphics/summary_screen/bw/stat_grades.4bpp.lz");
 static const u32 sMaxFriendshipSummaryScreenIconTiles[] = INCBIN_U32("graphics/summary_screen/MaxFriendshipSummaryScreenIcon.4bpp.lz");
 static const u16 sMaxFriendshipSummaryScreenIconPal[] = INCBIN_U16("graphics/summary_screen/MaxFriendshipSummaryScreenIcon.gbapal");
+static const u32 sGigantamaxSummaryScreenIconTiles[] = INCBIN_U32("graphics/summary_screen/GigantamaxSummaryScreenIcon.4bpp.lz");
+static const u16 sGigantamaxSummaryScreenIconPal[] = INCBIN_U16("graphics/summary_screen/GigantamaxSummaryScreenIcon.gbapal");
 
 static const struct BgTemplate sBgTemplates[] =
 {
@@ -776,6 +779,7 @@ static void (*const sTextPrinterTasks[])(u8 taskId) =
 #define TAG_CATEGORY_ICONS 30006
 #define TAG_STAT_GRADES 30007
 #define GFX_TAG_MAX_FRIENDSHIP_ICON 0x2716 //Some battle tag
+#define TAG_GIGANTAMAX_ICON 30008
 
 enum BWCategoryIcon
 {
@@ -1472,6 +1476,47 @@ static const struct SpritePalette sSummaryScreenMaxFriendshipIconSpritePalette =
 {
     .data = sMaxFriendshipSummaryScreenIconPal,
     .tag = GFX_TAG_MAX_FRIENDSHIP_ICON,
+};
+
+static const struct OamData sOamData_GigantamaxIcon =
+{
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = FALSE,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(16x16),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(16x16),
+    .tileNum = 0,
+    .priority = 1,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+static const struct SpriteTemplate sSummaryScreenGigantamaxIconTemplate =
+{
+	.tileTag = TAG_GIGANTAMAX_ICON,
+	.paletteTag = TAG_GIGANTAMAX_ICON,
+	.oam = &sOamData_GigantamaxIcon,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct CompressedSpriteSheet sSummaryScreenGigantamaxIconSpriteSheet = 
+{
+    .data = sGigantamaxSummaryScreenIconTiles, 
+    .size = (16 * 16 * 1) / 2, 
+    .tag = TAG_GIGANTAMAX_ICON,
+};
+
+static const struct SpritePalette sSummaryScreenGigantamaxIconSpritePalette = 
+{
+    .data = sGigantamaxSummaryScreenIconPal,
+    .tag = TAG_GIGANTAMAX_ICON,
 };
 
 // code
@@ -2202,6 +2247,8 @@ static void Task_ChangeSummaryMon(u8 taskId)
         DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]]);
         if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] != MAX_SPRITES)
             DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]]);
+        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] != MAX_SPRITES)
+            DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]]);
         break;
     case 3:
         CopyMonToSummaryStruct(&sMonSummaryScreen->currentMon);
@@ -4987,6 +5034,20 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
     }
     else
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART] = MAX_SPRITES;
+    
+    if (GetMonData(mon, MON_DATA_GIGANTAMAX_FACTOR))
+    {
+        LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenGigantamaxIconSpriteSheet);
+		LoadSpritePalette(&sSummaryScreenGigantamaxIconSpritePalette);
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] = CreateSprite(&sSummaryScreenGigantamaxIconTemplate, 213, 38, 0);
+        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] < MAX_SPRITES)
+        {
+            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].callback = SpriteCallbackDummy;
+            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].oam.priority = 3;
+        }
+    }
+    else
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] = MAX_SPRITES;
 }
 
 static void CreateSetStatusSprite(void)
