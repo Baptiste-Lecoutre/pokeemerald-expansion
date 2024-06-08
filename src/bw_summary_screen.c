@@ -4039,7 +4039,9 @@ static void BufferStat(u8 *dst, u8 statIndex, u32 stat, u32 strId, u32 align)
 
     if (BW_SUMMARY_NATURE_ARROWS)
     {
-        if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp)
+        if (gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statDown)
+            ;
+        else if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statUp)
             StringAppend(txtPtr, sTextUpArrow);
         else if (statIndex == gNaturesInfo[sMonSummaryScreen->summary.mintNature].statDown)
             StringAppend(txtPtr, sTextDownArrow);
