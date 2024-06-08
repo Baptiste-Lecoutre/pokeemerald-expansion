@@ -478,6 +478,7 @@ bool32 InitRaidData(void)
 bool32 InitCustomRaidData(void)
 {
     u16 item = gSpecialVar_0x8008;
+    u8 teraType = gSpecialVar_0x8009;
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
 
@@ -489,10 +490,12 @@ bool32 InitCustomRaidData(void)
 
     if (item != ITEM_NONE)
         SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &item);
+    if (teraType != TYPE_NONE)
+        SetMonData(&gEnemyParty[0], MON_DATA_TERA_TYPE, &teraType);
     return TRUE;
 }
 
-// Sets up the RaidBattleData struct in gBattleStruct.
+// Sets up the RaidBattleData struct in gBattleStruct, run during battle intro setup after battle transition.
 void InitRaidBattleData(void)
 {
     u32 i;
