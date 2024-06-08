@@ -13557,7 +13557,7 @@ static void Cmd_healpartystatus(void)
     CMD_ARGS();
 
     u32 zero = 0;
-    u32 battler;
+    u32 partner = GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gBattlerAttacker)));
     u8 toHeal = 0;
 
     if (gCurrentMove == MOVE_HEAL_BELL)
@@ -13567,7 +13567,8 @@ static void Cmd_healpartystatus(void)
 
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_BELL;
 
-        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_SOUNDPROOF)
+        if (GetBattlerAbility(gBattlerAttacker) != ABILITY_SOUNDPROOF
+         || B_HEAL_BELL_SOUNDPROOF == GEN_5 || B_HEAL_BELL_SOUNDPROOF >= GEN_9)
         {
             gBattleMons[gBattlerAttacker].status1 = 0;
             gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_NIGHTMARE;
@@ -13578,19 +13579,18 @@ static void Cmd_healpartystatus(void)
             gBattleCommunication[MULTISTRING_CHOOSER] |= B_MSG_BELL_SOUNDPROOF_ATTACKER;
         }
 
-        battler = gBattleScripting.battler = GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gBattlerAttacker)));
+        gBattleScripting.battler = partner;
 
-        if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
-            && !(gAbsentBattlerFlags & gBitTable[battler]))
+        if (IsBattlerAlive(partner))
         {
-            if (GetBattlerAbility(battler) != ABILITY_SOUNDPROOF)
+            if (GetBattlerAbility(partner) != ABILITY_SOUNDPROOF || B_HEAL_BELL_SOUNDPROOF == GEN_5)
             {
-                gBattleMons[battler].status1 = 0;
-                gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
+                gBattleMons[partner].status1 = 0;
+                gBattleMons[partner].status2 &= ~STATUS2_NIGHTMARE;
             }
             else
             {
-                RecordAbilityBattle(battler, gBattleMons[battler].ability);
+                RecordAbilityBattle(partner, gBattleMons[partner].ability);
                 gBattleCommunication[MULTISTRING_CHOOSER] |= B_MSG_BELL_SOUNDPROOF_PARTNER;
             }
         }
@@ -13605,13 +13605,17 @@ static void Cmd_healpartystatus(void)
             if (species != SPECIES_NONE && species != SPECIES_EGG)
             {
                 u16 ability;
+                bool32 isAttacker = gBattlerPartyIndexes[gBattlerAttacker] == i;
+                bool32 isDoublesPartner = gBattlerPartyIndexes[partner] == i && IsBattlerAlive(partner);
 
-                if (gBattlerPartyIndexes[gBattlerAttacker] == i)
+                if (B_HEAL_BELL_SOUNDPROOF == GEN_5 || (isAttacker && B_HEAL_BELL_SOUNDPROOF >= GEN_9))
+                    ability = ABILITY_NONE;
+                else if (B_HEAL_BELL_SOUNDPROOF > GEN_5 && !isAttacker && !isDoublesPartner)
+                    ability = ABILITY_NONE;
+                else if (isAttacker)
                     ability = GetBattlerAbility(gBattlerAttacker);
-                else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
-                         && gBattlerPartyIndexes[battler] == i
-                         && !(gAbsentBattlerFlags & gBitTable[battler]))
-                    ability = GetBattlerAbility(battler);
+                else if (isDoublesPartner)
+                    ability = GetBattlerAbility(partner);
                 else
                     ability = GetAbilityBySpecies(species, abilityNum);
 
@@ -13628,12 +13632,11 @@ static void Cmd_healpartystatus(void)
         gBattleMons[gBattlerAttacker].status1 = 0;
         gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_NIGHTMARE;
 
-        battler = GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(gBattlerAttacker)));
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
-            && !(gAbsentBattlerFlags & gBitTable[battler]))
+            && !(gAbsentBattlerFlags & gBitTable[partner]))
         {
-            gBattleMons[battler].status1 = 0;
-            gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
+            gBattleMons[partner].status1 = 0;
+            gBattleMons[partner].status2 &= ~STATUS2_NIGHTMARE;
         }
 
     }
