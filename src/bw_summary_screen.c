@@ -752,6 +752,7 @@ static const u8 sTextColors[][3] =
     {0, 3, 4},
     {0, 5, 6},
     {0, 7, 8},
+    {0, 5, 5},
 };
 
 static void (*const sTextPrinterFunctions[])(void) =
@@ -2893,7 +2894,7 @@ static bool8 CanReplaceMove(void)
 {
     if (sMonSummaryScreen->firstMoveIndex == MAX_MON_MOVES
         || sMonSummaryScreen->newMove == MOVE_NONE
-        || IsMoveHM(sMonSummaryScreen->summary.moves[sMonSummaryScreen->firstMoveIndex]) != TRUE)
+        /*|| IsMoveHM(sMonSummaryScreen->summary.moves[sMonSummaryScreen->firstMoveIndex]) != TRUE*/)
         return TRUE;
     else
         return FALSE;
@@ -3349,9 +3350,15 @@ static void ResetWindows(void)
         sMonSummaryScreen->windowIds[i] = WINDOW_NONE;
 }
 
+static void PrintTextOnWindowWithFont(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId, u32 fontId)
+{
+    AddTextPrinterParameterized4(windowId, fontId, x, y, 0, lineSpacing, sTextColors[colorId], 0, string);
+}
+
 static void PrintTextOnWindow(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId)
 {
-    AddTextPrinterParameterized4(windowId, FONT_SHORT, x, y, 0, lineSpacing, sTextColors[colorId], 0, string);
+    PrintTextOnWindowWithFont(windowId, string, x, y, lineSpacing, colorId, FONT_SHORT);
+    //AddTextPrinterParameterized4(windowId, FONT_SHORT, x, y, 0, lineSpacing, sTextColors[colorId], 0, string);
 }
 
 static void PrintTextOnWindow_BW_Font(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId)
@@ -3731,7 +3738,10 @@ static void PrintMonDexNumberSpecies(void)
             }
             else
             {
-                PrintTextOnWindow(windowId, gStringVar1, 4, 0, 0, 6);
+                const u8 sText_Shiny[] = _("{SUM_SHINY}");
+                //StringAppend(gStringVar1, sText_Shiny);
+                PrintTextOnWindowWithFont(windowId, sText_Shiny, 28, 0, 0, 13, FONT_NORMAL);
+                PrintTextOnWindow(windowId, gStringVar1, 4, 0, 0, 0);//6);
                 HandleMonShinyIcon(TRUE);
             }
         }
@@ -4742,18 +4752,18 @@ static void SetMonTypeIcons(void)
         SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[0], 68, 46, SPRITE_ARR_ID_TYPE);
         if (gSpeciesInfo[summary->species].types[0] != gSpeciesInfo[summary->species].types[1])
         {
-            SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 108, 46, SPRITE_ARR_ID_TYPE + 1);
+            SetTypeSpritePosAndPal(gSpeciesInfo[summary->species].types[1], 104, 46, SPRITE_ARR_ID_TYPE + 1); //108
             SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, FALSE);
         }
         else
         {
             SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 1, TRUE);
         }
-        //ravetodo not yet implemented
-        // if (P_SHOW_TERA_TYPE >= GEN_9)
-        // {
-        //     SetTypeSpritePosAndPal(summary->teraType, 200, 48, SPRITE_ARR_ID_TYPE + 2);
-        // }
+
+        if (P_SHOW_TERA_TYPE >= GEN_9 && CheckBagHasItem(ITEM_TERA_ORB, 1) && summary->teraType != TYPE_NONE)
+        {
+            SetTypeSpritePosAndPal(summary->teraType, 140, 46, SPRITE_ARR_ID_TYPE + 2); //200
+        }
     }
 }
 
@@ -5028,8 +5038,8 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
 			}
 
             StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]], imageNum);
-            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
-            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
+            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
+            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
 		}
     }
     else
@@ -5040,11 +5050,11 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
         LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenGigantamaxIconSpriteSheet);
 		LoadSpritePalette(&sSummaryScreenGigantamaxIconSpritePalette);
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] = CreateSprite(&sSummaryScreenGigantamaxIconTemplate, 213, 38, 0);
-        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] < MAX_SPRITES)
+        /*if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] < MAX_SPRITES)
         {
             gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].callback = SpriteCallbackDummy;
-            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].oam.priority = 3;
-        }
+            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].oam.priority = 3;
+        }*/
     }
     else
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] = MAX_SPRITES;
