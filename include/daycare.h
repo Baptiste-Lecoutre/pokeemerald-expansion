@@ -34,9 +34,7 @@ void ShowDaycareLevelMenu(void);
 void ChooseSendDaycareMon(void);
 u8 GetEggMoves(struct Pokemon *pokemon, u16 *eggMoves);
 u16 GetEggSpecies(u16 species);
-u16 GetEggMovesArraySize(void);
-
-u8 GetEggMovesSpecies(u16 species, u16 *eggMoves);
+u8 GetEggMovesBySpecies(u16 species, u16 *eggMoves);
 bool8 SpeciesCanLearnEggMove(u16 species, u16 move);
 void IsPartyAndBoxesFull(void);
 
