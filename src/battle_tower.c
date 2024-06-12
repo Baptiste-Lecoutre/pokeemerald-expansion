@@ -2153,7 +2153,7 @@ void DoSpecialTrainerBattle(void)
         if (gRaidData.partnerNum != 0)
         {
             gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
-            gPartnerSpriteId = gBattlePartners[gRaidData.partnerNum].trainerPic;
+//            gPartnerSpriteId = gBattlePartners[gRaidData.partnerNum].trainerPic;
             gPartnerTrainerId = TRAINER_PARTNER(gRaidData.partnerNum);
             FillPartnerParty(gPartnerTrainerId);
         }

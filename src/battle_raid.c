@@ -404,7 +404,7 @@ bool32 InitRaidData(void)
             SetMonData(mon, MON_DATA_HP_IV + statIDs[i], &maxIV);
     }
 
-    numEggMoves = GetEggMovesSpecies(species, eggMoves);
+    numEggMoves = GetEggMovesBySpecies(species, eggMoves);
     if (numEggMoves && Random() % 100 < eggMoveChance)
     {
         u16 eggMove = eggMoves[RandRange(0, numEggMoves)];
