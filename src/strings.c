@@ -2309,3 +2309,7 @@ const u8 gText_Effect_Field[]                 = _("Field");
 //Summary Screen Makes Contact
 const u8 gText_Effect_ContactYes[]            = _("Yes");
 const u8 gText_Effect_ContactNo[]             = _("No");
+
+// Map Name Popups
+const u8 gText_AM[] = _("AM");
+const u8 gText_PM[] = _("PM");

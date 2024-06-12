@@ -434,7 +434,7 @@ bool32 InitRaidData(void)
     }
 
     // Give egg moves
-    numEggMoves = GetEggMovesSpecies(species, eggMoves);
+    numEggMoves = GetEggMovesBySpecies(species, eggMoves);
     if (numEggMoves && Random() % 100 < eggMoveChance)
     {
         u16 eggMove = eggMoves[RandRange(0, numEggMoves)];
