@@ -3621,5 +3621,8 @@ extern const u8 gText_Effect_Flinch[];
 extern const u8 gText_Effect_Recoil[];
 extern const u8 gText_Effect_Always_Crit[];
 extern const u8 gText_Effect_Protect[];
+// Map name pop-up
+extern const u8 gText_AM[];
+extern const u8 gText_PM[];
 
 #endif // GUARD_STRINGS_H
