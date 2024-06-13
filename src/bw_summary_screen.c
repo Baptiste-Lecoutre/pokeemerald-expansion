@@ -129,6 +129,8 @@ enum BWSummarySprites
     SPRITE_ARR_ID_BALL,
     SPRITE_ARR_ID_HEART,
     SPRITE_ARR_ID_GIGANTAMAX,
+    SPRITE_ARR_ID_DYNAMAX_LEVEL_1,
+    SPRITE_ARR_ID_DYNAMAX_LEVEL_2,
     SPRITE_ARR_ID_STATUS,
     SPRITE_ARR_ID_SHINY,
     SPRITE_ARR_ID_POKERUS_CURED,
@@ -308,6 +310,7 @@ static void PrintHPStats(u8);
 static void BufferNonHPStats(void);
 static void PrintNonHPStats(void);
 static void PrintExpPointsNextLevel(void);
+static void PrintDynamaxLevel(void);
 static void PrintBattleMoves(void);
 static void Task_PrintBattleMoves(u8);
 static void PrintMoveNameAndPP(u8);
@@ -439,6 +442,9 @@ static const u32 sMaxFriendshipSummaryScreenIconTiles[] = INCBIN_U32("graphics/s
 static const u16 sMaxFriendshipSummaryScreenIconPal[] = INCBIN_U16("graphics/summary_screen/MaxFriendshipSummaryScreenIcon.gbapal");
 static const u32 sGigantamaxSummaryScreenIconTiles[] = INCBIN_U32("graphics/summary_screen/GigantamaxSummaryScreenIcon.4bpp.lz");
 static const u16 sGigantamaxSummaryScreenIconPal[] = INCBIN_U16("graphics/summary_screen/GigantamaxSummaryScreenIcon.gbapal");
+static const u32 sDynamaxLevel1IconTiles[] = INCBIN_U32("graphics/summary_screen/pss_dynamax_level_1.4bpp.lz");
+static const u32 sDynamaxLevel2IconTiles[] = INCBIN_U32("graphics/summary_screen/pss_dynamax_level_2.4bpp.lz");
+static const u16 sDynamaxLevelIconPal[] = INCBIN_U16("graphics/summary_screen/pss_dynamax_level.gbapal");
 
 static const struct BgTemplate sBgTemplates[] =
 {
@@ -781,6 +787,8 @@ static void (*const sTextPrinterTasks[])(u8 taskId) =
 #define TAG_STAT_GRADES 30007
 #define GFX_TAG_MAX_FRIENDSHIP_ICON 0x2716 //Some battle tag
 #define TAG_GIGANTAMAX_ICON 30008
+#define TAG_DYNAMAX_LEVEL_ICON 30009
+#define TAG_DYNAMAX_LEVEL_ICON2 30010
 
 enum BWCategoryIcon
 {
@@ -1520,6 +1528,110 @@ static const struct SpritePalette sSummaryScreenGigantamaxIconSpritePalette =
     .tag = TAG_GIGANTAMAX_ICON,
 };
 
+
+
+
+
+
+
+
+static const struct OamData sDynamaxLevelIconOam =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(32x8),
+	.size = SPRITE_SIZE(32x8),
+	.priority = 0, //Above all
+};
+
+static const union AnimCmd sSpriteAnim_DynamaxLevelIcon0[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_DynamaxLevelIcon1[] =
+{
+    ANIMCMD_FRAME(4, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_DynamaxLevelIcon2[] =
+{
+    ANIMCMD_FRAME(8, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_DynamaxLevelIcon3[] =
+{
+    ANIMCMD_FRAME(12, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_DynamaxLevelIcon4[] =
+{
+    ANIMCMD_FRAME(16, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_DynamaxLevelIcon5[] =
+{
+    ANIMCMD_FRAME(20, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sSpriteAnimTable_DynamaxLevelIcons[] =
+{
+    sSpriteAnim_DynamaxLevelIcon0,
+    sSpriteAnim_DynamaxLevelIcon1,
+    sSpriteAnim_DynamaxLevelIcon2,
+    sSpriteAnim_DynamaxLevelIcon3,
+    sSpriteAnim_DynamaxLevelIcon4,
+    sSpriteAnim_DynamaxLevelIcon5,
+};
+
+static const struct SpriteTemplate sSummaryScreenDynamaxLevelIconTemplate =
+{
+	.tileTag = TAG_DYNAMAX_LEVEL_ICON,
+	.paletteTag = TAG_DYNAMAX_LEVEL_ICON,
+	.oam = &sDynamaxLevelIconOam,
+	.anims = sSpriteAnimTable_DynamaxLevelIcons,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteTemplate sSummaryScreenDynamaxLevel2IconTemplate =
+{
+	.tileTag = TAG_DYNAMAX_LEVEL_ICON2,
+	.paletteTag = TAG_DYNAMAX_LEVEL_ICON,
+	.oam = &sDynamaxLevelIconOam,
+	.anims = sSpriteAnimTable_DynamaxLevelIcons,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct CompressedSpriteSheet sSummaryScreenDynamaxLevel1IconSpriteSheet = 
+{
+    .data = sDynamaxLevel1IconTiles, 
+    .size = (32 * 8 * 6) / 2, 
+    .tag = TAG_DYNAMAX_LEVEL_ICON,
+};
+
+static const struct CompressedSpriteSheet sSummaryScreenDynamaxLevel2IconSpriteSheet = 
+{
+    .data = sDynamaxLevel2IconTiles, 
+    .size = (32 * 8 * 6) / 2, 
+    .tag = TAG_DYNAMAX_LEVEL_ICON2,
+};
+
+static const struct SpritePalette sSummaryScreenDynamaxLevelIconSpritePalette =
+{
+    .data = sDynamaxLevelIconPal,
+    .tag = TAG_DYNAMAX_LEVEL_ICON,
+};
+
 // code
 void ShowPokemonSummaryScreen_BW(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, void (*callback)(void))
 {
@@ -2250,6 +2362,10 @@ static void Task_ChangeSummaryMon(u8 taskId)
             DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]]);
         if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] != MAX_SPRITES)
             DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]]);
+        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] != MAX_SPRITES)
+            DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1]]);
+        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] != MAX_SPRITES)
+            DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]]);
         break;
     case 3:
         CopyMonToSummaryStruct(&sMonSummaryScreen->currentMon);
@@ -2398,6 +2514,10 @@ static void ChangePage(u8 taskId, s8 delta)
         SetTaskFuncWithFollowupFunc(taskId, PssScrollLeft, gTasks[taskId].func);
     CreateTextPrinterTask(sMonSummaryScreen->currPageIndex);
     HidePageSpecificSprites();
+    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] != MAX_SPRITES)
+        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1]]);
+    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] != MAX_SPRITES)
+        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]]);
 }
 
 static void PssScrollRight(u8 taskId) // Scroll right
@@ -3752,7 +3872,7 @@ static void PrintMonDexNumberSpecies(void)
 static void HandleMonShinyIcon(bool8 isShiny)
 {
     if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHINY] != SPRITE_NONE)
-        gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHINY]].invisible = !isShiny;
+        gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHINY]].invisible = TRUE;//!isShiny;
 }
 
 static void PrintMonOTName(void)
@@ -3995,6 +4115,7 @@ static void PrintSkillsPageText(void)
     BufferNonHPStats();
     PrintNonHPStats();
     PrintExpPointsNextLevel();
+    PrintDynamaxLevel();
 }
 
 static void Task_PrintSkillsPage(u8 taskId)
@@ -4005,6 +4126,7 @@ static void Task_PrintSkillsPage(u8 taskId)
     {
     case 1:
         PrintMonAbilityName();
+        PrintDynamaxLevel();
         break;
     case 2:
         PrintMonAbilityDescription();
@@ -4023,6 +4145,9 @@ static void Task_PrintSkillsPage(u8 taskId)
         break;
     case 7:
         PrintExpPointsNextLevel();
+//        break;
+//    case 8:
+//        PrintDynamaxLevel();
         break;
     case 8:
         DestroyTask(taskId);
@@ -4251,6 +4376,82 @@ static void PrintExpPointsNextLevel(void)
     ConvertIntToDecimalStringN(gStringVar1, expToNextLevel, STR_CONV_MODE_RIGHT_ALIGN, 6);
 
     PrintTextOnWindow(windowIdNextLvl, gStringVar1, 1, 4, 0, 0);
+}
+
+static void PrintDynamaxLevel(void)
+{
+    struct Pokemon *mon = &sMonSummaryScreen->currentMon;
+    u32 dynamaxLevel = GetMonData(mon, MON_DATA_DYNAMAX_LEVEL);
+
+    LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenDynamaxLevel1IconSpriteSheet);
+    LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenDynamaxLevel2IconSpriteSheet);
+	LoadSpritePalette(&sSummaryScreenDynamaxLevelIconSpritePalette);
+
+		sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] = CreateSprite(&sSummaryScreenDynamaxLevelIconTemplate, 80, 102, 0);
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] = CreateSprite(&sSummaryScreenDynamaxLevel2IconTemplate, 110, 102, 0);
+		if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] < MAX_SPRITES)
+		{
+			u16 imageNum = 0;
+
+			switch (dynamaxLevel)
+			{
+                case 5 ... 10:
+                    imageNum = 5;
+                    break;
+				case 4:
+					imageNum = 4;
+					break;
+				case 3:
+					imageNum = 3;
+					break;
+				case 2:
+					imageNum = 2;
+					break;
+				case 1:
+					imageNum = 1;
+					break;
+                case 0:
+                default:
+                    imageNum = 0;
+                    break;
+			}
+
+            StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1]], imageNum);
+            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
+            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
+		}
+
+        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] < MAX_SPRITES)
+		{
+			u16 imageNum = 0;
+
+			switch (dynamaxLevel)
+			{
+                case 10:
+                    imageNum = 5;
+                    break;
+				case 9:
+					imageNum = 4;
+					break;
+				case 8:
+					imageNum = 3;
+					break;
+				case 7:
+					imageNum = 2;
+					break;
+				case 6:
+					imageNum = 1;
+					break;
+                case 0 ... 5:
+                default:
+                    imageNum = 0;
+                    break;
+			}
+
+            StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]], imageNum);
+            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
+            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
+		}
 }
 
 static void PrintBattleMoves(void)
@@ -4990,7 +5191,7 @@ static void CreateMonShinySprite(struct Pokemon *mon)
     if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHINY] == SPRITE_NONE)
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHINY] = CreateSprite(&sSpriteTemplate_ShinyIcon, 153, 25, 0); // 153 25 pas mal, à gauche de la box // 166 48 original, en bas à gauche de la box
 
-    gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHINY]].invisible = !IsMonShiny(mon);
+    gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHINY]].invisible = TRUE;//!IsMonShiny(mon);
 }
 
 static void RemoveAndCreateMonMarkingsSprite(struct Pokemon *mon)
