@@ -695,7 +695,7 @@ static const struct WindowTemplate sPageSkillsTemplate[] =
     },
     [PSS_DATA_WINDOW_EXP] = {
         .bg = 0,
-        .tilemapLeft = 0,
+        .tilemapLeft = 4, //3, //0,
         .tilemapTop = 13,
         .width = 11,
         .height = 2,
@@ -704,9 +704,9 @@ static const struct WindowTemplate sPageSkillsTemplate[] =
     },
     [PSS_DATA_WINDOW_EXP_NEXT_LEVEL] = {
         .bg = 0,
-        .tilemapLeft = 18,
+        .tilemapLeft = 22, //21, //18,
         .tilemapTop = 13,
-        .width = 9,
+        .width = 8, //9, //9,
         .height = 2,
         .paletteNum = 6,
         .baseBlock = 607,
@@ -3621,7 +3621,7 @@ static void PrintPageNamesAndStats(void)
         PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_STATS, sText_ViewStats, stringXPos, 1, 0, 1);
     }
 
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP, sText_NextLv, 0, 4, 0, 0);
+    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP, sText_NextLv, 32/*0*/, 4, 0, 0);
 }
 
 static void PutPageWindowTilemaps(u8 page)
