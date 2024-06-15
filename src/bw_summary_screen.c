@@ -310,7 +310,6 @@ static void PrintHPStats(u8);
 static void BufferNonHPStats(void);
 static void PrintNonHPStats(void);
 static void PrintExpPointsNextLevel(void);
-static void PrintDynamaxLevel(void);
 static void PrintBattleMoves(void);
 static void Task_PrintBattleMoves(u8);
 static void PrintMoveNameAndPP(u8);
@@ -2282,10 +2281,10 @@ static void Task_HandleInput(u8 taskId)
             PlaySE(SE_SELECT);
             BeginCloseSummaryScreen(taskId);
         }  
-    #if DEBUG_POKEMON_MENU == TRUE
+    #if DEBUG_POKEMON_SPRITE_VISUALIZER == TRUE
         else if (JOY_NEW(SELECT_BUTTON) && !gMain.inBattle)
         {
-            sMonSummaryScreen->callback = CB2_Debug_Pokemon;
+            sMonSummaryScreen->callback = CB2_Pokemon_Sprite_Visualizer;
             StopPokemonAnimations();
             PlaySE(SE_SELECT);
             CloseSummaryScreen(taskId);
@@ -2514,10 +2513,6 @@ static void ChangePage(u8 taskId, s8 delta)
         SetTaskFuncWithFollowupFunc(taskId, PssScrollLeft, gTasks[taskId].func);
     CreateTextPrinterTask(sMonSummaryScreen->currPageIndex);
     HidePageSpecificSprites();
-    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] != MAX_SPRITES)
-        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1]]);
-    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] != MAX_SPRITES)
-        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]]);
 }
 
 static void PssScrollRight(u8 taskId) // Scroll right
@@ -3859,9 +3854,8 @@ static void PrintMonDexNumberSpecies(void)
             else
             {
                 const u8 sText_Shiny[] = _("{SUM_SHINY}");
-                //StringAppend(gStringVar1, sText_Shiny);
                 PrintTextOnWindowWithFont(windowId, sText_Shiny, 28, 0, 0, 13, FONT_NORMAL);
-                PrintTextOnWindow(windowId, gStringVar1, 4, 0, 0, 0);//6);
+                PrintTextOnWindow(windowId, gStringVar1, 4, 0, 0, 0);
                 HandleMonShinyIcon(TRUE);
             }
         }
@@ -4115,7 +4109,6 @@ static void PrintSkillsPageText(void)
     BufferNonHPStats();
     PrintNonHPStats();
     PrintExpPointsNextLevel();
-    PrintDynamaxLevel();
 }
 
 static void Task_PrintSkillsPage(u8 taskId)
@@ -4126,7 +4119,6 @@ static void Task_PrintSkillsPage(u8 taskId)
     {
     case 1:
         PrintMonAbilityName();
-        PrintDynamaxLevel();
         break;
     case 2:
         PrintMonAbilityDescription();
@@ -4145,9 +4137,6 @@ static void Task_PrintSkillsPage(u8 taskId)
         break;
     case 7:
         PrintExpPointsNextLevel();
-//        break;
-//    case 8:
-//        PrintDynamaxLevel();
         break;
     case 8:
         DestroyTask(taskId);
@@ -4376,82 +4365,6 @@ static void PrintExpPointsNextLevel(void)
     ConvertIntToDecimalStringN(gStringVar1, expToNextLevel, STR_CONV_MODE_RIGHT_ALIGN, 6);
 
     PrintTextOnWindow(windowIdNextLvl, gStringVar1, 1, 4, 0, 0);
-}
-
-static void PrintDynamaxLevel(void)
-{
-    struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-    u32 dynamaxLevel = GetMonData(mon, MON_DATA_DYNAMAX_LEVEL);
-
-    LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenDynamaxLevel1IconSpriteSheet);
-    LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenDynamaxLevel2IconSpriteSheet);
-	LoadSpritePalette(&sSummaryScreenDynamaxLevelIconSpritePalette);
-
-		sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] = CreateSprite(&sSummaryScreenDynamaxLevelIconTemplate, 80, 102, 0);
-        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] = CreateSprite(&sSummaryScreenDynamaxLevel2IconTemplate, 110, 102, 0);
-		if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] < MAX_SPRITES)
-		{
-			u16 imageNum = 0;
-
-			switch (dynamaxLevel)
-			{
-                case 5 ... 10:
-                    imageNum = 5;
-                    break;
-				case 4:
-					imageNum = 4;
-					break;
-				case 3:
-					imageNum = 3;
-					break;
-				case 2:
-					imageNum = 2;
-					break;
-				case 1:
-					imageNum = 1;
-					break;
-                case 0:
-                default:
-                    imageNum = 0;
-                    break;
-			}
-
-            StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1]], imageNum);
-            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
-            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
-		}
-
-        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] < MAX_SPRITES)
-		{
-			u16 imageNum = 0;
-
-			switch (dynamaxLevel)
-			{
-                case 10:
-                    imageNum = 5;
-                    break;
-				case 9:
-					imageNum = 4;
-					break;
-				case 8:
-					imageNum = 3;
-					break;
-				case 7:
-					imageNum = 2;
-					break;
-				case 6:
-					imageNum = 1;
-					break;
-                case 0 ... 5:
-                default:
-                    imageNum = 0;
-                    break;
-			}
-
-            StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]], imageNum);
-            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
-            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
-		}
 }
 
 static void PrintBattleMoves(void)
@@ -4893,6 +4806,19 @@ static void HidePageSpecificSprites(void)
         if (sMonSummaryScreen->spriteIds[i] != SPRITE_NONE)
             SetSpriteInvisibility(i, TRUE);
     }
+
+    if (sMonSummaryScreen->currPageIndex < PSS_PAGE_BATTLE_MOVES)
+    {
+        SetSpriteInvisibility(SPRITE_ARR_ID_GIGANTAMAX, FALSE);
+        SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_1, FALSE);
+        SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_2, FALSE);
+    }
+    else
+    {
+        SetSpriteInvisibility(SPRITE_ARR_ID_GIGANTAMAX, TRUE);
+        SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_1, TRUE);
+        SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_2, TRUE);
+    }
 }
 
 static void SetTypeAndPokerusIcons(void)
@@ -5205,6 +5131,7 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
 {
     u8 ball = ItemIdToBallId(GetMonData(mon, MON_DATA_POKEBALL));
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
+    u32 dynamaxLevel = GetMonData(mon, MON_DATA_DYNAMAX_LEVEL);
 
     LoadBallGfx(ball);
     sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL] = CreateSprite(&gBallSpriteTemplates[ball], 233, 38, 0);
@@ -5239,8 +5166,6 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
 			}
 
             StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]], imageNum);
-            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].callback = SpriteCallbackDummy;
-            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HEART]].oam.priority = 3;
 		}
     }
     else
@@ -5250,15 +5175,85 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
     {
         LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenGigantamaxIconSpriteSheet);
 		LoadSpritePalette(&sSummaryScreenGigantamaxIconSpritePalette);
-        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] = CreateSprite(&sSummaryScreenGigantamaxIconTemplate, 213, 38, 0);
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] = CreateSprite(&sSummaryScreenGigantamaxIconTemplate, 140, 102, 0); // 213, 38
+        SetSpriteInvisibility(SPRITE_ARR_ID_GIGANTAMAX, sMonSummaryScreen->currPageIndex > PSS_PAGE_SKILLS);
         /*if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] < MAX_SPRITES)
         {
             gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].callback = SpriteCallbackDummy;
-            //gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].oam.priority = 3;
+            gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX]].oam.priority = 3;
         }*/
     }
     else
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_GIGANTAMAX] = MAX_SPRITES;
+
+    LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenDynamaxLevel1IconSpriteSheet);
+    LoadCompressedSpriteSheetUsingHeap(&sSummaryScreenDynamaxLevel2IconSpriteSheet);
+	LoadSpritePalette(&sSummaryScreenDynamaxLevelIconSpritePalette);
+
+	sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] = CreateSprite(&sSummaryScreenDynamaxLevelIconTemplate, 80, 102, 0);
+    sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] = CreateSprite(&sSummaryScreenDynamaxLevel2IconTemplate, 110, 102, 0);
+
+    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1] < MAX_SPRITES)
+	{
+		u16 imageNum = 0;
+
+		switch (dynamaxLevel)
+		{
+            case 5 ... 10:
+                imageNum = 5;
+                break;
+			case 4:
+				imageNum = 4;
+				break;
+			case 3:
+				imageNum = 3;
+				break;
+			case 2:
+				imageNum = 2;
+				break;
+			case 1:
+				imageNum = 1;
+				break;
+            case 0:
+            default:
+                imageNum = 0;
+                break;
+		}
+
+        StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1]], imageNum);
+        SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_1, sMonSummaryScreen->currPageIndex > PSS_PAGE_SKILLS);
+	}
+
+    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] < MAX_SPRITES)
+	{
+		u16 imageNum = 0;
+
+		switch (dynamaxLevel)
+		{
+            case 10:
+                imageNum = 5;
+                break;
+			case 9:
+				imageNum = 4;
+				break;
+			case 8:
+				imageNum = 3;
+				break;
+			case 7:
+				imageNum = 2;
+				break;
+			case 6:
+				imageNum = 1;
+				break;
+            case 0 ... 5:
+            default:
+                imageNum = 0;
+                break;
+		}
+
+        StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]], imageNum);
+        SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_2, sMonSummaryScreen->currPageIndex > PSS_PAGE_SKILLS);
+	}
 }
 
 static void CreateSetStatusSprite(void)
