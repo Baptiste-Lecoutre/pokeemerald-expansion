@@ -148,20 +148,24 @@ Debug_EventScript_Text_DefensiveIVs:
 
 Debug_EventScript_Script_1::
 	goto EventScript_DoWonderTrade
+	release
 	end
 
 Debug_EventScript_Script_2::
 	special GameClear
 	waitstate
+	release
 	end
 
 Debug_EventScript_Script_3::
 	goto PKMN_Center_Move_Tutor
+	release
 	end
 
 Debug_EventScript_Script_4::
 	choose_mons
 	multi_fixed_2_vs_2 TRAINER_ROSE_1, Route118_Text_RoseDefeat, TRAINER_DEANDRE, Route118_Text_DeandreDefeat, TRAINER_WALLACE
+	release
 	end
 
 Debug_EventScript_Script_5::
@@ -179,6 +183,7 @@ Debug_DoFixedRaid:
 
 Debug_EventScript_Script_6::
 	goto PKMN_Center_MinimalGrinding
+	release
 	end
 
 Debug_EventScript_Script_7::
@@ -196,6 +201,7 @@ Debug_EventScript_Script_7::
 	end
 
 Debug_EventScript_Script_8::
+	release
 	end
 
 Debug_CheckSaveBlock::

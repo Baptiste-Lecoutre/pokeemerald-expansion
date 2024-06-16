@@ -2615,6 +2615,11 @@ bool8 ScrCmd_isChosenMonSpecies(struct ScriptContext *ctx)
     return FALSE;
 }
 
+void ScriptSetDoubleBattleFlag(struct ScriptContext *ctx)
+{
+    sIsScriptedWildDouble = TRUE;
+}
+
 // follow me script commands
 #include "follow_me.h"
 bool8 ScrCmd_setfollower(struct ScriptContext *ctx)
@@ -2643,4 +2648,3 @@ bool8 ScrCmd_checkfollower(struct ScriptContext *ctx)
     CheckPlayerHasFollower();
     return FALSE;
 }
-
