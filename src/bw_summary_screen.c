@@ -19,6 +19,7 @@
 #include "graphics.h"
 #include "international_string_util.h"
 #include "item.h"
+#include "item_icon.h"
 #include "link.h"
 #include "m4a.h"
 #include "malloc.h"
@@ -141,6 +142,7 @@ enum BWSummarySprites
     SPRITE_ARR_ID_SPA_GRADE,
     SPRITE_ARR_ID_SPD_GRADE,
     SPRITE_ARR_ID_SPE_GRADE,
+    SPRITE_ARR_ID_HELD_ITEM,
     SPRITE_ARR_ID_TERA_TYPE,
     SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
     SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
@@ -789,7 +791,8 @@ static void (*const sTextPrinterTasks[])(u8 taskId) =
 #define TAG_GIGANTAMAX_ICON 30008
 #define TAG_DYNAMAX_LEVEL_ICON 30009
 #define TAG_DYNAMAX_LEVEL_ICON2 30010
-#define TAG_MOVE_TYPES_SMALL 3001
+#define TAG_MOVE_TYPES_SMALL 30011
+#define TAG_HELD_ITEM_ICON 30012
 
 enum BWCategoryIcon
 {
@@ -2389,6 +2392,10 @@ static void Task_ChangeSummaryMon(u8 taskId)
             DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_1]]);
         if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2] != MAX_SPRITES)
             DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]]);
+        if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM] != MAX_SPRITES)
+        {    DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM]]);
+        FreeSpriteTilesByTag(TAG_HELD_ITEM_ICON);
+        FreeSpritePaletteByTag(TAG_HELD_ITEM_ICON);}
         break;
     case 3:
         CopyMonToSummaryStruct(&sMonSummaryScreen->currentMon);
@@ -4843,6 +4850,8 @@ static void HidePageSpecificSprites(void)
         SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_1, TRUE);
         SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_2, TRUE);
     }
+
+    SetSpriteInvisibility(SPRITE_ARR_ID_HELD_ITEM, sMonSummaryScreen->currPageIndex != PSS_PAGE_INFO);
 }
 
 static void SetTypeAndPokerusIcons(void)
@@ -5160,6 +5169,7 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
     u8 ball = ItemIdToBallId(GetMonData(mon, MON_DATA_POKEBALL));
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
     u32 dynamaxLevel = GetMonData(mon, MON_DATA_DYNAMAX_LEVEL);
+    u16 item = GetMonData(mon, MON_DATA_HELD_ITEM);
 
     LoadBallGfx(ball);
     sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL] = CreateSprite(&gBallSpriteTemplates[ball], 233, 38, 0);
@@ -5282,6 +5292,16 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
         StartSpriteAnim(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_DYNAMAX_LEVEL_2]], imageNum);
         SetSpriteInvisibility(SPRITE_ARR_ID_DYNAMAX_LEVEL_2, sMonSummaryScreen->currPageIndex > PSS_PAGE_SKILLS);
 	}
+
+    if (item != ITEM_NONE)
+    {
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM] = AddItemIconSprite(TAG_HELD_ITEM_ICON, TAG_HELD_ITEM_ICON, item);
+        gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM]].x = 57;//165; //57
+        gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM]].y = 94; //100
+        SetSpriteInvisibility(SPRITE_ARR_ID_HELD_ITEM, sMonSummaryScreen->currPageIndex != PSS_PAGE_INFO);
+    }
+    else
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM] = MAX_SPRITES;
 }
 
 static void CreateSetStatusSprite(void)
