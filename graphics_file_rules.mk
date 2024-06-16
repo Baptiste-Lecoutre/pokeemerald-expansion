@@ -377,6 +377,9 @@ graphics/party_menu/bg.4bpp: %.4bpp: %.png
 $(TYPESGFXDIR)/move_types.4bpp: $(types:%=$(TYPESGFXDIR)/%.4bpp) $(contest_types:%=$(TYPESGFXDIR)/contest_%.4bpp)
 	@cat $^ >$@
 
+$(TYPESGFXDIR)/move_types_small.4bpp: $(types:%=$(TYPESGFXDIR)/small/%.4bpp) $(contest_types:%=$(TYPESGFXDIR)/contest_%.4bpp)
+	@cat $^ >$@
+
 $(TYPESBWGFXDIR)/move_types_bw.4bpp: $(types:%=$(TYPESBWGFXDIR)/%.4bpp) $(contest_types:%=$(TYPESBWGFXDIR)/contest_%.4bpp)
 	@cat $^ >$@
 

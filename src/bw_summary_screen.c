@@ -141,6 +141,7 @@ enum BWSummarySprites
     SPRITE_ARR_ID_SPA_GRADE,
     SPRITE_ARR_ID_SPD_GRADE,
     SPRITE_ARR_ID_SPE_GRADE,
+    SPRITE_ARR_ID_TERA_TYPE,
     SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
     SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
     SPRITE_ARR_ID_MOVE_SELECTOR2 = SPRITE_ARR_ID_MOVE_SELECTOR1 + MOVE_SELECTOR_SPRITES_COUNT,
@@ -427,7 +428,7 @@ static const u8 sButtons_Gfx[][4 * TILE_SIZE_4BPP] = {
 };
 
 //static const u32 sMoveTypes_Gfx_BW[]                        = INCBIN_U32("graphics/types_bw/move_types_bw.4bpp.lz");
-static const u32 sMoveTypes_Gfx_BW[]                        = INCBIN_U32("graphics/types/move_types.4bpp.lz");
+//static const u32 sMoveTypes_Gfx_BW_Small[]                  = INCBIN_U32("graphics/types_bw/move_types_small.4bpp.lz");
 static const u32 sSummaryMoveSelect_Gfx_BW[]                = INCBIN_U32("graphics/summary_screen/bw/move_select.4bpp.lz");
 static const u32 sSummaryMoveSelect_Pal_BW[]                = INCBIN_U32("graphics/summary_screen/bw/move_select.gbapal.lz");
 static const u16 sMarkings_Pal_BW[]                         = INCBIN_U16("graphics/summary_screen/bw/markings.gbapal");
@@ -788,6 +789,7 @@ static void (*const sTextPrinterTasks[])(u8 taskId) =
 #define TAG_GIGANTAMAX_ICON 30008
 #define TAG_DYNAMAX_LEVEL_ICON 30009
 #define TAG_DYNAMAX_LEVEL_ICON2 30010
+#define TAG_MOVE_TYPES_SMALL 3001
 
 enum BWCategoryIcon
 {
@@ -1137,7 +1139,7 @@ static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES
 
 static const struct CompressedSpriteSheet sSpriteSheet_MoveTypes =
 {
-    .data = sMoveTypes_Gfx_BW,
+    .data = gMoveTypes_Gfx,
     .size = (NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 0x100,
     .tag = TAG_MOVE_TYPES
 };
@@ -1151,6 +1153,24 @@ static const struct SpriteTemplate sSpriteTemplate_MoveTypes =
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCallbackDummy
+};
+
+static const struct CompressedSpriteSheet sSpriteSheet_MoveTypesSmall =
+{
+    .data = gMoveTypesSmall_Gfx,
+    .size = (NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 0x100,
+    .tag = TAG_MOVE_TYPES_SMALL
+};
+
+static const struct SpriteTemplate sSpriteTemplate_MoveTypesSmall = 
+{
+    .tileTag = TAG_MOVE_TYPES_SMALL,
+    .paletteTag = TAG_MOVE_TYPES,
+    .oam = &sOamData_MoveTypes,
+    .anims = sSpriteAnimTable_MoveTypes,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
 };
 
 static const u8 sContestCategoryToOamPaletteNum[CONTEST_CATEGORIES_COUNT] =
@@ -1912,50 +1932,54 @@ static bool8 DecompressGraphics(void)
         sMonSummaryScreen->switchCounter++;
         break;
     case 10:
-        LoadCompressedSpriteSheet(&sMoveSelectorSpriteSheet);
+        LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypesSmall);
         sMonSummaryScreen->switchCounter++;
         break;
     case 11:
-        LoadCompressedSpriteSheet(&sStatusIconsSpriteSheet);
+        LoadCompressedSpriteSheet(&sMoveSelectorSpriteSheet);
         sMonSummaryScreen->switchCounter++;
         break;
     case 12:
-        LoadCompressedSpritePalette(&sStatusIconsSpritePalette);
+        LoadCompressedSpriteSheet(&sStatusIconsSpriteSheet);
         sMonSummaryScreen->switchCounter++;
         break;
     case 13:
-        LoadCompressedSpriteSheet(&sShinyIconSpriteSheet);
+        LoadCompressedSpritePalette(&sStatusIconsSpritePalette);
         sMonSummaryScreen->switchCounter++;
         break;
     case 14:
-        LoadCompressedSpriteSheet(&sPokerusCuredIconSpriteSheet);
+        LoadCompressedSpriteSheet(&sShinyIconSpriteSheet);
         sMonSummaryScreen->switchCounter++;
         break;
     case 15:
-        LoadCompressedSpritePalette(&sMoveSelectorSpritePal);
+        LoadCompressedSpriteSheet(&sPokerusCuredIconSpriteSheet);
         sMonSummaryScreen->switchCounter++;
         break;
     case 16:
-        if (BW_SUMMARY_CATEGORY_ICONS)
-            LoadCompressedSpriteSheet(&sSpriteSheet_CategoryIcons);
+        LoadCompressedSpritePalette(&sMoveSelectorSpritePal);
         sMonSummaryScreen->switchCounter++;
         break;
     case 17:
         if (BW_SUMMARY_CATEGORY_ICONS)
-            LoadSpritePalette(&sSpritePal_CategoryIcons);
+            LoadCompressedSpriteSheet(&sSpriteSheet_CategoryIcons);
         sMonSummaryScreen->switchCounter++;
         break;
     case 18:
-        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-            LoadCompressedSpriteSheet(&sSpriteSheet_StatGrades);
+        if (BW_SUMMARY_CATEGORY_ICONS)
+            LoadSpritePalette(&sSpritePal_CategoryIcons);
         sMonSummaryScreen->switchCounter++;
         break;
     case 19:
         if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
-            LoadSpritePalette(&sSpritePal_StatGrades);
+            LoadCompressedSpriteSheet(&sSpriteSheet_StatGrades);
         sMonSummaryScreen->switchCounter++;
         break;
     case 20:
+        if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
+            LoadSpritePalette(&sSpritePal_StatGrades);
+        sMonSummaryScreen->switchCounter++;
+        break;
+    case 21:
         LoadCompressedPalette(gMoveTypes_Pal, OBJ_PLTT_ID(13), 3 * PLTT_SIZE_4BPP);
         sMonSummaryScreen->switchCounter = 0;
         return TRUE;
@@ -4851,6 +4875,10 @@ static void CreateMoveTypeIcons(void)
 
         SetSpriteInvisibility(i, TRUE);
     }
+
+    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_TERA_TYPE] == SPRITE_NONE)
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_TERA_TYPE] = CreateSprite(&sSpriteTemplate_MoveTypesSmall, 0, 0, 2);
+    SetSpriteInvisibility(SPRITE_ARR_ID_TERA_TYPE, TRUE);
 }
 
 static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId)
@@ -4889,7 +4917,7 @@ static void SetMonTypeIcons(void)
 
         if (P_SHOW_TERA_TYPE >= GEN_9 && CheckBagHasItem(ITEM_TERA_ORB, 1) && summary->teraType != TYPE_NONE)
         {
-            SetTypeSpritePosAndPal(summary->teraType, 140, 46, SPRITE_ARR_ID_TYPE + 2); //200
+            SetTypeSpritePosAndPal(summary->teraType, (gSpeciesInfo[summary->species].types[0] != gSpeciesInfo[summary->species].types[1]) ? 131 : 95, 46, SPRITE_ARR_ID_TERA_TYPE); //140 //200
         }
     }
 }
