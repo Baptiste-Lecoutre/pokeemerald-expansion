@@ -643,7 +643,7 @@ static const struct WindowTemplate sPageInfoTemplate[] =
         .width = 26,
         .height = 7,
         .paletteNum = 6,
-        .baseBlock = 407,
+        .baseBlock = 425,//407,
     },
     [PSS_DATA_WINDOW_INFO_DEX_NUMBER_NAME] = {
         .bg = 0,
@@ -652,7 +652,7 @@ static const struct WindowTemplate sPageInfoTemplate[] =
         .width = 9,
         .height = 4,
         .paletteNum = 6,
-        .baseBlock = 589,
+        .baseBlock = 607,//589,
     },
 };
 static const struct WindowTemplate sPageSkillsTemplate[] =
@@ -5305,7 +5305,7 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
     gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]].callback = SpriteCallbackDummy;
     gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]].oam.priority = 1;
 
-    if (friendship > 80)
+    if (friendship > 30)
     {
         LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_FriendshipIcon);
 		LoadSpritePalette(&sSpritePal_FriendshipIcon);
@@ -5318,19 +5318,22 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
 			//Adjust heart colour based on how much friendship
 			switch (friendship)
 			{
-				case 40 ... 79:
-                    imageNum = 1;
+				case 30 ... 69:
+                    imageNum = 0;
                     break;
-                case 80 ... 129:
+                case 70 ... 109:
+					imageNum = 1;
+					break;
+				case 110 ... 149:
 					imageNum = 2;
 					break;
-				case 130 ... 179:
+				case 150 ... 189:
 					imageNum = 3;
 					break;
-				case 180 ... 219:
-					imageNum = 4;
-					break;
-				case 220 ... 254:
+				case 190 ... 219:
+                    imageNum = 4;
+                    break;
+                case 220 ... 254:
 					imageNum = 5;
 					break;
                 case 255:
