@@ -2578,3 +2578,8 @@ bool8 ScrCmd_isChosenMonSpecies(struct ScriptContext *ctx)
     }
     return FALSE;
 }
+
+void ScriptSetDoubleBattleFlag(struct ScriptContext *ctx)
+{
+    sIsScriptedWildDouble = TRUE;
+}
