@@ -1979,6 +1979,7 @@ extern const u16 gSummaryScreen_MoveEffect_Contest_Tilemap[];
 extern const u16 gSummaryScreen_MoveEffect_Cancel_Tilemap[];
 
 extern const u32 gMoveTypes_Gfx[];
+extern const u32 gMoveTypesSmall_Gfx[];
 extern const u32 gSummaryMoveSelect_Gfx[];
 extern const u32 gSummaryMoveSelect_Pal[];
 extern const u32 gStatusGfx_Icons[];
