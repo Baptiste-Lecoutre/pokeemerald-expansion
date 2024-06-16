@@ -643,7 +643,7 @@ static const struct WindowTemplate sPageInfoTemplate[] =
         .bg = 0,
         .tilemapLeft = 7,
         .tilemapTop = 9,
-        .width = 11,
+        .width = 15,
         .height = 4,
         .paletteNum = 6,
         .baseBlock = 497,
@@ -3507,6 +3507,17 @@ static void PrintTextOnWindow(u8 windowId, const u8 *string, u8 x, u8 y, u8 line
     //AddTextPrinterParameterized4(windowId, FONT_SHORT, x, y, 0, lineSpacing, sTextColors[colorId], 0, string);
 }
 
+static void PrintTextOnWindowToFitPx(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId, u32 width)
+{
+    u32 fontId = GetFontIdToFit(string, FONT_SHORT, 0, width);
+    PrintTextOnWindowWithFont(windowId, string, x, y, lineSpacing, colorId, fontId);
+}
+
+static void PrintTextOnWindowToFit(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId)
+{
+    PrintTextOnWindowToFitPx(windowId, string, x, y, lineSpacing, colorId, WindowWidthPx(windowId));
+}
+
 static void PrintTextOnWindow_BW_Font(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId)
 {
     AddTextPrinterParameterized4(windowId, FONT_BW_SUMMARY_SCREEN, x, y, 0, lineSpacing, sTextColors[colorId], 0, string);
@@ -5296,7 +5307,7 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
     if (item != ITEM_NONE)
     {
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM] = AddItemIconSprite(TAG_HELD_ITEM_ICON, TAG_HELD_ITEM_ICON, item);
-        gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM]].x = 57;//165; //57
+        gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM]].x = 56;//165; //57
         gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_HELD_ITEM]].y = 94; //100
         SetSpriteInvisibility(SPRITE_ARR_ID_HELD_ITEM, sMonSummaryScreen->currPageIndex != PSS_PAGE_INFO);
     }
