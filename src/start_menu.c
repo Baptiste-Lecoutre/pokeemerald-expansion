@@ -734,6 +734,7 @@ void ShowReturnToFieldStartMenu(void)
 {
     sInitStartMenuData[0] = 0;
     sInitStartMenuData[1] = 0;
+    gShouldStartMenuIconsBePrinted = TRUE;
     gFieldCallback2 = FieldCB_ReturnToFieldStartMenu;
 }
 
@@ -887,7 +888,6 @@ static bool8 HandleStartMenuInput(void)
             PlaySE(SE_SELECT);
             PlayRainStoppingSoundEffect();
             DeleteAllStartMenuIcons();
-            gShouldStartMenuIconsBePrinted = TRUE;
             RemoveExtraStartMenuWindows();
             CleanupOverworldWindowsAndTilemaps();
 
@@ -917,7 +917,6 @@ bool8 StartMenuPokedexCallback(void)
         IncrementGameStat(GAME_STAT_CHECKED_POKEDEX);
         PlayRainStoppingSoundEffect();
         DeleteAllStartMenuIcons();
-        gShouldStartMenuIconsBePrinted = TRUE;
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_OpenPokedex);
@@ -934,7 +933,6 @@ static bool8 StartMenuPokemonCallback(void)
     {
         PlayRainStoppingSoundEffect();
         DeleteAllStartMenuIcons();
-        gShouldStartMenuIconsBePrinted = TRUE;
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_PartyMenuFromStartMenu); // Display party menu
@@ -951,7 +949,6 @@ static bool8 StartMenuBagCallback(void)
     {
         PlayRainStoppingSoundEffect();
         DeleteAllStartMenuIcons();
-        gShouldStartMenuIconsBePrinted = TRUE;
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_BagMenuFromStartMenu); // Display bag menu
@@ -968,7 +965,6 @@ static bool8 StartMenuPokeNavCallback(void)
     {
         PlayRainStoppingSoundEffect();
         DeleteAllStartMenuIcons();
-        gShouldStartMenuIconsBePrinted = TRUE;
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_InitPokeNav);  // Display PokéNav
@@ -985,7 +981,6 @@ static bool8 StartMenuPlayerNameCallback(void)
     {
         PlayRainStoppingSoundEffect();
         DeleteAllStartMenuIcons();
-        gShouldStartMenuIconsBePrinted = TRUE;
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
 
@@ -1019,7 +1014,6 @@ static bool8 StartMenuOptionCallback(void)
     {
         PlayRainStoppingSoundEffect();
         DeleteAllStartMenuIcons();
-        gShouldStartMenuIconsBePrinted = TRUE;
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_InitOptionMenu); // Display option menu
@@ -1116,7 +1110,6 @@ static bool8 StartMenuBattlePyramidBagCallback(void)
 static bool8 SaveStartCallback(void)
 {
     DeleteAllStartMenuIcons();
-    gShouldStartMenuIconsBePrinted = TRUE;
     InitSave();
     gMenuCallback = SaveCallback;
 
