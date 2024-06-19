@@ -17,6 +17,7 @@
 #include "link_rfu.h"
 #include "palette.h"
 #include "party_menu.h"
+#include "pokemon_animation.h"
 #include "recorded_battle.h"
 #include "string_util.h"
 #include "sound.h"
@@ -2608,6 +2609,9 @@ void BtlController_HandleTrainerSlideBack(u32 battler, s16 data0, bool32 startAn
 
 void BtlController_HandleFaintAnimation(u32 battler)
 {
+    if (B_ANIM_ON_OPPONENT_FAINT)
+        SetHealthboxSpriteInvisible(gHealthboxSpriteIds[battler]);
+
     if (gBattleSpritesDataPtr->healthBoxesData[battler].animationState == 0)
     {
         if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
@@ -2636,6 +2640,31 @@ void BtlController_HandleFaintAnimation(u32 battler)
             }
             // The player's sprite callback just slides the mon, the opponent's removes the sprite.
             // The player's sprite is removed in Controller_FaintPlayerMon. Controller_FaintOpponentMon only removes the healthbox once the sprite is removed by SpriteCB_FaintOpponentMon.
+        }
+    }
+
+    if(GetBattlerSide(battler) == B_SIDE_PLAYER && B_ANIM_ON_OPPONENT_FAINT) // removed cry because it mixes with the fainted one
+    {
+        LaunchAnimationTaskForFrontSprite(&gSprites[gBattlerSpriteIds[BATTLE_OPPOSITE(battler)]], gSpeciesInfo[gBattleMons[BATTLE_OPPOSITE(battler)].species].frontAnimId);
+//        PlayCry_Normal(gBattleMons[BATTLE_OPPOSITE(battler)].species, CRY_PRIORITY_NORMAL);
+        if (HasTwoFramesAnimation(gBattleMons[BATTLE_OPPOSITE(battler)].species))
+            StartSpriteAnim(&gSprites[gBattlerSpriteIds[BATTLE_OPPOSITE(battler)]], 1);
+        if(gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(battler))))
+        {
+            LaunchAnimationTaskForFrontSprite(&gSprites[gBattlerSpriteIds[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))]], gSpeciesInfo[gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species].frontAnimId);
+//            PlayCry_Normal(gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species, CRY_PRIORITY_NORMAL);
+            if (HasTwoFramesAnimation(gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species))
+                StartSpriteAnim(&gSprites[gBattlerSpriteIds[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))]], 1);
+        }
+    }
+    else if(GetBattlerSide(battler) == B_SIDE_OPPONENT && B_ANIM_ON_OPPONENT_FAINT)
+    {
+        LaunchAnimationTaskForBackSprite(&gSprites[gBattlerSpriteIds[BATTLE_OPPOSITE(battler)]], gSpeciesInfo[gBattleMons[BATTLE_OPPOSITE(battler)].species].backAnimId);
+//        PlayCry_Normal(gBattleMons[BATTLE_OPPOSITE(battler)].species, CRY_PRIORITY_NORMAL);
+        if(gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(battler))))
+        {
+            LaunchAnimationTaskForBackSprite(&gSprites[gBattlerSpriteIds[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))]], gSpeciesInfo[gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species].backAnimId);
+//            PlayCry_Normal(gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species, CRY_PRIORITY_NORMAL);
         }
     }
 }
