@@ -39,6 +39,8 @@ enum MapPopUp_Themes
 enum MapPopUp_Themes_BW
 {
     MAPPOPUP_THEME_BW_DEFAULT,
+    MAPPOPUP_THEME_BW_TOWN,
+    MAPPOPUP_THEME_BW_CITY,
 };
 
 // static functions
@@ -200,11 +202,15 @@ static const u8 sRegionMapSectionId_To_PopUpThemeIdMapping[] =
 #if OW_POPUP_GENERATION == GEN_5
 // Gen5 assets
 static const u8 sMapPopUpTilesPrimary_BW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary.4bpp");
+static const u8 sMapPopUpTilesPrimary_TownBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_town2.4bpp");
+static const u8 sMapPopUpTilesPrimary_CityBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_city2.4bpp");
 static const u8 sMapPopUpTilesSecondary_BW[] = INCBIN_U8("graphics/map_popup/bw/bw_secondary.4bpp");
 static const u16 sMapPopUpTilesPalette_BW_Black[16] = INCBIN_U16("graphics/map_popup/bw/black.gbapal");
 static const u16 sMapPopUpTilesPalette_BW_White[16] = INCBIN_U16("graphics/map_popup/bw/white.gbapal");
 #else
 static const u8 sMapPopUpTilesPrimary_BW[] = {0};
+static const u8 sMapPopUpTilesPrimary_TownBW[] = {0};
+static const u8 sMapPopUpTilesPrimary_CityBW[] = {0};
 static const u8 sMapPopUpTilesSecondary_BW[] = {0};
 static const u16 sMapPopUpTilesPalette_BW_Black[] = {0};
 static const u16 sMapPopUpTilesPalette_BW_White[] = {0};
@@ -212,14 +218,14 @@ static const u16 sMapPopUpTilesPalette_BW_White[] = {0};
 
 static const u8 sRegionMapSectionId_To_PopUpThemeIdMapping_BW[] =
 {
-    [MAPSEC_LITTLEROOT_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_LITTLEROOT_TOWN] = MAPPOPUP_THEME_BW_TOWN,
     [MAPSEC_OLDALE_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_DEWFORD_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_LAVARIDGE_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_FALLARBOR_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_VERDANTURF_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_PACIFIDLOG_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_PETALBURG_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_PETALBURG_CITY] = MAPPOPUP_THEME_BW_CITY,
     [MAPSEC_SLATEPORT_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_MAUVILLE_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_RUSTBORO_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
@@ -556,7 +562,7 @@ static void ShowMapNamePopUpWindow(void)
 
     if (OW_POPUP_GENERATION == GEN_5)
     {
-        AddTextPrinterParameterized(mapNamePopUpWindowId, FONT_SHORT, mapDisplayHeader, 8, 2, TEXT_SKIP_DRAW, NULL);
+        AddTextPrinterParameterized(mapNamePopUpWindowId, FONT_SHORT, mapDisplayHeader, sRegionMapSectionId_To_PopUpThemeIdMapping_BW[gMapHeader.regionMapSectionId] == MAPPOPUP_THEME_BW_DEFAULT ? 8 : 40, 2, TEXT_SKIP_DRAW, NULL);
         
         if (OW_POPUP_BW_TIME_MODE != OW_POPUP_BW_TIME_NONE)
         {
@@ -639,6 +645,24 @@ static void LoadMapNamePopUpWindowBg(void)
                     LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
 
                 CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_BW, sizeof(sMapPopUpTilesPrimary_BW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_TOWN:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_TownBW, sizeof(sMapPopUpTilesPrimary_TownBW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_CITY:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_CityBW, sizeof(sMapPopUpTilesPrimary_CityBW), 0);
                 CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
                 break;
         }
