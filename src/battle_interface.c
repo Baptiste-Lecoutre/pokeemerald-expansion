@@ -2877,7 +2877,7 @@ static const struct OamData sOamData_LastUsedBall =
 static const struct SpriteTemplate sSpriteTemplate_LastUsedBallWindow =
 {
     .tileTag = LAST_BALL_WINDOW_TAG,
-    .paletteTag = ABILITY_POP_UP_TAG,
+    .paletteTag = LAST_BALL_WINDOW_TAG,
     .oam = &sOamData_LastUsedBall,
     .anims = gDummySpriteAnimTable,
     .images = NULL,
@@ -2894,9 +2894,16 @@ static const struct SpriteTemplate sSpriteTemplate_LastUsedBallWindow =
 #else
     static const u8 ALIGNED(4) sLastUsedBallWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l.4bpp");
 #endif
+static const u16 sLastUsedBallWindowPalette[] = INCBIN_U16("graphics/battle_interface/last_used_ball.gbapal");
+
 static const struct SpriteSheet sSpriteSheet_LastUsedBallWindow =
 {
     sLastUsedBallWindowGfx, sizeof(sLastUsedBallWindowGfx), LAST_BALL_WINDOW_TAG
+};
+
+static const struct SpritePalette sSpritePalette_LastUsedBallWindow =
+{
+    sLastUsedBallWindowPalette, LAST_BALL_WINDOW_TAG
 };
 
 #define LAST_USED_BALL_X_F    14
@@ -2963,7 +2970,7 @@ void TryAddLastUsedBallItemSprites(void)
     }
 
     // window
-    LoadSpritePalette(&sSpritePalette_AbilityPopUp);
+    LoadSpritePalette(&sSpritePalette_LastUsedBallWindow);
     if (GetSpriteTileStartByTag(LAST_BALL_WINDOW_TAG) == 0xFFFF)
         LoadSpriteSheet(&sSpriteSheet_LastUsedBallWindow);
 
@@ -2994,7 +3001,7 @@ UNUSED static void CreateLastUsedBallGfx(void)
 static void DestroyLastUsedBallWinGfx(struct Sprite *sprite)
 {
     FreeSpriteTilesByTag(LAST_BALL_WINDOW_TAG);
-    FreeSpritePaletteByTag(ABILITY_POP_UP_TAG);
+    FreeSpritePaletteByTag(LAST_BALL_WINDOW_TAG);
     DestroySprite(sprite);
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
 }
