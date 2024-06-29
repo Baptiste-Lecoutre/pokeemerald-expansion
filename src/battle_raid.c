@@ -34,25 +34,25 @@ const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
         .shield = RAID_SHIELD_MAX,
         .shockwave = RAID_GEN_8,
         .rules = RAID_RULES_MAX,
-        .gimmick = GIMMICK_DYNAMAX,
+        .gimmick = RAID_GIMMICK_DYNAMAX,
     },
     [RAID_TYPE_TERA] = {
         .shield = RAID_SHIELD_TERA,
         .shockwave = RAID_GEN_9,
         .rules = RAID_RULES_TERA,
-        .gimmick = GIMMICK_TERA,
+        .gimmick = RAID_GIMMICK_TERA,
     },
     [RAID_TYPE_MEGA] = {
         .shield = RAID_SHIELD_MEGA,
         .shockwave = RAID_GEN_8,
         .rules = RAID_RULES_MEGA,
-        .gimmick = GIMMICK_MEGA,
+        .gimmick = RAID_GIMMICK_MEGA,
     },
     [RAID_TYPE_PRIMAL] = {
         .shield = RAID_SHIELD_MEGA,
         .shockwave = RAID_GEN_8,
         .rules = RAID_RULES_MEGA,
-        .gimmick = GIMMICK_PRIMAL,
+        .gimmick = RAID_GIMMICK_PRIMAL,
     },
 };
 
@@ -447,7 +447,7 @@ bool32 InitRaidData(void)
     }
 
     // Gigantamax factor & dynamax level
-    if (gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_DYNAMAX)
+    if (gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_DYNAMAX)
     {
         postEvoSpecies = GetGMaxTargetSpecies(species);
 
@@ -463,7 +463,7 @@ bool32 InitRaidData(void)
     }
 
     // Tera type
-    if (gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_TERA)
+    if (gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_TERA)
     {
         u32 teraType = randomNum % (NUMBER_OF_MON_TYPES - 2);
         if (teraType >= TYPE_MYSTERY)
@@ -546,8 +546,8 @@ u8 GetRaidBattleTransition(void)
 {
     if (gRaidData.raidType == RAID_TYPE_TERA)
         return B_TRANSITION_TERA_RAID;
-    else if (gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_MEGA
-            || gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_PRIMAL)
+    else if (gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_MEGA
+            || gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_PRIMAL)
         return B_TRANSITION_MEGA_RAID;
     else
         return B_TRANSITION_MAX_RAID;
@@ -906,7 +906,7 @@ u16 GetShieldDamageReduction(void)
     }
     else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
     {
-        if (IsTerastallized(gBattlerAttacker))
+        if (GetActiveGimmick(gBattlerAttacker) == GIMMICK_TERA)
         {
             if (GetBattlerType(gBattlerAttacker, 0, FALSE) == gMovesInfo[gCurrentMove].type)
                 return UQ_4_12(0.75); // tera & stab
@@ -958,7 +958,7 @@ static const struct SpritePalette sSpritePalette_MaxRaidBarrier =
 // Mega Raid Shields share a palette with the Mega trigger.
 static const struct SpritePalette sSpritePalette_MegaRaidBarrier =
 {
-    sMegaRaidBarrierPal, TAG_MEGA_TRIGGER_PAL
+    sMegaRaidBarrierPal, TAG_MEGA_BARRIER_PAL
 };
 
 static const struct OamData sOamData_MaxRaidBarrier =
@@ -1019,7 +1019,7 @@ static const struct SpriteTemplate sSpriteTemplate_MaxRaidBarrier =
 static const struct SpriteTemplate sSpriteTemplate_MegaRaidBarrier =
 {
     .tileTag = TAG_RAID_BARRIER_TILE,
-    .paletteTag = TAG_MEGA_TRIGGER_PAL,
+    .paletteTag = TAG_MEGA_BARRIER_PAL,
     .oam = &sOamData_MegaRaidBarrier,
     .anims = gDummySpriteAnimTable,
     .images = NULL,

@@ -2252,7 +2252,7 @@ void HBlankCB_DoublePopupWindow(void)
         REG_BG0VOFS = offset;
 
         if(OW_POPUP_BW_ALPHA_BLEND && !IsWeatherAlphaBlend())
-            REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
+            REG_BLDALPHA = BLDALPHA_BLEND(7, 12); // 15, 5
     }
     else
     {
