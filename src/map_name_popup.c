@@ -39,6 +39,13 @@ enum MapPopUp_Themes
 enum MapPopUp_Themes_BW
 {
     MAPPOPUP_THEME_BW_DEFAULT,
+    MAPPOPUP_THEME_BW_TOWN,
+    MAPPOPUP_THEME_BW_CITY,
+    MAPPOPUP_THEME_BW_VOLCANO,
+    MAPPOPUP_THEME_BW_FOREST,
+    MAPPOPUP_THEME_BW_CAVE,
+    MAPPOPUP_THEME_BW_WATER_ROUTE,
+    MAPPOPUP_THEME_BW_LAND_ROUTE,
 };
 
 // static functions
@@ -204,11 +211,25 @@ static const u8 sRegionMapSectionId_To_PopUpThemeIdMapping[] =
 #if OW_POPUP_GENERATION == GEN_5
 // Gen5 assets
 static const u8 sMapPopUpTilesPrimary_BW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary.4bpp");
+static const u8 sMapPopUpTilesPrimary_TownBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_town.4bpp");
+static const u8 sMapPopUpTilesPrimary_CityBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_city.4bpp");
+static const u8 sMapPopUpTilesPrimary_VolcanoBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_volcano.4bpp");
+static const u8 sMapPopUpTilesPrimary_ForestBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_forest.4bpp");
+static const u8 sMapPopUpTilesPrimary_CaveBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_cave.4bpp");
+static const u8 sMapPopUpTilesPrimary_WaterRouteBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_water_route.4bpp");
+static const u8 sMapPopUpTilesPrimary_LandRouteBW[] = INCBIN_U8("graphics/map_popup/bw/bw_primary_land_route.4bpp");
 static const u8 sMapPopUpTilesSecondary_BW[] = INCBIN_U8("graphics/map_popup/bw/bw_secondary.4bpp");
 static const u16 sMapPopUpTilesPalette_BW_Black[16] = INCBIN_U16("graphics/map_popup/bw/black.gbapal");
 static const u16 sMapPopUpTilesPalette_BW_White[16] = INCBIN_U16("graphics/map_popup/bw/white.gbapal");
 #else
 static const u8 sMapPopUpTilesPrimary_BW[] = {0};
+static const u8 sMapPopUpTilesPrimary_TownBW[] = {0};
+static const u8 sMapPopUpTilesPrimary_CityBW[] = {0};
+static const u8 sMapPopUpTilesPrimary_VolcanoBW[] = {0};
+static const u8 sMapPopUpTilesPrimary_ForestBW[] = {0};
+static const u8 sMapPopUpTilesPrimary_CaveBW[] = {0};
+static const u8 sMapPopUpTilesPrimary_WaterRouteBW[] = {0};
+static const u8 sMapPopUpTilesPrimary_LandRouteBW[] = {0};
 static const u8 sMapPopUpTilesSecondary_BW[] = {0};
 static const u16 sMapPopUpTilesPalette_BW_Black[] = {0};
 static const u16 sMapPopUpTilesPalette_BW_White[] = {0};
@@ -216,87 +237,87 @@ static const u16 sMapPopUpTilesPalette_BW_White[] = {0};
 
 static const u8 sRegionMapSectionId_To_PopUpThemeIdMapping_BW[] =
 {
-    [MAPSEC_LITTLEROOT_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_OLDALE_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_DEWFORD_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_LAVARIDGE_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_FALLARBOR_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_VERDANTURF_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_PACIFIDLOG_TOWN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_PETALBURG_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_SLATEPORT_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_MAUVILLE_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_RUSTBORO_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_FORTREE_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_LILYCOVE_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_MOSSDEEP_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_SOOTOPOLIS_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_EVER_GRANDE_CITY] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_101] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_102] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_103] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_104] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_105] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_106] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_107] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_108] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_109] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_110] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_111] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_112] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_113] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_114] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_115] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_116] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_117] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_118] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_119] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_120] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_121] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_122] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_123] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_124] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_125] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_126] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_127] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_128] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_129] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_130] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_131] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_132] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_133] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ROUTE_134] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_LITTLEROOT_TOWN] = MAPPOPUP_THEME_BW_TOWN,
+    [MAPSEC_OLDALE_TOWN] = MAPPOPUP_THEME_BW_TOWN,
+    [MAPSEC_DEWFORD_TOWN] = MAPPOPUP_THEME_BW_TOWN,
+    [MAPSEC_LAVARIDGE_TOWN] = MAPPOPUP_THEME_BW_TOWN,
+    [MAPSEC_FALLARBOR_TOWN] = MAPPOPUP_THEME_BW_TOWN,
+    [MAPSEC_VERDANTURF_TOWN] = MAPPOPUP_THEME_BW_TOWN,
+    [MAPSEC_PACIFIDLOG_TOWN] = MAPPOPUP_THEME_BW_TOWN,
+    [MAPSEC_PETALBURG_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_SLATEPORT_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_MAUVILLE_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_RUSTBORO_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_FORTREE_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_LILYCOVE_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_MOSSDEEP_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_SOOTOPOLIS_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_EVER_GRANDE_CITY] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_ROUTE_101] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_102] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_103] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_104] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_105] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_106] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_107] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_108] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_109] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_110] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_111] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_112] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_113] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_114] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_115] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_116] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_117] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_118] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_119] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_120] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_121] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_122] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_123] = MAPPOPUP_THEME_BW_LAND_ROUTE,
+    [MAPSEC_ROUTE_124] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_125] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_126] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_127] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_128] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_129] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_130] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_131] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_132] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_133] = MAPPOPUP_THEME_BW_WATER_ROUTE,
+    [MAPSEC_ROUTE_134] = MAPPOPUP_THEME_BW_WATER_ROUTE,
     [MAPSEC_UNDERWATER_124] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_126] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_127] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_128] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_SOOTOPOLIS] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_GRANITE_CAVE] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_MT_CHIMNEY] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_GRANITE_CAVE] = MAPPOPUP_THEME_BW_CAVE,
+    [MAPSEC_MT_CHIMNEY] = MAPPOPUP_THEME_BW_VOLCANO,
     [MAPSEC_SAFARI_ZONE] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_BATTLE_FRONTIER] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_PETALBURG_WOODS] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_RUSTURF_TUNNEL] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_BATTLE_FRONTIER] = MAPPOPUP_THEME_BW_CITY,
+    [MAPSEC_PETALBURG_WOODS] = MAPPOPUP_THEME_BW_FOREST,
+    [MAPSEC_RUSTURF_TUNNEL] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_ABANDONED_SHIP] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_NEW_MAUVILLE] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_METEOR_FALLS] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_METEOR_FALLS2] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_METEOR_FALLS] = MAPPOPUP_THEME_BW_CAVE,
+    [MAPSEC_METEOR_FALLS2] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_MT_PYRE] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_AQUA_HIDEOUT_OLD] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_SHOAL_CAVE] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_SHOAL_CAVE] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_SEAFLOOR_CAVERN] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_SEAFLOOR_CAVERN] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_VICTORY_ROAD] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_VICTORY_ROAD] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_MIRAGE_ISLAND] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_CAVE_OF_ORIGIN] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_CAVE_OF_ORIGIN] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_SOUTHERN_ISLAND] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_FIERY_PATH] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_FIERY_PATH2] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_JAGGED_PASS] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_JAGGED_PASS2] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_FIERY_PATH] = MAPPOPUP_THEME_BW_VOLCANO,
+    [MAPSEC_FIERY_PATH2] = MAPPOPUP_THEME_BW_VOLCANO,
+    [MAPSEC_JAGGED_PASS] = MAPPOPUP_THEME_BW_VOLCANO,
+    [MAPSEC_JAGGED_PASS2] = MAPPOPUP_THEME_BW_VOLCANO,
     [MAPSEC_SEALED_CHAMBER] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_SEALED_CHAMBER] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_SCORCHED_SLAB] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_SCORCHED_SLAB] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_ISLAND_CAVE] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_DESERT_RUINS] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_ANCIENT_TOMB] = MAPPOPUP_THEME_BW_DEFAULT,
@@ -309,15 +330,15 @@ static const u8 sRegionMapSectionId_To_PopUpThemeIdMapping_BW[] =
     [MAPSEC_MIRAGE_TOWER - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_BIRTH_ISLAND - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_FARAWAY_ISLAND - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ARTISAN_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_MARINE_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_ARTISAN_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_CAVE,
+    [MAPSEC_MARINE_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_UNDERWATER_MARINE_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_TERRA_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_TERRA_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_UNDERWATER_105 - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_125 - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_UNDERWATER_129 - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_DESERT_UNDERPASS - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
-    [MAPSEC_ALTERING_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
+    [MAPSEC_DESERT_UNDERPASS - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_CAVE,
+    [MAPSEC_ALTERING_CAVE - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_CAVE,
     [MAPSEC_NAVEL_ROCK - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
     [MAPSEC_TRAINER_HILL - KANTO_MAPSEC_COUNT] = MAPPOPUP_THEME_BW_DEFAULT,
 };
@@ -502,7 +523,8 @@ void HideMapNamePopUpWindow(void)
             {
                 SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG_ALL | WININ_WIN0_OBJ | WININ_WIN1_BG_ALL | WININ_WIN1_OBJ);
                 SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG2 | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_OBJ | BLDCNT_EFFECT_BLEND);
-                SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 10));
+                //SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 10));
+                Weather_SetBlendCoeffs(7, 12);
             }
         }
 
@@ -560,7 +582,7 @@ static void ShowMapNamePopUpWindow(void)
 
     if (OW_POPUP_GENERATION == GEN_5)
     {
-        AddTextPrinterParameterized(mapNamePopUpWindowId, FONT_SHORT, mapDisplayHeader, 8, 2, TEXT_SKIP_DRAW, NULL);
+        AddTextPrinterParameterized(mapNamePopUpWindowId, FONT_SHORT, mapDisplayHeader, sRegionMapSectionId_To_PopUpThemeIdMapping_BW[gMapHeader.regionMapSectionId] == MAPPOPUP_THEME_BW_DEFAULT ? 8 : 40, 2, TEXT_SKIP_DRAW, NULL);
         
         if (OW_POPUP_BW_TIME_MODE != OW_POPUP_BW_TIME_NONE)
         {
@@ -643,6 +665,69 @@ static void LoadMapNamePopUpWindowBg(void)
                     LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
 
                 CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_BW, sizeof(sMapPopUpTilesPrimary_BW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_TOWN:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_TownBW, sizeof(sMapPopUpTilesPrimary_TownBW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_CITY:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_CityBW, sizeof(sMapPopUpTilesPrimary_CityBW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_VOLCANO:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_VolcanoBW, sizeof(sMapPopUpTilesPrimary_VolcanoBW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_FOREST:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_ForestBW, sizeof(sMapPopUpTilesPrimary_ForestBW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_CAVE:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_CaveBW, sizeof(sMapPopUpTilesPrimary_CaveBW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_WATER_ROUTE:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_WaterRouteBW, sizeof(sMapPopUpTilesPrimary_WaterRouteBW), 0);
+                CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
+                break;
+            case MAPPOPUP_THEME_BW_LAND_ROUTE:
+                if (OW_POPUP_BW_COLOR == OW_POPUP_BW_COLOR_WHITE)
+                    LoadPalette(sMapPopUpTilesPalette_BW_White, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_White));
+                else
+                    LoadPalette(sMapPopUpTilesPalette_BW_Black, BG_PLTT_ID(14), sizeof(sMapPopUpTilesPalette_BW_Black));
+
+                CopyToWindowPixelBuffer(popupWindowId, sMapPopUpTilesPrimary_LandRouteBW, sizeof(sMapPopUpTilesPrimary_LandRouteBW), 0);
                 CopyToWindowPixelBuffer(secondaryPopUpWindowId, sMapPopUpTilesSecondary_BW, sizeof(sMapPopUpTilesSecondary_BW), 0);
                 break;
         }
