@@ -176,6 +176,15 @@ enum
     HEALTHBOX_GFX_123,
     HEALTHBOX_GFX_FRAME_END,
     HEALTHBOX_GFX_FRAME_END_BAR,
+    HEALTHBOX_GFX_HP_BAR_BLUE,
+    HEALTHBOX_GFX_127, //hp bar blue [1 pixels]
+    HEALTHBOX_GFX_128, //hp bar blue [2 pixels]
+    HEALTHBOX_GFX_129, //hp bar blue [3 pixels]
+    HEALTHBOX_GFX_130, //hp bar blue [4 pixels]
+    HEALTHBOX_GFX_131, //hp bar blue [5 pixels]
+    HEALTHBOX_GFX_132, //hp bar blue [6 pixels]
+    HEALTHBOX_GFX_133, //hp bar blue [7 pixels]
+    HEALTHBOX_GFX_134, //hp bar blue [8 pixels]
 };
 
 static const u8 *GetHealthboxElementGfxPtr(u8);
@@ -2159,7 +2168,7 @@ static void MoveBattleBarGraphically(u8 battlerId, u8 whichBar)
         if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX)
             barElementId = HEALTHBOX_GFX_HP_BAR_RED;
         else if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
-            barElementId = HEALTHBOX_GFX_HP_BAR_YELLOW; //HEALTHBOX_GFX_12; // Exp bar for blue color
+            barElementId = HEALTHBOX_GFX_HP_BAR_BLUE; //HEALTHBOX_GFX_12; // Exp bar for blue color
         else if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
             barElementId = HEALTHBOX_GFX_HP_BAR_YELLOW;
         else if (filledPixelsCount > (B_HEALTHBAR_PIXELS * 50 / 100)) // more than 50 % hp
