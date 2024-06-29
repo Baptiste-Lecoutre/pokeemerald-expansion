@@ -3059,7 +3059,7 @@ static bool32 IsDynamaxBattle(void)
 {
     u32 i;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_DYNAMAX)
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_DYNAMAX)
         return TRUE;
     
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -3067,7 +3067,7 @@ static bool32 IsDynamaxBattle(void)
         for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_A); i++)
         {
             const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_A);
-            if (party[i].shouldDynamax)
+            if (party[i].dynamaxLevel || party[i].gigantamaxFactor)
                 return TRUE;
         }
 
@@ -3076,7 +3076,7 @@ static bool32 IsDynamaxBattle(void)
             for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_B); i++)
             {
                 const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_B);
-                if (party[i].shouldDynamax)
+                if (party[i].dynamaxLevel || party[i].gigantamaxFactor)
                     return TRUE;
             }
         }
@@ -3089,7 +3089,7 @@ static bool32 IsTerastalBattle(void)
 {
     u32 i;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == GIMMICK_TERA)
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_TERA)
         return TRUE;
     
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -3097,7 +3097,7 @@ static bool32 IsTerastalBattle(void)
         for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_A); i++)
         {
             const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_A);
-            if (party[i].shouldTerastal)
+            if (party[i].teraType > TYPE_NONE)
                 return TRUE;
         }
 
@@ -3106,7 +3106,7 @@ static bool32 IsTerastalBattle(void)
             for (i = 0; i < GetTrainerPartySizeFromId(gTrainerBattleOpponent_B); i++)
             {
                 const struct TrainerMon *party = GetTrainerPartyFromId(gTrainerBattleOpponent_B);
-                if (party[i].shouldTerastal)
+                if (party[i].teraType > TYPE_NONE)
                     return TRUE;
             }
         }

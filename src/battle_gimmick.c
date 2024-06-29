@@ -71,6 +71,8 @@ enum Gimmick GetActiveGimmick(u32 battler)
                 return GIMMICK_MEGA;
             case RAID_GIMMICK_TERA:
                 return GIMMICK_TERA;
+            case RAID_GIMMICK_PRIMAL:
+                return GIMMICK_MEGA;
         }
     }
     return gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
