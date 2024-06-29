@@ -5289,6 +5289,19 @@ static bool32 TryDoGimmicksBeforeMoves(void)
     {
         gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         gBattleStruct->raid.usedShockwave = TRUE;
+
+        /*if (gRaidData.raidType == RAID_TYPE_MEGA) // Does not work anymore after gimmick refactor ffs...
+        { // probablement unset gBattleStruct->zmove.used[gBattlerAttacker]
+            //gBattleStruct->zmove.chosenZMove = GetTypeBasedZMove(gCurrentMove, gBattlerAttacker);
+            //gCalledMove = GetTypeBasedZMove(gCurrentMove);
+            //QueueZMove(gBattlerAttacker, gCurrentMove);
+            gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
+            SetActiveGimmick(gBattlerAttacker, GIMMICK_Z_MOVE);
+            ActivateZMove(gBattlerAttacker);
+            SetGimmickAsActivated(gBattlerAttacker, GIMMICK_Z_MOVE);
+//            return TRUE;
+        }*/
+
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
         gBattleCommunication[MULTIUSE_STATE] = 0;
         BattleScriptExecute(BattleScript_RaidShockwave);
