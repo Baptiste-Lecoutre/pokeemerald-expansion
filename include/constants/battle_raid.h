@@ -6,9 +6,9 @@
 #define RAID_GEN_9  1
 
 // Gimmick IDs
-#define GIMMICK_MEGA    0
-#define GIMMICK_DYNAMAX 1
-#define GIMMICK_TERA    2
+#define RAID_GIMMICK_MEGA    0
+#define RAID_GIMMICK_DYNAMAX 1
+#define RAID_GIMMICK_TERA    2
 
 // Raid Type IDs
 #define RAID_TYPE_MAX    0

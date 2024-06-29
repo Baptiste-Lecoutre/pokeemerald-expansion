@@ -5,6 +5,7 @@
 #include "battle_interface.h"
 #include "battle_gimmick.h"
 #include "battle_z_move.h"
+#include "battle_raid.h"
 #include "battle_setup.h"
 #include "battle_util.h"
 #include "item.h"
@@ -59,6 +60,19 @@ void SetActiveGimmick(u32 battler, enum Gimmick gimmick)
 // Returns a battler's active gimmick, if any.
 enum Gimmick GetActiveGimmick(u32 battler)
 {
+    if (IsRaidBoss(battler))
+    {
+        switch (gRaidTypes[gRaidData.raidType].gimmick)
+        {
+            default:
+            case RAID_GIMMICK_DYNAMAX:
+                return GIMMICK_DYNAMAX;
+            case RAID_GIMMICK_MEGA:
+                return GIMMICK_MEGA;
+            case RAID_GIMMICK_TERA:
+                return GIMMICK_TERA;
+        }
+    }
     return gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
 }
 

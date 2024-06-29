@@ -30,19 +30,19 @@ const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
         .shield = RAID_GEN_8,
         .shockwave = RAID_GEN_8,
         .rules = RAID_GEN_8,
-        .gimmick = GIMMICK_DYNAMAX,
+        .gimmick = RAID_GIMMICK_DYNAMAX,
     },
     [RAID_TYPE_TERA] = {
         .shield = RAID_GEN_9,
         .shockwave = RAID_GEN_9,
         .rules = RAID_GEN_9,
-        .gimmick = GIMMICK_TERA,
+        .gimmick = RAID_GIMMICK_TERA,
     },
     [RAID_TYPE_MEGA] = {
         .shield = RAID_GEN_8,
         .shockwave = RAID_GEN_8,
         .rules = RAID_GEN_8,
-        .gimmick = GIMMICK_MEGA,
+        .gimmick = RAID_GIMMICK_MEGA,
     },
 };
 
