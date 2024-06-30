@@ -10190,6 +10190,24 @@ BattleScript_MegaRaidHealBarrier::
 	return
 
 BattleScript_RaidShockwave::
+	printfromtable gRaidShockwaveStringIds
+	waitmessage B_WAIT_TIME_LONG
+	jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_RaidShockwaveFocusAnim
+	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE
+	waitanimation
+	goto BattleScript_RaidShockwaveDoShockwave
+BattleScript_RaidShockwaveFocusAnim:
+	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE_FOCUS
+	waitanimation
+BattleScript_RaidShockwaveDoShockwave:
+	doraidshockwave
+	jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_RaidShockwaveEnd
+	clearstatus BS_ATTACKER
+	updatestatusicon BS_ATTACKER
+BattleScript_RaidShockwaveEnd:
+	end3
+
+BattleScript_RaidShockwaveOld::
 	printstring STRINGID_PKMNNULLIFIEDOTHERS
 @	printfromtable gRaidShockwaveStringIds
 	waitmessage B_WAIT_TIME_LONG
@@ -10200,6 +10218,15 @@ BattleScript_RaidShockwave::
 	updatestatusicon BS_ATTACKER
 	end3
 @	return
+
+BattleScript_MaxRaidShockwaveFocus::
+@	printstring STRINGID_PKMNFOCUSEDONOPPONENTS
+	printfromtable gRaidShockwaveStringIds
+	waitmessage B_WAIT_TIME_LONG
+	playanimation BS_ATTACKER, B_ANIM_TOTEM_FLARE
+	waitanimation
+	doraidshockwave
+	end3
 
 BattleScript_RaidVictory::
 	hidehealthboxes

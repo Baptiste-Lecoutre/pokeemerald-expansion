@@ -579,9 +579,10 @@
 #define B_ANIM_RAID_BARRIER_BROKEN      55
 #define B_ANIM_RAID_SHOCKWAVE           56
 #define B_ANIM_RAID_BOSS_EXPLOSION      57
-#define B_ANIM_MON_SCARED               58
-#define B_ANIM_GHOST_GET_OUT            59
-#define B_ANIM_GO_GOGGLED               60
+#define B_ANIM_RAID_SHOCKWAVE_FOCUS     58
+#define B_ANIM_MON_SCARED               59
+#define B_ANIM_GHOST_GET_OUT            60
+#define B_ANIM_GO_GOGGLED               61
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

@@ -17520,17 +17520,28 @@ void BS_DoRaidShockwave(void)
     NATIVE_ARGS();
     u32 i;
 
-    for (i = 0; i < gBattlersCount; i++)
+    switch (gBattleCommunication[MULTIUSE_STATE])
     {
-        if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
-            continue;
-        if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
+    case 0:
+    default:
+        for (i = 0; i < gBattlersCount; i++)
         {
-            if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
-                gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
-            gStatuses3[i] |= STATUS3_GASTRO_ACID;
+            if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
+                continue;
+            if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
+            {
+                if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
+                    gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
+                gStatuses3[i] |= STATUS3_GASTRO_ACID;
+            }
+            TryResetBattlerStatChanges(i);
         }
-        TryResetBattlerStatChanges(i);
+        break;
+    case 1:
+        gBattleMons[gBattlerAttacker].status2 |= STATUS2_FOCUS_ENERGY;
+        if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC] < MAX_STAT_STAGE)
+            gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC]++;
+        break;
     }
 
     gBattlescriptCurrInstr = cmd->nextInstr;

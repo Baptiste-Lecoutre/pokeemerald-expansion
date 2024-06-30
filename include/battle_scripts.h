@@ -560,6 +560,7 @@ extern const u8 BattleScript_RaidShieldAppeared[];
 extern const u8 BattleScript_RaidShieldDisappeared[];
 extern const u8 BattleScript_RaidBarrierBroken[];
 extern const u8 BattleScript_RaidShockwave[];
+extern const u8 BattleScript_MaxRaidShockwaveFocus[];
 extern const u8 BattleScript_RaidVictory[];
 extern const u8 BattleScript_FaintRaidBoss[];
 extern const u8 BattleScript_RaidDefeat[];

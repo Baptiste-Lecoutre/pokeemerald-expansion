@@ -5302,8 +5302,16 @@ static bool32 TryDoGimmicksBeforeMoves(void)
 //            return TRUE;
         }*/
 
-        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
-        gBattleCommunication[MULTIUSE_STATE] = 0;
+        if (Random() % 100 < 30)
+        {
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
+            gBattleCommunication[MULTIUSE_STATE] = 1;
+        }
+        else
+        {
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
+            gBattleCommunication[MULTIUSE_STATE] = 0;
+        }
         BattleScriptExecute(BattleScript_RaidShockwave);
         return TRUE;
     }

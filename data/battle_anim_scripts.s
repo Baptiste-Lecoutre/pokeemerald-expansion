@@ -91,6 +91,7 @@ gBattleAnims_General::
 	.4byte General_RaidShieldBroken			@ B_ANIM_RAID_SHIELD_BROKE
 	.4byte General_RaidShockwave			@ B_ANIM_RAID_SHOCKWAVE
 	.4byte General_RaidBossExplosion		@ B_ANIM_RAID_BOSS_EXPLOSION
+	.4byte General_RaidShockwaveFocus		@ B_ANIM_RAID_SHOCKWAVE_FOCUS
 	.4byte General_MonScared 				@ B_ANIM_MON_SCARED
 	.4byte General_GhostGetOut 				@ B_ANIM_GHOST_GET_OUT
 	.4byte General_GoGoggled 				@ B_ANIM_GO_GOGGLED
@@ -33795,6 +33796,9 @@ General_RaidShockwave::
 	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 224
 	waitforvisualfinish
 	end
+
+General_RaidShockwaveFocus::
+	goto Move_FOCUS_ENERGY
 
 General_RaidBossExplosion::
 	createvisualtask AnimTask_SetAnimTargetToBattlerTarget, 2
