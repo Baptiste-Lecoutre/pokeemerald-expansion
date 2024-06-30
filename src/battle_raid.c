@@ -627,13 +627,23 @@ bool32 ShouldRaidKickPlayer(void)
 
 bool32 ShouldMoveDynamaxEnergy(void)
 {
+    u32 currentEnergyBattler = gBattleStruct->raid.energy;
+
     if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
     {
         gBattleStruct->raid.energy ^= BIT_FLANK;
-        gBattlerAttacker = gBattleStruct->raid.energy;
-
-        if (CanDynamax(gBattlerAttacker))
+        if (IsBattlerAlive(gBattleStruct->raid.energy) && CanDynamax(gBattleStruct->raid.energy))
+        {
+            gBattlerAttacker = gBattleStruct->raid.energy;
             return TRUE;
+        }
+
+        gBattleStruct->raid.energy = currentEnergyBattler;
+    //    gBattleStruct->raid.energy ^= BIT_FLANK;
+    //    gBattlerAttacker = gBattleStruct->raid.energy;
+
+    //    if (CanDynamax(gBattlerAttacker))
+    //        return TRUE;
     }
 
     return FALSE;
