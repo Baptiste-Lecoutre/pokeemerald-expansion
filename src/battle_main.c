@@ -3059,7 +3059,7 @@ static bool32 IsDynamaxBattle(void)
 {
     u32 i;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_DYNAMAX)
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID /*&& gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_DYNAMAX*/) // will have to see later what I want
         return TRUE;
     
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -5262,6 +5262,15 @@ static void PopulateArrayWithBattlers(u8 *battlers)
 
 static bool32 TryDoGimmicksBeforeMoves(void)
 {
+    /*if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave) // this works
+    {
+        gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+        gBattleStruct->raid.usedShockwave = TRUE;
+        gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE;
+        gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
+        gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
+    }*/
+
     if (!(gHitMarker & HITMARKER_RUN) && gBattleStruct->gimmick.toActivate)
     {
         u32 i, battler;
@@ -5285,7 +5294,7 @@ static bool32 TryDoGimmicksBeforeMoves(void)
         }
     }
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID  && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
     {
         gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         gBattleStruct->raid.usedShockwave = TRUE;

@@ -146,13 +146,13 @@ u32 GetUsableZMove(u32 battler, u32 move)
     u32 item = gBattleMons[battler].item;
     u32 holdEffect = GetBattlerHoldEffect(battler, FALSE);
 
-    if (holdEffect == HOLD_EFFECT_Z_CRYSTAL)
+    if (holdEffect == HOLD_EFFECT_Z_CRYSTAL /*|| gBattleTypeFlags & BATTLE_TYPE_RAID*/)
     {
         u16 zMove = GetSignatureZMove(move, gBattleMons[battler].species, item);
         if (zMove != MOVE_NONE)
             return zMove;  // Signature z move exists
 
-        if (move != MOVE_NONE && zMove != MOVE_Z_STATUS && gMovesInfo[move].type == ItemId_GetSecondaryId(item))
+        if (move != MOVE_NONE && zMove != MOVE_Z_STATUS && (gMovesInfo[move].type == ItemId_GetSecondaryId(item) /*|| gBattleTypeFlags & BATTLE_TYPE_RAID*/))
             return GetTypeBasedZMove(move);
     }
 
