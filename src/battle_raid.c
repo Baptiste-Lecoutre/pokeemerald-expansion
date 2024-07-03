@@ -635,6 +635,7 @@ bool32 ShouldMoveDynamaxEnergy(void)
         if (IsBattlerAlive(gBattleStruct->raid.energy) && CanDynamax(gBattleStruct->raid.energy))
         {
             gBattlerAttacker = gBattleStruct->raid.energy;
+            AssignUsableGimmicks();
             return TRUE;
         }
 
