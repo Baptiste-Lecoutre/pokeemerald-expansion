@@ -336,7 +336,7 @@ u32 GetRaidRandomNumber(void);
 // Sets the data for the Raid being loaded from the map information.
 bool32 InitRaidData(void)
 {
-    u16 numBadges, min, max, species = SPECIES_NONE, preEvoSpecies = SPECIES_NONE, postEvoSpecies = SPECIES_NONE;
+    u16 min, max, species = SPECIES_NONE, preEvoSpecies = SPECIES_NONE, postEvoSpecies = SPECIES_NONE;
 	u32 i, randomNum = GetRaidRandomNumber(), numEggMoves;
     u8 raidBossLevel, numPostEvoSpecies = 0, maxIV = MAX_IV_MASK, eggMoveChance = GetRaidEggMoveChance();
     u8 statIDs[NUM_STATS] = {STAT_HP, STAT_ATK, STAT_DEF, STAT_SPEED, STAT_SPATK, STAT_SPDEF};
@@ -356,13 +356,6 @@ bool32 InitRaidData(void)
 
     // determine raid rank based on number of badges
     gRaidData.rank = gRaidBattleStarsByBadges[GetNumberOfBadges()][randomNum & 1];
-    //numBadges = GetNumberOfBadges();
-    //min = gRaidBattleStarsByBadges[numBadges][0];
-	//max = gRaidBattleStarsByBadges[numBadges][1];
-    //if (min == max)
-    //    gRaidData.rank = min;
-    //else
-    //    gRaidData.rank = (randomNum % ((max + 1) - min)) + min;
     
     // determine raid boss level based on raid rank
     min = gRaidBattleLevelRanges[gRaidData.rank][0];
@@ -1047,7 +1040,7 @@ static const struct SpriteTemplate sSpriteTemplate_PrimalRaidBarrier =
 
 static u32 CreateRaidBarrierSprite(u8 index)
 {
-    u32 spriteId, position;
+    u32 spriteId;
     s16 x, y;
     u16 species = gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species;
 

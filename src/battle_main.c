@@ -3085,7 +3085,7 @@ static bool32 IsDynamaxBattle(void)
     return FALSE;
 }
 
-static bool32 IsTerastalBattle(void)
+UNUSED static bool32 IsTerastalBattle(void)
 {
     u32 i;
 

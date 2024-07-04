@@ -228,8 +228,6 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite);
 
 static void SpriteCB_TypeIcon(struct Sprite* sprite);
 
-static void DestroyTeamPreviewTrigger(struct Sprite* sprite);
-
 static const struct OamData sOamData_64x32 =
 {
     .y = 0,

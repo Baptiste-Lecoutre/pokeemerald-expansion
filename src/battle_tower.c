@@ -2146,7 +2146,6 @@ void DoSpecialTrainerBattle(void)
     // TODO: Does this belong with all the other multi battles?
     case SPECIAL_BATTLE_RAID:
         {
-        const struct RaidPartner* raidPartners = &gRaidPartners[gRaidData.rank];
         gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;
         gTrainerBattleOpponent_B = 0xFFFF;
 
@@ -2160,7 +2159,6 @@ void DoSpecialTrainerBattle(void)
         if (gRaidData.partnerNum != 0)
         {
             gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
-//            gPartnerSpriteId = gBattlePartners[gRaidData.partnerNum].trainerPic;
             gPartnerTrainerId = TRAINER_PARTNER(gRaidData.partnerNum);
             FillPartnerParty(gPartnerTrainerId);
         }

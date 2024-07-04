@@ -3020,8 +3020,6 @@ static void SetPartyMonFieldMoveSelectionActions(struct Pokemon *mons, u8 slotId
 
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 {
-    u8 i, j;
-
     sPartyMenuInternal->numActions = 0;
     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SUMMARY);
 
