@@ -17504,7 +17504,7 @@ void BS_DoRaidShockwave(void)
 
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
-    case 0:
+    case B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS: // use the string constants for both multistring chooser and multiuse state
     default:
         for (i = 0; i < gBattlersCount; i++)
         {
@@ -17519,7 +17519,7 @@ void BS_DoRaidShockwave(void)
             TryResetBattlerStatChanges(i);
         }
         break;
-    case 1:
+    case B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED:
         gBattleMons[gBattlerAttacker].status2 |= STATUS2_FOCUS_ENERGY;
         if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC] < MAX_STAT_STAGE)
             gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC]++;

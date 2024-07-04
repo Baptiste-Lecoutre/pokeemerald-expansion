@@ -5274,12 +5274,12 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 if (Random() % 100 < 30)
                 {
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
-                    gBattleCommunication[MULTIUSE_STATE] = 1;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED; // Use the same number for both multistring chooser and multiuse state
                 }
                 else
                 {
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
-                    gBattleCommunication[MULTIUSE_STATE] = 0;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
                 }
                 BattleScriptExecute(BattleScript_RaidShockwave);
                 return TRUE;
