@@ -60,8 +60,9 @@ void SetActiveGimmick(u32 battler, enum Gimmick gimmick)
 // Returns a battler's active gimmick, if any.
 enum Gimmick GetActiveGimmick(u32 battler)
 {
-    /*if (gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
-        return gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];*/
+    if (gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
+        return gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
+
     if (IsRaidBoss(battler))
     {
         switch (gRaidTypes[gRaidData.raidType].gimmick)
@@ -127,7 +128,7 @@ bool32 HasTrainerUsedGimmick(u32 battler, enum Gimmick gimmick)
 void SetGimmickAsActivated(u32 battler, enum Gimmick gimmick)
 {
     gBattleStruct->gimmick.activated[battler][gimmick] = TRUE;
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsPartnerMonFromSameTrainer(battler) /*&& !(gBattleTypeFlags & BATTLE_TYPE_RAID)*/)
+    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsPartnerMonFromSameTrainer(battler) && !IsRaidBoss(battler))
         gBattleStruct->gimmick.activated[BATTLE_PARTNER(battler)][gimmick] = TRUE;
 }
 

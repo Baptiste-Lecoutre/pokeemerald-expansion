@@ -1226,24 +1226,6 @@ static void Cmd_attackcanceler(void)
     u16 attackerAbility = GetBattlerAbility(gBattlerAttacker);
     GET_MOVE_TYPE(gCurrentMove, moveType);
 
-    // Raid bosses try to do a shockwave before moving.
-//    if (IsRaidBoss(gBattlerAttacker) && !gBattleStruct->raid.usedShockwave /*&& Random() % 100 < GetRaidShockwaveChance()*/)
-//    {
-//        gBattleStruct->raid.usedShockwave = TRUE;
-        /*if (gRaidData.raidType == RAID_TYPE_MEGA) // fonctionne. Un seul ZMove par combat. à voir ce que je veux en faire.
-        { // probablement unset gBattleStruct->zmove.used[gBattlerAttacker]
-            gBattleStruct->zmove.chosenZMove = GetTypeBasedZMove(gCurrentMove, gBattlerAttacker);
-            QueueZMove(gBattlerAttacker, gCurrentMove);
-            return;
-        }*/
-
-//        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
-//        gBattleCommunication[MULTIUSE_STATE] = 0;
-        //BattleScriptPushCursor();
-        //gBattlescriptCurrInstr = BattleScript_RaidShockwave;
-//        return;
-//    }
-
     // Weight-based moves are blocked by Dynamax.
     if ((GetActiveGimmick(gBattlerTarget) == GIMMICK_DYNAMAX) && IsMoveBlockedByDynamax(gCurrentMove))
     {

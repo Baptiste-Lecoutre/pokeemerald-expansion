@@ -5262,14 +5262,29 @@ static void PopulateArrayWithBattlers(u8 *battlers)
 
 static bool32 TryDoGimmicksBeforeMoves(void)
 {
-    /*if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave) // this works
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
     {
         gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         gBattleStruct->raid.usedShockwave = TRUE;
-        gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE;
+        
+        // Following lines are mega bosses that should use zmoves as shockwaves.
+        /*gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // this works with other dummied lines, see corresponding commit
         gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
-        gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
-    }*/
+        gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];*/
+
+        if (Random() % 100 < 30)
+        {
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
+            gBattleCommunication[MULTIUSE_STATE] = 1;
+        }
+        else
+        {
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
+            gBattleCommunication[MULTIUSE_STATE] = 0;
+        }
+        BattleScriptExecute(BattleScript_RaidShockwave);
+        return TRUE;
+    }
 
     if (!(gHitMarker & HITMARKER_RUN) && gBattleStruct->gimmick.toActivate)
     {
@@ -5292,37 +5307,6 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 }
             }
         }
-    }
-
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
-    {
-        gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-        gBattleStruct->raid.usedShockwave = TRUE;
-
-        /*if (gRaidData.raidType == RAID_TYPE_MEGA) // Does not work anymore after gimmick refactor ffs...
-        { // probablement unset gBattleStruct->zmove.used[gBattlerAttacker]
-            //gBattleStruct->zmove.chosenZMove = GetTypeBasedZMove(gCurrentMove, gBattlerAttacker);
-            //gCalledMove = GetTypeBasedZMove(gCurrentMove);
-            //QueueZMove(gBattlerAttacker, gCurrentMove);
-            gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
-            SetActiveGimmick(gBattlerAttacker, GIMMICK_Z_MOVE);
-            ActivateZMove(gBattlerAttacker);
-            SetGimmickAsActivated(gBattlerAttacker, GIMMICK_Z_MOVE);
-//            return TRUE;
-        }*/
-
-        if (Random() % 100 < 30)
-        {
-            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
-            gBattleCommunication[MULTIUSE_STATE] = 1;
-        }
-        else
-        {
-            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
-            gBattleCommunication[MULTIUSE_STATE] = 0;
-        }
-        BattleScriptExecute(BattleScript_RaidShockwave);
-        return TRUE;
     }
 
     if (B_MEGA_EVO_TURN_ORDER >= GEN_7)
