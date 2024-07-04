@@ -5266,24 +5266,30 @@ static bool32 TryDoGimmicksBeforeMoves(void)
     {
         gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         gBattleStruct->raid.usedShockwave = TRUE;
-        
-        // Following lines are mega bosses that should use zmoves as shockwaves.
-        /*gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // this works with other dummied lines, see corresponding commit
-        gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
-        gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];*/
 
-        if (Random() % 100 < 30)
+        switch (gRaidTypes[gRaidData.raidType].shockwave)
         {
-            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
-            gBattleCommunication[MULTIUSE_STATE] = 1;
+            default:
+            case RAID_SHOCKWAVE_MAX:
+                if (Random() % 100 < 30)
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
+                    gBattleCommunication[MULTIUSE_STATE] = 1;
+                }
+                else
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
+                    gBattleCommunication[MULTIUSE_STATE] = 0;
+                }
+                BattleScriptExecute(BattleScript_RaidShockwave);
+                return TRUE;
+            /*case RAID_SHOCKWAVE_TERA:
+            case RAID_SHOCKWAVE_MEGA:
+                gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE;
+                gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
+                gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
+                break;*/
         }
-        else
-        {
-            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
-            gBattleCommunication[MULTIUSE_STATE] = 0;
-        }
-        BattleScriptExecute(BattleScript_RaidShockwave);
-        return TRUE;
     }
 
     if (!(gHitMarker & HITMARKER_RUN) && gBattleStruct->gimmick.toActivate)

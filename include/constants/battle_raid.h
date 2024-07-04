@@ -1,10 +1,6 @@
 #ifndef GUARD_CONSTANTS_BATTLE_RAID_H
 #define GUARD_CONSTANTS_BATTLE_RAID_H
 
-// Constants for Raid Settings
-#define RAID_GEN_8  0
-#define RAID_GEN_9  1
-
 // Raid shield IDs
 #define RAID_SHIELD_MAX     0
 #define RAID_SHIELD_TERA    1
@@ -15,7 +11,7 @@
 #define RAID_RULES_TERA 1
 #define RAID_RULES_MEGA 2
 
-// Gimmick IDs
+// Raid gimmick IDs
 #define RAID_GIMMICK_DYNAMAX 0
 #define RAID_GIMMICK_TERA    1
 #define RAID_GIMMICK_MEGA    2
@@ -27,6 +23,12 @@
 #define RAID_TYPE_MEGA   2
 #define RAID_TYPE_PRIMAL 3
 #define NUM_RAID_TYPES   4
+
+// Raid Shockwave IDs
+#define RAID_SHOCKWAVE_MAX  0
+#define RAID_SHOCKWAVE_TERA 1
+#define RAID_SHOCKWAVE_MEGA 2
+#define NUM_RAID_SHOCKWAVE  3
 
 // Raid Battle States
 #define RAID_INTRO_COMPLETE     (1 << 1)

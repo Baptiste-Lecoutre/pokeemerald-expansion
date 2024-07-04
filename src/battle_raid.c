@@ -32,25 +32,25 @@
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
     [RAID_TYPE_MAX] = {
         .shield = RAID_SHIELD_MAX,
-        .shockwave = RAID_GEN_8,
+        .shockwave = RAID_SHOCKWAVE_MAX,
         .rules = RAID_RULES_MAX,
         .gimmick = RAID_GIMMICK_DYNAMAX,
     },
     [RAID_TYPE_TERA] = {
         .shield = RAID_SHIELD_TERA,
-        .shockwave = RAID_GEN_9,
+        .shockwave = RAID_SHOCKWAVE_TERA,
         .rules = RAID_RULES_TERA,
         .gimmick = RAID_GIMMICK_TERA,
     },
     [RAID_TYPE_MEGA] = {
         .shield = RAID_SHIELD_MEGA,
-        .shockwave = RAID_GEN_8,
+        .shockwave = RAID_SHOCKWAVE_MEGA,
         .rules = RAID_RULES_MEGA,
         .gimmick = RAID_GIMMICK_MEGA,
     },
     [RAID_TYPE_PRIMAL] = {
         .shield = RAID_SHIELD_MEGA,
-        .shockwave = RAID_GEN_8,
+        .shockwave = RAID_SHOCKWAVE_MEGA,
         .rules = RAID_RULES_MEGA,
         .gimmick = RAID_GIMMICK_PRIMAL,
     },
@@ -103,6 +103,13 @@ const u8 gRaidBattleLevelRanges[MAX_RAID_RANK + 1][2] =
 	[RAID_RANK_5] = {60, 65},
 	[RAID_RANK_6] = {75, 90},
     [RAID_RANK_7] = {90, 100},
+};
+
+const u8 gRaidShockwaveChance[NUM_RAID_SHOCKWAVE][MAX_RAID_RANK + 1] = 
+{
+    [RAID_SHOCKWAVE_MAX] = {0, 0, 0, 10, 15, 20, 25, 30},
+    [RAID_SHOCKWAVE_TERA] = {0, 0, 0, 10, 15, 20, 25, 30},
+    [RAID_SHOCKWAVE_MEGA] = {0, 0, 0, 5, 10, 15, 20, 25},
 };
 
 // The chance that each move is replaced with an Egg Move
@@ -685,23 +692,10 @@ u8 GetRaidRepeatedAttackChance(void)
 
 u8 GetRaidShockwaveChance(void) // to be adjusted
 {
-    u8 numStars = gRaidData.rank;
-
-	if (gDisableStructs[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].isFirstTurn)
+    if (gDisableStructs[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].isFirstTurn)
 		return 0; //Don't use first attack with this
 
-    switch (numStars)
-    {
-		case NO_RAID ... RAID_RANK_2:
-			return 0; //Never
-		case RAID_RANK_3:
-        case RAID_RANK_4:
-			return 15; //~20 % chance before each attack
-		case RAID_RANK_5:
-			return 25; //~35 % chance before each attack: less probable to do 2 attacks 
-		default:
-			return 25; //~50 % chance before each turn: probably do 2 attacks during the turn
-	}
+    return gRaidShockwaveChance[gRaidTypes[gRaidData.raidType].shockwave][gRaidData.rank];
 }
 
 u8 GetRaidBossKOStatIncrease(u8 battlerId)
