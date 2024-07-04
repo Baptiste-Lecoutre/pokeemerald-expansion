@@ -629,6 +629,9 @@ bool32 ShouldMoveDynamaxEnergy(void)
 {
     u32 currentEnergyBattler = gBattleStruct->raid.energy;
 
+    if (!B_MAX_RAID_ENERGY_POSITION)
+        return FALSE;
+
     if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
     {
         gBattleStruct->raid.energy ^= BIT_FLANK;
@@ -640,11 +643,6 @@ bool32 ShouldMoveDynamaxEnergy(void)
         }
 
         gBattleStruct->raid.energy = currentEnergyBattler;
-    //    gBattleStruct->raid.energy ^= BIT_FLANK;
-    //    gBattlerAttacker = gBattleStruct->raid.energy;
-
-    //    if (CanDynamax(gBattlerAttacker))
-    //        return TRUE;
     }
 
     return FALSE;

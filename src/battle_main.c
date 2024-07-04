@@ -4095,7 +4095,7 @@ static void TryDoEventsBeforeFirstTurn(void)
     if ((i = ShouldDoTrainerSlide(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), TRAINER_SLIDE_BEFORE_FIRST_TURN)))
         BattleScriptExecute(i == 1 ? BattleScript_TrainerASlideMsgEnd2 : BattleScript_TrainerBSlideMsgEnd2);
     
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
+    if (B_MAX_RAID_ENERGY_POSITION && gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
     {
         gBattlerAttacker = gBattleStruct->raid.energy;
         BattleScriptExecute(BattleScript_RaidMoveDynamaxEnergy);

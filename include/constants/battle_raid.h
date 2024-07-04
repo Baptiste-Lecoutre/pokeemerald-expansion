@@ -65,4 +65,7 @@
 #define MAX_RAID_DROPS     12
 #define MAX_BARRIER_COUNT   5
 
+// Config
+#define B_MAX_RAID_ENERGY_POSITION TRUE
+
 #endif
