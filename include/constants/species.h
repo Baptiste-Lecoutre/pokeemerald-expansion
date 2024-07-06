@@ -1632,7 +1632,7 @@
 #define SPECIES_PIKACHU_SURFING                         1524
 #define SPECIES_PIKACHU_FLYING                          1525
 
-#define SPECIES_EGG SPECIES_PIKACHU_FLYING + 1
+#define SPECIES_EGG (SPECIES_PIKACHU_FLYING + 1)
 
 #define NUM_SPECIES SPECIES_EGG
 
