@@ -578,10 +578,19 @@ static void DoBattlePyramidTrainerHillBattle(void)
 // Initiates battle where Wally catches Ralts
 void StartWallyTutorialBattle(void)
 {
-    CreateMaleMon(&gEnemyParty[0], SPECIES_RALTS, GetHighestLevelInPlayerParty());
+    CreateMaleMon(&gEnemyParty[0], SPECIES_RALTS, 7);
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_ReturnToFieldContinueScriptPlayMapMusic;
     gBattleTypeFlags = BATTLE_TYPE_WALLY_TUTORIAL;
+    CreateBattleStartTask(B_TRANSITION_SLICE, 0);
+}
+
+void StartWallyLatiBattle(void)
+{
+    CreateWildMon((gSaveBlock2Ptr->playerGender == MALE) ? SPECIES_LATIAS : SPECIES_LATIOS, 50);
+    LockPlayerFieldControls();
+    gMain.savedCallback = CB2_ReturnToFieldContinueScriptPlayMapMusic;
+    gBattleTypeFlags = BATTLE_TYPE_WALLY_TUTORIAL | BATTLE_TYPE_ROAMER;
     CreateBattleStartTask(B_TRANSITION_SLICE, 0);
 }
 
