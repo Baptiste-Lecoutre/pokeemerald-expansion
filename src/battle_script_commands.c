@@ -17526,9 +17526,6 @@ void BS_DoRaidShockwave(void)
         break;
     case B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED:
         gBattleMoveDamage = -gBattleMons[gBattlerAttacker].maxHP / 4;
-        if (gBattleMons[gBattlerAttacker].hp - gBattleMoveDamage > gBattleMons[gBattlerAttacker].maxHP)
-            gBattleMoveDamage = gBattleMons[gBattlerAttacker].hp - gBattleMons[gBattlerAttacker].maxHP;
-        gBattleMons[gBattlerAttacker].hp -= gBattleMoveDamage;
 
         for (i = STAT_ATK; i < NUM_STATS; i++)
         {

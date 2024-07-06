@@ -853,6 +853,13 @@ bool32 UpdateRaidShield(void)
                 if (gBattleMons[gBattlerTarget].statStages[STAT_SPDEF] < MAX_STAT_STAGE)
                     ++gBattleMons[gBattlerTarget].statStages[STAT_SPDEF];
             }
+            // Proposal instead of the previous cases
+            /*for (i = 0; i < gRaidData.rank; i++)
+            {
+                u32 statIdx = Random() % (NUM_STATS - STAT_ATK) + STAT_ATK;
+                if (gBattleMons[gBattlerTarget].statStages[statIdx] < MAX_STAT_STAGE)
+                    ++gBattleMons[gBattlerTarget].statStages[statIdx];
+            }*/
             gBattleCommunication[MULTIUSE_STATE] = RAID_SHIELD_MEGA;
         }
 
