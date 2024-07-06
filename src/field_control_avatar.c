@@ -45,7 +45,6 @@ static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
 static EWRAM_DATA u8 sCurrentDirection = 0;
 static EWRAM_DATA u8 sPreviousDirection = 0;
-static EWRAM_DATA u8 sRegisteredKeyItem = 0;
 
 u8 gSelectedObjectEvent;
 
