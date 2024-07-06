@@ -18,6 +18,7 @@
 #include "gpu_regs.h"
 #include "overworld.h"
 #include "field_camera.h"
+#include "constants/map_types.h"
 
 #define DROUGHT_COLOR_INDEX(color) ((((color) >> 1) & 0xF) | (((color) >> 2) & 0xF0) | (((color) >> 3) & 0xF00))
 
@@ -484,7 +485,7 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
         palOffset = PLTT_ID(startPalIndex);
         UpdateAltBgPalettes(palettes & PALETTES_BG);
         // Thunder gamma-shift looks bad on night-blended palettes, so ignore time blending in some situations
-        if (!(colorMapIndex > 3) && MapHasNaturalLight(gMapHeader.mapType))
+        if (!(colorMapIndex > 3) && (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)))
           UpdatePalettesWithTime(palettes);
         else
           CpuFastCopy(gPlttBufferUnfaded + palOffset, gPlttBufferFaded + palOffset, PLTT_SIZE_4BPP * numPalettes);
@@ -554,7 +555,7 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
     }
     else
     {
-        if (MapHasNaturalLight(gMapHeader.mapType)) { // Time-blend
+        if (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)) { // Time-blend
             u32 palettes = ((1 << numPalettes) - 1) << startPalIndex;
             UpdateAltBgPalettes(palettes & PALETTES_BG);
             UpdatePalettesWithTime(palettes);
@@ -809,6 +810,12 @@ void FadeScreen(u8 mode, s8 delay)
               (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
               (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
               currentTimeBlend.weight, fadeColor);
+          } else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) {
+            UpdateAltBgPalettes(PALETTES_BG);
+            BeginTimeOfDayPaletteFade(PALETTES_ALL, delay, 16, 0,
+              (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+              (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+              256, fadeColor);
           } else {
             BeginNormalPaletteFade(PALETTES_ALL, delay, 16, 0, fadeColor);
           }

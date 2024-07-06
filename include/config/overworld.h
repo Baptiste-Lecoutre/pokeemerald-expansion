@@ -89,4 +89,7 @@
 // Pokémon Center
 #define OW_IGNORE_EGGS_ON_HEAL     GEN_LATEST               // In Gen 4+, the nurse in the Pokémon Center does not heal Eggs on healing machine.
 
+// Day-Night
+#define OW_DNS_TINT_UNDERGROUND     TRUE // When set to TRUE, MAP_TYPE_UNDERGROUND maps will be tinted like night.
+
 #endif // GUARD_CONFIG_OVERWORLD_H

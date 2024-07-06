@@ -1604,7 +1604,7 @@ void UpdateAltBgPalettes(u16 palettes) {
     const struct Tileset *primary = gMapHeader.mapLayout->primaryTileset;
     const struct Tileset *secondary = gMapHeader.mapLayout->secondaryTileset;
     u32 i = 1;
-    if (!MapHasNaturalLight(gMapHeader.mapType))
+    if (!MapHasNaturalLight(gMapHeader.mapType) && (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType != MAP_TYPE_UNDERGROUND))
         return;
     palettes &= ~((1 << NUM_PALS_IN_PRIMARY) - 1) | primary->swapPalettes;
     palettes &= ((1 << NUM_PALS_IN_PRIMARY) - 1) | (secondary->swapPalettes << NUM_PALS_IN_PRIMARY);
@@ -1615,9 +1615,9 @@ void UpdateAltBgPalettes(u16 palettes) {
     while (palettes) {
         if (palettes & 1) {
             if (i < NUM_PALS_IN_PRIMARY)
-                AvgPaletteWeighted(&((u16*)primary->palettes)[i*16], &((u16*)primary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, currentTimeBlend.altWeight);
+                AvgPaletteWeighted(&((u16*)primary->palettes)[i*16], &((u16*)primary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) ? 0 : currentTimeBlend.altWeight);
             else
-                AvgPaletteWeighted(&((u16*)secondary->palettes)[i*16], &((u16*)secondary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, currentTimeBlend.altWeight);
+                AvgPaletteWeighted(&((u16*)secondary->palettes)[i*16], &((u16*)secondary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) ? 0 : currentTimeBlend.altWeight);
         }
         i++;
         palettes >>= 1;
@@ -1643,6 +1643,24 @@ void UpdatePalettesWithTime(u32 palettes) {
       (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
       currentTimeBlend.weight);
   }
+  else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) {
+    u32 i;
+    u32 mask = 1 << 16;
+    if (palettes >= 0x10000)
+      for (i = 0; i < 16; i++, mask <<= 1)
+        if (GetSpritePaletteTagByPaletteNum(i) >> 15) // Don't blend special sprite palette tags
+          palettes &= ~(mask);
+
+    palettes &= 0xFFFF1FFF; // Don't blend UI BG palettes [13,15]
+    if (!palettes)
+      return;
+    TimeMixPalettes(palettes,
+      gPlttBufferUnfaded,
+      gPlttBufferFaded,
+      (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+      (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+      256);
+  }
 }
 
 u8 UpdateSpritePaletteWithTime(u8 paletteNum) {
@@ -1657,6 +1675,18 @@ u8 UpdateSpritePaletteWithTime(u8 paletteNum) {
       (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
       (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
       currentTimeBlend.weight);
+  }
+  else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) {
+    u16 offset;
+    if (GetSpritePaletteTagByPaletteNum(paletteNum) >> 15)
+      return paletteNum;
+    offset = (paletteNum + 16) << 4;
+    TimeMixPalettes(1,
+      gPlttBufferUnfaded + offset,
+      gPlttBufferFaded + offset,
+      (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+      (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+      256);
   }
   return paletteNum;
 }
