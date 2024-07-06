@@ -838,7 +838,7 @@ bool32 UpdateRaidShield(void)
             hpGain = hpGain * (gBattleStruct->raid.shield + 1) / (GetShieldAmount() + 1);
             gBattleMoveDamage = -hpGain;
 
-            if (gRaidData.rank > RAID_RANK_5)
+            /*if (gRaidData.rank > RAID_RANK_5)
             {
                 for (i = STAT_ATK; i < NUM_STATS; i++)
                 {
@@ -852,14 +852,14 @@ bool32 UpdateRaidShield(void)
                     ++gBattleMons[gBattlerTarget].statStages[STAT_DEF];
                 if (gBattleMons[gBattlerTarget].statStages[STAT_SPDEF] < MAX_STAT_STAGE)
                     ++gBattleMons[gBattlerTarget].statStages[STAT_SPDEF];
-            }
+            }*/
             // Proposal instead of the previous cases
-            /*for (i = 0; i < gRaidData.rank; i++)
+            for (i = 0; i < gRaidData.rank / 2; i++)
             {
                 u32 statIdx = Random() % (NUM_STATS - STAT_ATK) + STAT_ATK;
                 if (gBattleMons[gBattlerTarget].statStages[statIdx] < MAX_STAT_STAGE)
                     ++gBattleMons[gBattlerTarget].statStages[statIdx];
-            }*/
+            }
             gBattleCommunication[MULTIUSE_STATE] = RAID_SHIELD_MEGA;
         }
 
