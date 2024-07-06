@@ -511,7 +511,8 @@ static bool32 AI_ShouldSwitchIfBadMoves(u32 battler, bool32 doubleBattle)
     if (CountUsablePartyMons(battler) > 0
         && !IsBattlerTrapped(battler, TRUE)
         && !(gBattleTypeFlags & (BATTLE_TYPE_ARENA | BATTLE_TYPE_PALACE))
-        && AI_THINKING_STRUCT->aiFlags[battler] & (AI_FLAG_CHECK_VIABILITY | AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_PREFER_BATON_PASS))
+        && AI_THINKING_STRUCT->aiFlags[battler] & (AI_FLAG_CHECK_VIABILITY | AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_PREFER_BATON_PASS)
+        && !(AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_SEQUENCE_SWITCHING))
     {
         // Consider switching if all moves are worthless to use.
         if (GetTotalBaseStat(gBattleMons[battler].species) >= 310 // Mon is not weak.
@@ -1875,7 +1876,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
                 ADJUST_SCORE(-10);
             break;
         case EFFECT_REST:
-            if (!AI_CanSleep(battlerAtk, aiData->abilities[battlerAtk]))
+            if (!CanBeSlept(battlerAtk, aiData->abilities[battlerAtk]))
                 ADJUST_SCORE(-10);
             //fallthrough
         case EFFECT_RESTORE_HP:
@@ -3497,7 +3498,7 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
         }
         break;
     case EFFECT_REST:
-        if (!(AI_CanSleep(battlerAtk, aiData->abilities[battlerAtk])))
+        if (!(CanBeSlept(battlerAtk, aiData->abilities[battlerAtk])))
         {
             break;
         }
@@ -3977,7 +3978,7 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
                 ADJUST_SCORE(DECENT_EFFECT);
             break;
         case HOLD_EFFECT_FLAME_ORB:
-            if (!ShouldBurnSelf(battlerAtk, aiData->abilities[battlerAtk]) && AI_CanBeBurned(battlerAtk, aiData->abilities[battlerDef]))
+            if (!ShouldBurnSelf(battlerAtk, aiData->abilities[battlerAtk]) && CanBeBurned(battlerAtk, aiData->abilities[battlerDef]))
                 ADJUST_SCORE(DECENT_EFFECT);
             break;
         case HOLD_EFFECT_BLACK_SLUDGE:
