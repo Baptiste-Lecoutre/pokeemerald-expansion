@@ -715,7 +715,7 @@ static u16 GetShieldAmount(void)
     u8 hp = gSpeciesInfo[species].baseHP;
     u8 def = gSpeciesInfo[species].baseDefense;
     u8 spDef = gSpeciesInfo[species].baseSpDefense;
-    u8 retVal;
+    u8 retVal = 0;
 
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
@@ -834,11 +834,9 @@ bool32 UpdateRaidShield(void)
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
         {
             u32 i;
-            /*gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - gBattleMons[gBattlerTarget].maxHP;
-            gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;*/
-            gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - gBattleMons[gBattlerTarget].maxHP;
-            gBattleMoveDamage *= (gBattleStruct->raid.shield + 1) / (GetShieldAmount() + 1);
-            gBattleMons[gBattlerTarget].hp -= gBattleMoveDamage;
+            u32 hpGain = gBattleMons[gBattlerTarget].maxHP - gBattleMons[gBattlerTarget].hp;
+            hpGain = hpGain * (gBattleStruct->raid.shield + 1) / (GetShieldAmount() + 1);
+            gBattleMoveDamage = -hpGain;
 
             if (gRaidData.rank > RAID_RANK_5)
             {
