@@ -17524,6 +17524,18 @@ void BS_DoRaidShockwave(void)
         if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC] < MAX_STAT_STAGE)
             gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC]++;
         break;
+    case B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED:
+        gBattleMoveDamage = -gBattleMons[gBattlerAttacker].maxHP / 4;
+        if (gBattleMons[gBattlerAttacker].hp - gBattleMoveDamage > gBattleMons[gBattlerAttacker].maxHP)
+            gBattleMoveDamage = gBattleMons[gBattlerAttacker].hp - gBattleMons[gBattlerAttacker].maxHP;
+        gBattleMons[gBattlerAttacker].hp -= gBattleMoveDamage;
+
+        for (i = STAT_ATK; i < NUM_STATS; i++)
+        {
+            if (gBattleMons[gBattlerTarget].statStages[i] > MIN_STAT_STAGE)
+                --gBattleMons[gBattlerTarget].statStages[i];
+        }
+        break;
     }
 
     gBattlescriptCurrInstr = cmd->nextInstr;

@@ -10192,41 +10192,35 @@ BattleScript_MegaRaidHealBarrier::
 BattleScript_RaidShockwave::
 	printfromtable gRaidShockwaveStringIds
 	waitmessage B_WAIT_TIME_LONG
-	jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_RaidShockwaveFocusAnim
-	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE
-	waitanimation
-	goto BattleScript_RaidShockwaveDoShockwave
-BattleScript_RaidShockwaveFocusAnim:
-	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE_FOCUS
-	waitanimation
-BattleScript_RaidShockwaveDoShockwave:
-	doraidshockwave
-	jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_RaidShockwaveEnd
-	clearstatus BS_ATTACKER
-	updatestatusicon BS_ATTACKER
+	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS, BattleScript_RaidShockwaveMaxNullifiedOthers
+	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED, BattleScript_RaidShockwaveMaxFocus
+	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED, BattleScript_RaidShockwaveMegaCalmedHealed
+	goto BattleScript_RaidShockwaveMaxNullifiedOthers @ default, just in case
 BattleScript_RaidShockwaveEnd:
 	end3
 
-BattleScript_RaidShockwaveOld::
-	printstring STRINGID_PKMNNULLIFIEDOTHERS
-@	printfromtable gRaidShockwaveStringIds
-	waitmessage B_WAIT_TIME_LONG
+BattleScript_RaidShockwaveMaxNullifiedOthers::
 	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE
 	waitanimation
 	doraidshockwave
 	clearstatus BS_ATTACKER
 	updatestatusicon BS_ATTACKER
-	end3
-@	return
+	goto BattleScript_RaidShockwaveEnd
 
-BattleScript_MaxRaidShockwaveFocus::
-@	printstring STRINGID_PKMNFOCUSEDONOPPONENTS
-	printfromtable gRaidShockwaveStringIds
-	waitmessage B_WAIT_TIME_LONG
-	playanimation BS_ATTACKER, B_ANIM_TOTEM_FLARE
+BattleScript_RaidShockwaveMaxFocus::
+	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE_FOCUS
 	waitanimation
 	doraidshockwave
-	end3
+	goto BattleScript_RaidShockwaveEnd
+
+BattleScript_RaidShockwaveMegaCalmedHealed::
+	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
+	waitanimation
+	doraidshockwave
+	healthbar_update BS_ATTACKER
+	datahpupdate BS_ATTACKER
+	goto BattleScript_RaidShockwaveEnd
+
 
 BattleScript_RaidVictory::
 	hidehealthboxes

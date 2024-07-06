@@ -5285,10 +5285,15 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 return TRUE;
             /*case RAID_SHOCKWAVE_TERA:
             case RAID_SHOCKWAVE_MEGA:
-                gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE;
+                gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // maybe I should restore mega as the active gimmick at the end of the turn
                 gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
                 gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
                 break;*/
+            case RAID_SHOCKWAVE_MEGA:
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
+                gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
+                BattleScriptExecute(BattleScript_RaidShockwave);
+                return TRUE;
         }
     }
 
