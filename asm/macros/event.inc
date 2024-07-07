@@ -2148,6 +2148,16 @@
 	dofieldeffect FLDEFF_SPARKLE
 	.endm
 
+	@ Does a ground dust field effect (e.g. when a NPC appears, like when landing after a jump) at the given coordinates.
+	@ +7 corresponds to MAP_OFFSET, which I can not use in the C functions just like the sparkle field effect
+	.macro dofieldeffectgrounddust x:req, y:req, elevation: req, priority:req
+	setfieldeffectargument 0, \x + 7
+	setfieldeffectargument 1, \y + 7
+	setfieldeffectargument 2, \elevation
+	setfieldeffectargument 3, \priority
+	dofieldeffect FLDEFF_DUST
+	.endm
+
 	@ Prints a braille message, waits for an A or B press, then closes the message.
 	.macro braillemsgbox text:req
 	braillemessage \text
