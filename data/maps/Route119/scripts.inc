@@ -394,20 +394,20 @@ Route119_EventScript_PlayLatiCryAndExit::
 	return
 
 Route119_Movement_LatiExit:
-	face_down
-	walk_faster_down
-	walk_faster_down
-	face_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
-	walk_faster_left
+@	face_down
+	walk_fast_down
+	walk_fast_down
+@	face_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
 	step_end
 
 Route119_Movement_WatchLatiExit:
