@@ -242,7 +242,7 @@ Route119_EventScript_LatiScene::
 	call Route119_EventScript_RivalTextIsThatLati
 	call Route119_EventScript_PlayLatiCryAndExit
 	call Route119_EventScript_RivalTextAfterLatiExit
-	return @ I need to set the Lati Pokedex flag as seen
+	return
 
 Route119_EventScript_LatiGroundDust::
 	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_LatiGroundDustRight
@@ -427,10 +427,14 @@ Route119_EventScript_RivalTextAfterLatiExit::
 	return
 
 Route119_EventScript_MayIllHaveToTellDadBye::
+	setvar VAR_RESULT, SPECIES_LATIOS
+	special SetPokedexSeenFlag
 	msgbox Route119_Text_MayIllHaveToTellDad, MSGBOX_DEFAULT
 	return
 
 Route119_EventScript_BrendanIllHaveToTellDadBye::
+	setvar VAR_RESULT, SPECIES_LATIAS
+	special SetPokedexSeenFlag
 	msgbox Route119_Text_BrendanIllHaveToTellDad, MSGBOX_DEFAULT
 	return
 
