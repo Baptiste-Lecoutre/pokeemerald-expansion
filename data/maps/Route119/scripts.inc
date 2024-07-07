@@ -240,7 +240,7 @@ Route119_EventScript_LatiScene::
 	call Route119_EventScript_RivalTextWhatIsThisPokemon
 	call Route119_EventScript_LatiApproach
 	call Route119_EventScript_RivalTextIsThatLati
-	call Route119_EventScript_PlayLatiCryAndExit
+	call Route119_EventScript_PlayLatiCryAndExit @ I could make it disappear the same way it appears with the ground dust effect. TBC/D
 	call Route119_EventScript_RivalTextAfterLatiExit
 	return
 
