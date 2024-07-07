@@ -382,8 +382,8 @@ Route119_EventScript_PlayLatiCryAndExit::
 	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_PlayLatiasCry
 	playse SE_FU_ZAKU
 	applymovement LOCALID_LATI, Route119_Movement_LatiExit
-	@applymovement LOCALID_RIVAL, Route119_Movement_WatchLatiExit
-	@applymovement OBJ_EVENT_ID_PLAYER, Route119_Movement_WatchLatiExit
+	applymovement LOCALID_RIVAL, Route119_Movement_WatchLatiExit
+	applymovement OBJ_EVENT_ID_PLAYER, Route119_Movement_WatchLatiExit
 	waitmovement 0
 	delay 30
 	setflag FLAG_TEMP_8
