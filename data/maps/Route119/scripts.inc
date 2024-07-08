@@ -240,7 +240,8 @@ Route119_EventScript_LatiScene::
 	call Route119_EventScript_RivalTextWhatIsThisPokemon
 	call Route119_EventScript_LatiApproach
 	call Route119_EventScript_RivalTextIsThatLati
-	call Route119_EventScript_PlayLatiCryAndExit @ I could make it disappear the same way it appears with the ground dust effect. TBC/D
+	call Route119_EventScript_PlayLatiCryAndDisappear
+@	call Route119_EventScript_PlayLatiCryAndExit @ I could make it disappear the same way it appears with the ground dust effect. TBC/D
 	call Route119_EventScript_RivalTextAfterLatiExit
 	return
 
@@ -391,6 +392,34 @@ Route119_EventScript_PlayLatiCryAndExit::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
 	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
+	return
+
+Route119_EventScript_PlayLatiCryAndDisappear::
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, Route119_EventScript_PlayLatiosCry
+	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_PlayLatiasCry
+	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_LatiGroundDustRightDisappear
+	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_LatiGroundDustLeftDisappear
+	delay 30
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	return
+
+Route119_EventScript_LatiGroundDustRightDisappear::
+	playse SE_CLICK
+	dofieldeffectgrounddust 26, 32, 3, 2
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_LATI
+	waitfieldeffect FLDEFF_DUST
+	return
+
+Route119_EventScript_LatiGroundDustLeftDisappear::
+	playse SE_CLICK
+	dofieldeffectgrounddust 25, 32, 3, 2
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_LATI
+	waitfieldeffect FLDEFF_DUST
 	return
 
 Route119_Movement_LatiExit:
