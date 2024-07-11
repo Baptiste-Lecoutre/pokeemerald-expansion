@@ -418,15 +418,21 @@ bool32 IsDamageMoveUnusable(u32 move, u32 battlerAtk, u32 battlerDef)
 
     switch (battlerDefAbility)
     {
+    case ABILITY_LIGHTNING_ROD:
+        if (B_REDIRECT_ABILITY_IMMUNITY < GEN_5)
+            break;
+        // Fallthrough
     case ABILITY_VOLT_ABSORB:
     case ABILITY_MOTOR_DRIVE:
-    case ABILITY_LIGHTNING_ROD:
         if (moveType == TYPE_ELECTRIC)
             return TRUE;
         break;
+    case ABILITY_STORM_DRAIN:
+        if (B_REDIRECT_ABILITY_IMMUNITY < GEN_5)
+            break;
+        // Fallthrough
     case ABILITY_WATER_ABSORB:
     case ABILITY_DRY_SKIN:
-    case ABILITY_STORM_DRAIN:
         if (moveType == TYPE_WATER)
             return TRUE;
         break;
@@ -844,6 +850,8 @@ static bool32 AI_IsMoveEffectInMinus(u32 battlerAtk, u32 battlerDef, u32 move, s
     {
     case EFFECT_MAX_HP_50_RECOIL:
     case EFFECT_MIND_BLOWN:
+    case EFFECT_EXPLOSION:
+    case EFFECT_FINAL_GAMBIT:
         return TRUE;
     case EFFECT_RECOIL_IF_MISS:
         if (AI_IsDamagedByRecoil(battlerAtk))
