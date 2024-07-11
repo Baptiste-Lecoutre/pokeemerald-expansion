@@ -1338,8 +1338,6 @@ void TintPalette_CustomTone_Blend(u16 *palette, u16 count, u16 rTone, u16 gTone,
         g = GET_G(*palette);
         b = GET_B(*palette);
 
-        gray = (r * Q_8_8(0.3) + g * Q_8_8(0.59) + b * Q_8_8(0.1133)) >> 8;
-
         r = (u16)((rTone * r)) >> 8;
         g = (u16)((gTone * g)) >> 8;
         b = (u16)((bTone * b)) >> 8;
