@@ -5287,7 +5287,15 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 }
                 BattleScriptExecute(BattleScript_RaidShockwave);
                 return TRUE;
-            /*case RAID_SHOCKWAVE_TERA:*/
+            case RAID_SHOCKWAVE_TERA:
+                if (gBattleStruct->raid.energy && !HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
+                {
+                    gBattleStruct->raid.energy--;
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
+                }
+                BattleScriptExecute(BattleScript_RaidShockwave);
+                return TRUE;
             /*case RAID_SHOCKWAVE_MEGA:
                 gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // maybe I should restore mega as the active gimmick at the end of the turn
                 gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
