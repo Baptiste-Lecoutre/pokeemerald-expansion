@@ -10293,6 +10293,11 @@ BattleScript_RaidMoveDynamaxEnergy::
 	waitmessage B_WAIT_TIME_LONG
 	end2
 
+BattleScript_RaidHandleTeraOrbCharge::
+	printfromtable gRaidTeraOrbCharge
+	waitmessage B_WAIT_TIME_LONG
+	end2
+
 BattleScript_RaidBossRaiseStat::
 	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_RaidBossRaiseStat_End
 	setgraphicalstatchangevalues

@@ -42,6 +42,7 @@ u8 GetRaidBattleTransition(void);
 void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon);
 bool32 ShouldRaidKickPlayer(void);
 bool32 ShouldMoveDynamaxEnergy(void);
+bool32 HandleTeraOrbCharge(void);
 bool8 DoesRaidPreventMove(u16 move);
 u8 GetRaidRepeatedAttackChance(void);
 u8 GetRaidShockwaveChance(void);

@@ -514,7 +514,11 @@ void InitRaidBattleData(void)
     gBattleStruct->raid.nextShield = GetNextShieldThreshold();
     gBattleStruct->raid.shield = 0;
     gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
-	gBattleStruct->raid.energy = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
+	
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
+        gBattleStruct->raid.energy = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
+    else if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
+        gBattleStruct->raid.energy = 0;
 
     // Zeroes sprite IDs for Gen 8-style shield.
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
@@ -643,6 +647,30 @@ bool32 ShouldMoveDynamaxEnergy(void)
         }
 
         gBattleStruct->raid.energy = currentEnergyBattler;
+    }
+
+    return FALSE;
+}
+
+bool32 HandleTeraOrbCharge(void)
+{
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
+    {
+        if (HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
+            return FALSE;
+        
+        if (!CheckBagHasItem(ITEM_TERA_ORB, 1))
+            return FALSE;
+
+        if (gBattleStruct->raid.energy < RAID_MAX_TERA_ORB_CHARGE)
+        {
+            gBattleStruct->raid.energy++;
+            if (gBattleStruct->raid.energy < RAID_MAX_TERA_ORB_CHARGE)
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_TERA_ORB_CHARGING;
+            else
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_TERA_ORB_CHARGED;
+            return TRUE;
+        }
     }
 
     return FALSE;

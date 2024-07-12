@@ -846,6 +846,8 @@ static const u8 sText_RaidNotMuchTimeLeft[] = _("You can feel tremendous energy\
 static const u8 sText_RaidPkmnReleasedEnergy[] = _("{B_OPPONENT_MON1_NAME} released its\ngathered energy!");
 static const u8 sText_BarrierRestoredEnergy[] = _("The barrier restored\n{B_OPPONENT_MON1_NAME}'s energy!");
 static const u8 sText_DynamaxEnergySurroundsPkmn[] = _("Dynamax energy surrounds\n{B_ATK_NAME_WITH_PREFIX}!");
+static const u8 sText_PlayerTeraOrbCharging[] = _("{B_PLAYER_NAME}'s Tera Orb is\nstoring energy!");
+static const u8 sText_PlayerTeraOrbCharged[] = _("{B_PLAYER_NAME}'s Tera Orb is\nfully charged!");
 static const u8 sText_PkmnRevivedReadyToFight[] = _("{B_BUFF1} was revived and\nis ready to fight again!");
 static const u8 sText_ItemRestoredSpeciesHealth[] = _("{B_BUFF1} had its\nHP restored!");
 static const u8 sText_ItemCuredSpeciesStatus[] = _("{B_BUFF1} had\nits status healed!");
@@ -912,6 +914,8 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_BARRIERRESTOREDENERGY - BATTLESTRINGS_TABLE_START] = sText_BarrierRestoredEnergy,
     [STRINGID_DYNAMAXENERGYGATHERED - BATTLESTRINGS_TABLE_START] = sText_DynamaxEnergyGathered,
     [STRINGID_DYNAMAXENERGYSURROUNDS - BATTLESTRINGS_TABLE_START] = sText_DynamaxEnergySurroundsPkmn,
+    [STRINGID_PLAYERTERAORBCHARGING - BATTLESTRINGS_TABLE_START] = sText_PlayerTeraOrbCharging,
+    [STRINGID_PLAYERTERAORBCHARGED - BATTLESTRINGS_TABLE_START] = sText_PlayerTeraOrbCharged,
     [STRINGID_PKMNAPPEARSMASSIVE - BATTLESTRINGS_TABLE_START] = sText_PkmnAppearsMassive,
     [STRINGID_RAIDPKMNDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_RaidPkmnDisappeared,
     [STRINGID_PKMNISTOOSTRONG - BATTLESTRINGS_TABLE_START] = sText_PkmnIsTooStrong,
@@ -1648,6 +1652,12 @@ const u16 gRaidStateStringIds[] =
     [B_MSG_GETTING_EVEN_STRONGER] = STRINGID_STORMGETTINGEVENSTRONGER,
     [B_MSG_GETTING_TOO_STRONG] = STRINGID_STORMGETTINGTOOSTRONG,
     [B_MSG_PKMN_RELEASED_ENERGY] = STRINGID_RAIDPKMNRELEASEDENERGY,
+};
+
+const u16 gRaidTeraOrbCharge[] = 
+{
+    [B_MSG_TERA_ORB_CHARGING] = STRINGID_PLAYERTERAORBCHARGING,
+    [B_MSG_TERA_ORB_CHARGED] = STRINGID_PLAYERTERAORBCHARGED,
 };
 
 const u16 gRaidShockwaveStringIds[] =

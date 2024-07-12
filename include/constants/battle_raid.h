@@ -66,6 +66,7 @@
 // Other Constants
 #define MAX_RAID_DROPS     12
 #define MAX_BARRIER_COUNT   5
+#define RAID_MAX_TERA_ORB_CHARGE    3
 
 // Config
 #define B_MAX_RAID_ENERGY_POSITION TRUE

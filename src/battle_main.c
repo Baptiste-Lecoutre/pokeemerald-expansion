@@ -4193,6 +4193,8 @@ void BattleTurnPassed(void)
         gBattleMainFunc = HandleEndTurn_FinishBattle;
     else if (gBattleTypeFlags & BATTLE_TYPE_RAID && ShouldMoveDynamaxEnergy()) // Show which mon has dynamax energy in raids
         BattleScriptExecute(BattleScript_RaidMoveDynamaxEnergy);
+    else if (gBattleTypeFlags & BATTLE_TYPE_RAID && HandleTeraOrbCharge()) // Increase Tera Orb charge and display message accordingly
+        BattleScriptExecute(BattleScript_RaidHandleTeraOrbCharge);
     else if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
         BattleScriptExecute(BattleScript_PalacePrintFlavorText);
     else if (gBattleTypeFlags & BATTLE_TYPE_ARENA && gBattleStruct->arenaTurnCounter == 0)

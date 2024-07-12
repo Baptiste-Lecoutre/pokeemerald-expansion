@@ -740,18 +740,20 @@
 #define STRINGID_RAIDPKMNRELEASEDENERGY               738
 #define STRINGID_BARRIERRESTOREDENERGY                739
 #define STRINGID_DYNAMAXENERGYSURROUNDS               740
-#define STRINGID_PKMNGAINEDEXPSHARE                   741
-#define STRINGID_PKMNDROPPEDITEM                      742
-#define STRINGID_BAGISFULL                            743
-#define STRINGID_NORUNNINGFROMTHISBATTLE              744
-#define STRINGID_MONTOOSCAREDTOMOVE                   745
-#define STRINGID_GHOSTGETOUTGETOUT                    746
-#define STRINGID_DEVONSCOPEUNVEILED                   747
-#define STRINGID_MAYDEVONSCOPEUNVEILED                748
-#define STRINGID_BRENDANDEVONSCOPEUNVEILED            749
-#define STRINGID_GHOSTWASOPPONENT                     750
+#define STRINGID_PLAYERTERAORBCHARGING                741
+#define STRINGID_PLAYERTERAORBCHARGED                 742
+#define STRINGID_PKMNGAINEDEXPSHARE                   743
+#define STRINGID_PKMNDROPPEDITEM                      744
+#define STRINGID_BAGISFULL                            745
+#define STRINGID_NORUNNINGFROMTHISBATTLE              746
+#define STRINGID_MONTOOSCAREDTOMOVE                   747
+#define STRINGID_GHOSTGETOUTGETOUT                    748
+#define STRINGID_DEVONSCOPEUNVEILED                   749
+#define STRINGID_MAYDEVONSCOPEUNVEILED                750
+#define STRINGID_BRENDANDEVONSCOPEUNVEILED            751
+#define STRINGID_GHOSTWASOPPONENT                     752
 
-#define BATTLESTRINGS_COUNT                           751
+#define BATTLESTRINGS_COUNT                           753
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -1099,5 +1101,9 @@
 #define B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE      4
 #define B_MSG_SHOCKWAVE_MEGA_ZMOVE             5
 #define B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED     6
+
+// gRaidTeraOrbCharge
+#define B_MSG_TERA_ORB_CHARGING 0
+#define B_MSG_TERA_ORB_CHARGED  1
 
 #endif // GUARD_CONSTANTS_BATTLE_STRING_IDS_H
