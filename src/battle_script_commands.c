@@ -2178,11 +2178,27 @@ END:
         gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
     }
     // If an attack will trigger a Raid Boss's shield, it will not go past that threshold.
-    else if (IsRaidBoss(gBattlerTarget) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
+    else if (IsRaidBoss(gBattlerTarget) && (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
         && gBattleMoveDamage > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
     {
         gBattleMoveDamage = GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP);
         gBattleStruct->raid.state |= RAID_CREATE_SHIELD;
+    }
+    else if (IsRaidBoss(gBattlerTarget) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA
+        && gBattleMoveDamage > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
+    {
+        gBattleStruct->raid.state |= RAID_CREATE_SHIELD;
+    }
+    else if (IsRaidBoss(gBattlerTarget) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA && gBattleMoveDamage && gBattleStruct->raid.shield > 0)
+    {
+        gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
+        if (gBattleStruct->raid.shield < gBattleMoveDamage)
+        {
+            gBattleStruct->raid.shield = 0;
+            gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+        }
+        else
+            gBattleStruct->raid.shield -= gBattleMoveDamage;
     }
 }
 

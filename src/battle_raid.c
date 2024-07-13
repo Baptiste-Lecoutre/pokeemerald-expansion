@@ -534,6 +534,10 @@ void InitRaidBattleData(void)
         if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
             gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].moves[3] = MOVE_DRAGON_ASCENT;
     }
+    /*else if (gRaisTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+    {
+        gBattleStruct->raid.shieldsRemaining = 1;
+    }*/
 
     // Update HP Multiplier.
     RecalcBattlerStats(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &gEnemyParty[0]);
@@ -578,7 +582,7 @@ void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
     }
     else if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
     {
-        mult = sGen9RaidHPMultipliers[gRaidData.rank];
+        mult = 3;//sGen9RaidHPMultipliers[gRaidData.rank];
         hp = GetMonData(mon, MON_DATA_HP) * mult;
         maxHP = GetMonData(mon, MON_DATA_MAX_HP) * mult;
         SetMonData(mon, MON_DATA_HP, &hp);
@@ -773,9 +777,14 @@ static u16 GetShieldAmount(void)
     u8 hp = gSpeciesInfo[species].baseHP;
     u8 def = gSpeciesInfo[species].baseDefense;
     u8 spDef = gSpeciesInfo[species].baseSpDefense;
-    u8 retVal = 0;
+    u16 retVal = 0;
 
-    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+    {
+        // à choisir selon le rank
+        retVal = 40 * gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].maxHP / 100; // valeur en HP
+    }
+    else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
         switch (gRaidData.rank)
         {
@@ -814,13 +823,15 @@ static u16 GetShieldAmount(void)
     }
 
     return retVal;
-    // only valid for dynamax raids atm
 }
 
 static u8 GetRaidShieldThresholdTotalNumber(void)
 {
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
         return 0;
+    else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+        return 1; // à modifier, shield seulement à partir d'un certain rank
+
 
     switch (gRaidData.rank)
     {
