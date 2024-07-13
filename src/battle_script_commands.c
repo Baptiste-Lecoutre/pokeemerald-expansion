@@ -17579,13 +17579,30 @@ void BS_DoRaidShockwave(void)
         if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC] < MAX_STAT_STAGE)
             gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC]++;
         break;
+    case B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS:
+        for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
+        {
+            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] > DEFAULT_STAT_STAGE)
+                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] = DEFAULT_STAT_STAGE;
+            
+            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] > DEFAULT_STAT_STAGE)
+                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] = DEFAULT_STAT_STAGE;
+        }
+        break; // + still gotta deal with abilities
+    case B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF:
+        for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
+        {
+            if (gBattleMons[gBattlerAttacker].statStages[i] < DEFAULT_STAT_STAGE)
+                gBattleMons[gBattlerAttacker].statStages[i] = DEFAULT_STAT_STAGE;
+        }
+        break;
     case B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED:
         gBattleMoveDamage = -gBattleMons[gBattlerAttacker].maxHP / 4;
 
         for (i = STAT_ATK; i < NUM_STATS; i++)
         {
-            if (gBattleMons[gBattlerTarget].statStages[i] > MIN_STAT_STAGE)
-                --gBattleMons[gBattlerTarget].statStages[i];
+            if (gBattleMons[gBattlerAttacker].statStages[i] > MIN_STAT_STAGE)
+                --gBattleMons[gBattlerAttacker].statStages[i];
         }
         break;
     }

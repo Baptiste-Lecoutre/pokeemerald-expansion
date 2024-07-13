@@ -10202,15 +10202,17 @@ BattleScript_MegaRaidHealBarrier::
 BattleScript_RaidShockwave::
 	printfromtable gRaidShockwaveStringIds
 	waitmessage B_WAIT_TIME_LONG
-	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS, BattleScript_RaidShockwaveMaxNullifiedOthers
+	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS, BattleScript_RaidShockwaveNullifiedOthers
 	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED, BattleScript_RaidShockwaveMaxFocus
+	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS, BattleScript_RaidShockwaveNullifiedOthers
+	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF, BattleScript_RaidShockwaveNullifiedSelf
 	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE, BattleScript_RaidShockwaveTeraOrbCharge
 	jumpifbyte CMP_EQUAL, gBattleCommunication, B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED, BattleScript_RaidShockwaveMegaCalmedHealed
-	goto BattleScript_RaidShockwaveMaxNullifiedOthers @ default, just in case
+	goto BattleScript_RaidShockwaveNullifiedOthers @ default, just in case
 BattleScript_RaidShockwaveEnd:
 	end3
 
-BattleScript_RaidShockwaveMaxNullifiedOthers::
+BattleScript_RaidShockwaveNullifiedOthers::
 	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE
 	waitanimation
 	doraidshockwave
@@ -10222,6 +10224,11 @@ BattleScript_RaidShockwaveMaxFocus::
 	playanimation BS_ATTACKER, B_ANIM_RAID_SHOCKWAVE_FOCUS
 	waitanimation
 	doraidshockwave
+	goto BattleScript_RaidShockwaveEnd
+
+BattleScript_RaidShockwaveNullifiedSelf::
+	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
+	waitanimation
 	goto BattleScript_RaidShockwaveEnd
 
 BattleScript_RaidShockwaveTeraOrbCharge::

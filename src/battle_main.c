@@ -5270,6 +5270,7 @@ static bool32 TryDoGimmicksBeforeMoves(void)
     {
         gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         gBattleStruct->raid.usedShockwave = TRUE;
+        // GetRaidShockwaveType // Handles the choosing of the raid shockwave
 
         switch (gRaidTypes[gRaidData.raidType].shockwave)
         {
@@ -5288,11 +5289,21 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 BattleScriptExecute(BattleScript_RaidShockwave);
                 return TRUE;
             case RAID_SHOCKWAVE_TERA:
-                if (gBattleStruct->raid.energy && !HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
+                if (Random() % 100 < 30)
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
+                }
+                else if (Random() % 100 < 60 && gBattleStruct->raid.energy && !HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
                 {
                     gBattleStruct->raid.energy--;
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
                     gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
+                }
+                else
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF;
                 }
                 BattleScriptExecute(BattleScript_RaidShockwave);
                 return TRUE;
