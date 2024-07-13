@@ -10163,6 +10163,7 @@ BattleScript_RaidShieldDisappeared::
 	playanimation BS_TARGET, B_ANIM_RAID_SHIELD_DISAPPEARED
 	waitanimation
 	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_SHIELD_MEGA, BattleScript_MegaRaidHealBarrier
+	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_SHIELD_TERA, BattleScript_TeraRaidBarrierBroke
 	printstring STRINGID_RAIDSHIELDDISAPPEARED
 	waitmessage B_WAIT_TIME_LONG
 	jumpifstat BS_TARGET, CMP_GREATER_THAN, STAT_DEF, MIN_STAT_STAGE, BattleScript_RaidDefenseDrop
@@ -10188,7 +10189,7 @@ BattleScript_RaidBarrierBroken::
 	playanimation BS_TARGET, B_ANIM_RAID_BARRIER_BROKEN
 	waitanimation
 	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_SHIELD_MEGA, BattleScript_MegaRaidHealBarrier
-	return
+	goto BattleScript_RaidShieldDisappearedEnd
 
 BattleScript_MegaRaidHealBarrier::
 	playanimation BS_TARGET, B_ANIM_HELD_ITEM_EFFECT
@@ -10197,7 +10198,12 @@ BattleScript_MegaRaidHealBarrier::
 	datahpupdate BS_TARGET
 	printstring STRINGID_BARRIERRESTOREDENERGY
 	waitmessage B_WAIT_TIME_LONG
-	return
+	goto BattleScript_RaidShieldDisappearedEnd
+
+BattleScript_TeraRaidBarrierBroke::
+	printstring STRINGID_RAIDBOSSLOSTITSENERGY
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_RaidShieldDisappearedEnd
 
 BattleScript_RaidShockwave::
 	printfromtable gRaidShockwaveStringIds

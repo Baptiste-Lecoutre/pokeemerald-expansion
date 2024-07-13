@@ -739,21 +739,22 @@
 #define STRINGID_RAIDNOTMUCHTIMELEFT                  737
 #define STRINGID_RAIDPKMNRELEASEDENERGY               738
 #define STRINGID_BARRIERRESTOREDENERGY                739
-#define STRINGID_DYNAMAXENERGYSURROUNDS               740
-#define STRINGID_PLAYERTERAORBCHARGING                741
-#define STRINGID_PLAYERTERAORBCHARGED                 742
-#define STRINGID_PKMNGAINEDEXPSHARE                   743
-#define STRINGID_PKMNDROPPEDITEM                      744
-#define STRINGID_BAGISFULL                            745
-#define STRINGID_NORUNNINGFROMTHISBATTLE              746
-#define STRINGID_MONTOOSCAREDTOMOVE                   747
-#define STRINGID_GHOSTGETOUTGETOUT                    748
-#define STRINGID_DEVONSCOPEUNVEILED                   749
-#define STRINGID_MAYDEVONSCOPEUNVEILED                750
-#define STRINGID_BRENDANDEVONSCOPEUNVEILED            751
-#define STRINGID_GHOSTWASOPPONENT                     752
+#define STRINGID_RAIDBOSSLOSTITSENERGY                740
+#define STRINGID_DYNAMAXENERGYSURROUNDS               741
+#define STRINGID_PLAYERTERAORBCHARGING                742
+#define STRINGID_PLAYERTERAORBCHARGED                 743
+#define STRINGID_PKMNGAINEDEXPSHARE                   744
+#define STRINGID_PKMNDROPPEDITEM                      745
+#define STRINGID_BAGISFULL                            746
+#define STRINGID_NORUNNINGFROMTHISBATTLE              747
+#define STRINGID_MONTOOSCAREDTOMOVE                   748
+#define STRINGID_GHOSTGETOUTGETOUT                    749
+#define STRINGID_DEVONSCOPEUNVEILED                   750
+#define STRINGID_MAYDEVONSCOPEUNVEILED                751
+#define STRINGID_BRENDANDEVONSCOPEUNVEILED            752
+#define STRINGID_GHOSTWASOPPONENT                     753
 
-#define BATTLESTRINGS_COUNT                           753
+#define BATTLESTRINGS_COUNT                           754
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

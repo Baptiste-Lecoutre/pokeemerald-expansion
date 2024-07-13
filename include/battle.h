@@ -599,10 +599,11 @@ struct BattleGimmickData
 struct RaidBattleData
 {
     u8 state;             // stores the progress of the raid, intro and catching included
-    u16 shield;           // stores either num. of shields (GEN_8) or amount of HP protected (GEN_9)
+    u16 shieldedHP;           // stores either num. of shields (GEN_8) or amount of HP protected (GEN_9)
     u8 nextShield;        // stores the HP fraction threshold (0 to 100) that the next shield should occur
     u8 shieldsRemaining;  // stores the remaining num. of shields
-    u8 energy;            // stores Dynamax Energy position or Tera Orb charge
+    u8 shield:3;
+    u8 energy:2;            // stores Dynamax Energy position or Tera Orb charge
     bool8 usedShockwave:1;// stores whether the raid boss has used its shockwave during the turn
     bool8 movedTwice:1;   // stores whether the raid boss has moves twice during the turn
     bool8 statIncreased:1;// stores whether the raid boss stats have increased after fainting a mon

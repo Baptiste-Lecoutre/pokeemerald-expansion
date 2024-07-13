@@ -782,7 +782,7 @@ static u16 GetShieldAmount(void)
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
     {
         // à choisir selon le rank
-        retVal = 40 * gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].maxHP / 100; // valeur en HP
+        retVal = 1;//40 * gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].maxHP / 100; // valeur en HP
     }
     else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
@@ -830,7 +830,7 @@ static u8 GetRaidShieldThresholdTotalNumber(void)
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
         return 0;
     else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
-        return 1; // à modifier, shield seulement à partir d'un certain rank
+        return 1; // à modifier, shield seulement à partir d'un certain rank -> là apparait à 50%
 
 
     switch (gRaidData.rank)
@@ -864,15 +864,19 @@ bool32 UpdateRaidShield(void)
     if (gBattleStruct->raid.state & RAID_CREATE_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_CREATE_SHIELD;
-        gBattlerTarget = B_POSITION_OPPONENT_LEFT;
+        gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         gBattleStruct->raid.shieldsRemaining--;
 
         // Set up shield data.
         gBattleStruct->raid.shield = GetShieldAmount();
         gBattleStruct->raid.nextShield = GetNextShieldThreshold();
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             CreateAllRaidBarrierSprites();
+        
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+            gBattleStruct->raid.shieldedHP = 20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
 
         // Play animation and message.
         BattleScriptPushCursor();
@@ -936,6 +940,7 @@ bool32 UpdateRaidShield(void)
         {
             gBattleMons[gBattlerTarget].status2 |= STATUS2_RECHARGE;
             gDisableStructs[gBattlerTarget].rechargeTimer = 2;
+            gBattleCommunication[MULTIUSE_STATE] = RAID_SHIELD_TERA;
         }
 
         BattleScriptPushCursor();
@@ -949,7 +954,8 @@ bool32 UpdateRaidShield(void)
     {
         gBattleStruct->raid.state &= ~RAID_RESHOW_SHIELD;
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             CreateAllRaidBarrierSprites();
         return TRUE;
     }
@@ -1002,6 +1008,8 @@ u16 GetShieldDamageReduction(void)
 // SHIELD SPRITE DATA:
 static const u16 sMaxRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/raid_barrier.4bpp");
 static const u16 sMaxRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/misc_indicator.gbapal");
+static const u16 sTeraRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/tera_shield.4bpp");
+static const u16 sTeraRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/tera_shield.gbapal");
 static const u16 sMegaRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/mega_shield.4bpp");
 static const u16 sMegaRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/mega_trigger.gbapal");
 static const u16 sOmegaRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/omega_shield.4bpp");
@@ -1027,6 +1035,11 @@ static const struct SpriteSheet sSpriteSheet_AlphaRaidBarrier =
     sAlphaRaidBarrierGfx, sizeof(sAlphaRaidBarrierGfx), TAG_RAID_BARRIER_TILE
 };
 
+static const struct SpriteSheet sSpriteSheet_TeraRaidBarrier = 
+{
+    sTeraRaidBarrierGfx, sizeof(sTeraRaidBarrierGfx), TAG_RAID_BARRIER_TILE
+};
+
 // Max Raid Barriers share a palette with the Alpha, Omega, and Dynamax indicators.
 static const struct SpritePalette sSpritePalette_MaxRaidBarrier =
 {
@@ -1037,6 +1050,11 @@ static const struct SpritePalette sSpritePalette_MaxRaidBarrier =
 static const struct SpritePalette sSpritePalette_MegaRaidBarrier =
 {
     sMegaRaidBarrierPal, TAG_MEGA_BARRIER_PAL
+};
+
+static const struct SpritePalette sSpritePalette_TeraRaidBarrier = 
+{
+    sTeraRaidBarrierPal, TAG_TERA_BARRIER_PAL
 };
 
 static const struct OamData sOamData_MaxRaidBarrier =
@@ -1075,6 +1093,7 @@ static const struct OamData sOamData_MegaRaidBarrier =
 
 static const s8 sMaxBarrierPosition[2] = {43, 9};
 static const s8 sMegaBarrierPosition[2] = {37, 9};
+static const s8 sTeraBarrierPosition[2] = {30, 9};
 
 // Sync up barrier sprites with healthbox.
 static void SpriteCb_RaidBarrier(struct Sprite *sprite)
@@ -1116,6 +1135,17 @@ static const struct SpriteTemplate sSpriteTemplate_PrimalRaidBarrier =
     .callback = SpriteCb_RaidBarrier,
 };
 
+static const struct SpriteTemplate sSpriteTemplate_TeraRaidBarrier =
+{
+    .tileTag = TAG_RAID_BARRIER_TILE,
+    .paletteTag = TAG_TERA_BARRIER_PAL,
+    .oam = &sOamData_MegaRaidBarrier,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCb_RaidBarrier,
+};
+
 #define tBattler    data[0]
 #define tHide       data[1]
 #define hOther_IndicatorSpriteId data[6]
@@ -1146,6 +1176,15 @@ static u32 CreateRaidBarrierSprite(u8 index)
             spriteId = CreateSprite(&sSpriteTemplate_MegaRaidBarrier, x, y, 0);
         }
     }
+    else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+    {
+        x += sTeraBarrierPosition[0] - (index * 31);
+        y += sTeraBarrierPosition[1];
+
+        LoadSpritePalette(&sSpritePalette_TeraRaidBarrier);
+        LoadSpriteSheet(&sSpriteSheet_TeraRaidBarrier);
+        spriteId = CreateSprite(&sSpriteTemplate_TeraRaidBarrier, x, y, 0);
+    }
     else // MAX RAIDS & TERA RAIDS
     {
         x += sMaxBarrierPosition[0] - (index * 10);
@@ -1168,6 +1207,9 @@ static void CreateAllRaidBarrierSprites(void)
     {
         if (gBattleStruct->raid.barrierSpriteIds[i] == MAX_SPRITES)
             gBattleStruct->raid.barrierSpriteIds[i] = CreateRaidBarrierSprite(i);
+        
+        /*if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+            break;*/
     }
 }
 
@@ -1195,7 +1237,8 @@ void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible)
     u32 i;
     for (i = 0; i < gBattleStruct->raid.shield; i++)
     {
-        gSprites[gBattleStruct->raid.barrierSpriteIds[i]].invisible = invisible;
+        if (gBattleStruct->raid.barrierSpriteIds[i] != MAX_SPRITES)
+            gSprites[gBattleStruct->raid.barrierSpriteIds[i]].invisible = invisible;
     }
 }
 

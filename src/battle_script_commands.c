@@ -2192,13 +2192,13 @@ END:
     else if (IsRaidBoss(gBattlerTarget) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA && gBattleMoveDamage && gBattleStruct->raid.shield > 0)
     {
         gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
-        if (gBattleStruct->raid.shield < gBattleMoveDamage)
+        if (gBattleStruct->raid.shieldedHP < gBattleMoveDamage)
         {
-            gBattleStruct->raid.shield = 0;
+            gBattleStruct->raid.shieldedHP = 0;
             gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
         }
         else
-            gBattleStruct->raid.shield -= gBattleMoveDamage;
+            gBattleStruct->raid.shieldedHP -= gBattleMoveDamage;
     }
 }
 
