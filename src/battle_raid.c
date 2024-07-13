@@ -921,6 +921,12 @@ bool32 UpdateRaidShield(void)
             gBattleCommunication[MULTIUSE_STATE] = RAID_SHIELD_MEGA;
         }
 
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA) // breaking tera shield incapacitate the raid boss for the next turn
+        {
+            gBattleMons[gBattlerTarget].status2 |= STATUS2_RECHARGE;
+            gDisableStructs[gBattlerTarget].rechargeTimer = 2;
+        }
+
         BattleScriptPushCursor();
         if (gBattleStruct->raid.shield == 0)
             gBattlescriptCurrInstr = BattleScript_RaidShieldDisappeared;
@@ -961,8 +967,7 @@ u16 GetShieldDamageRequired(u16 hp, u16 maxHP)
 u16 GetShieldDamageReduction(void)
 {
     // Gen 8-style shields reduce damage by a constant 95%.
-    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
-        || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX)
     {
         return UQ_4_12(1-0.95);
     }
