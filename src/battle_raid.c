@@ -669,6 +669,7 @@ bool32 HandleTeraOrbCharge(void)
                 gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_TERA_ORB_CHARGING;
             else
                 gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_TERA_ORB_CHARGED;
+            AssignUsableGimmicks();
             return TRUE;
         }
     }

@@ -108,8 +108,12 @@ bool32 CanDynamax(u32 battler)
     if (!TESTING && (holdEffect == HOLD_EFFECT_Z_CRYSTAL || holdEffect == HOLD_EFFECT_MEGA_STONE))  // tests make this check already
         return FALSE;
 
-    // TODO: Cannot Dynamax in a Max Raid if you don't have Dynamax Energy.
+    // Cannot Dynamax in a Max Raid if you don't have Dynamax Energy.
     if (B_MAX_RAID_ENERGY_POSITION && gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX && gBattleStruct->raid.energy != battler)
+        return FALSE;
+    
+    // Cannot Dynamax against a non-dynamaxed raid boss
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick != RAID_GIMMICK_DYNAMAX)
         return FALSE;
 
     // No checks failed, all set!

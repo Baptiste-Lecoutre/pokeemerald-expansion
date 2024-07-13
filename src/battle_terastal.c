@@ -30,7 +30,8 @@ void ActivateTera(u32 battler)
     if (B_FLAG_TERA_ORB_CHARGED != 0
         && (B_FLAG_TERA_ORB_NO_COST == 0 || !FlagGet(B_FLAG_TERA_ORB_NO_COST))
         && side == B_SIDE_PLAYER
-        && !(gBattleTypeFlags & BATTLE_TYPE_DOUBLE && !IsPartnerMonFromSameTrainer(battler)))
+        && !(gBattleTypeFlags & BATTLE_TYPE_DOUBLE && !IsPartnerMonFromSameTrainer(battler))
+        && !(gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_TERA))
     {
         FlagClear(B_FLAG_TERA_ORB_CHARGED);
     }
@@ -68,7 +69,7 @@ bool32 CanTerastallize(u32 battler)
         return FALSE;
 
     if (!TESTING 
-     && !(B_FLAG_TERA_ORB_NO_COST != 0 && FlagGet(B_FLAG_TERA_ORB_NO_COST))
+     && !((B_FLAG_TERA_ORB_NO_COST != 0 && FlagGet(B_FLAG_TERA_ORB_NO_COST)) || (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_TERA))
      && (battler == B_POSITION_PLAYER_LEFT || (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) && battler == B_POSITION_PLAYER_RIGHT)))
     {
         if (B_FLAG_TERA_ORB_CHARGED != 0 && !FlagGet(B_FLAG_TERA_ORB_CHARGED))
@@ -89,6 +90,14 @@ bool32 CanTerastallize(u32 battler)
 
     // Check if battler is holding a Z-Crystal or Mega Stone.
     if (!TESTING && (holdEffect == HOLD_EFFECT_Z_CRYSTAL || holdEffect == HOLD_EFFECT_MEGA_STONE)) // tests make this check already
+        return FALSE;
+    
+    // Cannot Terastal in Tera Raids if Tera Orb is not fully charged
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_TERA && gBattleStruct->raid.energy < RAID_MAX_TERA_ORB_CHARGE)
+        return FALSE;
+
+    // Cannot Terastal against a non-terastallized raid boss
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID && gRaidTypes[gRaidData.raidType].gimmick != RAID_GIMMICK_TERA)
         return FALSE;
 
     // Every check passed!
