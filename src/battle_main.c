@@ -5268,15 +5268,15 @@ static bool32 TryDoGimmicksBeforeMoves(void)
 {
     if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
     {
+        u32 raidShockwaveNum = GetRaidShockwaveNum();
         gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         gBattleStruct->raid.usedShockwave = TRUE;
-        // GetRaidShockwaveType // Handles the choosing of the raid shockwave
 
         switch (gRaidTypes[gRaidData.raidType].shockwave)
         {
             default:
             case RAID_SHOCKWAVE_MAX:
-                if (Random() % 100 < 30)
+                if (raidShockwaveNum == 1)
                 {
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
                     gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED; // Use the same number for both multistring chooser and multiuse state
@@ -5289,12 +5289,12 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 BattleScriptExecute(BattleScript_RaidShockwave);
                 return TRUE;
             case RAID_SHOCKWAVE_TERA:
-                if (Random() % 100 < 30)
+                if (raidShockwaveNum == 0)
                 {
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
                     gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
                 }
-                else if (Random() % 100 < 60 && gBattleStruct->raid.energy && !HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
+                else if (raidShockwaveNum == 2 && gBattleStruct->raid.energy && !HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
                 {
                     gBattleStruct->raid.energy--;
                     gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
@@ -5313,11 +5313,21 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
                 break;*/
             case RAID_SHOCKWAVE_MEGA:
-                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
-                gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
-                BattleScriptExecute(BattleScript_RaidShockwave);
-                return TRUE;
-        }
+                if (raidShockwaveNum == 1)
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
+                    BattleScriptExecute(BattleScript_RaidShockwave);
+                    return TRUE;
+                }
+                else
+                {
+                    gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // maybe I should restore mega as the active gimmick at the end of the turn
+                    gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
+                    gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
+                    break;
+                }
+        } // end of switch
     }
 
     if (!(gHitMarker & HITMARKER_RUN) && gBattleStruct->gimmick.toActivate)

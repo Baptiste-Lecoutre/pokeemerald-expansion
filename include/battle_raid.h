@@ -46,6 +46,7 @@ bool32 HandleTeraOrbCharge(void);
 bool8 DoesRaidPreventMove(u16 move);
 u8 GetRaidRepeatedAttackChance(void);
 u8 GetRaidShockwaveChance(void);
+u32 GetRaidShockwaveNum(void);
 u8 GetRaidBossKOStatIncrease(u8 battlerId);
 bool32 UpdateRaidShield(void);
 u16 GetShieldDamageRequired(u16 hp, u16 maxHP);

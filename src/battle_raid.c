@@ -719,6 +719,35 @@ u8 GetRaidShockwaveChance(void) // to be adjusted
     return gRaidShockwaveChance[gRaidTypes[gRaidData.raidType].shockwave][gRaidData.rank];
 }
 
+u32 GetRaidShockwaveNum(void)
+{
+    u32 randomNum = Random() % 100;
+    switch (gRaidTypes[gRaidData.raidType].shockwave)
+    {
+        default:
+        case RAID_SHOCKWAVE_MAX:
+            if (randomNum < 30)
+                return 1; // focus
+            else
+                return 0; // nullified others
+            break;
+        case RAID_SHOCKWAVE_TERA:
+            if (randomNum < 30)
+                return 0; // nullified others
+            else if (randomNum < 60)
+                return 2; // tera charge
+            else
+                return 1; // nullified self
+        case RAID_SHOCKWAVE_MEGA:
+            if (randomNum < 30)
+                return 1; // heal
+            else
+                return 0; // zmove
+            break;
+    }
+    return 0;
+}
+
 u8 GetRaidBossKOStatIncrease(u8 battlerId)
 {
     u8 level = gBattleMons[battlerId].level;
