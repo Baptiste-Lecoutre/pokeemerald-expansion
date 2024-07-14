@@ -251,13 +251,13 @@ Route119_EventScript_LatiGroundDust::
 	return
 
 Route119_EventScript_LatiGroundDustRight::
-	playse SE_CLICK
+	playse SE_M_POISON_POWDER
 	dofieldeffectgrounddust 27, 32, 3, 2
 	waitfieldeffect FLDEFF_DUST
 	return
 
 Route119_EventScript_LatiGroundDustLeft::
-	playse SE_CLICK
+	playse SE_M_POISON_POWDER
 	dofieldeffectgrounddust 24, 32, 3, 2
 	waitfieldeffect FLDEFF_DUST
 	return
@@ -407,7 +407,7 @@ Route119_EventScript_PlayLatiCryAndDisappear::
 	return
 
 Route119_EventScript_LatiGroundDustRightDisappear::
-	playse SE_CLICK
+	playse SE_M_POISON_POWDER
 	dofieldeffectgrounddust 26, 32, 3, 2
 	setflag FLAG_TEMP_8
 	removeobject LOCALID_LATI
@@ -415,7 +415,7 @@ Route119_EventScript_LatiGroundDustRightDisappear::
 	return
 
 Route119_EventScript_LatiGroundDustLeftDisappear::
-	playse SE_CLICK
+	playse SE_M_POISON_POWDER
 	dofieldeffectgrounddust 25, 32, 3, 2
 	setflag FLAG_TEMP_8
 	removeobject LOCALID_LATI

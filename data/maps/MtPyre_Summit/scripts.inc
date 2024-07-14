@@ -117,7 +117,7 @@ MtPyre_Summit_EventScript_LatisAppear::
 	applymovement LOCALID_LATIAS, MtPyre_Summit_Movement_LatiFasterLeft
 	applymovement LOCALID_LATIOS, MtPyre_Summit_Movement_LatiFasterRight
 	waitmovement 0
-	playse SE_CLICK
+	playse SE_M_POISON_POWDER
 	dofieldeffectgrounddust 20, 6, 3, 2
 	dofieldeffectgrounddust 26, 6, 3, 2
 	waitfieldeffect FLDEFF_DUST
@@ -173,7 +173,7 @@ MtPyre_Summit_EventScript_LatisExit::
 	setflag FLAG_TEMP_1
 	removeobject LOCALID_LATIAS
 	removeobject LOCALID_LATIOS
-	playse SE_CLICK
+	playse SE_M_POISON_POWDER
 	checkplayergender
 	call_if_eq VAR_RESULT, MALE, MtPyre_Summit_EventScript_GroundDustMale
 	call_if_eq VAR_RESULT, FEMALE, MtPyre_Summit_EventScript_GroundDustFemale
