@@ -1150,6 +1150,58 @@ static const struct SpriteTemplate sSpriteTemplate_TeraRaidBarrier =
 #define tHide       data[1]
 #define hOther_IndicatorSpriteId data[6]
 
+// Bars code adapted from HGSS dex. See explanations below
+// The first 4 corresponds to 32/8 (X size)
+// There is no explicit dependance on the Y size
+// The filling of the pixels is done in the following order:
+// - scan one 8x8 tile at a time, going left to right and going down
+// - inside a 8x8 tile, scan the pixel index going left to right and going down
+// - +1 increments of the pixel index actually goes 2 pixels to the right (see below)
+// - 2 pixels with the same index share the same color byte (8 bits, shared as 4+4 bits)
+// - left pixel has the 4 lower bits, right pixel has the 4 higher bits.
+// - pixel index is given by PIXEL_COORDS_TO_OFFSET(x, y), tiles included
+// - pixel 4bits are chosen in WritePixel
+#define PIXEL_COORDS_TO_OFFSET(x, y)(			\
+/*Add tiles by Y*/								\
+((y / 8) * 32 * 4)								\
+/*Add tiles by X*/								\
++ ((x / 8) * 32)								\
+/*Add pixels by Y*/								\
++ ((((y) - ((y / 8) * 8))) * 4)				    \
+/*Add pixels by X*/								\
++ ((((x) - ((x / 8) * 8)) / 2)))
+
+static inline void WritePixel(u8 *dst, u32 x, u32 y, u32 value)
+{
+    if (x & 1)
+    {
+        dst[PIXEL_COORDS_TO_OFFSET(x, y)] &= ~0xF0;
+        dst[PIXEL_COORDS_TO_OFFSET(x, y)] |= (value << 4);
+    }
+    else
+    {
+        dst[PIXEL_COORDS_TO_OFFSET(x, y)] &= ~0xF;
+        dst[PIXEL_COORDS_TO_OFFSET(x, y)] |= (value);
+    }
+}
+static void FillTeraBarrierBar(u8 *dst)
+{
+    u32 i = 10;
+    WritePixel(dst, 15, 11, 11);
+    WritePixel(dst, 16, 11, 11);
+    WritePixel(dst, 17, 11, 11);
+    WritePixel(dst, 15, 10, 11);
+    WritePixel(dst, 16, 10, 11);
+    WritePixel(dst, 17, 10, 11);
+    WritePixel(dst, 15, 9, 15);
+    WritePixel(dst, 16, 9, 15);
+    WritePixel(dst, 17, 9, 15);
+    //for (i = 0; i < sizeof(sTeraRaidBarrierGfx)/2; i++)
+        dst[i] = 10 | (10 << 4);
+    //for (i = 0; i < 32; i++)
+    //    dst[sizeof(sTeraRaidBarrierGfx)/2 +32 +i] = 10 | (10 << 4);
+}
+
 static u32 CreateRaidBarrierSprite(u8 index)
 {
     u32 spriteId;
@@ -1178,11 +1230,18 @@ static u32 CreateRaidBarrierSprite(u8 index)
     }
     else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
     {
+        u8 *gfx = Alloc(16*32);
+        struct SpriteSheet sheet = {gfx, 16*32, TAG_RAID_BARRIER_TILE};
+        
+        memcpy(gfx, sTeraRaidBarrierGfx, sizeof(sTeraRaidBarrierGfx));
+        FillTeraBarrierBar(gfx);
         x += sTeraBarrierPosition[0] - (index * 31);
         y += sTeraBarrierPosition[1];
 
         LoadSpritePalette(&sSpritePalette_TeraRaidBarrier);
-        LoadSpriteSheet(&sSpriteSheet_TeraRaidBarrier);
+        //LoadSpriteSheet(&sSpriteSheet_TeraRaidBarrier);
+        LoadSpriteSheet(&sheet);
+        Free(gfx);
         spriteId = CreateSprite(&sSpriteTemplate_TeraRaidBarrier, x, y, 0);
     }
     else // MAX RAIDS & TERA RAIDS
