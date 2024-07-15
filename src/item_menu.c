@@ -3157,6 +3157,9 @@ static void DrawPartyMonIcons(void)
 
     LoadMonIconPalettesTinted();
 
+    SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL);
+    SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(7, 11));
+
     for (i = 0; i < gPlayerPartyCount; i++)
     {
         if (gPlayerPartyCount < 4)
@@ -3188,9 +3191,9 @@ static void TintPartyMonIcons(u16 itemId)
     {
         if (!CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), ItemIdToBattleMoveId(itemId))
             || gItemsInfo[itemId].pocket != POCKET_TM_HM)
-            gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_BLEND; //gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
         else
-            gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_NORMAL; //gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
     }
 }
 
