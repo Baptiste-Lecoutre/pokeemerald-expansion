@@ -858,6 +858,12 @@ static u16 GetNextShieldThreshold(void)
         return (remaining * 100) / (total + 1);
 }
 
+u16 GetTeraRaidShieldProtectedHP(void)
+{
+    u32 battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    return 20 * gBattleMons[battler].maxHP / 100;
+}
+
 // Updates the state of the Raid shield (set up, clearing, or breaking individual barriers).
 bool32 UpdateRaidShield(void)
 {
@@ -870,14 +876,15 @@ bool32 UpdateRaidShield(void)
         // Set up shield data.
         gBattleStruct->raid.shield = GetShieldAmount();
         gBattleStruct->raid.nextShield = GetNextShieldThreshold();
+    
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+            gBattleStruct->raid.shieldedHP = GetTeraRaidShieldProtectedHP();//20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
+
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             CreateAllRaidBarrierSprites();
         
-        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
-            gBattleStruct->raid.shieldedHP = 20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
-
         // Play animation and message.
         BattleScriptPushCursor();
         gBattlescriptCurrInstr = BattleScript_RaidShieldAppeared;
@@ -1186,20 +1193,13 @@ static inline void WritePixel(u8 *dst, u32 x, u32 y, u32 value)
 }
 static void FillTeraBarrierBar(u8 *dst)
 {
-    u32 i = 10;
-    WritePixel(dst, 15, 11, 11);
-    WritePixel(dst, 16, 11, 11);
-    WritePixel(dst, 17, 11, 11);
-    WritePixel(dst, 15, 10, 11);
-    WritePixel(dst, 16, 10, 11);
-    WritePixel(dst, 17, 10, 11);
-    WritePixel(dst, 15, 9, 15);
-    WritePixel(dst, 16, 9, 15);
-    WritePixel(dst, 17, 9, 15);
-    //for (i = 0; i < sizeof(sTeraRaidBarrierGfx)/2; i++)
-        dst[i] = 10 | (10 << 4);
-    //for (i = 0; i < 32; i++)
-    //    dst[sizeof(sTeraRaidBarrierGfx)/2 +32 +i] = 10 | (10 << 4);
+    u32 i;
+    for (i = 1; i < 31 * gBattleStruct->raid.shieldedHP / GetTeraRaidShieldProtectedHP(); i++)
+    {
+        WritePixel(dst, i, 9, (i == 1 || i == 30 ) ? 15 : 11);
+        WritePixel(dst, i, 10, (i == 1 || i == 30 ) ? 15 : 11);
+        WritePixel(dst, i, 11, 15);
+    }
 }
 
 static u32 CreateRaidBarrierSprite(u8 index)
@@ -1244,7 +1244,7 @@ static u32 CreateRaidBarrierSprite(u8 index)
         Free(gfx);
         spriteId = CreateSprite(&sSpriteTemplate_TeraRaidBarrier, x, y, 0);
     }
-    else // MAX RAIDS & TERA RAIDS
+    else // MAX RAIDS
     {
         x += sMaxBarrierPosition[0] - (index * 10);
         y += sMaxBarrierPosition[1];

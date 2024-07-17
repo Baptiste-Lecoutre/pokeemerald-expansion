@@ -2198,7 +2198,12 @@ END:
             gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
         }
         else
+        {
+            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+            UpdateRaidShield();
             gBattleStruct->raid.shieldedHP -= gBattleMoveDamage;
+            gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+        }
     }
 }
 
