@@ -2432,6 +2432,8 @@ u8 DoBattlerEndTurnEffects(void)
             {
                 gBattleScripting.battler = battler;
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / 16;
+                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.shield && gBattleMoveDamage > gBattleMons[battler].hp)
+                    gBattleMoveDamage = gBattleMons[battler].hp - 1;
                 BattleScriptExecute(BattleScript_DamagingWeather);
                 effect++;
             }
@@ -2456,6 +2458,8 @@ u8 DoBattlerEndTurnEffects(void)
             {
                 gBattleScripting.battler = battler;
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / 16;
+                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.shield && gBattleMoveDamage > gBattleMons[battler].hp)
+                    gBattleMoveDamage = gBattleMons[battler].hp - 1;
                 BattleScriptExecute(BattleScript_DamagingWeather);
                 effect++;
             }
