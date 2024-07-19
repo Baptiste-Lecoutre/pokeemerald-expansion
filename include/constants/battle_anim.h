@@ -573,16 +573,17 @@
 #define B_ANIM_FOG_CONTINUES            49
 #define B_ANIM_TERA_CHARGE              50
 #define B_ANIM_TERA_ACTIVATE            51
-#define B_ANIM_RAID_STORM_BREWS         52
-#define B_ANIM_RAID_SHIELD_APPEARED     53
-#define B_ANIM_RAID_SHIELD_DISAPPEARED  54
-#define B_ANIM_RAID_BARRIER_BROKEN      55
-#define B_ANIM_RAID_SHOCKWAVE           56
-#define B_ANIM_RAID_BOSS_EXPLOSION      57
-#define B_ANIM_RAID_SHOCKWAVE_FOCUS     58
-#define B_ANIM_MON_SCARED               59
-#define B_ANIM_GHOST_GET_OUT            60
-#define B_ANIM_GO_GOGGLED               61
+#define B_ANIM_SIMPLE_HEAL              52
+#define B_ANIM_RAID_STORM_BREWS         53
+#define B_ANIM_RAID_SHIELD_APPEARED     54
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  55
+#define B_ANIM_RAID_BARRIER_BROKEN      56
+#define B_ANIM_RAID_SHOCKWAVE           57
+#define B_ANIM_RAID_BOSS_EXPLOSION      58
+#define B_ANIM_RAID_SHOCKWAVE_FOCUS     59
+#define B_ANIM_MON_SCARED               60
+#define B_ANIM_GHOST_GET_OUT            61
+#define B_ANIM_GO_GOGGLED               62
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0
