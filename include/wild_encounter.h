@@ -49,8 +49,6 @@ u8 ChooseWildMonIndex_WaterRock(void);
 u8 ChooseHiddenMonIndex(void);
 bool32 MapHasNoEncounterData(void);
 bool8 StandardWildEncounter_Debug(void);
-void ResetChainFishingDexNavStreak(void);
-bool32 IsCurrentEncounterFishing(void);
 u32 CalculateChainFishingShinyRolls(void);
 
 #endif // GUARD_WILD_ENCOUNTER_H
