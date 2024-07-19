@@ -4270,7 +4270,7 @@ bool8 FieldCallback_PrepareFadeInFromMenu(void)
 
 // Same as above, but removes follower pokemon
 bool8 FieldCallback_PrepareFadeInForTeleport(void)
-{ 
+{
     RemoveFollowingPokemon();
     return FieldCallback_PrepareFadeInFromMenu();
 }
@@ -8109,7 +8109,7 @@ void IsLastMonThatKnowsSurf(void)
             }
         }
         if (AnyStorageMonWithMove(move) != TRUE)
-            gSpecialVar_Result = TRUE;
+            gSpecialVar_Result = !P_CAN_FORGET_HIDDEN_MOVE;
     }
 }
 
