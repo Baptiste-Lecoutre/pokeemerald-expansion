@@ -2199,10 +2199,8 @@ END:
         }
         else
         {
-            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
-            UpdateRaidShield();
             gBattleStruct->raid.shieldedHP -= gBattleMoveDamage;
-            gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+            gBattleStruct->raid.state |= RAID_UPDATE_SHIELD;
         }
     }
 }

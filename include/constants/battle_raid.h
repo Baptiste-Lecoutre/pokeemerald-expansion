@@ -37,6 +37,7 @@
 #define RAID_CATCHING_BOSS      (1 << 4)
 #define RAID_RESHOW_SHIELD     (1 << 5)
 #define RAID_HIDE_SHIELD       (1 << 6)
+#define RAID_UPDATE_SHIELD     (1 << 7)
 
 // Raid Storm Turn Thresholds
 #define RAID_STORM_TURNS_LEVEL_1    3    // number of turns

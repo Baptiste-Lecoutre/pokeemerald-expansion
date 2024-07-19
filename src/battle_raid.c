@@ -112,6 +112,32 @@ const u8 gRaidShockwaveChance[NUM_RAID_SHOCKWAVE][MAX_RAID_RANK + 1] =
     [RAID_SHOCKWAVE_MEGA] = {0, 0, 0, 5, 10, 15, 20, 25},
 };
 
+// The percent of maxHPs the tera shield protects
+const u16 gTeraRaidHPShieldProtected[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 0,
+	[RAID_RANK_2] = 0,
+	[RAID_RANK_3] = 20,
+	[RAID_RANK_4] = 30,
+	[RAID_RANK_5] = 40,
+	[RAID_RANK_6] = 60,
+    [RAID_RANK_7] = 80,
+};
+
+// The percent of health at which the tera shield is triggered
+const u16 gTeraRaidHPShieldTrigger[MAX_RAID_RANK + 1] =
+{
+    [NO_RAID]     = 0,
+    [RAID_RANK_1] = 0,
+	[RAID_RANK_2] = 0,
+	[RAID_RANK_3] = 40,
+	[RAID_RANK_4] = 60,
+	[RAID_RANK_5] = 60,
+	[RAID_RANK_6] = 70,
+    [RAID_RANK_7] = 90,
+};
+
 // The chance that each move is replaced with an Egg Move
 const u8 gRaidBattleEggMoveChances[MAX_RAID_RANK + 1] =
 {
@@ -852,7 +878,11 @@ static u16 GetNextShieldThreshold(void)
     u8 total = GetRaidShieldThresholdTotalNumber();
     u8 remaining = gBattleStruct->raid.shieldsRemaining;
 
-    if (remaining == 0 || total == 0)
+    if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+    {
+        return gTeraRaidHPShieldTrigger[gRaidData.rank];
+    }
+    else if (remaining == 0 || total == 0)
         return 0;
     else
         return (remaining * 100) / (total + 1);
@@ -861,7 +891,7 @@ static u16 GetNextShieldThreshold(void)
 u16 GetTeraRaidShieldProtectedHP(void)
 {
     u32 battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-    return 20 * gBattleMons[battler].maxHP / 100;
+    return (gTeraRaidHPShieldProtected[gRaidData.rank] + Random()%5)* gBattleMons[battler].maxHP / 100;
 }
 
 // Updates the state of the Raid shield (set up, clearing, or breaking individual barriers).
@@ -972,6 +1002,18 @@ bool32 UpdateRaidShield(void)
         gBattleStruct->raid.state &= ~RAID_HIDE_SHIELD;
         for (i = 0; i < gBattleStruct->raid.shield; i++)
             DestroyRaidBarrierSprite(i);
+        return TRUE;
+    }
+    else if (gBattleStruct->raid.state & RAID_UPDATE_SHIELD)
+    {
+        u32 i;
+        gBattleStruct->raid.state &= ~RAID_UPDATE_SHIELD;
+        for (i = 0; i < gBattleStruct->raid.shield; i++)
+            DestroyRaidBarrierSprite(i);
+        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+            CreateAllRaidBarrierSprites();
         return TRUE;
     }
     return FALSE;
