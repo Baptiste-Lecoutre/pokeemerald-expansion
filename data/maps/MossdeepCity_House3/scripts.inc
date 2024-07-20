@@ -20,6 +20,15 @@ MossdeepCity_House3_ShowFishermanHideWailord::
 	removeobject LOCALID_WAILORD
 	return
 
+MossdeepCity_House3_EventScript_Wailord::
+	lock
+	playmoncry SPECIES_WAILORD, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	msgbox MossdeepCity_House3_Text_WailordWontMove, MSGBOX_AUTOCLOSE
+	release
+	end
+
 MossdeepCity_House3_EventScript_SuperRodFisherman::
 	lock
 	faceplayer
@@ -39,7 +48,10 @@ MossdeepCity_House3_EventScript_SuperRodFisherman::
 	call_if_eq VAR_RESULT, DIR_EAST, MossdeepCity_House3_EventScript_DoMovementsWest
 	setflag FLAG_TEMP_1
 	removeobject LOCALID_FISHERMAN
+	playmoncry SPECIES_WAILORD, CRY_MODE_NORMAL
 	msgbox MossdeepCity_House3_Text_Bwaah, MSGBOX_AUTOCLOSE
+	delay 40
+	waitmoncry
 	release
 	end
 
@@ -127,3 +139,6 @@ MossdeepCity_House3_Text_GoAfterSeafloorPokemon:
 
 MossdeepCity_House3_Text_Bwaah:
 	.string "Bwaaah!$"
+
+MossdeepCity_House3_Text_WailordWontMove:
+	.string "Loos like it won't move.$"
