@@ -256,6 +256,7 @@ Route114_EventScript_ReceiveGoodRod::
 	playmoncry SPECIES_GYARADOS, CRY_MODE_NORMAL
 	delay 40
 	waitmoncry
+	playse SE_LEDGE
 	applymovement LOCALID_GYARADOS, Route114_Movement_GoDownFast
 	applymovement LOCALID_FISHERMAN, Route114_Movement_JumpRight
 	waitmovement 0

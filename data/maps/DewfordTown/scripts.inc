@@ -212,7 +212,7 @@ DewfordTown_EventScript_OldRodFisherman::
 	goto_if_set FLAG_DEWFORD_EVIOLITE, DewfordTown_EventScript_ReceivedEviolite
 	msgbox DewfordTown_Text_FishedUpEviolite
 	giveitem ITEM_EVIOLITE
-	goto_if_eq VAR_RESULT, 0, Common_EventScript_BagIsFull
+	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox DewfordTown_Text_ReceivedEviolite, MSGBOX_DEFAULT
 	setflag FLAG_DEWFORD_EVIOLITE
 	release
@@ -963,7 +963,7 @@ DewfordTown_Text_FishedUpEviolite:
 DewfordTown_Text_FisherManDiglett:
 	.string "Hmm… All these Pokémon wreaking havoc\n"
 	.string "in town…\p"
-	.string "Not as good as bait, that's for sure!$"
+	.string "Not good for fishing, that's for sure!$"
 
 DewfordTown_Text_WomanDiglett:
 	.string "These Pokémon! What's happening to\n"
