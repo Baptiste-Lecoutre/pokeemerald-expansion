@@ -8,7 +8,7 @@ VerdanturfTown_MapScripts::
 VerdanturfTown_OnTransition:
 	setflag FLAG_VISITED_VERDANTURF_TOWN
 	setvar VAR_CONTEST_HALL_STATE, 0
-	goto_if_defeated TRAINER_ERIKA, VerdanturfTown_EventScript_HideErika
+	call_if_defeated TRAINER_ERIKA, VerdanturfTown_EventScript_HideErika
 	end
 
 VerdanturfTown_EventScript_HideErika::

@@ -9,7 +9,7 @@ Route121_MapScripts::
 	.byte 0
 
 Route121_OnTransition:
-	goto_if_defeated TRAINER_RED_ROUTE121, Route121_EventScript_HideRed
+	call_if_defeated TRAINER_RED_ROUTE121, Route121_EventScript_HideRed
 	end
 
 Route121_EventScript_HideRed::

@@ -17,7 +17,7 @@ MossdeepCity_OnTransition:
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_2
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_3
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_4
-	goto_if_defeated TRAINER_SABRINA, MossDeepCity_EventScript_HideSabrina
+	call_if_defeated TRAINER_SABRINA, MossDeepCity_EventScript_HideSabrina
 	call_if_set FLAG_SYS_WEATHER_CTRL, Common_EventScript_SetAbnormalWeather
 	call_if_unset FLAG_FISHERMAN_POLIWAG_JUMPED, MossdeepCity_HideFishermanPoliwhirl
 	end

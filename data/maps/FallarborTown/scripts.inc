@@ -10,7 +10,7 @@ FallarborTown_OnTransition:
 	clearflag FLAG_CONTEST_SKETCH_CREATED
 	setflag FLAG_TEMP_7
 	removeobject LOCALID_RED
-	goto_if_defeated TRAINER_RED_FALLARBOR, FallarborTown_EventScript_PreventDoingRedScene
+	call_if_defeated TRAINER_RED_FALLARBOR, FallarborTown_EventScript_PreventDoingRedScene
 	end
 
 FallarborTown_EventScript_PreventDoingRedScene::
