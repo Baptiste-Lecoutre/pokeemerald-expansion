@@ -3004,8 +3004,8 @@ void TryAddLastUsedBallItemSprites(void)
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {
         gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, (CanThrowLastUsedBall() ? gBallToDisplay : ITEM_SCANNER));
-        gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_0;
-        gSprites[gBattleStruct->ballSpriteIds[0]].y = LAST_USED_BALL_Y + 2*!CanThrowLastUsedBall();
+        gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_0 - !CanThrowLastUsedBall();
+        gSprites[gBattleStruct->ballSpriteIds[0]].y = LAST_USED_BALL_Y;
         gSprites[gBattleStruct->ballSpriteIds[0]].sHide = FALSE;   // restore
         gLastUsedBallMenuPresent = TRUE;
         gSprites[gBattleStruct->ballSpriteIds[0]].callback = SpriteCB_LastUsedBall;
@@ -3088,7 +3088,7 @@ static void SpriteCB_LastUsedBall(struct Sprite *sprite)
     }
     else
     {
-        if (sprite->x != LAST_USED_BALL_X_F)
+        if (sprite->x != LAST_USED_BALL_X_F - !CanThrowLastUsedBall())
             sprite->x++;
     }
 }
