@@ -897,6 +897,7 @@ u16 GetTeraRaidShieldProtectedHP(void)
 // Updates the state of the Raid shield (set up, clearing, or breaking individual barriers).
 bool32 UpdateRaidShield(void)
 {
+    bool32 retVal = FALSE;
     if (gBattleStruct->raid.state & RAID_CREATE_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_CREATE_SHIELD;
@@ -918,9 +919,9 @@ bool32 UpdateRaidShield(void)
         // Play animation and message.
         BattleScriptPushCursor();
         gBattlescriptCurrInstr = BattleScript_RaidShieldAppeared;
-        return TRUE;
+        retVal = TRUE;
     }
-    else if (gBattleStruct->raid.state & RAID_BREAK_SHIELD && gBattleMoveDamage > 0)
+    if (gBattleStruct->raid.state & RAID_BREAK_SHIELD && gBattleMoveDamage > 0)
     {
         gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
         // Destroy an extra barrier with a Max Move.
@@ -985,26 +986,27 @@ bool32 UpdateRaidShield(void)
             gBattlescriptCurrInstr = BattleScript_RaidShieldDisappeared;
         else
             gBattlescriptCurrInstr = BattleScript_RaidBarrierBroken;
-        return TRUE;
+        retVal = TRUE;
     }
-    else if (gBattleStruct->raid.state & RAID_RESHOW_SHIELD)
+    if (gBattleStruct->raid.state & RAID_HIDE_SHIELD && gBattleStruct->raid.shield > 0)
+    {
+        u32 i;
+        gBattleStruct->raid.state &= ~RAID_HIDE_SHIELD;
+        for (i = 0; i < gBattleStruct->raid.shield; i++)
+            DestroyRaidBarrierSprite(i);
+        retVal = TRUE;
+    }
+    if (gBattleStruct->raid.state & RAID_RESHOW_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_RESHOW_SHIELD;
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             CreateAllRaidBarrierSprites();
-        return TRUE;
+        retVal = TRUE;
     }
-    else if (gBattleStruct->raid.state & RAID_HIDE_SHIELD && gBattleStruct->raid.shield > 0)
-    {
-        u32 i;
-        gBattleStruct->raid.state &= ~RAID_HIDE_SHIELD;
-        for (i = 0; i < gBattleStruct->raid.shield; i++)
-            DestroyRaidBarrierSprite(i);
-        return TRUE;
-    }
-    else if (gBattleStruct->raid.state & RAID_UPDATE_SHIELD)
+
+    if (gBattleStruct->raid.state & RAID_UPDATE_SHIELD)
     {
         u32 i;
         gBattleStruct->raid.state &= ~RAID_UPDATE_SHIELD;
@@ -1014,9 +1016,9 @@ bool32 UpdateRaidShield(void)
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             CreateAllRaidBarrierSprites();
-        return TRUE;
+        retVal = TRUE;
     }
-    return FALSE;
+    return retVal;
 }
 
 // Returns the amount of damage required to make a Raid Boss produce a shield.
