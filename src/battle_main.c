@@ -4217,6 +4217,8 @@ void BattleTurnPassed(void)
     SetAiLogicDataForTurn(AI_DATA); // get assumed abilities, hold effects, etc of all battlers
     gBattleMainFunc = HandleTurnActionSelectionState;
 
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+        UpdateRaidTimerSprites();
     if (gBattleTypeFlags & BATTLE_TYPE_RAID && ShouldRaidKickPlayer()) // Raid Storm check
         gBattleMainFunc = HandleEndTurn_FinishBattle;
     else if (gBattleTypeFlags & BATTLE_TYPE_RAID && ShouldMoveDynamaxEnergy()) // Show which mon has dynamax energy in raids

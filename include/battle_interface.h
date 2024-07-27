@@ -84,6 +84,9 @@ enum
 #define TAG_RAID_BARRIER_TILE           0xD794
 #define TAG_MEGA_BARRIER_PAL            0xD795
 #define TAG_TERA_BARRIER_PAL            0xD796
+#define TAG_RAID_TIMER_LEFT_TILE        0xD797
+#define TAG_RAID_TIMER_RIGHT_TILE       0xD798
+#define TAG_RAID_TIMER_PAL              0xD799
 
 enum
 {

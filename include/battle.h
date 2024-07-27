@@ -608,6 +608,7 @@ struct RaidBattleData
     bool8 movedTwice:1;   // stores whether the raid boss has moves twice during the turn
     bool8 statIncreased:1;// stores whether the raid boss stats have increased after fainting a mon
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for Gen 8-style shields
+    u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
 };
 
 struct LostItem

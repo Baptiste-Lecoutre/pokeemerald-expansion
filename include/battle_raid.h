@@ -52,6 +52,10 @@ bool32 UpdateRaidShield(void);
 u16 GetShieldDamageRequired(u16 hp, u16 maxHP);
 u16 GetShieldDamageReduction(void);
 void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible);
+void CreateRaidTimerSprites(void);
+void DestroyRaidTimerSprites(void);
+void RaidTimer_SetVisibilities(u32 healthboxId, bool32 invisible);
+void UpdateRaidTimerSprites(void);
 
 void SetRaidBattleFlag(void);
 bool8 GetRaidBattleFlag(void);

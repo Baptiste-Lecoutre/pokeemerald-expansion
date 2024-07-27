@@ -750,6 +750,8 @@ u8 CreateBattlerHealthboxSprites(u8 battlerId)
         gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
         UpdateRaidShield();
     }
+    if (IsRaidBoss(battlerId) && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+        CreateRaidTimerSprites();
 
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
@@ -838,7 +840,11 @@ void SetHealthboxSpriteInvisible(u8 healthboxSpriteId)
     UpdateIndicatorVisibilityAndType(healthboxSpriteId, TRUE);
 
     if (IsRaidBoss(battlerId))
+    {
         RaidBarrier_SetVisibilities(healthboxSpriteId, TRUE);
+        if ((gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+            RaidTimer_SetVisibilities(healthboxSpriteId, TRUE);
+    }
 }
 
 void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
@@ -851,7 +857,11 @@ void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
     UpdateIndicatorVisibilityAndType(healthboxSpriteId, FALSE);
 
     if (IsRaidBoss(battlerId))
+    {
         RaidBarrier_SetVisibilities(healthboxSpriteId, FALSE);
+        if ((gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+            RaidTimer_SetVisibilities(healthboxSpriteId, FALSE);
+    }
 }
 
 static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
@@ -885,7 +895,11 @@ static void TryToggleHealboxVisibility(u32 priority, u32 healthboxLeftSpriteId, 
     UpdateIndicatorVisibilityAndType(healthboxLeftSpriteId, invisible);
 
     if (IsRaidBoss(battlerId))
+    {
         RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
+        if ((gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+            RaidTimer_SetVisibilities(healthboxLeftSpriteId, invisible);
+    }
 }
 
 void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)

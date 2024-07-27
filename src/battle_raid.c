@@ -549,6 +549,11 @@ void InitRaidBattleData(void)
     // Zeroes sprite IDs for Gen 8-style shield.
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
         gBattleStruct->raid.barrierSpriteIds[i] = MAX_SPRITES;
+    
+    for (i = 0; i < 2; i++)
+        gBattleStruct->raid.timerSpriteIds[i] = MAX_SPRITES;
+    gBattleStruct->battleTimer = 0;
+    CreateRaidTimerSprites();
 
     // Mega Raids start off with a shield at the beginning.
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
@@ -560,10 +565,6 @@ void InitRaidBattleData(void)
         if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
             gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].moves[3] = MOVE_DRAGON_ASCENT;
     }
-    /*else if (gRaisTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
-    {
-        gBattleStruct->raid.shieldsRemaining = 1;
-    }*/
 
     // Update HP Multiplier.
     RecalcBattlerStats(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &gEnemyParty[0]);
@@ -1086,7 +1087,7 @@ static const struct SpriteSheet sSpriteSheet_AlphaRaidBarrier =
     sAlphaRaidBarrierGfx, sizeof(sAlphaRaidBarrierGfx), TAG_RAID_BARRIER_TILE
 };
 
-static const struct SpriteSheet sSpriteSheet_TeraRaidBarrier = 
+static const struct SpriteSheet sSpriteSheet_TeraRaidBarrier = // unused now?
 {
     sTeraRaidBarrierGfx, sizeof(sTeraRaidBarrierGfx), TAG_RAID_BARRIER_TILE
 };
@@ -1333,8 +1334,6 @@ static void DestroyRaidBarrierSprite(u8 index)
     }
 }
 
-#define hMain_Battler data[6]
-
 void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible)
 {
     u32 i;
@@ -1345,8 +1344,198 @@ void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible)
     }
 }
 
-#undef hMain_Battler
+// Raid visual timer part
+static const u16 sRaidTimerLeftGfx[] = INCBIN_U16("graphics/battle_interface/raid_timer_left.4bpp");
+static const u16 sRaidTimerRightGfx[] = INCBIN_U16("graphics/battle_interface/raid_timer_right.4bpp");
+static const u16 sRaidTimerPal[] = INCBIN_U16("graphics/battle_interface/raid_timer_left.gbapal");
 
+static const struct SpriteSheet sSpriteSheet_RaidTimerLeft = // unused ?
+{
+    sRaidTimerLeftGfx, sizeof(sRaidTimerLeftGfx), TAG_RAID_TIMER_LEFT_TILE
+};
+
+static const struct SpriteSheet sSpriteSheet_RaidTimerRight = // unused ?
+{
+    sRaidTimerRightGfx, sizeof(sRaidTimerRightGfx), TAG_RAID_TIMER_RIGHT_TILE
+};
+
+static const struct OamData sOamData_RaidTimer =
+{
+    .y = 0,
+    .affineMode = 0,
+    .objMode = 0,
+    .mosaic = 0,
+    .bpp = 0,
+    .shape = SPRITE_SHAPE(32x8),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(32x8),
+    .tileNum = 0,
+    .priority = 2,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_RaidTimerLeft =
+{
+    .tileTag = TAG_RAID_TIMER_LEFT_TILE,
+    .paletteTag = TAG_RAID_TIMER_PAL,
+    .oam = &sOamData_RaidTimer,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCb_RaidBarrier,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_RaidTimerRight =
+{
+    .tileTag = TAG_RAID_TIMER_RIGHT_TILE,
+    .paletteTag = TAG_RAID_TIMER_PAL,
+    .oam = &sOamData_RaidTimer,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCb_RaidBarrier,
+};
+
+static const struct SpritePalette sSpritePalette_RaidTimer = 
+{
+    sRaidTimerPal, TAG_RAID_TIMER_PAL
+};
+
+static const s8 sRaidTimerPosition[2][2] = {
+    [0] = {-10, -17},
+    [1] = {22, -17},
+};
+
+static void FillRaidTimerBar(u8 *dst, u32 index)
+{
+    u32 i;
+    s32 numPix = 13+31; //13 pixels left sprite, 31 pixels right sprite
+    s32 temp, currentValue, maxValue;
+    u8 lightColor, darkColor;
+
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX
+        || gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA)
+    {
+        lightColor = 2;
+        darkColor = 3;
+        currentValue = gBattleResults.battleTurnCounter;
+        maxValue = RAID_STORM_TURNS_MAX;
+    }
+    else
+    {
+        lightColor = 4;
+        darkColor = 5;
+        currentValue = gBattleStruct->battleTimer;
+        maxValue = RAID_STORM_TIMER_MAX;
+    }
+
+    numPix *= (maxValue - currentValue);
+    temp = numPix / maxValue;
+    if (((temp+1)*maxValue - numPix) < (numPix - temp*maxValue))
+        numPix = temp+1;
+    else
+        numPix=temp;
+    
+    if (index && numPix > 13)
+    {
+        for (i = 0; i < numPix-13; i++)
+        {
+            WritePixel(dst, i, 5, darkColor);
+            WritePixel(dst, i, 6, (i==30) ? darkColor : lightColor);
+            WritePixel(dst, i, 7, (i==30) ? darkColor : lightColor);
+        }
+    }
+    else if (!index && numPix >= 0)
+    {
+        if (numPix > 13)
+            numPix = 13;
+        for (i = 0; i < numPix; i++)
+        {
+            WritePixel(dst, i+19, 5, darkColor);
+            WritePixel(dst, i+19, 6, (i==0) ? darkColor : lightColor);
+            WritePixel(dst, i+19, 7, (i==0) ? darkColor : lightColor);
+        }
+    }
+}
+
+void CreateRaidTimerSprites(void)
+{
+
+    u32 spriteId;
+    s16 x, y;
+
+    if (gBattleStruct->raid.timerSpriteIds[0] == MAX_SPRITES)
+    {
+        u8 *gfxLeft = Alloc(8*32);
+        struct SpriteSheet sheetLeft = {gfxLeft, 8*32, TAG_RAID_TIMER_LEFT_TILE};
+        memcpy(gfxLeft, sRaidTimerLeftGfx, sizeof(sRaidTimerLeftGfx));
+
+        // modify gfx
+        FillRaidTimerBar(gfxLeft, 0);
+
+        GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
+        x += sRaidTimerPosition[0][0];
+        y += sRaidTimerPosition[0][1];
+
+        LoadSpritePalette(&sSpritePalette_RaidTimer);
+        LoadSpriteSheet(&sheetLeft);
+        Free(gfxLeft);
+        gBattleStruct->raid.timerSpriteIds[0]=CreateSprite(&sSpriteTemplate_RaidTimerLeft, x, y, 0);
+    }
+
+    if (gBattleStruct->raid.timerSpriteIds[1] == MAX_SPRITES)
+    {
+        u8 *gfxRight = Alloc(8*32);
+        struct SpriteSheet sheetRight = {gfxRight, 8*32, TAG_RAID_TIMER_RIGHT_TILE};
+        memcpy(gfxRight, sRaidTimerRightGfx, sizeof(sRaidTimerRightGfx));
+
+        // modify gfx
+        FillRaidTimerBar(gfxRight, 1);
+
+        GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
+        x += sRaidTimerPosition[1][0];
+        y += sRaidTimerPosition[1][1];
+
+        LoadSpriteSheet(&sheetRight);
+        Free(gfxRight);
+        gBattleStruct->raid.timerSpriteIds[1]=CreateSprite(&sSpriteTemplate_RaidTimerRight, x, y, 0);
+    }
+}
+
+void DestroyRaidTimerSprites(void)
+{
+    u32 i;
+    for (i = 0; i < 2; i++)
+    {
+        if (gBattleStruct->raid.timerSpriteIds[i] != MAX_SPRITES)
+        {
+            DestroySprite(&gSprites[gBattleStruct->raid.timerSpriteIds[i]]);
+            gBattleStruct->raid.timerSpriteIds[i] = MAX_SPRITES;
+        }
+    }
+    FreeSpriteTilesByTag(TAG_RAID_TIMER_LEFT_TILE);
+    FreeSpriteTilesByTag(TAG_RAID_TIMER_RIGHT_TILE);
+}
+
+void RaidTimer_SetVisibilities(u32 healthboxId, bool32 invisible)
+{
+    u32 i;
+    for (i = 0; i < 2; i++)
+    {
+        if (gBattleStruct->raid.timerSpriteIds[i] != MAX_SPRITES)
+            gSprites[gBattleStruct->raid.timerSpriteIds[i]].invisible = invisible;
+    }
+}
+
+void UpdateRaidTimerSprites(void)
+{
+    DestroyRaidTimerSprites();
+    CreateRaidTimerSprites();
+}
+
+// Raid scripting part
 static u8 GetRaidMapSectionId(void)
 {
     u8 currRegionMapSecId = GetCurrentRegionMapSectionId();
