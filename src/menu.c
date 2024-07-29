@@ -10,6 +10,7 @@
 #include "map_name_popup.h"
 #include "menu.h"
 #include "menu_helpers.h"
+#include "overworld.h"
 #include "palette.h"
 #include "pokedex.h"
 #include "pokemon_icon.h"
@@ -2252,7 +2253,7 @@ void HBlankCB_DoublePopupWindow(void)
         REG_BG0VOFS = offset;
 
         if(OW_POPUP_BW_ALPHA_BLEND && !IsWeatherAlphaBlend())
-            REG_BLDALPHA = BLDALPHA_BLEND(7, 12); // 15, 5
+            REG_BLDALPHA = (gTimeOfDay == TIME_OF_DAY_NIGHT) ? BLDALPHA_BLEND(12, 12) : BLDALPHA_BLEND(7, 12); // 15, 5
     }
     else
     {

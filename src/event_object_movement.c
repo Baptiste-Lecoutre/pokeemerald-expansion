@@ -2531,28 +2531,42 @@ void GetFollowerAction(struct ScriptContext *ctx) // Essentially a big switch fo
                         gFollowerBasicMessages[emotion].script);
 }
 
+#define sLightType      data[5]
+#define sLightX         data[6]
+#define sLightY         data[7]
 // Sprite callback for light sprites
 void UpdateLightSprite(struct Sprite *sprite) {
     s16 left =   gSaveBlock1Ptr->pos.x - 2;
     s16 right =  gSaveBlock1Ptr->pos.x + 17;
     s16 top =    gSaveBlock1Ptr->pos.y;
     s16 bottom = gSaveBlock1Ptr->pos.y + 15;
-    s16 x = sprite->data[6];
-    s16 y = sprite->data[7];
-    u16 sheetTileStart;
-    u32 paletteNum;
+    s16 x = sprite->sLightX;
+    s16 y = sprite->sLightY;
+
     // Ripped from RemoveObjectEventIfOutsideView
     if (!(x >= left && x <= right && y >= top && y <= bottom)) {
-        sheetTileStart = sprite->sheetTileStart;
-        paletteNum = sprite->oam.paletteNum;
+        u16 sheetTileStart = sprite->sheetTileStart;
+        u32 paletteNum = sprite->oam.paletteNum;
         DestroySprite(sprite);
         FieldEffectFreeTilesIfUnused(sheetTileStart);
         FieldEffectFreePaletteIfUnused(paletteNum);
-        Weather_SetBlendCoeffs(8, 10); // TODO: Restore original blend coeffs at dawn //7, 12
+        Weather_SetBlendCoeffs(7, 12);//(8, 10); // TODO: Restore original blend coeffs at dawn //7, 12
         return;
     }
+    else
+    {
+        if (gTimeOfDay == TIME_OF_DAY_NIGHT)
+        {
+            Weather_SetBlendCoeffs(12, 12);
+            sprite->invisible = FALSE;
+        }
+        else
+        {
+            sprite->invisible = TRUE;
+        }
+    }
 
-    if (gTimeOfDay != TIME_OF_DAY_NIGHT) {
+    /*if (gTimeOfDay != TIME_OF_DAY_NIGHT) {
         sprite->invisible = TRUE;
         return;
     }
@@ -2567,17 +2581,17 @@ void UpdateLightSprite(struct Sprite *sprite) {
             sprite->invisible = FALSE;
             if (GetSpritePaletteTagByPaletteNum(sprite->oam.paletteNum) == OBJ_EVENT_PAL_TAG_LIGHT_2)
                 LoadSpritePaletteInSlot(&sObjectEventSpritePalettes[FindObjectEventPaletteIndexByTag(OBJ_EVENT_PAL_TAG_LIGHT)], sprite->oam.paletteNum);
-        } /*else if ((sprite->invisible = gTimeUpdateCounter & 1)) {
-            Weather_SetBlendCoeffs(12, 12);
-            if (GetSpritePaletteTagByPaletteNum(sprite->oam.paletteNum) == OBJ_EVENT_PAL_TAG_LIGHT)
-                LoadSpritePaletteInSlot(&sObjectEventSpritePalettes[FindObjectEventPaletteIndexByTag(OBJ_EVENT_PAL_TAG_LIGHT_2)], sprite->oam.paletteNum);
-        }*/
+        } //else if ((sprite->invisible = gTimeUpdateCounter & 1)) {
+          //  Weather_SetBlendCoeffs(12, 12);
+          //  if (GetSpritePaletteTagByPaletteNum(sprite->oam.paletteNum) == OBJ_EVENT_PAL_TAG_LIGHT)
+          //      LoadSpritePaletteInSlot(&sObjectEventSpritePalettes[FindObjectEventPaletteIndexByTag(OBJ_EVENT_PAL_TAG_LIGHT_2)], sprite->oam.paletteNum);
+        //}
         break;
     case 1 ... 2:
         Weather_SetBlendCoeffs(8, 10);
         sprite->invisible = FALSE;
         break;
-    }
+    }*/
 }
 
 // Spawn a light at a map coordinate
@@ -2599,9 +2613,9 @@ static void SpawnLightSprite(s16 x, s16 y, s16 camX, s16 camY, u32 lightType) {
     else
         UpdateSpritePaletteByTemplate(template, sprite);
     GetMapCoordsFromSpritePos(x + camX, y + camY, &sprite->x, &sprite->y);
-    sprite->data[5] = lightType;
-    sprite->data[6] = x;
-    sprite->data[7] = y;
+    sprite->sLightType = lightType;
+    sprite->sLightX = x;
+    sprite->sLightY = y;
     sprite->affineAnims = gDummySpriteAffineAnimTable;
     sprite->affineAnimBeginning = TRUE;
     sprite->coordOffsetEnabled = TRUE;
@@ -2621,6 +2635,7 @@ static void SpawnLightSprite(s16 x, s16 y, s16 camX, s16 camY, u32 lightType) {
         sprite->oam.priority = 2;
         sprite->subpriority = 0xFF;
         sprite->oam.objMode = 1; // BLEND
+        break;
     }
 }
 
@@ -2650,6 +2665,10 @@ void TrySpawnLightSprites(s16 camX, s16 camY) {
                 SpawnLightSprite(npcX, npcY, camX, camY, template->trainerRange_berryTreeId);
     }
 }
+
+#undef sLightType
+#undef sLightX
+#undef sLightY
 
 void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 {
