@@ -39,6 +39,19 @@
       "trainer_sight_or_berry_tree_id": "ITEM_TM100_CURSE",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_DEWFORD_MANOR_TM100"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_GOLD_ITEM_BALL",
+      "x": 22,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_HM_FLASH",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_RECEIVED_HM_FLASH"
     }
   ],
   "warp_events": [

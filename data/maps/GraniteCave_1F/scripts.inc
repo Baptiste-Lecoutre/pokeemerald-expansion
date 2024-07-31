@@ -6,9 +6,9 @@ GraniteCave_1F_EventScript_Hiker::
 	faceplayer
 	goto_if_set FLAG_RECEIVED_HM_FLASH, GraniteCave_1F_EventScript_ReceivedFlash
 	msgbox GraniteCave_1F_Text_GetsDarkAheadHereYouGo, MSGBOX_DEFAULT
-	giveitem ITEM_HM_FLASH
-	setflag FLAG_RECEIVED_HM_FLASH
-	msgbox GraniteCave_1F_Text_ExplainFlash, MSGBOX_DEFAULT
+@	giveitem ITEM_HM_FLASH
+@	setflag FLAG_RECEIVED_HM_FLASH
+@	msgbox GraniteCave_1F_Text_ExplainFlash, MSGBOX_DEFAULT
 	release
 	end
 
@@ -27,9 +27,15 @@ GraniteCave_1F_Text_GetsDarkAheadHereYouGo:
 	.string "to be all right, but…\p"
 	.string "Well, for us Hikers, helping out those\n"
 	.string "that we meet is our motto.\p"
-	.string "Here you go, I'll pass this on to you.$"
+	.string "Here you go, I'll pass the info\n"
+	.string "on to you:\p"
+	.string "I heard the hidden move Flash\n"
+	.string "can be found in the deserted manor\l"
+	.string "at the west of Dewford Town.\p"
+	.string "But I don't like this place…$"
 
 GraniteCave_1F_Text_ExplainFlash:
+	.string "Oh you got it!\p"
 	.string "Teach that hidden move Flash to\n"
 	.string "a Pokémon and use it.\p"
 	.string "It lights up even the inky darkness\n"
