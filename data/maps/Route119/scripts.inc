@@ -36,11 +36,11 @@ Route119_EventScript_SetLatiGfxId::
 	end
 
 Route119_EventScript_SetLatiosGfxId::
-	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_MON_BASE+SPECIES_LATIOS
+	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_SPECIES(LATIOS)
 	return
 
 Route119_EventScript_SetLatiasGfxId::
-	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_MON_BASE+SPECIES_LATIAS
+	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_SPECIES(LATIAS)
 	return
 
 Route119_EventScript_HideKoga::

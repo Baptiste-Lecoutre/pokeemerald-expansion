@@ -291,7 +291,7 @@
       "flag": "FLAG_TEMP_1"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_POLIWHIRL",
+      "graphics_id": "OBJ_EVENT_GFX_SPECIES(POLIWHIRL)",
       "x": 10,
       "y": 15,
       "elevation": 0,
