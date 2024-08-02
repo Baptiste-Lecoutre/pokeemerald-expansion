@@ -5927,10 +5927,10 @@ static void Cmd_moveend(void)
                         gBattlescriptCurrInstr = BattleScript_TargetBurnHeal;
                         break;
                     case STATUS1_FREEZE:
-                        gBattlescriptCurrInstr = BattleScript_FrostbiteHealedViaFireMove;
+                        gBattlescriptCurrInstr = BattleScript_DefrostedViaFireMove;
                         break;
                     case STATUS1_FROSTBITE:
-                        gBattlescriptCurrInstr = BattleScript_DefrostedViaFireMove;
+                        gBattlescriptCurrInstr = BattleScript_FrostbiteHealedViaFireMove;
                         break;
                     case STATUS1_POISON:
                     case STATUS1_TOXIC_POISON:
@@ -12086,16 +12086,6 @@ static u32 ChangeStatBuffs(s8 statValue, u32 statId, u32 flags, const u8 *BS_ptr
                 gBattlescriptCurrInstr = BattleScript_MirrorArmorReflect;
                 RecordAbilityBattle(battler, gBattleMons[battler].ability);
             }
-            return STAT_CHANGE_DIDNT_WORK;
-        }
-        else if (battlerAbility == ABILITY_SHIELD_DUST && flags == 0)
-        {
-            RecordAbilityBattle(battler, ABILITY_SHIELD_DUST);
-            return STAT_CHANGE_DIDNT_WORK;
-        }
-        else if (flags == 0 && battlerHoldEffect == HOLD_EFFECT_COVERT_CLOAK)
-        {
-            RecordItemEffectBattle(battler, HOLD_EFFECT_COVERT_CLOAK);
             return STAT_CHANGE_DIDNT_WORK;
         }
         else // try to decrease
