@@ -1397,7 +1397,9 @@ static u8 InitObjectEventStateFromTemplate(struct ObjectEventTemplate *template,
     SetObjectEventDynamicGraphicsId(objectEvent);
     if (objectEvent->graphicsId >= OBJ_EVENT_GFX_MON_BASE)
     {
-        if (template->script && template->script[0] == 0x7d)
+        if(objectEvent->graphicsId >= OBJ_EVENT_GFX_MON_BASE + SPECIES_SHINY_TAG)
+            objectEvent->shiny = TRUE;
+        else if (template->script && template->script[0] == 0x7d)
             objectEvent->shiny = T1_READ_16(&template->script[2]) >> 15;
         else if (template->trainerRange_berryTreeId)
             objectEvent->shiny = VarGet(template->trainerRange_berryTreeId) >> 5;
@@ -10983,4 +10985,17 @@ void GetDaycareGraphics(struct ScriptContext *ctx)
         VarSet(varForm[i], form | (shiny << 5));
     }
     gSpecialVar_Result = i;
+}
+
+// change object event movement in real-time, from Ghoul
+void SetObjectEventMovementType(void)
+{
+    struct ObjectEvent *objectEvent = &gObjectEvents[GetObjectEventIdByLocalId(gSpecialVar_0x8005)];
+    u8 movementType = gSpecialVar_0x8006;
+
+    objectEvent->movementType = movementType;
+    objectEvent->directionSequenceIndex = 0;
+    objectEvent->playerCopyableMovement = 0;
+    gSprites[objectEvent->spriteId].callback = sMovementTypeCallbacks[movementType];
+    gSprites[objectEvent->spriteId].sTypeFuncId = 0;
 }

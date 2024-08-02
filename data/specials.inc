@@ -614,3 +614,4 @@ gSpecials::
 	def_special Script_GetChosenMonDefensiveIVs
 	def_special SetPokedexSeenFlag
 	def_special SetPokedexCaughtFlag
+	def_special SetObjectEventMovementType
