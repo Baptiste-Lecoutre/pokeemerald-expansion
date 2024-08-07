@@ -819,6 +819,7 @@ struct BattleStruct
     u32 stellarBoostFlags[NUM_BATTLE_SIDES]; // stored as a bitfield of flags for all types for each side
     u8 revealedEnemyMons;
     u32 battleTimer; // frame counter to measure battle time length
+    u8 hasBattleInputStarted:1; // speed up battle
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,

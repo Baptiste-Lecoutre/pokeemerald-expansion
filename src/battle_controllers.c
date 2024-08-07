@@ -3115,3 +3115,47 @@ void BtlController_HandleBattleAnimation(u32 battler, bool32 ignoreSE, bool32 up
             BattleTv_SetDataBasedOnAnimation(animationId);
     }
 }
+
+u32 SpeedUp_GetBattleSpeedScale(bool32 forHealthbar)
+{
+    u8 battleSceneOption = gSaveBlock2Ptr->optionsBattleScene; //VarGet(B_BATTLE_SPEED); //Originally GetBattleSceneOption() with a saveblock stored value;
+
+    // hold L Button to slow down
+    if (JOY_HELD(L_BUTTON))
+        return 1;
+
+    // we want to spped up all anims until input selection starts
+    if (InBattleChoosingMoves())
+        gBattleStruct->hasBattleInputStarted = TRUE;
+
+    if (gBattleStruct->hasBattleInputStarted)
+    {
+        // always run at 1x speed here
+        if (InBattleChoosingMoves())
+            return 1;
+
+        // when battle anims are turned off, it's a bit too hard to read text, so force running at normal speed
+        if (!forHealthbar && battleSceneOption == OPTIONS_BATTLE_SCENE_DISABLED && InBattleRunningActions())
+            return 1;
+    }
+
+    // we don't need to speed up health bar anymore as that passively happens now
+    switch (battleSceneOption)
+    {
+    case OPTIONS_BATTLE_SCENE_1X:
+        return forHealthbar ? 1 : 1;
+    case OPTIONS_BATTLE_SCENE_2X:
+        return forHealthbar ? 1 : 2;
+    case OPTIONS_BATTLE_SCENE_3X:
+        return forHealthbar ? 1 : 3;
+    case OPTIONS_BATTLE_SCENE_4X:
+        return forHealthbar ? 1 : 4;
+    // print text at a readable speed still
+    case OPTIONS_BATTLE_SCENE_DISABLED:
+        if (gBattleStruct->hasBattleInputStarted)
+            return forHealthbar ? 10 : 1;
+        else
+            return 4;
+    }
+    return 1;
+}

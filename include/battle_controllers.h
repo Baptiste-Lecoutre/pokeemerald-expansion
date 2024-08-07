@@ -344,4 +344,7 @@ void SetControllerToLinkOpponent(u32 battler);
 // link partner
 void SetControllerToLinkPartner(u32 battler);
 
+// Battle speed up (credits to Pokabbie & Alex for porting it)
+u32 SpeedUp_GetBattleSpeedScale(bool32 forHealthBar);
+
 #endif // GUARD_BATTLE_CONTROLLERS_H
