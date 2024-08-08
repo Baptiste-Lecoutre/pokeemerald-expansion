@@ -115,7 +115,7 @@ void HandleIntroSlide(u8 terrain)
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
     {
-        taskId = CreateTask((TRUE) ? BattleIntroNoSlide : BattleIntroSlide3, 0);
+        taskId = CreateTask((gSaveBlock2Ptr->optionsBattleScene) ? BattleIntroNoSlide : BattleIntroSlide3, 0);
     }
     else if (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL) == SPECIES_KYOGRE)
     {
@@ -124,7 +124,7 @@ void HandleIntroSlide(u8 terrain)
     }
     else
     {
-        taskId = CreateTask((TRUE) ? BattleIntroNoSlide : sBattleIntroSlideFuncs[terrain], 0);
+        taskId = CreateTask((gSaveBlock2Ptr->optionsBattleScene) ? BattleIntroNoSlide : sBattleIntroSlideFuncs[terrain], 0);
     }
 
     gTasks[taskId].tState = 0;

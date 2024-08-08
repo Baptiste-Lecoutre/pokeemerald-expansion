@@ -2561,7 +2561,7 @@ void BtlController_HandleDrawTrainerPic(u32 battler, u32 trainerPicId, bool32 is
         gSprites[gBattlerSpriteIds[battler]].x2 = DISPLAY_WIDTH;
         gSprites[gBattlerSpriteIds[battler]].sSpeedX = -2;
     }
-    gSprites[gBattlerSpriteIds[battler]].callback = (TRUE) ? SpriteCB_TrainerSpawn :SpriteCB_TrainerSlideIn;
+    gSprites[gBattlerSpriteIds[battler]].callback = (gSaveBlock2Ptr->optionsBattleScene) ? SpriteCB_TrainerSpawn :SpriteCB_TrainerSlideIn;
 
     gBattlerControllerFuncs[battler] = Controller_WaitForTrainerPic;
 }
