@@ -795,6 +795,7 @@ struct BattleStruct
     u8 quickClawRandom[MAX_BATTLERS_COUNT];
     u8 quickDrawRandom[MAX_BATTLERS_COUNT];
     u8 shellSideArmCategory[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT];
+    u8 speedTieBreaks; // MAX_BATTLERS_COUNT! values.
     u8 boosterEnergyActivates;
     u8 distortedTypeMatchups;
     u8 categoryOverride; // for Z-Moves and Max Moves
@@ -811,13 +812,6 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 #define F_DYNAMIC_TYPE_IGNORE_PHYSICALITY  (1 << 6) // If set, the dynamic type's physicality won't be used for certain move effects.
 #define F_DYNAMIC_TYPE_SET                 (1 << 7) // Set for all dynamic types to distinguish a dynamic type of Normal (0) from no dynamic type.
 
-#define GET_MOVE_TYPE(move, typeArg) do {                             \
-    if (gBattleStruct->dynamicMoveType)                               \
-        typeArg = gBattleStruct->dynamicMoveType & DYNAMIC_TYPE_MASK; \
-    else                                                              \
-        typeArg = gMovesInfo[move].type;                              \
-} while(0)
-
 #define IS_MOVE_PHYSICAL(move)(GetBattleMoveCategory(move) == DAMAGE_CATEGORY_PHYSICAL)
 #define IS_MOVE_SPECIAL(move)(GetBattleMoveCategory(move) == DAMAGE_CATEGORY_SPECIAL)
 #define IS_MOVE_STATUS(move)(gMovesInfo[move].category == DAMAGE_CATEGORY_STATUS)
@@ -832,18 +826,18 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 #define IS_BATTLER_OF_BASE_TYPE(battlerId, type)((GetBattlerType(battlerId, 0, TRUE) == type || GetBattlerType(battlerId, 1, TRUE) == type || (GetBattlerType(battlerId, 2, TRUE) != TYPE_MYSTERY && GetBattlerType(battlerId, 2, TRUE) == type)))
 #define IS_BATTLER_TYPELESS(battlerId)(GetBattlerType(battlerId, 0, FALSE) == TYPE_MYSTERY && GetBattlerType(battlerId, 1, FALSE) == TYPE_MYSTERY && GetBattlerType(battlerId, 2, FALSE) == TYPE_MYSTERY)
 
-#define SET_BATTLER_TYPE(battlerId, type)           \
-{                                                   \
-    gBattleMons[battlerId].type1 = type;            \
-    gBattleMons[battlerId].type2 = type;            \
-    gBattleMons[battlerId].type3 = TYPE_MYSTERY;    \
+#define SET_BATTLER_TYPE(battlerId, type)              \
+{                                                      \
+    gBattleMons[battlerId].types[0] = type;            \
+    gBattleMons[battlerId].types[1] = type;            \
+    gBattleMons[battlerId].types[2] = TYPE_MYSTERY;    \
 }
 
-#define RESTORE_BATTLER_TYPE(battlerId)                                                     \
-{                                                                                           \
-    gBattleMons[battlerId].type1 = gSpeciesInfo[gBattleMons[battlerId].species].types[0];   \
-    gBattleMons[battlerId].type2 = gSpeciesInfo[gBattleMons[battlerId].species].types[1];   \
-    gBattleMons[battlerId].type3 = TYPE_MYSTERY;                                            \
+#define RESTORE_BATTLER_TYPE(battlerId)                                                        \
+{                                                                                              \
+    gBattleMons[battlerId].types[0] = gSpeciesInfo[gBattleMons[battlerId].species].types[0];   \
+    gBattleMons[battlerId].types[1] = gSpeciesInfo[gBattleMons[battlerId].species].types[1];   \
+    gBattleMons[battlerId].types[2] = TYPE_MYSTERY;                                            \
 }
 
 #define IS_BATTLER_PROTECTED(battlerId)(gProtectStructs[battlerId].protected                                           \
