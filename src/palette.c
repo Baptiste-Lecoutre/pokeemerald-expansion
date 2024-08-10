@@ -1083,7 +1083,7 @@ void TintPalette_CustomTone(u16 *palette, u32 count, u16 rTone, u16 gTone, u16 b
     }
 }
 
-void TintPalette_CustomTone_Blend(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 bTone)
+void TintPalette_CustomTone_Blend(u16 *palette, u32 count, u16 rTone, u16 gTone, u16 bTone)
 {
     s32 r, g, b, i;
     u32 gray;
