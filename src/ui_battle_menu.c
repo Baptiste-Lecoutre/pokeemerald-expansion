@@ -1248,21 +1248,21 @@ static void PrintStatsTab(){
     //Pokemon Types
     y++;
     x = 9;
-    StringCopy(gStringVar1, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type1].name);
+    StringCopy(gStringVar1, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[0]].name);
     //Check if there is a second type
-    if(gBattleMons[sMenuDataPtr->battlerId].type1 != gBattleMons[sMenuDataPtr->battlerId].type2){
+    if(gBattleMons[sMenuDataPtr->battlerId].types[0] != gBattleMons[sMenuDataPtr->battlerId].types[1]){
         numtypes++;
-        StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type2].name);
+        StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[1]].name);
     }
     //Check if there is a third type
-    if(gBattleMons[sMenuDataPtr->battlerId].type3 != TYPE_MYSTERY && 
-       gBattleMons[sMenuDataPtr->battlerId].type3 != gBattleMons[sMenuDataPtr->battlerId].type1 &&
-       gBattleMons[sMenuDataPtr->battlerId].type3 != gBattleMons[sMenuDataPtr->battlerId].type2){
+    if(gBattleMons[sMenuDataPtr->battlerId].types[2] != TYPE_MYSTERY && 
+       gBattleMons[sMenuDataPtr->battlerId].types[2] != gBattleMons[sMenuDataPtr->battlerId].types[0] &&
+       gBattleMons[sMenuDataPtr->battlerId].types[2] != gBattleMons[sMenuDataPtr->battlerId].types[1]){
         numtypes++;
         if(numtypes == 2)
-            StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type3].name);
+            StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[2]].name);
         else
-            StringCopy(gStringVar3, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].type3].name);
+            StringCopy(gStringVar3, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[2]].name);
     }   
 
     switch(numtypes){
@@ -1871,7 +1871,6 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
 
     //Sets move type depending on the mon ability/stats
     SetTypeBeforeUsingMove(move, sMenuDataPtr->battlerId);
-    GET_MOVE_TYPE(move, moveType);
 
     //Sets move power depending on the mon ability/stats
     movePower = calculateTotalMoveDamage(move, sMenuDataPtr->battlerId, target, moveType);
@@ -2773,7 +2772,7 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     u32 minDamage, maxDamage, midDamage, tempdamage;
     s32 dmg, critDmg, critChance, tempchance, minHits2KOChance;
     u32 hits2KO = 0, hits2KOmin, percentage;
-    u8 chance, moveType;
+    u8 chance;
     u8 natureAtk, natureDef;
     u8 statUpAtk, statUpDef;
     u8 statDownAtk, statDownDef;
@@ -2783,6 +2782,7 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     bool8 isCrit = FALSE;
     u16 typeEffectivenessModifier;
     u16 move = gBattleMons[battler].moves[moveIndex];
+    u8 moveType = gMovesInfo[move].type;
     const s8 *natureMod;
     
     if(sMenuDataPtr->damageCalculation[battler][target][moveIndex].calculated)
@@ -2792,7 +2792,6 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
 
     //Sets move type depending on the mon ability/stats
     SetTypeBeforeUsingMove(move, battler);
-    GET_MOVE_TYPE(move, moveType);
     
     typeEffectivenessModifier = CalcTypeEffectivenessMultiplier(move, moveType, battler, target, GetBattlerAbility(target), FALSE);
 
@@ -2891,7 +2890,7 @@ static void PrintDamageCalculation(u8 battler, u8 target, u8 moveIdx){
     s32 dmg, critDmg, critChance, tempchance;
     double minHits2KOChance;
     u16 hits2KO, hits2KOmin, percentage;
-    u8 chance, moveType;
+    u8 chance;
     u8 natureAtk, natureDef;
     u8 statUpAtk, statUpDef;
     u8 statDownAtk, statDownDef;
@@ -2901,12 +2900,12 @@ static void PrintDamageCalculation(u8 battler, u8 target, u8 moveIdx){
     u16 typeEffectivenessModifier;
     const s8 *natureMod;
     u16 move = gBattleMons[battler].moves[moveIdx];
+    u8 moveType = gMovesInfo[move].type;
     struct DamageCalculation *damageCalculation;
     u8 *DamageCalculationText;
 
     //Sets move type depending on the mon ability/stats
     SetTypeBeforeUsingMove(move, battler);
-    GET_MOVE_TYPE(move, moveType);
     
     typeEffectivenessModifier = CalcTypeEffectivenessMultiplier(move, moveType, battler, target, GetBattlerAbility(target), FALSE);
 
@@ -3777,7 +3776,6 @@ static void PrintSpeedTab(void)
                     if(gMovesInfo[move].category != DAMAGE_CATEGORY_STATUS && gMovesInfo[move].power > 0){
                         u8 moveType = gMovesInfo[move].type;
                         SetTypeBeforeUsingMove(move, battlertoCheck);
-                        GET_MOVE_TYPE(move, moveType);
                         moveDamage = CalculateMoveDamage(move, battlertoCheck, target, moveType, 0, FALSE, FALSE, FALSE);
                         if(targetCurrentHp <= moveDamage)
                             BlitBitmapToWindow(windowId, sCheck, (x * 8) + x2, (y * 8), 8, 8);

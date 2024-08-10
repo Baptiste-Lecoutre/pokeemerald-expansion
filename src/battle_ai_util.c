@@ -165,8 +165,8 @@ void SaveBattlerData(u32 battlerId)
             AI_THINKING_STRUCT->saved[battlerId].moves[i] = gBattleMons[battlerId].moves[i];
     }
     // Save and restore types even for AI controlled battlers in case it gets changed during move evaluation process.
-    AI_THINKING_STRUCT->saved[battlerId].types[0] = gBattleMons[battlerId].type1;
-    AI_THINKING_STRUCT->saved[battlerId].types[1] = gBattleMons[battlerId].type2;
+    AI_THINKING_STRUCT->saved[battlerId].types[0] = gBattleMons[battlerId].types[0];
+    AI_THINKING_STRUCT->saved[battlerId].types[1] = gBattleMons[battlerId].types[1];
 }
 
 static bool32 ShouldFailForIllusion(u32 illusionSpecies, u32 battlerId)
@@ -218,11 +218,11 @@ void SetBattlerData(u32 battlerId)
         if (illusionSpecies != SPECIES_NONE && ShouldFailForIllusion(illusionSpecies, battlerId))
         {
             // If the battler's type has not been changed, AI assumes the types of the illusion mon.
-            if (gBattleMons[battlerId].type1 == gSpeciesInfo[species].types[0]
-                && gBattleMons[battlerId].type2 == gSpeciesInfo[species].types[1])
+            if (gBattleMons[battlerId].types[0] == gSpeciesInfo[species].types[0]
+                && gBattleMons[battlerId].types[1] == gSpeciesInfo[species].types[1])
             {
-                gBattleMons[battlerId].type1 = gSpeciesInfo[illusionSpecies].types[0];
-                gBattleMons[battlerId].type2 = gSpeciesInfo[illusionSpecies].types[1];
+                gBattleMons[battlerId].types[0] = gSpeciesInfo[illusionSpecies].types[0];
+                gBattleMons[battlerId].types[1] = gSpeciesInfo[illusionSpecies].types[1];
             }
             species = illusionSpecies;
         }
@@ -262,8 +262,8 @@ void RestoreBattlerData(u32 battlerId)
         for (i = 0; i < 4; i++)
             gBattleMons[battlerId].moves[i] = AI_THINKING_STRUCT->saved[battlerId].moves[i];
     }
-    gBattleMons[battlerId].type1 = AI_THINKING_STRUCT->saved[battlerId].types[0];
-    gBattleMons[battlerId].type2 = AI_THINKING_STRUCT->saved[battlerId].types[1];
+    gBattleMons[battlerId].types[0] = AI_THINKING_STRUCT->saved[battlerId].types[0];
+    gBattleMons[battlerId].types[1] = AI_THINKING_STRUCT->saved[battlerId].types[1];
 }
 
 u32 GetHealthPercentage(u32 battlerId)
@@ -354,7 +354,7 @@ bool32 MovesWithCategoryUnusable(u32 attacker, u32 target, u32 category)
             && !(unusable & gBitTable[i]))
         {
             SetTypeBeforeUsingMove(moves[i], attacker);
-            GET_MOVE_TYPE(moves[i], moveType);
+            moveType = GetMoveType(moves[i]);
             if (CalcTypeEffectivenessMultiplier(moves[i], moveType, attacker, target, AI_DATA->abilities[target], FALSE) != 0)
                 usable |= gBitTable[i];
         }
@@ -400,10 +400,9 @@ static inline s32 DmgRoll(s32 dmg)
 
 bool32 IsDamageMoveUnusable(u32 move, u32 battlerAtk, u32 battlerDef)
 {
-    s32 moveType;
     struct AiLogicData *aiData = AI_DATA;
     u32 battlerDefAbility;
-    GET_MOVE_TYPE(move, moveType);
+    u32 moveType = GetMoveType(move);
 
     if (DoesBattlerIgnoreAbilityChecks(aiData->abilities[battlerAtk], move))
         battlerDefAbility = ABILITY_NONE;
@@ -547,7 +546,7 @@ struct SimulatedDamage AI_CalcDamage(u32 move, u32 battlerAtk, u32 battlerDef, u
     gBattleStruct->dynamicMoveType = 0;
 
     SetTypeBeforeUsingMove(move, battlerAtk);
-    GET_MOVE_TYPE(move, moveType);
+    moveType = GetMoveType(move);
     effectivenessMultiplier = CalcTypeEffectivenessMultiplier(move, moveType, battlerAtk, battlerDef, aiData->abilities[battlerDef], FALSE);
 
     if (gMovesInfo[move].power)
@@ -993,7 +992,7 @@ uq4_12_t AI_GetTypeEffectiveness(u32 move, u32 battlerAtk, u32 battlerDef)
 
     gBattleStruct->dynamicMoveType = 0;
     SetTypeBeforeUsingMove(move, battlerAtk);
-    GET_MOVE_TYPE(move, moveType);
+    moveType = GetMoveType(move);
     typeEffectiveness = CalcTypeEffectivenessMultiplier(move, moveType, battlerAtk, battlerDef, AI_DATA->abilities[battlerDef], FALSE);
 
     RestoreBattlerData(battlerAtk);
