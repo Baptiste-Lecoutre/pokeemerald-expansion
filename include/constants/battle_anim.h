@@ -405,9 +405,13 @@
 #define ANIM_TAG_SYRUP_SHELL_YELLOW         (ANIM_SPRITES_START + 391)
 #define ANIM_TAG_SYRUP_SPLAT_RED            (ANIM_SPRITES_START + 392)
 #define ANIM_TAG_SYRUP_SPLAT_YELLOW         (ANIM_SPRITES_START + 393)
-#define ANIM_TAG_TERA_CRYSTAL               (ANIM_SPRITES_START + 394)
-#define ANIM_TAG_TERA_SHATTER               (ANIM_SPRITES_START + 395)
-#define ANIM_TAG_DREEPY_SHINY               (ANIM_SPRITES_START + 396)
+#define ANIM_TAG_IVY_CUDGEL_GRASS           (ANIM_SPRITES_START + 394)
+#define ANIM_TAG_IVY_CUDGEL_FIRE            (ANIM_SPRITES_START + 395)
+#define ANIM_TAG_IVY_CUDGEL_ROCK            (ANIM_SPRITES_START + 396)
+#define ANIM_TAG_IVY_CUDGEL_WATER           (ANIM_SPRITES_START + 397)
+#define ANIM_TAG_TERA_CRYSTAL               (ANIM_SPRITES_START + 398)
+#define ANIM_TAG_TERA_SHATTER               (ANIM_SPRITES_START + 399)
+#define ANIM_TAG_DREEPY_SHINY               (ANIM_SPRITES_START + 400)
 
 // battlers
 #define ANIM_ATTACKER         0
@@ -573,15 +577,17 @@
 #define B_ANIM_FOG_CONTINUES            49
 #define B_ANIM_TERA_CHARGE              50
 #define B_ANIM_TERA_ACTIVATE            51
-#define B_ANIM_RAID_STORM_BREWS         52
-#define B_ANIM_RAID_SHIELD_APPEARED     53
-#define B_ANIM_RAID_SHIELD_DISAPPEARED  54
-#define B_ANIM_RAID_BARRIER_BROKEN      55
-#define B_ANIM_RAID_SHOCKWAVE           56
-#define B_ANIM_RAID_BOSS_EXPLOSION      57
-#define B_ANIM_MON_SCARED               58
-#define B_ANIM_GHOST_GET_OUT            59
-#define B_ANIM_GO_GOGGLED               60
+#define B_ANIM_SIMPLE_HEAL              52
+#define B_ANIM_RAID_STORM_BREWS         53
+#define B_ANIM_RAID_SHIELD_APPEARED     54
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  55
+#define B_ANIM_RAID_BARRIER_BROKEN      56
+#define B_ANIM_RAID_SHOCKWAVE           57
+#define B_ANIM_RAID_BOSS_EXPLOSION      58
+#define B_ANIM_RAID_SHOCKWAVE_FOCUS     59
+#define B_ANIM_MON_SCARED               60
+#define B_ANIM_GHOST_GET_OUT            61
+#define B_ANIM_GO_GOGGLED               62
 
 // special animations table (gBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

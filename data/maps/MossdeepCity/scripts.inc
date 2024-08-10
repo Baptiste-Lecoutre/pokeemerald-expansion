@@ -5,6 +5,8 @@
 .set LOCALID_MAXIE, 14
 .set LOCALID_SCOTT, 16
 .set LOCALID_SABRINA, 8
+.set LOCALID_FISHERMAN, 20
+.set LOCALID_POLIWHIRL, 21
 
 MossdeepCity_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, MossdeepCity_OnTransition
@@ -15,9 +17,16 @@ MossdeepCity_OnTransition:
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_2
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_3
 	clearflag FLAG_MOSSDEEP_GYM_SWITCH_4
-	goto_if_defeated TRAINER_SABRINA, MossDeepCity_EventScript_HideSabrina
+	call_if_defeated TRAINER_SABRINA, MossDeepCity_EventScript_HideSabrina
 	call_if_set FLAG_SYS_WEATHER_CTRL, Common_EventScript_SetAbnormalWeather
+	call_if_unset FLAG_FISHERMAN_POLIWAG_JUMPED, MossdeepCity_HideFishermanPoliwhirl
 	end
+
+MossdeepCity_HideFishermanPoliwhirl::
+	setflag FLAG_TEMP_1
+	removeobject LOCALID_FISHERMAN
+	removeobject LOCALID_POLIWHIRL
+	return
 
 MossDeepCity_EventScript_HideSabrina::
 	setflag FLAG_TEMP_7
@@ -511,3 +520,29 @@ MossdeepCity_Text_HaveTM96:
 	.string "… … … … … … … … … … … … … … … …\p"
 	.string "… … … … … … … … … … … … … … … …\p"
 	.string "(Seems he has nothing more to say…)$"
+
+MossdeepCity_EventScript_Poliwhirl::
+	lock
+	playmoncry SPECIES_POLIWHIRL, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	msgbox MossdeepCity_Text_ItLooksFocusedOnTheSea, MSGBOX_AUTOCLOSE
+	release
+	end
+
+MossdeepCity_Text_ItLooksFocusedOnTheSea:
+	.string "It looks focused on the sea…\n"
+	.string "Better leave it alone!$"
+
+MossdeepCity_EventScript_Fisherman::
+	lock
+	faceplayer
+	msgbox MossdeepCity_Text_IFoundMyPoliwag, MSGBOX_DEFAULT
+	release
+	end
+
+MossdeepCity_Text_IFoundMyPoliwag:
+	.string "I found my Poliwag!\n"
+	.string "I'm so happy!\p"
+	.string "But now it has evolved and\n"
+	.string "I don't like it anymore…$"

@@ -465,6 +465,12 @@ const u32 gBattleAnimSpriteGfx_SyrupSplat[] = INCBIN_U32("graphics/battle_anims/
 const u32 gBattleAnimSpritePal_SyrupRed[] = INCBIN_U32("graphics/battle_anims/sprites/syrup_red.gbapal.lz");
 const u32 gBattleAnimSpritePal_SyrupYellow[] = INCBIN_U32("graphics/battle_anims/sprites/syrup_yellow.gbapal.lz");
 
+const u32 gBattleAnimSpriteGfx_IvyCudgel[] = INCBIN_U32("graphics/battle_anims/sprites/cudgel.4bpp.lz");
+const u32 gBattleAnimSpritePal_IvyCudgelGrass[] = INCBIN_U32("graphics/pokemon/ogerpon/normal.gbapal.lz");
+const u32 gBattleAnimSpritePal_IvyCudgelFire[] = INCBIN_U32("graphics/pokemon/ogerpon/hearthflame/normal.gbapal.lz");
+const u32 gBattleAnimSpritePal_IvyCudgelRock[] = INCBIN_U32("graphics/pokemon/ogerpon/cornerstone/normal.gbapal.lz");
+const u32 gBattleAnimSpritePal_IvyCudgelWater[] = INCBIN_U32("graphics/pokemon/ogerpon/wellspring/normal.gbapal.lz");
+
 // old battle interface data, unused
 
 const u32 gOldBattleInterfaceGfx[] = INCBIN_U32("graphics/unused/obi1.4bpp.lz");
@@ -1618,13 +1624,13 @@ const u32 gBattleAnimBgImage_Rainbow[] = INCBIN_U32("graphics/battle_anims/backg
 const u32 gBattleAnimBGPalette_Rainbow[] = INCBIN_U32("graphics/battle_anims/backgrounds/rainbow.gbapal.lz");
 const u32 gBattleAnimBgTilemap_Rainbow[] = INCBIN_U32("graphics/battle_anims/backgrounds/rainbow.bin.lz");
 
-const u32 gPartyMenuBg_Gfx[] = INCBIN_U32("graphics/party_menu/bg.4bpp.lz");
-const u32 gPartyMenuBg_Pal[] = INCBIN_U32("graphics/party_menu/bg.gbapal.lz");
-const u32 gPartyMenuBg_Tilemap[] = INCBIN_U32("graphics/party_menu/bg.bin.lz");
+const u32 gPartyMenuBg_Gfx[] = INCBIN_U32("graphics/party_menu/bw/bg.4bpp.lz");
+const u32 gPartyMenuBg_Pal[] = INCBIN_U32("graphics/party_menu/bw/bg.gbapal.lz");
+const u32 gPartyMenuBg_Tilemap[] = INCBIN_U32("graphics/party_menu/bw/bg.bin.lz");
 
-const u32 gPartyMenuPokeball_Gfx[] = INCBIN_U32("graphics/party_menu/pokeball.4bpp.lz");
+const u32 gPartyMenuPokeball_Gfx[] = INCBIN_U32("graphics/party_menu/bw/pokeball.4bpp.lz");
 const u32 gPartyMenuPokeballSmall_Gfx[] = INCBIN_U32("graphics/party_menu/pokeball_small.4bpp.lz"); //unused
-const u32 gPartyMenuPokeball_Pal[] = INCBIN_U32("graphics/party_menu/pokeball.gbapal.lz");
+const u32 gPartyMenuPokeball_Pal[] = INCBIN_U32("graphics/party_menu/bw/pokeball.gbapal.lz");
 
 const u32 gStatusGfx_Icons[] = INCBIN_U32("graphics/interface/status_icons.4bpp.lz");
 const u32 gStatusPal_Icons[] = INCBIN_U32("graphics/interface/status_icons.gbapal.lz");
@@ -1633,6 +1639,7 @@ const u16 gCategoryIcons_Pal[] = INCBIN_U16("graphics/interface/category_icons.g
 const u32 gCategoryIcons_Gfx[] = INCBIN_U32("graphics/interface/category_icons.4bpp.lz");
 
 const u32 gMoveTypes_Gfx[] = INCBIN_U32("graphics/types/move_types.4bpp.lz");
+const u32 gMoveTypesSmall_Gfx [] = INCBIN_U32("graphics/types/move_types_small.4bpp.lz");
 const u32 gMoveTypes_Pal[] = INCBIN_U32("graphics/types/move_types.gbapal.lz");
 
 const u32 gSummaryMoveSelect_Gfx[] = INCBIN_U32("graphics/summary_screen/move_select.4bpp.lz");

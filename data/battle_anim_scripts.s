@@ -1,4 +1,4 @@
-#include "config.h"
+#include "config/general.h"
 #include "config/battle.h"
 #include "constants/battle.h"
 #include "constants/battle_anim.h"
@@ -85,12 +85,14 @@ gBattleAnims_General::
 	.4byte General_Fog                      @ B_ANIM_FOG_CONTINUES
 	.4byte General_TeraCharge               @ B_ANIM_TERA_CHARGE
 	.4byte General_TeraActivate             @ B_ANIM_TERA_ACTIVATE
+	.4byte General_SimpleHeal               @ B_ANIM_SIMPLE_HEAL
 	.4byte General_RaidStormBrews			@ B_ANIM_RAID_STORM_BREWS
 	.4byte General_RaidBarrierAppeared		@ B_ANIM_RAID_BARRIER_APPEARED
 	.4byte General_RaidBarrierDisappeared	@ B_ANIM_RAID_SHIELD_DISAPPEARED
 	.4byte General_RaidShieldBroken			@ B_ANIM_RAID_SHIELD_BROKE
 	.4byte General_RaidShockwave			@ B_ANIM_RAID_SHOCKWAVE
 	.4byte General_RaidBossExplosion		@ B_ANIM_RAID_BOSS_EXPLOSION
+	.4byte General_RaidShockwaveFocus		@ B_ANIM_RAID_SHOCKWAVE_FOCUS
 	.4byte General_MonScared 				@ B_ANIM_MON_SCARED
 	.4byte General_GhostGetOut 				@ B_ANIM_GHOST_GET_OUT
 	.4byte General_GoGoggled 				@ B_ANIM_GO_GOGGLED
@@ -4231,7 +4233,6 @@ Move_SMACK_DOWN::
 	createvisualtask AnimTask_SmokescreenImpact, 0x8, 0x400, 0x1902
 	fadetobg BG_IN_AIR
 	waitbgfadeout
-	createvisualtask AnimTask_StartSlidingBg, 5, 0x0, 0x0, 0x0, 0xffff
 	createvisualtask AnimTask_SeismicTossBgAccelerateDownAtEnd, 3
 	goto SeismicTossWeak
 
@@ -16910,6 +16911,59 @@ ElectroShotUnleash:
 	blendoff
 	end
 
+Move_IVY_CUDGEL::
+	loadspritegfx ANIM_TAG_IVY_CUDGEL_GRASS
+	loadspritegfx ANIM_TAG_WOOD_HAMMER
+	loadspritegfx ANIM_TAG_WOOD_HAMMER_HAMMER
+	loadspritegfx ANIM_TAG_IMPACT
+	playsewithpan SE_M_SWAGGER, SOUND_PAN_ATTACKER
+	createvisualtask AnimTask_TranslateMonEllipticalRespectSide, 2, ANIM_ATTACKER, 12, 4, 2, 4
+	jumpifmovetypeequal TYPE_FIRE, IvyCudgelFire
+	jumpifmovetypeequal TYPE_ROCK, IvyCudgelRock
+	jumpifmovetypeequal TYPE_WATER, IvyCudgelWater
+	createsprite gIvyCudgelSpriteTemplate, ANIM_TARGET, 2
+	delay 60
+	createvisualtask AnimTask_ShakeMonInPlace, 2, ANIM_ATTACKER, 3, 0, 12, 4
+	delay 18
+	createvisualtask AnimTask_SquishTarget, 0x2
+	delay 6
+	call WoodHammerImpact
+	waitforvisualfinish
+	end
+IvyCudgelFire:
+	loadspritegfx ANIM_TAG_IVY_CUDGEL_FIRE
+	createsprite gIvyCudgelFireSpriteTemplate, ANIM_TARGET, 2
+	delay 60
+	createvisualtask AnimTask_ShakeMonInPlace, 2, ANIM_ATTACKER, 3, 0, 12, 4
+	delay 18
+	createvisualtask AnimTask_SquishTarget, 0x2
+	delay 6
+	call WoodHammerImpact
+	waitforvisualfinish
+	end
+IvyCudgelRock:
+	loadspritegfx ANIM_TAG_IVY_CUDGEL_ROCK
+	createsprite gIvyCudgelRockSpriteTemplate, ANIM_TARGET, 2
+	delay 60
+	createvisualtask AnimTask_ShakeMonInPlace, 2, ANIM_ATTACKER, 3, 0, 12, 4
+	delay 18
+	createvisualtask AnimTask_SquishTarget, 0x2
+	delay 6
+	call WoodHammerImpact
+	waitforvisualfinish
+	end
+IvyCudgelWater:
+	loadspritegfx ANIM_TAG_IVY_CUDGEL_WATER
+	createsprite gIvyCudgelWaterSpriteTemplate, ANIM_TARGET, 2
+	delay 60
+	createvisualtask AnimTask_ShakeMonInPlace, 2, ANIM_ATTACKER, 3, 0, 12, 4
+	delay 18
+	createvisualtask AnimTask_SquishTarget, 0x2
+	delay 6
+	call WoodHammerImpact
+	waitforvisualfinish
+	end
+
 Move_SPICY_EXTRACT::
 	loadspritegfx ANIM_TAG_SMALL_EMBER
 	loadspritegfx ANIM_TAG_POISON_BUBBLE
@@ -16955,8 +17009,22 @@ Move_SPICY_EXTRACT::
 	waitforvisualfinish
 	end
 
-Move_TERA_BLAST::
 Move_AXE_KICK::
+	loadspritegfx ANIM_TAG_HANDS_AND_FEET
+	loadspritegfx ANIM_TAG_IMPACT
+	playsewithpan SE_M_JUMP_KICK, SOUND_PAN_ATTACKER
+	createsprite gSlideMonToOffsetSpriteTemplate, ANIM_ATTACKER, 2, 0, 20, 0, 0, 4
+	delay 7
+	createsprite gAxeKickSpriteTemplate, ANIM_TARGET, 3
+	delay 2
+	playsewithpan SE_M_COMET_PUNCH, SOUND_PAN_TARGET
+	createsprite gBasicHitSplatSpriteTemplate, ANIM_ATTACKER, 1, 0, 0, ANIM_TARGET, 1
+	createvisualtask AnimTask_SquishTargetShort, 2
+	waitforvisualfinish
+	createsprite gSlideMonToOriginalPosSpriteTemplate, ANIM_ATTACKER, 2, 0, 1, 4
+	end
+
+Move_TERA_BLAST::
 Move_ORDER_UP::
 Move_SPIN_OUT::
 Move_POPULATION_BOMB::
@@ -16985,7 +17053,6 @@ Move_MAGICAL_TORQUE::
 Move_PSYBLADE::
 Move_BLOOD_MOON::
 Move_MATCHA_GOTCHA::
-Move_IVY_CUDGEL::
 Move_TERA_STARSTORM::
 Move_FICKLE_BEAM::
 Move_THUNDERCLAP::
@@ -27358,6 +27425,12 @@ General_WishHeal:
 	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 2, F_PAL_BG, 3, 10, 0, RGB_BLACK
 	end
 
+General_SimpleHeal:
+	loadspritegfx ANIM_TAG_BLUE_STAR
+	call HealingEffect
+	waitforvisualfinish
+	end
+
 General_IllusionOff:
 	monbg ANIM_TARGET
 	createvisualtask AnimTask_TransformMon, 2, 1, 0
@@ -28293,6 +28366,7 @@ Move_TECTONIC_RAGE::
 	waitforvisualfinish
 	call UnsetPsychicBg
 	waitbgfadein
+	clearmonbg_static ANIM_ATTACKER
 	createvisualtask AnimTask_AllBattlersVisible, 0xA
 	waitforvisualfinish
 	end
@@ -33795,6 +33869,9 @@ General_RaidShockwave::
 	createsprite gHiddenPowerOrbScatterSpriteTemplate, ANIM_TARGET, 2, 224
 	waitforvisualfinish
 	end
+
+General_RaidShockwaveFocus::
+	goto Move_FOCUS_ENERGY
 
 General_RaidBossExplosion::
 	createvisualtask AnimTask_SetAnimTargetToBattlerTarget, 2

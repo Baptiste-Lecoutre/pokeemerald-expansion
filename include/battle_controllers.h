@@ -99,10 +99,7 @@ enum {
 
 // Special return values in gBattleBufferB from Battle Controller functions.
 #define RET_VALUE_LEVELED_UP   11
-#define RET_MEGA_EVOLUTION (1 << 7)
-#define RET_ULTRA_BURST    (1 << 6)
-#define RET_DYNAMAX        (1 << 5)
-#define RET_TERASTAL       (1 << 4)
+#define RET_GIMMICK            (1 << 7)
 
 struct UnusedControllerStruct
 {
@@ -132,8 +129,6 @@ struct ChooseMoveStruct
     u8 monType1;
     u8 monType2;
     u8 monType3;
-    struct MegaEvolutionData mega;
-    struct UltraBurstData burst;
     struct ZMoveData zmove;
 };
 
@@ -348,5 +343,8 @@ void SetControllerToLinkOpponent(u32 battler);
 
 // link partner
 void SetControllerToLinkPartner(u32 battler);
+
+// Battle speed up (credits to Pokabbie & Alex for porting it)
+u32 SpeedUp_GetBattleSpeedScale(bool32 forHealthBar);
 
 #endif // GUARD_BATTLE_CONTROLLERS_H

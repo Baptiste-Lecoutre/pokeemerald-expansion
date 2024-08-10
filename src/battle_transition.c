@@ -129,6 +129,7 @@ static void Task_FrontierSquaresScroll(u8);
 static void Task_FrontierSquaresSpiral(u8);
 static void Task_Rocket(u8);
 static void Task_MaxRaid(u8);
+static void Task_TeraRaid(u8);
 static void Task_MegaRaid(u8);
 static void VBlankCB_BattleTransition(void);
 static void VBlankCB_Swirl(void);
@@ -165,6 +166,8 @@ static bool8 Rocket_Init(struct Task *);
 static bool8 Rocket_SetGfx(struct Task *);
 static bool8 MaxRaid_Init(struct Task *);
 static bool8 MaxRaid_SetGfx(struct Task *);
+static bool8 TeraRaid_Init(struct Task *);
+static bool8 TeraRaid_SetGfx(struct Task *);
 static bool8 MegaRaid_Init(struct Task *);
 static bool8 MegaRaid_SetGfx(struct Task *);
 static bool8 FramesCountdown(struct Task *);
@@ -221,7 +224,6 @@ static bool8 AngledWipes_TryEnd(struct Task *);
 static bool8 AngledWipes_StartNext(struct Task *);
 static bool8 ShredSplit_Init(struct Task *);
 static bool8 ShredSplit_Main(struct Task *);
-//static bool8 ShredSplit_BrokenCheck(struct Task *);
 static bool8 ShredSplit_End(struct Task *);
 static bool8 Blackhole_Init(struct Task *);
 static bool8 Blackhole_Vibrate(struct Task *);
@@ -311,6 +313,7 @@ static const u32 sShrinkingBoxTileset[] = INCBIN_U32("graphics/battle_transition
 static const u16 sEvilTeam_Palette[] = INCBIN_U16("graphics/battle_transitions/evil_team.gbapal");
 static const u16 sRocketTeam_Palette[] = INCBIN_U16("graphics/battle_transitions/rocket_team.gbapal");
 static const u16 sMaxRaid_Palette[] = INCBIN_U16("graphics/battle_transitions/max_raid_battle.gbapal");
+static const u16 sTeraRaid_Palette[] = INCBIN_U16("graphics/battle_transitions/tera_raid_battle.gbapal");
 static const u16 sMegaRaid_Palette[] = INCBIN_U16("graphics/battle_transitions/mega_raid_battle.gbapal");
 static const u32 sTeamAqua_Tileset[] = INCBIN_U32("graphics/battle_transitions/team_aqua.4bpp.lz");
 static const u32 sTeamAqua_Tilemap[] = INCBIN_U32("graphics/battle_transitions/team_aqua.bin.lz");
@@ -320,6 +323,8 @@ static const u32 sTeamRocket_Tileset[] = INCBIN_U32("graphics/battle_transitions
 static const u32 sTeamRocket_Tilemap[] = INCBIN_U32("graphics/battle_transitions/team_rocket.bin.lz");
 static const u32 sMaxRaid_Tileset[] = INCBIN_U32("graphics/battle_transitions/max_raid_battle.4bpp.lz");
 static const u32 sMaxRaid_Tilemap[] = INCBIN_U32("graphics/battle_transitions/max_raid_battle.bin.lz");
+static const u32 sTeraRaid_Tileset[] = INCBIN_U32("graphics/battle_transitions/tera_raid_battle.4bpp.lz");
+static const u32 sTeraRaid_Tilemap[] = INCBIN_U32("graphics/battle_transitions/tera_raid_battle.bin.lz");
 static const u32 sMegaRaid_Tileset[] = INCBIN_U32("graphics/battle_transitions/mega_raid_battle.4bpp.lz");
 static const u32 sMegaRaid_Tilemap[] = INCBIN_U32("graphics/battle_transitions/mega_raid_battle.bin.lz");
 static const u32 sRegis_Tileset[] = INCBIN_U32("graphics/battle_transitions/regis.4bpp");
@@ -401,7 +406,7 @@ static const TaskFunc sTasks_Main[B_TRANSITION_COUNT] =
     [B_TRANSITION_FRONTIER_CIRCLES_SYMMETRIC_SPIRAL_IN_SEQ] = Task_FrontierCirclesSymmetricSpiralInSeq,
     [B_TRANSITION_ROCKET] = Task_Rocket,
     [B_TRANSITION_MAX_RAID] = Task_MaxRaid,
-    [B_TRANSITION_TERA_RAID] = Task_Swirl,
+    [B_TRANSITION_TERA_RAID] = Task_TeraRaid,
     [B_TRANSITION_MEGA_RAID] = Task_MegaRaid,
 };
 
@@ -469,6 +474,17 @@ static const TransitionStateFunc sMaxRaid_Funcs[] =
 {
     MaxRaid_Init,
     MaxRaid_SetGfx,
+    PatternWeave_Blend1,
+    PatternWeave_Blend2,
+    PatternWeave_FinishAppear,
+    FramesCountdown,
+    PatternWeave_CircularMask
+};
+
+static const TransitionStateFunc sTeraRaid_Funcs[] =
+{
+    TeraRaid_Init,
+    TeraRaid_SetGfx,
     PatternWeave_Blend1,
     PatternWeave_Blend2,
     PatternWeave_FinishAppear,
@@ -616,7 +632,6 @@ static const TransitionStateFunc sShredSplit_Funcs[] =
 {
     ShredSplit_Init,
     ShredSplit_Main,
-//    ShredSplit_BrokenCheck,
     ShredSplit_End
 };
 
@@ -1385,6 +1400,11 @@ static void Task_MaxRaid(u8 taskId)
     while (sMaxRaid_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
 }
 
+static void Task_TeraRaid(u8 taskId)
+{
+    while (sTeraRaid_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
+}
+
 static void Task_MegaRaid(u8 taskId)
 {
     while (sMegaRaid_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
@@ -1495,6 +1515,21 @@ static bool8 MaxRaid_Init(struct Task *task)
     return FALSE;
 }
 
+static bool8 TeraRaid_Init(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    task->tEndDelay = 60;
+    InitPatternWeaveTransition(task);
+    GetBg0TilesDst(&tilemap, &tileset);
+    CpuFill16(0, tilemap, BG_SCREEN_SIZE);
+    LZ77UnCompVram(sTeraRaid_Tileset, tileset);
+    LoadPalette(sTeraRaid_Palette, BG_PLTT_ID(15), sizeof(sTeraRaid_Palette));
+
+    task->tState++;
+    return FALSE;
+}
+
 static bool8 MegaRaid_Init(struct Task *task)
 {
     u16 *tilemap, *tileset;
@@ -1600,6 +1635,18 @@ static bool8 MaxRaid_SetGfx(struct Task *task)
 
     GetBg0TilesDst(&tilemap, &tileset);
     LZ77UnCompVram(sMaxRaid_Tilemap, tilemap);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+
+    task->tState++;
+    return FALSE;
+}
+
+static bool8 TeraRaid_SetGfx(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    GetBg0TilesDst(&tilemap, &tileset);
+    LZ77UnCompVram(sTeraRaid_Tilemap, tilemap);
     SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;
@@ -3079,29 +3126,6 @@ static bool8 ShredSplit_Main(struct Task *task)
     sTransitionData->VBlank_DMA++;
     return FALSE;
 }
-
-// This function never increments the state counter, because the loop condition
-// is always false, resulting in the game being stuck in an infinite loop.
-// It's possible this transition is only partially
-// done and the second part was left out.
-// In any case removing or bypassing this state allows the transition to finish.
-/*static bool8 ShredSplit_BrokenCheck(struct Task *task)
-{
-    u16 i;
-    bool32 done = TRUE;
-    u16 checkVar2 = 0xFF10;
-
-    for (i = 0; i < DISPLAY_HEIGHT; i++)
-    {
-        if (gScanlineEffectRegBuffers[1][i] != DISPLAY_WIDTH && gScanlineEffectRegBuffers[1][i] != checkVar2)
-            done = FALSE;
-    }
-
-    if (done == TRUE)
-        task->tState++;
-
-    return FALSE;
-}*/
 
 static bool8 ShredSplit_End(struct Task *task)
 {

@@ -106,6 +106,11 @@ PetalburgCity_Gym_EventScript_ReturnFromWallyTutorialDoBattle:
 	delay 30
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
+	bufferspeciesname STR_VAR_1, SPECIES_LATIOS
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, PetalburgCity_Gym_EventScript_BufferLatiasName
+	msgbox PetalburgCity_Gym_Text_SoYouEncouteredLati, MSGBOX_DEFAULT
+	delay 30
 	msgbox PetalburgCity_Gym_Text_DadGoCollectBadges, MSGBOX_DEFAULT
 	closemessage
 	giveitem ITEM_AMULET_COIN
@@ -113,6 +118,10 @@ PetalburgCity_Gym_EventScript_ReturnFromWallyTutorialDoBattle:
 	setvar VAR_PETALBURG_CITY_STATE, 3
 	releaseall
 	end
+
+PetalburgCity_Gym_EventScript_BufferLatiasName:
+	bufferspeciesname STR_VAR_1, SPECIES_LATIAS
+	return
 
 PetalburgCity_Gym_EventScript_ReturnFromWallyTutorialAlreadyLostBattle::
 	applymovement OBJ_EVENT_ID_PLAYER, PetalburgCity_Gym_Movement_PlayerEnterWallyBattle
@@ -1263,6 +1272,17 @@ PetalburgCity_Gym_Text_WallyAfterBattle:
 PetalburgCity_Gym_Text_WallyDefeat:
 	.string "………………\p"
 	.string "So this is a Pokémon battle…$"
+
+PetalburgCity_Gym_Text_SoYouEncouteredLati:
+	.string "Dad: Interesting kid…\p"
+	.string "You're telling me you encountered\n"
+	.string "{STR_VAR_1}?\p"
+	.string "That is tremendous! Listen, this\n"
+	.string "Pokémon is a sign of hope.\p"
+	.string "Most trainers spend their lives\n"
+	.string "without ever seeing it…\p"
+	.string "For you to meet {STR_VAR_1}, surely it\n"
+	.string "means you will do great things…$"
 
 PetalburgCity_Gym_Text_DadGoCollectBadges:
 	.string "Dad: Now…\p"

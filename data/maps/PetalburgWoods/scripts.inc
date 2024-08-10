@@ -8,7 +8,7 @@ PetalburgWoods_MapScripts::
 
 PetalburgWoods_OnTransition:
 	goto_if_unset FLAG_BADGE01_GET, PetalburgWoods_EventScript_HideRed
-	goto_if_defeated TRAINER_RED_PETALBURG_WOODS, PetalburgWoods_EventScript_HideRed
+	call_if_defeated TRAINER_RED_PETALBURG_WOODS, PetalburgWoods_EventScript_HideRed
 	end
 
 PetalburgWoods_EventScript_HideRed:

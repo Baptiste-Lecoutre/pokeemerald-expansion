@@ -81,6 +81,13 @@ Route102_Text_WatchMeCatchPokemon:
 	.string "catch one properly.\p"
 	.string "…Whoa!$"
 
+Route102_Text_WallyWhatWasThatPokemon:
+	.string "Wally: Whoa! What was that Pokémon?\n"
+	.string "I could not do anything!\p"
+	.string "Let me try another time…\n"
+	.string "Hold on…\p"
+	.string "…Whoa!$"
+
 Route102_Text_WallyIDidIt:
 	.string "Wally: I did it… It's my…\n"
 	.string "My Pokémon!$"

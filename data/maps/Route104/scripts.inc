@@ -1,6 +1,8 @@
 @ NOTE: Route 104's sail to Dewford script references local IDs from Dewford's map.
 @  These are labeled in DewfordTown/scripts.inc
 .set LOCALID_RIVAL, 34
+.set LOCALID_FISHERMAN, 36
+.set LOCALID_POLIWAG, 37
 
 Route104_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, Route104_OnFrame
@@ -20,7 +22,15 @@ Route104_OnTransition:
 	call Common_EventScript_SetupRivalGfxId
 	call Route104_EventScript_TrySetRivalPos
 	call Route104_EventScript_ShowOrHideWhiteHerbFlorist
+	call_if_set FLAG_FISHERMAN_POLIWAG_JUMPED, Route104_EventScript_HideFishermanPoliwag
 	end
+
+Route104_EventScript_HideFishermanPoliwag::
+	setflag FLAG_TEMP_1
+	setflag FLAG_TEMP_2
+	removeobject LOCALID_FISHERMAN
+	removeobject LOCALID_POLIWAG
+	return
 
 Route104_EventScript_ShowOrHideWhiteHerbFlorist::
 	goto_if_unset FLAG_MET_PRETTY_PETAL_SHOP_OWNER, Route104_EventScript_HideWhiteHerbFlorist
@@ -1171,3 +1181,74 @@ Route104_Text_BrendanPostBattle:
 	.string "making Pokémon battle.\p"
 	.string "Like Mr. Briney, it's important to\n"
 	.string "become friends with your Pokémon.$"
+
+Route104_EventScript_Poliwag::
+	lock
+	playmoncry SPECIES_POLIWAG, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	msgbox Route104_Text_ItLooksFocusedOnTheSea, MSGBOX_AUTOCLOSE
+	release
+	end
+
+Route104_Text_ItLooksFocusedOnTheSea:
+	.string "It looks focused on the sea…\n"
+	.string "Better leave it alone!$"
+
+Route104_EventScript_Fisherman::
+	lock
+	faceplayer
+	msgbox Route104_Text_AllIWantedWasAPoliwag, MSGBOX_DEFAULT
+	closemessage
+	playmoncry SPECIES_POLIWAG, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	playse SE_LEDGE
+	applymovement LOCALID_FISHERMAN, Route104_Movement_FishermanSurprised
+	applymovement LOCALID_POLIWAG, Route104_Movement_PoliwagJumpSea
+	waitmovement 0
+	setflag FLAG_TEMP_2
+	removeobject LOCALID_POLIWAG
+	delay 40
+	msgbox Route104_Text_WaitNo, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_FISHERMAN, Route104_Movement_FishermanPrepareJump
+	waitmovement 0
+	playse SE_LEDGE
+	applymovement LOCALID_FISHERMAN, Route104_Movement_PoliwagJumpSea
+	waitmovement 0
+	setflag FLAG_TEMP_1
+	removeobject LOCALID_FISHERMAN
+	setflag FLAG_FISHERMAN_POLIWAG_JUMPED
+	release
+	end
+
+Route104_Text_AllIWantedWasAPoliwag:
+	.string "All I wanted to do is catch\n"
+	.string "a Poliwag!\p"
+	.string "Thankfully I caught this one\n"
+	.string "before that jackass Gym Leader of\l"
+	.string "Petalburg City stole my old rod…\p"
+	.string "But it doesn't matter, I sure do love\n"
+	.string "spending time with Poliwag!$"
+
+Route104_Text_WaitNo:
+	.string "Wait! No! I spent so many days\n"
+	.string "getting perfect IVs and nature!$"
+
+Route104_Movement_PoliwagJumpSea:
+	jump_2_down
+	step_end
+
+Route104_Movement_FishermanSurprised:
+	face_down
+	emote_exclamation_mark
+	delay_16
+	step_end
+
+Route104_Movement_FishermanPrepareJump:
+	walk_left
+	delay_16
+	face_down
+	delay_16
+	step_end

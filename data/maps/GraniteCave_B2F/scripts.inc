@@ -5,7 +5,7 @@ GraniteCave_B2F_MapScripts::
 	.byte 0
 
 GraniteCave_B2F_OnTransition::
-	goto_if_defeated TRAINER_BROCK, GraniteCave_B2F_EventScript_HideBrock
+	call_if_defeated TRAINER_BROCK, GraniteCave_B2F_EventScript_HideBrock
 	end
 
 GraniteCave_B2F_EventScript_HideBrock::

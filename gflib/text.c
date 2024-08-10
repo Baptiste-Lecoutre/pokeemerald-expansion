@@ -23,10 +23,10 @@ static u16 FontFunc_ShortCopy2(struct TextPrinter *);
 static u16 FontFunc_ShortCopy3(struct TextPrinter *);
 static u16 FontFunc_Narrow(struct TextPrinter *);
 static u16 FontFunc_SmallNarrow(struct TextPrinter *);
+static u16 FontFunc_BW_Summary_Screen(struct TextPrinter *);
 static u16 FontFunc_Narrower(struct TextPrinter *);
 static u16 FontFunc_SmallNarrower(struct TextPrinter *);
 static u16 FontFunc_ShortNarrow(struct TextPrinter *);
-static u16 FontFunc_BW_Summary_Screen(struct TextPrinter *);
 static void DecompressGlyph_Small(u16, bool32);
 static void DecompressGlyph_Normal(u16, bool32);
 static void DecompressGlyph_Short(u16, bool32);
@@ -661,7 +661,7 @@ static u8 UNUSED GetLastTextColor(u8 colorType)
 
 inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, s64 i, u32 *glyphPixels, s32 width, s32 height)
 {
-    u32 xAdd, pixelData, bits, toOrr, dummyX, dummyY;
+    u32 xAdd, pixelData, bits, toOrr, dummyX;
     s64 yAdd;
     u8 *dst = 0;
 
@@ -2236,21 +2236,17 @@ u32 GetFontIdToFit(const u8 *string, u32 fontId, u32 letterSpacing, u32 widthPx)
 
 u8 *PrependFontIdToFit(u8 *start, u8 *end, u32 fontId, u32 width)
 {
-
     u32 fitFontId = GetFontIdToFit(start, fontId, 0, width);
-    if (fitFontId != fontId)
-    {
-        memmove(&start[3], &start[0], end - start);
-        start[0] = EXT_CTRL_CODE_BEGIN;
-        start[1] = EXT_CTRL_CODE_FONT;
-        start[2] = fitFontId;
-        end[3] = EOS;
-        return end + 3;
-    }
-    else
-    {
+
+    if (fitFontId == fontId)
         return end;
-    }
+
+    memmove(&start[3], &start[0], end - start);
+    start[0] = EXT_CTRL_CODE_BEGIN;
+    start[1] = EXT_CTRL_CODE_FONT;
+    start[2] = fitFontId;
+    end[3] = EOS;
+    return end + 3;
 }
 
 u8 *WrapFontIdToFit(u8 *start, u8 *end, u32 fontId, u32 width)

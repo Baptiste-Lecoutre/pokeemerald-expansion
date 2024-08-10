@@ -795,8 +795,8 @@ static const u8 sText_AttackerLostElectricType[] = _("{B_ATK_NAME_WITH_PREFIX} u
 static const u8 sText_AttackerSwitchedStatWithTarget[] = _("{B_ATK_NAME_WITH_PREFIX} switched {B_BUFF1}\nwith its target!");
 static const u8 sText_BeingHitChargedPkmnWithPower[] = _("Being hit by {B_CURRENT_MOVE}\ncharged {B_DEF_NAME_WITH_PREFIX} with power!");
 static const u8 sText_SunlightActivatedAbility[] = _("The harsh sunlight activated\n{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_LAST_ABILITY}!");
-static const u8 sText_StatWasHeightened[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_BUFF1} was heightened!");
-static const u8 sText_BoosterEnergyActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} used its Booster Energy\nto activate {B_SCR_ACTIVE_ABILITY}!");
+static const u8 sText_StatWasHeightened[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_BUFF1}\nwas heightened!");
+static const u8 sText_BoosterEnergyActivates[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} used its\n{B_LAST_ITEM} to activate\l{B_SCR_ACTIVE_ABILITY}!");
 static const u8 sText_ElectricTerrainActivatedAbility[] = _("The Electric Terrain activated\n{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_LAST_ABILITY}!");
 static const u8 sText_AbilityWeakenedSurroundingMonsStat[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX}'s {B_SCR_ACTIVE_ABILITY}\nweakened the {B_BUFF1} of\lall surrounding Pokémon!\p");
 static const u8 sText_AttackerGainedStrengthFromTheFallen[] = _("{B_SCR_ACTIVE_NAME_WITH_PREFIX} gained strength\nfrom the fallen!");
@@ -824,6 +824,12 @@ static const u8 sText_RaidBarrierDisappeared[] = _("The mysterious barrier prote
 static const u8 sText_CatchRaidMon[] = _("{B_OPPONENT_MON1_NAME} is weak!\nThrow a Ball?");
 static const u8 sText_PkmnIsTooStrong[] = _("{B_OPPONENT_MON1_NAME} is\ntoo strong!");
 static const u8 sText_PkmnNullifiedOthers[] = _("{B_OPPONENT_MON1_NAME} nullified the stat changes\nand abilities of other Pokémon!");
+static const u8 sText_PkmnFocusedOnOpponents[] = _("{B_OPPONENT_MON1_NAME} became sharply focused\non its opponents!");
+static const u8 sText_PkmnResetStatIncreases[] = _("{B_OPPONENT_MON1_NAME} nullified the stat increases\nof its opponents!");
+static const u8 sText_PkmnRecoveredFromNegative[] = _("{B_OPPONENT_MON1_NAME} recovered from its\nnegative conditions!");
+static const u8 sText_PkmnStoleTeraCharge[] = _("{B_OPPONENT_MON1_NAME} stole a charge\nof your Tera Orb!");
+static const u8 sText_PkmnEmittedWaveZEnergy[] = _("{B_OPPONENT_MON1_NAME} emitted a wave\nof Z-Energy!");
+static const u8 sText_PkmnCalmedHealed[] = _("{B_OPPONENT_MON1_NAME} calmed itself and\nrestored its energy!");
 static const u8 sText_MovePreventedByDynamax[] = _("The move was blocked by\nthe power of Dynamax!");
 static const u8 sText_RaidPkmnAppeared[] = _("{B_OPPONENT_MON1_NAME} appeared!");
 static const u8 sText_RaidPkmnDisappeared[] = _("{B_OPPONENT_MON1_NAME} disappeared\nsomewhere into the den...");
@@ -839,7 +845,10 @@ static const u8 sText_PkmnBrokeItsStance[] = _("{B_OPPONENT_MON1_NAME} succumbed
 static const u8 sText_RaidNotMuchTimeLeft[] = _("You can feel tremendous energy\ngathering! There isn't much time left!");
 static const u8 sText_RaidPkmnReleasedEnergy[] = _("{B_OPPONENT_MON1_NAME} released its\ngathered energy!");
 static const u8 sText_BarrierRestoredEnergy[] = _("The barrier restored\n{B_OPPONENT_MON1_NAME}'s energy!");
+static const u8 sText_RaidBossLostItsEnergy[] = _("{B_OPPONENT_MON1_NAME} broke its stance!\nIt lost its energy!");
 static const u8 sText_DynamaxEnergySurroundsPkmn[] = _("Dynamax energy surrounds\n{B_ATK_NAME_WITH_PREFIX}!");
+static const u8 sText_PlayerTeraOrbCharging[] = _("{B_PLAYER_NAME}'s Tera Orb is\nstoring energy!");
+static const u8 sText_PlayerTeraOrbCharged[] = _("{B_PLAYER_NAME}'s Tera Orb is\nfully charged!");
 static const u8 sText_PkmnRevivedReadyToFight[] = _("{B_BUFF1} was revived and\nis ready to fight again!");
 static const u8 sText_ItemRestoredSpeciesHealth[] = _("{B_BUFF1} had its\nHP restored!");
 static const u8 sText_ItemCuredSpeciesStatus[] = _("{B_BUFF1} had\nits status healed!");
@@ -904,12 +913,21 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_RAIDNOTMUCHTIMELEFT - BATTLESTRINGS_TABLE_START] = sText_RaidNotMuchTimeLeft,
     [STRINGID_RAIDPKMNRELEASEDENERGY - BATTLESTRINGS_TABLE_START] = sText_RaidPkmnReleasedEnergy,
     [STRINGID_BARRIERRESTOREDENERGY - BATTLESTRINGS_TABLE_START] = sText_BarrierRestoredEnergy,
+    [STRINGID_RAIDBOSSLOSTITSENERGY - BATTLESTRINGS_TABLE_START] = sText_RaidBossLostItsEnergy,
     [STRINGID_DYNAMAXENERGYGATHERED - BATTLESTRINGS_TABLE_START] = sText_DynamaxEnergyGathered,
     [STRINGID_DYNAMAXENERGYSURROUNDS - BATTLESTRINGS_TABLE_START] = sText_DynamaxEnergySurroundsPkmn,
+    [STRINGID_PLAYERTERAORBCHARGING - BATTLESTRINGS_TABLE_START] = sText_PlayerTeraOrbCharging,
+    [STRINGID_PLAYERTERAORBCHARGED - BATTLESTRINGS_TABLE_START] = sText_PlayerTeraOrbCharged,
     [STRINGID_PKMNAPPEARSMASSIVE - BATTLESTRINGS_TABLE_START] = sText_PkmnAppearsMassive,
     [STRINGID_RAIDPKMNDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_RaidPkmnDisappeared,
     [STRINGID_PKMNISTOOSTRONG - BATTLESTRINGS_TABLE_START] = sText_PkmnIsTooStrong,
     [STRINGID_PKMNNULLIFIEDOTHERS - BATTLESTRINGS_TABLE_START] = sText_PkmnNullifiedOthers,
+    [STRINGID_PKMNFOCUSEDONOPPONENTS - BATTLESTRINGS_TABLE_START] = sText_PkmnFocusedOnOpponents,
+    [STRINGID_PKMNRESETSTATINCREASE - BATTLESTRINGS_TABLE_START] = sText_PkmnResetStatIncreases,
+    [STRINGID_PKMNRECOVEREDFROMNEGATIVE - BATTLESTRINGS_TABLE_START] = sText_PkmnRecoveredFromNegative,
+    [STRINGID_PKMNSTOLETERACHARGE - BATTLESTRINGS_TABLE_START] = sText_PkmnStoleTeraCharge,
+    [STRINGID_PKMNEMITTEDWAVEOFENERGY - BATTLESTRINGS_TABLE_START] = sText_PkmnEmittedWaveZEnergy,
+    [STRINGID_PKMNCALMEDHEALEDITSELF - BATTLESTRINGS_TABLE_START] = sText_PkmnCalmedHealed,
     [STRINGID_MOVEPREVENTEDBYDYNAMAX - BATTLESTRINGS_TABLE_START] = sText_MovePreventedByDynamax,
     [STRINGID_RAIDSHIELDAPPEARED - BATTLESTRINGS_TABLE_START] = sText_RaidBarrierAppeared,
     [STRINGID_RAIDSHIELDDISAPPEARED - BATTLESTRINGS_TABLE_START] = sText_RaidBarrierDisappeared,
@@ -937,7 +955,6 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_ZEROTOHEROTRANSFORMATION - BATTLESTRINGS_TABLE_START] = sText_ZeroToHeroTransformation,
     [STRINGID_PKMNTELLCHILLINGRECEPTIONJOKE - BATTLESTRINGS_TABLE_START] = sText_PkmnTellChillingReceptionJoke,
     [STRINGID_MOVEBLOCKEDBYDYNAMAX - BATTLESTRINGS_TABLE_START] = sText_MoveBlockedByDynamax,
-    [STRINGID_OPPORTUNISTCOPIED - BATTLESTRINGS_TABLE_START] = sText_OpportunistCopied,
     [STRINGID_TARGETISHURTBYSALTCURE - BATTLESTRINGS_TABLE_START] = sText_TargetIsHurtBySaltCure,
     [STRINGID_TARGETISBEINGSALTCURED - BATTLESTRINGS_TABLE_START] = sText_TargetIsBeingSaltCured,
     [STRINGID_CURRENTMOVECANTSELECT - BATTLESTRINGS_TABLE_START] = sText_CurrentMoveCantSelect,
@@ -1638,15 +1655,21 @@ const u16 gRaidStateStringIds[] =
     [B_MSG_PKMN_RELEASED_ENERGY] = STRINGID_RAIDPKMNRELEASEDENERGY,
 };
 
+const u16 gRaidTeraOrbCharge[] = 
+{
+    [B_MSG_TERA_ORB_CHARGING] = STRINGID_PLAYERTERAORBCHARGING,
+    [B_MSG_TERA_ORB_CHARGED] = STRINGID_PLAYERTERAORBCHARGED,
+};
+
 const u16 gRaidShockwaveStringIds[] =
 {
     [B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS] = STRINGID_PKMNNULLIFIEDOTHERS,
-    [B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED] = STRINGID_PKMNNULLIFIEDOTHERS,
-    [B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS] = STRINGID_PKMNNULLIFIEDOTHERS,
-    [B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF] = STRINGID_PKMNNULLIFIEDOTHERS,
-    [B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE] = STRINGID_PKMNNULLIFIEDOTHERS,
-    [B_MSG_SHOCKWAVE_MEGA_ZMOVE] = STRINGID_PKMNNULLIFIEDOTHERS,
-    [B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED] = STRINGID_PKMNNULLIFIEDOTHERS,
+    [B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED] = STRINGID_PKMNFOCUSEDONOPPONENTS,
+    [B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS] = STRINGID_PKMNRESETSTATINCREASE,
+    [B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF] = STRINGID_PKMNRECOVEREDFROMNEGATIVE,
+    [B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE] = STRINGID_PKMNSTOLETERACHARGE,
+    [B_MSG_SHOCKWAVE_MEGA_ZMOVE] = STRINGID_PKMNEMITTEDWAVEOFENERGY,
+    [B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED] = STRINGID_PKMNCALMEDHEALEDITSELF,
 };
 
 const u16 gZEffectStringIds[] =
@@ -4102,7 +4125,10 @@ void BattlePutTextOnWindow(const u8 *text, u8 windowId)
         // We cannot check the actual width of the window because
         // B_WIN_MOVE_NAME_1 and B_WIN_MOVE_NAME_3 are 16 wide for
         // Z-move details.
-        printerTemplate.fontId = GetFontIdToFit(text, printerTemplate.fontId, printerTemplate.letterSpacing, 8 * TILE_WIDTH);
+        if (gBattleStruct->zmove.viewing && windowId == B_WIN_MOVE_NAME_1)
+            printerTemplate.fontId = GetFontIdToFit(text, printerTemplate.fontId, printerTemplate.letterSpacing, 16 * TILE_WIDTH);
+        else
+            printerTemplate.fontId = GetFontIdToFit(text, printerTemplate.fontId, printerTemplate.letterSpacing, 8 * TILE_WIDTH);
     }
 
     if (printerTemplate.x == 0xFF)
@@ -4158,7 +4184,7 @@ void SetPpNumbersPaletteInMoveSelection(u32 battler)
         var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPp[gMoveSelectionCursor[battler]],
                          chooseMoveStruct->maxPp[gMoveSelectionCursor[battler]]);
     else
-        var = GetCurrentPpToMaxPpState(chooseMoveStruct->currentPp[gMoveSelectionCursor[battler]], gMovesInfo[gMoveSelectionCursor[battler]].pp);
+        var = 3;
 
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 12] = palPtr[(var * 2) + 0];
     gPlttBufferUnfaded[BG_PLTT_ID(5) + 11] = palPtr[(var * 2) + 1];

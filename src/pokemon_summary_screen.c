@@ -29,7 +29,7 @@
 #include "palette.h"
 #include "pokeball.h"
 #include "pokemon.h"
-#include "pokemon_debug.h"
+#include "pokemon_sprite_visualizer.h"
 #include "pokemon_storage_system.h"
 #include "pokemon_summary_screen.h"
 #include "region_map.h"
@@ -1875,10 +1875,10 @@ static void Task_HandleInput(u8 taskId)
             PlaySE(SE_SELECT);
             BeginCloseSummaryScreen(taskId);
         }
-    #if DEBUG_POKEMON_MENU == TRUE
+    #if DEBUG_POKEMON_SPRITE_VISUALIZER == TRUE
         else if (JOY_NEW(SELECT_BUTTON) && !gMain.inBattle)
         {
-            sMonSummaryScreen->callback = CB2_Debug_Pokemon;
+            sMonSummaryScreen->callback = CB2_Pokemon_Sprite_Visualizer;
             StopPokemonAnimations();
             PlaySE(SE_SELECT);
             CloseSummaryScreen(taskId);
@@ -2780,14 +2780,14 @@ static void Task_ConfirmHMCantForget(u8 taskId)
 
 static bool8 CanReplaceMove(void)
 {
-    /*if (CONFIG_CAN_FORGET_HM_MOVES)
+    if (CONFIG_CAN_FORGET_HM_MOVES)
         return TRUE;
     else if (sMonSummaryScreen->firstMoveIndex == MAX_MON_MOVES
         || sMonSummaryScreen->newMove == MOVE_NONE
-        || IsMoveHm(sMonSummaryScreen->summary.moves[sMonSummaryScreen->firstMoveIndex]) != TRUE)*/
+        || IsMoveHM(sMonSummaryScreen->summary.moves[sMonSummaryScreen->firstMoveIndex]) != TRUE)
         return TRUE;
-    //else
-    //    return FALSE;
+    else
+        return FALSE;
 }
 
 static void PrintTextOnWindowWithFont(u8 windowId, const u8 *string, u8 x, u8 y, u8 lineSpacing, u8 colorId, u32 fontId)

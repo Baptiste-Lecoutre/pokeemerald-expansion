@@ -399,6 +399,19 @@ void SpriteCB_TrainerSlideIn(struct Sprite *sprite)
     }
 }
 
+// fast battle intro
+void SpriteCB_TrainerSpawn(struct Sprite *sprite)
+{
+    if (!(gIntroSlideFlags & 1))
+    {
+        sprite->x2 = 0;
+        if (sprite->y2 != 0)
+            sprite->callback = SpriteCB_TrainerSlideVertical;
+        else
+            sprite->callback = SpriteCallbackDummy;
+    }
+}
+
 // Slide up to 0 if necessary (used by multi battle intro)
 static void SpriteCB_TrainerSlideVertical(struct Sprite *sprite)
 {
@@ -586,6 +599,7 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battler)
         if (B_TRANSFORM_SHINY >= GEN_4)
         {
             currentPersonality = gTransformedPersonalities[battler];
+            isShiny = gTransformedShininess[battler];
         }
         else
         {
@@ -626,7 +640,7 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battler)
     }
 
     // dynamax tint
-    if (IsDynamaxed(battler))
+    if (GetActiveGimmick(battler) == GIMMICK_DYNAMAX)
     {
         // Calyrex and its forms have a blue dynamax aura instead of red.
         if (GET_BASE_SPECIES_ID(species) == SPECIES_CALYREX)
@@ -637,7 +651,7 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battler)
     }
 
     // Terastallization's tint
-    if (IsTerastallized(battler))
+    if (GetActiveGimmick(battler) == GIMMICK_TERA)
     {
         BlendPalette(paletteOffset, 16, 8, GetTeraTypeRGB(GetBattlerTeraType(battler)));
         CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, PLTT_SIZEOF(16));
@@ -718,8 +732,7 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
         {
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
-            MegaIndicator_LoadSpritesGfx();
-            TeraIndicator_LoadSpriteGfx();
+            LoadIndicatorSpritesGfx();
             CategoryIcons_LoadSpritesGfx();
         }
         else if (!IsDoubleBattle())
@@ -924,7 +937,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
             HandleLoadSpecialPokePic(FALSE,
                                      gMonSpritesGfxPtr->spritesGfx[position],
                                      targetSpecies,
-                                     gTransformedPersonalities[battlerAtk]);
+                                     personalityValue);
         }
         else
         {
@@ -942,7 +955,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
             HandleLoadSpecialPokePic(TRUE,
                                      gMonSpritesGfxPtr->spritesGfx[position],
                                      targetSpecies,
-                                     gTransformedPersonalities[battlerAtk]);
+                                     personalityValue);
         }
     }
     src = gMonSpritesGfxPtr->spritesGfx[position];

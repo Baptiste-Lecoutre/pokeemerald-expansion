@@ -66,6 +66,7 @@ static EWRAM_DATA struct PaletteStruct sPaletteStructs[NUM_PALETTE_STRUCTS] = {0
 EWRAM_DATA struct PaletteFadeControl gPaletteFade = {0};
 static EWRAM_DATA u32 sPlttBufferTransferPending = 0;
 EWRAM_DATA u8 ALIGNED(2) gPaletteDecompressionBuffer[PLTT_SIZE] = {0};
+static EWRAM_DATA u32 sPlttPreviousUpdateResult = 0;
 
 static const struct PaletteStructTemplate sDummyPaletteStructTemplate = {
     .id = 0xFFFF,
@@ -128,6 +129,8 @@ u8 UpdatePaletteFade(void)
     u8 result;
     u8 dummy = 0;
 
+    sPlttPreviousUpdateResult = PALETTE_FADE_STATUS_LOADING;
+
     if (sPlttBufferTransferPending)
         return PALETTE_FADE_STATUS_LOADING;
 
@@ -141,8 +144,14 @@ u8 UpdatePaletteFade(void)
         result = UpdateHardwarePaletteFade();
 
     sPlttBufferTransferPending = gPaletteFade.multipurpose1 | dummy;
+    sPlttPreviousUpdateResult = result;
 
     return result;
+}
+
+u32 PrevPaletteFadeResult(void)
+{
+    return sPlttPreviousUpdateResult;
 }
 
 void ResetPaletteFade(void)
@@ -1331,15 +1340,12 @@ void TintPalette_CustomTone(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 b
 void TintPalette_CustomTone_Blend(u16 *palette, u16 count, u16 rTone, u16 gTone, u16 bTone)
 {
     s32 r, g, b, i;
-    u32 gray;
 
     for (i = 0; i < count; i++)
     {
         r = GET_R(*palette);
         g = GET_G(*palette);
         b = GET_B(*palette);
-
-        gray = (r * Q_8_8(0.3) + g * Q_8_8(0.59) + b * Q_8_8(0.1133)) >> 8;
 
         r = (u16)((rTone * r)) >> 8;
         g = (u16)((gTone * g)) >> 8;

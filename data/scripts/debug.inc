@@ -150,25 +150,29 @@ Debug_EventScript_Text_DefensiveIVs:
 
 Debug_EventScript_Script_1::
 	goto EventScript_DoWonderTrade
+	release
 	end
 
 Debug_EventScript_Script_2::
 	special GameClear
 	waitstate
+	release
 	end
 
 Debug_EventScript_Script_3::
 	goto PKMN_Center_Move_Tutor
+	release
 	end
 
 Debug_EventScript_Script_4::
 	choose_mons
-	multi_fixed_2_vs_2 TRAINER_ROSE_1, Route118_Text_RoseDefeat, TRAINER_DEANDRE, Route118_Text_DeandreDefeat, TRAINER_WALLACE, TRAINER_BACK_PIC_MAY
+	multi_fixed_2_vs_2 TRAINER_ROSE_1, Route118_Text_RoseDefeat, TRAINER_DEANDRE, Route118_Text_DeandreDefeat, TRAINER_WALLACE
+	release
 	end
 
 Debug_EventScript_Script_5::
 	lockall
-	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_7, SPECIES_SALAMENCE, 90, ITEM_SALAMENCITE
+	preparefixedraid RAID_TYPE_TERA, RAID_RANK_5, SPECIES_SALAMENCE, 50, ITEM_SALAMENCITE, TYPE_ELECTRIC
 	special InitRaidIntro
 	waitstate
 	goto_if_ne VAR_RESULT, FALSE, Debug_DoFixedRaid
@@ -181,6 +185,7 @@ Debug_DoFixedRaid:
 
 Debug_EventScript_Script_6::
 	goto PKMN_Center_MinimalGrinding
+	release
 	end
 
 Debug_EventScript_Script_7::
@@ -199,6 +204,7 @@ Debug_EventScript_Script_7::
 
 Debug_EventScript_Script_8::
 	setTeraType TYPE_STELLAR, 4
+	release
 	end
 
 Debug_CheckSaveBlock::
@@ -470,5 +476,15 @@ Debug_EventScript_InflictStatus1_Text_Freeze:
 
 Debug_EventScript_InflictStatus1_Text_Frostbite:
 	.string "Frostbite$"
+
+Debug_EventScript_EWRAMCounters::
+	callnative CheckEWRAMCounters
+	msgbox Debug_EventScript_EWRAMCounters_Text, MSGBOX_DEFAULT
+	release
+	end
+
+Debug_EventScript_EWRAMCounters_Text::
+	.string "Follower Steps: {STR_VAR_1}.\n"
+	.string "Fishing Chain: {STR_VAR_2}.$"
 
 .endif

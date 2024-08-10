@@ -3,7 +3,7 @@
 
 #include <string.h>
 #include <limits.h>
-#include "config.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.
+#include "config/general.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.
 #include "gba/gba.h"
 #include "fpmath.h"
 #include "metaprogram.h"
@@ -167,12 +167,6 @@ struct UCoords32
     u32 y;
 };
 
-struct SaveBlock3
-{
-};
-
-extern struct SaveBlock3 *gSaveBlock3Ptr;
-
 struct Time
 {
     /*0x00*/ s16 days;
@@ -180,6 +174,16 @@ struct Time
     /*0x03*/ s8 minutes;
     /*0x04*/ s8 seconds;
 };
+
+
+struct SaveBlock3
+{
+#if OW_USE_FAKE_RTC
+    struct Time fakeRTC;
+#endif
+};
+
+extern struct SaveBlock3 *gSaveBlock3Ptr;
 
 struct Pokedex
 {
@@ -533,9 +537,9 @@ struct SaveBlock2
              u16 optionsWindowFrameType:5; // Specifies one of the 20 decorative borders for text boxes
              u16 optionsSound:2; // OPTIONS_SOUND_[MONO/STEREO/OFF]
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
-             u16 optionsBattleSceneOff:1; // whether battle animations are disabled
+             u16 optionsBattleScene:3; // whether battle animations are disabled
              u16 regionMapZoom:1; // whether the map is zoomed in
-             //u16 padding1:4;
+             u16 padding1:1;
              //u16 padding2;
     /*0x18*/ struct Pokedex pokedex;
     /*0x90*/ u8 filler_90[0x7];
@@ -671,14 +675,15 @@ struct Roamer
     /*0x08*/ u16 species;
     /*0x0A*/ u16 hp;
     /*0x0C*/ u8 level;
-    /*0x0D*/ u8 status;
+    /*0x0D*/ u8 statusA;
     /*0x0E*/ u8 cool;
     /*0x0F*/ u8 beauty;
     /*0x10*/ u8 cute;
     /*0x11*/ u8 smart;
     /*0x12*/ u8 tough;
     /*0x13*/ bool8 active;
-    /*0x14*/ u8 filler[0x8];
+    /*0x14*/ u8 statusB; // Stores frostbite
+    /*0x14*/ u8 filler[0x7];
 };
 
 struct RamScriptData
@@ -1133,7 +1138,7 @@ struct SaveBlock1
     /*0x31A8*/ u8 giftRibbons[GIFT_RIBBONS_COUNT];
     /*0x31B3*/ struct ExternalEventData externalEventData;
     /*0x31C7*/ struct ExternalEventFlags externalEventFlags;
-    /*0x31DC*/ struct Roamer roamer;
+    /*0x31DC*/ struct Roamer roamer[ROAMER_COUNT];
 #if FREE_ENIGMA_BERRY == FALSE
     /*0x31F8*/ struct EnigmaBerry enigmaBerry;
 #endif //FREE_ENIGMA_BERRY

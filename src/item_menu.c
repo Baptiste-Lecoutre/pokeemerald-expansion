@@ -1150,7 +1150,7 @@ static void BagMenu_MoveCursorCallback(s32 itemIndex, bool8 onInit, struct ListM
 {
     if (onInit != TRUE)
     {
-        PlaySE(SE_SELECT);
+        PlaySE(SE_RG_BAG_CURSOR);
         ShakeBagSprite();
     }
     if (gBagMenu->toSwapPos == NOT_SWAPPING)
@@ -1434,7 +1434,7 @@ static void PrintItemSoldAmount(int windowId, int numSold, int moneyEarned)
     ConvertIntToDecimalStringN(gStringVar1, numSold, STR_CONV_MODE_LEADING_ZEROS, MAX_ITEM_DIGITS);
     StringExpandPlaceholders(gStringVar4, gText_xVar1);
     AddTextPrinterParameterized(windowId, FONT_NORMAL, gStringVar4, 0, 1, TEXT_SKIP_DRAW, 0);
-    PrintMoneyAmount(windowId, 38, 1, moneyEarned, 0);
+    PrintMoneyAmount(windowId, CalculateMoneyTextHorizontalPosition(moneyEarned), 1, moneyEarned, 0);
 }
 
 static void Task_BagMenu_HandleInput(u8 taskId)
@@ -1519,12 +1519,12 @@ static u8 GetSwitchBagPocketDirection(void)
     LRKeys = GetLRKeysPressed();
     if (JOY_NEW(DPAD_LEFT) || LRKeys == MENU_L_PRESSED)
     {
-        PlaySE(SE_SELECT);
+        PlaySE(SE_RG_BAG_POCKET);
         return SWITCH_POCKET_LEFT;
     }
     if (JOY_NEW(DPAD_RIGHT) || LRKeys == MENU_R_PRESSED)
     {
-        PlaySE(SE_SELECT);
+        PlaySE(SE_RG_BAG_POCKET);
         return SWITCH_POCKET_RIGHT;
     }
     return SWITCH_POCKET_NONE;
@@ -2497,7 +2497,6 @@ static void FreeKeyItemWheelGfx(s16 *data) {
 static void Task_KeyItemWheel(u8 taskId) {
     u32 i, j;
     s16 *data = gTasks[taskId].data;
-    struct Sprite *sprite;
     switch (tState)
     {
     case 0:
@@ -2611,7 +2610,7 @@ static void DisplaySellItemPriceAndConfirm(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
-    ConvertIntToDecimalStringN(gStringVar1, (ItemId_GetPrice(gSpecialVar_ItemId) / ITEM_SELL_FACTOR) * tItemCount, STR_CONV_MODE_LEFT_ALIGN, 6);
+    ConvertIntToDecimalStringN(gStringVar1, (ItemId_GetPrice(gSpecialVar_ItemId) / ITEM_SELL_FACTOR) * tItemCount, STR_CONV_MODE_LEFT_ALIGN, MAX_MONEY_DIGITS);
     StringExpandPlaceholders(gStringVar4, gText_ICanPayVar1);
     DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, AskSellItems);
 }
@@ -2671,7 +2670,7 @@ static void ConfirmSell(u8 taskId)
     s16 *data = gTasks[taskId].data;
 
     CopyItemName(gSpecialVar_ItemId, gStringVar2);
-    ConvertIntToDecimalStringN(gStringVar1, (ItemId_GetPrice(gSpecialVar_ItemId) / ITEM_SELL_FACTOR) * tItemCount, STR_CONV_MODE_LEFT_ALIGN, 6);
+    ConvertIntToDecimalStringN(gStringVar1, (ItemId_GetPrice(gSpecialVar_ItemId) / ITEM_SELL_FACTOR) * tItemCount, STR_CONV_MODE_LEFT_ALIGN, MAX_MONEY_DIGITS);
     StringExpandPlaceholders(gStringVar4, gText_TurnedOverVar1ForVar2);
     DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, SellItem);
 }
@@ -3158,6 +3157,9 @@ static void DrawPartyMonIcons(void)
 
     LoadMonIconPalettesTinted();
 
+    SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL);
+    SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(7, 11));
+
     for (i = 0; i < gPlayerPartyCount; i++)
     {
         if (gPlayerPartyCount < 4)
@@ -3189,9 +3191,9 @@ static void TintPartyMonIcons(u16 itemId)
     {
         if (!CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), ItemIdToBattleMoveId(itemId))
             || gItemsInfo[itemId].pocket != POCKET_TM_HM)
-            gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_BLEND; //gSprites[spriteIdData[i]].oam.paletteNum = 15;//1;//7 + spriteIdPalette[i];
         else
-            gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
+            gSprites[spriteIdData[i]].oam.objMode = ST_OAM_OBJ_NORMAL; //gSprites[spriteIdData[i]].oam.paletteNum = spriteIdPalette[i];
     }
 }
 

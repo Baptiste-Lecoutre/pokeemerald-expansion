@@ -1,6 +1,7 @@
 #ifndef GUARD_CONSTANTS_GLOBAL_H
 #define GUARD_CONSTANTS_GLOBAL_H
 
+#include "config/general.h"
 #include "config/battle.h"
 #include "config/debug.h"
 #include "config/item.h"
@@ -80,6 +81,7 @@
 #define SAVED_TRENDS_COUNT 5
 #define PYRAMID_BAG_ITEMS_COUNT 10
 #define MAX_REGISTERED_ITEMS 4
+#define ROAMER_COUNT 1 // Number of maximum concurrent active roamers
 
 // Number of facilities for Ranking Hall.
 // 7 facilities for single mode + tower double mode + tower multi mode.
@@ -152,6 +154,13 @@
 
 #define OPTIONS_BATTLE_STYLE_SHIFT 0
 #define OPTIONS_BATTLE_STYLE_SET 1
+
+#define OPTIONS_BATTLE_SCENE_1X 0
+#define OPTIONS_BATTLE_SCENE_2X 1
+#define OPTIONS_BATTLE_SCENE_3X 2
+#define OPTIONS_BATTLE_SCENE_4X 3
+#define OPTIONS_BATTLE_SCENE_DISABLED   4
+#define OPTIONS_BATTLE_SCENE_COUNT  5
 
 #define DIR_NONE        0
 #define DIR_SOUTH       1

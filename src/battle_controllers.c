@@ -17,6 +17,7 @@
 #include "link_rfu.h"
 #include "palette.h"
 #include "party_menu.h"
+#include "pokemon_animation.h"
 #include "recorded_battle.h"
 #include "string_util.h"
 #include "sound.h"
@@ -1603,12 +1604,22 @@ static u32 GetBattlerMonData(u32 battler, struct Pokemon *party, u32 monId, u8 *
         battleMon.abilityNum = GetMonData(&party[monId], MON_DATA_ABILITY_NUM);
         battleMon.otId = GetMonData(&party[monId], MON_DATA_OT_ID);
         battleMon.metLevel = GetMonData(&party[monId], MON_DATA_MET_LEVEL);
+        battleMon.isShiny = GetMonData(&party[monId], MON_DATA_IS_SHINY);
         GetMonData(&party[monId], MON_DATA_NICKNAME, nickname);
         StringCopy_Nickname(battleMon.nickname, nickname);
         GetMonData(&party[monId], MON_DATA_OT_NAME, battleMon.otName);
         src = (u8 *)&battleMon;
         for (size = 0; size < sizeof(battleMon); size++)
             dst[size] = src[size];
+        #if TESTING
+        if (gTestRunnerEnabled)
+        {
+            u32 side = GetBattlerSide(battler);
+            u32 partyIndex = gBattlerPartyIndexes[battler];
+            if (TestRunner_Battle_GetForcedAbility(side, partyIndex))
+                gBattleMons[battler].ability = gBattleStruct->overwrittenAbilities[battler] = TestRunner_Battle_GetForcedAbility(side, partyIndex);
+        }
+        #endif
         break;
     case REQUEST_SPECIES_BATTLE:
         data16 = GetMonData(&party[monId], MON_DATA_SPECIES);
@@ -2550,7 +2561,7 @@ void BtlController_HandleDrawTrainerPic(u32 battler, u32 trainerPicId, bool32 is
         gSprites[gBattlerSpriteIds[battler]].x2 = DISPLAY_WIDTH;
         gSprites[gBattlerSpriteIds[battler]].sSpeedX = -2;
     }
-    gSprites[gBattlerSpriteIds[battler]].callback = SpriteCB_TrainerSlideIn;
+    gSprites[gBattlerSpriteIds[battler]].callback = (gSaveBlock2Ptr->optionsBattleScene) ? SpriteCB_TrainerSpawn :SpriteCB_TrainerSlideIn;
 
     gBattlerControllerFuncs[battler] = Controller_WaitForTrainerPic;
 }
@@ -2607,6 +2618,9 @@ void BtlController_HandleTrainerSlideBack(u32 battler, s16 data0, bool32 startAn
 
 void BtlController_HandleFaintAnimation(u32 battler)
 {
+    if (B_ANIM_ON_OPPONENT_FAINT)
+        SetHealthboxSpriteInvisible(gHealthboxSpriteIds[battler]);
+
     if (gBattleSpritesDataPtr->healthBoxesData[battler].animationState == 0)
     {
         if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
@@ -2635,6 +2649,31 @@ void BtlController_HandleFaintAnimation(u32 battler)
             }
             // The player's sprite callback just slides the mon, the opponent's removes the sprite.
             // The player's sprite is removed in Controller_FaintPlayerMon. Controller_FaintOpponentMon only removes the healthbox once the sprite is removed by SpriteCB_FaintOpponentMon.
+        }
+    }
+
+    if(GetBattlerSide(battler) == B_SIDE_PLAYER && B_ANIM_ON_OPPONENT_FAINT) // removed cry because it mixes with the fainted one
+    {
+        LaunchAnimationTaskForFrontSprite(&gSprites[gBattlerSpriteIds[BATTLE_OPPOSITE(battler)]], gSpeciesInfo[gBattleMons[BATTLE_OPPOSITE(battler)].species].frontAnimId);
+//        PlayCry_Normal(gBattleMons[BATTLE_OPPOSITE(battler)].species, CRY_PRIORITY_NORMAL);
+        if (HasTwoFramesAnimation(gBattleMons[BATTLE_OPPOSITE(battler)].species))
+            StartSpriteAnim(&gSprites[gBattlerSpriteIds[BATTLE_OPPOSITE(battler)]], 1);
+        if(gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(battler))))
+        {
+            LaunchAnimationTaskForFrontSprite(&gSprites[gBattlerSpriteIds[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))]], gSpeciesInfo[gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species].frontAnimId);
+//            PlayCry_Normal(gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species, CRY_PRIORITY_NORMAL);
+            if (HasTwoFramesAnimation(gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species))
+                StartSpriteAnim(&gSprites[gBattlerSpriteIds[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))]], 1);
+        }
+    }
+    else if(GetBattlerSide(battler) == B_SIDE_OPPONENT && B_ANIM_ON_OPPONENT_FAINT)
+    {
+        LaunchAnimationTaskForBackSprite(&gSprites[gBattlerSpriteIds[BATTLE_OPPOSITE(battler)]], gSpeciesInfo[gBattleMons[BATTLE_OPPOSITE(battler)].species].backAnimId);
+//        PlayCry_Normal(gBattleMons[BATTLE_OPPOSITE(battler)].species, CRY_PRIORITY_NORMAL);
+        if(gBattleTypeFlags & BATTLE_TYPE_DOUBLE && IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(battler))))
+        {
+            LaunchAnimationTaskForBackSprite(&gSprites[gBattlerSpriteIds[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))]], gSpeciesInfo[gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species].backAnimId);
+//            PlayCry_Normal(gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].species, CRY_PRIORITY_NORMAL);
         }
     }
 }
@@ -3075,4 +3114,48 @@ void BtlController_HandleBattleAnimation(u32 battler, bool32 ignoreSE, bool32 up
         if (updateTvData)
             BattleTv_SetDataBasedOnAnimation(animationId);
     }
+}
+
+u32 SpeedUp_GetBattleSpeedScale(bool32 forHealthbar)
+{
+    u8 battleSceneOption = gSaveBlock2Ptr->optionsBattleScene; //VarGet(B_BATTLE_SPEED); //Originally GetBattleSceneOption() with a saveblock stored value;
+
+    // hold L Button to slow down
+    if (JOY_HELD(L_BUTTON))
+        return 1;
+
+    // we want to spped up all anims until input selection starts
+    if (InBattleChoosingMoves())
+        gBattleStruct->hasBattleInputStarted = TRUE;
+
+    if (gBattleStruct->hasBattleInputStarted)
+    {
+        // always run at 1x speed here
+        if (InBattleChoosingMoves())
+            return 1;
+
+        // when battle anims are turned off, it's a bit too hard to read text, so force running at normal speed
+        if (!forHealthbar && battleSceneOption == OPTIONS_BATTLE_SCENE_DISABLED && InBattleRunningActions())
+            return 1;
+    }
+
+    // we don't need to speed up health bar anymore as that passively happens now
+    switch (battleSceneOption)
+    {
+    case OPTIONS_BATTLE_SCENE_1X:
+        return forHealthbar ? 1 : 1;
+    case OPTIONS_BATTLE_SCENE_2X:
+        return forHealthbar ? 1 : 2;
+    case OPTIONS_BATTLE_SCENE_3X:
+        return forHealthbar ? 1 : 3;
+    case OPTIONS_BATTLE_SCENE_4X:
+        return forHealthbar ? 1 : 4;
+    // print text at a readable speed still
+    case OPTIONS_BATTLE_SCENE_DISABLED:
+        if (gBattleStruct->hasBattleInputStarted)
+            return forHealthbar ? 10 : 1;
+        else
+            return 4;
+    }
+    return 1;
 }

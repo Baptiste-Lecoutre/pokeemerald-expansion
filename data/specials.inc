@@ -173,6 +173,7 @@ gSpecials::
 	def_special Special_ViewWallClock
 	def_special ChooseStarter
 	def_special StartWallyTutorialBattle
+	def_special StartWallyLatiBattle
 	def_special ChangePokemonNickname
 	def_special ChoosePartyMon
 	def_special GetFirstFreePokeblockSlot
@@ -611,3 +612,6 @@ gSpecials::
 	def_special Script_GetChosenMonDefensiveEVs
 	def_special Script_GetChosenMonOffensiveIVs
 	def_special Script_GetChosenMonDefensiveIVs
+	def_special SetPokedexSeenFlag
+	def_special SetPokedexCaughtFlag
+	def_special SetObjectEventMovementType

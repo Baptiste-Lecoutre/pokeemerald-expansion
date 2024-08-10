@@ -533,14 +533,14 @@ static void Task_HandleStarterChooseInput(u8 taskId)
         gTasks[taskId].tStarterSelection++;
         gTasks[taskId].func = Task_MoveStarterChooseCursor;
     }
-    else if (JOY_NEW(R_BUTTON))
+    else if (JOY_NEW(DPAD_UP))
     {
         gTasks[taskId].tRegionSelection++;
         if (gTasks[taskId].tRegionSelection > REGION_COUNT-1)
             gTasks[taskId].tRegionSelection = 0;
         gTasks[taskId].func = Task_MoveStarterChooseCursor;
     }
-    else if (JOY_NEW(L_BUTTON))
+    else if (JOY_NEW(DPAD_DOWN))
     {
         if (gTasks[taskId].tRegionSelection == 0)
             gTasks[taskId].tRegionSelection = REGION_COUNT - 1;
@@ -603,7 +603,7 @@ static void Task_DeclineStarter(u8 taskId)
     gTasks[taskId].func = Task_StarterChoose;
 }
 
-static const u8 sText_ChangePocketPrompt[] = _("Change pocket using L/R");
+static const u8 sText_ChangePocketPrompt[] = _("Change pocket using {DPAD_UPDOWN}");
 static void CreateChangePocketPrompt(void)
 {
     struct WindowTemplate winTemplate;

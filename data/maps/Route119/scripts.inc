@@ -2,6 +2,7 @@
 .set LOCALID_RIVAL_ON_BIKE, 25
 .set LOCALID_SCOTT, 43
 .set LOCALID_KOGA, 44
+.set LOCALID_LATI, 49
 
 Route119_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, Route119_OnResume
@@ -21,14 +22,35 @@ Route119_EventScript_TryRemoveKecleon::
 Route119_OnTransition:
 	call Common_EventScript_SetupRivalGfxId
 	call Common_EventScript_SetupRivalOnBikeGfxId
+	call Route119_EventScript_SetLatiGfxId
 	call_if_eq VAR_WEATHER_INSTITUTE_STATE, 1, Route119_EventScript_MoveInstituteWorkersDownstairs
-	goto_if_defeated TRAINER_KOGA, Route119_EventScript_HideKoga
+	call_if_defeated TRAINER_KOGA, Route119_EventScript_HideKoga
+	call Route119_EventScript_HideLati
 	special SetRoute119Weather
 	end
+
+Route119_EventScript_SetLatiGfxId::
+	checkplayergender
+	goto_if_eq VAR_RESULT, MALE, Route119_EventScript_SetLatiosGfxId
+	goto_if_eq VAR_RESULT, FEMALE, Route119_EventScript_SetLatiasGfxId
+	end
+
+Route119_EventScript_SetLatiosGfxId::
+	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_SPECIES(LATIOS)
+	return
+
+Route119_EventScript_SetLatiasGfxId::
+	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_SPECIES(LATIAS)
+	return
 
 Route119_EventScript_HideKoga::
 	setflag FLAG_TEMP_7
 	removeobject LOCALID_KOGA
+	return
+
+Route119_EventScript_HideLati::
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_LATI
 	return
 
 Route119_EventScript_MoveInstituteWorkersDownstairs::
@@ -183,6 +205,7 @@ Route119_EventScript_GiveFlyHM::
 
 Route119_EventScript_RivalExitScottArrive::
 	closemessage
+	call Route119_EventScript_LatiScene
 	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_SetRivalPos1
 	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_SetRivalPos2
 	removeobject LOCALID_RIVAL
@@ -208,6 +231,255 @@ Route119_EventScript_RivalExitScottArrive::
 	removeobject LOCALID_SCOTT
 	releaseall
 	end
+
+Route119_EventScript_LatiScene::
+	clearflag FLAG_TEMP_8
+	addobject LOCALID_LATI
+	call Route119_EventScript_LatiGroundDust
+	call Route119_EventScript_PlayLatiCry
+	call Route119_EventScript_RivalTextWhatIsThisPokemon
+	call Route119_EventScript_LatiApproach
+	call Route119_EventScript_RivalTextIsThatLati
+	call Route119_EventScript_PlayLatiCryAndDisappear
+@	call Route119_EventScript_PlayLatiCryAndExit @ I could make it disappear the same way it appears with the ground dust effect. TBC/D
+	call Route119_EventScript_RivalTextAfterLatiExit
+	return
+
+Route119_EventScript_LatiGroundDust::
+	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_LatiGroundDustRight
+	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_LatiGroundDustLeft
+	return
+
+Route119_EventScript_LatiGroundDustRight::
+	playse SE_M_POISON_POWDER
+	dofieldeffectgrounddust 27, 32, 3, 2
+	waitfieldeffect FLDEFF_DUST
+	return
+
+Route119_EventScript_LatiGroundDustLeft::
+	playse SE_M_POISON_POWDER
+	dofieldeffectgrounddust 24, 32, 3, 2
+	waitfieldeffect FLDEFF_DUST
+	return
+
+Route119_EventScript_PlayLatiCry::
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, Route119_EventScript_PlayLatiosCry
+	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_PlayLatiasCry
+	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_PlayerRivalTurnRight
+	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_PlayerRivalTurnLeft
+	return
+
+Route119_EventScript_PlayLatiosCry::
+	playmoncry SPECIES_LATIOS, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	return
+
+Route119_EventScript_PlayLatiasCry::
+	playmoncry SPECIES_LATIAS, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	return
+
+Route119_EventScript_PlayerRivalTurnRight::
+	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterRight
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	playse SE_PIN
+	applymovement LOCALID_RIVAL, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_RIVAL, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	return
+
+Route119_EventScript_PlayerRivalTurnLeft::
+	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterLeft
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	playse SE_PIN
+	applymovement LOCALID_RIVAL, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_RIVAL, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	return
+
+Route119_EventScript_RivalTextWhatIsThisPokemon::
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, Route119_EventScript_MayWhatIsThatPokemon
+	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_BrendanWhatIsThatPokemon
+	closemessage
+	return
+
+Route119_EventScript_MayWhatIsThatPokemon::
+	msgbox Route119_Text_MayWhatIsThatPokemon, MSGBOX_DEFAULT
+	return
+
+Route119_EventScript_BrendanWhatIsThatPokemon::
+	msgbox Route119_Text_BrendanWhatIsThatPokemon, MSGBOX_DEFAULT
+	return
+
+Route119_Text_MayWhatIsThatPokemon:
+	.string "May: What?\n"
+	.string "What is that Pokémon?$"
+
+Route119_Text_BrendanWhatIsThatPokemon:
+	.string "Brendan: Huh?\n"
+	.string "What does this Pokémon want?$"
+
+Route119_EventScript_LatiApproach::
+	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_LatiApproachRight
+	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_LatiApproachLeft
+	return
+
+Route119_EventScript_LatiApproachRight::
+	applymovement LOCALID_LATI, Route119_Movement_LatiSlowLeft
+	waitmovement 0
+	return
+
+Route119_EventScript_LatiApproachLeft::
+	applymovement LOCALID_LATI, Route119_Movement_LatiSlowRight
+	waitmovement 0
+	return
+
+Route119_Movement_LatiSlowLeft:
+	walk_slow_left
+	step_end
+
+Route119_Movement_LatiSlowRight:
+	walk_slow_right
+	step_end
+
+Route119_EventScript_RivalTextIsThatLati::
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, Route119_EventScript_MayWasThatLatios
+	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_BrendanWasThatLatias
+	closemessage
+	return
+
+Route119_EventScript_MayWasThatLatios::
+	msgbox Route119_Text_MayWasThatLatios, MSGBOX_DEFAULT
+	return
+
+Route119_EventScript_BrendanWasThatLatias::
+	msgbox Route119_Text_BrendanWasThatLatias, MSGBOX_DEFAULT
+	return
+
+Route119_Text_MayWasThatLatios:
+	.string "May: This color… This shape…\n"
+	.string "Is this the legendary Pokémon Latios?$"
+
+Route119_Text_BrendanWasThatLatias:
+	.string "Brendan: This red color…\n"
+	.string "Are you Latias?$"
+
+Route119_EventScript_PlayLatiCryAndExit::
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, Route119_EventScript_PlayLatiosCry
+	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_PlayLatiasCry
+	playse SE_FU_ZAKU
+	applymovement LOCALID_LATI, Route119_Movement_LatiExit
+	applymovement LOCALID_RIVAL, Route119_Movement_WatchLatiExit
+	applymovement OBJ_EVENT_ID_PLAYER, Route119_Movement_WatchLatiExit
+	waitmovement 0
+	delay 30
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_LATI
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	return
+
+Route119_EventScript_PlayLatiCryAndDisappear::
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, Route119_EventScript_PlayLatiosCry
+	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_PlayLatiasCry
+	call_if_eq VAR_TEMP_1, 1, Route119_EventScript_LatiGroundDustRightDisappear
+	call_if_eq VAR_TEMP_1, 2, Route119_EventScript_LatiGroundDustLeftDisappear
+	delay 30
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
+	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	return
+
+Route119_EventScript_LatiGroundDustRightDisappear::
+	playse SE_M_POISON_POWDER
+	dofieldeffectgrounddust 26, 32, 3, 2
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_LATI
+	waitfieldeffect FLDEFF_DUST
+	return
+
+Route119_EventScript_LatiGroundDustLeftDisappear::
+	playse SE_M_POISON_POWDER
+	dofieldeffectgrounddust 25, 32, 3, 2
+	setflag FLAG_TEMP_8
+	removeobject LOCALID_LATI
+	waitfieldeffect FLDEFF_DUST
+	return
+
+Route119_Movement_LatiExit:
+@	face_down
+	walk_fast_down
+	walk_fast_down
+@	face_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	walk_fast_left
+	step_end
+
+Route119_Movement_WatchLatiExit:
+	walk_in_place_faster_down
+	delay_16
+	walk_in_place_faster_left
+	delay_16
+	delay_16
+	delay_16
+	step_end
+
+Route119_EventScript_RivalTextAfterLatiExit::
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, Route119_EventScript_MayIllHaveToTellDadBye
+	call_if_eq VAR_RESULT, FEMALE, Route119_EventScript_BrendanIllHaveToTellDadBye
+	closemessage
+	return
+
+Route119_EventScript_MayIllHaveToTellDadBye::
+	setvar VAR_RESULT, SPECIES_LATIOS
+	special SetPokedexSeenFlag
+	msgbox Route119_Text_MayIllHaveToTellDad, MSGBOX_DEFAULT
+	return
+
+Route119_EventScript_BrendanIllHaveToTellDadBye::
+	setvar VAR_RESULT, SPECIES_LATIAS
+	special SetPokedexSeenFlag
+	msgbox Route119_Text_BrendanIllHaveToTellDad, MSGBOX_DEFAULT
+	return
+
+Route119_Text_MayIllHaveToTellDad:
+	.string "May: I can't believe my eyes!\n"
+	.string "Latios!\p"
+	.string "I'll have to report this to Dad!\p"
+	.string "Oh, right! I forgot I'm late!\n"
+	.string "See you {PLAYER}{KUN}!$"
+
+Route119_Text_BrendanIllHaveToTellDad:
+	.string "Brendan: Latias…\n"
+	.string "Now that's something interesting.\p"
+	.string "Hmm…\n"
+	.string "I'll have to tell Dad…\p"
+	.string "Anyway, I was leaving.$"
 
 Route119_EventScript_SetScottPos1::
 	setobjectxyperm LOCALID_SCOTT, 27, 25
@@ -252,11 +524,17 @@ Route119_EventScript_RivalExit2::
 Route119_EventScript_SetRivalPos1::
 	setobjectxyperm LOCALID_RIVAL, 25, 32
 	setobjectxyperm LOCALID_RIVAL_ON_BIKE, 25, 32
+	setobjectxyperm LOCALID_LATI, 27, 32
+	setobjectmovementtype LOCALID_LATI, MOVEMENT_TYPE_WALK_IN_PLACE_LEFT
+	waitmovement 0
 	return
 
 Route119_EventScript_SetRivalPos2::
 	setobjectxyperm LOCALID_RIVAL, 26, 32
 	setobjectxyperm LOCALID_RIVAL_ON_BIKE, 26, 32
+	setobjectxyperm LOCALID_LATI, 24, 32
+	setobjectmovementtype LOCALID_LATI, MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT
+	waitmovement 0
 	return
 
 Route119_Movement_PlayerWatchRivalExit1:
