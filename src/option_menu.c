@@ -226,9 +226,10 @@ static const u8 sText_Equal[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Equal");
 static const u8 sText_Speed2x[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}2x");
 static const u8 sText_Speed3x[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}3x");
 static const u8 sText_Speed4x[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}4x");
+static const u8 sText_NoAnim[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}No Anim");
 
 static const u8 *const sTextSpeedStrings[] = {gText_TextSpeedSlow, gText_TextSpeedMid, gText_TextSpeedFast, gText_TextSpeedInstant};
-static const u8 *const sBattleSpeedUpStrings[] = {sText_Default, sText_Speed2x, sText_Speed3x, sText_Speed4x, sText_Off};
+static const u8 *const sBattleSpeedUpStrings[] = {sText_Default, sText_Speed2x, sText_Speed3x, sText_Speed4x, sText_NoAnim};
 static const u8 *const sLevelCapStrings[] = {sText_Off, sText_Soft, sText_Strict};
 static const u8 *const sBaseStatEqStrings[] = {sText_Default, sText_Equal};
 
