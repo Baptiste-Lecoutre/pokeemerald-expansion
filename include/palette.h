@@ -76,6 +76,7 @@ void LoadPaletteFast(const void *src, u16 offset, u16 size);
 void FillPalette(u16 value, u16 offset, u16 size);
 void TransferPlttBuffer(void);
 u8 UpdatePaletteFade(void);
+u32 PrevPaletteFadeResult(void);
 void ResetPaletteFade(void);
 bool8 BeginNormalPaletteFade(u32 selectedPalettes, s8 delay, u8 startY, u8 targetY, u16 blendColor);
 bool8 BeginTimeOfDayPaletteFade(u32, s8, u8, u8, struct BlendSettings *, struct BlendSettings *, u16, u16);

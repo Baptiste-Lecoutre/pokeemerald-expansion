@@ -33,7 +33,6 @@
     return FALSE
 
 static u32 AI_GetEffectiveness(uq4_12_t multiplier);
-u32 AI_GetBattlerAbility(u32);
 
 // Functions
 bool32 AI_IsFaster(u32 battlerAi, u32 battlerDef, u32 move)
@@ -411,10 +410,8 @@ bool32 IsDamageMoveUnusable(u32 move, u32 battlerAtk, u32 battlerDef)
     else
         battlerDefAbility = aiData->abilities[battlerDef];
 
-    // Battler doesn't see partners Ability for some reason.
-    // This is a small hack to avoid the issue but should be investigated
     if (battlerDef == BATTLE_PARTNER(battlerAtk))
-        battlerDefAbility = AI_GetBattlerAbility(battlerDef);
+        battlerDefAbility = aiData->abilities[battlerDef];
 
     switch (battlerDefAbility)
     {
@@ -1356,7 +1353,7 @@ bool32 DoesBattlerIgnoreAbilityChecks(u32 atkAbility, u32 move)
     if (AI_THINKING_STRUCT->aiFlags[sBattler_AI] & AI_FLAG_NEGATE_UNAWARE)
         return FALSE;   // AI handicap flag: doesn't understand ability suppression concept
 
-    if (IsMoldBreakerTypeAbility(atkAbility) || gMovesInfo[move].ignoresTargetAbility)
+    if (IsMoldBreakerTypeAbility(sBattler_AI, atkAbility) || gMovesInfo[move].ignoresTargetAbility)
         return TRUE;
 
     return FALSE;
@@ -2950,7 +2947,7 @@ bool32 AI_CanBeInfatuated(u32 battlerAtk, u32 battlerDef, u32 defAbility)
 
 u32 ShouldTryToFlinch(u32 battlerAtk, u32 battlerDef, u32 atkAbility, u32 defAbility, u32 move)
 {
-    if (((!IsMoldBreakerTypeAbility(AI_DATA->abilities[battlerAtk]) && (defAbility == ABILITY_SHIELD_DUST || defAbility == ABILITY_INNER_FOCUS))
+    if (((!IsMoldBreakerTypeAbility(battlerAtk, AI_DATA->abilities[battlerAtk]) && (defAbility == ABILITY_SHIELD_DUST || defAbility == ABILITY_INNER_FOCUS))
       || AI_DATA->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK
       || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
       || AI_IsSlower(battlerAtk, battlerDef, move))) // Opponent goes first
@@ -2993,7 +2990,7 @@ bool32 ShouldFakeOut(u32 battlerAtk, u32 battlerDef, u32 move)
     || AI_DATA->holdEffects[battlerAtk] == HOLD_EFFECT_CHOICE_BAND
     || AI_DATA->holdEffects[battlerDef] == HOLD_EFFECT_COVERT_CLOAK
     || DoesSubstituteBlockMove(battlerAtk, battlerDef, move)
-    || (!IsMoldBreakerTypeAbility(AI_DATA->abilities[battlerAtk])
+    || (!IsMoldBreakerTypeAbility(battlerAtk, AI_DATA->abilities[battlerAtk])
     && (AI_DATA->abilities[battlerDef] == ABILITY_SHIELD_DUST || AI_DATA->abilities[battlerDef] == ABILITY_INNER_FOCUS)))
         return FALSE;
 
@@ -3046,7 +3043,7 @@ bool32 AnyPartyMemberStatused(u32 battlerId, bool32 checkSoundproof)
     }
 
     // Check attacker's status
-    if ((B_HEAL_BELL_SOUNDPROOF == GEN_5 || B_HEAL_BELL_SOUNDPROOF >= GEN_9
+    if ((B_HEAL_BELL_SOUNDPROOF == GEN_5 || B_HEAL_BELL_SOUNDPROOF >= GEN_8
       || AI_DATA->abilities[battlerId] != ABILITY_SOUNDPROOF || !checkSoundproof)
      && GetMonData(&party[battlerOnField1], MON_DATA_STATUS) != STATUS1_NONE)
         return TRUE;

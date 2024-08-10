@@ -2411,3 +2411,11 @@
 	.macro togglefakertc
 	callnative Script_ToggleFakeRtc
 	.endm
+
+	@ changes the movement type of an object event. Make sure VAR_0x8005 and 0x8006 are not in conflict with the reste of a script.
+	@ To be used surrounded by a lock & release.
+	.macro setobjecteventmovementtype localId:req, movementType:req
+	setvar VAR_0x8005, \localId
+	setvar VAR_0x8006, \movementType
+	special SetObjectEventMovementType
+	.endm

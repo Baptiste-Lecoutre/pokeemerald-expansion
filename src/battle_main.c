@@ -495,21 +495,25 @@ static void CB2_InitBattleInternal(void)
     else
     {
         gBattle_WIN0V = WIN_RANGE(DISPLAY_HEIGHT / 2, DISPLAY_HEIGHT / 2 + 1);
-        ScanlineEffect_Clear();
-
-        for (i = 0; i < DISPLAY_HEIGHT / 2; i++)
+        
+        if (gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X)
         {
-            gScanlineEffectRegBuffers[0][i] = 0xF0;
-            gScanlineEffectRegBuffers[1][i] = 0xF0;
-        }
+            ScanlineEffect_Clear();
 
-        for (; i < DISPLAY_HEIGHT; i++)
-        {
-            gScanlineEffectRegBuffers[0][i] = 0xFF10;
-            gScanlineEffectRegBuffers[1][i] = 0xFF10;
-        }
+            for (i = 0; i < DISPLAY_HEIGHT / 2; i++)
+            {
+                gScanlineEffectRegBuffers[0][i] = 0xF0;
+                gScanlineEffectRegBuffers[1][i] = 0xF0;
+            }
 
-        ScanlineEffect_SetParams(sIntroScanlineParams16Bit);
+            for (; i < DISPLAY_HEIGHT; i++)
+            {
+                gScanlineEffectRegBuffers[0][i] = 0xFF10;
+                gScanlineEffectRegBuffers[1][i] = 0xFF10;
+            }
+
+            ScanlineEffect_SetParams(sIntroScanlineParams16Bit);
+        }
     }
 
     ResetPaletteFade();
@@ -542,7 +546,8 @@ static void CB2_InitBattleInternal(void)
     LoadBattleTextboxAndBackground();
     ResetSpriteData();
     ResetTasks();
-    DrawBattleEntryBackground();
+    if (gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X)
+        DrawBattleEntryBackground();
     FreeAllSpritePalettes();
     gReservedSpritePaletteCount = MAX_BATTLERS_COUNT;
     SetVBlankCallback(VBlankCB_Battle);
@@ -1746,11 +1751,66 @@ static void CB2_HandleStartMultiBattle(void)
 
 void BattleMainCB2(void)
 {
-    AnimateSprites();
-    BuildOamBuffer();
-    RunTextPrinters();
-    UpdatePaletteFade();
-    RunTasks();
+    u32 speedScale = SpeedUp_GetBattleSpeedScale(FALSE);
+
+    // If we are processing a palette fade we need to temporarily fall back to 1x speed otherwise there is graphical corruption
+    if (PrevPaletteFadeResult() == PALETTE_FADE_STATUS_LOADING)
+        speedScale = 1;
+
+    if (gBattleResults.caughtMonSpecies)
+        speedScale = 1;
+
+    if (speedScale <= 1)
+    {
+        // maintain OG order for compat
+        AnimateSprites();
+        BuildOamBuffer();
+        RunTextPrinters();
+        UpdatePaletteFade();
+        RunTasks();
+    }
+    else
+    {
+        u32 s;
+        u32 fadeResult;
+
+        // update select entries at higher speed
+        // disable speed up during palette fades otherwise we run into issues with blending
+        // (e.g. moves that chnages background like Psychic can get stuck or have their colours overflow)
+        for (s = 1; s < speedScale; s++)
+        {
+            AnimateSprites();
+            RunTextPrinters();
+            fadeResult = UpdatePaletteFade();
+
+            if (fadeResult == PALETTE_FADE_STATUS_LOADING)
+            {
+                // minimal final update as we've just started a fade
+                BuildOamBuffer();
+                RunTasks();
+                break;
+            }
+            else
+            {
+                RunTasks();
+                VBlankCB_Battle();
+
+                // call it again to make sure everything is behaving as it should (this is crazy town now)
+                if (gMain.callback1)
+                    gMain.callback1();
+            }
+        }
+
+        if (fadeResult != PALETTE_FADE_STATUS_LOADING)
+        {
+            // final update
+            AnimateSprites();
+            BuildOamBuffer();
+            RunTextPrinters();
+            UpdatePaletteFade();
+            RunTasks();
+        }
+    }
 
     if (JOY_HELD(B_BUTTON) && gBattleTypeFlags & BATTLE_TYPE_RECORDED && RecordedBattle_CanStopPlayback())
     {
@@ -2673,19 +2733,30 @@ void SpriteCB_WildMon(struct Sprite *sprite)
 {
     sprite->callback = SpriteCB_MoveWildMonToRight;
     StartSpriteAnimIfDifferent(sprite, 0);
-    if (WILD_DOUBLE_BATTLE)
-        BeginNormalPaletteFade((0x10000 << sprite->sBattler) | (0x10000 << BATTLE_PARTNER(sprite->sBattler)), 0, 10, 10, RGB(8, 8, 8));
-    else
-        BeginNormalPaletteFade((0x10000 << sprite->sBattler), 0, 10, 10, RGB(8, 8, 8));
+    if (gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X)
+    {
+        if (WILD_DOUBLE_BATTLE)
+            BeginNormalPaletteFade((0x10000 << sprite->sBattler) | (0x10000 << BATTLE_PARTNER(sprite->sBattler)), 0, 10, 10, RGB(8, 8, 8));
+        else
+            BeginNormalPaletteFade((0x10000 << sprite->sBattler), 0, 10, 10, RGB(8, 8, 8));
+    }
 }
 
 static void SpriteCB_MoveWildMonToRight(struct Sprite *sprite)
 {
     if ((gIntroSlideFlags & 1) == 0)
     {
-        sprite->x2 += 2;
-        if (sprite->x2 == 0)
+        if (gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X)
         {
+            sprite->x2 += 2;
+            if (sprite->x2 == 0)
+            {
+                sprite->callback = SpriteCB_WildMonShowHealthbox;
+            }
+        }
+        else
+        {
+            sprite->x2 = 0;
             sprite->callback = SpriteCB_WildMonShowHealthbox;
         }
     }
@@ -2695,9 +2766,17 @@ void SpriteCB_MoveWildMonToLeft(struct Sprite *sprite)
 {
     if ((gIntroSlideFlags & 1) == 0)
     {
-        sprite->x2 -= 2;
-        if (sprite->x2 == 0)
+        if (gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X)
         {
+            sprite->x2 -= 2;
+            if (sprite->x2 == 0)
+            {
+                sprite->callback = SpriteCB_WildMonShowHealthbox;
+            }
+        }
+        else
+        {
+            sprite->x2 = 0;
             sprite->callback = SpriteCB_WildMonShowHealthbox;
         }
     }
@@ -2711,10 +2790,13 @@ static void SpriteCB_WildMonShowHealthbox(struct Sprite *sprite)
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[sprite->sBattler]);
         sprite->callback = SpriteCB_WildMonAnimate;
         StartSpriteAnimIfDifferent(sprite, 0);
-        if (WILD_DOUBLE_BATTLE)
-            BeginNormalPaletteFade((0x10000 << sprite->sBattler) | (0x10000 << BATTLE_PARTNER(sprite->sBattler)), 0, 10, 0, RGB(8, 8, 8));
-        else
-            BeginNormalPaletteFade((0x10000 << sprite->sBattler), 0, 10, 0, RGB(8, 8, 8));
+        if (gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X)
+        {
+            if (WILD_DOUBLE_BATTLE)
+                BeginNormalPaletteFade((0x10000 << sprite->sBattler) | (0x10000 << BATTLE_PARTNER(sprite->sBattler)), 0, 10, 0, RGB(8, 8, 8));
+            else
+                BeginNormalPaletteFade((0x10000 << sprite->sBattler), 0, 10, 0, RGB(8, 8, 8));
+        }
     }
 }
 
@@ -3028,6 +3110,16 @@ void BeginBattleIntro(void)
     gBattleMainFunc = DoBattleIntro;
 }
 
+bool32 InBattleChoosingMoves(void)
+{
+    return gBattleMainFunc == HandleTurnActionSelectionState;
+}
+
+bool32 InBattleRunningActions(void)
+{
+    return gBattleMainFunc == RunTurnActionsFunctions;
+}
+
 static void BattleMainCB1(void)
 {
     u32 battler;
@@ -3185,7 +3277,7 @@ static void BattleStartClearSetData(void)
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_RECORDED))
     {
-        if (!(gBattleTypeFlags & BATTLE_TYPE_LINK) && gSaveBlock2Ptr->optionsBattleSceneOff == TRUE)
+        if (!(gBattleTypeFlags & BATTLE_TYPE_LINK) && gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_DISABLED)
             gHitMarker |= HITMARKER_NO_ANIMATIONS;
     }
     else if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK)) && GetBattleSceneInRecordedBattle())
@@ -3624,6 +3716,15 @@ static void DoBattleIntro(void)
                 gBattleMons[battler].status2 = 0;
                 for (i = 0; i < NUM_BATTLE_STATS; i++)
                     gBattleMons[battler].statStages[i] = DEFAULT_STAT_STAGE;
+                #if TESTING
+                if (gTestRunnerEnabled)
+                {
+                    u32 side = GetBattlerSide(battler);
+                    u32 partyIndex = gBattlerPartyIndexes[battler];
+                    if (TestRunner_Battle_GetForcedAbility(side, partyIndex))
+                        gBattleMons[battler].ability = gBattleStruct->overwrittenAbilities[battler] = TestRunner_Battle_GetForcedAbility(side, partyIndex);
+                }
+                #endif
             }
 
             // Draw sprite.

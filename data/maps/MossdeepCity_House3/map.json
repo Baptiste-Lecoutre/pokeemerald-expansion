@@ -28,7 +28,7 @@
       "flag": "FLAG_TEMP_1"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_WAILORD",
+      "graphics_id": "OBJ_EVENT_GFX_SPECIES(WAILORD)",
       "x": 4,
       "y": 4,
       "elevation": 0,

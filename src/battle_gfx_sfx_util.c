@@ -399,6 +399,19 @@ void SpriteCB_TrainerSlideIn(struct Sprite *sprite)
     }
 }
 
+// fast battle intro
+void SpriteCB_TrainerSpawn(struct Sprite *sprite)
+{
+    if (!(gIntroSlideFlags & 1))
+    {
+        sprite->x2 = 0;
+        if (sprite->y2 != 0)
+            sprite->callback = SpriteCB_TrainerSlideVertical;
+        else
+            sprite->callback = SpriteCallbackDummy;
+    }
+}
+
 // Slide up to 0 if necessary (used by multi battle intro)
 static void SpriteCB_TrainerSlideVertical(struct Sprite *sprite)
 {

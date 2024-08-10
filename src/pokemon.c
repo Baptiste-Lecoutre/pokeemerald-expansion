@@ -87,6 +87,7 @@ EWRAM_DATA struct Pokemon gEnemyParty[PARTY_SIZE] = {0};
 EWRAM_DATA struct SpriteTemplate gMultiuseSpriteTemplate = {0};
 EWRAM_DATA static struct MonSpritesGfxManager *sMonSpritesGfxManagers[MON_SPR_GFX_MANAGERS_COUNT] = {NULL};
 EWRAM_DATA static u8 sTriedEvolving = 0;
+EWRAM_DATA u16 gFollowerSteps = 0;
 
 #include "data/moves_info.h"
 #include "data/abilities.h"
@@ -1343,7 +1344,8 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     else
     {
         u32 iv;
-        value = Random();
+        u32 ivRandom = Random32();
+        value = (u16)ivRandom;
 
         iv = value & MAX_IV_MASK;
         SetBoxMonData(boxMon, MON_DATA_HP_IV, &iv);
@@ -1352,7 +1354,7 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         iv = (value & (MAX_IV_MASK << 10)) >> 10;
         SetBoxMonData(boxMon, MON_DATA_DEF_IV, &iv);
 
-        value = Random();
+        value = (u16)(ivRandom >> 16);
 
         iv = value & MAX_IV_MASK;
         SetBoxMonData(boxMon, MON_DATA_SPEED_IV, &iv);
@@ -4896,12 +4898,12 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 if (evolutionTracker >= evolutions[i].param && GetMonGender(mon) == MON_FEMALE)
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
-            case EVO_DEFEAT_WITH_ITEM:
+            case EVO_DEFEAT_THREE_WITH_ITEM:
                 if (evolutionTracker >= 3)
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
             case EVO_OVERWORLD_STEPS:
-                if (evolutionTracker >= evolutions[i].param)
+                if (mon == GetFirstLiveMon() && gFollowerSteps >= evolutions[i].param)
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
             }

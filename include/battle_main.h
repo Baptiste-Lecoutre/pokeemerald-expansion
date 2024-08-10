@@ -88,6 +88,9 @@ void ModifyPersonalityForNature(u32 *personality, u32 newNature);
 u32 GeneratePersonalityForGender(u32 gender, u32 species);
 void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMon *partyEntry);
 
+bool32 InBattleChoosingMoves(void);
+bool32 InBattleRunningActions(void);
+
 extern struct MultiPartnerMenuPokemon gMultiPartnerParty[MULTI_PARTY_SIZE];
 
 extern const struct SpriteTemplate gUnusedBattleInitSprite;

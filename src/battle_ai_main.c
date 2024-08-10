@@ -409,7 +409,7 @@ static u32 Ai_SetMoveAccuracy(struct AiLogicData *aiData, u32 battlerAtk, u32 ba
 {
     u32 accuracy;
     u32 abilityAtk = aiData->abilities[battlerAtk];
-    u32 abilityDef = aiData->abilities[battlerAtk];
+    u32 abilityDef = aiData->abilities[battlerDef];
     if (abilityAtk == ABILITY_NO_GUARD || abilityDef == ABILITY_NO_GUARD || gMovesInfo[move].accuracy == 0) // Moves with accuracy 0 or no guard ability always hit.
         accuracy = 100;
     else
@@ -478,12 +478,20 @@ void SetAiLogicDataForTurn(struct AiLogicData *aiData)
     aiData->weatherHasEffect = WEATHER_HAS_EFFECT;
     // get/assume all battler data and simulate AI damage
     battlersCount = gBattlersCount;
+
     for (battlerAtk = 0; battlerAtk < battlersCount; battlerAtk++)
     {
         if (!IsBattlerAlive(battlerAtk))
             continue;
 
         SetBattlerAiData(battlerAtk, aiData);
+    }
+
+    for (battlerAtk = 0; battlerAtk < battlersCount; battlerAtk++)
+    {
+        if (!IsBattlerAlive(battlerAtk))
+            continue;
+
         SetBattlerAiMovesData(aiData, battlerAtk, battlersCount);
     }
 }
@@ -4903,6 +4911,8 @@ static s32 AI_SetupFirstTurn(u32 battlerAtk, u32 battlerDef, u32 move, s32 score
 static s32 AI_Risky(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
 {
     u8 i;
+    struct AiLogicData *aiData = AI_DATA;
+
     if (IS_TARGETING_PARTNER(battlerAtk, battlerDef))
         return score;
 
@@ -4925,12 +4935,16 @@ static s32 AI_Risky(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         break;
 
     // +2 Score
+    case EFFECT_MEMENTO:
+        if (aiData->hpPercents[battlerAtk] < 50 && AI_RandLessThan(128))
+            ADJUST_SCORE(AVERAGE_RISKY_EFFECT);
+        break;
     case EFFECT_REVENGE:
         if (gSpeciesInfo[gBattleMons[battlerDef].species].baseSpeed >= gSpeciesInfo[gBattleMons[battlerAtk].species].baseSpeed + 10)
             ADJUST_SCORE(AVERAGE_RISKY_EFFECT);
         break;
     case EFFECT_BELLY_DRUM:
-        if (gBattleMons[battlerAtk].hp >= gBattleMons[battlerAtk].maxHP * 90 / 100)
+        if (aiData->hpPercents[battlerAtk] >= 90)
             ADJUST_SCORE(AVERAGE_RISKY_EFFECT);
         break;
     case EFFECT_MAX_HP_50_RECOIL:
