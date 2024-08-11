@@ -3638,6 +3638,10 @@ extern const u16 gMonMarkingsMenu_Pal[];
 
 extern const u8 TypeIconsTiles[];
 extern const u16 TypeIconsPal[];
+extern const u32 gBattleIcons_Gfx1[];
+extern const u32 gBattleIcons_Gfx2[];
+extern const u32 gBattleIcons_Pal1[];
+extern const u32 gBattleIcons_Pal2[];
 
 // poke vial
 extern const u32 gItemIcon_PokeVial[];
