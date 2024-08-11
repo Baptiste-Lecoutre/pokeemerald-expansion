@@ -2,7 +2,12 @@ EventScript_RaidBattle::
     lockall
     goto_if_unset FLAG_BADGE01_GET, EventScript_RaidBattleNoDynamaxBand
     checkitem ITEM_DYNAMAX_BAND
-    goto_if_eq VAR_RESULT, FALSE, EventScript_RaidBattleNoDynamaxBand
+    goto_if_eq VAR_RESULT, TRUE, EventScript_RaidBattleCheckIfAvailable
+    checkitem ITEM_TERA_ORB
+    goto_if_eq VAR_RESULT, TRUE, EventScript_RaidBattleCheckIfAvailable
+    goto EventScript_RaidBattleNoDynamaxBand
+
+EventScript_RaidBattleCheckIfAvailable::
     special IsRaidBattleAvailable
     goto_if_eq VAR_RESULT, FALSE, EventScript_NoRaidBattle
     msgbox Text_DenEmitsMysteriousEnergy, MSGBOX_YESNO
