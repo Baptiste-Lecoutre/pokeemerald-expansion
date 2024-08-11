@@ -48,6 +48,7 @@
 #include "level_caps.h"
 #include "menu.h"
 #include "pokemon_summary_screen.h"
+#include "type_icons.h"
 
 static void PlayerBufferExecCompleted(u32 battler);
 static void PlayerHandleLoadMonSprite(u32 battler);
@@ -430,7 +431,7 @@ static void HandleInputChooseAction(u32 battler)
     }
     else if (JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)
     {
-        if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+        if (IsDoubleBattle()
          && GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT
          && !(gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)])
          && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
@@ -1872,7 +1873,7 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     }
     else
     {
-        end = StringCopy(txtPtr, gTypesInfo[type].name);       
+        end = StringCopy(txtPtr, gTypesInfo[type].name);
     }
 
     PrependFontIdToFit(txtPtr, end, FONT_NORMAL, WindowWidthPx(B_WIN_MOVE_TYPE) - 25);
@@ -2328,6 +2329,7 @@ void InitMoveSelectionsVarsAndStrings(u32 battler)
 {
     TryLoadMoveInfoWindow(battler);
     TryLoadTypeIcons(battler);
+    //LoadTypeIcons(battler);
 
     MoveSelectionDisplayMoveNames(battler);
     gMultiUsePlayerCursor = 0xFF;
