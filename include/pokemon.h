@@ -900,7 +900,6 @@ u32 GetGMaxTargetSpecies(u32 species);
 const u8 *GetMoveAnimationScript(u16 moveId);
 void UpdateDaysPassedSinceFormChange(u16 days);
 void TrySetDayLimitToFormChange(struct Pokemon *mon);
-u8 CheckDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler);
-u8 CalculateHiddenPowerType(struct Pokemon *mon);
+u32 CheckDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler);
 
 #endif // GUARD_POKEMON_H
