@@ -3460,9 +3460,11 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
 	//Type icons should prepare to destroy themselves if the Player is not choosing an action
 	if (gBattlerControllerFuncs[activeBattler] != PlayerHandleChooseMove
 	&&  gBattlerControllerFuncs[activeBattler] != HandleChooseMoveAfterDma3
-	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseTarget
 	&&  gBattlerControllerFuncs[activeBattler] != HandleMoveSwitching
-	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove)
+	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove
+    &&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseTarget
+    &&  gBattlerControllerFuncs[activeBattler] != HandleInputShowTargets
+    &&  gBattlerControllerFuncs[activeBattler] != HandleInputShowEntireFieldTargets)
 	{
         switch (position) {
 			case B_POSITION_PLAYER_LEFT:
