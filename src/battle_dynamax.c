@@ -152,7 +152,7 @@ u16 GetNonDynamaxHP(u32 battler)
         return gBattleMons[battler].hp;
     else
     {
-        u16 mult = UQ_4_12(1.0/1.5); // placeholder
+        u16 mult = UQ_4_12(100.0/(150.0 + 5.0 * GetMonData(&GetBattlerParty(battler)[gBattlerPartyIndexes[battler]], MON_DATA_DYNAMAX_LEVEL)));
         u16 hp = UQ_4_12_TO_INT((gBattleMons[battler].hp * mult) + UQ_4_12_ROUND);
         return hp;
     }
@@ -166,7 +166,7 @@ u16 GetNonDynamaxMaxHP(u32 battler)
         return gBattleMons[battler].maxHP;
     else
     {
-        u16 mult = UQ_4_12(1.0/1.5); // placeholder
+        u16 mult = UQ_4_12(100.0/(150.0 + 5.0 * GetMonData(&GetBattlerParty(battler)[gBattlerPartyIndexes[battler]], MON_DATA_DYNAMAX_LEVEL)));
         u16 maxHP = UQ_4_12_TO_INT((gBattleMons[battler].maxHP * mult) + UQ_4_12_ROUND);
         return maxHP;
     }
