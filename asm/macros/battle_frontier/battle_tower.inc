@@ -168,10 +168,10 @@
 	multi_do_fixed MULTI_BATTLE_2_VS_WILD, \partnerId
 	.endm
 
-	.macro multi_fixed_sootopolis partnerId:req, partnerPicId:req
+	.macro multi_fixed_sootopolis partnerId:req
 	special SavePlayerParty
 	setflag FLAG_SOOTOPOLIS_BATTLE
-	multi_do_fixed MULTI_BATTLE_2_VS_WILD, \partnerId, \partnerPicId
+	multi_do_fixed MULTI_BATTLE_2_VS_WILD, \partnerId
 	.endm
 
 	@ Starts a Raid Battle without a partner.
