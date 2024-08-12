@@ -456,6 +456,7 @@ static const u8 sText_SpAttack[] = _("Sp. Atk");
 static const u8 sText_SpDefense[] = _("Sp. Def");
 static const u8 sText_Accuracy[] = _("accuracy");
 static const u8 sText_Evasiveness[] = _("evasiveness");
+const u8 gText_PkmnSendToPC[] =_("Do you want {B_DEF_NAME}\nto join your party?");
 
 const u8 *const gStatNamesTable[NUM_BATTLE_STATS] =
 {

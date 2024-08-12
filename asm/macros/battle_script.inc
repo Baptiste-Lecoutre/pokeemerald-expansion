@@ -1290,9 +1290,8 @@
 	.byte 0xf2
 	.endm
 
-	.macro trygivecaughtmonnick successInstr:req
+	.macro trygivecaughtmonnick
 	.byte 0xf3
-	.4byte \successInstr
 	.endm
 
 	.macro subattackerhpbydmg
@@ -1668,6 +1667,11 @@
 
 	.macro damagetoquartertargethp
 	callnative BS_DamageToQuarterTargetHP
+	.endm
+
+	.macro trychoosemontosendtopc successInstr:req
+	callnative BS_TryChooseMonToSendToPC
+	.4byte \successInstr
 	.endm
 
 @ various command changed to more readable macros
