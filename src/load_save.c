@@ -13,8 +13,8 @@
 #include "gba/flash_internal.h"
 #include "decoration_inventory.h"
 #include "agb_flash.h"
-#include "constants/event_objects.h"
 #include "event_data.h"
+#include "constants/event_objects.h"
 
 static void ApplyNewEncryptionKeyToAllEncryptedData(u32 encryptionKey);
 
@@ -36,6 +36,7 @@ struct LoadedSaveData
 };
 
 // EWRAM DATA
+EWRAM_DATA struct SaveBlock3 gSaveblock3 = {};
 EWRAM_DATA struct SaveBlock2ASLR gSaveblock2 = {0};
 EWRAM_DATA struct SaveBlock1ASLR gSaveblock1 = {0};
 EWRAM_DATA struct PokemonStorageASLR gPokemonStorage = {0};
@@ -47,6 +48,7 @@ EWRAM_DATA u32 gLastEncryptionKey = 0;
 bool32 gFlashMemoryPresent;
 struct SaveBlock1 *gSaveBlock1Ptr;
 struct SaveBlock2 *gSaveBlock2Ptr;
+IWRAM_INIT struct SaveBlock3 *gSaveBlock3Ptr = &gSaveblock3;
 struct PokemonStorage *gPokemonStoragePtr;
 
 // code
@@ -61,6 +63,11 @@ void CheckForFlashMemory(void)
     {
         gFlashMemoryPresent = FALSE;
     }
+}
+
+void ClearSav3(void)
+{
+    CpuFill16(0, &gSaveblock3, sizeof(struct SaveBlock3));
 }
 
 void ClearSav2(void)
@@ -199,7 +206,8 @@ void SaveObjectEvents(void)
     int i;
     u16 graphicsId;
 
-    for (i = 0; i < OBJECT_EVENTS_COUNT; i++) {
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
         gSaveBlock1Ptr->objectEvents[i] = gObjectEvents[i];
         // Swap graphicsId bytes when saving and loading
         // This keeps compatibility with vanilla,
@@ -218,7 +226,8 @@ void LoadObjectEvents(void)
     int i;
     u16 graphicsId;
 
-    for (i = 0; i < OBJECT_EVENTS_COUNT; i++) {
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
         gObjectEvents[i] = gSaveBlock1Ptr->objectEvents[i];
         // Swap graphicsId bytes when saving and loading
         // This keeps compatibility with vanilla,

@@ -216,9 +216,21 @@ const u32 gTrainerPalette_Wally[] = INCBIN_U32("graphics/trainers/palettes/wally
 
 const u32 gTrainerFrontPic_Brendan[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
 const u32 gTrainerPalette_Brendan[] = INCBIN_U32("graphics/trainers/palettes/brendan.gbapal.lz");
+const u32 gTrainerFrontPic_BrendanRed[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
+const u32 gTrainerPalette_BrendanRed[] = INCBIN_U32("graphics/trainers/palettes/brendan_red.gbapal.lz");
+const u32 gTrainerFrontPic_BrendanBlue[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
+const u32 gTrainerPalette_BrendanBlue[] = INCBIN_U32("graphics/trainers/palettes/brendan_blue.gbapal.lz");
+const u32 gTrainerFrontPic_BrendanYellow[] = INCBIN_U32("graphics/trainers/front_pics/brendan.4bpp.lz");
+const u32 gTrainerPalette_BrendanYellow[] = INCBIN_U32("graphics/trainers/palettes/brendan_yellow.gbapal.lz");
 
 const u32 gTrainerFrontPic_May[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
 const u32 gTrainerPalette_May[] = INCBIN_U32("graphics/trainers/palettes/may.gbapal.lz");
+const u32 gTrainerFrontPic_MayRed[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
+const u32 gTrainerPalette_MayRed[] = INCBIN_U32("graphics/trainers/palettes/may_red.gbapal.lz");
+const u32 gTrainerFrontPic_MayBlue[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
+const u32 gTrainerPalette_MayBlue[] = INCBIN_U32("graphics/trainers/palettes/may_blue.gbapal.lz");
+const u32 gTrainerFrontPic_MayYellow[] = INCBIN_U32("graphics/trainers/front_pics/may.4bpp.lz");
+const u32 gTrainerPalette_MayYellow[] = INCBIN_U32("graphics/trainers/palettes/may_yellow.gbapal.lz");
 
 const u32 gTrainerFrontPic_BugCatcher[] = INCBIN_U32("graphics/trainers/front_pics/bug_catcher.4bpp.lz");
 const u32 gTrainerPalette_BugCatcher[] = INCBIN_U32("graphics/trainers/front_pics/bug_catcher.gbapal.lz");
@@ -375,17 +387,18 @@ const u32 gTrainerPalette_Chase[] = INCBIN_U32("graphics/trainers/palettes/chase
 const u32 gTrainerFrontPic_Elaine[] = INCBIN_U32("graphics/trainers/front_pics/elaine_front_pic.4bpp.lz");
 const u32 gTrainerPalette_Elaine[] = INCBIN_U32("graphics/trainers/palettes/elaine.gbapal.lz");
 
-static const union AnimCmd *const sAnims_Trainer[] ={
-    sAnim_GeneralFrame0,
-};
-
-#define TRAINER_SPRITE(trainerPic, file)                                                  \
+// The first two parameters invoke a front pic and palette by
+// calling a "TRAINER_PIC" constant (e.g. TRAINER_PIC_HIKER), and
+// gTrainerFrontPic/gTrainerPalette pointers, (e.g "gTrainerFrontPic_Hiker" and "gTrainerPalette_Hiker").
+// The last three parameters control the X and Y coordinates and rotation of the mugshot on the screen.
+// They default to 0, 0, and 0x200 which are default values used by the majority of the game's trainer sprites.
+#define TRAINER_SPRITE(trainerPic, file, ...)                                             \
     [TRAINER_PIC_##trainerPic] =                                                          \
     {                                                                                     \
-        .y_offset = 8,                                                                    \
         .frontPic = {gTrainerFrontPic_##file, TRAINER_PIC_SIZE, TRAINER_PIC_##trainerPic},\
         .palette = {gTrainerPalette_##file, TRAINER_PIC_##trainerPic},                    \
-        .animation = sAnims_Trainer,                                                      \
+        .mugshotCoords = {DEFAULT(0, __VA_ARGS__), DEFAULT_2(0, __VA_ARGS__)},            \
+        .mugshotRotation = DEFAULT_3(0x200, __VA_ARGS__),                                 \
     }
 
 const struct TrainerSprite gTrainerSprites[] =
@@ -428,8 +441,8 @@ const struct TrainerSprite gTrainerSprites[] =
     TRAINER_SPRITE(GENTLEMAN, Gentleman),
     TRAINER_SPRITE(ELITE_FOUR_SIDNEY, EliteFourSidney),
     TRAINER_SPRITE(ELITE_FOUR_PHOEBE, EliteFourPhoebe),
-    TRAINER_SPRITE(ELITE_FOUR_GLACIA, EliteFourGlacia),
-    TRAINER_SPRITE(ELITE_FOUR_DRAKE, EliteFourDrake),
+    TRAINER_SPRITE(ELITE_FOUR_GLACIA, EliteFourGlacia, -4, 4, 0x1B0),
+    TRAINER_SPRITE(ELITE_FOUR_DRAKE, EliteFourDrake, 0, 5, 0x1A0),
     TRAINER_SPRITE(LEADER_ROXANNE, LeaderRoxanne),
     TRAINER_SPRITE(LEADER_BRAWLY, LeaderBrawly),
     TRAINER_SPRITE(LEADER_WATTSON, LeaderWattson),
@@ -444,7 +457,7 @@ const struct TrainerSprite gTrainerSprites[] =
     TRAINER_SPRITE(POKEFAN_M, PokefanM),
     TRAINER_SPRITE(POKEFAN_F, PokefanF),
     TRAINER_SPRITE(YOUNGSTER, Youngster),
-    TRAINER_SPRITE(CHAMPION_WALLACE, ChampionWallace),
+    TRAINER_SPRITE(CHAMPION_WALLACE, ChampionWallace, -8, 7, 0x188),
     TRAINER_SPRITE(FISHERMAN, Fisherman),
     TRAINER_SPRITE(CYCLING_TRIATHLETE_M, CyclingTriathleteM),
     TRAINER_SPRITE(CYCLING_TRIATHLETE_F, CyclingTriathleteF),
@@ -471,7 +484,7 @@ const struct TrainerSprite gTrainerSprites[] =
     TRAINER_SPRITE(YOUNG_COUPLE, YoungCouple),
     TRAINER_SPRITE(OLD_COUPLE, OldCouple),
     TRAINER_SPRITE(SIS_AND_BRO, SisAndBro),
-    TRAINER_SPRITE(STEVEN, Steven),
+    TRAINER_SPRITE(STEVEN, Steven, 0, 7, 0x188),
     TRAINER_SPRITE(SALON_MAIDEN_ANABEL, SalonMaidenAnabel),
     TRAINER_SPRITE(DOME_ACE_TUCKER, DomeAceTucker),
     TRAINER_SPRITE(PALACE_MAVEN_SPENSER, PalaceMavenSpenser),
@@ -505,6 +518,12 @@ const struct TrainerSprite gTrainerSprites[] =
     TRAINER_SPRITE(MAGMA_ADMIN_F, MagmaAdminF),
     TRAINER_SPRITE(CHASE, Chase),
     TRAINER_SPRITE(ELAINE, Elaine),
+    TRAINER_SPRITE(BRENDAN_RED, BrendanRed),
+    TRAINER_SPRITE(BRENDAN_BLUE, BrendanBlue),
+    TRAINER_SPRITE(BRENDAN_YELLOW, BrendanYellow),
+    TRAINER_SPRITE(MAY_RED, MayRed),
+    TRAINER_SPRITE(MAY_BLUE, MayBlue),
+    TRAINER_SPRITE(MAY_YELLOW, MayYellow),
 };
 
 static const union AnimCmd sAnimCmd_Hoenn[] =
@@ -527,16 +546,38 @@ static const union AnimCmd sAnimCmd_Kanto[] =
     ANIMCMD_END,
 };
 
+static const union AnimCmd sAnimCmd_Point_HGSS[] =
+{
+    ANIMCMD_FRAME(3, 9),
+    ANIMCMD_FRAME(0, 9),
+    ANIMCMD_FRAME(2, 24),
+    ANIMCMD_FRAME(2, 24),
+    ANIMCMD_FRAME(3, 50),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnimCmd_Point_HGSS_Red_Leaf[] =
+{
+    ANIMCMD_FRAME(0, 9),
+    ANIMCMD_FRAME(1, 9),
+    ANIMCMD_FRAME(3, 24),
+    ANIMCMD_FRAME(3, 24),
+    ANIMCMD_FRAME(0, 50),
+    ANIMCMD_END,
+};
+
 static const union AnimCmd *const sBackAnims_Hoenn[] =
 {
     sAnim_GeneralFrame3,
     sAnimCmd_Hoenn,
+    sAnimCmd_Point_HGSS,
 };
 
 static const union AnimCmd *const sBackAnims_Kanto[] =
 {
     sAnim_GeneralFrame0,
     sAnimCmd_Kanto,
+    sAnimCmd_Point_HGSS_Red_Leaf,
 };
 
 const struct SpriteFrameImage gTrainerBackPicTable_Brendan[] =
@@ -708,4 +749,10 @@ const struct TrainerBacksprite gTrainerBacksprites[] =
     TRAINER_BACK_SPRITE(DAWN_PLATINUM, 4, DawnPlatinum, BackPicPalette_DawnPlatinum, Hoenn),
     TRAINER_BACK_SPRITE(CHASE, 4, Chase, BackPicPalette_Chase, Hoenn),
     TRAINER_BACK_SPRITE(ELAINE, 4, Elaine, BackPicPalette_Elaine, Hoenn),
+    TRAINER_BACK_SPRITE(BRENDAN_RED, 4, Brendan, Palette_BrendanRed, Hoenn),
+    TRAINER_BACK_SPRITE(BRENDAN_BLUE, 4, Brendan, Palette_BrendanBlue, Hoenn),
+    TRAINER_BACK_SPRITE(BRENDAN_YELLOW, 4, Brendan, Palette_BrendanYellow, Hoenn),
+    TRAINER_BACK_SPRITE(MAY_RED, 4, May, Palette_MayRed, Hoenn),
+    TRAINER_BACK_SPRITE(MAY_BLUE, 4, May, Palette_MayBlue, Hoenn),
+    TRAINER_BACK_SPRITE(MAY_YELLOW, 4, May, Palette_MayYellow, Hoenn),
 };

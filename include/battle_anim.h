@@ -194,7 +194,6 @@ u8 GetBattlerSpriteCoord(u8 battlerId, u8 attributeId);
 bool8 IsBattlerSpritePresent(u8 battlerId);
 void ClearBattleAnimBg(u32 bgId);
 u8 GetAnimBattlerSpriteId(u8 wantedBattler);
-bool8 IsDoubleBattle(void);
 u8 GetBattleBgPaletteNum(void);
 u8 GetBattlerSpriteBGPriorityRank(u8 battlerId);
 void StoreSpriteCallbackInData6(struct Sprite *sprite, void (*spriteCallback)(struct Sprite *));
@@ -203,10 +202,10 @@ u8 GetBattlerSpriteDefault_Y(u8 battlerId);
 u8 GetSubstituteSpriteDefault_Y(u8 battlerId);
 
 // battle_anim_status_effects.c
-#define STAT_ANIM_PLUS1  MOVE_EFFECT_ATK_PLUS_1 - 1
-#define STAT_ANIM_PLUS2  MOVE_EFFECT_ATK_PLUS_2 - 1
-#define STAT_ANIM_MINUS1 MOVE_EFFECT_ATK_MINUS_1 - 1
-#define STAT_ANIM_MINUS2 MOVE_EFFECT_ATK_MINUS_2 - 1
+#define STAT_ANIM_PLUS1  (MOVE_EFFECT_ATK_PLUS_1 - 1)
+#define STAT_ANIM_PLUS2  (MOVE_EFFECT_ATK_PLUS_2 - 1)
+#define STAT_ANIM_MINUS1 (MOVE_EFFECT_ATK_MINUS_1 - 1)
+#define STAT_ANIM_MINUS2 (MOVE_EFFECT_ATK_MINUS_2 - 1)
 #define STAT_ANIM_MULTIPLE_PLUS1 55
 #define STAT_ANIM_MULTIPLE_PLUS2 56
 #define STAT_ANIM_MULTIPLE_MINUS1 57
@@ -296,6 +295,8 @@ extern const union AffineAnimCmd *const gSwiftStarAffineAnimTable[];
 extern const union AnimCmd *const gMetronomeThroughtBubbleAnimTable[];
 extern const union AffineAnimCmd *const gStockpileAbsorptionOrbAffineAnimTable[];
 extern const union AnimCmd *const gSlashSliceAnimTable[];
+extern const union AffineAnimCmd* const sSpriteAffineAnimTable_HydroCannonBall[];
+extern const union AffineAnimCmd sSpriteAffineAnim_HydroCannonBall[];
 
 // battle_anim_effects_2.c
 void AnimUproarRing(struct Sprite *sprite);
@@ -415,6 +416,7 @@ extern const struct OamData gOamData_AffineDouble_ObjNormal_64x64;
 extern const struct OamData gOamData_AffineDouble_ObjBlend_64x64;
 extern const struct OamData gOamData_AffineDouble_ObjBlend_64x32;
 extern const struct OamData gOamData_AffineDouble_ObjNormal_8x16;
+extern const struct OamData gOamData_AffineDouble_ObjNormal_64x32;
 extern const struct OamData gOamData_AffineOff_ObjBlend_16x16;
 extern const struct OamData gOamData_AffineDouble_ObjBlend_16x16;
 extern const struct OamData gOamData_AffineNormal_ObjNormal_8x8;
@@ -534,6 +536,9 @@ extern const union AnimCmd *const gAnims_WillOWispOrb[];
 extern const union AnimCmd *const gAnims_FirePlume[];
 
 // battle_anim_dragon.c
+extern const union AnimCmd *const gAnims_DreepyMissilePlayer[];
+extern const union AnimCmd *const gAnims_DreepyMissileOpponent[];
+extern const union AnimCmd *const gAnims_DreepyMissileOpponentNotDrag[];
 extern const union AnimCmd *const gAnims_DragonBreathFire[];
 extern const union AnimCmd *const gAnims_DragonRageFirePlume[];
 extern const union AffineAnimCmd *const gAffineAnims_DragonRageFire[];
@@ -544,9 +549,11 @@ void AnimDragonFireToTarget(struct Sprite *sprite);
 void AnimDragonDanceOrb(struct Sprite *sprite);
 void AnimOverheatFlame(struct Sprite *sprite);
 void AnimOutrageFlame(struct Sprite *sprite);
+void AnimDracoMeteorRock(struct Sprite *sprite);
 
 // battle_anim_new.c
 void CoreEnforcerLoadBeamTarget(struct Sprite *sprite);
 void SpriteCB_RandomCentredHits(struct Sprite *sprite);
+void InitSpritePosToAnimTargetsCentre(struct Sprite *sprite, bool32 respectMonPicOffsets);
 
 #endif // GUARD_BATTLE_ANIM_H

@@ -125,7 +125,7 @@ enum
     STATUS_INFO_ROOTED,
     STATUS_INFO_YAWN,
     STATUS_INFO_GRUDGE,
-    STATUS_INFO_CANT_CRIT,
+//    STATUS_INFO_CANT_CRIT,
     STATUS_INFO_GASTRO_ACID,
     STATUS_INFO_EMBARGO,
     STATUS_INFO_SMACKED_DOWN,
@@ -396,7 +396,7 @@ static void Task_CalculateDamage(u8 taskId)
                    IsBattlerAlive(j) && 
                    GetBattlerSide(i) != GetBattlerSide(j) &&
                    gBattleMons[i].moves[k] != MOVE_NONE   &&
-                   gBattleMoves[gBattleMons[i].moves[k]].category != BATTLE_CATEGORY_STATUS){
+                   gMovesInfo[gBattleMons[i].moves[k]].category != DAMAGE_CATEGORY_STATUS){
                     CalculateDamage(i, j, k);
                 }
             }
@@ -692,10 +692,10 @@ void UI_Battle_Menu_Init(MainCallback callback)
                     if(gStatuses3[j] & STATUS3_GRUDGE)
                         isExtraInfoShown = TRUE;
                 break;
-                case STATUS_INFO_CANT_CRIT:
+                /*case STATUS_INFO_CANT_CRIT:
                     if(gStatuses3[j] & STATUS3_CANT_SCORE_A_CRIT)
                         isExtraInfoShown = TRUE;
-                break;
+                break;*/
                 case STATUS_INFO_GASTRO_ACID:
                     if(gStatuses3[j] & STATUS3_GASTRO_ACID)
                         isExtraInfoShown = TRUE;
@@ -1027,7 +1027,7 @@ static const u8 sText_Accuracy[]       = _("Acc");
 static const u8 sText_Evasion[]        = _("Eva");
 static const u8 sText_Critical[]       = _("Crt");
 
-static u8 statorder[NUM_BATTLE_STATS] = {
+static const u8 statorder[NUM_BATTLE_STATS] = {
     STAT_HP,
     STAT_ATK,
     STAT_DEF,
@@ -1047,7 +1047,7 @@ static u8 statorder[NUM_BATTLE_STATS] = {
 static const u32 gBattleFieldIconForest_Gfx[] = INCBIN_U32("graphics/battle_menu/fields/forest.4bpp.lz");
 static const u16 gBattleFieldIconForest_Pal[] = INCBIN_U16("graphics/battle_menu/fields/forest.gbapal");
 
-static const struct SpritePalette sBattleMenuFieldIconSpritePalette_Forest[] = {gBattleFieldIconForest_Pal, PAL_FIELD_ICON};
+static const struct SpritePalette sBattleMenuFieldIconSpritePalette_Forest = {gBattleFieldIconForest_Pal, PAL_FIELD_ICON};
 
 //Field Icon
 void FreeFieldSprite(void)
@@ -1075,7 +1075,7 @@ static void ShowFieldIcon(void)
     TempSpriteTemplate.callback = SpriteCallbackDummy;
 
     LoadCompressedSpriteSheet(&sSpriteSheet_FieldIcon);
-    LoadSpritePalette(sBattleMenuFieldIconSpritePalette_Forest);
+    LoadSpritePalette(&sBattleMenuFieldIconSpritePalette_Forest);
     TempSpriteTemplate.paletteTag = PAL_FIELD_ICON;
     spriteId = CreateSprite(&TempSpriteTemplate, 4, 68, 0);
     sMenuDataPtr->spriteIds[SPRITE_ARR_ID_FIELD_ICON] = spriteId;
@@ -1095,7 +1095,7 @@ static void SpriteCB_Selector(struct Sprite *sprite)
 static const u32 gBattleSelector_Gfx[] = INCBIN_U32("graphics/battle_menu/fields/selector.4bpp.lz");
 static const u16 gBattleSelector_Pal[] = INCBIN_U16("graphics/battle_menu/fields/selector.gbapal");
 
-static const struct SpritePalette sBattleMenuSelectorSpritePalette[] = {gBattleSelector_Pal, PAL_UI_SPRITES};
+static const struct SpritePalette sBattleMenuSelectorSpritePalette = {gBattleSelector_Pal, PAL_UI_SPRITES};
 //Selector
 void FreeSelectorSprite(void)
 {
@@ -1122,7 +1122,7 @@ static void CreateSelectorSprite(void)
     TempSpriteTemplate.callback = SpriteCB_Selector;
 
     LoadCompressedSpriteSheet(&sSpriteSheet_Selector);
-    LoadSpritePalette(sBattleMenuSelectorSpritePalette);
+    LoadSpritePalette(&sBattleMenuSelectorSpritePalette);
     TempSpriteTemplate.paletteTag = PAL_UI_SPRITES;
     spriteId = CreateSprite(&TempSpriteTemplate, 4, 4, 0);
     sMenuDataPtr->spriteIds[SPRITE_ARR_ID_SELECTOR] = spriteId;
@@ -1248,21 +1248,21 @@ static void PrintStatsTab(){
     //Pokemon Types
     y++;
     x = 9;
-    StringCopy(gStringVar1, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type1]);
+    StringCopy(gStringVar1, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[0]].name);
     //Check if there is a second type
-    if(gBattleMons[sMenuDataPtr->battlerId].type1 != gBattleMons[sMenuDataPtr->battlerId].type2){
+    if(gBattleMons[sMenuDataPtr->battlerId].types[0] != gBattleMons[sMenuDataPtr->battlerId].types[1]){
         numtypes++;
-        StringCopy(gStringVar2, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type2]);
+        StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[1]].name);
     }
     //Check if there is a third type
-    if(gBattleMons[sMenuDataPtr->battlerId].type3 != TYPE_MYSTERY && 
-       gBattleMons[sMenuDataPtr->battlerId].type3 != gBattleMons[sMenuDataPtr->battlerId].type1 &&
-       gBattleMons[sMenuDataPtr->battlerId].type3 != gBattleMons[sMenuDataPtr->battlerId].type2){
+    if(gBattleMons[sMenuDataPtr->battlerId].types[2] != TYPE_MYSTERY && 
+       gBattleMons[sMenuDataPtr->battlerId].types[2] != gBattleMons[sMenuDataPtr->battlerId].types[0] &&
+       gBattleMons[sMenuDataPtr->battlerId].types[2] != gBattleMons[sMenuDataPtr->battlerId].types[1]){
         numtypes++;
         if(numtypes == 2)
-            StringCopy(gStringVar2, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type3]);
+            StringCopy(gStringVar2, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[2]].name);
         else
-            StringCopy(gStringVar3, gTypeNames[gBattleMons[sMenuDataPtr->battlerId].type3]);
+            StringCopy(gStringVar3, gTypesInfo[gBattleMons[sMenuDataPtr->battlerId].types[2]].name);
     }   
 
     switch(numtypes){
@@ -1394,11 +1394,11 @@ static void PrintStatsTab(){
     
     nature = GetMonData(&party[gBattlerPartyIndexes[sMenuDataPtr->battlerId]], MON_DATA_HIDDEN_NATURE, NULL);
 
-    StringCopy(gStringVar1, gNatureNamePointers[nature]);
-    if(nature == NATURE_HARDY || nature == NATURE_DOCILE || nature == NATURE_SERIOUS || nature == NATURE_BASHFUL || nature == NATURE_QUIRKY){
+    StringCopy(gStringVar1, gNaturesInfo[nature].name);
+    //if(nature == NATURE_HARDY || nature == NATURE_DOCILE || nature == NATURE_SERIOUS || nature == NATURE_BASHFUL || nature == NATURE_QUIRKY){
         //No Stat Up or Down
         StringExpandPlaceholders(gStringVar4, sText_Title_Nature_NoStat);
-    }
+    /*}
     else{
         natureMod = gNatureStatTable[nature];
         for(i = 0; i < NUM_NATURE_STATS; i++){
@@ -1444,7 +1444,7 @@ static void PrintStatsTab(){
             }
         }
         StringExpandPlaceholders(gStringVar4, sText_Title_Nature);
-    }
+    }*/
     
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
 
@@ -1452,9 +1452,9 @@ static void PrintStatsTab(){
     x = 9;
     y = 18;
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, sText_PrintAbilityTab_Ability);
-	AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + SPACE_BETWEEN_ABILITY_AND_NAME, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilities[ability].name);
+	AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + SPACE_BETWEEN_ABILITY_AND_NAME, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilitiesInfo[ability].name);
 	y++;
-    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilities[ability].description);
+    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilitiesInfo[ability].description);
 
 
 
@@ -1499,10 +1499,10 @@ static void PrintAbilityTab(){
     //Title
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, sText_PrintAbilityTab_Ability);
 	// Name ---------------------------------------------------------------------------------------------------
-    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + SPACE_BETWEEN_ABILITY_AND_NAME, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gAbilities[ability].name);
+    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + SPACE_BETWEEN_ABILITY_AND_NAME, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gAbilitiesInfo[ability].name);
 	// Description ---------------------------------------------------------------------------------------------------
     y++;
-    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2 + 4, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilities[ability].description);
+    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2 + 4, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilitiesInfo[ability].description);
 
 /*    // Innate 1
     y = y + SPACE_BETWEEN_ABILITIES;
@@ -1653,14 +1653,13 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
 
     //Iron Fist/Power Fist
     if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_IRON_FIST)){
-        if (gBattleMoves[move].punchingMove)
+        if (gMovesInfo[move].punchingMove)
            MulModifier(&modifier, UQ_4_12(1.3));
     }
 
     //Sheer Force
-    if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_SHEER_FORCE)){
-        if (gBattleMoves[move].sheerForceBoost)
-           MulModifier(&modifier, UQ_4_12(1.3));
+    if(TestIfSheerForceAffected(battlerAtk, move)){
+        MulModifier(&modifier, UQ_4_12(1.3));
     }
 
     //Sand Force
@@ -1683,7 +1682,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
     }
 
     // Strong Jaw
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_STRONG_JAW) && gBattleMoves[move].bitingMove)
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_STRONG_JAW) && gMovesInfo[move].bitingMove)
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	// Pixilate
@@ -1707,7 +1706,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
         MulModifier(&modifier, UQ_4_12(1.1));
 	
 	// Punk Rock
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_PUNK_ROCK) && gBattleMoves[move].soundMove)
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_PUNK_ROCK) && gMovesInfo[move].soundMove)
         MulModifier(&modifier, UQ_4_12(1.3));
 	
 	// Steely Spirit
@@ -1723,7 +1722,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	// Liquid Voice
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_LIQUID_VOICE) && gBattleMoves[move].soundMove)
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_LIQUID_VOICE) && gMovesInfo[move].soundMove)
         MulModifier(&modifier, UQ_4_12(1.2));
 
 	// Gorilla Tactics
@@ -1731,7 +1730,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	// Long Reach
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_LONG_REACH) && IS_MOVE_PHYSICAL(move) && !(gBattleMoves[move].makesContact))
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_LONG_REACH) && IS_MOVE_PHYSICAL(move) && !(gMovesInfo[move].makesContact))
         MulModifier(&modifier, UQ_4_12(1.2));
 	
 	// Tough Claws & Big Pecks
@@ -1766,7 +1765,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	// Mega Launcher
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_MEGA_LAUNCHER) && gBattleMoves[move].pulseMove)
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_MEGA_LAUNCHER) && gMovesInfo[move].pulseMove)
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	// Hustle
@@ -1859,11 +1858,11 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
     u8 x2 = 0;
     u8 y2 = -4;
     u8 target = BATTLE_OPPOSITE(sMenuDataPtr->battlerId);
-    u32 movePower = gBattleMoves[move].power;
+    u32 movePower = gMovesInfo[move].power;
     u32 moveAccuracy = GetTotalAccuracy(sMenuDataPtr->battlerId, target, move, GetBattlerAbility(sMenuDataPtr->battlerId), GetBattlerAbility(target), GetBattlerHoldEffect(sMenuDataPtr->battlerId, TRUE), GetBattlerHoldEffect(target, TRUE));
-    u8 moveType  = gBattleMoves[move].type;
+    u8 moveType  = gMovesInfo[move].type;
     bool32 updateFlags = FALSE;
-    bool8 isStatusMove = gBattleMoves[move].category == BATTLE_CATEGORY_STATUS;
+    bool8 isStatusMove = gMovesInfo[move].category == DAMAGE_CATEGORY_STATUS;
     bool8 isStab = FALSE;
     struct Pokemon *party;
 
@@ -1872,7 +1871,6 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
 
     //Sets move type depending on the mon ability/stats
     SetTypeBeforeUsingMove(move, sMenuDataPtr->battlerId);
-    GET_MOVE_TYPE(move, moveType);
 
     //Sets move power depending on the mon ability/stats
     movePower = calculateTotalMoveDamage(move, sMenuDataPtr->battlerId, target, moveType);
@@ -1882,9 +1880,9 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
         isStab = TRUE;
     
     //Move Name
-    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gMoveNames[move]);
+    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, GetMoveName(move));
     //Type
-    StringCopy(gStringVar4, gTypeNames[moveType]);
+    StringCopy(gStringVar4, gTypesInfo[moveType].name);
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, ((x + 1) * 8) + SPACE_BETWEEN_ABILITY_AND_NAME + 16, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar4);
     y++;
 
@@ -1910,21 +1908,21 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
             AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + SPACE_BETWEEN_ABILITY_AND_NAME, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
             y++;
             // Move Priority ---------------------------------------------------------------------------------------------------
-            if(gBattleMoves[move].priority >= 0)
-                ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[move].priority, STR_CONV_MODE_LEFT_ALIGN, 3);
+            if(gMovesInfo[move].priority >= 0)
+                ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[move].priority, STR_CONV_MODE_LEFT_ALIGN, 3);
             else
                 ConvertIntToDecimalStringN(gStringVar1, 0, STR_CONV_MODE_LEFT_ALIGN, 3);
             StringExpandPlaceholders(gStringVar4, gText_MoveInfo_Priority);
             AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
             // Move Split
-            switch(gBattleMoves[move].category){
-                case BATTLE_CATEGORY_PHYSICAL:
+            switch(gMovesInfo[move].category){
+                case DAMAGE_CATEGORY_PHYSICAL:
                     StringCopy(gStringVar1, gText_Split_Physical);
                 break;
-                case BATTLE_CATEGORY_SPECIAL:
+                case DAMAGE_CATEGORY_SPECIAL:
                     StringCopy(gStringVar1, gText_Split_Special);
                 break;
-                case BATTLE_CATEGORY_STATUS:
+                case DAMAGE_CATEGORY_STATUS:
                 default:
                     StringCopy(gStringVar1, gText_Split_Status);
                 break;
@@ -1949,11 +1947,11 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
         break;
         case MOVE_MODE_DESCRIPTION:
             y2 = y2 + 4;
-            StringCopy(gStringVar4, gMoveDescriptionPointers[move - 1]);
+            StringCopy(gStringVar4, gMovesInfo[move].description); //gMoveDescriptionPointers[move - 1]
             AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
         break;
         /*case MOVE_MODE_DAMAGE_CALCULATOR:
-            if(gBattleMoves[move].category == BATTLE_CATEGORY_STATUS || movePower == 0){
+            if(gMovesInfo[move].category == DAMAGE_CATEGORY_STATUS || movePower == 0){
                 StringCopy(gStringVar4, gText_Target_Nothing);
             }
             else{
@@ -1963,7 +1961,7 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
         break;*/
         case MOVE_MODE_AFFECTED_1:
             //Makes Contact
-            if(gBattleMoves[move].makesContact)
+            if(gMovesInfo[move].makesContact)
                 StringCopy(gStringVar4, gText_Makes_Contact_True);
             else
                 StringCopy(gStringVar4, gText_Makes_Contact_False);
@@ -1971,14 +1969,14 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
             
             //Protect Affected 
             y++;
-            if(gBattleMoves[move].ignoresProtect)
+            if(gMovesInfo[move].ignoresProtect)
                 StringCopy(gStringVar4, gText_Protect_Affected_True);
             else
                 StringCopy(gStringVar4, gText_Protect_Affected_False);
             AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
             //Magic Coat Affected
             y++;
-            if(gBattleMoves[move].magicCoatAffected)
+            if(gMovesInfo[move].magicCoatAffected)
                 StringCopy(gStringVar4, gText_Magic_Coat_Affected_True);
             else
                 StringCopy(gStringVar4, gText_Magic_Coat_Affected_False);
@@ -1986,7 +1984,7 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
         break;
         case MOVE_MODE_AFFECTED_2:
             //Snatch Affected
-            if(gBattleMoves[move].snatchAffected)
+            if(gMovesInfo[move].snatchAffected)
                 StringCopy(gStringVar4, gText_Snatch_Affected_True);
             else
                 StringCopy(gStringVar4, gText_Snatch_Affected_False);
@@ -1994,14 +1992,14 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
             
             //Mirror Move Affected
             y++;
-            if(gBattleMoves[move].ignoresProtect)
+            if(gMovesInfo[move].ignoresProtect)
                 StringCopy(gStringVar4, gText_Mirror_Move_Affected_True);
             else
                 StringCopy(gStringVar4, gText_Mirror_Move_Affected_False);
             AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
             //King's Rock Affected
             y++;
-            if(gBattleMoves[move].magicCoatAffected)
+            if(gMovesInfo[move].magicCoatAffected)
                 StringCopy(gStringVar4, gText_Kings_Rock_Affected_True);
             else
                 StringCopy(gStringVar4, gText_Kings_Rock_Affected_False);
@@ -2543,7 +2541,7 @@ static void PrintStatusTab(void){
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, ((y + 1) * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_BLACK], 0xFF, gStringVar1);
                 printedInfo = TRUE;
             break;
-            case STATUS_INFO_CANT_CRIT:
+            /*case STATUS_INFO_CANT_CRIT:
                 StringCopy(gStringVar1, sText_Title_Status_Cant_Crit);
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar1);
 
@@ -2551,7 +2549,7 @@ static void PrintStatusTab(void){
                 StringCopy(gStringVar1, sText_Title_Status_Cant_Crit_Description);
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, ((y + 1) * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_BLACK], 0xFF, gStringVar1);
                 printedInfo = TRUE;
-            break;
+            break;*/
             case STATUS_INFO_GASTRO_ACID:
                 StringCopy(gStringVar1, sText_Title_Status_Gastro_Acid);
                 AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar1);
@@ -2715,11 +2713,11 @@ static void PrintDamageCalulatorTab(void){
     y2 = -4;
     for(i = 0; i < MAX_MON_MOVES; i++){
         //Move Name
-        AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gMoveNames[moves[i]]);
+        AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, GetMoveName(moves[i]));
 
         // Move Damage ---------------------------------------------------------------------------------------------------
         y++;
-        if(gBattleMoves[moves[i]].category == BATTLE_CATEGORY_STATUS || gBattleMoves[moves[i]].power <= 2){
+        if(gMovesInfo[moves[i]].category == DAMAGE_CATEGORY_STATUS || gMovesInfo[moves[i]].power <= 2){
             StringCopy(gStringVar4, gText_Target_Nothing);
         }
         else{
@@ -2773,8 +2771,8 @@ const u8 gText_SmogonDamageCalculator_SixthPart_OHKO[] = _("{STR_VAR_1} OHKO");
 static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     u32 minDamage, maxDamage, midDamage, tempdamage;
     s32 dmg, critDmg, critChance, tempchance, minHits2KOChance;
-    u32 hits2KO, hits2KOmin, percentage;
-    u8 chance, moveType;
+    u32 hits2KO = 0, hits2KOmin, percentage;
+    u8 chance;
     u8 natureAtk, natureDef;
     u8 statUpAtk, statUpDef;
     u8 statDownAtk, statDownDef;
@@ -2784,6 +2782,7 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     bool8 isCrit = FALSE;
     u16 typeEffectivenessModifier;
     u16 move = gBattleMons[battler].moves[moveIndex];
+    u8 moveType = gMovesInfo[move].type;
     const s8 *natureMod;
     
     if(sMenuDataPtr->damageCalculation[battler][target][moveIndex].calculated)
@@ -2793,14 +2792,13 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
 
     //Sets move type depending on the mon ability/stats
     SetTypeBeforeUsingMove(move, battler);
-    GET_MOVE_TYPE(move, moveType);
     
     typeEffectivenessModifier = CalcTypeEffectivenessMultiplier(move, moveType, battler, target, GetBattlerAbility(target), FALSE);
 
     if(!IsBattlerAlive(battler) || 
        !IsBattlerAlive(target)  || 
-       gBattleMoves[move].category == BATTLE_CATEGORY_STATUS || 
-       gBattleMoves[move].power <= 2            || 
+       gMovesInfo[move].category == DAMAGE_CATEGORY_STATUS || 
+       gMovesInfo[move].power <= 2            || 
        typeEffectivenessModifier == UQ_4_12(0)){
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].noDamage = TRUE;
         return;
@@ -2848,10 +2846,10 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     natureDef = GetMonData(&targetParty[gBattlerPartyIndexes[target]], MON_DATA_HIDDEN_NATURE, NULL);
 
     //Attacker
-    if(natureAtk == NATURE_HARDY || natureAtk == NATURE_DOCILE || natureAtk == NATURE_SERIOUS || natureAtk == NATURE_BASHFUL || natureAtk == NATURE_QUIRKY){
+    //if(natureAtk == NATURE_HARDY || natureAtk == NATURE_DOCILE || natureAtk == NATURE_SERIOUS || natureAtk == NATURE_BASHFUL || natureAtk == NATURE_QUIRKY){
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].attackerNatureUp   = NUM_NATURE_STATS;
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].attackerNatureDown = NUM_NATURE_STATS;
-    }
+    /*}
     else{
         natureMod = gNatureStatTable[natureAtk];
         for(i = 0; i < NUM_NATURE_STATS; i++){
@@ -2860,13 +2858,13 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
             else if (natureMod[i] < 0)
                 sMenuDataPtr->damageCalculation[battler][target][moveIndex].attackerNatureDown = i + 1; //Nature Down
         }
-    }
+    }*/
 
     //Target
-    if(natureDef == NATURE_HARDY || natureDef == NATURE_DOCILE || natureDef == NATURE_SERIOUS || natureDef == NATURE_BASHFUL || natureDef == NATURE_QUIRKY){
+    //if(natureDef == NATURE_HARDY || natureDef == NATURE_DOCILE || natureDef == NATURE_SERIOUS || natureDef == NATURE_BASHFUL || natureDef == NATURE_QUIRKY){
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].targetNatureUp   = NUM_NATURE_STATS;
         sMenuDataPtr->damageCalculation[battler][target][moveIndex].targetNatureDown = NUM_NATURE_STATS;
-    }
+    /*}
     else{
         natureMod = gNatureStatTable[natureDef];
         for(i = 0; i < NUM_NATURE_STATS; i++){
@@ -2875,7 +2873,7 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
             else if (natureMod[i] < 0)
                 sMenuDataPtr->damageCalculation[battler][target][moveIndex].targetNatureDown = i + 1; //Nature Down
         }
-    }
+    }*/
 
     //Evs
     party = GetBattlerParty(battler);
@@ -2892,7 +2890,7 @@ static void PrintDamageCalculation(u8 battler, u8 target, u8 moveIdx){
     s32 dmg, critDmg, critChance, tempchance;
     double minHits2KOChance;
     u16 hits2KO, hits2KOmin, percentage;
-    u8 chance, moveType;
+    u8 chance;
     u8 natureAtk, natureDef;
     u8 statUpAtk, statUpDef;
     u8 statDownAtk, statDownDef;
@@ -2902,12 +2900,12 @@ static void PrintDamageCalculation(u8 battler, u8 target, u8 moveIdx){
     u16 typeEffectivenessModifier;
     const s8 *natureMod;
     u16 move = gBattleMons[battler].moves[moveIdx];
+    u8 moveType = gMovesInfo[move].type;
     struct DamageCalculation *damageCalculation;
     u8 *DamageCalculationText;
 
     //Sets move type depending on the mon ability/stats
     SetTypeBeforeUsingMove(move, battler);
-    GET_MOVE_TYPE(move, moveType);
     
     typeEffectivenessModifier = CalcTypeEffectivenessMultiplier(move, moveType, battler, target, GetBattlerAbility(target), FALSE);
 
@@ -2927,8 +2925,8 @@ static void PrintDamageCalculation(u8 battler, u8 target, u8 moveIdx){
 
     //First Part
     StringCopy(gStringVar2, gSpeciesInfo[gBattleMons[battler].species].speciesName);
-    StringCopy(gStringVar3, gMoveNames[move]);
-    if(gBattleMoves[move].category == BATTLE_CATEGORY_SPECIAL){
+    StringCopy(gStringVar3, GetMoveName(move));
+    if(gMovesInfo[move].category == DAMAGE_CATEGORY_SPECIAL){
         ConvertIntToDecimalStringN(gStringVar1, damageCalculation->battlerEvs[SPATK_EV_INDEX], STR_CONV_MODE_LEFT_ALIGN, 3);
         if(damageCalculation->attackerNatureDown == STAT_SPATK)
             StringExpandPlaceholders(gStringVar4, gText_SmogonDamageCalculator_FirstPartText_SpecialDefense_NatureDown);
@@ -2950,7 +2948,7 @@ static void PrintDamageCalculation(u8 battler, u8 target, u8 moveIdx){
     //Second Part
     StringCopy(gStringVar1, gStringVar4);
     ConvertIntToDecimalStringN(gStringVar2, damageCalculation->targetEvs[HP_EV_INDEX], STR_CONV_MODE_LEFT_ALIGN, 3);
-    if(gBattleMoves[move].category == BATTLE_CATEGORY_SPECIAL){
+    if(gMovesInfo[move].category == DAMAGE_CATEGORY_SPECIAL){
         ConvertIntToDecimalStringN(gStringVar3, damageCalculation->targetEvs[SPDEF_EV_INDEX], STR_CONV_MODE_LEFT_ALIGN, 3);
         if(damageCalculation->targetNatureDown == STAT_SPDEF)
             StringExpandPlaceholders(gStringVar4, gText_SmogonDamageCalculator_SecondPartText_SpecialDefense_NatureDown);
@@ -3766,19 +3764,18 @@ static void PrintSpeedTab(void)
             for(j = 0; j < MAX_MON_MOVES; j++){
                 move = gBattleMons[battlertoCheck].moves[j];
                 if(move != MOVE_NONE){
-                    StringCopy(gStringVar1, gMoveNames[move]);
+                    StringCopy(gStringVar1, GetMoveName(move));
                     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar1);
                     x = x + 9;
                     //Priority
-                    ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[move].priority, STR_CONV_MODE_LEFT_ALIGN, 3);
+                    ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[move].priority, STR_CONV_MODE_LEFT_ALIGN, 3);
                     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar1);
                     x = x + 3;
                     x2 = 4;
                     //Can KO - Todo: Check calculation
-                    if(gBattleMoves[move].category != BATTLE_CATEGORY_STATUS && gBattleMoves[move].power > 0){
-                        u8 moveType = gBattleMoves[move].type;
+                    if(gMovesInfo[move].category != DAMAGE_CATEGORY_STATUS && gMovesInfo[move].power > 0){
+                        u8 moveType = gMovesInfo[move].type;
                         SetTypeBeforeUsingMove(move, battlertoCheck);
-                        GET_MOVE_TYPE(move, moveType);
                         moveDamage = CalculateMoveDamage(move, battlertoCheck, target, moveType, 0, FALSE, FALSE, FALSE);
                         if(targetCurrentHp <= moveDamage)
                             BlitBitmapToWindow(windowId, sCheck, (x * 8) + x2, (y * 8), 8, 8);
@@ -3897,7 +3894,7 @@ static void PrintToWindow(u8 windowId, u8 colorIdx)
     x = 15;
     y = 7;
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, sText_Ability);
-    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, ((x + 5) * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilities[gBattleMons[sMenuDataPtr->battlerId].ability].name);
+    AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, ((x + 5) * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gAbilitiesInfo[gBattleMons[sMenuDataPtr->battlerId].ability].name);
     y++;
 /*    //Innate 1
     AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, sText_Innate);
@@ -3916,10 +3913,10 @@ static void PrintToWindow(u8 windowId, u8 colorIdx)
     for(i = 0; i < MAX_MON_MOVES; i++){
         move = gBattleMons[sMenuDataPtr->battlerId].moves[i];
         if(move != MOVE_NONE){
-            AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gMoveNames[move]);
+            AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, (x * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, GetMoveName(move));
             //Current PP
             ConvertIntToDecimalStringN(gStringVar1, gBattleMons[sMenuDataPtr->battlerId].pp[i], STR_CONV_MODE_LEFT_ALIGN, 3); //Current PP
-            ConvertIntToDecimalStringN(gStringVar2, gBattleMoves[move].pp, STR_CONV_MODE_LEFT_ALIGN, 3); //Max PP, ToFix
+            ConvertIntToDecimalStringN(gStringVar2, gMovesInfo[move].pp, STR_CONV_MODE_LEFT_ALIGN, 3); //Max PP, ToFix
             StringExpandPlaceholders(gStringVar4, sText_PP);
             AddTextPrinterParameterized4(windowId, FONT_SMALL_NARROW, ((x + 8) * 8) + x2, (y * 8) + y2, 0, 0, sMenuWindowFontColors[colorIdx], 0xFF, gStringVar4);
             y++;
@@ -4077,6 +4074,7 @@ static u8 DestroyBattleMenuSprite(u8 spriteArrayId)
     struct Sprite *sprite = &gSprites[sMenuDataPtr->spriteIds[spriteArrayId]];
     sMenuDataPtr->spriteIds[spriteArrayId] = SPRITE_NONE;
     DestroySpriteAndFreeResources(sprite);
+    return 0;
 }
 
 static u8 ShowSpeciesIcon(u8 num)
@@ -4086,6 +4084,7 @@ static u8 ShowSpeciesIcon(u8 num)
 	LoadMonIconPalette(species);
 
     switch(num){
+        default:
         case 0:
             sMenuDataPtr->spriteIds[SPRITE_ARR_ID_MON_ICON_1] = CreateMonIcon(species, SpriteCallbackDummy, POKEMON_ICON_X, POKEMON_ICON_1_Y, 0, personality);
                     
@@ -4145,6 +4144,7 @@ static u8 ShowSpeciesIconSpeed(u8 battler, u8 x, u8 y)
 	LoadMonIconPalette(species);
 
     switch(battler){
+        default:
         case 0:
             sMenuDataPtr->spriteIds[SPRITE_ARR_ID_MON_ICON_1_SPEED] = CreateMonIcon(species, SpriteCallbackDummy, x, y, 0, personality);
                     
@@ -4241,7 +4241,7 @@ static void SetMonTypeIcons(void)
     }
 }*/
 
-static u8 tabColors[NUM_TABS] = {
+static const u8 tabColors[NUM_TABS] = {
     [TAB_STATS]             = MENU_COLOR_BLUE,
     //[TAB_ABILITIES]         = MENU_COLOR_RED,
     [TAB_MOVES]             = MENU_COLOR_GREEN,
@@ -4249,7 +4249,7 @@ static u8 tabColors[NUM_TABS] = {
     [TAB_DAMAGE_CALCULATOR] = MENU_COLOR_RED,
 };
 
-static u8 tabColorsField[NUM_FIELD_TABS + 2] = {
+static const u8 tabColorsField[NUM_FIELD_TABS + 2] = {
     [TAB_FIELD]             = MENU_COLOR_GREEN,
     [TAB_SPEED]             = MENU_COLOR_BLUE,
     [TAB_PLAYER_SIDE]       = MENU_COLOR_RED,

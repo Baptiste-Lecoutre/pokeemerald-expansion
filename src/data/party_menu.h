@@ -29,6 +29,13 @@ static const struct BgTemplate sPartyMenuBgTemplates[] =
     },
 };
 
+enum
+{
+    PARTY_BOX_LEFT_COLUMN,
+    PARTY_BOX_RIGHT_COLUMN,
+    PARTY_BOX_EQUAL_COLUMN //Custom party menu
+};
+
 static const struct PartyMenuBoxInfoRects sPartyBoxInfoRects[] =
 {
     [PARTY_BOX_LEFT_COLUMN] =
@@ -473,7 +480,7 @@ static const struct WindowTemplate sCancelButtonWindowTemplate =
     .width = 6,
     .height = 2,
     .paletteNum = 3,
-    .baseBlock = 0x1C7,
+    .baseBlock = 0x207,
 };
 static const struct WindowTemplate sCancelButtonWindowTemplate_equal =
 {
@@ -732,6 +739,11 @@ static const u8 sEqualEmptySlotTileNums[] = {21, 22, 22, 22, 22, 22, 22, 22, 22,
                                              30,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 31,
                                              30,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 31,
                                              37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39};
+
+static const u8 sEmptySlotTileNums[] = {21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
+                                        30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31,
+                                        37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39};
+
 //
 // Palette offsets
 static const u8 sGenderPalOffsets[] = {11, 12};
@@ -823,7 +835,7 @@ struct
 {
     const u8 *text;
     TaskFunc func;
-} static const sCursorOptions[] =
+} static const sCursorOptions[MENU_FIELD_MOVES] =
 {
     [MENU_SUMMARY] = {gText_Summary5, CursorCb_Summary},
     [MENU_SWITCH] = {gText_Switch2, CursorCb_Switch},
@@ -854,23 +866,24 @@ struct
     [MENU_CATALOG_MOWER] = {gText_LawnMower, CursorCb_CatalogMower},
     [MENU_CHANGE_FORM] = {gText_ChangeForm, CursorCb_ChangeForm},
     [MENU_CHANGE_ABILITY] = {gText_ChangeAbility, CursorCb_ChangeAbility},
-    [MENU_FIELD_MOVES + FIELD_MOVE_CUT] = {gMoveNames[MOVE_CUT], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_FLASH] = {gMoveNames[MOVE_FLASH], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_ROCK_SMASH] = {gMoveNames[MOVE_ROCK_SMASH], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_STRENGTH] = {gMoveNames[MOVE_STRENGTH], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_SURF] = {gMoveNames[MOVE_SURF], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_FLY] = {gMoveNames[MOVE_FLY], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_DIVE] = {gMoveNames[MOVE_DIVE], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_WATERFALL] = {gMoveNames[MOVE_WATERFALL], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_TELEPORT] = {gMoveNames[MOVE_TELEPORT], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_DIG] = {gMoveNames[MOVE_DIG], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_SECRET_POWER] = {gMoveNames[MOVE_SECRET_POWER], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_MILK_DRINK] = {gMoveNames[MOVE_MILK_DRINK], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_SOFT_BOILED] = {gMoveNames[MOVE_SOFT_BOILED], CursorCb_FieldMove},
-    [MENU_FIELD_MOVES + FIELD_MOVE_SWEET_SCENT] = {gMoveNames[MOVE_SWEET_SCENT], CursorCb_FieldMove},
+    /*[MENU_FIELD_MOVES + FIELD_MOVE_CUT] = {GetMoveName(MOVE_CUT), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_FLASH] = {GetMoveName(MOVE_FLASH), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_ROCK_SMASH] = {GetMoveName(MOVE_ROCK_SMASH), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_STRENGTH] = {GetMoveName(MOVE_STRENGTH), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_SURF] = {GetMoveName(MOVE_SURF), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_FLY] = {GetMoveName(MOVE_FLY), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_DIVE] = {GetMoveName(MOVE_DIVE), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_WATERFALL] = {GetMoveName(MOVE_WATERFALL), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_TELEPORT] = {GetMoveName(MOVE_TELEPORT), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_DIG] = {GetMoveName(MOVE_DIG), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_SECRET_POWER] = {GetMoveName(MOVE_SECRET_POWER), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_MILK_DRINK] = {GetMoveName(MOVE_MILK_DRINK), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_SOFT_BOILED] = {GetMoveName(MOVE_SOFT_BOILED), CursorCb_FieldMove},
+    [MENU_FIELD_MOVES + FIELD_MOVE_SWEET_SCENT] = {GetMoveName(MOVE_SWEET_SCENT), CursorCb_FieldMove},
     #ifdef BATTLE_ENGINE
-    [MENU_FIELD_MOVES + FIELD_MOVE_ROCK_CLIMB] = {gMoveNames[MOVE_ROCK_CLIMB], CursorCb_FieldMove},
-    #endif
+    [MENU_FIELD_MOVES + FIELD_MOVE_ROCK_CLIMB] = {GetMoveName(MOVE_ROCK_CLIMB), CursorCb_FieldMove},
+    #endif*/
+    [MENU_POKEDEX] = {gText_Pokedex, CursorCb_Pokedex},
 };
 
 static const u8 sPartyMenuAction_SummarySwitchCancel[] = {MENU_SUMMARY, MENU_SWITCH, MENU_CANCEL1};

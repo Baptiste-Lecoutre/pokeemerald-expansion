@@ -24,8 +24,9 @@ MauvilleCity_House2_EventScript_AskToTradeForOvalStone:
 
 MauvilleCity_House2_EventScript_AcceptTrade::
 	msgbox MauvilleCity_House2_Text_IllTradeYouCoinCase, MSGBOX_DEFAULT
-	removeitem ITEM_OVAL_STONE, 1
 	giveitem ITEM_COIN_CASE
+	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
+	removeitem ITEM_OVAL_STONE
 	setflag FLAG_RECEIVED_COIN_CASE
 	goto MauvilleCity_House2_EventScript_ReceivedCoinCase
 	end

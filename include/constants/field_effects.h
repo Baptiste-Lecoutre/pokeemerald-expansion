@@ -69,15 +69,15 @@
 #define FLDEFF_RAYQUAZA_SPOTLIGHT        64
 #define FLDEFF_DESTROY_DEOXYS_ROCK       65
 #define FLDEFF_MOVE_DEOXYS_ROCK          66
-#define FLDEFF_USE_ROCK_CLIMB            67
-#define FLDEFF_ROCK_CLIMB_DUST           68
-#define FLDEFF_CAVE_DUST                 69
+#define FLDEFF_USE_VS_SEEKER             67
+#define FLDEFF_X_ICON                    68
+#define FLDEFF_DOUBLE_EXCL_MARK_ICON     69
 #define FLDEFF_TRACKS_SLITHER            70
 #define FLDEFF_TRACKS_SPOT               71
 #define FLDEFF_TRACKS_BUG                72
-#define FLDEFF_USE_VS_SEEKER             73
-#define FLDEFF_X_ICON                    74
-#define FLDEFF_DOUBLE_EXCL_MARK_ICON     75
+#define FLDEFF_USE_ROCK_CLIMB            73
+#define FLDEFF_ROCK_CLIMB_DUST           74
+#define FLDEFF_CAVE_DUST                 75
 
 #define FLDEFFOBJ_SHADOW_S              0
 #define FLDEFFOBJ_SHADOW_M              1
@@ -145,11 +145,5 @@
 #define FLDEFF_TILE_TAG_SHADOW_MEDIUM       0x1401
 #define FLDEFF_TILE_TAG_SHADOW_LARGE        0x1402
 #define FLDEFF_TILE_TAG_SHADOW_EXTRA_LARGE  0x1403
-
-// Duplicates of event_object_movement tags
-#define FLDEFF_PAL_TAG_MAY 0x1110 // OBJ_EVENT_PAL_TAG_MAY
-#define FLDEFF_PAL_TAG_BRENDAN 0x1100 // OBJ_EVENT_PAL_TAG_BRENDAN
-#define FLDEFF_PAL_TAG_NPC_1 0x1103 // OBJ_EVENT_PAL_TAG_NPC_1
-#define FLDEFF_PAL_TAG_NPC_2 0x1104 // OBJ_EVENT_PAL_TAG_NPC_2
 
 #endif // GUARD_FIELD_EFFECT_CONSTANTS_H

@@ -313,15 +313,15 @@ static void PlayerPartnerHandleDrawTrainerPic(u32 battler)
     }
     else if (IsAiVsAiBattle())
     {
-        trainerPicId = gTrainers[gPartnerTrainerId].trainerPic;
+        trainerPicId = GetTrainerPicFromId(gPartnerTrainerId);
         xPos = 60;
-        yPos = (8 - gTrainerSprites[trainerPicId].y_offset) * 4 + 80;
+        yPos = 80;
     }
     else
     {
         trainerPicId = GetFrontierTrainerFrontSpriteId(gPartnerTrainerId);
         xPos = 32;
-        yPos = (8 - gTrainerSprites[trainerPicId].y_offset) * 4 + 80;
+        yPos = 80;
     }
 
     // Use back pic only if the partner Steven or is custom.
@@ -368,25 +368,25 @@ static void PlayerPartnerHandleChooseMove(u32 battler)
     }
     else
     {
-        if (gBattleMoves[moveInfo->moves[chosenMoveId]].target & (MOVE_TARGET_USER | MOVE_TARGET_USER_OR_SELECTED))
+        if (gMovesInfo[moveInfo->moves[chosenMoveId]].target & (MOVE_TARGET_USER | MOVE_TARGET_USER_OR_SELECTED))
             gBattlerTarget = battler;
-        if (gBattleMoves[moveInfo->moves[chosenMoveId]].target & MOVE_TARGET_BOTH)
+        if (gMovesInfo[moveInfo->moves[chosenMoveId]].target & MOVE_TARGET_BOTH)
         {
             gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             if (gAbsentBattlerFlags & gBitTable[gBattlerTarget])
                 gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
         }
-
-        if (ShouldUseZMove(battler, gBattlerTarget, moveInfo->moves[chosenMoveId]))
-            QueueZMove(battler, moveInfo->moves[chosenMoveId]);
-
-        // If partner can mega evolve, do it.
-        if (CanMegaEvolve(battler))
-            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_MEGA_EVOLUTION) | (gBattlerTarget << 8));
-        else if (CanUltraBurst(battler))
-            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_ULTRA_BURST) | (gBattlerTarget << 8));
+        // If partner can and should use a gimmick (considering trainer data), do it
+        if (gBattleStruct->gimmick.usableGimmick[battler] != GIMMICK_NONE
+         && !(gBattleStruct->gimmick.usableGimmick[battler] == GIMMICK_Z_MOVE
+         && !ShouldUseZMove(battler, gBattlerTarget, moveInfo->moves[chosenMoveId])))
+        {
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (RET_GIMMICK) | (gBattlerTarget << 8));
+        }
         else
+        {
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, (chosenMoveId) | (gBattlerTarget << 8));
+        }
     }
 
     PlayerPartnerBufferExecCompleted(battler);
@@ -444,9 +444,9 @@ static void PlayerPartnerHandleIntroTrainerBallThrow(u32 battler)
     const u32 *trainerPal;
 
     if (gPartnerTrainerId > TRAINER_PARTNER(PARTNER_NONE))
-        trainerPal = gTrainerBacksprites[gPartnerSpriteId].palette.data;
+        trainerPal = gTrainerBacksprites[gBattlePartners[gPartnerTrainerId - TRAINER_PARTNER(PARTNER_NONE)].trainerPic].palette.data;
     else if (IsAiVsAiBattle())
-        trainerPal = gTrainerSprites[gTrainers[gPartnerTrainerId].trainerPic].palette.data;
+        trainerPal = gTrainerSprites[GetTrainerPicFromId(gPartnerTrainerId)].palette.data;
     else
         trainerPal = gTrainerSprites[GetFrontierTrainerFrontSpriteId(gPartnerTrainerId)].palette.data; // 2 vs 2 multi battle in Battle Frontier, load front sprite and pal.
 

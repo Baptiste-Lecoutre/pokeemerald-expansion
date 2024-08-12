@@ -143,7 +143,11 @@ static void Task_CloseBattlePikeCurtain(u8);
 static u8 DidPlayerGetFirstFans(void);
 static void SetInitialFansOfPlayer(void);
 static u16 PlayerGainRandomTrainerFan(void);
+#if FREE_LINK_BATTLE_RECORDS == FALSE
 static void BufferFanClubTrainerName_(struct LinkBattleRecords *, u8, u8);
+#else
+static void BufferFanClubTrainerName_(u8 whichLinkTrainer, u8 whichNPCTrainer);
+#endif //FREE_LINK_BATTLE_RECORDS
 
 void Special_ShowDiploma(void)
 {
@@ -1657,7 +1661,7 @@ bool8 BufferTMHMMoveName(void)
 {
     if (gSpecialVar_0x8004 >= ITEM_TM01 && gSpecialVar_0x8004 <= ITEM_HM08)
     {
-        StringCopy(gStringVar2, gMoveNames[ItemIdToBattleMoveId(gSpecialVar_0x8004)]);
+        StringCopy(gStringVar2, GetMoveName(ItemIdToBattleMoveId(gSpecialVar_0x8004)));
         return TRUE;
     }
 
@@ -2498,11 +2502,11 @@ void ShowScrollableMultichoice(void)
         break;
     case SCROLL_MULTI_COSTUME:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
-        task->tNumItems = 7;
+        task->tNumItems = 5;//7;
         task->tLeft = 22;
-        task->tTop = 1;
+        task->tTop = 3;//1;
         task->tWidth = 12;
-        task->tHeight = 12;
+        task->tHeight = 10;//12;
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
@@ -2937,8 +2941,8 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_SecondDrawer,
         gText_ThirdDrawer,
         gText_FourthDrawer,
-        gText_FifthDrawer,
-        gText_SixthDrawer,
+//        gText_FifthDrawer,
+//        gText_SixthDrawer,
         gText_Exit
     },
 };
@@ -3177,41 +3181,13 @@ void SetBattleTowerLinkPlayerGfx(void)
 
 void ShowNatureGirlMessage(void)
 {
-    static const u8 *const sNatureGirlMessages[NUM_NATURES] = {
-        [NATURE_HARDY]   = BattleFrontier_Lounge5_Text_NatureGirlHardy,
-        [NATURE_LONELY]  = BattleFrontier_Lounge5_Text_NatureGirlLonely,
-        [NATURE_BRAVE]   = BattleFrontier_Lounge5_Text_NatureGirlBrave,
-        [NATURE_ADAMANT] = BattleFrontier_Lounge5_Text_NatureGirlAdamant,
-        [NATURE_NAUGHTY] = BattleFrontier_Lounge5_Text_NatureGirlNaughty,
-        [NATURE_BOLD]    = BattleFrontier_Lounge5_Text_NatureGirlBold,
-        [NATURE_DOCILE]  = BattleFrontier_Lounge5_Text_NatureGirlDocileNaiveQuietQuirky,
-        [NATURE_RELAXED] = BattleFrontier_Lounge5_Text_NatureGirlRelaxed,
-        [NATURE_IMPISH]  = BattleFrontier_Lounge5_Text_NatureGirlImpish,
-        [NATURE_LAX]     = BattleFrontier_Lounge5_Text_NatureGirlLax,
-        [NATURE_TIMID]   = BattleFrontier_Lounge5_Text_NatureGirlTimid,
-        [NATURE_HASTY]   = BattleFrontier_Lounge5_Text_NatureGirlHasty,
-        [NATURE_SERIOUS] = BattleFrontier_Lounge5_Text_NatureGirlSerious,
-        [NATURE_JOLLY]   = BattleFrontier_Lounge5_Text_NatureGirlJolly,
-        [NATURE_NAIVE]   = BattleFrontier_Lounge5_Text_NatureGirlDocileNaiveQuietQuirky,
-        [NATURE_MODEST]  = BattleFrontier_Lounge5_Text_NatureGirlModest,
-        [NATURE_MILD]    = BattleFrontier_Lounge5_Text_NatureGirlMild,
-        [NATURE_QUIET]   = BattleFrontier_Lounge5_Text_NatureGirlDocileNaiveQuietQuirky,
-        [NATURE_BASHFUL] = BattleFrontier_Lounge5_Text_NatureGirlBashful,
-        [NATURE_RASH]    = BattleFrontier_Lounge5_Text_NatureGirlRash,
-        [NATURE_CALM]    = BattleFrontier_Lounge5_Text_NatureGirlCalm,
-        [NATURE_GENTLE]  = BattleFrontier_Lounge5_Text_NatureGirlGentle,
-        [NATURE_SASSY]   = BattleFrontier_Lounge5_Text_NatureGirlSassy,
-        [NATURE_CAREFUL] = BattleFrontier_Lounge5_Text_NatureGirlCareful,
-        [NATURE_QUIRKY]  = BattleFrontier_Lounge5_Text_NatureGirlDocileNaiveQuietQuirky,
-    };
-
     u8 nature;
 
     if (gSpecialVar_0x8004 >= PARTY_SIZE)
         gSpecialVar_0x8004 = 0;
 
     nature = GetNature(&gPlayerParty[gSpecialVar_0x8004]);
-    ShowFieldMessage(sNatureGirlMessages[nature]);
+    ShowFieldMessage(gNaturesInfo[nature].natureGirlMessage);
 }
 
 void UpdateFrontierGambler(u16 daysSince)
@@ -3612,7 +3588,7 @@ static const u16 sPokemonCenter_TutorMoves7[] =
 
 void BufferBattleFrontierTutorMoveName(void)
 {
-    StringCopy(gStringVar1, gMoveNames[gSpecialVar_0x8005]);
+    StringCopy(gStringVar1, GetMoveName(gSpecialVar_0x8005));
 }
 
 static void ShowBattleFrontierTutorWindow(u8 menu, u16 selection)
@@ -4112,9 +4088,6 @@ static void Task_DeoxysRockInteraction(u8 taskId)
         }
     }
 }
-
-// duplicate of event_object_movement
-#define OBJ_EVENT_PAL_TAG_BIRTH_ISLAND_STONE      0x111F
 
 static void ChangeDeoxysRockLevel(u8 rockLevel)
 {
@@ -4985,9 +4958,14 @@ void BufferFanClubTrainerName(void)
     case FANCLUB_MEMBER8:
         break;
     }
+#if FREE_LINK_BATTLE_RECORDS == FALSE
     BufferFanClubTrainerName_(&gSaveBlock1Ptr->linkBattleRecords, whichLinkTrainer, whichNPCTrainer);
+#else
+    BufferFanClubTrainerName_(whichLinkTrainer, whichNPCTrainer);
+#endif //FREE_LINK_BATTLE_RECORDS
 }
 
+#if FREE_LINK_BATTLE_RECORDS == FALSE
 static void BufferFanClubTrainerName_(struct LinkBattleRecords *linkRecords, u8 whichLinkTrainer, u8 whichNPCTrainer)
 {
     struct LinkBattleRecord *record = &linkRecords->entries[whichLinkTrainer];
@@ -5025,6 +5003,35 @@ static void BufferFanClubTrainerName_(struct LinkBattleRecords *linkRecords, u8 
         ConvertInternationalString(gStringVar1, linkRecords->languages[whichLinkTrainer]);
     }
 }
+#else
+static void BufferFanClubTrainerName_(u8 whichLinkTrainer, u8 whichNPCTrainer)
+{
+    switch (whichNPCTrainer)
+    {
+        case 0:
+            StringCopy(gStringVar1, gText_Wallace);
+            break;
+        case 1:
+            StringCopy(gStringVar1, gText_Steven);
+            break;
+        case 2:
+            StringCopy(gStringVar1, gText_Brawly);
+            break;
+        case 3:
+            StringCopy(gStringVar1, gText_Winona);
+            break;
+        case 4:
+            StringCopy(gStringVar1, gText_Phoebe);
+            break;
+        case 5:
+            StringCopy(gStringVar1, gText_Glacia);
+            break;
+        default:
+            StringCopy(gStringVar1, gText_Wallace);
+            break;
+    }
+}
+#endif //FREE_LINK_BATTLE_RECORDS
 
 void UpdateTrainerFansAfterLinkBattle(void)
 {
@@ -5335,7 +5342,7 @@ void SwapPlayersCostume(void)
     BlendPalettes(0xFFFFFFFF, 16, 0);
 }
 
-u8 GetPlayerCostumeId(void)
+u16 GetPlayerCostumeId(void)
 {
     return GetPlayerAvatarGraphicsIdByStateIdAndGender(PLAYER_AVATAR_STATE_NORMAL, gSaveBlock2Ptr->playerGender);
 }
@@ -5653,7 +5660,7 @@ void BufferChosenMonNature (void)
     u8 nature = 0;
 
     nature = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HIDDEN_NATURE);
-    StringCopy (gStringVar2, gNatureNamePointers[nature]);
+    StringCopy (gStringVar2, gNaturesInfo[nature].name);
 }
 
 // Changes the selected Pokemon's nature.

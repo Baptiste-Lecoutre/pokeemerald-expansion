@@ -77,7 +77,7 @@ const struct SpriteTemplate *const gFieldEffectLightTemplates[] = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowSmall = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_SMALL,
+    .tileTag = TAG_NONE, //FLDEFF_TILE_TAG_SHADOW_SMALL,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_8x8,
     .anims = sAnimTable_Shadow,
@@ -87,7 +87,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowSmall = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowMedium = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_MEDIUM,
+    .tileTag = TAG_NONE, //FLDEFF_TILE_TAG_SHADOW_MEDIUM,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_16x8,
     .anims = sAnimTable_Shadow,
@@ -97,7 +97,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowMedium = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowLarge = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_LARGE,
+    .tileTag = TAG_NONE, //FLDEFF_TILE_TAG_SHADOW_LARGE,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_32x8,
     .anims = sAnimTable_Shadow,
@@ -107,7 +107,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowLarge = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowExtraLarge = {
-    .tileTag = FLDEFF_TILE_TAG_SHADOW_EXTRA_LARGE,
+    .tileTag = TAG_NONE, //FLDEFF_TILE_TAG_SHADOW_EXTRA_LARGE,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_64x32,
     .anims = sAnimTable_Shadow,
@@ -1028,7 +1028,7 @@ static const union AnimCmd *const sAnimTable_Sparkle[] =
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_Sparkle = {
     .tileTag = TAG_NONE,
-    .paletteTag = FLDEFF_PAL_TAG_NPC_2,
+    .paletteTag = OBJ_EVENT_PAL_TAG_NPC_2,
     .oam = &gObjectEventBaseOam_16x16,
     .anims = sAnimTable_Sparkle,
     .images = sPicTable_Sparkle,
@@ -1370,7 +1370,7 @@ static const union AnimCmd *const sAnimTable_RayquazaSpotlightEffect[] = {
 };
 
 static const struct SpriteFrameImage sPicTable_RayquazaSpotlightEffect[] = {
-    overworld_frame(gObjectEventPic_Rayquaza, 4, 4, 0),
+    overworld_frame(gObjectEventPic_RayquazaCutscene, 4, 4, 0),
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_Rayquaza = {

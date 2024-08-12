@@ -17,8 +17,6 @@
 #include "util.h"
 #include "constants/battle_anim.h"
 
-#define IS_DOUBLE_BATTLE() ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
-
 extern const struct OamData gOamData_AffineNormal_ObjNormal_64x64;
 
 static void AnimTranslateLinear_WithFollowup_SetCornerVecX(struct Sprite *sprite);
@@ -298,45 +296,51 @@ u8 GetBattlerYCoordWithElevation(u8 battlerId)
 
 u8 GetAnimBattlerSpriteId(u8 animBattler)
 {
-    u8 *sprites;
+    u32 partner;
 
-    if (animBattler == ANIM_ATTACKER)
+    switch (animBattler)
     {
+    case ANIM_ATTACKER:
         if (IsBattlerSpritePresent(gBattleAnimAttacker))
         {
-            sprites = gBattlerSpriteIds;
-            return sprites[gBattleAnimAttacker];
+            return gBattlerSpriteIds[gBattleAnimAttacker];
         }
         else
         {
             return SPRITE_NONE;
         }
-    }
-    else if (animBattler == ANIM_TARGET)
-    {
+        break;
+    case ANIM_TARGET:
         if (IsBattlerSpritePresent(gBattleAnimTarget))
         {
-            sprites = gBattlerSpriteIds;
-            return sprites[gBattleAnimTarget];
+            return gBattlerSpriteIds[gBattleAnimTarget];
         }
         else
         {
             return SPRITE_NONE;
         }
-    }
-    else if (animBattler == ANIM_ATK_PARTNER)
-    {
+        break;
+    case ANIM_ATK_PARTNER:
         if (!IsBattlerSpriteVisible(BATTLE_PARTNER(gBattleAnimAttacker)))
             return SPRITE_NONE;
         else
             return gBattlerSpriteIds[BATTLE_PARTNER(gBattleAnimAttacker)];
-    }
-    else
-    {
+        break;
+    case ANIM_DEF_PARTNER:
         if (IsBattlerSpriteVisible(BATTLE_PARTNER(gBattleAnimTarget)))
             return gBattlerSpriteIds[BATTLE_PARTNER(gBattleAnimTarget)];
         else
             return SPRITE_NONE;
+        break;
+    case ANIM_PLAYER_LEFT ... ANIM_OPPONENT_RIGHT:
+        partner = animBattler - MAX_BATTLERS_COUNT;
+        if (IsBattlerSpriteVisible(partner))
+            return gBattlerSpriteIds[partner];
+        else
+            return SPRITE_NONE;
+        break;
+    default:
+        return SPRITE_NONE;
     }
 }
 
@@ -646,12 +650,6 @@ static void UNUSED TranslateSpriteToBattleAttackerPos(struct Sprite *sprite)
 #undef sStartY
 #undef sTargetY
 
-static void UNUSED EndUnkPaletteAnim(struct Sprite *sprite)
-{
-    PaletteStruct_ResetById(sprite->data[5]);
-    DestroySpriteAndMatrix(sprite);
-}
-
 void RunStoredCallbackWhenAffineAnimEnds(struct Sprite *sprite)
 {
     if (sprite->affineAnimEnded)
@@ -858,11 +856,6 @@ bool8 IsBattlerSpritePresent(u8 battlerId)
     }
 }
 
-bool8 IsDoubleBattle(void)
-{
-    return IS_DOUBLE_BATTLE();
-}
-
 #define BG_ANIM_PAL_1        8
 #define BG_ANIM_PAL_2        9
 #define BG_ANIM_PAL_CONTEST 14
@@ -1015,8 +1008,8 @@ void InitSpriteDataForLinearTranslation(struct Sprite *sprite)
 {
     s16 x = (sprite->data[2] - sprite->data[1]) << 8;
     s16 y = (sprite->data[4] - sprite->data[3]) << 8;
-    sprite->data[1] = x / sprite->data[0];
-    sprite->data[2] = y / sprite->data[0];
+    sprite->data[1] = SAFE_DIV(x, sprite->data[0]);
+    sprite->data[2] = SAFE_DIV(y, sprite->data[0]);
     sprite->data[4] = 0;
     sprite->data[3] = 0;
 }

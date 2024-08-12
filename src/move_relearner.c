@@ -1,9 +1,12 @@
 #include "global.h"
 #include "main.h"
 #include "battle.h"
+#include "battle_util.h"
 #include "bg.h"
+#include "bw_summary_screen.h"
 #include "contest_effect.h"
 #include "data.h"
+#include "decompress.h"
 #include "event_data.h"
 #include "field_screen_effect.h"
 #include "gpu_regs.h"
@@ -173,6 +176,7 @@ static EWRAM_DATA struct
     u8 moveListScrollArrowTask;                          /*0x113*/
     u8 moveDisplayArrowTask;                             /*0x114*/
     u16 scrollOffset;                                    /*0x116*/
+    u8 categoryIconSpriteId;                             /*0x117*/
 } *sMoveRelearnerStruct = {0};
 
 static EWRAM_DATA struct {
@@ -601,7 +605,7 @@ static void DoMoveRelearnerMain(void)
         break;
     case MENU_STATE_PRINT_STOP_TEACHING:
         sMoveRelearnerStruct->state = MENU_STATE_CHOOSE_SETUP_STATE;
-//        StringCopy(gStringVar2, gMoveNames[GetCurrentSelectedMove()]);
+//        StringCopy(gStringVar2, GetMoveName(GetCurrentSelectedMove()));
 //        PrintMessageWithPlaceholders(gText_MoveRelearnerStopTryingToTeachMove);
 //        sMoveRelearnerStruct->state++;
         break;
@@ -659,7 +663,11 @@ static void DoMoveRelearnerMain(void)
     case MENU_STATE_SHOW_MOVE_SUMMARY_SCREEN:
         if (!gPaletteFade.active)
         {
-            ShowSelectMovePokemonSummaryScreen(gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, CB2_InitLearnMoveReturnFromSelectMove, GetCurrentSelectedMove());
+            if (BW_SUMMARY_SCREEN)
+                ShowSelectMovePokemonSummaryScreen_BW(gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, CB2_InitLearnMoveReturnFromSelectMove, GetCurrentSelectedMove());
+            else
+                ShowSelectMovePokemonSummaryScreen(gPlayerParty, sMoveRelearnerStruct->partyMon, gPlayerPartyCount - 1, CB2_InitLearnMoveReturnFromSelectMove, GetCurrentSelectedMove());
+            
             FreeMoveRelearnerResources();
         }
         break;
@@ -708,10 +716,10 @@ static void DoMoveRelearnerMain(void)
             {
                 u16 moveId = GetMonData(&gPlayerParty[sMoveRelearnerStruct->partyMon], MON_DATA_MOVE1 + sMoveRelearnerStruct->moveSlot);
 
-                StringCopy(gStringVar3, gMoveNames[moveId]);
+                StringCopy(gStringVar3, GetMoveName(moveId));
                 RemoveMonPPBonus(&gPlayerParty[sMoveRelearnerStruct->partyMon], sMoveRelearnerStruct->moveSlot);
                 SetMonMoveSlot(&gPlayerParty[sMoveRelearnerStruct->partyMon], GetCurrentSelectedMove(), sMoveRelearnerStruct->moveSlot);
-                StringCopy(gStringVar2, gMoveNames[GetCurrentSelectedMove()]);
+                StringCopy(gStringVar2, GetMoveName(GetCurrentSelectedMove()));
                 PrintMessageWithPlaceholders(gText_MoveRelearnerAndPoof);
                 sMoveRelearnerStruct->state = MENU_STATE_DOUBLE_FANFARE_FORGOT_MOVE;
                 gSpecialVar_0x8004 = TRUE;
@@ -804,6 +812,9 @@ static void HandleInput(bool8 showContest)
 
         ScheduleBgCopyTilemapToVram(1);
         MoveRelearnerShowHideHearts(GetCurrentSelectedMove());
+        if (B_SHOW_CATEGORY_ICON == TRUE)
+            MoveRelearnerShowHideCategoryIcon(GetCurrentSelectedMove());
+
         break;
     case LIST_CANCEL:
         PlaySE(SE_SELECT);
@@ -816,7 +827,7 @@ static void HandleInput(bool8 showContest)
         PlaySE(SE_SELECT);
         RemoveScrollArrows();
         sMoveRelearnerStruct->state = MENU_STATE_PRINT_TEACH_MOVE_PROMPT;
-        StringCopy(gStringVar2, gMoveNames[itemId]);
+        StringCopy(gStringVar2, GetMoveName(itemId));
         StringExpandPlaceholders(gStringVar4, gText_MoveRelearnerTeachMoveConfirm);
         MoveRelearnerPrintMessage(gStringVar4);
         break;
@@ -851,6 +862,10 @@ static void CreateUISprites(void)
     sMoveRelearnerStruct->moveDisplayArrowTask = TASK_NONE;
     sMoveRelearnerStruct->moveListScrollArrowTask = TASK_NONE;
     AddScrollArrows();
+
+    sMoveRelearnerStruct->categoryIconSpriteId = 0xFF;
+    LoadCompressedSpriteSheet(&gSpriteSheet_CategoryIcons);
+    LoadSpritePalette(&gSpritePal_CategoryIcons);
 
     // These are the appeal hearts.
     for (i = 0; i < 8; i++)
@@ -905,7 +920,7 @@ static void CreateLearnableMovesList(void)
 
     for (i = 0; i < sMoveRelearnerStruct->numMenuChoices; i++)
     {
-        sMoveRelearnerStruct->menuItems[i].name = gMoveNames[sMoveRelearnerStruct->movesToLearn[i]];
+        sMoveRelearnerStruct->menuItems[i].name = GetMoveName(sMoveRelearnerStruct->movesToLearn[i]);
         sMoveRelearnerStruct->menuItems[i].id = sMoveRelearnerStruct->movesToLearn[i];
     }
 
@@ -929,7 +944,7 @@ void MoveRelearnerShowHideHearts(s32 moveId)
     }
     else
     {
-        numHearts = (u8)(gContestEffects[gContestMoves[moveId].effect].appeal / 10);
+        numHearts = (u8)(gContestEffects[gMovesInfo[moveId].contestEffect].appeal / 10);
 
         if (numHearts == 0xFF)
             numHearts = 0;
@@ -943,7 +958,7 @@ void MoveRelearnerShowHideHearts(s32 moveId)
             gSprites[sMoveRelearnerStruct->heartSpriteIds[i]].invisible = FALSE;
         }
 
-        numHearts = (u8)(gContestEffects[gContestMoves[moveId].effect].jam / 10);
+        numHearts = (u8)(gContestEffects[gMovesInfo[moveId].contestEffect].jam / 10);
 
         if (numHearts == 0xFF)
             numHearts = 0;
@@ -956,5 +971,25 @@ void MoveRelearnerShowHideHearts(s32 moveId)
                 StartSpriteAnim(&gSprites[sMoveRelearnerStruct->heartSpriteIds[i + 8]], 2);
             gSprites[sMoveRelearnerStruct->heartSpriteIds[i + 8]].invisible = FALSE;
         }
+    }
+}
+
+void MoveRelearnerShowHideCategoryIcon(s32 moveId)
+{
+    if (sMoveRelearnerMenuSate.showContestInfo || moveId == LIST_CANCEL)
+    {
+        if (sMoveRelearnerStruct->categoryIconSpriteId != 0xFF)
+            DestroySprite(&gSprites[sMoveRelearnerStruct->categoryIconSpriteId]);
+
+        sMoveRelearnerStruct->categoryIconSpriteId = 0xFF;
+        gSprites[sMoveRelearnerStruct->categoryIconSpriteId].invisible = TRUE;
+    }
+    else
+    {
+        if (sMoveRelearnerStruct->categoryIconSpriteId == 0xFF)
+            sMoveRelearnerStruct->categoryIconSpriteId = CreateSprite(&gSpriteTemplate_CategoryIcons, 66, 40, 0);
+
+        gSprites[sMoveRelearnerStruct->categoryIconSpriteId].invisible = FALSE;
+        StartSpriteAnim(&gSprites[sMoveRelearnerStruct->categoryIconSpriteId], GetBattleMoveCategory(moveId));
     }
 }

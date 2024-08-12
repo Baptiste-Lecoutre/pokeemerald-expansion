@@ -261,6 +261,26 @@ static const u32 sBirchSpeechBgMap[] = INCBIN_U32("graphics/birch_speech/map.bin
 static const u16 sBirchSpeechBgGradientPal[] = INCBIN_U16("graphics/birch_speech/bg2.gbapal");
 static const u16 sBirchSpeechPlatformBlackPal[] = {RGB_BLACK, RGB_BLACK, RGB_BLACK, RGB_BLACK, RGB_BLACK, RGB_BLACK, RGB_BLACK, RGB_BLACK};
 
+static const u8 gText_SaveFileCorrupted[] = _("The save file is corrupted. The\nprevious save file will be loaded.");
+static const u8 gText_SaveFileErased[] = _("The save file has been erased\ndue to corruption or damage.");
+static const u8 gJPText_No1MSubCircuit[] = _("1Mサブきばんが ささっていません！");
+static const u8 gText_BatteryRunDry[] = _("The internal battery has run dry.\nThe game can be played.\pHowever, clock-based events will\nno longer occur.");
+
+static const u8 gText_MainMenuNewGame[] = _("NEW GAME");
+static const u8 gText_MainMenuContinue[] = _("CONTINUE");
+static const u8 gText_MainMenuOption[] = _("OPTION");
+static const u8 gText_MainMenuMysteryGift[] = _("MYSTERY GIFT");
+static const u8 gText_MainMenuMysteryGift2[] = _("MYSTERY GIFT");
+static const u8 gText_MainMenuMysteryEvents[] = _("MYSTERY EVENTS");
+static const u8 gText_WirelessNotConnected[] = _("The Wireless Adapter is not\nconnected.");
+static const u8 gText_MysteryGiftCantUse[] = _("MYSTERY GIFT can't be used while\nthe Wireless Adapter is attached.");
+static const u8 gText_MysteryEventsCantUse[] = _("MYSTERY EVENTS can't be used while\nthe Wireless Adapter is attached.");
+
+static const u8 gText_ContinueMenuPlayer[] = _("PLAYER");
+static const u8 gText_ContinueMenuTime[] = _("TIME");
+static const u8 gText_ContinueMenuPokedex[] = _("POKéDEX");
+static const u8 gText_ContinueMenuBadges[] = _("BADGES");
+
 #define MENU_LEFT 2
 #define MENU_TOP_WIN0 1
 #define MENU_TOP_WIN1 5
@@ -458,54 +478,54 @@ static const union AffineAnimCmd *const sSpriteAffineAnimTable_PlayerShrink[] =
 };
 
 static const struct MenuAction sMenuActions_Gender[] = {
-    {gText_BirchBoy, {NULL}},
-    {gText_BirchGirl, {NULL}}
+    {COMPOUND_STRING("Boy"), {NULL}},
+    {COMPOUND_STRING("Girl"), {NULL}}
 };
 
 static const u8 *const sMalePresetNames[] = {
-    gText_DefaultNameStu,
-    gText_DefaultNameMilton,
-    gText_DefaultNameTom,
-    gText_DefaultNameKenny,
-    gText_DefaultNameReid,
-    gText_DefaultNameJude,
-    gText_DefaultNameJaxson,
-    gText_DefaultNameEaston,
-    gText_DefaultNameWalker,
-    gText_DefaultNameTeru,
-    gText_DefaultNameJohnny,
-    gText_DefaultNameBrett,
-    gText_DefaultNameSeth,
-    gText_DefaultNameTerry,
-    gText_DefaultNameCasey,
-    gText_DefaultNameDarren,
-    gText_DefaultNameLandon,
-    gText_DefaultNameCollin,
-    gText_DefaultNameStanley,
-    gText_DefaultNameQuincy
+    COMPOUND_STRING("Stu"),
+    COMPOUND_STRING("Milton"),
+    COMPOUND_STRING("Tom"),
+    COMPOUND_STRING("Kenny"),
+    COMPOUND_STRING("Reid"),
+    COMPOUND_STRING("Jude"),
+    COMPOUND_STRING("Jaxson"),
+    COMPOUND_STRING("Easton"),
+    COMPOUND_STRING("Walker"),
+    COMPOUND_STRING("Teru"),
+    COMPOUND_STRING("Johnny"),
+    COMPOUND_STRING("Brett"),
+    COMPOUND_STRING("Seth"),
+    COMPOUND_STRING("Terry"),
+    COMPOUND_STRING("Casey"),
+    COMPOUND_STRING("Darren"),
+    COMPOUND_STRING("Landon"),
+    COMPOUND_STRING("Collin"),
+    COMPOUND_STRING("Stanley"),
+    COMPOUND_STRING("Quincy")
 };
 
 static const u8 *const sFemalePresetNames[] = {
-    gText_DefaultNameKimmy,
-    gText_DefaultNameTiara,
-    gText_DefaultNameBella,
-    gText_DefaultNameJayla,
-    gText_DefaultNameAllie,
-    gText_DefaultNameLianna,
-    gText_DefaultNameSara,
-    gText_DefaultNameMonica,
-    gText_DefaultNameCamila,
-    gText_DefaultNameAubree,
-    gText_DefaultNameRuthie,
-    gText_DefaultNameHazel,
-    gText_DefaultNameNadine,
-    gText_DefaultNameTanja,
-    gText_DefaultNameYasmin,
-    gText_DefaultNameNicola,
-    gText_DefaultNameLillie,
-    gText_DefaultNameTerra,
-    gText_DefaultNameLucy,
-    gText_DefaultNameHalie
+    COMPOUND_STRING("Kimmy"),
+    COMPOUND_STRING("Tiara"),
+    COMPOUND_STRING("Bella"),
+    COMPOUND_STRING("Jayla"),
+    COMPOUND_STRING("Allie"),
+    COMPOUND_STRING("Lianna"),
+    COMPOUND_STRING("Sara"),
+    COMPOUND_STRING("Monica"),
+    COMPOUND_STRING("Camila"),
+    COMPOUND_STRING("Aubree"),
+    COMPOUND_STRING("Ruthie"),
+    COMPOUND_STRING("Hazel"),
+    COMPOUND_STRING("Nadine"),
+    COMPOUND_STRING("Tanja"),
+    COMPOUND_STRING("Yasmin"),
+    COMPOUND_STRING("Nicola"),
+    COMPOUND_STRING("Lillie"),
+    COMPOUND_STRING("Terra"),
+    COMPOUND_STRING("Lucy"),
+    COMPOUND_STRING("Halie")
 };
 
 // The number of male vs. female names is assumed to be the same.
@@ -1293,7 +1313,7 @@ static void Task_NewGameBirchSpeech_Init(u8 taskId)
     SetGpuReg(REG_OFFSET_BLDALPHA, 0);
     SetGpuReg(REG_OFFSET_BLDY, 0);
 
-    gTasks[taskId].tCostumeId = RSE_COSTUME;
+    gTasks[taskId].tCostumeId = GREEN_COSTUME;
 
     LZ77UnCompVram(sBirchSpeechShadowGfx, (void *)VRAM);
     LZ77UnCompVram(sBirchSpeechBgMap, (void *)(BG_SCREEN_ADDR(7)));
@@ -1549,13 +1569,13 @@ static void Task_NewGameBirchSpeech_ChooseGender(u8 taskId)
         if (costumeId < COSTUME_COUNT - 1)
             costumeId++;
         else
-            costumeId = RSE_COSTUME;
+            costumeId = GREEN_COSTUME;
     }
     else if (JOY_NEW(L_BUTTON))
     {
         PlaySE(SE_SELECT);
         gTasks[taskId].tChangeCostume = TRUE;
-        if (costumeId > RSE_COSTUME)
+        if (costumeId > GREEN_COSTUME)
             costumeId--;
         else
             costumeId = COSTUME_COUNT - 1;
@@ -1938,34 +1958,51 @@ static void AddBirchSpeechObjects(u8 taskId)
     u8 lotadSpriteId;
     u8 brendanSpriteId;
     u8 maySpriteId;
-    u8 facilityClassMale = FACILITY_CLASS_BRENDAN;
-    u8 facilityClassFemale = FACILITY_CLASS_MAY;
+    u8 maleTrainerPicId = TRAINER_PIC_BRENDAN;
+    u8 femaleTrainerPicId = TRAINER_PIC_MAY;
 
     switch (gTasks[taskId].tCostumeId)
     {
-        case FRLG_COSTUME:
-            facilityClassMale = FACILITY_CLASS_RED;
-            facilityClassFemale = FACILITY_CLASS_LEAF;
+        /*case FRLG_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_RED;
+            femaleTrainerPicId = TRAINER_PIC_LEAF;
             break;
         case RSE_COSTUME:
-            facilityClassMale = FACILITY_CLASS_BRENDAN;
-            facilityClassFemale = FACILITY_CLASS_MAY;
+            maleTrainerPicId = TRAINER_PIC_BRENDAN;
+            femaleTrainerPicId = TRAINER_PIC_MAY;
             break;
         case HGSS_COSTUME:
-            facilityClassMale = FACILITY_CLASS_ETHAN;
-            facilityClassFemale = FACILITY_CLASS_LYRA;
+            maleTrainerPicId = TRAINER_PIC_ETHAN;
+            femaleTrainerPicId = TRAINER_PIC_LYRA;
             break;
         case DPEARL_COSTUME:
-            facilityClassMale = FACILITY_CLASS_LUCAS;
-            facilityClassFemale = FACILITY_CLASS_DAWN;
+            maleTrainerPicId = TRAINER_PIC_LUCAS;
+            femaleTrainerPicId = TRAINER_PIC_DAWN;
             break;
         case PLATINUM_COSTUME:
-            facilityClassMale = FACILITY_CLASS_LUCAS_PLATINUM;
-            facilityClassFemale = FACILITY_CLASS_DAWN_PLATINUM;
+            maleTrainerPicId = TRAINER_PIC_LUCAS_PLATINUM;
+            femaleTrainerPicId = TRAINER_PIC_DAWN_PLATINUM;
             break;
         case LGPE_COSTUME:
-            facilityClassMale = FACILITY_CLASS_CHASE;
-            facilityClassFemale = FACILITY_CLASS_ELAINE;
+            maleTrainerPicId = TRAINER_PIC_CHASE;
+            femaleTrainerPicId = TRAINER_PIC_ELAINE;
+            break;*/
+        default:
+        case GREEN_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN;
+            femaleTrainerPicId = TRAINER_PIC_MAY;
+            break;
+        case RED_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN_RED;
+            femaleTrainerPicId = TRAINER_PIC_MAY_RED;
+            break;
+        case BLUE_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN_BLUE;
+            femaleTrainerPicId = TRAINER_PIC_MAY_BLUE;
+            break;
+        case YELLOW_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN_YELLOW;
+            femaleTrainerPicId = TRAINER_PIC_MAY_YELLOW;
             break;
     }
 
@@ -1979,12 +2016,12 @@ static void AddBirchSpeechObjects(u8 taskId)
     gSprites[lotadSpriteId].oam.priority = 0;
     gSprites[lotadSpriteId].invisible = TRUE;
     gTasks[taskId].tLotadSpriteId = lotadSpriteId;
-    brendanSpriteId = CreateTrainerSprite(FacilityClassToPicIndex(facilityClassMale), 120, 60, 0, &gDecompressionBuffer[0]);
+    brendanSpriteId = CreateTrainerSprite(maleTrainerPicId, 120, 60, 0, &gDecompressionBuffer[0]);
     gSprites[brendanSpriteId].callback = SpriteCB_Null;
     gSprites[brendanSpriteId].invisible = TRUE;
     gSprites[brendanSpriteId].oam.priority = 0;
     gTasks[taskId].tBrendanSpriteId = brendanSpriteId;
-    maySpriteId = CreateTrainerSprite(FacilityClassToPicIndex(facilityClassFemale), 120, 60, 0, &gDecompressionBuffer[TRAINER_PIC_SIZE]);
+    maySpriteId = CreateTrainerSprite(femaleTrainerPicId, 120, 60, 0, &gDecompressionBuffer[TRAINER_PIC_SIZE]);
     gSprites[maySpriteId].callback = SpriteCB_Null;
     gSprites[maySpriteId].invisible = TRUE;
     gSprites[maySpriteId].oam.priority = 0;
@@ -1995,46 +2032,63 @@ static void UpdateBirchSpeechObjects(u8 taskId)
 {
     u8 brendanSpriteId;
     u8 maySpriteId;
-    u8 facilityClassMale = FACILITY_CLASS_BRENDAN;
-    u8 facilityClassFemale = FACILITY_CLASS_MAY;
+    u8 maleTrainerPicId = TRAINER_PIC_BRENDAN;
+    u8 femaleTrainerPicId = TRAINER_PIC_MAY;
 
     switch (gTasks[taskId].tCostumeId)
     {
-        case FRLG_COSTUME:
-            facilityClassMale = FACILITY_CLASS_RED;
-            facilityClassFemale = FACILITY_CLASS_LEAF;
+        /*case FRLG_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_RED;
+            femaleTrainerPicId = TRAINER_PIC_LEAF;
             break;
         case RSE_COSTUME:
-            facilityClassMale = FACILITY_CLASS_BRENDAN;
-            facilityClassFemale = FACILITY_CLASS_MAY;
+            maleTrainerPicId = TRAINER_PIC_BRENDAN;
+            femaleTrainerPicId = TRAINER_PIC_MAY;
             break;
         case HGSS_COSTUME:
-            facilityClassMale = FACILITY_CLASS_ETHAN;
-            facilityClassFemale = FACILITY_CLASS_LYRA;
+            maleTrainerPicId = TRAINER_PIC_ETHAN;
+            femaleTrainerPicId = TRAINER_PIC_LYRA;
             break;
         case DPEARL_COSTUME:
-            facilityClassMale = FACILITY_CLASS_LUCAS;
-            facilityClassFemale = FACILITY_CLASS_DAWN;
+            maleTrainerPicId = TRAINER_PIC_LUCAS;
+            femaleTrainerPicId = TRAINER_PIC_DAWN;
             break;
         case PLATINUM_COSTUME:
-            facilityClassMale = FACILITY_CLASS_LUCAS_PLATINUM;
-            facilityClassFemale = FACILITY_CLASS_DAWN_PLATINUM;
+            maleTrainerPicId = TRAINER_PIC_LUCAS_PLATINUM;
+            femaleTrainerPicId = TRAINER_PIC_DAWN_PLATINUM;
             break;
         case LGPE_COSTUME:
-            facilityClassMale = FACILITY_CLASS_CHASE;
-            facilityClassFemale = FACILITY_CLASS_ELAINE;
+            maleTrainerPicId = TRAINER_PIC_CHASE;
+            femaleTrainerPicId = TRAINER_PIC_ELAINE;
+            break;*/
+        default:
+        case GREEN_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN;
+            femaleTrainerPicId = TRAINER_PIC_MAY;
+            break;
+        case RED_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN_RED;
+            femaleTrainerPicId = TRAINER_PIC_MAY_RED;
+            break;
+        case BLUE_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN_BLUE;
+            femaleTrainerPicId = TRAINER_PIC_MAY_BLUE;
+            break;
+        case YELLOW_COSTUME:
+            maleTrainerPicId = TRAINER_PIC_BRENDAN_YELLOW;
+            femaleTrainerPicId = TRAINER_PIC_MAY_YELLOW;
             break;
     }
 
     DestroySpriteAndFreeResources(&gSprites[gTasks[taskId].tBrendanSpriteId]);
     DestroySpriteAndFreeResources(&gSprites[gTasks[taskId].tMaySpriteId]);
 
-    brendanSpriteId = CreateTrainerSprite(FacilityClassToPicIndex(facilityClassMale), DISPLAY_WIDTH, 60, 0, &gDecompressionBuffer[0]);
+    brendanSpriteId = CreateTrainerSprite(maleTrainerPicId, DISPLAY_WIDTH, 60, 0, &gDecompressionBuffer[0]);
     gSprites[brendanSpriteId].callback = SpriteCB_Null;
     gSprites[brendanSpriteId].invisible = TRUE;
     gSprites[brendanSpriteId].oam.priority = 0;
     gTasks[taskId].tBrendanSpriteId = brendanSpriteId;
-    maySpriteId = CreateTrainerSprite(FacilityClassToPicIndex(facilityClassFemale), DISPLAY_WIDTH, 60, 0, &gDecompressionBuffer[TRAINER_PIC_SIZE]);
+    maySpriteId = CreateTrainerSprite(femaleTrainerPicId, DISPLAY_WIDTH, 60, 0, &gDecompressionBuffer[TRAINER_PIC_SIZE]);
     gSprites[maySpriteId].callback = SpriteCB_Null;
     gSprites[maySpriteId].invisible = TRUE;
     gSprites[maySpriteId].oam.priority = 0;

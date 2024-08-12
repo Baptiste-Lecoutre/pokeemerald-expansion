@@ -23,8 +23,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "PetalburgWoods_3_Beedrillite",
+      "trainer_sight_or_berry_tree_id": "ITEM_BEEDRILLITE",
+      "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_PETALBURG_WOODS_3_BEEDRILLITE"
     },
     {
@@ -36,8 +36,8 @@
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "0",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "PetalburgWoods_3_TM34_SludgeWave",
+      "trainer_sight_or_berry_tree_id": "ITEM_TM34_SLUDGE_WAVE",
+      "script": "Common_EventScript_FindItem",
       "flag": "PETALBURG_WOODS_3_SLUDGE_WAVE"
     }
   ],

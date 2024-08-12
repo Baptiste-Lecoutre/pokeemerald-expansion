@@ -542,6 +542,14 @@ const union AffineAnimCmd gGrowAndShrinkAffineAnimCmds[] =
     AFFINEANIMCMD_END,
 };
 
+const union AffineAnimCmd gShrinkAndGrowAffineAnimCmds[] =
+{
+    AFFINEANIMCMD_FRAME(4, 5, 0, 12),
+    AFFINEANIMCMD_FRAME(0, 0, 0, 24),
+    AFFINEANIMCMD_FRAME(-4, -5, 0, 6),
+    AFFINEANIMCMD_END,
+};
+
 const union AnimCmd gBreathPuffAnimCmds1[] =
 {
     ANIMCMD_FRAME(0, 4, .hFlip = TRUE),
@@ -1718,7 +1726,7 @@ void AnimTask_AirCutterProjectile(u8 taskId)
 
     attackerX = gTasks[taskId].data[9] = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_X);
     attackerY = gTasks[taskId].data[10] = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_Y);
-    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+    if (IsDoubleBattle()
         && IsBattlerSpriteVisible(BATTLE_PARTNER(gBattleAnimTarget)))
     {
         SetAverageBattlerPositions(gBattleAnimTarget, FALSE, &targetX, &targetY);
@@ -2282,6 +2290,16 @@ static void AnimTask_GrowAndShrink_Step(u8 taskId)
     struct Task *task = &gTasks[taskId];
     if (!RunAffineAnimFromTaskData(task))
         DestroyAnimVisualTask(taskId);
+}
+
+// Shrinks, pauses, then grows the attacking mon.
+// No args.
+void AnimTask_ShrinkAndGrow(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    u8 spriteId = GetAnimBattlerSpriteId(ANIM_ATTACKER);
+    PrepareAffineAnimInTaskData(task, spriteId, gShrinkAndGrowAffineAnimCmds);
+    task->func = AnimTask_GrowAndShrink_Step;
 }
 
 // Animates a little puff of the mon's breath.
@@ -3716,7 +3734,6 @@ static void AnimTask_UproarDistortion_Step(u8 taskId)
 
 static void AnimJaggedMusicNote(struct Sprite *sprite)
 {
-    int var1;
     u8 battler = !gBattleAnimArgs[0] ? gBattleAnimAttacker : gBattleAnimTarget;
 
     if (GetBattlerSide(battler) == B_SIDE_OPPONENT)
@@ -3727,16 +3744,8 @@ static void AnimJaggedMusicNote(struct Sprite *sprite)
     sprite->data[0] = 0;
     sprite->data[1] = (u16)sprite->x << 3;
     sprite->data[2] = (u16)sprite->y << 3;
-
-    var1 = gBattleAnimArgs[1] << 3;
-    if (var1 < 0)
-        var1 += 7;
-    sprite->data[3] = var1 >> 3;
-
-    var1 = gBattleAnimArgs[2] << 3;
-    if (var1 < 0)
-        var1 += 7;
-    sprite->data[4] = var1 >> 3;
+    sprite->data[3] = (gBattleAnimArgs[1] << 3) / 8;
+    sprite->data[4] = (gBattleAnimArgs[2] << 3) / 8;
 
     sprite->oam.tileNum += gBattleAnimArgs[3] * 16;
     sprite->callback = AnimJaggedMusicNote_Step;
@@ -3845,7 +3854,7 @@ static void AnimPerishSongMusicNote_Step2(struct Sprite *sprite)
 
 static void AnimGuardRing(struct Sprite *sprite)
 {
-    if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && IsBattlerSpriteVisible(BATTLE_PARTNER(gBattleAnimAttacker)))
+    if (IsDoubleBattle() && IsBattlerSpriteVisible(BATTLE_PARTNER(gBattleAnimAttacker)))
     {
         SetAverageBattlerPositions(gBattleAnimAttacker, FALSE, &sprite->x, &sprite->y);
         sprite->y += 40;

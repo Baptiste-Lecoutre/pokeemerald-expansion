@@ -121,7 +121,7 @@ gScriptCmdTable::
 	.4byte ScrCmd_hidemonpic                        @ 0x76
 	.4byte ScrCmd_showcontestpainting               @ 0x77
 	.4byte ScrCmd_braillemessage                    @ 0x78
-	.4byte ScrCmd_givemon                           @ 0x79
+	.4byte ScrCmd_nop1                              @ 0x79
 	.4byte ScrCmd_giveegg                           @ 0x7a
 	.4byte ScrCmd_setmonmove                        @ 0x7b
 	.4byte ScrCmd_checkpartymove                    @ 0x7c
@@ -205,8 +205,8 @@ gScriptCmdTable::
 	.4byte ScrCmd_nop1                              @ 0xca
 	.4byte ScrCmd_nop1                              @ 0xcb
 	.4byte ScrCmd_nop1                              @ 0xcc
-	.4byte ScrCmd_setmonmodernfatefulencounter      @ 0xcd
-	.4byte ScrCmd_checkmonmodernfatefulencounter    @ 0xce
+	.4byte ScrCmd_setmodernfatefulencounter         @ 0xcd
+	.4byte ScrCmd_checkmodernfatefulencounter       @ 0xce
 	.4byte ScrCmd_trywondercardscript               @ 0xcf
 	.4byte ScrCmd_nop1                              @ 0xd0
 	.4byte ScrCmd_warpspinenter                     @ 0xd1
@@ -231,15 +231,14 @@ gScriptCmdTable::
 	.4byte ScrCmd_dynmultipush                      @ 0xe4
 	.4byte ScrCmd_showitemdesc              		@ 0xe5
 	.4byte ScrCmd_hideitemdesc              		@ 0xe6
-	.4byte ScrCmd_callfunc                  		@ 0xe7
-	.4byte ScrCmd_setsootopolisbattle				@ 0xe8
-	.4byte ScrCmd_checkPartyHasSpecies      		@ 0xe9
-	.4byte ScrCmd_isChosenMonSpecies        		@ 0xea
+	.4byte ScrCmd_checkPartyHasSpecies      		@ 0xe7
+	.4byte ScrCmd_isChosenMonSpecies        		@ 0xe8
+	.4byte ScrCmd_setsootopolisbattle				@ 0xe9
 @@@ new script commands go here
-    .4byte ScrCmd_setfollower					@ 0xeb
-    .4byte ScrCmd_destroyfollower			@ 0xec
-    .4byte ScrCmd_facefollower				@ 0xed
-    .4byte ScrCmd_checkfollower				@ 0xee
+    .4byte ScrCmd_setfollower						@ 0xea
+    .4byte ScrCmd_destroyfollower					@ 0xeb
+    .4byte ScrCmd_facefollower						@ 0xec
+    .4byte ScrCmd_checkfollower						@ 0xed
 
 gScriptCmdTableEnd::
 	.4byte ScrCmd_nop

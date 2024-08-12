@@ -213,7 +213,6 @@ EWRAM_DATA static u16 sAmbientCrySpecies = 0;
 EWRAM_DATA static bool8 sIsAmbientCryWaterMon = FALSE;
 EWRAM_DATA struct LinkPlayerObjectEvent gLinkPlayerObjectEvents[4] = {0};
 
-
 static const struct WarpData sDummyWarpData =
 {
     .mapGroup = MAP_GROUP(UNDEFINED),
@@ -413,10 +412,14 @@ void Overworld_ResetStateAfterDigEscRope(void)
 }
 
 #if B_RESET_FLAGS_VARS_AFTER_WHITEOUT  == TRUE
-    void Overworld_ResetBattleFlagsAndVars(void)
+void Overworld_ResetBattleFlagsAndVars(void)
 {
-    #if VAR_TERRAIN != 0
-        VarSet(VAR_TERRAIN, 0);
+    #if B_VAR_STARTING_STATUS != 0
+        VarSet(B_VAR_STARTING_STATUS, 0);
+    #endif
+
+    #if B_VAR_STARTING_STATUS_TIMER != 0
+        VarSet(B_VAR_STARTING_STATUS_TIMER, 0);
     #endif
 
     #if B_VAR_WILD_AI_FLAGS != 0
@@ -460,7 +463,7 @@ static void UpdateMiscOverworldStates(void)
     ChooseAmbientCrySpecies();
     ResetCyclingRoadChallengeData();
     UpdateLocationHistoryForRoamer();
-    RoamerMoveToOtherLocationSet();
+    MoveAllRoamersToOtherLocationSets();
 }
 
 void ResetGameStats(void)
@@ -700,9 +703,19 @@ void SetWarpDestinationToHealLocation(u8 healLocationId)
         SetWarpDestination(healLocation->group, healLocation->map, WARP_ID_NONE, healLocation->x, healLocation->y);
 }
 
+static bool32 IsFRLGWhiteout(void)
+{
+    if (!OW_FRLG_WHITEOUT)
+        return FALSE;
+    return GetHealNpcLocalId(GetHealLocationIndexByWarpData(&gSaveBlock1Ptr->lastHealLocation)) > 0;
+}
+
 void SetWarpDestinationToLastHealLocation(void)
 {
-    sWarpDestination = gSaveBlock1Ptr->lastHealLocation;
+    if (IsFRLGWhiteout())
+        SetWhiteoutRespawnWarpAndHealerNPC(&sWarpDestination);
+    else
+        sWarpDestination = gSaveBlock1Ptr->lastHealLocation;
 }
 
 void SetLastHealLocationWarp(u8 healLocationId)
@@ -837,7 +850,9 @@ void LoadMapFromCameraTransition(u8 mapGroup, u8 mapNum)
     ResetDexNavSearch();
     ResetCyclingRoadChallengeData();
     RestartWildEncounterImmunitySteps();
+#if FREE_MATCH_CALL == FALSE
     TryUpdateRandomTrainerRematches(mapGroup, mapNum);
+#endif //FREE_MATCH_CALL
 
 if (I_VS_SEEKER_CHARGING != 0)
     MapResetTrainerRematches(mapGroup, mapNum);
@@ -856,13 +871,22 @@ if (I_VS_SEEKER_CHARGING != 0)
 
     InitSecondaryTilesetAnimation();
     UpdateLocationHistoryForRoamer();
-    RoamerMove();
+    MoveAllRoamers();
     DoCurrentWeather();
     ResetFieldTasksArgs();
     RunOnResumeMapScript();
 
-    if (gMapHeader.regionMapSectionId != sLastMapSectionId)
-        ShowMapNamePopup();
+    if (OW_HIDE_REPEAT_MAP_POPUP)
+    {
+        if (gMapHeader.regionMapSectionId != sLastMapSectionId)
+            ShowMapNamePopup();
+    }
+    else
+    {
+        if (gMapHeader.regionMapSectionId != MAPSEC_BATTLE_FRONTIER
+         || gMapHeader.regionMapSectionId != sLastMapSectionId)
+            ShowMapNamePopup();
+    }
 }
 
 static void LoadMapFromWarp(bool32 a1)
@@ -890,7 +914,9 @@ static void LoadMapFromWarp(bool32 a1)
     ResetDexNavSearch();
     ResetCyclingRoadChallengeData();
     RestartWildEncounterImmunitySteps();
+#if FREE_MATCH_CALL == FALSE
     TryUpdateRandomTrainerRematches(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
+#endif //FREE_MATCH_CALL
 
 if (I_VS_SEEKER_CHARGING != 0)
      MapResetTrainerRematches(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
@@ -905,7 +931,8 @@ if (I_VS_SEEKER_CHARGING != 0)
     Overworld_ClearSavedMusic();
     RunOnTransitionMapScript();
     UpdateLocationHistoryForRoamer();
-    RoamerMoveToOtherLocationSet();
+    MoveAllRoamersToOtherLocationSets();
+    gChainFishingDexNavStreak = 0;
     if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_FLOOR)
         InitBattlePyramidMap(FALSE);
     else if (InTrainerHill())
@@ -1686,9 +1713,10 @@ void CB2_Overworld(void)
     if (fading)
         SetVBlankCallback(NULL);
     OverworldBasic();
-    if (fading) {
-      SetFieldVBlankCallback();
-      return;
+    if (fading)
+    {
+        SetFieldVBlankCallback();
+        return;
     }
 }
 
@@ -1761,7 +1789,10 @@ void CB2_WhiteOut(void)
         ResetInitialPlayerAvatarState();
         ScriptContext_Init();
         UnlockPlayerFieldControls();
-        gFieldCallback = FieldCB_WarpExitFadeFromBlack;
+        if (IsFRLGWhiteout())
+            gFieldCallback = FieldCB_RushInjuredPokemonToCenter;
+        else
+            gFieldCallback = FieldCB_WarpExitFadeFromBlack;
         state = 0;
         DoMapLoadLoop(&state);
         SetFieldVBlankCallback();
@@ -2168,10 +2199,10 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_Fly || !gSaveBlock2Ptr->optionsShowFollowerPokemon || PlayerHasFollower())
-          RemoveFollowingPokemon();
+        if (gFieldCallback == FieldCallback_UseFly || !gSaveBlock2Ptr->optionsShowFollowerPokemon || PlayerHasFollower())
+            RemoveFollowingPokemon();
         else
-          UpdateFollowingPokemon();
+            UpdateFollowingPokemon();
         SetCameraToTrackPlayer();
         (*state)++;
         break;
@@ -2188,6 +2219,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
     case 3:
         return TRUE;
     }
+
     return FALSE;
 }
 
@@ -3255,7 +3287,7 @@ static void SetPlayerFacingDirection(u8 linkPlayerId, u8 facing)
     {
         if (facing > FACING_FORCED_RIGHT)
         {
-            objEvent->triggerGroundEffectsOnMove = 1;
+            objEvent->triggerGroundEffectsOnMove = TRUE;
         }
         else
         {
@@ -3404,7 +3436,7 @@ static void CreateLinkPlayerSprite(u8 linkPlayerId, u8 gameVersion)
         sprite = &gSprites[objEvent->spriteId];
         sprite->coordOffsetEnabled = TRUE;
         sprite->data[0] = linkPlayerId;
-        objEvent->triggerGroundEffectsOnMove = 0;
+        objEvent->triggerGroundEffectsOnMove = FALSE;
     }
 }
 

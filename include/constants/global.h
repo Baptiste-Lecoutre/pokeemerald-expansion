@@ -1,9 +1,11 @@
 #ifndef GUARD_CONSTANTS_GLOBAL_H
 #define GUARD_CONSTANTS_GLOBAL_H
 
+#include "config/general.h"
 #include "config/battle.h"
 #include "config/debug.h"
 #include "config/item.h"
+#include "config/level_caps.h"
 #include "config/pokemon.h"
 #include "config/overworld.h"
 
@@ -79,6 +81,7 @@
 #define SAVED_TRENDS_COUNT 5
 #define PYRAMID_BAG_ITEMS_COUNT 10
 #define MAX_REGISTERED_ITEMS 4
+#define ROAMER_COUNT 1 // Number of maximum concurrent active roamers
 
 // Number of facilities for Ranking Hall.
 // 7 facilities for single mode + tower double mode + tower multi mode.
@@ -106,29 +109,23 @@
 #define CONTEST_CATEGORIES_COUNT  5
 
 // string lengths
-#define ITEM_NAME_LENGTH 14
-#define POKEMON_NAME_LENGTH 10
+#define ITEM_NAME_LENGTH ((I_EXPANDED_ITEM_NAMES == TRUE) ? 20 : 14)
+#define ITEM_NAME_PLURAL_LENGTH ITEM_NAME_LENGTH + 2 // 2 is used for the instance where a word's suffix becomes y->ies
+#define POKEMON_NAME_LENGTH 12
+#define VANILLA_POKEMON_NAME_LENGTH 10
 #define POKEMON_NAME_BUFFER_SIZE max(20, POKEMON_NAME_LENGTH + 1) // Frequently used buffer size. Larger than necessary
 #define PLAYER_NAME_LENGTH 7
 #define MAIL_WORDS_COUNT 9
 #define EASY_CHAT_BATTLE_WORDS_COUNT 6
-#if B_EXPANDED_MOVE_NAMES == TRUE
-#define MOVE_NAME_LENGTH 16
-#else
-#define MOVE_NAME_LENGTH 12
-#endif
+#define MOVE_NAME_LENGTH ((B_EXPANDED_MOVE_NAMES == TRUE) ? 16 : 12)
 #define NUM_QUESTIONNAIRE_WORDS 4
 #define QUIZ_QUESTION_LEN 9
 #define WONDER_CARD_TEXT_LENGTH 40
 #define WONDER_NEWS_TEXT_LENGTH 40
 #define WONDER_CARD_BODY_TEXT_LINES 4
 #define WONDER_NEWS_BODY_TEXT_LINES 10
-#define TYPE_NAME_LENGTH 6
-#if B_EXPANDED_ABILITY_NAMES == TRUE
-#define ABILITY_NAME_LENGTH 16
-#else
-#define ABILITY_NAME_LENGTH 12
-#endif
+#define TYPE_NAME_LENGTH ((B_EXPANDED_TYPE_NAMES == TRUE) ? 8 : 6)
+#define ABILITY_NAME_LENGTH ((B_EXPANDED_ABILITY_NAMES == TRUE) ? 16 : 12)
 #define TRAINER_NAME_LENGTH 10
 
 #define MAX_STAMP_CARD_STAMPS 7
@@ -167,6 +164,11 @@
 #define DIR_SOUTHEAST   6
 #define DIR_NORTHWEST   7
 #define DIR_NORTHEAST   8
+#define CARDINAL_DIRECTION_COUNT DIR_SOUTHWEST
+
+#define AXIS_X     0
+#define AXIS_Y     1
+#define AXIS_COUNT 2
 
 #define CONNECTION_INVALID -1
 #define CONNECTION_NONE     0
@@ -177,30 +179,25 @@
 #define CONNECTION_DIVE     5
 #define CONNECTION_EMERGE   6
 
-#define	RED_COSTUME					0
-#define	LEAF_COSTUME				1
-#define	ETHAN_COSTUME				2
-#define	LYRA_COSTUME				3
-#define	KRIS_COSTUME				4
-#define BRENDAN_COSTUME       		5
-#define MAY_COSTUME       			6
-#define	LUCAS_COSTUME				7
-#define	DAWN_COSTUME				8
-#define	LUCAS_PLATINUM_COSTUME		9
-#define	DAWN_PLATINUM_COSTUME		10
-#define CHASE_COSTUME               11
-#define ELAINE_COSTUME              12
-/*#define COSTUME_COUNT   			13*/
-
-#define RSE_COSTUME 0
+/*#define RSE_COSTUME 0
 #define FRLG_COSTUME 1
 #define HGSS_COSTUME 2
 #define DPEARL_COSTUME 3
 #define PLATINUM_COSTUME 4
 #define LGPE_COSTUME 5
-#define COSTUME_COUNT 6
+#define COSTUME_COUNT 6*/
+
+#define GREEN_COSTUME 0
+#define RED_COSTUME 1
+#define BLUE_COSTUME 2
+#define YELLOW_COSTUME 3
+#define COSTUME_COUNT 4
 
 #define SIDEWAYS_STAIRS_IMPLEMENTED         FALSE
 #define POST_BATTLE_FOLLOWER_FIX            FALSE   //if you experience the follower de-syncing with the player after battle, set to TRUE
+
+#if TESTING
+#include "config/test.h"
+#endif
 
 #endif // GUARD_CONSTANTS_GLOBAL_H

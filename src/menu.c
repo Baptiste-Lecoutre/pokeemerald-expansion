@@ -4,8 +4,10 @@
 #include "blit.h"
 #include "dma3.h"
 #include "event_data.h"
+#include "field_weather.h"
 #include "graphics.h"
 #include "main.h"
+#include "map_name_popup.h"
 #include "menu.h"
 #include "menu_helpers.h"
 #include "palette.h"
@@ -14,11 +16,13 @@
 #include "region_map.h"
 #include "scanline_effect.h"
 #include "sound.h"
+#include "start_menu.h"
 #include "string_util.h"
 #include "strings.h"
 #include "task.h"
 #include "text_window.h"
 #include "window.h"
+#include "config/overworld.h"
 #include "constants/songs.h"
 
 #define DLG_WINDOW_PALETTE_NUM 15
@@ -60,10 +64,8 @@ static void WindowFunc_DrawStdFrameWithCustomTileAndPalette(u8, u8, u8, u8, u8, 
 static void WindowFunc_ClearStdWindowAndFrameToTransparent(u8, u8, u8, u8, u8, u8);
 static void task_free_buf_after_copying_tile_data_to_vram(u8 taskId);
 
-EWRAM_DATA u8 gPopupTaskId = 0;
-
 static EWRAM_DATA u8 sStartMenuWindowId = 0;
-static EWRAM_DATA u8 sPrimaryPopupWindowId = 0;
+static EWRAM_DATA u8 sMapNamePopupWindowId = 0;
 static EWRAM_DATA u8 sSecondaryPopupWindowId = 0;
 static EWRAM_DATA struct Menu sMenu = {0};
 static EWRAM_DATA u16 sTileNum = 0;
@@ -121,6 +123,7 @@ static const u8 sTextColors[] = { TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_WHITE, TEXT_C
 static const struct MenuInfoIcon sMenuInfoIcons[] =
 {   // { width, height, offset }
     { 12, 12, 0x00 },  // Unused
+    [TYPE_NONE + 1]     = { 32, 12, 0xA4 }, // Copy of TYPE_MYSTERY's
     [TYPE_NORMAL + 1]   = { 32, 12, 0x20 },
     [TYPE_FIGHTING + 1] = { 32, 12, 0x64 },
     [TYPE_FLYING + 1]   = { 32, 12, 0x60 },
@@ -140,6 +143,7 @@ static const struct MenuInfoIcon sMenuInfoIcons[] =
     [TYPE_DRAGON + 1]   = { 32, 12, 0xA0 },
     [TYPE_DARK + 1]     = { 32, 12, 0x8C },
     [TYPE_FAIRY + 1]    = { 32, 12, 0x4  },
+    [TYPE_STELLAR + 1]  = { 32, 12, 0x8  },
     [MENU_INFO_ICON_TYPE]      = { 42, 12, 0xA8 },
     [MENU_INFO_ICON_POWER]     = { 42, 12, 0xC0 },
     [MENU_INFO_ICON_ACCURACY]  = { 42, 12, 0xC8 },
@@ -153,8 +157,9 @@ void InitStandardTextBoxWindows(void)
 {
     InitWindows(sStandardTextBox_WindowTemplates);
     sStartMenuWindowId = WINDOW_NONE;
-    sPrimaryPopupWindowId = WINDOW_NONE;
-    sSecondaryPopupWindowId = WINDOW_NONE;
+    sMapNamePopupWindowId = WINDOW_NONE;
+    if (OW_POPUP_GENERATION == GEN_5)
+        sSecondaryPopupWindowId = WINDOW_NONE;
 }
 
 void FreeAllOverworldWindowBuffers(void)
@@ -500,7 +505,12 @@ u8 GetPlayerTextSpeedDelay(void)
 u8 AddStartMenuWindow(u8 numActions)
 {
     if (sStartMenuWindowId == WINDOW_NONE)
-        sStartMenuWindowId = AddWindowParameterized(0, 22, 1, 7, (numActions * 2) + 2, 15, 0x139);
+    {
+        if (gShouldStartMenuIconsBePrinted)
+            sStartMenuWindowId = AddWindowParameterized(0, 22 - ICON_WINDOW_OFFSET, 1, 7 + ICON_WINDOW_OFFSET, (numActions * 2) + 4, 15, 0x139);
+        else
+            sStartMenuWindowId = AddWindowParameterized(0, 22, 1, 7, (numActions * 2) + 2, 15, 0x139);
+    }
     return sStartMenuWindowId;
 }
 
@@ -530,22 +540,27 @@ static u16 UNUSED GetStandardFrameBaseTileNum(void)
 
 u8 AddMapNamePopUpWindow(void)
 {
-    if (sPrimaryPopupWindowId == WINDOW_NONE)
-        sPrimaryPopupWindowId = AddWindowParameterized(0, 0, 0, 30, 3, 14, 0x107);
-    return sPrimaryPopupWindowId;
-}
-
-u8 GetPrimaryPopUpWindowId(void)
-{
-    return sPrimaryPopupWindowId;
-}
-
-void RemovePrimaryPopUpWindow(void)
-{
-    if (sPrimaryPopupWindowId != WINDOW_NONE)
+    if (sMapNamePopupWindowId == WINDOW_NONE)
     {
-        RemoveWindow(sPrimaryPopupWindowId);
-        sPrimaryPopupWindowId = WINDOW_NONE;
+        if (OW_POPUP_GENERATION == GEN_5)
+            sMapNamePopupWindowId = AddWindowParameterized(0, 0, 0, 30, 3, 14, 0x107);
+        else
+            sMapNamePopupWindowId = AddWindowParameterized(0, 1, 1, 10, 3, 14, 0x107);
+    }
+    return sMapNamePopupWindowId;
+}
+
+u8 GetMapNamePopUpWindowId(void)
+{
+    return sMapNamePopupWindowId;
+}
+
+void RemoveMapNamePopUpWindow(void)
+{
+    if (sMapNamePopupWindowId != WINDOW_NONE)
+    {
+        RemoveWindow(sMapNamePopupWindowId);
+        sMapNamePopupWindowId = WINDOW_NONE;
     }
 }
 
@@ -951,8 +966,24 @@ void RedrawMenuCursor(u8 oldPos, u8 newPos)
 
     width = GetMenuCursorDimensionByFont(sMenu.fontId, 0);
     height = GetMenuCursorDimensionByFont(sMenu.fontId, 1);
-    FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos + sMenu.top, width, height);
-    AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_SelectorArrow3, sMenu.left, sMenu.optionHeight * newPos + sMenu.top, 0, 0);
+    
+    // The first 2 conditionals have changes specially made for the expanded start menu
+    if (!IsAStartMenuIconAtPosition(newPos) && gShouldStartMenuIconsBePrinted)
+    {
+        FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos, width, height + 4);
+        AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_SelectorArrow3, sMenu.left, (sMenu.optionHeight * newPos) + (newPos * 3), 0, 0);
+    }
+    else if (IsAStartMenuIconAtPosition(newPos) && gShouldStartMenuIconsBePrinted)
+    {
+        FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos, width, height + 4);
+        // Don't Print the cursor if there is already an option
+        AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_Space, sMenu.left, sMenu.optionHeight * newPos + sMenu.top, 0, 0);
+    }
+    else
+    {
+        FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos + sMenu.top, width, height);
+        AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_SelectorArrow3, sMenu.left, sMenu.optionHeight * newPos + sMenu.top, 0, 0);
+    }
 }
 
 u8 Menu_MoveCursor(s8 cursorDelta)
@@ -2189,14 +2220,8 @@ void BufferSaveMenuText(u8 textId, u8 *dest, u8 color)
     }
 }
 
-u8 AddFieldEffectPopUpWindow(void)
-{
-    if (sSecondaryPopupWindowId == WINDOW_NONE)
-        sSecondaryPopupWindowId = AddWindowParameterized(0, 0, 20, 30, 3, 14, 0x107);
-    return sSecondaryPopupWindowId;
-}
-
-u8 AddWeatherPopUpWindow(void)
+// BW map pop-ups
+u8 AddSecondaryPopUpWindow(void)
 {
     if (sSecondaryPopupWindowId == WINDOW_NONE)
         sSecondaryPopupWindowId = AddWindowParameterized(0, 0, 17, 30, 3, 14, 0x161);
@@ -2217,31 +2242,19 @@ void RemoveSecondaryPopUpWindow(void)
     }
 }
 
-void SetDoublePopUpWindowScanlineBuffers(u8 offset)
-{
-    u32 i; 
-    for (i = 0; i < DISPLAY_HEIGHT; i++)
-    {
-        if (i < 80)
-        {
-            gScanlineEffectRegBuffers[0][i] = offset;
-            gScanlineEffectRegBuffers[1][i] = offset;
-        }
-        else
-        {
-            gScanlineEffectRegBuffers[0][i] = -offset;
-            gScanlineEffectRegBuffers[1][i] = -offset;
-        }
-    }
-}
-
 void HBlankCB_DoublePopupWindow(void)
 {
-    u16 offset = 24 - gTasks[gPopupTaskId].data[2];
+    u16 offset = gTasks[gPopupTaskId].data[2];
     u16 scanline = REG_VCOUNT;
 
-    /*if (scanline < offset || scanline > 156 - offset)
-        REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
-    else*/
-        REG_BLDALPHA = BLDALPHA_BLEND(8, 10);
+    if (scanline < 80 || scanline > 160)
+    {
+        REG_BG0VOFS = offset;
+        if(OW_POPUP_BW_ALPHA_BLEND && !IsWeatherAlphaBlend())
+            REG_BLDALPHA = BLDALPHA_BLEND(7, 12); // 15, 5
+    }
+    else
+    {
+        REG_BG0VOFS = 512 - offset;
+    }
 }

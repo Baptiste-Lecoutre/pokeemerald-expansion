@@ -393,7 +393,7 @@ static void RecordedPlayerHandleDrawTrainerPic(u32 battler)
         if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
         {
             xPos = 90;
-            yPos = (8 - gTrainerSprites[trainerPicId].y_offset) * 4 + 80;
+            yPos = 80;
         }
         else
         {
@@ -517,7 +517,7 @@ static void RecordedPlayerHandleIntroTrainerBallThrow(u32 battler)
     else
         trainerPicId = gSaveBlock2Ptr->playerGender + TRAINER_BACK_PIC_BRENDAN;
 
-    trainerPal = gTrainerSprites[trainerPicId].palette.data;
+    trainerPal = gTrainerBacksprites[trainerPicId].palette.data;
     BtlController_HandleIntroTrainerBallThrow(battler, 0xD6F9, trainerPal, 24, Intro_TryShinyAnimShowHealthbox);
 }
 

@@ -776,6 +776,16 @@
 	trainerbattle TRAINER_BATTLE_SINGLE_NO_INTRO_TEXT, \trainer, 0, \lose_text
 	.endm
 
+	@ Starts a double battle with the player against two trainers
+	@ Takes two trainers and defeat text for each
+	.macro trainerbattle_two_trainers trainer_a:req, lose_text_a:req, trainer_b:req, lose_text_b:req
+	.byte 0x5c
+	.byte TRAINER_BATTLE_TWO_TRAINERS_NO_INTRO
+	.2byte \trainer_a
+	.4byte \lose_text_a
+	.2byte \trainer_b
+	.4byte \lose_text_b
+	.endm
 
 	@ Starts a trainer battle using the battle information stored in RAM (usually by the scripts in trainer_battle.inc, which
 	@ are run by trainerbattle), and blocks script execution until the battle finishes.
@@ -984,16 +994,124 @@
 	.byte \textTop
 	.endm
 
-	@ Gives the player a Pokémon of the specified species and level, holding the specified item. The trailing 0s are unused parameters.
+	@ Gives the player a Pokémon of the specified species and level, and allows to customize extra parameters.
 	@ VAR_RESULT will be set to MON_GIVEN_TO_PARTY, MON_GIVEN_TO_PC, or MON_CANT_GIVE depending on the outcome.
-	.macro givemon species:req, level:req, item=ITEM_NONE
-	.byte 0x79
+	.macro givemon species:req, level:req, item, ball, nature, abilityNum, gender, hpEv, atkEv, defEv, speedEv, spAtkEv, spDefEv, hpIv, atkIv, defIv, speedIv, spAtkIv, spDefIv, move1, move2, move3, move4, isShiny, ggMaxFactor, teraType
+	callnative ScrCmd_createmon
+	.byte 0
+	.byte 6	@ PARTY_SIZE - assign to first empty slot
+	.set givemon_flags, 0
 	.2byte \species
 	.2byte \level
-	.2byte \item
-	.4byte 0
-	.4byte 0
-	.byte 0
+	.ifnb \item; .set givemon_flags, givemon_flags | (1 << 0); .endif
+	.ifnb \ball; .set givemon_flags, givemon_flags | (1 << 1); .endif
+	.ifnb \nature; .set givemon_flags, givemon_flags | (1 << 2); .endif
+	.ifnb \abilityNum; .set givemon_flags, givemon_flags | (1 << 3); .endif
+	.ifnb \gender; .set givemon_flags, givemon_flags | (1 << 4); .endif
+	.ifnb \hpEv; .set givemon_flags, givemon_flags | (1 << 5); .endif
+	.ifnb \atkEv; .set givemon_flags, givemon_flags | (1 << 6); .endif
+	.ifnb \defEv; .set givemon_flags, givemon_flags | (1 << 7); .endif
+	.ifnb \speedEv; .set givemon_flags, givemon_flags | (1 << 8); .endif
+	.ifnb \spAtkEv; .set givemon_flags, givemon_flags | (1 << 9); .endif
+	.ifnb \spDefEv; .set givemon_flags, givemon_flags | (1 << 10); .endif
+	.ifnb \hpIv; .set givemon_flags, givemon_flags | (1 << 11); .endif
+	.ifnb \atkIv; .set givemon_flags, givemon_flags | (1 << 12); .endif
+	.ifnb \defIv; .set givemon_flags, givemon_flags | (1 << 13); .endif
+	.ifnb \speedIv; .set givemon_flags, givemon_flags | (1 << 14); .endif
+	.ifnb \spAtkIv; .set givemon_flags, givemon_flags | (1 << 15); .endif
+	.ifnb \spDefIv; .set givemon_flags, givemon_flags | (1 << 16); .endif
+	.ifnb \move1; .set givemon_flags, givemon_flags | (1 << 17); .endif
+	.ifnb \move2; .set givemon_flags, givemon_flags | (1 << 18); .endif
+	.ifnb \move3; .set givemon_flags, givemon_flags | (1 << 19); .endif
+	.ifnb \move4; .set givemon_flags, givemon_flags | (1 << 20); .endif
+	.ifnb \isShiny; .set givemon_flags, givemon_flags | (1 << 21); .endif
+	.ifnb \ggMaxFactor; .set givemon_flags, givemon_flags | (1 << 22); .endif
+	.ifnb \teraType; .set givemon_flags, givemon_flags | (1 << 23); .endif
+	.4byte givemon_flags
+	.ifnb \item; .2byte \item; .endif
+	.ifnb \ball; .2byte \ball; .endif
+	.ifnb \nature; .2byte \nature; .endif
+	.ifnb \abilityNum; .2byte \abilityNum; .endif
+	.ifnb \gender; .2byte \gender; .endif
+	.ifnb \hpEv; .2byte \hpEv; .endif
+	.ifnb \atkEv; .2byte \atkEv; .endif
+	.ifnb \defEv; .2byte \defEv; .endif
+	.ifnb \speedEv; .2byte \speedEv; .endif
+	.ifnb \spAtkEv; .2byte \spAtkEv; .endif
+	.ifnb \spDefEv; .2byte \spDefEv; .endif
+	.ifnb \hpIv; .2byte \hpIv; .endif
+	.ifnb \atkIv; .2byte \atkIv; .endif
+	.ifnb \defIv; .2byte \defIv; .endif
+	.ifnb \speedIv; .2byte \speedIv; .endif
+	.ifnb \spAtkIv; .2byte \spAtkIv; .endif
+	.ifnb \spDefIv; .2byte \spDefIv; .endif
+	.ifnb \move1; .2byte \move1; .endif
+	.ifnb \move2; .2byte \move2; .endif
+	.ifnb \move3; .2byte \move3; .endif
+	.ifnb \move4; .2byte \move4; .endif
+	.ifnb \isShiny; .2byte \isShiny; .endif
+	.ifnb \ggMaxFactor; .2byte \ggMaxFactor; .endif
+	.ifnb \teraType; .2byte \teraType; .endif
+	.endm
+
+	@ creates a mon for a given party and slot
+	@ otherwise
+	.macro createmon side:req, slot:req, species:req, level:req, item, ball, nature, abilityNum, gender, hpEv, atkEv, defEv, speedEv, spAtkEv, spDefEv, hpIv, atkIv, defIv, speedIv, spAtkIv, spDefIv, move1, move2, move3, move4, isShiny, ggMaxFactor, teraType
+	callnative ScrCmd_createmon
+	.byte \side	 @ 0 - player, 1 - opponent
+	.byte \slot	 @ 0-5
+	.set givemon_flags, 0
+	.2byte \species
+	.2byte \level
+	.ifnb \item; .set givemon_flags, givemon_flags | (1 << 0); .endif
+	.ifnb \ball; .set givemon_flags, givemon_flags | (1 << 1); .endif
+	.ifnb \nature; .set givemon_flags, givemon_flags | (1 << 2); .endif
+	.ifnb \abilityNum; .set givemon_flags, givemon_flags | (1 << 3); .endif
+	.ifnb \gender; .set givemon_flags, givemon_flags | (1 << 4); .endif
+	.ifnb \hpEv; .set givemon_flags, givemon_flags | (1 << 5); .endif
+	.ifnb \atkEv; .set givemon_flags, givemon_flags | (1 << 6); .endif
+	.ifnb \defEv; .set givemon_flags, givemon_flags | (1 << 7); .endif
+	.ifnb \speedEv; .set givemon_flags, givemon_flags | (1 << 8); .endif
+	.ifnb \spAtkEv; .set givemon_flags, givemon_flags | (1 << 9); .endif
+	.ifnb \spDefEv; .set givemon_flags, givemon_flags | (1 << 10); .endif
+	.ifnb \hpIv; .set givemon_flags, givemon_flags | (1 << 11); .endif
+	.ifnb \atkIv; .set givemon_flags, givemon_flags | (1 << 12); .endif
+	.ifnb \defIv; .set givemon_flags, givemon_flags | (1 << 13); .endif
+	.ifnb \speedIv; .set givemon_flags, givemon_flags | (1 << 14); .endif
+	.ifnb \spAtkIv; .set givemon_flags, givemon_flags | (1 << 15); .endif
+	.ifnb \spDefIv; .set givemon_flags, givemon_flags | (1 << 16); .endif
+	.ifnb \move1; .set givemon_flags, givemon_flags | (1 << 17); .endif
+	.ifnb \move2; .set givemon_flags, givemon_flags | (1 << 18); .endif
+	.ifnb \move3; .set givemon_flags, givemon_flags | (1 << 19); .endif
+	.ifnb \move4; .set givemon_flags, givemon_flags | (1 << 20); .endif
+	.ifnb \isShiny; .set givemon_flags, givemon_flags | (1 << 21); .endif
+	.ifnb \ggMaxFactor; .set givemon_flags, givemon_flags | (1 << 22); .endif
+	.ifnb \teraType; .set givemon_flags, givemon_flags | (1 << 23); .endif
+	.4byte givemon_flags
+	.ifnb \item; .2byte \item; .endif
+	.ifnb \ball; .2byte \ball; .endif
+	.ifnb \nature; .2byte \nature; .endif
+	.ifnb \abilityNum; .2byte \abilityNum; .endif
+	.ifnb \gender; .2byte \gender; .endif
+	.ifnb \hpEv; .2byte \hpEv; .endif
+	.ifnb \atkEv; .2byte \atkEv; .endif
+	.ifnb \defEv; .2byte \defEv; .endif
+	.ifnb \speedEv; .2byte \speedEv; .endif
+	.ifnb \spAtkEv; .2byte \spAtkEv; .endif
+	.ifnb \spDefEv; .2byte \spDefEv; .endif
+	.ifnb \hpIv; .2byte \hpIv; .endif
+	.ifnb \atkIv; .2byte \atkIv; .endif
+	.ifnb \defIv; .2byte \defIv; .endif
+	.ifnb \speedIv; .2byte \speedIv; .endif
+	.ifnb \spAtkIv; .2byte \spAtkIv; .endif
+	.ifnb \spDefIv; .2byte \spDefIv; .endif
+	.ifnb \move1; .2byte \move1; .endif
+	.ifnb \move2; .2byte \move2; .endif
+	.ifnb \move3; .2byte \move3; .endif
+	.ifnb \move4; .2byte \move4; .endif
+	.ifnb \isShiny; .2byte \isShiny; .endif
+	.ifnb \ggMaxFactor; .2byte \ggMaxFactor; .endif
+	.ifnb \teraType; .2byte \teraType; .endif
 	.endm
 
 	@ Gives the player an Egg of the specified species.
@@ -1680,7 +1798,7 @@
 	.4byte \text
 	.endm
 
-	@ Equivalent to fadescreen but copies gPlttBufferUnfaded to gPaletteDecompressionBuffer on the fade out
+	@ Equivalent to fadescreen but copies gPlttBufferUnfaded to gDecompressionBuffer on the fade out
 	@ and the reverse on the fade in, in effect saving gPlttBufferUnfaded to restore it.
   @ If nowait set, does not wait for the fade to complete
 	.macro fadescreenswapbuffers mode:req, nowait=0
@@ -1736,28 +1854,6 @@
 	.2byte \item
 	.2byte \quantity
 	.endm
-    
-    @ sets an NPC up to follow the player
-    .macro setfollower localId:req, flags:req
-    .byte 0xe9
-    .byte \localId
-    .2byte \flags
-    .endm
-    
-    @ remove the following NPC (assumes there will only ever be one)
-    .macro destroyfollower
-    .byte 0xea
-    .endm
-    
-    @ makes the player and follower face one another
-    .macro facefollower
-    .byte 0xeb
-    .endm
-    
-    @ checks if you have a follower. returns the result to VAR_RESULT
-    .macro checkfollower
-    .byte 0xec
-    .endm
 
 	.macro _dynmultichoice left:req, top:req, ignoreBPress:req, maxBeforeScroll:req, shouldSort:req, initialSelected:req, callbacks:req argv:vararg
 	.byte 0xe3
@@ -1809,11 +1905,15 @@
 	.byte 0xe6
 	.endm
 
-  @ Like callnative, but function expects a ctx
-  .macro callfunc func:req
-  .byte 0xe7
-  .4byte \func
-  .endm
+	.macro checkPartyHasSpecies species:req
+	.byte 0xe7
+	.2byte \species
+	.endm
+
+	.macro isChosenMonSpecies species:req
+	.byte 0xe8
+	.2byte \species
+	.endm
 
 @ Prepares to start a wild battle against a 'species' at 'level' holding 'item'.
 	@ If 'species2' is something other than SPECIES_NONE, then the battle is a double battle
@@ -1821,7 +1921,7 @@
 	@ Running this command will not affect normal wild battles. You start the prepared battle with multi_wild.
 	@ If the player only has one Pokemon, a scripted double battle will be buggy.
 	.macro setsootopolisbattle species:req, level:req, item=ITEM_NONE, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE
-	.byte 0xe8
+	.byte 0xe9
 	.2byte \species
 	.byte \level
 	.2byte \item
@@ -1830,15 +1930,28 @@
 	.2byte \item2
 	.endm
 
-	.macro checkPartyHasSpecies species:req
-	.byte 0xe9
-	.2byte \species
-	.endm
-
-	.macro isChosenMonSpecies species:req
-	.byte 0xea
-	.2byte \species
-	.endm
+@NPC follower macros
+    @ sets an NPC up to follow the player
+    .macro setfollower localId:req, flags:req
+    .byte 0xea
+    .byte \localId
+    .2byte \flags
+    .endm
+    
+    @ remove the following NPC (assumes there will only ever be one)
+    .macro destroyfollower
+    .byte 0xeb
+    .endm
+    
+    @ makes the player and follower face one another
+    .macro facefollower
+    .byte 0xec
+    .endm
+    
+    @ checks if you have a follower. returns the result to VAR_RESULT
+    .macro checkfollower
+    .byte 0xed
+    .endm
 
 @ Supplementary
 
@@ -2050,6 +2163,11 @@
 	special CreateEnemyEventMon
 	.endm
 
+	.macro setdynamicaifunc func:req
+	callnative ScriptSetDynamicAiFunc
+	.4byte \func
+	.endm
+
 	@ Set up a totem boost for the next battle.
 	@ 'battler' is the position of the mon you want to gain a boost. see B_POSITION_xx in include/constants/battle.h.
 	@ The rest of the arguments are the stat change values to each stat.
@@ -2168,4 +2286,116 @@
 	.macro togglegigantamaxfactor slot:req
 	callnative ToggleGigantamaxFactor
 	.2byte \slot
+	.endm
+
+	@ Sets VAR_RESULT to one of the arguments (via setorcopyvar).
+	.macro randomelement element:req, elements:vararg
+	.set _randomelement_n, 0
+	.irp el, \element, \elements
+	.set _randomelement_n, _randomelement_n + 1
+	.endr
+		random _randomelement_n
+
+	.set _randomelement_n, 0
+	.irp el, \element, \elements
+		goto_if_ne VAR_RESULT, _randomelement_n, 1f
+		setorcopyvar VAR_RESULT, \el
+		goto 2f
+	1:
+	.set _randomelement_n, _randomelement_n + 1
+	.endr
+	2:
+	.endm
+
+	@ Sets VAR_RESULT to TRUE with probability 'percent', and FALSE
+	@ with probability '100% - percent'.
+	.macro randompercentage percent:req
+		random 100
+		goto_if_lt VAR_RESULT, \percent, 1f
+		setvar VAR_RESULT, FALSE
+		goto 2f
+	1:
+		setvar VAR_RESULT, TRUE
+	2:
+	.endm
+
+	@ Inflicts \status1 to the Pokémon in \slot.
+	@ If \slot is greater or equal than PARTY_SIZE, the status is inflicted on each of the Player's Pokémon.
+	.macro setstatus1 status1:req, slot:req
+	callnative Script_SetStatus1
+	.2byte \status1
+	.2byte \slot
+	.endm
+
+	@ Sets VAR_RESULT to the Pokémon in \slot's Tera Type
+	.macro checkteratype slot:req
+	callnative CheckTeraType
+	.2byte \slot
+	.endm
+
+	@ Sets the Pokémon in \slot's Tera Type
+	.macro setteratype type:req, slot:req
+	callnative SetTeraType
+	.byte \type
+	.2byte \slot
+	.endm
+
+	@ Saves species and forms of Daycare Pokémon to specific vars. Saves the amount of Daycare mon to VAR_RESULT.
+	.macro getdaycaregfx varSpecies1:req varSpecies2:req varForm1:req varForm2:req
+	callnative GetDaycareGraphics
+	.2byte \varSpecies1
+	.2byte \varSpecies2
+	.2byte \varForm1
+	.2byte \varForm2
+	.endm
+
+	@ Plays the cry of the first alive party member.
+	.macro playfirstmoncry
+	callnative PlayFirstMonCry
+	.endm
+
+	@ Buffers the nickname of the first alive party member.
+	.macro bufferlivemonnickname out:req
+	callnative BufferFirstLiveMonNickname
+	.byte \out
+	.endm
+
+	@ Executes Follower actions
+	.macro getfolloweraction
+	callnative GetFollowerAction
+	.endm
+
+	@ Checks if Field move is being used by the current follower.
+	.macro isfollowerfieldmoveuser var:req
+	callnative IsFollowerFieldMoveUser
+	.2byte \var
+	.endm
+
+	@ Saves the direction from where source object event would need to turn to to face the target into the specified var.
+	.macro getdirectiontoface var:req, sourceId:req, targetId:req
+	callnative GetDirectionToFaceScript
+	.2byte \var
+	.byte \sourceId
+	.byte \targetId
+	.endm
+
+	@ set the wild double battle flag
+	@ can be used in conjunection with createmon to set up a wild battle with 2 player mons vs. 1 enemy mon
+	.macro setwilddoubleflag
+	callnative ScriptSetDoubleBattleFlag
+	.endm
+
+	@ When OW_USE_FAKE_RTC and OW_FLAG_PAUSE_TIME is assigned, this macro will stop the flow of time.
+	.macro pausefakertc
+	callnative Script_PauseFakeRtc
+	.endm
+
+	@ When OW_USE_FAKE_RTC and OW_FLAG_PAUSE_TIME is assigned, this macro will resume the flow of time.
+	.macro resumefakertc
+	callnative Script_ResumeFakeRtc
+	.endm
+
+	@ When OW_USE_FAKE_RTC and OW_FLAG_PAUSE_TIME is assigned, this macro will resume the flow of time if paused, and stop the flow of time otherwise.
+	.macro togglefakertc
+	callnative Script_ToggleFakeRtc
 	.endm

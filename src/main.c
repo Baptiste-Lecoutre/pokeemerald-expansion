@@ -61,8 +61,6 @@ const IntrFunc gIntrTableTemplate[] =
 
 #define INTR_COUNT ((int)(sizeof(gIntrTableTemplate)/sizeof(IntrFunc)))
 
-static u16 sUnusedVar; // Never read
-
 u16 gKeyRepeatStartDelay;
 bool8 gLinkTransferringData;
 struct Main gMain;
@@ -119,7 +117,6 @@ void AgbMain()
         SetMainCallback2(NULL);
 
     gLinkTransferringData = FALSE;
-    sUnusedVar = 0xFC0;
 
 #ifndef NDEBUG
 #if (LOG_HANDLER == LOG_HANDLER_MGBA_PRINT)
@@ -208,15 +205,37 @@ void SetMainCallback2(MainCallback callback)
 
 void StartTimer1(void)
 {
-    REG_TM1CNT_H = 0x80;
+    if (HQ_RANDOM)
+    {
+        REG_TM2CNT_L = 0;
+        REG_TM2CNT_H = TIMER_ENABLE | TIMER_COUNTUP;
+    }
+
+    REG_TM1CNT_H = TIMER_ENABLE;
 }
 
 void SeedRngAndSetTrainerId(void)
 {
-    u16 val = REG_TM1CNT_L;
-    SeedRng(val);
-    REG_TM1CNT_H = 0;
-    sTrainerId = val;
+    u32 val;
+
+    if (HQ_RANDOM)
+    {
+        REG_TM1CNT_H = 0;
+        REG_TM2CNT_H = 0;
+        val = ((u32)REG_TM2CNT_L) << 16;
+        val |= REG_TM1CNT_L;
+        SeedRng(val);
+        sTrainerId = Random();
+    }
+    else
+    {
+        // Do it exactly like it was originally done, including not stopping
+        // the timer beforehand.
+        val = REG_TM1CNT_L;
+        SeedRng((u16)val);
+        REG_TM1CNT_H = 0;
+        sTrainerId = val;
+    }
 }
 
 u16 GetGeneratedTrainerIdLower(void)
@@ -235,9 +254,22 @@ void EnableVCountIntrAtLine150(void)
 #ifdef BUGFIX
 static void SeedRngWithRtc(void)
 {
-    u32 seed = RtcGetMinuteCount();
-    seed = (seed >> 16) ^ (seed & 0xFFFF);
-    SeedRng(seed);
+    #if HQ_RANDOM == FALSE
+        u32 seed = RtcGetMinuteCount();
+        seed = (seed >> 16) ^ (seed & 0xFFFF);
+        SeedRng(seed);
+    #else
+        #define BCD8(x) ((((x) >> 4) & 0xF) * 10 + ((x) & 0xF))
+        u32 seconds;
+        struct SiiRtcInfo rtc;
+        RtcGetInfo(&rtc);
+        seconds =
+            ((HOURS_PER_DAY * RtcGetDayCount(&rtc) + BCD8(rtc.hour))
+            * MINUTES_PER_HOUR + BCD8(rtc.minute))
+            * SECONDS_PER_MINUTE + BCD8(rtc.second);
+        SeedRng(seconds);
+        #undef BCD8
+    #endif
 }
 #endif
 
@@ -416,7 +448,18 @@ static void IntrDummy(void)
 static void WaitForVBlank(void)
 {
     gMain.intrCheck &= ~INTR_FLAG_VBLANK;
-    VBlankIntrWait();
+
+    if (gWirelessCommType != 0)
+    {
+        // Desynchronization may occur if wireless adapter is connected
+        // and we call VBlankIntrWait();
+        while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
+            ;
+    }
+    else
+    {
+        VBlankIntrWait();
+    }
 }
 
 void SetTrainerHillVBlankCounter(u32 *counter)
@@ -444,14 +487,4 @@ void DoSoftReset(void)
 void ClearPokemonCrySongs(void)
 {
     CpuFill16(0, gPokemonCrySongs, MAX_POKEMON_CRIES * sizeof(struct PokemonCrySong));
-}
-
-// TODO: Needs to be updated if compiling for a different processor than the GBA's
-bool8 IsAccurateGBA(void) { // tests to see whether running on either an accurate emulator in >=2020, or real hardware
-  u32 code[5] = {0xFF1EE12F, 0xE1DF00B0, 0xE12FFF1E, 0xAAAABBBB, 0xCCCCDDDD}; // ARM: _;ldrh r0, [pc];bx lr
-  u32 func = (u32) &code[0];
-  if (func & 3) // not word aligned; safer to just return false here
-    return FALSE;
-  func = (func & ~3) | 0x2; // misalign PC to test PC-relative loading
-  return ((u32 (*)(void)) func)() == code[3] >> 16;
 }

@@ -4,19 +4,6 @@
 #include "constants/moves.h"
 #include "constants/trainers.h"
 
-#define SPECIES_SHINY_TAG 5000
-#define N_FOLLOWER_HAPPY_MESSAGES 31
-#define N_FOLLOWER_NEUTRAL_MESSAGES 14
-#define N_FOLLOWER_SAD_MESSAGES 3
-#define N_FOLLOWER_UPSET_MESSAGES 3
-#define N_FOLLOWER_ANGRY_MESSAGES 5
-#define N_FOLLOWER_PENSIVE_MESSAGES 20
-#define N_FOLLOWER_LOVE_MESSAGES 10
-#define N_FOLLOWER_SURPRISE_MESSAGES 20
-#define N_FOLLOWER_CURIOUS_MESSAGES 7
-#define N_FOLLOWER_MUSIC_MESSAGES 14
-#define N_FOLLOWER_POISONED_MESSAGES 1
-
 #define MAX_TRAINER_ITEMS 4
 
 #define TRAINER_PIC_WIDTH 64
@@ -46,6 +33,8 @@ struct TrainerSprite
     struct CompressedSpriteSheet frontPic;
     struct CompressedSpritePalette palette;
     const union AnimCmd *const *const animation;
+    const struct Coords16 mugshotCoords;
+    s16 mugshotRotation;
 };
 
 struct TrainerBacksprite
@@ -61,8 +50,9 @@ struct TrainerBacksprite
 #define GET_MON_COORDS_HEIGHT(size)((size & 0xF) * 8)
 #define TRAINER_PARTY_IVS(hp, atk, def, speed, spatk, spdef) (hp | (atk << 5) | (def << 10) | (speed << 15) | (spatk << 20) | (spdef << 25))
 #define TRAINER_PARTY_EVS(hp, atk, def, speed, spatk, spdef) ((const u8[6]){hp,atk,def,spatk,spdef,speed})
-#define TRAINER_PARTY_NATURE(nature) (nature+1)
 
+// Shared by both trainer and frontier mons
+// See CreateNPCTrainerPartyFromTrainer and CreateFacilityMon
 struct TrainerMon
 {
     const u8 *nickname;
@@ -75,11 +65,15 @@ struct TrainerMon
     u8 lvl;
     u8 ball;
     u8 friendship;
-    u8 nature : 5;
-    bool8 gender : 2;
-    bool8 isShiny : 1;
-    u8 dynamaxLevel : 4;
-    bool8 gigantamaxFactor : 1;
+    u8 nature:5;
+    bool8 gender:2;
+    bool8 isShiny:1;
+    u8 teraType:5;
+    bool8 gigantamaxFactor:1;
+    u8 shouldUseDynamax:1;
+    u8 padding1:1;
+    u8 dynamaxLevel:4;
+    u8 padding2:4;
 };
 
 #define TRAINER_PARTY(partyArray) partyArray, .partySize = ARRAY_COUNT(partyArray)
@@ -94,8 +88,10 @@ struct Trainer
     /*0x12*/ u8 trainerPic;
     /*0x13*/ u8 trainerName[TRAINER_NAME_LENGTH + 1];
     /*0x1E*/ bool8 doubleBattle:1;
-             u8 padding:7;
-    /*0x1F*/ u8 partySize;
+             bool8 mugshotEnabled:1;
+             u8 startingStatus:6;    // this trainer starts a battle with a given status. see include/constants/battle.h for values
+    /*0x1F*/ u8 mugshotColor;
+    /*0x20*/ u8 partySize;
 };
 
 struct TrainerClass
@@ -106,20 +102,41 @@ struct TrainerClass
     s8 levelOffset;
 };
 
-#define TRAINER_ENCOUNTER_MUSIC(trainer)((gTrainers[trainer].encounterMusic_gender & 0x7F))
+struct TypeInfo
+{
+    u8 name[TYPE_NAME_LENGTH + 1];
+    u8 generic[17];
+    u8 palette;
+    u16 zMove;
+    u16 maxMove;
+    u16 teraTypeRGBValue;    // Most values pulled from the Tera type icon palette.
+    u16 damageCategory:2;    // Used for B_PHYSICAL_SPECIAL_SPLIT <= GEN_3
+    u16 useSecondTypeIconPalette:1;
+    u16 isSpecialCaseType:1;
+    u16 padding:12;
+    const u32 *const paletteTMHM;
+    //u16 enhanceItem;
+    //u16 berry;
+    //u16 gem;
+    //u16 plate;
+    //u16 memory;
+    //u16 zCrystal;
+    //u16 teraShard;
+    //u16 arceusForm;
+};
 
-struct FollowerMsgInfo {
+struct FollowerMsgInfo
+{
     const u8 *text;
     const u8 *script;
 };
 
 struct FollowerMessagePool
 {
-    const struct FollowerMsgInfo * messages;
-    const u8 * script;
+    const struct FollowerMsgInfo *messages;
+    const u8 *script;
     u16 length;
 };
-
 
 extern const u16 gMinigameDigits_Pal[];
 extern const u32 gMinigameDigits_Gfx[];
@@ -154,6 +171,7 @@ extern const union AffineAnimCmd *const gAffineAnims_BattleSpriteContest[];
 extern const union AnimCmd sAnim_GeneralFrame0[];
 extern const union AnimCmd sAnim_GeneralFrame3[];
 extern const union AnimCmd *const gAnims_MonPic[];
+extern const union AnimCmd *const sAnims_Trainer[];
 extern const struct TrainerSprite gTrainerSprites[];
 extern const struct TrainerBacksprite gTrainerBacksprites[];
 
@@ -161,9 +179,82 @@ extern const struct Trainer gTrainers[];
 extern const struct Trainer gBattlePartners[];
 
 extern const struct TrainerClass gTrainerClasses[TRAINER_CLASS_COUNT];
-extern const u8 gMoveNames[MOVES_COUNT_DYNAMAX][MOVE_NAME_LENGTH + 1];
-extern const u8 *const gZMoveNames[];
-extern const u8 *const gMaxMoveNames[];
+
+static inline u16 SanitizeTrainerId(u16 trainerId)
+{
+    if (trainerId >= TRAINERS_COUNT)
+        return TRAINER_NONE;
+    return trainerId;
+}
+
+static inline const struct Trainer *GetTrainerStructFromId(u16 trainerId)
+{
+    return &gTrainers[SanitizeTrainerId(trainerId)];
+}
+
+static inline const u8 GetTrainerClassFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].trainerClass;
+}
+
+static inline const u8 *GetTrainerClassNameFromId(u16 trainerId)
+{
+    if (trainerId > TRAINER_PARTNER(PARTNER_NONE))
+        return gTrainerClasses[gBattlePartners[trainerId - TRAINER_PARTNER(PARTNER_NONE)].trainerClass].name;
+    return gTrainerClasses[GetTrainerClassFromId(trainerId)].name;
+}
+
+static inline const u8 *GetTrainerNameFromId(u16 trainerId)
+{
+    if (trainerId > TRAINER_PARTNER(PARTNER_NONE))
+        return gBattlePartners[trainerId - TRAINER_PARTNER(PARTNER_NONE)].trainerName;
+    return gTrainers[SanitizeTrainerId(trainerId)].trainerName;
+}
+
+static inline const u8 GetTrainerPicFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].trainerPic;
+}
+
+static inline const u8 GetTrainerStartingStatusFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].startingStatus;
+}
+
+static inline const bool32 IsTrainerDoubleBattle(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].doubleBattle;
+}
+
+static inline const u8 GetTrainerPartySizeFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].partySize;
+}
+
+static inline const bool32 DoesTrainerHaveMugshot(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].mugshotEnabled;
+}
+
+static inline const u8 GetTrainerMugshotColorFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].mugshotColor;
+}
+
+static inline const u16 *GetTrainerItemsFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].items;
+}
+
+static inline const struct TrainerMon *GetTrainerPartyFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].party;
+}
+
+static inline const bool32 GetTrainerAIFlagsFromId(u16 trainerId)
+{
+    return gTrainers[SanitizeTrainerId(trainerId)].aiFlags;
+}
 
 // Follower text messages
 extern const struct FollowerMsgInfo gFollowerHappyMessages[];

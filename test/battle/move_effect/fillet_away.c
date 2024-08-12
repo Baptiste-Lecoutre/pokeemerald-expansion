@@ -3,7 +3,7 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gBattleMoves[MOVE_FILLET_AWAY].effect == EFFECT_FILLET_AWAY);
+    ASSUME(gMovesInfo[MOVE_FILLET_AWAY].effect == EFFECT_FILLET_AWAY);
 }
 
 SINGLE_BATTLE_TEST("Fillet Away cuts the user's HP in half")
@@ -54,5 +54,21 @@ SINGLE_BATTLE_TEST("Fillet Away fails if user's current HP is half or less than 
             ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
             HP_BAR(player);
         }
+    }
+}
+
+SINGLE_BATTLE_TEST("Fillet Away's HP cost doesn't trigger effects that trigger on damage taken")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_AIR_BALLOON); }
+        OPPONENT(SPECIES_WOBBUFFET);
+    } WHEN {
+        TURN { MOVE(player, MOVE_FILLET_AWAY); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_FILLET_AWAY, player);
+        MESSAGE("Wobbuffet's Attack sharply rose!");
+        MESSAGE("Wobbuffet's Sp. Atk sharply rose!");
+        MESSAGE("Wobbuffet's Speed sharply rose!");
+        NOT MESSAGE("Wobbuffet's Air Balloon popped!");
     }
 }

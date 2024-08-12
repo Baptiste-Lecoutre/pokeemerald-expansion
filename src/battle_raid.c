@@ -30,19 +30,19 @@ const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
         .shield = RAID_GEN_8,
         .shockwave = RAID_GEN_8,
         .rules = RAID_GEN_8,
-        .gimmick = GIMMICK_DYNAMAX,
+        .gimmick = RAID_GIMMICK_DYNAMAX,
     },
     [RAID_TYPE_TERA] = {
         .shield = RAID_GEN_9,
         .shockwave = RAID_GEN_9,
         .rules = RAID_GEN_9,
-        .gimmick = GIMMICK_TERA,
+        .gimmick = RAID_GIMMICK_TERA,
     },
     [RAID_TYPE_MEGA] = {
         .shield = RAID_GEN_8,
         .shockwave = RAID_GEN_8,
         .rules = RAID_GEN_8,
-        .gimmick = GIMMICK_MEGA,
+        .gimmick = RAID_GIMMICK_MEGA,
     },
 };
 
@@ -343,7 +343,7 @@ bool32 InitRaidData(void)
     // determine raid species
     do
     {
-        species = ((randomNum + species) % FORMS_START) + 1;
+        species = ((randomNum + species) % SPECIES_VENUSAUR_MEGA) + 1;
     } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
@@ -404,7 +404,7 @@ bool32 InitRaidData(void)
             SetMonData(mon, MON_DATA_HP_IV + statIDs[i], &maxIV);
     }
 
-    numEggMoves = GetEggMovesSpecies(species, eggMoves);
+    numEggMoves = GetEggMovesBySpecies(species, eggMoves);
     if (numEggMoves && Random() % 100 < eggMoveChance)
     {
         u16 eggMove = eggMoves[RandRange(0, numEggMoves)];
@@ -752,6 +752,7 @@ u16 GetShieldDamageReduction(void)
     {
         return UQ_4_12(1-0.95);
     }
+    return UQ_4_12(1);
 }
 
 // SHIELD SPRITE DATA:

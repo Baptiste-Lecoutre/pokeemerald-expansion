@@ -130,6 +130,13 @@
 #define TRAINER_PIC_MAGMA_ADMIN_F         112
 #define TRAINER_PIC_CHASE                 113
 #define TRAINER_PIC_ELAINE                114
+#define TRAINER_PIC_BRENDAN_RED           115
+#define TRAINER_PIC_BRENDAN_BLUE          116
+#define TRAINER_PIC_BRENDAN_YELLOW        117
+#define TRAINER_PIC_MAY_RED               118
+#define TRAINER_PIC_MAY_BLUE              119
+#define TRAINER_PIC_MAY_YELLOW            120
+#define TRAINER_PIC_COUNT                 121
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0
@@ -149,6 +156,12 @@
 #define TRAINER_BACK_PIC_DAWN_PLATINUM          14
 #define TRAINER_BACK_PIC_CHASE                  15
 #define TRAINER_BACK_PIC_ELAINE                 16
+#define TRAINER_BACK_PIC_BRENDAN_RED            17
+#define TRAINER_BACK_PIC_BRENDAN_BLUE           18
+#define TRAINER_BACK_PIC_BRENDAN_YELLOW         19
+#define TRAINER_BACK_PIC_MAY_RED                20
+#define TRAINER_BACK_PIC_MAY_BLUE               21
+#define TRAINER_BACK_PIC_MAY_YELLOW             22
 
 #define FACILITY_CLASS_HIKER                 0x0
 #define FACILITY_CLASS_AQUA_GRUNT_M          0x1
@@ -413,7 +426,8 @@
 #define F_TRAINER_FEMALE (1 << 7)
 
 // Trainer party defines
-#define TRAINER_MON_MALE    1
-#define TRAINER_MON_FEMALE  2
+#define TRAINER_MON_MALE          1
+#define TRAINER_MON_FEMALE        2
+#define TRAINER_MON_RANDOM_GENDER 3
 
 #endif  // GUARD_TRAINERS_H

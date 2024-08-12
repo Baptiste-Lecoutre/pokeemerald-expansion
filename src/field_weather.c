@@ -285,7 +285,6 @@ static void BuildColorMaps(void)
     u16 brightnessDelta;
     u16 colorMapIndex;
     u16 baseBrightness;
-    u32 remainingBrightness;
     s16 diff;
 
     sPaletteColorMapTypes = sBasePaletteColorMapTypes;
@@ -313,11 +312,7 @@ static void BuildColorMaps(void)
             }
 
             baseBrightness = curBrightness;
-            remainingBrightness = 0x1f00 - curBrightness;
-            if ((0x1f00 - curBrightness) < 0)
-                remainingBrightness += 0xf;
-
-            brightnessDelta = remainingBrightness / (NUM_WEATHER_COLOR_MAPS - 3);
+            brightnessDelta = (0x1f00 - curBrightness) / (NUM_WEATHER_COLOR_MAPS - 3);
             if (colorVal < 12)
             {
                 // For shadows (color values < 12), the remaining color mappings are
@@ -712,7 +707,7 @@ static void MarkFogSpritePalToLighten(u8 paletteIndex)
 
 static bool8 LightenSpritePaletteInFog(u8 paletteIndex)
 {
-    u16 i;
+    u16 i=0;
 
     if (paletteIndex >= 16 && (GetSpritePaletteTagByPaletteNum(i - 16) >> 15)) // don't blend specialpalette tags
         return FALSE;
@@ -876,6 +871,15 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
         }
         break;
     }
+    // If faded out, i.e due to fadescreenswapbuffers,
+    // Copy unfaded palette to pal decomp buffer
+    // so it will be restored on fade-in
+    if (gPaletteFade.y == 16)
+        CpuFastCopy(
+            gPlttBufferUnfaded + OBJ_PLTT_ID(spritePaletteIndex),
+            gPlttBufferFaded + 2*OBJ_PLTT_ID(spritePaletteIndex),
+            PLTT_SIZE_4BPP
+        );
 }
 
 void ApplyWeatherColorMapToPal(u8 paletteIndex) // now unused / obselete
@@ -887,7 +891,6 @@ void ApplyWeatherColorMapToPals(u8 startPalIndex, u8 numPalettes) {
     ApplyColorMap(startPalIndex, numPalettes, gWeatherPtr->colorMapIndex);
 }
 
-// Unused
 static bool8 UNUSED IsFirstFrameOfWeatherFadeIn(void)
 {
     if (gWeatherPtr->palProcessingState == WEATHER_PAL_STATE_SCREEN_FADING_IN)
@@ -1146,4 +1149,12 @@ void PreservePaletteInWeather(u8 preservedPalIndex)
 void ResetPreservedPalettesInWeather(void)
 {
     sPaletteColorMapTypes = sBasePaletteColorMapTypes;
+}
+
+bool32 IsWeatherAlphaBlend(void)
+{
+    return (gWeatherPtr->currWeather == WEATHER_FOG_HORIZONTAL
+         || gWeatherPtr->currWeather == WEATHER_FOG_DIAGONAL
+         || gWeatherPtr->currWeather == WEATHER_UNDERWATER_BUBBLES
+         || gWeatherPtr->currWeather == WEATHER_UNDERWATER);
 }

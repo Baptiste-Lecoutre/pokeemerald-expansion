@@ -21,6 +21,7 @@
 #include "text_window.h"
 #include "trig.h"
 #include "window.h"
+#include "config/battle.h"
 #include "constants/map_types.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
@@ -29,7 +30,6 @@
 #include "constants/battle_partner.h"
 
 // .rodata
-static const u16 sUnrefArray[] = {0x0300, 0x0000}; //OamData?
 
 static const struct OamData sVsLetter_V_OamData =
 {
@@ -221,9 +221,14 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
     },
     [B_WIN_PP] = {
         .bg = 0,
-        .tilemapLeft = 23,
+        #if B_PSS_SPLIT_ICONS == TRUE 
+            .tilemapLeft = 23,
+            .width = 2,
+        #else
+            .tilemapLeft = 21,
+            .width = 4,
+        #endif
         .tilemapTop = 55,
-        .width = 2,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0290,
@@ -231,11 +236,19 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
     [B_WIN_DUMMY] = {
         .bg = 0,
         .tilemapLeft = 21,
-        .tilemapTop = 55,
-        .width = 2,
-        .height = 2,
-        .paletteNum = 10,
-        .baseBlock = 0x0294,
+        #if B_PSS_SPLIT_ICONS == TRUE
+            .tilemapTop = 55,
+            .width = 2,
+            .height = 2,
+            .paletteNum = 10,
+            .baseBlock = 0x0294,
+        #else
+            .tilemapTop = 57,
+            .width = 0,
+            .height = 0,
+            .paletteNum = 5,
+            .baseBlock = 0x0298,
+        #endif
     },
     [B_WIN_PP_REMAINING] = {
         .bg = 0,
@@ -478,9 +491,14 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
     },
     [B_WIN_PP] = {
         .bg = 0,
-        .tilemapLeft = 23,
+        #if B_PSS_SPLIT_ICONS == TRUE 
+            .tilemapLeft = 23,
+            .width = 2,
+        #else
+            .tilemapLeft = 21,
+            .width = 4,
+        #endif
         .tilemapTop = 55,
-        .width = 2,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0290,
@@ -488,11 +506,19 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
     [B_WIN_DUMMY] = {
         .bg = 0,
         .tilemapLeft = 21,
-        .tilemapTop = 55,
-        .width = 2,
-        .height = 2,
-        .paletteNum = 10,
-        .baseBlock = 0x0294,
+        #if B_PSS_SPLIT_ICONS == TRUE
+            .tilemapTop = 55,
+            .width = 2,
+            .height = 2,
+            .paletteNum = 10,
+            .baseBlock = 0x0294,
+        #else
+            .tilemapTop = 57,
+            .width = 0,
+            .height = 0,
+            .paletteNum = 5,
+            .baseBlock = 0x0298,
+        #endif
     },
     [B_WIN_PP_REMAINING] = {
         .bg = 0,
@@ -619,6 +645,15 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .height = 4,
         .paletteNum = 7,
         .baseBlock = 0x0090,
+    },
+    [B_WIN_MOVE_DESCRIPTION] = {
+        .bg = 0,
+        .tilemapLeft = 1,
+        .tilemapTop = 47,
+        .width = 18,
+        .height = 6,
+        .paletteNum = 5,
+        .baseBlock = 0x0350,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -831,7 +866,7 @@ void DrawMainBattleBackground(void)
     {
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
-            u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+            u32 trainerClass = GetTrainerClassFromId(gTrainerBattleOpponent_A);
             if (trainerClass == TRAINER_CLASS_LEADER)
             {
                 LZDecompressVram(gBattleTerrainTiles_Building, (void *)(BG_CHAR_ADDR(2)));
@@ -1237,7 +1272,7 @@ void DrawBattleEntryBackground(void)
     {
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
-            u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+            u32 trainerClass = GetTrainerClassFromId(gTrainerBattleOpponent_A);
             if (trainerClass == TRAINER_CLASS_LEADER)
             {
                 LZDecompressVram(gBattleTerrainAnimTiles_Building, (void *)(BG_CHAR_ADDR(1)));
@@ -1302,7 +1337,7 @@ bool8 LoadChosenBattleElement(u8 caseId)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
             {
-                u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+                u32 trainerClass = GetTrainerClassFromId(gTrainerBattleOpponent_A);
                 if (trainerClass == TRAINER_CLASS_LEADER)
                 {
                     LZDecompressVram(gBattleTerrainTiles_Building, (void *)(BG_CHAR_ADDR(2)));
@@ -1364,7 +1399,7 @@ bool8 LoadChosenBattleElement(u8 caseId)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
             {
-                u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+                u32 trainerClass = GetTrainerClassFromId(gTrainerBattleOpponent_A);
                 if (trainerClass == TRAINER_CLASS_LEADER)
                 {
                     LZDecompressVram(gBattleTerrainTilemap_Building, (void *)(BG_SCREEN_ADDR(26)));
@@ -1426,7 +1461,7 @@ bool8 LoadChosenBattleElement(u8 caseId)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
             {
-                u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+                u32 trainerClass = GetTrainerClassFromId(gTrainerBattleOpponent_A);
                 if (trainerClass == TRAINER_CLASS_LEADER)
                 {
                     LoadCompressedPalette(gBattleTerrainPalette_BuildingLeader, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);

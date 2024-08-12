@@ -620,9 +620,9 @@ void CreateWonderTradePokemon(u8 whichPlayerMon)
     struct InGameTrade gIngameTrades[] = {
         {
             _(""), species,
-            (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32),
+            {(Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32), (Random() % 32)},
             (Random() % 2), OTID,
-            0, 0, 0, 0, 0,
+            {0, 0, 0, 0, 0},
             personality,
             heldItem, -1,
             _("ERROR"), FEMALE, 0,
@@ -956,7 +956,7 @@ u16 determineEvolution(struct Pokemon *mon)
         case EVO_FRIENDSHIP_MOVE_TYPE:
             for (j = 0; j < 4; j++)
             {
-                if (gBattleMoves[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == evolutions[i].param)
+                if (gMovesInfo[GetMonData(mon, MON_DATA_MOVE1 + j, NULL)].type == evolutions[i].param)
                 {
                     targetSpecies = evolutions[i].targetSpecies;
                     break;
@@ -1043,7 +1043,6 @@ bool32 IsMegaPreEvolution(u16 species, u16 heldStone, bool32 found)
 u16 GetValidWonderTradeItem(u16 item)
 {
     u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES);
-    int i;
 
     ROLL:
         item = Random() % ITEMS_COUNT;
