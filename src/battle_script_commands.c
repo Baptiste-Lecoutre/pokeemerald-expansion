@@ -15934,6 +15934,7 @@ static void Cmd_trygivecaughtmonnick(void)
             PlaySE(SE_SELECT);
             if (gBattleCommunication[CURSOR_POSITION] == 0)
             {
+                HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
                 gBattleCommunication[MULTIUSE_STATE]++;
                 BeginFastPaletteFade(3);
             }
@@ -16012,7 +16013,11 @@ static void Cmd_trygivecaughtmonnick(void)
         break;
     case 6:
         if (!gPaletteFade.active)
-            gBattlescriptCurrInstr++;
+        {
+            HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
+            gBattlescriptCurrInstr = cmd->nextInstr;
+
+        }
         break;
     }
 }
@@ -17644,15 +17649,13 @@ void BS_TryChooseMonToSendToPC(void)
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
     case 0:
-        if (CalculatePlayerPartyCount() != PARTY_SIZE)
+        if (CalculatePlayerPartyCount() != PARTY_SIZE) // probably can't get this situation
         {
             gBattlescriptCurrInstr = cmd->successInstr;
             return;
         }
         HandleBattleWindow(YESNOBOX_X_Y, 0);
         BattlePutTextOnWindow(gText_BattleYesNoChoice, B_WIN_YESNO);
-        BattleStringExpandPlaceholdersToDisplayedString(gText_PkmnSendToPC);
-        BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MSG);
         gBattleCommunication[MULTIUSE_STATE]++;
         gBattleCommunication[CURSOR_POSITION] = 0;
         BattleCreateYesNoCursorAt(0);
@@ -17696,7 +17699,6 @@ void BS_TryChooseMonToSendToPC(void)
         {
             FreeAllWindowBuffers();
             OpenPartyMenuChooseMonToSendToPC();
-//            gSpecialVar_0x8004 = 4;
             gBattleCommunication[MULTIUSE_STATE]++;
         }
     case 3:
