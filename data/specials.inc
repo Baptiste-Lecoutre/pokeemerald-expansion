@@ -615,3 +615,5 @@ gSpecials::
 	def_special SetPokedexSeenFlag
 	def_special SetPokedexCaughtFlag
 	def_special SetObjectEventMovementType
+	def_special ChooseMonForBlender
+	def_special TryEvolveMilcery

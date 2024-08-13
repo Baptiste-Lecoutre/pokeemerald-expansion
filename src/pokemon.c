@@ -7545,3 +7545,26 @@ u32 CheckDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler)
 
     return type;
 }
+
+bool32 IsMilceryAndCanEvolve(struct Pokemon *mon) {
+    u16 species = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u16 heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, 0);
+    bool32 holdingSweet = FALSE;
+
+    switch(heldItem) {
+        case ITEM_STRAWBERRY_SWEET:
+        case ITEM_LOVE_SWEET: 
+        case ITEM_BERRY_SWEET:
+        case ITEM_CLOVER_SWEET:
+        case ITEM_FLOWER_SWEET:
+        case ITEM_STAR_SWEET:
+        case ITEM_RIBBON_SWEET:
+            holdingSweet = TRUE;
+            break;
+        default:
+            holdingSweet = FALSE;
+            break;
+    }
+
+    return (species == SPECIES_MILCERY && holdingSweet);
+}
