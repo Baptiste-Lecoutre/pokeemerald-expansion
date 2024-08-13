@@ -176,7 +176,7 @@ BattleScript_TryNicknameCaughtMon::
 	printstring STRINGID_GIVENICKNAMECAPTURED
 	waitstate
 	setbyte gBattleCommunication, 0
-	trygivecaughtmonnick
+	trygivecaughtmonnick BattleScript_GiveCaughtMonEnd
 	setbyte gBattleCommunication, 0
 	trychoosemontosendtopc BattleScript_GiveCaughtMonEnd
 	givecaughtmon

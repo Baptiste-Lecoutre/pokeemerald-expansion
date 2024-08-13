@@ -1290,8 +1290,9 @@
 	.byte 0xf2
 	.endm
 
-	.macro trygivecaughtmonnick
+	.macro trygivecaughtmonnick successInstr:req
 	.byte 0xf3
+	.4byte \successInstr
 	.endm
 
 	.macro subattackerhpbydmg

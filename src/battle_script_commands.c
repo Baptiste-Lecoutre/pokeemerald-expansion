@@ -15900,9 +15900,10 @@ void BattleDestroyYesNoCursorAt(u8 cursorPosition)
 
 static void Cmd_trygivecaughtmonnick(void)
 {
-    CMD_ARGS();
+    CMD_ARGS(const u8 *successInstr);
     u32 i;
     u8 spriteId;
+    struct Pokemon *mon = &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]];
 
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
@@ -15950,13 +15951,13 @@ static void Cmd_trygivecaughtmonnick(void)
     case 2:
         if (!gPaletteFade.active)
         {
-            GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_NICKNAME, gBattleStruct->caughtMonNick);
+            GetMonData(mon, MON_DATA_NICKNAME, gBattleStruct->caughtMonNick);
             FreeAllWindowBuffers();
 
             DoNamingScreen(NAMING_SCREEN_CAUGHT_MON, gBattleStruct->caughtMonNick,
-                           GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_SPECIES),
-                           GetMonGender(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]),
-                           GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_PERSONALITY, NULL),
+                           GetMonData(mon, MON_DATA_SPECIES),
+                           GetMonGender(mon),
+                           GetMonData(mon, MON_DATA_PERSONALITY, NULL),
                            BattleMainCB2);
 
             gBattleCommunication[MULTIUSE_STATE]++;
@@ -15965,25 +15966,39 @@ static void Cmd_trygivecaughtmonnick(void)
     case 3:
         if (gMain.callback2 == BattleMainCB2 && !gPaletteFade.active)
         {
-            //SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_NICKNAME, gBattleStruct->caughtMonNick);
+            //SetMonData(mon, MON_DATA_NICKNAME, gBattleStruct->caughtMonNick);
             //gBattlescriptCurrInstr = cmd->successInstr;
             SetVBlankCallback(VBlankCB_Battle);
             gBattleCommunication[MULTIUSE_STATE]++;
         }
         break;
     case 4:
-        //if (CalculatePlayerPartyCount() == PARTY_SIZE)
-        //    gBattlescriptCurrInstr = cmd->nextInstr;
-        //else
-        //    gBattlescriptCurrInstr = cmd->successInstr;
+        SetMonData(mon, MON_DATA_NICKNAME, gBattleStruct->caughtMonNick);
+        
+        // don't reshow the battle screen after naming screen if there is free space in the party
+        if (CalculatePlayerPartyCount() < PARTY_SIZE)
+        {
+            gBattlescriptCurrInstr = cmd->successInstr;
+            break;
+        }
+
         InitBattleBgsVideo();
-        SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_NICKNAME, gBattleStruct->caughtMonNick);
         LoadBattleTextboxAndBackground();
         gBattle_BG3_X = 256;
+        
+        // remove remaining Naming screen sprites
         for (i = 0; i < MAX_SPRITES; i++)
             DestroySprite(&gSprites[i]);
-        spriteId = CreateMonPicSprite(GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_SPECIES), FALSE, GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_PERSONALITY), TRUE, 120, 80, 11, TAG_NONE);
+
+        // display the mon sprite again after naming screen
+        LoadCompressedPalette(GetMonSpritePalFromSpeciesAndPersonality(GetMonData(mon, MON_DATA_SPECIES), GetMonData(mon, MON_DATA_IS_SHINY), GetMonData(mon, MON_DATA_PERSONALITY)), OBJ_PLTT_ID(1), PLTT_SIZE_4BPP);
+        SetMultiuseSpriteTemplateToPokemon(GetMonData(mon, MON_DATA_SPECIES), gBattlerTarget);
+        gMultiuseSpriteTemplate.affineAnims = gDummySpriteAffineAnimTable;
+        spriteId = CreateSprite(&gMultiuseSpriteTemplate, 120, 80, 0);
+        gSprites[spriteId].callback = SpriteCallbackDummy_2;
+        gSprites[spriteId].oam.paletteNum = 1;
         gSprites[spriteId].oam.priority = 0;
+
         gBattleCommunication[MULTIUSE_STATE]++;
         break;
     case 5:
@@ -17681,6 +17696,7 @@ void BS_TryChooseMonToSendToPC(void)
         {
             FreeAllWindowBuffers();
             OpenPartyMenuChooseMonToSendToPC();
+//            gSpecialVar_0x8004 = 4;
             gBattleCommunication[MULTIUSE_STATE]++;
         }
     case 3:
