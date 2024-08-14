@@ -46,31 +46,33 @@ enum {
 // All Pokémon start with 1, so the max here is MAX_CONDITION_SPARKLES - 1
 #define GET_NUM_CONDITION_SPARKLES(sheen)((sheen) != MAX_SHEEN) ? (sheen) / ((u32)MAX_SHEEN / (MAX_CONDITION_SPARKLES - 1) + 1) : MAX_CONDITION_SPARKLES - 1;
 
-#define CONDITION_GRAPH_TOP_Y  56
-#define CONDITION_GRAPH_BOTTOM_Y 121
+#define CONDITION_GRAPH_TOP_Y  52
+#define CONDITION_GRAPH_BOTTOM_Y 123
 #define CONDITION_GRAPH_HEIGHT  (CONDITION_GRAPH_BOTTOM_Y - CONDITION_GRAPH_TOP_Y + 1)
 #define CONDITION_GRAPH_CENTER_X 155
-#define CONDITION_GRAPH_CENTER_Y ((CONDITION_GRAPH_BOTTOM_Y + CONDITION_GRAPH_TOP_Y) / 2 + 3)
+#define CONDITION_GRAPH_CENTER_Y 88
 #define CONDITION_GRAPH_UPDATE_STEPS 10
 #define CONDITION_GRAPH_LOAD_MAX 4
 
 // Equivalent to flavor and contest values, but in a different order.
 enum {
-    CONDITION_COOL,
-    CONDITION_TOUGH,
+    CONDITION_SHEEN,
     CONDITION_SMART,
-    CONDITION_CUTE,
     CONDITION_BEAUTY,
+    CONDITION_CUTE,
+    CONDITION_TOUGH,
+    CONDITION_COOL,
     CONDITION_COUNT
 };
 
 // Yet another order. This one is the same (by coincidence) as the contest categories
 enum {
+    GRAPH_SHEEN,
     GRAPH_COOL,
-    GRAPH_BEAUTY,
-    GRAPH_CUTE,
-    GRAPH_SMART,
     GRAPH_TOUGH,
+    GRAPH_CUTE,
+    GRAPH_BEAUTY,
+    GRAPH_SMART,
 };
 
 struct ConditionGraph

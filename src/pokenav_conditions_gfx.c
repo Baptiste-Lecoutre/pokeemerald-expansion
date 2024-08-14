@@ -209,7 +209,8 @@ static u32 LoopedTask_OpenConditionGraphMenu(s32 state)
         SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_WIN0_ON | DISPCNT_WIN1_ON | DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP | DISPCNT_BG0_ON | DISPCNT_BG3_ON);
         SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG2 | BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_BG3);
         SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(11, 4));
-        DecompressAndCopyTileDataToVram(3, gPokenavCondition_Gfx, 0, 0, 0);
+//        DecompressAndCopyTileDataToVram(3, gPokenavCondition_Gfx, 0, 0, 0);
+        DecompressAndCopyTileDataToVram(3, gPokenavConditionPotential_Gfx, 0, 0, 0);
         return LT_INC_AND_PAUSE;
     case 2:
         if (FreeTempTileDataBuffersIfPossible())
@@ -227,6 +228,10 @@ static u32 LoopedTask_OpenConditionGraphMenu(s32 state)
 
         CopyBgTilemapBufferToVram(3);
         CopyPaletteIntoBufferUnfaded(gPokenavCondition_Pal, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
+        // Load copy and edit colors (the colors are in 15-bit)
+        CopyPaletteIntoBufferUnfaded(gPokenavCondition_Pal, BG_PLTT_ID(4), PLTT_SIZE_4BPP);
+        gPlttBufferUnfaded[4*16+12] = 0x730e;
+        gPlttBufferUnfaded[4*16+13] = 0x7ffc;
         CopyPaletteIntoBufferUnfaded(gConditionText_Pal, BG_PLTT_ID(15), PLTT_SIZE_4BPP);
         menu->monTransitionX = -80;
         return LT_INC_AND_PAUSE;
