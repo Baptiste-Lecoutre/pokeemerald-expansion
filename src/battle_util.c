@@ -4096,7 +4096,7 @@ static void ChooseStatBoostAnimation(u32 battler)
         if (gBattleScripting.animArg1 != 0) // Already set in a different stat so now boosting multiple stats
             gBattleScripting.animArg1 = (statBuffMoreThan1 ? STAT_ANIM_MULTIPLE_PLUS2 : STAT_ANIM_MULTIPLE_PLUS1);
         else
-            gBattleScripting.animArg1 = GET_STAT_BUFF_ID((statsOrder[stat] + 1)) + (!statBuffMoreThan1 ? STAT_ANIM_PLUS1 : STAT_ANIM_PLUS2);
+            gBattleScripting.animArg1 = GET_STAT_BUFF_ID((statsOrder[stat] + 1)) + (statBuffMoreThan1 ? STAT_ANIM_PLUS2 : STAT_ANIM_PLUS1);
     }
 }
 #undef ANIM_STAT_HP
@@ -8393,7 +8393,7 @@ u8 IsMonDisobedient(void)
     // is not obedient
     if (gCurrentMove == MOVE_RAGE)
         gBattleMons[gBattlerAttacker].status2 &= ~STATUS2_RAGE;
-    if (gBattleMons[gBattlerAttacker].status1 & STATUS1_SLEEP && (gCurrentMove == MOVE_SNORE || gCurrentMove == MOVE_SLEEP_TALK))
+    if (gBattleMons[gBattlerAttacker].status1 & STATUS1_SLEEP && (gMovesInfo[gCurrentMove].effect == EFFECT_SNORE || gMovesInfo[gCurrentMove].effect == EFFECT_SLEEP_TALK))
     {
         gBattlescriptCurrInstr = BattleScript_IgnoresWhileAsleep;
         return 1;
@@ -9073,7 +9073,7 @@ static inline u32 CalcMoveBasePower(u32 move, u32 battlerAtk, u32 battlerDef, u3
         basePower = (basePower > 350) ? 350 : basePower;
         break;
     case EFFECT_FICKLE_BEAM:
-        if (RandomPercentage(RNG_FICKLE_BEAM, 30))
+        if (gBattleStruct->fickleBeamBoosted)
             basePower *= 2;
         break;
     case EFFECT_TERA_BLAST:
