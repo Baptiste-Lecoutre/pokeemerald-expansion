@@ -884,7 +884,7 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
     if (gPaletteFade.y == 16)
         CpuFastCopy(
             gPlttBufferUnfaded + OBJ_PLTT_ID(spritePaletteIndex),
-            gPaletteDecompressionBuffer + 2*OBJ_PLTT_ID(spritePaletteIndex),
+            gPlttBufferFaded + 2*OBJ_PLTT_ID(spritePaletteIndex),
             PLTT_SIZE_4BPP
         );
 }

@@ -372,7 +372,7 @@ bool32 InitRaidData(void)
 
     // determine raid type
     if (CheckBagHasItem(ITEM_DYNAMAX_BAND, 1) && CheckBagHasItem(ITEM_TERA_ORB, 1))
-        gRaidData.raidType = (randomNum & 1) ? RAID_TYPE_MAX : RAID_TYPE_MAX;//RAID_TYPE_TERA;
+        gRaidData.raidType = (randomNum & 1) ? RAID_TYPE_MAX : RAID_TYPE_TERA;
     else if (CheckBagHasItem(ITEM_DYNAMAX_BAND, 1))
         gRaidData.raidType = RAID_TYPE_MAX;
     else if (CheckBagHasItem(ITEM_TERA_ORB, 1))
@@ -829,7 +829,7 @@ static u16 GetShieldAmount(void)
                 break;
         }
     }
-    else
+    else // max shield
     {
         // Uses the sum of defenses to determine barrier count.
         switch (hp + def + spDef)
@@ -857,8 +857,7 @@ static u8 GetRaidShieldThresholdTotalNumber(void)
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
         return 0;
     else if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
-        return 1; // à modifier, shield seulement à partir d'un certain rank -> là apparait à 50%
-
+        return 1;
 
     switch (gRaidData.rank)
     {

@@ -48,6 +48,7 @@
 #include "level_caps.h"
 #include "menu.h"
 #include "pokemon_summary_screen.h"
+#include "type_icons.h"
 
 static void PlayerBufferExecCompleted(u32 battler);
 static void PlayerHandleLoadMonSprite(u32 battler);
@@ -430,7 +431,7 @@ static void HandleInputChooseAction(u32 battler)
     }
     else if (JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)
     {
-        if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+        if (IsDoubleBattle()
          && GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT
          && !(gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)])
          && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
@@ -670,7 +671,7 @@ static void HideShownTargets(u32 battler)
     }
 }
 
-static void HandleInputShowEntireFieldTargets(u32 battler)
+void HandleInputShowEntireFieldTargets(u32 battler)
 {
     if (JOY_HELD(DPAD_ANY) && gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_L_EQUALS_A)
         gPlayerDpadHoldFrames++;
@@ -698,7 +699,7 @@ static void HandleInputShowEntireFieldTargets(u32 battler)
     }
 }
 
-static void HandleInputShowTargets(u32 battler)
+void HandleInputShowTargets(u32 battler)
 {
     if (JOY_HELD(DPAD_ANY) && gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_L_EQUALS_A)
         gPlayerDpadHoldFrames++;
@@ -1835,15 +1836,14 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     u8 type;
     u32 speciesId;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
-
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
-
     type = gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].type;
 
     if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_TERA_BLAST)
     {
         if (IsGimmickSelected(battler, GIMMICK_TERA) || GetActiveGimmick(battler) == GIMMICK_TERA)
             type = GetBattlerTeraType(battler);
+            end = StringCopy(txtPtr, gTypesInfo[type].name);
     }
     else if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_IVY_CUDGEL)
     {
@@ -1852,22 +1852,34 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
         if (speciesId == SPECIES_OGERPON_WELLSPRING_MASK || speciesId == SPECIES_OGERPON_WELLSPRING_MASK_TERA
             || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK_TERA
             || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK_TERA)
-            type = gBattleMons[battler].type2;
+            type = gBattleMons[battler].types[1];
+            end = StringCopy(txtPtr, gTypesInfo[type].name);
     }
     // Max Guard is a Normal-type move
     else if (gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].category == DAMAGE_CATEGORY_STATUS
              && (GetActiveGimmick(battler) == GIMMICK_DYNAMAX || IsGimmickSelected(battler, GIMMICK_DYNAMAX)))
     {
         type = TYPE_NORMAL;
+        end = StringCopy(txtPtr, gTypesInfo[type].name);
     }
     else if (moveInfo->moves[gMoveSelectionCursor[battler]] == MOVE_TERA_STARSTORM)
     {
         if (gBattleMons[battler].species == SPECIES_TERAPAGOS_STELLAR
         || (IsGimmickSelected(battler, GIMMICK_TERA) && gBattleMons[battler].species == SPECIES_TERAPAGOS_TERASTAL))
             type = TYPE_STELLAR;
+            end = StringCopy(txtPtr, gTypesInfo[type].name);
+    }
+    else if (P_SHOW_DYNAMIC_TYPES)
+    {
+        struct Pokemon *mon = &gPlayerParty[gBattlerPartyIndexes[battler]];
+        type = CheckDynamicMoveType(mon, moveInfo->moves[gMoveSelectionCursor[battler]], battler);
+        end = StringCopy(txtPtr, gTypesInfo[type].name);
+    }
+    else
+    {
+        end = StringCopy(txtPtr, gTypesInfo[type].name);
     }
 
-    end = StringCopy(txtPtr, gTypesInfo[type].name);
     PrependFontIdToFit(txtPtr, end, FONT_NORMAL, WindowWidthPx(B_WIN_MOVE_TYPE) - 25);
     BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, battler, targetId));
 
@@ -2321,6 +2333,7 @@ void InitMoveSelectionsVarsAndStrings(u32 battler)
 {
     TryLoadMoveInfoWindow(battler);
     TryLoadTypeIcons(battler);
+    //LoadTypeIcons(battler);
 
     MoveSelectionDisplayMoveNames(battler);
     gMultiUsePlayerCursor = 0xFF;

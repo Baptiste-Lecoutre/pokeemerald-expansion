@@ -271,6 +271,7 @@ bool8 IsMonBannedFromSkyBattles(u16 species);
 u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 battlerDef, u32 moveType, bool32 updateFlags, u32 atkAbility, u32 defAbility, u32 holdEffectAtk, u32 weather);
 u32 GetWeather(void);
 void RemoveBattlerType(u32 battler, u8 type);
+u32 GetMoveType(u32 move);
 
 bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId);
 static inline u32 ApplyModifier(uq4_12_t modifier, u32 val)

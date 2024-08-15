@@ -76,6 +76,10 @@ bool32 CanDynamax(u32 battler)
     u16 species = gBattleMons[battler].species;
     u16 holdEffect = GetBattlerHoldEffect(battler, FALSE);
 
+    // Prevents Zigzagoon from dynamaxing in vanilla.
+    if (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE && GetBattlerSide(battler) == B_SIDE_OPPONENT)
+        return FALSE;
+
     // Check if Player has a Dynamax Band.
     if (!TESTING && (GetBattlerPosition(battler) == B_POSITION_PLAYER_LEFT
         || (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) && GetBattlerPosition(battler) == B_POSITION_PLAYER_RIGHT)))
@@ -152,7 +156,7 @@ u16 GetNonDynamaxHP(u32 battler)
         return gBattleMons[battler].hp;
     else
     {
-        u16 mult = UQ_4_12(1.0/1.5); // placeholder
+        u16 mult = UQ_4_12(100.0/(150.0 + 5.0 * GetMonData(&GetBattlerParty(battler)[gBattlerPartyIndexes[battler]], MON_DATA_DYNAMAX_LEVEL)));
         u16 hp = UQ_4_12_TO_INT((gBattleMons[battler].hp * mult) + UQ_4_12_ROUND);
         return hp;
     }
@@ -166,7 +170,7 @@ u16 GetNonDynamaxMaxHP(u32 battler)
         return gBattleMons[battler].maxHP;
     else
     {
-        u16 mult = UQ_4_12(1.0/1.5); // placeholder
+        u16 mult = UQ_4_12(100.0/(150.0 + 5.0 * GetMonData(&GetBattlerParty(battler)[gBattlerPartyIndexes[battler]], MON_DATA_DYNAMAX_LEVEL)));
         u16 maxHP = UQ_4_12_TO_INT((gBattleMons[battler].maxHP * mult) + UQ_4_12_ROUND);
         return maxHP;
     }
