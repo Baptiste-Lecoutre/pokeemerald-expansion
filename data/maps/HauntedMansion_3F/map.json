@@ -2,7 +2,7 @@
   "id": "MAP_HAUNTED_MANSION_3F",
   "name": "HauntedMansion_3F",
   "layout": "LAYOUT_HAUNTED_MANSION_3F",
-  "music": "MUS_MT_PYRE",
+  "music": "MUS_DP_OLD_CHATEAU",
   "region_map_section": "MAPSEC_HAUNTED_MANOR",
   "requires_flash": false,
   "weather": "WEATHER_SHADE",
