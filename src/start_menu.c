@@ -1127,6 +1127,7 @@ static bool8 SaveCallback(void)
         return FALSE;
     case SAVE_CANCELED: // Back to start menu
         ClearDialogWindowAndFrameToTransparent(0, FALSE);
+        gShouldStartMenuIconsBePrinted = TRUE;
         InitStartMenu();
         gMenuCallback = HandleStartMenuInput;
         return FALSE;
