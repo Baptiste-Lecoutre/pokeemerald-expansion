@@ -11,6 +11,7 @@ void LoadTypeIcons(u32);
 #define tBattlerId        data[1]
 #define tHideIconTimer    data[2]
 #define tVerticalPosition data[3]
+#define tDelay            data[4]
 
 #define TYPE_ICON_1_FRAME(monType) ((monType - 1) * 2)
 #define TYPE_ICON_2_FRAME(monType) ((monType - 11) * 2)
