@@ -21,6 +21,7 @@ static u32 LoopedTask_MoveCursorNoTransition(s32);
 static u32 LoopedTask_SlideMonOut(s32);
 static u32 LoopedTask_OpenMonMarkingsWindow(s32);
 static u32 LoopedTask_CloseMonMarkingsWindow(s32);
+static u32 LoopedTask_MoveCursorSwitchView(s32);
 
 static u8 sInitialLoadId; // Never read
 
@@ -113,7 +114,8 @@ static const LoopedTask sLoopedTaskFuncs[] =
     [CONDITION_FUNC_NO_TRANSITION]  = LoopedTask_MoveCursorNoTransition,
     [CONDITION_FUNC_SLIDE_MON_OUT]  = LoopedTask_SlideMonOut,
     [CONDITION_FUNC_ADD_MARKINGS]   = LoopedTask_OpenMonMarkingsWindow,
-    [CONDITION_FUNC_CLOSE_MARKINGS] = LoopedTask_CloseMonMarkingsWindow
+    [CONDITION_FUNC_CLOSE_MARKINGS] = LoopedTask_CloseMonMarkingsWindow,
+    [CONDITION_FUNC_SWITCH_VIEW]    = LoopedTask_MoveCursorSwitchView,
 };
 
 typedef u8 ALIGNED(4) TilemapBuffer[BG_SCREEN_SIZE];
@@ -300,6 +302,8 @@ static u32 LoopedTask_OpenConditionGraphMenu(s32 state)
         ShowBg(3);
         if (IsConditionMenuSearchMode() == TRUE)
             PrintHelpBarText(HELPBAR_CONDITION_MON_STATUS);
+        else
+            PrintHelpBarText(HELPBAR_CONDITION_SWITCH_VIEW);
         return LT_INC_AND_PAUSE;
     case 15:
         PokenavFadeScreen(POKENAV_FADE_FROM_BLACK);
@@ -548,6 +552,46 @@ static u32 LoopedTask_CloseMonMarkingsWindow(s32 state)
         if (WaitForHelpBar() == TRUE)
             return LT_PAUSE;
         return LT_INC_AND_CONTINUE;
+    }
+
+    return LT_FINISH;
+}
+
+static u32 LoopedTask_MoveCursorSwitchView(s32 state)
+{
+    struct Pokenav_ConditionMenuGfx *menu = GetSubstructPtr(POKENAV_SUBSTRUCT_CONDITION_GRAPH_MENU_GFX);
+
+    switch (state)
+    {
+    case 0:
+        LoadNextConditionMenuMonData(CONDITION_LOAD_MON_INFO);
+        return LT_INC_AND_CONTINUE;
+    case 1:
+        LoadNextConditionMenuMonData(CONDITION_LOAD_GRAPH);
+        return LT_INC_AND_CONTINUE;
+    case 2:
+        LoadNextConditionMenuMonData(CONDITION_LOAD_MON_PIC);
+        return LT_INC_AND_CONTINUE;
+    case 3:
+        CreateConditionMonPic(GetConditionGraphMenuCurrentLoadIndex());
+        return LT_INC_AND_CONTINUE;
+    case 4:
+        UpdateConditionGraphMenuWindows(0, GetConditionGraphMenuCurrentLoadIndex(), FALSE);
+        return LT_INC_AND_CONTINUE;
+    case 5:
+        UpdateConditionGraphMenuWindows(1, GetConditionGraphMenuCurrentLoadIndex(), FALSE);
+        return LT_INC_AND_CONTINUE;
+    case 6:
+        UpdateConditionGraphMenuWindows(2, GetConditionGraphMenuCurrentLoadIndex(), FALSE);
+        return LT_INC_AND_CONTINUE;
+    case 7:
+        if (UpdateConditionGraphMenuWindows(3, GetConditionGraphMenuCurrentLoadIndex(), FALSE) == TRUE)
+            return LT_INC_AND_CONTINUE;
+        return LT_PAUSE;
+    case 8:
+        if (!ConditionMenu_UpdateMonEnter(GetConditionGraphPtr(), &menu->monTransitionX))
+            return LT_INC_AND_CONTINUE;
+        return LT_PAUSE;
     }
 
     return LT_FINISH;

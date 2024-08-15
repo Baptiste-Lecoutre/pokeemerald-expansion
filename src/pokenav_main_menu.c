@@ -83,6 +83,7 @@ static const u8 *const sHelpBarTexts[HELPBAR_COUNT] =
     [HELPBAR_RIBBONS_MON_LIST]     = gText_PokenavRibbons_MonListButtons,
     [HELPBAR_RIBBONS_LIST]         = gText_PokenavRibbons_RibbonListButtons,
     [HELPBAR_RIBBONS_CHECK]        = gText_PokenavRibbons_RibbonCheckButtons,
+    [HELPBAR_CONDITION_SWITCH_VIEW]= gText_PokenavCondition_SwitchViewButton,
 };
 
 static const u8 sHelpBarTextColors[3] =

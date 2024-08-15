@@ -139,7 +139,7 @@ static u32 HandleConditionMenuInput(struct Pokenav_ConditionMenu *menu)
 
                 // oversimplified SwitchConditionSummaryIndex ?
                 ConditionGraph_SetNewPositions(&menu->graph, menu->graph.curPositions, menu->graph.savedPositions[menu->loadId]);
-                ret = CONDITION_FUNC_NO_TRANSITION;
+                ret = CONDITION_FUNC_SWITCH_VIEW;
             }
         }
     }
