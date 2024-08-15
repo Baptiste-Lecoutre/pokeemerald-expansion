@@ -84,7 +84,27 @@ static const struct ScanlineEffectParams sConditionGraphScanline =
     .initState = 1,
 };
 
-static const u8 sConditionToLineLength[MAX_IV_MASK + 1] =
+static const u8 sConditionToLineLength[MAX_CONDITION + 1] =
+{
+     4,  5,  6,  7,  8,  9,  9, 10, 10, 11, 11, 12, 12, 13, 13, 13,
+    13, 14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 17,
+    17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19,
+    19, 19, 19, 20, 20, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21,
+    21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23,
+    23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+    24, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 26, 26, 26,
+    26, 26, 26, 26, 26, 26, 26, 26, 26, 27, 27, 27, 27, 27, 27, 27,
+    27, 27, 27, 27, 27, 27, 27, 28, 28, 28, 28, 28, 28, 28, 28, 28,
+    28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29,
+    29, 29, 29, 29, 29, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+    30, 30, 30, 30, 30, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
+    31, 31, 31, 31, 31, 31, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+    32, 32, 32, 32, 32, 32, 32, 32, 33, 33, 33, 33, 33, 33, 33, 33,
+    33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 34,
+    34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 35
+};
+
+static const u8 sIVToLineLength[MAX_IV_MASK + 1] =
 {
      5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 33, 33, 34
@@ -697,15 +717,17 @@ static void ConditionGraph_CalcLeftHalf(struct ConditionGraph *graph)
     }
 }
 
-void ConditionGraph_CalcPositions(u8 *conditions, struct UCoords16 *positions)
+void ConditionGraph_CalcPositions(u8 *conditions, struct UCoords16 *positions, bool32 viewIV)
 {
     u8 lineLength, HPlineLength, sinIdx;
     s8 posIdx;
     u16 i;
 
-    // Sheen is straight up-and-down (not angled), so no need for Sin
-    //lineLength = sConditionToLineLength[*(conditions++)];
-    HPlineLength = sHPToLineLength[*(conditions++)];
+    // Sheen/HP is straight up-and-down (not angled), so no need for Sin
+    if (viewIV)
+        HPlineLength = sHPToLineLength[*(conditions++)];
+    else
+        HPlineLength = sConditionToLineLength[*(conditions++)];
     positions[GRAPH_SHEEN].x = CONDITION_GRAPH_CENTER_X;
     positions[GRAPH_SHEEN].y = CONDITION_GRAPH_CENTER_Y - HPlineLength;
 
@@ -719,8 +741,11 @@ void ConditionGraph_CalcPositions(u8 *conditions, struct UCoords16 *positions)
 
         if (posIdx == GRAPH_TOUGH)
             sinIdx += 2;
-
-        lineLength = sConditionToLineLength[*(conditions++)];
+        
+        if (viewIV)
+            lineLength = sIVToLineLength[*(conditions++)];
+        else
+            lineLength = sConditionToLineLength[*(conditions++)];
         positions[posIdx].x = CONDITION_GRAPH_CENTER_X + ((lineLength * gSineTable[64 + sinIdx]) >> 8);
         positions[posIdx].y = CONDITION_GRAPH_CENTER_Y - ((lineLength * gSineTable[sinIdx]) >> 8);
 
@@ -1098,22 +1123,22 @@ void GetConditionMenuMonConditions(struct ConditionGraph *graph, u8 *numSparkles
 
     if (partyId != numMons)
     {
-        /*graph->conditions[id][CONDITION_SHEEN] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SHEEN, NULL);
+        graph->conditions[id][CONDITION_SHEEN] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SHEEN, NULL);
         graph->conditions[id][CONDITION_COOL] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_COOL, NULL);
         graph->conditions[id][CONDITION_TOUGH] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_TOUGH, NULL);
         graph->conditions[id][CONDITION_SMART] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SMART, NULL);
         graph->conditions[id][CONDITION_CUTE] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_CUTE, NULL);
-        graph->conditions[id][CONDITION_BEAUTY] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_BEAUTY, NULL);*/
-        graph->conditions[id][CONDITION_SHEEN] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_HP_IV, NULL);
+        graph->conditions[id][CONDITION_BEAUTY] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_BEAUTY, NULL);
+        /*graph->conditions[id][CONDITION_SHEEN] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_HP_IV, NULL);
         graph->conditions[id][CONDITION_COOL] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_ATK_IV, NULL);
         graph->conditions[id][CONDITION_TOUGH] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_DEF_IV, NULL);
         graph->conditions[id][CONDITION_SMART] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPATK_IV, NULL);
         graph->conditions[id][CONDITION_CUTE] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPEED_IV, NULL);
-        graph->conditions[id][CONDITION_BEAUTY] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPDEF_IV, NULL);
+        graph->conditions[id][CONDITION_BEAUTY] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPDEF_IV, NULL);*/
 
         numSparkles[id] = GET_NUM_CONDITION_SPARKLES(GetBoxOrPartyMonData(boxId, monId, MON_DATA_SHEEN, NULL));
 
-        ConditionGraph_CalcPositions(graph->conditions[id], graph->savedPositions[id]);
+        ConditionGraph_CalcPositions(graph->conditions[id], graph->savedPositions[id], FALSE);
     }
     else
     {

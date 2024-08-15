@@ -1,6 +1,7 @@
 #include "global.h"
 #include "data.h"
 #include "decompress.h"
+#include "graphics.h"
 #include "main.h"
 #include "menu_specialized.h"
 #include "mon_markings.h"
@@ -23,7 +24,7 @@ struct Pokenav_ConditionMenu
     bool8 inSearchMode;
     s16 toLoadListIndex;
     u32 (*callback)(struct Pokenav_ConditionMenu *);
-    u8 fill2[0x18];
+    u8 fill2[0x17];
     u8 locationText[CONDITION_MONS_LOADED][24];
     u8 nameText[CONDITION_MONS_LOADED][64];
     struct ConditionGraph graph;
@@ -34,6 +35,7 @@ struct Pokenav_ConditionMenu
     s8 nextLoadIdUp;
     s8 toLoadId;
     u8 state;
+    bool8 viewIV;
 };
 
 static void InitPartyConditionListParameters(void);
@@ -58,6 +60,7 @@ bool32 PokenavCallback_Init_ConditionGraph_Party(void)
     InitPartyConditionListParameters();
     gKeyRepeatStartDelay = 20;
     menu->callback = HandleConditionMenuInput;
+    menu->viewIV = FALSE;
     return TRUE;
 }
 
@@ -114,6 +117,29 @@ static u32 HandleConditionMenuInput(struct Pokenav_ConditionMenu *menu)
                 PlaySE(SE_SELECT);
                 ret = CONDITION_FUNC_ADD_MARKINGS;
                 menu->callback = OpenMarkingsMenu;
+            }
+        }
+        else if (!menu->inSearchMode && JOY_NEW(SELECT_BUTTON))
+        {
+            if (monListPtr->currIndex != monListPtr->listCount - 1)
+            {
+                PlaySE(SE_DEX_PAGE);
+                menu->viewIV ^= 1;
+                if (menu->toLoadId >= CONDITION_MONS_LOADED) // edge case when opening the graph menu for the first time
+                    menu->toLoadId = menu->loadId;
+
+                if (menu->viewIV) // change tileset to use battle stats names or contest stats names
+                    DecompressAndCopyTileDataToVram(3, gPokenavConditionPotential_Gfx, 0, 0, 0);
+                else
+                    DecompressAndCopyTileDataToVram(3, gPokenavCondition_Gfx, 0, 0, 0);
+                FreeTempTileDataBuffersIfPossible();
+                
+                // load the new data
+                GetMonConditionGraphData(monListPtr->currIndex, menu->loadId); 
+
+                // oversimplified SwitchConditionSummaryIndex ?
+                ConditionGraph_SetNewPositions(&menu->graph, menu->graph.curPositions, menu->graph.savedPositions[menu->loadId]);
+                ret = CONDITION_FUNC_NO_TRANSITION;
             }
         }
     }
@@ -500,21 +526,15 @@ static void GetMonConditionGraphData(s16 listId, u8 loadId)
     {
         boxId = monListPtr->monData[listId].boxId;
         monId = monListPtr->monData[listId].monId;
-        /*menu->graph.conditions[loadId][CONDITION_SHEEN] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SHEEN, NULL);
-        menu->graph.conditions[loadId][CONDITION_COOL] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_COOL, NULL);
-        menu->graph.conditions[loadId][CONDITION_TOUGH] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_TOUGH, NULL);
-        menu->graph.conditions[loadId][CONDITION_SMART] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SMART, NULL);
-        menu->graph.conditions[loadId][CONDITION_CUTE] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_CUTE, NULL);
-        menu->graph.conditions[loadId][CONDITION_BEAUTY] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_BEAUTY, NULL);*/
-        menu->graph.conditions[loadId][CONDITION_SHEEN] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_HP_IV, NULL);
-        menu->graph.conditions[loadId][CONDITION_COOL] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_ATK_IV, NULL);
-        menu->graph.conditions[loadId][CONDITION_TOUGH] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_DEF_IV, NULL);
-        menu->graph.conditions[loadId][CONDITION_SMART] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPATK_IV, NULL);
-        menu->graph.conditions[loadId][CONDITION_CUTE] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPEED_IV, NULL);
-        menu->graph.conditions[loadId][CONDITION_BEAUTY] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_SPDEF_IV, NULL);
+        menu->graph.conditions[loadId][CONDITION_SHEEN] = GetBoxOrPartyMonData(boxId, monId, (menu->viewIV == 1) ? MON_DATA_HP_IV : MON_DATA_SHEEN, NULL);
+        menu->graph.conditions[loadId][CONDITION_COOL] = GetBoxOrPartyMonData(boxId, monId, (menu->viewIV == 1) ? MON_DATA_ATK_IV : MON_DATA_COOL, NULL);
+        menu->graph.conditions[loadId][CONDITION_TOUGH] = GetBoxOrPartyMonData(boxId, monId, (menu->viewIV == 1) ? MON_DATA_DEF_IV : MON_DATA_TOUGH, NULL);
+        menu->graph.conditions[loadId][CONDITION_SMART] = GetBoxOrPartyMonData(boxId, monId, (menu->viewIV == 1) ? MON_DATA_SPATK_IV : MON_DATA_SMART, NULL);
+        menu->graph.conditions[loadId][CONDITION_CUTE] = GetBoxOrPartyMonData(boxId, monId, (menu->viewIV == 1) ? MON_DATA_SPEED_IV : MON_DATA_CUTE, NULL);
+        menu->graph.conditions[loadId][CONDITION_BEAUTY] = GetBoxOrPartyMonData(boxId, monId,(menu->viewIV == 1) ? MON_DATA_SPDEF_IV :  MON_DATA_BEAUTY, NULL);
         menu->numSparkles[loadId] = GET_NUM_CONDITION_SPARKLES(GetBoxOrPartyMonData(boxId, monId, MON_DATA_SHEEN, NULL));
         menu->monMarks[loadId] = GetBoxOrPartyMonData(boxId, monId, MON_DATA_MARKINGS, NULL);
-        ConditionGraph_CalcPositions(menu->graph.conditions[loadId], menu->graph.savedPositions[loadId]);
+        ConditionGraph_CalcPositions(menu->graph.conditions[loadId], menu->graph.savedPositions[loadId], menu->viewIV);
     }
     else
     {
