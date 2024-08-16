@@ -249,10 +249,14 @@ Route114_EventScript_ReceiveGoodRod::
 	playse SE_M_DETECT
 	dofieldeffectsparkle 22, 28, 0
 	waitfieldeffect FLDEFF_SPARKLE
+	applymovement LOCALID_MAGIKARP, Route114_Movement_StartEvo
+	waitmovement 0
 	setflag FLAG_TEMP_2
 	removeobject LOCALID_MAGIKARP
 	clearflag FLAG_TEMP_3
 	addobject LOCALID_GYARADOS
+	applymovement LOCALID_GYARADOS, Route114_MovementEndEvo
+	waitmovement 0
 	playmoncry SPECIES_GYARADOS, CRY_MODE_NORMAL
 	delay 40
 	waitmoncry
@@ -423,4 +427,12 @@ Route114_Movement_GyaradosJumpWater:
 
 Route114_Movement_EnterPokeball:
 	enter_pokeball
+	step_end
+
+Route114_Movement_StartEvo:
+	transform_start
+	step_end
+
+Route114_MovementEndEvo:
+	transform_end
 	step_end
