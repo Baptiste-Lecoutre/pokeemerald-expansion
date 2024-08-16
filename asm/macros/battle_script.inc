@@ -1670,6 +1670,10 @@
 	callnative BS_DamageToQuarterTargetHP
 	.endm
 
+	.macro ficklebeamdamagecalculation
+	callnative BS_FickleBeamDamageCalculation
+	.endm
+
 	.macro trychoosemontosendtopc successInstr:req
 	callnative BS_TryChooseMonToSendToPC
 	.4byte \successInstr
