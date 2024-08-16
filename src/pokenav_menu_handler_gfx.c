@@ -249,8 +249,8 @@ struct
     },
     [POKENAV_MENU_TYPE_CONDITION] =
     {
-        .yStart = 49,
-        .deltaY = 20,
+        .yStart = 58, //49
+        .deltaY = 18, //20
         .gfx = {
             sOptionsLabelGfx_Party,
             sOptionsLabelGfx_Ribbons,

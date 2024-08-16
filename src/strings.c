@@ -973,6 +973,7 @@ const u8 gText_PokenavMatchCall_CheckTrainerButtons[] = _("{B_BUTTON}Cancel");
 const u8 gText_PokenavRibbons_MonListButtons[] = _("{A_BUTTON}Ribbons {B_BUTTON}Cancel");
 const u8 gText_PokenavRibbons_RibbonListButtons[] = _("{A_BUTTON}Check {B_BUTTON}Cancel");
 const u8 gText_PokenavRibbons_RibbonCheckButtons[] = _("{B_BUTTON}Cancel");
+const u8 gText_PokenavCondition_SwitchViewButton[] = _("{SELECT_BUTTON} Stats");
 const u8 gText_NatureSlash[] = _("Nature/");
 const u8 gText_TrainerCloseBy[] = _("That Trainer is close by.\nTalk to the Trainer in person!");
 const u8 gText_InParty[] = _("In party");

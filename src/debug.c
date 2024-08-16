@@ -2245,7 +2245,7 @@ static void DebugAction_Util_Weather(u8 taskId)
     //Display initial ID
     StringCopy(gStringVar2, gText_DigitIndicator[0]);
     ConvertIntToDecimalStringN(gStringVar3, 1, STR_CONV_MODE_LEADING_ZEROS, 2);
-    StringCopyPadded(gStringVar1, sWeatherNames[0], CHAR_SPACE, 30);
+    StringCopyPadded(gStringVar1, sWeatherNames[0], CHAR_SPACE, 40);
     StringExpandPlaceholders(gStringVar4, sDebugText_Util_Weather_ID);
     AddTextPrinterParameterized(windowId, DEBUG_MENU_FONT, gStringVar4, 1, 1, 0, NULL);
 
@@ -2288,9 +2288,9 @@ static void DebugAction_Util_Weather_SelectId(u8 taskId)
         ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 2);
 
         if (gTasks[taskId].tInput <= WEATHER_LEAVES || gTasks[taskId].tInput >= 20)
-            StringCopyPadded(gStringVar1, sWeatherNames[gTasks[taskId].tInput], CHAR_SPACE, 30);
+            StringCopyPadded(gStringVar1, sWeatherNames[gTasks[taskId].tInput], CHAR_SPACE, 40);
         else
-            StringCopyPadded(gStringVar1, sDebugText_WeatherNotDefined, CHAR_SPACE, 30);
+            StringCopyPadded(gStringVar1, sDebugText_WeatherNotDefined, CHAR_SPACE, 40);
 
         StringExpandPlaceholders(gStringVar4, sDebugText_Util_Weather_ID);
         AddTextPrinterParameterized(gTasks[taskId].tSubWindowId, DEBUG_MENU_FONT, gStringVar4, 1, 1, 0, NULL);
