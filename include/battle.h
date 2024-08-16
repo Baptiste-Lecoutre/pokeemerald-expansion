@@ -815,6 +815,7 @@ struct BattleStruct
     u8 distortedTypeMatchups;
     u8 categoryOverride; // for Z-Moves and Max Moves
     u32 stellarBoostFlags[MAX_BATTLERS_COUNT]; // stored as a bitfield of flags for all types for each side
+    u8 fickleBeamBoosted:1;
     u8 revealedEnemyMons[2];
     u32 battleTimer; // frame counter to measure battle time length
 };
