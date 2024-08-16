@@ -1360,20 +1360,20 @@ static void DestroyFogHorizontalSprites(void);
 
 // Updates just the color of shadows to match special weather blending
 u8 UpdateShadowColor(u16 color) {
-  u8 paletteNum = IndexOfSpritePaletteTag(TAG_WEATHER_START);
-  u16 ALIGNED(4) tempBuffer[16];
-  u16 blendedColor;
-  if (paletteNum != 0xFF) {
-    u16 index = (paletteNum+16)*16+SHADOW_COLOR_INDEX;
-    gPlttBufferUnfaded[index] = gPlttBufferFaded[index] = color;
-    // Copy to temporary buffer, blend, and keep just the shadow color index
-    CpuFastCopy(&gPlttBufferFaded[index-SHADOW_COLOR_INDEX], tempBuffer, 32);
-    UpdateSpritePaletteWithTime(paletteNum);
-    blendedColor = gPlttBufferFaded[index];
-    CpuFastCopy(tempBuffer, &gPlttBufferFaded[index-SHADOW_COLOR_INDEX], 32);
-    gPlttBufferFaded[index] = blendedColor;
-  }
-  return paletteNum;
+    u8 paletteNum = IndexOfSpritePaletteTag(TAG_WEATHER_START);
+    u16 ALIGNED(4) tempBuffer[16];
+    u16 blendedColor;
+    if (paletteNum < 16) {
+        u16 index = OBJ_PLTT_ID(paletteNum)+SHADOW_COLOR_INDEX;
+        gPlttBufferUnfaded[index] = gPlttBufferFaded[index] = color;
+        // Copy to temporary buffer, blend, and keep just the shadow color index
+        CpuFastCopy(&gPlttBufferFaded[index-SHADOW_COLOR_INDEX], tempBuffer, PLTT_SIZE_4BPP);
+        UpdateSpritePaletteWithTime(paletteNum);
+        blendedColor = gPlttBufferFaded[index];
+        CpuFastCopy(tempBuffer, &gPlttBufferFaded[index-SHADOW_COLOR_INDEX], PLTT_SIZE_4BPP);
+        gPlttBufferFaded[index] = blendedColor;
+    }
+    return paletteNum;
 }
 
 void FogHorizontal_InitVars(void)
@@ -2274,7 +2274,7 @@ static void UpdateLeavesSprite(struct Sprite *);
 static void WaitLeavesSwirlSpriteEntrance(struct Sprite *);
 static void UpdateLeavesSwirlSprite(struct Sprite *);
 
-#define MIN_Leaves_WAVE_INDEX 0x20
+#define MIN_LEAVES_WAVE_INDEX 0x20
 
 void Leaves_InitVars(void)
 {
@@ -2288,11 +2288,12 @@ void Leaves_InitVars(void)
         gWeatherPtr->leavesWaveIndex = 8;
         gWeatherPtr->leavesWaveCounter = 0;
         // Dead code. How does the compiler not optimize this out?
-        if (gWeatherPtr->leavesWaveIndex >= 0x80 - MIN_Leaves_WAVE_INDEX)
+        if (gWeatherPtr->leavesWaveIndex >= 0x80 - MIN_LEAVES_WAVE_INDEX)
             gWeatherPtr->leavesWaveIndex = 0x80 - gWeatherPtr->leavesWaveIndex;
 
         Weather_SetBlendCoeffs(0, 16);
     }
+    gWeatherPtr->noShadows = FALSE;
 }
 
 void Leaves_InitAll(void)
@@ -2306,8 +2307,8 @@ void Leaves_Main(void)
 {
     UpdateLeavesMovement();
     UpdateLeavesWaveIndex();
-    if (gWeatherPtr->leavesWaveIndex >= 0x80 - MIN_Leaves_WAVE_INDEX)
-        gWeatherPtr->leavesWaveIndex = MIN_Leaves_WAVE_INDEX;
+    if (gWeatherPtr->leavesWaveIndex >= 0x80 - MIN_LEAVES_WAVE_INDEX)
+        gWeatherPtr->leavesWaveIndex = MIN_LEAVES_WAVE_INDEX;
 
     switch (gWeatherPtr->initStep)
     {
@@ -2317,7 +2318,8 @@ void Leaves_Main(void)
         gWeatherPtr->initStep++;
         break;
     case 1:
-        Weather_SetTargetBlendCoeffs(16, 0, 0);
+        Weather_SetTargetBlendCoeffs(16, 0, 0); // Weather_SetTargetBlendCoeffs(16, 2, 0); //from sandstorm
+        UpdateShadowColor(0x3DEF); //from sandstorm
         gWeatherPtr->initStep++;
         break;
     case 2:
@@ -2326,6 +2328,9 @@ void Leaves_Main(void)
             gWeatherPtr->weatherGfxLoaded = TRUE;
             gWeatherPtr->initStep++;
         }
+        break;
+    default:
+        Weather_UpdateBlend();
         break;
     }
 }
@@ -2343,9 +2348,12 @@ bool8 Leaves_Finish(void)
     case 1:
         if (Weather_UpdateBlend())
             gWeatherPtr->finishStep++;
+        if (gWeatherPtr->currBlendEVB == 12)
+            UpdateShadowColor(RGB_BLACK);
         break;
     case 2:
         DestroyLeavesSprites();
+        UpdateShadowColor(RGB_BLACK);
         gWeatherPtr->finishStep++;
         break;
     default:
@@ -2527,9 +2535,9 @@ static void UpdateLeavesSprite(struct Sprite *sprite)
 {
     sprite->y2 = gWeatherPtr->leavesPosY;
     sprite->x = gWeatherPtr->leavesBaseSpritesX + 32 + sprite->tSpriteColumn * 64;
-    if (sprite->x > 271)
+    if (sprite->x >= DISPLAY_WIDTH + 32)
     {
-        sprite->x = gWeatherPtr->leavesBaseSpritesX + 480 - (4 - sprite->tSpriteColumn) * 64;
+        sprite->x = gWeatherPtr->leavesBaseSpritesX + (DISPLAY_WIDTH * 2) - (4 - sprite->tSpriteColumn) * 64;
         sprite->x &= 0x1FF;
     }
 }
@@ -2546,7 +2554,7 @@ static void UpdateLeavesSwirlSprite(struct Sprite *sprite)
 
     if (--sprite->y < -48)
     {
-        sprite->y = 208;
+        sprite->y = DISPLAY_HEIGHT + 48;
         sprite->tRadius = 4;
     }
 
