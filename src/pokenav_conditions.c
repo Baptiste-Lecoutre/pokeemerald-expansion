@@ -137,7 +137,13 @@ static u32 HandleConditionMenuInput(struct Pokenav_ConditionMenu *menu)
                 // load the new data
                 GetMonConditionGraphData(monListPtr->currIndex, menu->loadId); 
 
-                // oversimplified SwitchConditionSummaryIndex ?
+                if (monListPtr->listCount != 1) // load the new data of the 2 other indexes
+                {
+                    GetMonConditionGraphData((monListPtr->currIndex + 1 >= monListPtr->listCount) ? 0 : monListPtr->currIndex + 1, menu->nextLoadIdDown);
+                    GetMonConditionGraphData((monListPtr->currIndex - 1 >= 0) ? monListPtr->currIndex - 1 : monListPtr->listCount - 1, menu->nextLoadIdUp);
+                }
+
+                // oversimplified SwitchConditionSummaryIndex
                 ConditionGraph_SetNewPositions(&menu->graph, menu->graph.curPositions, menu->graph.savedPositions[menu->loadId]);
                 ret = CONDITION_FUNC_SWITCH_VIEW;
             }
