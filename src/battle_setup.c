@@ -484,7 +484,7 @@ static void DoStandardWildBattle(bool32 isDouble)
     {
         gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
         SavePlayerParty();
-        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(TRAINER_RIVAL_OVERRIDE)); //gSpecialVar_0x8006
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(GetFollowerPartnerId())); //gSpecialVar_0x8006
         FillPartnerParty(gPartnerTrainerId);
     }
     CreateBattleStartTask(GetWildBattleTransition(), 0);
@@ -1449,7 +1449,7 @@ void BattleSetup_StartTrainerBattle(void)
     {
         gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
         SavePlayerParty();
-        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(TRAINER_RIVAL_OVERRIDE)); //gSpecialVar_0x8006
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(GetFollowerPartnerId())); //gSpecialVar_0x8006
         FillPartnerParty(gPartnerTrainerId);
     }
 

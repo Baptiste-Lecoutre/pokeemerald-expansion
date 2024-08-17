@@ -2125,7 +2125,7 @@ void DoSpecialTrainerBattle(void)
             gBattleTypeFlags = BATTLE_TYPE_TRAINER | BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
         }
 
-        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(gSpecialVar_0x8006)); // automatic handling of the wally/red/rival partners over progression
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(gSpecialVar_0x8006)); // automatic handling of the wally/red/rival partners over story progression
         FillPartnerParty(gPartnerTrainerId);
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);
