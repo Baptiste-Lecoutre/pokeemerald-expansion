@@ -52,8 +52,9 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	applymovement LOCALID_GIRL, Common_Movement_FaceRight
 	waitmovement 0
 	checkplayergender
-	call_if_eq VAR_RESULT, MALE, HauntedMansion_3F_EventScript_MayGoBack
-	call_if_eq VAR_RESULT, FEMALE, HauntedMansion_3F_EventScript_BrendanGoBack
+	goto_if_eq VAR_RESULT, MALE, HauntedMansion_3F_EventScript_MayGoBack
+	goto_if_eq VAR_RESULT, FEMALE, HauntedMansion_3F_EventScript_BrendanGoBack
+HauntedMansion_3F_EventScript_LittleGirlEnd::
 	addvar VAR_POKE_VIAL_MAX_CHARGES, 1
 	addvar VAR_POKE_VIAL_CHARGES, 1
 	setvar VAR_LAVARIDGE_TOWN_STATE, 4
@@ -73,14 +74,14 @@ HauntedMansion_3F_EventScript_MayGoBack::
 	giveitem ITEM_GO_GOGGLES
 	setflag FLAG_RECEIVED_GO_GOGGLES
 	msgbox HauntedMansion_3F_Text_MayGoNorman, MSGBOX_NPC
-	return
+	goto HauntedMansion_3F_EventScript_LittleGirlEnd
 
 HauntedMansion_3F_EventScript_BrendanGoBack::
 	msgbox HauntedMansion_3F_Text_BrendanReceiveGoGoggles, MSGBOX_NPC
 	giveitem ITEM_GO_GOGGLES
 	setflag FLAG_RECEIVED_GO_GOGGLES
 	msgbox HauntedMansion_3F_Text_BrendanGoNorman, MSGBOX_NPC
-	return
+	goto HauntedMansion_3F_EventScript_LittleGirlEnd
 
 HauntedMansion_3F_EventScript_LostGengarBattle::
 	fadescreen FADE_TO_BLACK
