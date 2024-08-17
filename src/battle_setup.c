@@ -41,8 +41,10 @@
 #include "vs_seeker.h"
 #include "item.h"
 #include "wild_encounter.h"
+#include "follow_me.h"
 #include "constants/battle_frontier.h"
 #include "constants/battle_setup.h"
+#include "constants/battle_tower.h"
 #include "constants/game_stat.h"
 #include "constants/items.h"
 #include "constants/songs.h"
@@ -478,6 +480,13 @@ static void DoStandardWildBattle(bool32 isDouble)
         VarSet(VAR_TEMP_E, 0);
         gBattleTypeFlags |= BATTLE_TYPE_PYRAMID;
     }
+    if (PlayerHasFollower())
+    {
+        gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
+        SavePlayerParty();
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(TRAINER_RIVAL_OVERRIDE)); //gSpecialVar_0x8006
+        FillPartnerParty(gPartnerTrainerId);
+    }
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
     IncrementGameStat(GAME_STAT_WILD_BATTLES);
@@ -755,6 +764,12 @@ static void CB2_EndWildBattle(void)
     {
         SetMainCallback2(CB2_ReturnToField);
         DowngradeBadPoison();
+        if (PlayerHasFollower())
+        {
+            SaveChangesToPlayerParty();
+            LoadPlayerParty();
+            HealPlayerParty();
+        }
         gFieldCallback = FieldCB_ReturnToFieldNoScriptCheckMusic;
     }
 }
@@ -1430,6 +1445,14 @@ void BattleSetup_StartTrainerBattle(void)
     gWhichTrainerToFaceAfterBattle = 0;
     gMain.savedCallback = CB2_EndTrainerBattle;
 
+    if (sNoOfPossibleTrainerRetScripts == 2 && PlayerHasFollower())
+    {
+        gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
+        SavePlayerParty();
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(TRAINER_RIVAL_OVERRIDE)); //gSpecialVar_0x8006
+        FillPartnerParty(gPartnerTrainerId);
+    }
+
     if (InBattlePyramid() || InTrainerHillChallenge())
         DoBattlePyramidTrainerHillBattle();
     else
@@ -1454,7 +1477,13 @@ void BattleSetup_StartTrainerBattle_Debug(void)
 static void SaveChangesToPlayerParty(void)
 {
     u8 i = 0, j = 0;
-    u8 participatedPokemon = VarGet(B_VAR_SKY_BATTLE);
+    u8 participatedPokemon;
+    
+    if (B_FLAG_SKY_BATTLE != 0 && FlagGet(B_FLAG_SKY_BATTLE))
+        participatedPokemon = VarGet(B_VAR_SKY_BATTLE);
+    else
+        participatedPokemon = 7;
+
     for (i = 0; i < PARTY_SIZE; i++)
     {
         if ((participatedPokemon >> i & 1) == 1)
@@ -1467,11 +1496,22 @@ static void SaveChangesToPlayerParty(void)
 
 static void HandleBattleVariantEndParty(void)
 {
-    if (B_FLAG_SKY_BATTLE == 0 || !FlagGet(B_FLAG_SKY_BATTLE))
-        return;
-    SaveChangesToPlayerParty();
-    LoadPlayerParty();
-    FlagClear(B_FLAG_SKY_BATTLE);
+    if (B_FLAG_SKY_BATTLE != 0 && FlagGet(B_FLAG_SKY_BATTLE))
+    {
+        SaveChangesToPlayerParty();
+        LoadPlayerParty();
+        FlagClear(B_FLAG_SKY_BATTLE);
+    }
+
+    if (PlayerHasFollower())
+    {
+        if (sNoOfPossibleTrainerRetScripts == 2)
+        {
+            SaveChangesToPlayerParty();
+            LoadPlayerParty();
+        }
+        HealPlayerParty();
+    }
 }
 
 static void CB2_EndTrainerBattle(void)
