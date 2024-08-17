@@ -614,6 +614,13 @@ void BattleSetup_StartScriptedWildBattle(void)
         gBattleTypeFlags = BATTLE_TYPE_GHOST;
         SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, gText_Ghost);
     }
+    else if (PlayerHasFollower())
+    {
+        gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
+        SavePlayerParty();
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(GetFollowerPartnerId())); //gSpecialVar_0x8006
+        FillPartnerParty(gPartnerTrainerId);
+    }
 
     CreateBattleStartTask(GetWildBattleTransition(), 0);
     IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
@@ -766,8 +773,11 @@ static void CB2_EndWildBattle(void)
         DowngradeBadPoison();
         if (PlayerHasFollower())
         {
-            SaveChangesToPlayerParty();
-            LoadPlayerParty();
+            if (!(gBattleTypeFlags & BATTLE_TYPE_GHOST))
+            {
+                SaveChangesToPlayerParty();
+                LoadPlayerParty();
+            }
             HealPlayerParty();
         }
         gFieldCallback = FieldCB_ReturnToFieldNoScriptCheckMusic;
@@ -789,6 +799,15 @@ static void CB2_EndScriptedWildBattle(void)
     else
     {
         DowngradeBadPoison();
+        if (PlayerHasFollower())
+        {
+            if (!(gBattleTypeFlags & BATTLE_TYPE_GHOST))
+            {
+                SaveChangesToPlayerParty();
+                LoadPlayerParty();
+            }
+            HealPlayerParty();
+        }
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
 }
