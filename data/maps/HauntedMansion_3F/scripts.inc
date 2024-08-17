@@ -35,6 +35,8 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	waitmovement 0
 	msgbox HauntedMansion_3F_Text_WhatWasThatNoise, MSGBOX_DEFAULT
 	closemessage
+	specialvar VAR_RESULT, IsPokeballPocketEmpty
+	call_if_eq VAR_RESULT, TRUE, HauntedMansion_3F_EventScript_GiveFreePokeball
 	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_4, SPECIES_GENGAR, 40, ITEM_GENGARITE
 	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
 	special InitStoryRaid
@@ -87,6 +89,10 @@ HauntedMansion_3F_EventScript_LostGengarBattle::
 	fadescreen FADE_TO_BLACK
 	special SetCB2WhiteOut
 	waitstate
+
+HauntedMansion_3F_EventScript_GiveFreePokeball::
+	additem ITEM_POKE_BALL, 1
+	return
 
 HauntedMansion_3F_Text_WhoAreYou:
 	.string "Kid: Wh- Who are you?\n"
