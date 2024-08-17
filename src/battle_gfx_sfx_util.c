@@ -979,7 +979,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
     gSprites[gBattlerSpriteIds[battlerAtk]].y = GetBattlerSpriteDefault_Y(battlerAtk);
     StartSpriteAnim(&gSprites[gBattlerSpriteIds[battlerAtk]], 0);
     
-    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && ShouldUnveilGhost())
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && ShouldUnveilGhost() && GetBattlerSide(battlerAtk) == B_SIDE_OPPONENT)
     {
         SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesInfo[targetSpecies].speciesName);
         UpdateNickInHealthbox(gHealthboxSpriteIds[battlerAtk], &gEnemyParty[gBattlerPartyIndexes[battlerAtk]]);
