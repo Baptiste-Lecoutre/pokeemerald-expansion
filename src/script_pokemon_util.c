@@ -61,6 +61,13 @@ static void HealPlayerBoxes(void)
     }
 }
 
+void HealPlayerPartyPokeVial(void)
+{
+    u32 i;
+    for (i = 0; i < gPlayerPartyCount; i++)
+        HealPokemon(&gPlayerParty[i]);
+}
+
 u8 ScriptGiveEgg(u16 species)
 {
     struct Pokemon mon;
