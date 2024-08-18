@@ -5498,11 +5498,6 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 }
                 BattleScriptExecute(BattleScript_RaidShockwave);
                 return TRUE;
-            /*case RAID_SHOCKWAVE_MEGA:
-                gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // maybe I should restore mega as the active gimmick at the end of the turn
-                gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
-                gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
-                break;*/
             case RAID_SHOCKWAVE_MEGA:
                 if (raidShockwaveNum == 1)
                 {
@@ -5515,7 +5510,7 @@ static bool32 TryDoGimmicksBeforeMoves(void)
                 {
                     gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // maybe I should restore mega as the active gimmick at the end of the turn
                     gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
-                    gBattleStruct->gimmick.toActivate |= gBitTable[gBattlerAttacker];
+                    gBattleStruct->gimmick.toActivate |= 1u << gBattlerAttacker;
                     break;
                 }
         } // end of switch
