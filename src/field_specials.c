@@ -5780,5 +5780,5 @@ void SetPokedexCaughtFlag(void)
 
 bool32 FollowerHasDevonScope(void)
 {
-    return (VarGet(VAR_LAVARIDGE_TOWN_STATE) >= 2 && VarGet(VAR_LAVARIDGE_TOWN_STATE) <= 5);
+    return (VarGet(VAR_LAVARIDGE_TOWN_STATE) >= 2 && VarGet(VAR_LAVARIDGE_TOWN_STATE) <= 6);
 }
