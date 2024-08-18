@@ -151,7 +151,7 @@ struct
     [MENUITEM_TYPEEFFECTIVENESS] = {TypeEffectiveness_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTFIELDMOVE] = {FastFieldMove_DrawChoices,TwoOptions_ProcessInput},
     [MENUITEM_SOUND] = {Sound_DrawChoices, Sound_ProcessInput},
-    [MENUITEM_LOWHEALTHBEEP] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
+    [MENUITEM_LOWHEALTHBEEP] = {FastFieldMove_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_SURFBIKEMUSIC] = {SurfBikeMusic_DrawChoices, ThreeOptions_ProcessInput},
     [MENUITEM_FISHREELING] = {BattleScene_DrawChoices, TwoOptions_ProcessInput},
     [MENUITEM_FASTEGGHATCH] = {FastScene_DrawChoices, TwoOptions_ProcessInput},
