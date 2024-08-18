@@ -113,6 +113,9 @@ static const u32 sPokenavDeviceBgTilemap[] = INCBIN_U32("graphics/pokenav/device
 static const u16 sMatchCallBlueLightPal[] = INCBIN_U16("graphics/pokenav/blue_light.gbapal");
 static const u32 sMatchCallBlueLightTiles[] = INCBIN_U32("graphics/pokenav/blue_light.4bpp.lz");
 
+static const u8 gText_NoRibbonWinners[] = _("There are no Ribbon winners.");
+static const u8 gText_Pokenav_Cannot_Access_PC[] = _("Can't access PC. Go outside.");
+
 static const struct BgTemplate sPokenavMainMenuBgTemplates[] = {
     {
         .bg = 1,
@@ -286,24 +289,23 @@ static const struct WindowTemplate sOptionDescWindowTemplate =
 
 static const u8 *const sPageDescriptions[] =
 {
-    [POKENAV_MENUITEM_MAP]                     = gText_CheckMapOfHoenn,
-    [POKENAV_MENUITEM_DEXNAV]                  = gText_DexNavDescription,
-    [POKENAV_MENUITEM_TRAINER_RADAR]           = gText_TrainerRadarDescription,
-    [POKENAV_MENUITEM_ACCESS_PC]               = gText_Pokenav_Access_PC,
-    [POKENAV_MENUITEM_CONDITION]               = gText_CheckPokemonInDetail,
-    [POKENAV_MENUITEM_MATCH_CALL]              = gText_CallRegisteredTrainer,
-    [POKENAV_MENUITEM_RIBBONS]                 = gText_CheckObtainedRibbons,
-    [POKENAV_MENUITEM_SWITCH_OFF]              = gText_PutAwayPokenav,
-    [POKENAV_MENUITEM_CONDITION_PARTY]         = gText_CheckPartyPokemonInDetail,
-    [POKENAV_MENUITEM_CONDITION_RIBBONS]       = gText_CheckObtainedRibbons,
-    [POKENAV_MENUITEM_CONDITION_SEARCH]        = gText_CheckAllPokemonInDetail,
-    [POKENAV_MENUITEM_CONDITION_CANCEL]        = gText_ReturnToPokenavMenu,
-    [POKENAV_MENUITEM_CONDITION_SEARCH_COOL]   = gText_FindCoolPokemon,
-    [POKENAV_MENUITEM_CONDITION_SEARCH_BEAUTY] = gText_FindBeautifulPokemon,
-    [POKENAV_MENUITEM_CONDITION_SEARCH_CUTE]   = gText_FindCutePokemon,
-    [POKENAV_MENUITEM_CONDITION_SEARCH_SMART]  = gText_FindSmartPokemon,
-    [POKENAV_MENUITEM_CONDITION_SEARCH_TOUGH]  = gText_FindToughPokemon,
-    [POKENAV_MENUITEM_CONDITION_SEARCH_CANCEL] = gText_ReturnToConditionMenu
+    [POKENAV_MENUITEM_MAP]                     = COMPOUND_STRING("Check the map of the Hoenn region."),
+    [POKENAV_MENUITEM_DEXNAV]                  = COMPOUND_STRING("Search for wild Pokémon."),
+    [POKENAV_MENUITEM_TRAINER_RADAR]           = COMPOUND_STRING("Check the opposing trainers data."),
+    [POKENAV_MENUITEM_ACCESS_PC]               = COMPOUND_STRING("Access your PC."),
+    [POKENAV_MENUITEM_CONDITION]               = COMPOUND_STRING("Check Pokémon in detail."),
+    [POKENAV_MENUITEM_MATCH_CALL]              = COMPOUND_STRING("Call a registered Trainer."),
+    [POKENAV_MENUITEM_RIBBONS]                 = COMPOUND_STRING("Check obtained Ribbons."),
+    [POKENAV_MENUITEM_SWITCH_OFF]              = COMPOUND_STRING("Put away the Pokénav."),
+    [POKENAV_MENUITEM_CONDITION_PARTY]         = COMPOUND_STRING("Check party Pokémon in detail."),
+    [POKENAV_MENUITEM_CONDITION_SEARCH]        = COMPOUND_STRING("Check all Pokémon in detail."),
+    [POKENAV_MENUITEM_CONDITION_CANCEL]        = COMPOUND_STRING("Return to the Pokénav menu."),
+    [POKENAV_MENUITEM_CONDITION_SEARCH_COOL]   = COMPOUND_STRING("Find cool Pokémon."),
+    [POKENAV_MENUITEM_CONDITION_SEARCH_BEAUTY] = COMPOUND_STRING("Find beautiful Pokémon."),
+    [POKENAV_MENUITEM_CONDITION_SEARCH_CUTE]   = COMPOUND_STRING("Find cute Pokémon."),
+    [POKENAV_MENUITEM_CONDITION_SEARCH_SMART]  = COMPOUND_STRING("Find smart Pokémon."),
+    [POKENAV_MENUITEM_CONDITION_SEARCH_TOUGH]  = COMPOUND_STRING("Find tough Pokémon."),
+    [POKENAV_MENUITEM_CONDITION_SEARCH_CANCEL] = COMPOUND_STRING("Return to the condition menu.")
 };
 
 static const u8 sOptionDescTextColors[]  = {TEXT_COLOR_GREEN, TEXT_COLOR_BLUE, TEXT_COLOR_LIGHT_GREEN};
