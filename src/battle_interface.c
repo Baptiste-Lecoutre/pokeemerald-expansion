@@ -216,8 +216,6 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite);
 
 static void SpriteCB_TypeIcon(struct Sprite* sprite);
 
-static void DestroyTeamPreviewTrigger(struct Sprite* sprite);
-
 static const struct OamData sOamData_64x32 =
 {
     .y = 0,
@@ -3565,7 +3563,7 @@ static const struct CompressedSpriteSheet sTeamPreviewStatusIconsSpriteSheet =
 
 static bool8 CanShowEnemyMon(u8 monId)
 {
-    return (gBattleStruct->revealedEnemyMons & gBitTable[monId]) != 0;
+    return (gBattleStruct->revealedEnemyMons & 1u << monId) != 0;
 }
 
 static bool8 EntireEnemyPartyRevealed(void)
