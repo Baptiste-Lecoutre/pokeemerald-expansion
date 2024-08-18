@@ -171,4 +171,6 @@
 
 	create_movement_action exit_pokeball, MOVEMENT_ACTION_EXIT_POKEBALL
 	create_movement_action enter_pokeball, MOVEMENT_ACTION_ENTER_POKEBALL
+	create_movement_action transform_start, MOVEMENT_ACTION_START_TRANSFORM
+	create_movement_action transform_end, MOVEMENT_ACTION_END_TRANSFORM
 	create_movement_action step_end, MOVEMENT_ACTION_STEP_END

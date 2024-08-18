@@ -11001,3 +11001,59 @@ void SetObjectEventMovementType(void)
     gSprites[objectEvent->spriteId].callback = sMovementTypeCallbacks[movementType];
     gSprites[objectEvent->spriteId].sTypeFuncId = 0;
 }
+
+bool8 MovementAction_StartTransform_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    u8 frames = sprite->data[7];
+    u8 stretch;
+
+    sprite->oam.mosaic = TRUE;
+    if (frames < 16)
+        stretch = frames >> 1;
+    else
+    {
+        sprite->sActionFuncId++;
+        return FALSE;
+    }
+    
+    SetGpuReg(REG_OFFSET_MOSAIC, (stretch << 12) | (stretch << 8));
+    frames++;
+    sprite->data[7] = frames;
+    return FALSE;
+}
+
+bool8 MovementAction_StartTransform_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+//    SetGpuReg(REG_OFFSET_MOSAIC, 0);
+//    sprite->oam.mosaic = FALSE;
+    sprite->data[7] = 0;
+    return TRUE;
+}
+
+bool8 MovementAction_EndTransform_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    u8 frames = sprite->data[7];
+    u8 stretch;
+
+    sprite->oam.mosaic = TRUE;
+    if (frames < 16)
+        stretch = (16 - frames) >> 1;
+    else
+    {
+        sprite->sActionFuncId++;
+        return FALSE;
+    }
+    
+    SetGpuReg(REG_OFFSET_MOSAIC, (stretch << 12) | (stretch << 8));
+    frames++;
+    sprite->data[7] = frames;
+    return FALSE;
+}
+
+bool8 MovementAction_EndTransform_Step1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    SetGpuReg(REG_OFFSET_MOSAIC, 0);
+    sprite->oam.mosaic = FALSE;
+    sprite->data[7] = 0;
+    return TRUE;
+}

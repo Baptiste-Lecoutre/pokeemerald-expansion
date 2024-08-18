@@ -256,6 +256,9 @@
 #define MOVEMENT_ACTION_ENTER_POKEBALL                  0xA7
 #define MOVEMENT_ACTION_EMOTE_X                         0xA8
 #define MOVEMENT_ACTION_EMOTE_DOUBLE_EXCL_MARK          0xA9
+// transform movements
+#define MOVEMENT_ACTION_START_TRANSFORM                 0xAA
+#define MOVEMENT_ACTION_END_TRANSFORM                   0xAB
 
 #define MOVEMENT_ACTION_STEP_END 0xFE
 #define MOVEMENT_ACTION_NONE     0xFF
