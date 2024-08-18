@@ -71,19 +71,19 @@ static const struct WindowTemplate sHelpBarWindowTemplate[] =
 
 static const u8 *const sHelpBarTexts[HELPBAR_COUNT] =
 {
-    [HELPBAR_NONE]                 = gText_Pokenav_ClearButtonList,
-    [HELPBAR_MAP_ZOOMED_OUT]       = gText_PokenavMap_ZoomedOutButtons,
-    [HELPBAR_MAP_ZOOMED_IN]        = gText_PokenavMap_ZoomedInButtons,
-    [HELPBAR_CONDITION_MON_LIST]   = gText_PokenavCondition_MonListButtons,
-    [HELPBAR_CONDITION_MON_STATUS] = gText_PokenavCondition_MonStatusButtons,
-    [HELPBAR_CONDITION_MARKINGS]   = gText_PokenavCondition_MarkingButtons,
-    [HELPBAR_MC_TRAINER_LIST]      = gText_PokenavMatchCall_TrainerListButtons,
-    [HELPBAR_MC_CALL_MENU]         = gText_PokenavMatchCall_CallMenuButtons,
-    [HELPBAR_MC_CHECK_PAGE]        = gText_PokenavMatchCall_CheckTrainerButtons,
-    [HELPBAR_RIBBONS_MON_LIST]     = gText_PokenavRibbons_MonListButtons,
-    [HELPBAR_RIBBONS_LIST]         = gText_PokenavRibbons_RibbonListButtons,
-    [HELPBAR_RIBBONS_CHECK]        = gText_PokenavRibbons_RibbonCheckButtons,
-    [HELPBAR_CONDITION_SWITCH_VIEW]= gText_PokenavCondition_SwitchViewButton,
+    [HELPBAR_NONE]                 = COMPOUND_STRING("{CLEAR 0x80}"),
+    [HELPBAR_MAP_ZOOMED_OUT]       = COMPOUND_STRING("{A_BUTTON}Zoom {B_BUTTON}Cancel"),
+    [HELPBAR_MAP_ZOOMED_IN]        = COMPOUND_STRING("{A_BUTTON}Full {B_BUTTON}Cancel"),
+    [HELPBAR_CONDITION_MON_LIST]   = COMPOUND_STRING("{A_BUTTON}Condition {B_BUTTON}Cancel"),
+    [HELPBAR_CONDITION_MON_STATUS] = COMPOUND_STRING("{A_BUTTON}Markings {B_BUTTON}Cancel"),
+    [HELPBAR_CONDITION_MARKINGS]   = COMPOUND_STRING("{A_BUTTON}Select mark {B_BUTTON}Cancel"),
+    [HELPBAR_MC_TRAINER_LIST]      = COMPOUND_STRING("{A_BUTTON}Menu {B_BUTTON}Cancel"),
+    [HELPBAR_MC_CALL_MENU]         = COMPOUND_STRING("{A_BUTTON}Ok {B_BUTTON}Cancel"),
+    [HELPBAR_MC_CHECK_PAGE]        = COMPOUND_STRING("{B_BUTTON}Cancel"),
+    [HELPBAR_RIBBONS_MON_LIST]     = COMPOUND_STRING("{A_BUTTON}Ribbons {B_BUTTON}Cancel"),
+    [HELPBAR_RIBBONS_LIST]         = COMPOUND_STRING("{A_BUTTON}Check {B_BUTTON}Cancel"),
+    [HELPBAR_RIBBONS_CHECK]        = COMPOUND_STRING("{B_BUTTON}Cancel"),
+    [HELPBAR_CONDITION_SWITCH_VIEW]= COMPOUND_STRING("{SELECT_BUTTON} Stats"),
 };
 
 static const u8 sHelpBarTextColors[3] =
