@@ -24,6 +24,7 @@
 #include "dma3.h"
 #include "event_data.h"
 #include "evolution_scene.h"
+#include "field_specials.h"
 #include "follow_me.h"
 #include "graphics.h"
 #include "gpu_regs.h"
@@ -3859,11 +3860,9 @@ static void DoBattleIntro(void)
                 gBattleScripting.battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
                 if (CheckBagHasItem(ITEM_DEVON_SCOPE, 1))
                     BattleScriptExecute(BattleScript_DevonScopeUnveiled);
-                else if ((VarGet(VAR_LAVARIDGE_TOWN_STATE) == 2 || VarGet(VAR_LAVARIDGE_TOWN_STATE) == 3) 
-                            && gSaveBlock2Ptr->playerGender == MALE)
+                else if (FollowerHasDevonScope() && gSaveBlock2Ptr->playerGender == MALE)
                     BattleScriptExecute(BattleScript_MayDevonScopeUnveiled);
-                else if ((VarGet(VAR_LAVARIDGE_TOWN_STATE) == 2 || VarGet(VAR_LAVARIDGE_TOWN_STATE) == 3) 
-                            && gSaveBlock2Ptr->playerGender != MALE)
+                else if (FollowerHasDevonScope() && gSaveBlock2Ptr->playerGender != MALE)
                     BattleScriptExecute(BattleScript_BrendanDevonScopeUnveiled);
             }
             (*state)++;

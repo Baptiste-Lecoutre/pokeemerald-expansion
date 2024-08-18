@@ -185,6 +185,15 @@
       "y": 26,
       "elevation": 0,
       "weather": "COORD_EVENT_WEATHER_SUNNY"
+    },
+    {
+      "type": "trigger",
+      "x": 22,
+      "y": 6,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "3",
+      "script": "AshenWoods_EventScript_WeAreInTheAshenWoods"
     }
   ],
   "bg_events": [

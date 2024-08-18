@@ -41,7 +41,7 @@ HauntedMansion_1F_EventScript_DefeatedDragapultGhost::
 	call_if_eq VAR_RESULT, MALE, HauntedMansion_1F_EventScript_MaySoThereAreGhostsHere
 	call_if_eq VAR_RESULT, FEMALE, HauntedMansion_1F_EventScript_BrendanSoThereAreGhostsHere
 	closemessage
-	setvar VAR_LAVARIDGE_TOWN_STATE, 3
+	setvar VAR_LAVARIDGE_TOWN_STATE, 5
 	releaseall
 	end
 

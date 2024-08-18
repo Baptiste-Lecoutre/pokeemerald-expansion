@@ -5,7 +5,7 @@ HauntedMansion_3F_MapScripts::
 	.byte 0
 
 HauntedMansion_3F_OnTransition:
-	call_if_gt VAR_LAVARIDGE_TOWN_STATE, 3, LavaridgeTown_EventScript_RemoveLittleGirl
+	call_if_gt VAR_LAVARIDGE_TOWN_STATE, 5, LavaridgeTown_EventScript_RemoveLittleGirl
 	end
 
 HauntedMansion_3F_EventScript_RemoveLittleGirl::
@@ -59,7 +59,7 @@ HauntedMansion_3F_EventScript_LittleGirl::
 HauntedMansion_3F_EventScript_LittleGirlEnd::
 	addvar VAR_POKE_VIAL_MAX_CHARGES, 1
 	addvar VAR_POKE_VIAL_CHARGES, 1
-	setvar VAR_LAVARIDGE_TOWN_STATE, 4
+	setvar VAR_LAVARIDGE_TOWN_STATE, 6
 	addvar VAR_PETALBURG_GYM_STATE, 1
 	call_if_eq VAR_PETALBURG_GYM_STATE, 7, Common_EventScript_ReadyPetalburgGymForBattle
 	fadescreenswapbuffers FADE_TO_BLACK

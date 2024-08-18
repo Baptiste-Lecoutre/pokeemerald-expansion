@@ -110,7 +110,33 @@
     }
   ],
   "coord_events": [
-
+    {
+      "type": "trigger",
+      "x": 32,
+      "y": 38,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "EmberPath_EventScript_ThisIsTheWayTrigger1"
+    },
+    {
+      "type": "trigger",
+      "x": 33,
+      "y": 37,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "EmberPath_EventScript_ThisIsTheWayTrigger2"
+    },
+    {
+      "type": "trigger",
+      "x": 34,
+      "y": 38,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "EmberPath_EventScript_ThisIsTheWayTrigger3"
+    }
   ],
   "bg_events": [
 

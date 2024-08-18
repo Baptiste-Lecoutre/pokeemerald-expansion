@@ -5777,3 +5777,8 @@ void SetPokedexCaughtFlag(void)
     GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_CAUGHT);
     GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_SEEN);
 }
+
+bool32 FollowerHasDevonScope(void)
+{
+    return (VarGet(VAR_LAVARIDGE_TOWN_STATE) >= 2 && VarGet(VAR_LAVARIDGE_TOWN_STATE) <= 5);
+}
