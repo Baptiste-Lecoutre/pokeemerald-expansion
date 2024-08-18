@@ -23,6 +23,8 @@
 #include "field_message_box.h"
 #include "tv.h"
 #include "battle_factory.h"
+#include "follow_me.h"
+#include "script_pokemon_util.h"
 #include "constants/abilities.h"
 #include "constants/apprentice.h"
 #include "constants/battle_dome.h"
@@ -1972,7 +1974,10 @@ static void HandleSpecialTrainerBattleEnd(void)
         CopyEReaderTrainerFarewellMessage();
         break;
     case SPECIAL_BATTLE_MULTI:
-        for (i = 0; i < 3; i++)
+    case SPECIAL_BATTLE_RAID:
+        if (PlayerHasFollower())
+            HealPlayerParty();
+        for (i = 0; i < MULTI_PARTY_SIZE; i++)
         {
             if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES))
                 gSaveBlock1Ptr->playerParty[i] = gPlayerParty[i];
