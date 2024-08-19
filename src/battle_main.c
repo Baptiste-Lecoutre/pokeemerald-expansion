@@ -4089,7 +4089,7 @@ static void TryDoEventsBeforeFirstTurn(void)
         if (gBattleTypeFlags & BATTLE_TYPE_RAID && !(gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
         {
             InitRaidBattleData();
-            gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+            gBattlerAttacker = GetRaidBossBattler();
             gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData.raidType].gimmick;
             gBattleCommunication[1] = gRaidTypes[gRaidData.raidType].rules;
             BattleScriptExecute(BattleScript_RaidIntro);
@@ -5459,7 +5459,7 @@ static bool32 TryDoGimmicksBeforeMoves(void)
     if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
     {
         u32 raidShockwaveNum = GetRaidShockwaveNum();
-        gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+        gBattlerAttacker = GetRaidBossBattler();
         gBattleStruct->raid.usedShockwave = TRUE;
 
         switch (gRaidTypes[gRaidData.raidType].shockwave)

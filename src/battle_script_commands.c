@@ -1416,7 +1416,7 @@ static void Cmd_attackcanceler(void)
 
     // Raid shields prevent status moves.
     if (IsRaidBoss(gBattlerTarget)
-        && GetBattlerPosition(gBattlerAttacker) != B_POSITION_OPPONENT_LEFT
+        && gBattlerAttacker != GetRaidBossBattler()
         && gBattleStruct->raid.shield > 0
         && IS_MOVE_STATUS(gCurrentMove))
     {
@@ -4128,7 +4128,7 @@ static void Cmd_cleareffectsonfaint(void)
             MarkBattlerForControllerExec(battler);
         }
 
-        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerSide(battler) == B_SIDE_PLAYER && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerSide(battler) == B_SIDE_PLAYER && IsBattlerAlive(GetRaidBossBattler()))
         {
             if (gCurrentMove != MOVE_STRUGGLE) // don't apply repeated attack probability twice
                 gBattleStruct->raid.movedTwice = FALSE;
@@ -4137,7 +4137,7 @@ static void Cmd_cleareffectsonfaint(void)
             {
                 u8 statId, increase;
                 if (!IsRaidBoss(gBattlerAttacker))
-                    gBattlerAttacker = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+                    gBattlerAttacker = GetRaidBossBattler();
                 increase = GetRaidBossKOStatIncrease(gBattlerAttacker);
 
                 if (increase)
@@ -11243,7 +11243,7 @@ static void Cmd_various(void)
             gBattleSpritesDataPtr->animationData->isCriticalCapture = 0;
             gBattleSpritesDataPtr->animationData->criticalCaptureSuccess = 0;
             gBattlerAttacker = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-            gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+            gBattlerTarget = GetRaidBossBattler();
 
             BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_3_SHAKES_SUCCESS);
             MarkBattlerForControllerExec(gBattlerAttacker);
@@ -17615,7 +17615,7 @@ void BS_DoRaidShockwave(void)
     default:
         for (i = 0; i < gBattlersCount; i++)
         {
-            if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
+            if (i == GetRaidBossBattler())
                 continue;
             if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
             {
@@ -17628,8 +17628,8 @@ void BS_DoRaidShockwave(void)
         break;
     case B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED:
         gBattleMons[gBattlerAttacker].status2 |= STATUS2_FOCUS_ENERGY;
-        if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC] < MAX_STAT_STAGE)
-            gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].statStages[STAT_ACC]++;
+        if (gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC] < MAX_STAT_STAGE)
+            gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC]++;
         break;
     case B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS:
         for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
