@@ -11284,7 +11284,7 @@ static void Cmd_various(void)
         {
             for (i = 0; i < gBattlersCount; i++)
             {
-                if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
+                if (i == GetRaidBossBattler())
                     continue;
                 if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
                 {
