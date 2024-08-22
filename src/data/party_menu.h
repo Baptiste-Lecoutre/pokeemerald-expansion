@@ -42,6 +42,7 @@ static const struct PartyMenuBoxInfoRects sPartyBoxInfoRects[] =
     {
         BlitBitmapToPartyWindow_LeftColumn,
         {
+            #if PARTY_MENU_STYLE == PARTY_MENU_STYLE_DEFAULT
             //The below are the x, y, width, and height for each of the following info
             24, 11, 40, 13, // Nickname
             32, 20, 32,  8, // Level
@@ -49,6 +50,23 @@ static const struct PartyMenuBoxInfoRects sPartyBoxInfoRects[] =
             38, 37, 24,  8, // HP
             53, 37, 24,  8, // Max HP
             24, 35, 48,  3  // HP bar
+            #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_HGSS
+            //The below are the x, y, width, and height for each of the following info
+            24, 11, 40, 13, // Nickname
+            32, 20, 32,  8, // Level
+            64, 20,  8,  8, // Gender
+            38, 37, 24,  8, // HP
+            53, 37, 24,  8, // Max HP
+            24, 35, 48,  3  // HP bar
+            #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW
+            //The below are the x, y, width, and height for each of the following info
+            29, 9, 40, 13, // Nickname
+            32, 20, 32,  8, // Level
+            64, 20,  8,  8, // Gender
+            33, 40, 24,  8, // HP
+            48, 40, 24,  8, // Max HP
+            24, 38, 48,  3  // HP bar
+            #endif
         },
         12, 34, 64, 16      // Description text (e.g. NO USE)
     },
@@ -56,13 +74,31 @@ static const struct PartyMenuBoxInfoRects sPartyBoxInfoRects[] =
     {
         BlitBitmapToPartyWindow_RightColumn,
         {
-             // See above comment
-             22,  3, 40, 13, // Nickname
-             30, 12, 32,  8, // Level
-             62, 12,  8,  8, // Gender
-            102, 12, 24,  8, // HP
-            117, 12, 24,  8, // Max HP
-             88, 10, 48,  3  // HP bar
+            #if PARTY_MENU_STYLE == PARTY_MENU_STYLE_DEFAULT
+            //The below are the x, y, width, and height for each of the following info
+            22,  3, 40, 13, // Nickname
+            30, 12, 32,  8, // Level
+            62, 12,  8,  8, // Gender
+           102, 12, 24,  8, // HP
+           117, 12, 24,  8, // Max HP
+            88, 10, 48,  3  // HP bar
+            #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_HGSS
+            //The below are the x, y, width, and height for each of the following info
+            22,  3, 40, 13, // Nickname
+            30, 12, 32,  8, // Level
+            62, 12,  8,  8, // Gender
+           102, 12, 24,  8, // HP
+           117, 12, 24,  8, // Max HP
+            88, 10, 48,  3  // HP bar
+            #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW
+            //The below are the x, y, width, and height for each of the following info
+            25,  2, 40, 13, // Nickname
+            30, 12, 32,  8, // Level
+            62, 12,  8,  8, // Gender
+            97, 16, 24,  8, // HP
+           112, 16, 24,  8, // Max HP
+            88, 14, 48,  3  // HP bar
+            #endif
         },
         77, 4, 64, 16        // Description text
     },
@@ -96,7 +132,7 @@ static const struct PartyMenuBoxInfoRects sPartyBoxInfoRects[] =
             56, 22, 48,  3  // HP bar
             #endif
         }, 
-        33, 13, 64, 16      // Description text (e.g. NO USE)
+        61, 19, 64, 16      // Description text (e.g. NO USE)
     },//
 };
 
@@ -106,6 +142,7 @@ static const struct PartyMenuBoxInfoRects sPartyBoxInfoRects[] =
 // Pokémon icon (x, y), held item (x, y), status condition (x, y), menu Poké Ball (x, y)
 static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
 {
+    #if PARTY_MENU_STYLE == PARTY_MENU_STYLE_DEFAULT
     [PARTY_LAYOUT_SINGLE] =
     {
         { 24,  14,  38,  33, 105,  33,  24,  18},
@@ -124,6 +161,45 @@ static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
         {104, 82, 108, 92, 136, 91, 102, 89},
         {104, 114, 108, 124, 136, 123, 102, 121},
     },
+    #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_HGSS
+    [PARTY_LAYOUT_SINGLE] =
+    {
+        { 24,  14,  38,  33, 105,  33,  24,  18},
+        {136,  22, 150,  41, 217,  41, 136,  26},
+        { 24,  54,  38,  73, 105,  73,  24,  58},
+        {136,  62, 150,  81, 217,  81, 136,  66},
+        { 24,  94,  38, 113, 105, 113,  24,  98},
+        {136, 102, 150, 121, 217, 121, 136, 106},
+    },
+    [PARTY_LAYOUT_DOUBLE] =
+    {
+        {16, 24, 20, 34, 50, 36, 16, 18},
+        {16, 80, 20, 90, 50, 92, 16, 74},
+        {104, 18, 108, 28, 136, 27, 102, 25},
+        {104, 50, 108, 60, 136, 59, 102, 57},
+        {104, 82, 108, 92, 136, 91, 102, 89},
+        {104, 114, 108, 124, 136, 123, 102, 121},
+    },
+    #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW
+    [PARTY_LAYOUT_SINGLE] =
+    {
+        { 24,  14,  38,  33, 105,  33,  24,  18},
+        {136,  22, 150,  41, 217,  41, 136,  26},
+        { 24,  54,  38,  73, 105,  73,  24,  58},
+        {136,  62, 150,  81, 217,  81, 136,  66},
+        { 24,  94,  38, 113, 105, 113,  24,  98},
+        {136, 102, 150, 121, 217, 121, 136, 106},
+    },
+    [PARTY_LAYOUT_DOUBLE] =
+    {
+        {16, 24, 20, 34, 50, 36, 16, 18},
+        {16, 80, 20, 90, 50, 92, 16, 74},
+        {104, 18, 108, 28, 136, 27, 102, 25},
+        {104, 50, 108, 60, 136, 59, 102, 57},
+        {104, 82, 108, 92, 136, 91, 102, 89},
+        {104, 114, 108, 124, 136, 123, 102, 121},
+    },
+    #endif
     [PARTY_LAYOUT_MULTI] =
     {
         {16, 24, 20, 34, 50, 36, 16, 18},
@@ -318,38 +394,38 @@ static const struct WindowTemplate sDoublePartyMenuWindowTemplate[] =
     { // Party mon 3
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 1,
+        .tilemapTop = 0, //1
         .width = 18,
-        .height = 3,
+        .height = 4, //3
         .paletteNum = 5,
         .baseBlock = 0xEF,
     },
     { // Party mon 4
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 5,
+        .tilemapTop = 4, //5
         .width = 18,
-        .height = 3,
+        .height = 4, //3
         .paletteNum = 6,
-        .baseBlock = 0x125,
+        .baseBlock = 0x137, //125
     },
     { // Party mon 5
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 9,
+        .tilemapTop = 8, //9
         .width = 18,
-        .height = 3,
+        .height = 4, //3
         .paletteNum = 7,
-        .baseBlock = 0x15B,
+        .baseBlock = 0x17F, //15B
     },
     { // Party mon 6
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 13,
+        .tilemapTop = 12, //13
         .width = 18,
-        .height = 3,
+        .height = 4, //3
         .paletteNum = 8,
-        .baseBlock = 0x191,
+        .baseBlock = 0x1C7, //191
     },
     [WIN_MSG] = {
         .bg = 2,
@@ -358,7 +434,7 @@ static const struct WindowTemplate sDoublePartyMenuWindowTemplate[] =
         .width = 28,
         .height = 4,
         .paletteNum = 14,
-        .baseBlock = 0x1DF,
+        .baseBlock = 0x227, //1DF +24
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -498,7 +574,7 @@ static const struct WindowTemplate sCancelButtonWindowTemplate =
     .width = 6,
     .height = 2,
     .paletteNum = 3,
-    .baseBlock = 0x207,
+    .baseBlock = 0x20F, //207
 };
 static const struct WindowTemplate sCancelButtonWindowTemplate_equal =
 {
@@ -508,7 +584,7 @@ static const struct WindowTemplate sCancelButtonWindowTemplate_equal =
     .width = 6,
     .height = 2,
     .paletteNum = 3,
-    .baseBlock = 0x207, //0x1C7,  //Custom party menu
+    .baseBlock = 0x20F, //0x1C7,  //Custom party menu
 };
 
 static const struct WindowTemplate sMultiCancelButtonWindowTemplate =
@@ -519,7 +595,7 @@ static const struct WindowTemplate sMultiCancelButtonWindowTemplate =
     .width = 6,
     .height = 2,
     .paletteNum = 3,
-    .baseBlock = 0x207,
+    .baseBlock = 0x20F,
 };
 static const struct WindowTemplate sMultiCancelButtonWindowTemplate_equal =
 {
@@ -529,7 +605,7 @@ static const struct WindowTemplate sMultiCancelButtonWindowTemplate_equal =
     .width = 6,
     .height = 2,
     .paletteNum = 3,
-    .baseBlock = 0x207, //0x1C7,  //Custom party menu
+    .baseBlock = 0x20F, //0x1C7,  //Custom party menu
 };
 
 static const struct WindowTemplate sConfirmButtonWindowTemplate =
@@ -540,7 +616,7 @@ static const struct WindowTemplate sConfirmButtonWindowTemplate =
     .width = 6,
     .height = 2,
     .paletteNum = 3,
-    .baseBlock = 0x1D3,
+    .baseBlock = 0x21B, //0x1D3
 };
 static const struct WindowTemplate sConfirmButtonWindowTemplate_equal =
 {
@@ -550,7 +626,7 @@ static const struct WindowTemplate sConfirmButtonWindowTemplate_equal =
     .width = 6,
     .height = 2,
     .paletteNum = 3,
-    .baseBlock = 0x213, //0x1D3,  //Custom party menu
+    .baseBlock = 0x21B, //0x1D3,  //Custom party menu
 };
 
 static const struct WindowTemplate sDefaultPartyMsgWindowTemplate =
@@ -732,10 +808,10 @@ static const struct WindowTemplate sUnusedWindowTemplate2 =
 // Plain tilemaps for party menu slots.
 // The versions with no HP bar are used by eggs, and in certain displays like registering at a battle facility.
 // There is no empty version of the main slot because it shouldn't ever be empty.
-static const u8 sSlotTilemap_Main[]      = INCBIN_U8("graphics/party_menu/slot_main.bin");
+//static const u8 sSlotTilemap_Main[]      = INCBIN_U8("graphics/party_menu/slot_main.bin");
 static const u8 sSlotTilemap_MainNoHP[]  = INCBIN_U8("graphics/party_menu/slot_main_no_hp.bin");
-static const u8 sSlotTilemap_Wide[]      = INCBIN_U8("graphics/party_menu/slot_wide.bin");
-static const u8 sSlotTilemap_WideNoHP[]  = INCBIN_U8("graphics/party_menu/slot_wide_no_hp.bin");
+//static const u8 sSlotTilemap_Wide[]      = INCBIN_U8("graphics/party_menu/slot_wide.bin");
+//static const u8 sSlotTilemap_WideNoHP[]  = INCBIN_U8("graphics/party_menu/slot_wide_no_hp.bin");
 static const u8 sSlotTilemap_WideEmpty[] = INCBIN_U8("graphics/party_menu/slot_wide_empty.bin");
 
 
@@ -764,6 +840,14 @@ static const u8 sEqualEmptySlotTileNums[] = {21, 22, 22, 22, 22, 22, 22, 22, 22,
                                              30,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 31,
                                              30,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 31,
                                              37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39};
+
+static const u8 sSlotTilemap_Main[]      = INCBIN_U8("graphics/party_menu/slot_main.bin");
+static const u8 sSlotTilemap_Wide[]      = INCBIN_U8("graphics/party_menu/slot_wide.bin");
+static const u8 sSlotTilemap_WideNoHP[]  = INCBIN_U8("graphics/party_menu/slot_wide_no_hp.bin");
+
+static const u8 sEmptySlotTileNums[] = {21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
+                                        30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31,
+                                        37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39};
 #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_HGSS
 const u32 gPartyMenuBg_Gfx[] = INCBIN_U32("graphics/party_menu/hgss/bg.4bpp.lz");
 const u32 gPartyMenuBg_Pal[] = INCBIN_U32("graphics/party_menu/hgss/bg.gbapal.lz");
@@ -788,10 +872,20 @@ static const u8 sEqualEmptySlotTileNums[] = { 0,  0,  0,  0,  0,  0,  0,  0,  0,
                                               0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
                                               0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
                                               0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};
+
+static const u8 sSlotTilemap_Main[]      = INCBIN_U8("graphics/party_menu/slot_main.bin");
+static const u8 sSlotTilemap_Wide[]      = INCBIN_U8("graphics/party_menu/slot_wide.bin");
+static const u8 sSlotTilemap_WideNoHP[]  = INCBIN_U8("graphics/party_menu/slot_wide_no_hp.bin");
+
+static const u8 sEmptySlotTileNums[] = {21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
+                                        30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31,
+                                        37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39};
 #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW
 const u32 gPartyMenuBg_Gfx[] = INCBIN_U32("graphics/party_menu/bw/bg.4bpp.lz");
 const u32 gPartyMenuBg_Pal[] = INCBIN_U32("graphics/party_menu/bw/bg.gbapal.lz");
 const u32 gPartyMenuBg_Tilemap[] = INCBIN_U32("graphics/party_menu/bw/bg.bin.lz");
+const u32 gPartyMenuBg_DoubleTilemap[] = INCBIN_U32("graphics/party_menu/bw/bg_double.bin.lz");
+const u32 gPartyMenuBg_ShowcaseTilemap[] = INCBIN_U32("graphics/party_menu/bw/bg_showcase.bin.lz");
 const u32 gPartyMenuPokeball_Gfx[] = INCBIN_U32("graphics/party_menu/bw/pokeball.4bpp.lz");
 const u32 gPartyMenuPokeballSmall_Gfx[] = INCBIN_U32("graphics/party_menu/pokeball_small.4bpp.lz"); //unused
 const u32 gPartyMenuPokeball_Pal[] = INCBIN_U32("graphics/party_menu/bw/pokeball.gbapal.lz");
@@ -812,11 +906,37 @@ static const u8 sEqualEmptySlotTileNums[] = {13, 14, 14, 14, 14, 14, 14, 14, 14,
                                              21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
                                              21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
                                              43, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 45};
-#endif
+
+static const u8 sSlotTilemap_Main[] = {24, 25, 25, 25, 48, 30, 30, 30, 30, 79,
+                                       32, 33, 33, 49, 38, 38, 38, 38, 38, 82,
+                                       32, 33, 49, 38, 38, 38, 38, 38, 38, 77,
+                                       32, 49, 38, 38, 38, 38, 38, 38, 57, 34,
+                                       76, 51, 52, 53, 53, 53, 53, 54, 39, 55,
+                                       81, 59, 60, 61, 61, 61, 62, 47, 47, 63,
+                                       78, 46, 46, 46, 46, 58, 41, 41, 41, 42};
+
+static const u8 sSlotTilemap_Wide[] = {24, 25, 25, 25, 25, 25, 48, 30, 30, 30, 30, 30, 30, 30, 56, 25, 25, 26,
+                                       32, 33, 33, 33, 33, 49, 38, 38, 38, 51, 52, 53, 53, 54, 39, 39, 39, 55,
+                                       32, 33, 33, 33, 49, 38, 38, 38, 38, 59, 60, 61, 62, 47, 47, 47, 47, 63,
+                                       40, 41, 41, 50, 46, 46, 46, 46, 46, 46, 46, 58, 41, 41, 41, 41, 41, 42};
+
+static const u8 sSlotTilemap_WideNoHP[] = {24, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 26,
+                                           32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34,
+                                           32, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 34,
+                                           40, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 42};
+
+static const u8 sEmptySlotTileNums[] = {13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 15,
+                                        21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
+                                        21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
+                                        43, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 45};
+/*static const u8 sSlotTilemap_Main[]      = INCBIN_U8("graphics/party_menu/slot_main.bin");
+static const u8 sSlotTilemap_Wide[]      = INCBIN_U8("graphics/party_menu/slot_wide.bin");
+static const u8 sSlotTilemap_WideNoHP[]  = INCBIN_U8("graphics/party_menu/slot_wide_no_hp.bin");
 
 static const u8 sEmptySlotTileNums[] = {21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
                                         30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31,
-                                        37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39};
+                                        37, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 39};*/
+#endif
 
 //
 // Palette offsets
