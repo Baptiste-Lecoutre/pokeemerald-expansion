@@ -161,6 +161,24 @@ static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
         {104, 82, 108, 92, 136, 91, 102, 89},
         {104, 114, 108, 124, 136, 123, 102, 121},
     },
+    [PARTY_LAYOUT_MULTI] =
+    {
+        {16, 24, 20, 34, 50, 36, 16, 18},
+        {16, 80, 20, 90, 50, 92, 16, 74},
+        {104, 26, 106, 36, 136, 35, 102, 33},
+        {104, 50, 106, 60, 136, 59, 102, 57},
+        {104, 82, 106, 92, 136, 91, 102, 89},
+        {104, 106, 106, 116, 136, 115, 102, 113},
+    },
+    [PARTY_LAYOUT_MULTI_SHOWCASE] =
+    {
+        {16, 32, 20, 42, 50, 44, 16, 26},
+        {104, 34, 106, 44, 136, 43, 102, 41},
+        {104, 58, 106, 68, 136, 67, 102, 65},
+        {16, 104, 20, 114, 50, 116, 16, 98},
+        {104, 106, 106, 116, 136, 115, 102, 113},
+        {104, 130, 106, 140, 136, 139, 102, 137},
+    },
     #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_HGSS
     [PARTY_LAYOUT_SINGLE] =
     {
@@ -179,6 +197,24 @@ static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
         {104, 50, 108, 60, 136, 59, 102, 57},
         {104, 82, 108, 92, 136, 91, 102, 89},
         {104, 114, 108, 124, 136, 123, 102, 121},
+    },
+    [PARTY_LAYOUT_MULTI] =
+    {
+        {16, 24, 20, 34, 50, 36, 16, 18},
+        {16, 80, 20, 90, 50, 92, 16, 74},
+        {104, 26, 106, 36, 136, 35, 102, 33},
+        {104, 50, 106, 60, 136, 59, 102, 57},
+        {104, 82, 106, 92, 136, 91, 102, 89},
+        {104, 106, 106, 116, 136, 115, 102, 113},
+    },
+    [PARTY_LAYOUT_MULTI_SHOWCASE] =
+    {
+        {16, 32, 20, 42, 50, 44, 16, 26},
+        {104, 34, 106, 44, 136, 43, 102, 41},
+        {104, 58, 106, 68, 136, 67, 102, 65},
+        {16, 104, 20, 114, 50, 116, 16, 98},
+        {104, 106, 106, 116, 136, 115, 102, 113},
+        {104, 130, 106, 140, 136, 139, 102, 137},
     },
     #elif PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW
     [PARTY_LAYOUT_SINGLE] =
@@ -199,7 +235,6 @@ static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
         {104, 82, 108, 92, 136, 91, 102, 89},
         {104, 114, 108, 124, 136, 123, 102, 121},
     },
-    #endif
     [PARTY_LAYOUT_MULTI] =
     {
         {16, 24, 20, 34, 50, 36, 16, 18},
@@ -212,12 +247,13 @@ static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
     [PARTY_LAYOUT_MULTI_SHOWCASE] =
     {
         {16, 32, 20, 42, 50, 44, 16, 26},
-        {104, 34, 106, 44, 136, 43, 102, 41},
+        {104, 26, 106, 36, 136, 35, 102, 33},
         {104, 58, 106, 68, 136, 67, 102, 65},
         {16, 104, 20, 114, 50, 116, 16, 98},
-        {104, 106, 106, 116, 136, 115, 102, 113},
+        {104, 98, 106, 108, 136, 107, 102, 105},
         {104, 130, 106, 140, 136, 139, 102, 137},
     },
+    #endif
 };
 
 // Used only when both Cancel and Confirm are present
@@ -521,20 +557,20 @@ static const struct WindowTemplate sShowcaseMultiPartyMenuWindowTemplate[] =
     { // Party mon 2
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 3,
+        .tilemapTop = 1, //3
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 5,
         .baseBlock = 0xA9,
     },
     { // Party mon 3
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 6,
+        .tilemapTop = 5,//6
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 6,
-        .baseBlock = 0xDF,
+        .baseBlock = 0xF1,//DF
     },
     { // Party mon 4
         .bg = 2,
@@ -543,25 +579,25 @@ static const struct WindowTemplate sShowcaseMultiPartyMenuWindowTemplate[] =
         .width = 10,
         .height = 7,
         .paletteNum = 4,
-        .baseBlock = 0x115,
+        .baseBlock = 0x139,//115
     },
     { // Party mon 5
         .bg = 2,
         .tilemapLeft = 12,
-        .tilemapTop = 12,
+        .tilemapTop = 11, //12
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 7,
-        .baseBlock = 0x16B,
+        .baseBlock = 0x17F,//16B
     },
     { // Party mon 6
         .bg = 2,
         .tilemapLeft = 12,
         .tilemapTop = 15,
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 8,
-        .baseBlock = 0x1A1,
+        .baseBlock = 0x1C7,//1A1
     },
     DUMMY_WIN_TEMPLATE
 };

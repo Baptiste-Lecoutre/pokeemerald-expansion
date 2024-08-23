@@ -1270,7 +1270,7 @@ static bool8 CreatePartyMonSpritesLoop(void)
 
 static void CreateCancelConfirmPokeballSprites(void)
 {
-    if (gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE)
+    if (PARTY_MENU_STYLE != PARTY_MENU_STYLE_BW && gPartyMenu.menuType == PARTY_MENU_TYPE_MULTI_SHOWCASE)
     {
         // The showcase has no Cancel/Confirm buttons
         FillBgTilemapBufferRect(1, 14, 23, 17, 7, 2, 1);
@@ -2447,7 +2447,10 @@ static void BlitBitmapToPartyWindow(u8 windowId, const u8 *b, u8 c, u8 x, u8 y, 
     if (pixels != NULL)
     {
         #if PARTY_MENU_ALPHA == TRUE
-        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_ALL);
+        if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_SHOWCASE)
+            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_TGT1_BG2 | BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_ALL);
+        else
+            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_ALL);
         SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(16, 8));
         SetGpuReg(REG_OFFSET_BLDY, 0);
         #endif
