@@ -901,7 +901,7 @@ static bool8 AllocPartyMenuBgGfx(void)
     case 1:
         if (!IsDma3ManagerBusyWithBgCopy())
         {
-            if (gPartyMenu.layout == PARTY_LAYOUT_DOUBLE && PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW)
+            if ((gPartyMenu.layout == PARTY_LAYOUT_DOUBLE || gPartyMenu.layout == PARTY_LAYOUT_MULTI) && PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW)
                 LZDecompressWram(gPartyMenuBg_DoubleTilemap, sPartyBgTilemapBuffer);
             else if (gPartyMenu.layout == PARTY_LAYOUT_MULTI_SHOWCASE && PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW)
                 LZDecompressWram(gPartyMenuBg_ShowcaseTilemap, sPartyBgTilemapBuffer);

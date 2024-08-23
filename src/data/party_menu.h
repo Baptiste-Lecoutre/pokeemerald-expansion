@@ -239,10 +239,10 @@ static const u8 sPartyMenuSpriteCoords[PARTY_LAYOUT_COUNT][PARTY_SIZE][4 * 2] =
     {
         {16, 24, 20, 34, 50, 36, 16, 18},
         {16, 80, 20, 90, 50, 92, 16, 74},
-        {104, 26, 106, 36, 136, 35, 102, 33},
+        {104, 18, 106, 28, 136, 27, 102, 25},
         {104, 50, 106, 60, 136, 59, 102, 57},
         {104, 82, 106, 92, 136, 91, 102, 89},
-        {104, 106, 106, 116, 136, 115, 102, 113},
+        {104, 114, 106, 124, 136, 123, 102, 121},
     },
     [PARTY_LAYOUT_MULTI_SHOWCASE] =
     {
@@ -498,38 +498,38 @@ static const struct WindowTemplate sMultiPartyMenuWindowTemplate[] =
     { // Party mon 3
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 2,
+        .tilemapTop = 0,//2
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 5,
         .baseBlock = 0xEF,
     },
     { // Party mon 4
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 5,
+        .tilemapTop = 4,//5
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 6,
-        .baseBlock = 0x125,
+        .baseBlock = 0x137,//125
     },
     { // Party mon 5
         .bg = 0,
         .tilemapLeft = 12,
-        .tilemapTop = 9,
+        .tilemapTop = 8,//9
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 7,
-        .baseBlock = 0x15B,
+        .baseBlock = 0x17F,//15B
     },
     { // Party mon 6
         .bg = 0,
         .tilemapLeft = 12,
         .tilemapTop = 12,
         .width = 18,
-        .height = 3,
+        .height = 4,//3
         .paletteNum = 8,
-        .baseBlock = 0x191,
+        .baseBlock = 0x1C7,//191
     },
     [WIN_MSG] = {
         .bg = 2,
@@ -538,7 +538,7 @@ static const struct WindowTemplate sMultiPartyMenuWindowTemplate[] =
         .width = 28,
         .height = 4,
         .paletteNum = 14,
-        .baseBlock = 0x1DF,
+        .baseBlock = 0x227,//1DF + 24
     },
     DUMMY_WIN_TEMPLATE
 };
