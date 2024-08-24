@@ -273,6 +273,7 @@ static const u8 sText_MenuDebug[] = _("Debug");
 static const u8 sText_TownMap[] = _("Town Map");
 static const u8 sText_MatchCall[] = _("Match Call");
 static const u8 sText_TrainerRadar[] = _("Trainer Database");
+static const u8 sText_AccessPC[] = _("Access your PC.");
 
 static const struct MenuAction sStartMenuItems[] =
 {
@@ -291,10 +292,10 @@ static const struct MenuAction sStartMenuItems[] =
     [MENU_ACTION_PYRAMID_BAG]     = {gText_MenuBag,     {.u8_void = StartMenuBattlePyramidBagCallback}},
     [MENU_ACTION_DEBUG]           = {sText_MenuDebug,   {.u8_void = StartMenuDebugCallback}},
     [MENU_ACTION_DEXNAV]          = {gText_MenuDexNav,  {.u8_void = StartMenuDexNavCallback}},
-    [MENU_ACTION_PC]              = {gText_Pokenav_Access_PC, {.u8_void = StartMenuAccessPCCallback}},
-    [MENU_ACTION_TOWN_MAP]        = {sText_TownMap, {.u8_void = StartMenuTownMapCallback}},
-    [MENU_ACTION_MATCH_CALL]      = {sText_MatchCall, {.u8_void = StartMenuMatchCallCallback}},
-    [MENU_ACTION_TRAINER_RADAR]   = {sText_TrainerRadar, {.u8_void = StartMenuTrainerRadarCallback}},
+    [MENU_ACTION_PC]              = {sText_AccessPC,    {.u8_void = StartMenuAccessPCCallback}},
+    [MENU_ACTION_TOWN_MAP]        = {sText_TownMap,     {.u8_void = StartMenuTownMapCallback}},
+    [MENU_ACTION_MATCH_CALL]      = {sText_MatchCall,   {.u8_void = StartMenuMatchCallCallback}},
+    [MENU_ACTION_TRAINER_RADAR]   = {sText_TrainerRadar,{.u8_void = StartMenuTrainerRadarCallback}},
 };
 
 static const struct BgTemplate sBgTemplates_LinkBattleSave[] =
@@ -1124,6 +1125,7 @@ static bool8 SaveCallback(void)
         return FALSE;
     case SAVE_CANCELED: // Back to start menu
         ClearDialogWindowAndFrameToTransparent(0, FALSE);
+        gShouldStartMenuIconsBePrinted = TRUE;
         InitStartMenu();
         gMenuCallback = HandleStartMenuInput;
         return FALSE;

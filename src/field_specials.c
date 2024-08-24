@@ -72,6 +72,7 @@
 #include "constants/battle_frontier.h"
 #include "constants/weather.h"
 #include "constants/metatile_labels.h"
+#include "constants/rgb.h"
 #include "palette.h"
 #include "battle_util.h"
 
@@ -982,8 +983,8 @@ static bool32 IsBuildingPCTile(u32 tileId)
 
 static bool32 IsPlayerHousePCTile(u32 tileId)
 {
-    return gMapHeader.mapLayout->secondaryTileset == &gTileset_BrendansMaysHouse 
-        && (tileId == METATILE_BrendansMaysHouse_BrendanPC_On 
+    return gMapHeader.mapLayout->secondaryTileset == &gTileset_BrendansMaysHouse
+        && (tileId == METATILE_BrendansMaysHouse_BrendanPC_On
             || tileId == METATILE_BrendansMaysHouse_BrendanPC_Off
             || tileId == METATILE_BrendansMaysHouse_MayPC_On
             || tileId == METATILE_BrendansMaysHouse_MayPC_Off);
@@ -4157,7 +4158,7 @@ void SetDeoxysRockPalette(void)
     u32 paletteNum = IndexOfSpritePaletteTag(OBJ_EVENT_PAL_TAG_BIRTH_ISLAND_STONE);
     LoadPalette(&sDeoxysRockPalettes[(u8)VarGet(VAR_DEOXYS_ROCK_LEVEL)], OBJ_PLTT_ID(paletteNum), PLTT_SIZEOF(4));
     // Set faded to all black, weather blending handled during fade-in
-    CpuFill16(0, &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)], 32);
+    CpuFill16(RGB_BLACK, &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)], PLTT_SIZE_4BPP);
 }
 
 void SetPCBoxToSendMon(u8 boxId)
@@ -5775,4 +5776,9 @@ void SetPokedexCaughtFlag(void)
     u32 species = VarGet(VAR_RESULT);
     GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_CAUGHT);
     GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_SEEN);
+}
+
+bool32 FollowerHasDevonScope(void)
+{
+    return (VarGet(VAR_LAVARIDGE_TOWN_STATE) >= 2 && VarGet(VAR_LAVARIDGE_TOWN_STATE) <= 6);
 }

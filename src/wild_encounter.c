@@ -14,6 +14,7 @@
 #include "tv.h"
 #include "link.h"
 #include "script.h"
+#include "follow_me.h"
 #include "battle_debug.h"
 #include "battle_pike.h"
 #include "battle_pyramid.h"
@@ -1244,6 +1245,8 @@ bool8 TryDoDoubleWildBattle(void)
 {
     if (CheckDevonScopeInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
         return FALSE;
+    else if (PlayerHasFollower())
+        return TRUE;
     else if (GetSafariZoneFlag()
       || (B_DOUBLE_WILD_REQUIRE_2_MONS == TRUE && GetMonsStateToDoubles() != PLAYER_HAS_TWO_USABLE_MONS))
         return FALSE;

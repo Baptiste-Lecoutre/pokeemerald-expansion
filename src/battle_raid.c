@@ -535,6 +535,7 @@ bool32 InitCustomRaidData(void)
 void InitRaidBattleData(void)
 {
     u32 i;
+    u32 raidBossBattler = GetRaidBossBattler();
 
     gBattleStruct->raid.shieldsRemaining = GetRaidShieldThresholdTotalNumber();
     gBattleStruct->raid.nextShield = GetNextShieldThreshold();
@@ -560,20 +561,26 @@ void InitRaidBattleData(void)
     {
         gBattleStruct->raid.shield = GetShieldAmount();
         CreateAllRaidBarrierSprites();
-        RaidBarrier_SetVisibilities(gHealthboxSpriteIds[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)], TRUE);
+        RaidBarrier_SetVisibilities(gHealthboxSpriteIds[raidBossBattler], TRUE);
 
-        if (gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
-            gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].moves[3] = MOVE_DRAGON_ASCENT;
+        if (gBattleMons[raidBossBattler].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
+            gBattleMons[raidBossBattler].moves[3] = MOVE_DRAGON_ASCENT;
     }
 
     // Update HP Multiplier.
-    RecalcBattlerStats(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &gEnemyParty[0]);
+    RecalcBattlerStats(raidBossBattler, &gEnemyParty[0]);
+}
+
+// return the raid boss battlerId
+u32 GetRaidBossBattler(void)
+{
+    return GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
 }
 
 // Returns whether the target is a Raid Boss. Includes battle type flag check.
-bool32 IsRaidBoss(u16 battlerId)
+bool32 IsRaidBoss(u32 battlerId)
 {
-    return (gBattleTypeFlags & BATTLE_TYPE_RAID) && GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT;
+    return (gBattleTypeFlags & BATTLE_TYPE_RAID) && battlerId == GetRaidBossBattler();
 }
 
 // Returns the battle transition ID for the Raid battle.
@@ -591,7 +598,7 @@ u8 GetRaidBattleTransition(void)
 // Applies the HP multiplier for Raid Bosses.
 // Ideally, I should have used UQ_4_12 all the way, but the possible values are to low for tera multipliers (limited to 16).
 // Hence the redundancy in the code below
-void ApplyRaidHPMultiplier(u16 battlerId, struct Pokemon* mon)
+void ApplyRaidHPMultiplier(u32 battlerId, struct Pokemon* mon)
 {
     u16 mult, hp, maxHP;
 
@@ -745,7 +752,7 @@ u8 GetRaidRepeatedAttackChance(void)
 
 u8 GetRaidShockwaveChance(void) // to be adjusted
 {
-    if (gDisableStructs[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].isFirstTurn)
+    if (gDisableStructs[GetRaidBossBattler()].isFirstTurn)
 		return 0; //Don't use first attack with this
 
     return gRaidShockwaveChance[gRaidTypes[gRaidData.raidType].shockwave][gRaidData.rank];
@@ -890,8 +897,7 @@ static u16 GetNextShieldThreshold(void)
 
 u16 GetTeraRaidShieldProtectedHP(void)
 {
-    u32 battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-    return (gTeraRaidHPShieldProtected[gRaidData.rank] + Random()%5)* gBattleMons[battler].maxHP / 100;
+    return (gTeraRaidHPShieldProtected[gRaidData.rank] + Random()%5)* gBattleMons[GetRaidBossBattler()].maxHP / 100;
 }
 
 // Updates the state of the Raid shield (set up, clearing, or breaking individual barriers).
@@ -901,7 +907,7 @@ bool32 UpdateRaidShield(void)
     if (gBattleStruct->raid.state & RAID_CREATE_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_CREATE_SHIELD;
-        gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+        gBattlerTarget = GetRaidBossBattler();
         gBattleStruct->raid.shieldsRemaining--;
 
         // Set up shield data.
@@ -1149,7 +1155,7 @@ static const s8 sTeraBarrierPosition[2] = {30, 9};
 // Sync up barrier sprites with healthbox.
 static void SpriteCb_RaidBarrier(struct Sprite *sprite)
 {
-    u8 healthboxSpriteId = gBattleSpritesDataPtr->battleBars[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].healthboxSpriteId;
+    u8 healthboxSpriteId = gBattleSpritesDataPtr->battleBars[GetRaidBossBattler()].healthboxSpriteId;
     sprite->y2 = gSprites[healthboxSpriteId].y2;
 }
 
@@ -1249,10 +1255,11 @@ static void FillTeraBarrierBar(u8 *dst)
 static u32 CreateRaidBarrierSprite(u8 index)
 {
     u32 spriteId;
+    u32 raidBossBattler = GetRaidBossBattler();
     s16 x, y;
-    u16 species = gBattleMons[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].species;
+    u16 species = gBattleMons[raidBossBattler].species;
 
-    GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
+    GetBattlerHealthboxCoords(raidBossBattler, &x, &y);
 
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
@@ -1298,7 +1305,7 @@ static u32 CreateRaidBarrierSprite(u8 index)
         spriteId = CreateSprite(&sSpriteTemplate_MaxRaidBarrier, x, y, 0);
     }
 
-    gSprites[spriteId].tBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+    gSprites[spriteId].tBattler = raidBossBattler;
     return spriteId;
 }
 
@@ -1461,8 +1468,6 @@ static void FillRaidTimerBar(u8 *dst, u32 index)
 
 void CreateRaidTimerSprites(void)
 {
-
-    u32 spriteId;
     s16 x, y;
 
     if (gBattleStruct->raid.timerSpriteIds[0] == MAX_SPRITES)
@@ -1474,7 +1479,7 @@ void CreateRaidTimerSprites(void)
         // modify gfx
         FillRaidTimerBar(gfxLeft, 0);
 
-        GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
+        GetBattlerHealthboxCoords(GetRaidBossBattler(), &x, &y);
         x += sRaidTimerPosition[0][0];
         y += sRaidTimerPosition[0][1];
 
@@ -1493,7 +1498,7 @@ void CreateRaidTimerSprites(void)
         // modify gfx
         FillRaidTimerBar(gfxRight, 1);
 
-        GetBattlerHealthboxCoords(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), &x, &y);
+        GetBattlerHealthboxCoords(GetRaidBossBattler(), &x, &y);
         x += sRaidTimerPosition[1][0];
         y += sRaidTimerPosition[1][1];
 

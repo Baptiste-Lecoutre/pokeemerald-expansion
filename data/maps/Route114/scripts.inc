@@ -278,7 +278,7 @@ Route114_EventScript_ReceiveGoodRod::
 Route114_EventScript_GiveGyaradosToPlayer::
 	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_GYARADOS
 	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
-	givemon SPECIES_GYARADOS, VAR_RESULT, item=ITEM_GYARADOSITE, nature=NATURE_ADAMANT, abilityNum=2, hpEv=252, atkEv=252, speedEv=252, hpIv=31, atkIv=31, defIv=31, speedIv=31, spAtkIv=31, spDefIv=31, move1=MOVE_WATERFALL, move2=MOVE_EARTHQUAKE, move3=MOVE_ICICLE_CRASH, move4=MOVE_DRAGON_DANCE, isShiny=TRUE, teraType=TYPE_STELLAR
+	givemon SPECIES_GYARADOS, VAR_RESULT, item=ITEM_GYARADOSITE, nature=NATURE_ADAMANT, abilityNum=2, hpEv=252, atkEv=252, speedEv=252, hpIv=31, atkIv=31, defIv=31, speedIv=31, spAtkIv=31, spDefIv=31, move1=MOVE_WATERFALL, move2=MOVE_EARTHQUAKE, move3=MOVE_ICICLE_CRASH, move4=MOVE_DRAGON_DANCE, isShiny=TRUE, teraType=TYPE_GROUND
 	goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, Route114_EventScript_ReceiveGyaradosParty
 	goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, Route114_EventScript_ReceiveGyaradosPC
 	goto Common_EventScript_NoMoreRoomForPokemon

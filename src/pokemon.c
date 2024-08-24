@@ -2250,14 +2250,14 @@ u8 CountAliveMonsInBattle(u8 caseId, u32 battler)
     case BATTLE_ALIVE_EXCEPT_BATTLER:
         for (i = 0; i < MAX_BATTLERS_COUNT; i++)
         {
-            if (i != battler && !(gAbsentBattlerFlags & gBitTable[i]))
+            if (i != battler && !(gAbsentBattlerFlags & (1u << i)))
                 retVal++;
         }
         break;
     case BATTLE_ALIVE_SIDE:
         for (i = 0; i < MAX_BATTLERS_COUNT; i++)
         {
-            if (GetBattlerSide(i) == GetBattlerSide(battler) && !(gAbsentBattlerFlags & gBitTable[i]))
+            if (GetBattlerSide(i) == GetBattlerSide(battler) && !(gAbsentBattlerFlags & (1u << i)))
                 retVal++;
         }
         break;
@@ -2285,7 +2285,7 @@ u8 GetDefaultMoveTarget(u8 battlerId)
     }
     else
     {
-        if ((gAbsentBattlerFlags & gBitTable[opposing]))
+        if ((gAbsentBattlerFlags & (1u << opposing)))
             return GetBattlerAtPosition(BATTLE_PARTNER(opposing));
         else
             return GetBattlerAtPosition(opposing);
@@ -2861,7 +2861,7 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
                         || substruct1->move2 == move
                         || substruct1->move3 == move
                         || substruct1->move4 == move)
-                        retVal |= gBitTable[i];
+                        retVal |= (1u << i);
                     i++;
                 }
             }
@@ -3493,7 +3493,15 @@ u8 GiveMonToPlayer(struct Pokemon *mon)
     }
 
     if (i >= PARTY_SIZE)
+    {
+        if (gSpecialVar_0x8004 < PARTY_SIZE)
+        {
+            CopyMon(&gEnemyParty[PARTY_SIZE-1], &gPlayerParty[gSpecialVar_0x8004], sizeof(*mon));
+            CopyMon(&gPlayerParty[gSpecialVar_0x8004], mon, sizeof(*mon));
+            CopyMon(mon, &gEnemyParty[PARTY_SIZE-1], sizeof(*mon));
+        }
         return CopyMonToPC(mon);
+    }
 
     CopyMon(&gPlayerParty[i], mon, sizeof(*mon));
     gPlayerPartyCount = i + 1;
@@ -5509,7 +5517,7 @@ void RandomlyGivePartyPokerus(struct Pokemon *party)
         }
         while (!GetMonData(mon, MON_DATA_SPECIES, 0) || GetMonData(mon, MON_DATA_IS_EGG, 0));
 
-        if (!(CheckPartyHasHadPokerus(party, gBitTable[rnd])))
+        if (!(CheckPartyHasHadPokerus(party, 1u << rnd)))
         {
             u8 rnd2;
 
@@ -6920,9 +6928,9 @@ void TrySpecialOverworldEvo(void)
     for (i = 0; i < PARTY_SIZE; i++)
     {
         u16 targetSpecies = GetEvolutionTargetSpecies(&gPlayerParty[i], EVO_MODE_OVERWORLD_SPECIAL, evoMethod, SPECIES_NONE);
-        if (targetSpecies != SPECIES_NONE && !(sTriedEvolving & gBitTable[i]))
+        if (targetSpecies != SPECIES_NONE && !(sTriedEvolving & (1u << i)))
         {
-            sTriedEvolving |= gBitTable[i];
+            sTriedEvolving |= 1u << i;
             if(gMain.callback2 == TrySpecialOverworldEvo) // This fixes small graphics glitches.
                 EvolutionScene(&gPlayerParty[i], targetSpecies, canStopEvo, i);
             else
@@ -7272,7 +7280,7 @@ bool8 ShouldUnveilGhost(void)
 {
     if (CheckBagHasItem(ITEM_DEVON_SCOPE, 1))
         return TRUE;
-    else if (VarGet(VAR_LAVARIDGE_TOWN_STATE) == 2 || VarGet(VAR_LAVARIDGE_TOWN_STATE) == 3)
+    else if (FollowerHasDevonScope())
         return TRUE;
     else
         return FALSE;
@@ -7537,4 +7545,27 @@ u32 CheckDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler)
         return TYPE_WATER;
 
     return type;
+}
+
+bool32 IsMilceryAndCanEvolve(struct Pokemon *mon) {
+    u16 species = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u16 heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, 0);
+    bool32 holdingSweet = FALSE;
+
+    switch(heldItem) {
+        case ITEM_STRAWBERRY_SWEET:
+        case ITEM_LOVE_SWEET: 
+        case ITEM_BERRY_SWEET:
+        case ITEM_CLOVER_SWEET:
+        case ITEM_FLOWER_SWEET:
+        case ITEM_STAR_SWEET:
+        case ITEM_RIBBON_SWEET:
+            holdingSweet = TRUE;
+            break;
+        default:
+            holdingSweet = FALSE;
+            break;
+    }
+
+    return (species == SPECIES_MILCERY && holdingSweet);
 }

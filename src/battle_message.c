@@ -895,10 +895,12 @@ static const u8 sText_ShedItsTail[] = _("{B_ATK_NAME_WITH_PREFIX} shed its tail\
 static const u8 sText_PkmnTerastallizedInto[] = _("{B_ATK_NAME_WITH_PREFIX} terastallized\ninto the {B_BUFF1} type!");
 static const u8 sText_SupersweetAromaWafts[] = _("A supersweet aroma is wafting from\nthe syrup covering {B_ATK_NAME_WITH_PREFIX}!");
 static const u8 sText_TidyingUpComplete[] = _("Tidying up complete!");
+static const u8 sText_SendWhichMonToPC[] = _("Do you want {B_DEF_NAME}\nto join your party?");
 static const u8 sText_FickleBeamDoubled[] = _("{B_ATK_NAME_WITH_PREFIX} is going all\nout for this attack!");
 
 const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
 {
+    [STRINGID_SENDWHICHMONTOPC - BATTLESTRINGS_TABLE_START] = sText_SendWhichMonToPC,
     [STRINGID_DEVONSCOPEUNVEILED - BATTLESTRINGS_TABLE_START] = sText_DevonScopeUnveil,
     [STRINGID_MAYDEVONSCOPEUNVEILED - BATTLESTRINGS_TABLE_START] = sText_MayDevonScopeUnveil,
     [STRINGID_BRENDANDEVONSCOPEUNVEILED - BATTLESTRINGS_TABLE_START] = sText_BrendanDevonScopeUnveil,

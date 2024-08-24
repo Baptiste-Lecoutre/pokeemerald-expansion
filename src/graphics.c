@@ -1814,6 +1814,7 @@ const u16 gContestResultsTitle_Tilemap[]        = INCBIN_U16("graphics/contest/r
 
 const u16 gPokenavCondition_Pal[] = INCBIN_U16("graphics/pokenav/condition/graph.gbapal");
 const u32 gPokenavCondition_Gfx[] = INCBIN_U32("graphics/pokenav/condition/graph.4bpp.lz");
+const u32 gPokenavConditionPotential_Gfx[] = INCBIN_U32("graphics/pokenav/condition/graph_potential.4bpp.lz");
 const u32 gPokenavCondition_Tilemap[] = INCBIN_U32("graphics/pokenav/condition/graph.bin.lz");
 
 const u16 gPokenavOptions_Tilemap[] = INCBIN_U16("graphics/pokenav/options/options.bin");

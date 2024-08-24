@@ -23,6 +23,8 @@
 #include "field_message_box.h"
 #include "tv.h"
 #include "battle_factory.h"
+#include "follow_me.h"
+#include "script_pokemon_util.h"
 #include "constants/abilities.h"
 #include "constants/apprentice.h"
 #include "constants/battle_dome.h"
@@ -76,7 +78,6 @@ static void FillTentTrainerParty_(u16 trainerId, u8 firstMonId, u8 monCount);
 static void FillFactoryFrontierTrainerParty(u16 trainerId, u8 firstMonId);
 static void FillFactoryTentTrainerParty(u16 trainerId, u8 firstMonId);
 static u8 GetFrontierTrainerFixedIvs(u16 trainerId);
-static void FillPartnerParty(u16 trainerId);
 #if FREE_BATTLE_TOWER_E_READER == FALSE
 static void SetEReaderTrainerChecksum(struct BattleTowerEReaderTrainer *ereaderTrainer);
 #endif //FREE_BATTLE_TOWER_E_READER
@@ -1973,7 +1974,10 @@ static void HandleSpecialTrainerBattleEnd(void)
         CopyEReaderTrainerFarewellMessage();
         break;
     case SPECIAL_BATTLE_MULTI:
-        for (i = 0; i < 3; i++)
+    case SPECIAL_BATTLE_RAID:
+        if (PlayerHasFollower())
+            HealPlayerParty();
+        for (i = 0; i < MULTI_PARTY_SIZE; i++)
         {
             if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES))
                 gSaveBlock1Ptr->playerParty[i] = gPlayerParty[i];
@@ -2126,7 +2130,7 @@ void DoSpecialTrainerBattle(void)
             gBattleTypeFlags = BATTLE_TYPE_TRAINER | BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
         }
 
-        gPartnerTrainerId = VarGet(gSpecialVar_0x8006) + TRAINER_PARTNER(PARTNER_NONE);
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(gSpecialVar_0x8006)); // automatic handling of the wally/red/rival partners over story progression
         FillPartnerParty(gPartnerTrainerId);
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);
@@ -3038,7 +3042,7 @@ void TryHideBattleTowerReporter(void)
 
 #define STEVEN_OTID 61226
 
-static void FillPartnerParty(u16 trainerId)
+void FillPartnerParty(u16 trainerId)
 {
     s32 i, j, k;
     u32 firstIdPart = 0, secondIdPart = 0, thirdIdPart = 0;

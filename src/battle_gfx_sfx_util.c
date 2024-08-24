@@ -127,7 +127,7 @@ u16 ChooseMoveAndTargetInBattlePalace(u32 battler)
 
     // If battler is < 50% HP and not asleep, use second set of move group likelihoods
     // otherwise use first set
-    i = (gBattleStruct->palaceFlags & gBitTable[battler]) ? 2 : 0;
+    i = (gBattleStruct->palaceFlags & (1u << battler)) ? 2 : 0;
     minGroupNum = i;
 
     maxGroupNum = i + 2; // + 2 because there are two percentages per set of likelihoods
@@ -151,7 +151,7 @@ u16 ChooseMoveAndTargetInBattlePalace(u32 battler)
         if (moveInfo->moves[i] == MOVE_NONE)
             break;
         if (selectedGroup == GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]) && moveInfo->currentPp[i] != 0)
-            selectedMoves |= gBitTable[i];
+            selectedMoves |= 1u << i;
     }
 
     // Pass selected moves to AI, pick one
@@ -179,11 +179,11 @@ u16 ChooseMoveAndTargetInBattlePalace(u32 battler)
             {
                 // Count the number of usable moves the battler has in each move group.
                 // The totals will be stored separately in 3 groups of 4 bits each in numMovesPerGroup.
-                if (GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]) == PALACE_MOVE_GROUP_ATTACK && !(gBitTable[i] & unusableMovesBits))
+                if (GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]) == PALACE_MOVE_GROUP_ATTACK && !((1u << i) & unusableMovesBits))
                     numMovesPerGroup += (1 << 0);
-                if (GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]) == PALACE_MOVE_GROUP_DEFENSE && !(gBitTable[i] & unusableMovesBits))
+                if (GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]) == PALACE_MOVE_GROUP_DEFENSE && !((1u << i) & unusableMovesBits))
                     numMovesPerGroup += (1 << 4);
-                if (GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]) == PALACE_MOVE_GROUP_SUPPORT && !(gBitTable[i] & unusableMovesBits))
+                if (GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]) == PALACE_MOVE_GROUP_SUPPORT && !((1u << i) & unusableMovesBits))
                     numMovesPerGroup += (1 << 8);
             }
 
@@ -216,7 +216,7 @@ u16 ChooseMoveAndTargetInBattlePalace(u32 battler)
                 do
                 {
                     i = Random() % MAX_MON_MOVES;
-                    if (!(gBitTable[i] & unusableMovesBits))
+                    if (!((1u << i) & unusableMovesBits))
                         chosenMoveId = i;
                 } while (chosenMoveId == -1);
             }
@@ -242,7 +242,7 @@ u16 ChooseMoveAndTargetInBattlePalace(u32 battler)
                 do
                 {
                     i = Random() % MAX_MON_MOVES;
-                    if (!(gBitTable[i] & unusableMovesBits) && randSelectGroup == GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]))
+                    if (!((1u << i) & unusableMovesBits) && randSelectGroup == GetBattlePalaceMoveGroup(battler, moveInfo->moves[i]))
                         chosenMoveId = i;
                 } while (chosenMoveId == -1);
             }
@@ -979,7 +979,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
     gSprites[gBattlerSpriteIds[battlerAtk]].y = GetBattlerSpriteDefault_Y(battlerAtk);
     StartSpriteAnim(&gSprites[gBattlerSpriteIds[battlerAtk]], 0);
     
-    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && ShouldUnveilGhost())
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && ShouldUnveilGhost() && GetBattlerSide(battlerAtk) == B_SIDE_OPPONENT)
     {
         SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesInfo[targetSpecies].speciesName);
         UpdateNickInHealthbox(gHealthboxSpriteIds[battlerAtk], &gEnemyParty[gBattlerPartyIndexes[battlerAtk]]);

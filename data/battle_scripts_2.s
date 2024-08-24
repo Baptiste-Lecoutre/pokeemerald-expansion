@@ -45,7 +45,7 @@ BattleScript_UseItemMessage:
 	printfromtable gTrainerUsedItemStringIds
 	waitmessage B_WAIT_TIME_LONG
 	return
-	
+
 BattleScript_ItemRestoreHPRet:
 	bichalfword gMoveResultFlags, MOVE_RESULT_NO_EFFECT
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
@@ -177,6 +177,10 @@ BattleScript_TryNicknameCaughtMon::
 	waitstate
 	setbyte gBattleCommunication, 0
 	trygivecaughtmonnick BattleScript_GiveCaughtMonEnd
+	printstring	STRINGID_SENDWHICHMONTOPC
+	waitstate
+	setbyte gBattleCommunication, 0
+	trychoosemontosendtopc BattleScript_GiveCaughtMonEnd
 	givecaughtmon
 	printfromtable gCaughtMonStringIds
 	waitmessage B_WAIT_TIME_LONG

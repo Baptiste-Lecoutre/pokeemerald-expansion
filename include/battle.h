@@ -44,7 +44,7 @@
 // Used to exclude moves learned temporarily by Transform or Mimic
 #define MOVE_IS_PERMANENT(battler, moveSlot)                        \
    (!(gBattleMons[battler].status2 & STATUS2_TRANSFORMED)           \
- && !(gDisableStructs[battler].mimickedMoves & gBitTable[moveSlot]))
+ && !(gDisableStructs[battler].mimickedMoves & (1u << moveSlot)))
 
 // Battle Actions
 // These determine what each battler will do in a turn
@@ -624,6 +624,30 @@ struct BattleVideo {
 };
 #endif
 
+enum BattleIntroStates
+{
+    BATTLE_INTRO_STATE_GET_MON_DATA,
+    BATTLE_INTRO_STATE_LOOP_BATTLER_DATA,
+    BATTLE_INTRO_STATE_PREPARE_BG_SLIDE,
+    BATTLE_INTRO_STATE_WAIT_FOR_BG_SLIDE,
+    BATTLE_INTRO_STATE_DRAW_SPRITES,
+    BATTLE_INTRO_STATE_DRAW_PARTY_SUMMARY,
+    BATTLE_INTRO_STATE_WAIT_FOR_PARTY_SUMMARY,
+    BATTLE_INTRO_STATE_INTRO_TEXT,
+    BATTLE_INTRO_STATE_WAIT_FOR_INTRO_TEXT,
+    BATTLE_INTRO_STATE_TRAINER_SEND_OUT_TEXT,
+    BATTLE_INTRO_STATE_WAIT_FOR_TRAINER_SEND_OUT_TEXT,
+    BATTLE_INTRO_STATE_TRAINER_1_SEND_OUT_ANIM,
+    BATTLE_INTRO_STATE_TRAINER_2_SEND_OUT_ANIM,
+    BATTLE_INTRO_STATE_WAIT_FOR_TRAINER_2_SEND_OUT_ANIM,
+    BATTLE_INTRO_STATE_WAIT_FOR_WILD_BATTLE_TEXT,
+    BATTLE_INTRO_STATE_PRINT_PLAYER_SEND_OUT_TEXT,
+    BATTLE_INTRO_STATE_WAIT_FOR_PLAYER_SEND_OUT_TEXT,
+    BATTLE_INTRO_STATE_PRINT_PLAYER_1_SEND_OUT_TEXT,
+    BATTLE_INTRO_STATE_PRINT_PLAYER_2_SEND_OUT_TEXT,
+    BATTLE_INTRO_STATE_SET_DEX_AND_BATTLE_VARS
+};
+
 struct BattleStruct
 {
     u8 turnEffectsTracker;
@@ -693,6 +717,7 @@ struct BattleStruct
     u16 chosenItem[MAX_BATTLERS_COUNT];
     u16 choicedMove[MAX_BATTLERS_COUNT];
     u16 changedItems[MAX_BATTLERS_COUNT];
+    u8 canPickupItem;
     u8 switchInBattlerCounter;
     u8 arenaTurnCounter;
     u8 turnSideTracker;
@@ -743,7 +768,7 @@ struct BattleStruct
     struct RaidBattleData raid;
     const u8 *trainerSlideMsg;
     bool8 trainerSlideLowHpMsgDone;
-    u8 introState;
+    enum BattleIntroStates introState:8;
     u8 ateBerry[2]; // array id determined by side, each party pokemon as bit
     u8 stolenStats[NUM_BATTLE_STATS]; // hp byte is used for which stats to raise, other inform about by how many stages
     u8 lastMoveFailed; // as bits for each battler, for the sake of Stomping Tantrum
@@ -781,7 +806,6 @@ struct BattleStruct
     bool8 effectsBeforeUsingMoveDone:1; // Mega Evo and Focus Punch/Shell Trap effects.
     u8 targetsDone[MAX_BATTLERS_COUNT]; // Each battler as a bit.
     u16 overwrittenAbilities[MAX_BATTLERS_COUNT];    // abilities overwritten during battle (keep separate from battle history in case of switching)
-    bool8 allowedToChangeFormInWeather[PARTY_SIZE][NUM_BATTLE_SIDES]; // For each party member and side, used by Ice Face.
     u8 battleBondTransformed[NUM_BATTLE_SIDES]; // Bitfield for each party.
     u8 storedHealingWish:4; // Each battler as a bit.
     u8 storedLunarDance:4; // Each battler as a bit.
@@ -840,8 +864,8 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 #define IS_MOVE_RECOIL(move)(gMovesInfo[move].recoil > 0 || gMovesInfo[move].effect == EFFECT_RECOIL_IF_MISS)
 
 #define BATTLER_MAX_HP(battlerId)(gBattleMons[battlerId].hp == gBattleMons[battlerId].maxHP)
-#define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0) || (gBattleStruct->enduredDamage & gBitTable[gBattlerTarget]))
-#define BATTLER_TURN_DAMAGED(battlerId) ((gSpecialStatuses[battlerId].physicalDmg != 0 || gSpecialStatuses[battlerId].specialDmg != 0) || (gBattleStruct->enduredDamage & gBitTable[battler]))
+#define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0) || (gBattleStruct->enduredDamage & (1u << gBattlerTarget)))
+#define BATTLER_TURN_DAMAGED(battlerId) ((gSpecialStatuses[battlerId].physicalDmg != 0 || gSpecialStatuses[battlerId].specialDmg != 0) || (gBattleStruct->enduredDamage & (1u << battler)))
 
 #define IS_BATTLER_OF_TYPE(battlerId, type)((GetBattlerType(battlerId, 0, FALSE) == type || GetBattlerType(battlerId, 1, FALSE) == type || (GetBattlerType(battlerId, 2, FALSE) != TYPE_MYSTERY && GetBattlerType(battlerId, 2, FALSE) == type)))
 #define IS_BATTLER_OF_BASE_TYPE(battlerId, type)((GetBattlerType(battlerId, 0, TRUE) == type || GetBattlerType(battlerId, 1, TRUE) == type || (GetBattlerType(battlerId, 2, TRUE) != TYPE_MYSTERY && GetBattlerType(battlerId, 2, TRUE) == type)))

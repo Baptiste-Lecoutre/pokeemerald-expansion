@@ -285,6 +285,7 @@ static void DisplayPartyPokemonDataForContest(u8);
 static void DisplayPartyPokemonDataForChooseHalf(u8);
 static void DisplayPartyPokemonDataForWirelessMinigame(u8);
 static void DisplayPartyPokemonDataForBattlePyramidHeldItem(u8);
+static void DisplayPartyPokemonDataForBlender(u8);
 static bool8 DisplayPartyPokemonDataForMoveTutorOrEvolutionItem(u8);
 static void DisplayPartyPokemonData(u8);
 static void DisplayPartyPokemonNickname(struct Pokemon *, struct PartyMenuBox *, u8);
@@ -472,12 +473,15 @@ static void Task_MultiPartnerPartySlideIn(u8);
 static void SlideMultiPartyMenuBoxSpritesOneStep(u8);
 static void Task_WaitAfterMultiPartnerPartySlideIn(u8);
 static void BufferMonSelection(void);
+static void BufferMonSelectionAfterCatch(void);
 static void Task_PartyMenuWaitForFade(u8 taskId);
 static void Task_ChooseContestMon(u8 taskId);
 static void CB2_ChooseContestMon(void);
 static void Task_ChoosePartyMon(u8 taskId);
 static void Task_ChooseMonForMoveRelearner(u8);
 static void CB2_ChooseMonForMoveRelearner(void);
+static void Task_ChooseMonForBlender(u8 taskId);
+static void CB2_ChooseMonForBlender(void);
 static void Task_BattlePyramidChooseMonHeldItems(u8);
 static void ShiftMoveSlot(struct Pokemon*, u8, u8);
 static void BlitBitmapToPartyWindow_LeftColumn(u8, u8, u8, u8, u8, u8);
@@ -1028,6 +1032,8 @@ static void RenderPartyMenuBox(u8 slot)
                 DisplayPartyPokemonDataForWirelessMinigame(slot);
             else if (gPartyMenu.menuType == PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS)
                 DisplayPartyPokemonDataForBattlePyramidHeldItem(slot);
+            else if (gPartyMenu.menuType == PARTY_MENU_TYPE_BLENDER)
+                DisplayPartyPokemonDataForBlender(slot);
             else if (!DisplayPartyPokemonDataForMoveTutorOrEvolutionItem(slot))
                 DisplayPartyPokemonData(slot);
 
@@ -1213,6 +1219,14 @@ static void DisplayPartyPokemonDataForMultiBattle(u8 slot)
         DisplayPartyPokemonMaxHP(gMultiPartnerParty[actualSlot].maxhp, menuBox);
         DisplayPartyPokemonHPBar(gMultiPartnerParty[actualSlot].hp, gMultiPartnerParty[actualSlot].maxhp, menuBox);
     }
+}
+
+static void DisplayPartyPokemonDataForBlender(u8 slot)
+{
+    if (IsMilceryAndCanEvolve(&gPlayerParty[slot]))
+        DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_ABLE_2);
+    else
+        DisplayPartyPokemonDescriptionData(slot, PARTYBOX_DESC_NOT_ABLE_2);
 }
 
 static bool8 RenderPartyMenuBoxes(void)
@@ -6751,13 +6765,13 @@ static void Task_TryItemUseFormChange(u8 taskId)
     case 6:
         if (!IsPartyMenuTextPrinterActive())
         {
-            if (gSpecialVar_ItemId == ITEM_ROTOM_CATALOG) //only for rotom currently
+            if (gSpecialVar_ItemId == ITEM_ROTOM_CATALOG) //only for Rotom currently
             {
                 u32 i;
                 for (i = 0; i < ARRAY_COUNT(sRotomFormChangeMoves); i++)
                     DeleteMove(mon, sRotomFormChangeMoves[i]);
 
-                if (gSpecialVar_0x8000 == MOVE_THUNDER_SHOCK)
+                if (I_ROTOM_CATALOG_THUNDER_SHOCK < GEN_9 && gSpecialVar_0x8000 == ROTOM_BASE_MOVE)
                 {
                     if (!DoesMonHaveAnyMoves(mon))
                         FormChangeTeachMove(taskId, gSpecialVar_0x8000, gPartyMenu.slotId);
@@ -6855,42 +6869,42 @@ bool32 TryMultichoiceFormChange(u8 taskId)
 static void CursorCb_CatalogBulb(u8 taskId)
 {
     gSpecialVar_Result = 0;
-    gSpecialVar_0x8000 = MOVE_THUNDER_SHOCK;
+    gSpecialVar_0x8000 = ROTOM_BASE_MOVE;
     TryMultichoiceFormChange(taskId);
 }
 
 static void CursorCb_CatalogOven(u8 taskId)
 {
     gSpecialVar_Result = 1;
-    gSpecialVar_0x8000 = MOVE_OVERHEAT;
+    gSpecialVar_0x8000 = ROTOM_HEAT_MOVE;
     TryMultichoiceFormChange(taskId);
 }
 
 static void CursorCb_CatalogWashing(u8 taskId)
 {
     gSpecialVar_Result = 2;
-    gSpecialVar_0x8000 = MOVE_HYDRO_PUMP;
+    gSpecialVar_0x8000 = ROTOM_WASH_MOVE;
     TryMultichoiceFormChange(taskId);
 }
 
 static void CursorCb_CatalogFridge(u8 taskId)
 {
     gSpecialVar_Result = 3;
-    gSpecialVar_0x8000 = MOVE_BLIZZARD;
+    gSpecialVar_0x8000 = ROTOM_FROST_MOVE;
     TryMultichoiceFormChange(taskId);
 }
 
 static void CursorCb_CatalogFan(u8 taskId)
 {
     gSpecialVar_Result = 4;
-    gSpecialVar_0x8000 = MOVE_AIR_SLASH;
+    gSpecialVar_0x8000 = ROTOM_FAN_MOVE;
     TryMultichoiceFormChange(taskId);
 }
 
 static void CursorCb_CatalogMower(u8 taskId)
 {
     gSpecialVar_Result = 5;
-    gSpecialVar_0x8000 = MOVE_LEAF_STORM;
+    gSpecialVar_0x8000 = ROTOM_MOW_MOVE;
     TryMultichoiceFormChange(taskId);
 }
 
@@ -7474,6 +7488,11 @@ void OpenPartyMenuInBattle(u8 partyAction)
     UpdatePartyToBattleOrder();
 }
 
+void OpenPartyMenuChooseMonToSendToPC(void)
+{
+    InitPartyMenu(PARTY_MENU_TYPE_CHOOSE_MON, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_AND_CLOSE, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelectionAfterCatch);
+}
+
 void ChooseMonForInBattleItem(void)
 {
     InitPartyMenu(PARTY_MENU_TYPE_IN_BATTLE, GetPartyLayoutFromBattleType(), PARTY_ACTION_USE_ITEM, FALSE, PARTY_MSG_USE_ON_WHICH_MON, Task_HandleChooseMonInput, CB2_ReturnToBagMenu);
@@ -7912,6 +7931,15 @@ static void BufferMonSelection(void)
     SetMainCallback2(CB2_ReturnToField);
 }
 
+static void BufferMonSelectionAfterCatch(void)
+{
+    gSpecialVar_0x8004 = GetCursorSelectionMonId();
+    if (gSpecialVar_0x8004 >= PARTY_SIZE)
+        gSpecialVar_0x8004 = PARTY_NOTHING_CHOSEN;
+    //gFieldCallback2 = CB2_FadeFromPartyMenu;
+    SetMainCallback2(BattleMainCB2);
+}
+
 bool8 CB2_FadeFromPartyMenu(void)
 {
     FadeInFromBlack();
@@ -7998,6 +8026,34 @@ static void CB2_ChooseMonForMoveRelearner(void)
         gSpecialVar_0x8004 = PARTY_NOTHING_CHOSEN;
     else
         gSpecialVar_0x8005 = GetNumberOfRelearnableMoves(&gPlayerParty[gSpecialVar_0x8004]);
+    gFieldCallback2 = CB2_FadeFromPartyMenu;
+    SetMainCallback2(CB2_ReturnToField);
+}
+
+void ChooseMonForBlender(void)
+{
+    LockPlayerFieldControls();
+    FadeScreen(FADE_TO_BLACK, 0);
+    CreateTask(Task_ChooseMonForBlender, 10);
+}
+
+static void Task_ChooseMonForBlender(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        InitPartyMenu(PARTY_MENU_TYPE_BLENDER, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_AND_CLOSE, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, CB2_ChooseMonForBlender);
+        DestroyTask(taskId);
+    }
+}
+
+static void CB2_ChooseMonForBlender(void)
+{
+    gSpecialVar_0x8004 = GetCursorSelectionMonId();
+    if (gSpecialVar_0x8004 >= PARTY_SIZE)
+        gSpecialVar_0x8004 = PARTY_NOTHING_CHOSEN;
+    else
+        gSpecialVar_0x8005 = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_HELD_ITEM, 0);
     gFieldCallback2 = CB2_FadeFromPartyMenu;
     SetMainCallback2(CB2_ReturnToField);
 }

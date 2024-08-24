@@ -675,8 +675,8 @@ static bool8 MainState_PressedOKButton(void)
     if (sNamingScreen->templateNum == NAMING_SCREEN_CAUGHT_MON
         && CalculatePlayerPartyCount() >= PARTY_SIZE)
     {
-        DisplaySentToPCMessage();
-        sNamingScreen->state = STATE_WAIT_SENT_TO_PC_MESSAGE;
+        //DisplaySentToPCMessage();
+        sNamingScreen->state = STATE_FADE_OUT;
         return FALSE;
     }
     else

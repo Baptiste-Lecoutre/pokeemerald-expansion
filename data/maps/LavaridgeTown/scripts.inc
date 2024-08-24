@@ -20,6 +20,8 @@ LavaridgeTown_OnTransition:
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 1, LavaridgeTown_EventScript_RemoveLittleGirl
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_RemoveLittleGirl
 	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 3, LavaridgeTown_EventScript_RemoveLittleGirl
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 4, LavaridgeTown_EventScript_RemoveLittleGirl
+	call_if_eq VAR_LAVARIDGE_TOWN_STATE, 5, LavaridgeTown_EventScript_RemoveLittleGirl
 	end
 
 LavaridgeTown_EventScript_ClearLavaridgeWhiteOut::
@@ -106,7 +108,8 @@ LavaridgeTown_EventScript_RivalExit::
 	end
 
 LavaridgeTown_EventScript_FollowerScript:
-    msgbox LavaridgeTown_Text_RivalLetsGoSaveThisGirl MSGBOX_SIGN
+    faceplayer
+	msgbox LavaridgeTown_Text_RivalLetsGoSaveThisGirl MSGBOX_SIGN
     end
 LavaridgeTown_Text_RivalLetsGoSaveThisGirl:
     .string "Let's go save this kid!$"
@@ -145,6 +148,8 @@ LavaridgeTown_EventScript_OldWomanNoticePlayerPokeCenter::
 	waitmovement 0
 	applymovement LOCALID_OLD_WOMAN, Common_Movement_Delay48
 	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceLeft
+	waitmovement 0
 	return
 
 LavaridgeTown_EventScript_RivalNoticePlayer::
@@ -154,6 +159,8 @@ LavaridgeTown_EventScript_RivalNoticePlayer::
 	applymovement LOCALID_RIVAL, Common_Movement_ExclamationMark
 	waitmovement 0
 	applymovement LOCALID_RIVAL, Common_Movement_Delay48
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	return
 
@@ -279,6 +286,8 @@ LavaridgeTown_EventScript_HotSpringsOldWoman2::
 LavaridgeTown_EventScript_ExpertF::
 	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 2, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
 	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 3, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
+	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 4, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
+	goto_if_eq VAR_LAVARIDGE_TOWN_STATE, 5, LavaridgeTown_EventScript_ExpertFGrandDaughterMissing
 	msgbox LavaridgeTown_Text_OhYouLikeHotSprings, MSGBOX_NPC
 	end
 
@@ -473,7 +482,11 @@ LavaridgeTown_Text_MayIheardThatLetsGo:
 	.string "help you look for this little girl!\p"
 	.string "Oh? While I visited the hot springs,\n"
 	.string "you got the Lavaridge Gym Badge.\p"
-	.string "Anyway, let's go save this little girl!$"
+	.string "Anyway, let's go save this little girl!\p"
+	.string "According to my Pokénav, we need to\n"
+	.string "find the entrance to the Ember Path\l"
+	.string "somewhere in the Jagged Pass.\p"
+	.string "The Ashen Woods shall be at the end.$"
 
 LavaridgeTown_Text_BrendanIheardThatLetsGo:
 	.string "Brendan: {PLAYER}, hey, it's been a while.\n"
@@ -482,4 +495,8 @@ LavaridgeTown_Text_BrendanIheardThatLetsGo:
 	.string "help you look for this little girl!\p"
 	.string "Oh?\n"
 	.string "That's a decent collection of Badges.\p"
-	.string "Anyway, let's go save this little girl!$"
+	.string "Anyway, let's go save this little girl!\p"
+	.string "According to my Pokénav, we have to\n"
+	.string "find the entrance to the Ember Path\l"
+	.string "somewhere in the Jagged Pass.\p"
+	.string "The Ashen Woods would be at the end.$"

@@ -468,7 +468,7 @@
 #define OBJ_EVENT_GFX_VAR_F  (OBJ_EVENT_GFX_VARS + 0xF)
 
 #define OBJ_EVENT_GFX_MON_BASE  0x200 // 512
-#define OBJ_EVENT_GFX_SPECIES_BITS 11
+#define OBJ_EVENT_GFX_SPECIES_BITS 12 // This will need to be updated when NUM_SPECIES is > ~3.5k
 #define OBJ_EVENT_GFX_SPECIES_MASK ((1 << OBJ_EVENT_GFX_SPECIES_BITS) - 1)
 
 // Used to call a specific species' follower graphics. Useful for static encounters.
@@ -500,6 +500,9 @@
 
 // Special object event local ids
 #define OBJ_EVENT_ID_FOLLOWER_NPC 0xFC
+// Used for link player OWs in CreateLinkPlayerSprite
+#define OBJ_EVENT_ID_DYNAMIC_BASE 0xF0
+
 #define OBJ_EVENT_ID_PLAYER 0xFF
 #define OBJ_EVENT_ID_FOLLOWER 0xFE
 #define OBJ_EVENT_ID_CAMERA 0x7F

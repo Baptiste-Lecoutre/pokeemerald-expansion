@@ -25,6 +25,7 @@
 #include "constants/map_types.h"
 #include "constants/field_effects.h"
 #include "constants/metatile_behaviors.h"
+#include "constants/opponents.h"
 /*
     -FollowMe_StairsMoveHook ?
     -FollowMe_WarpStairsEndHook ?
@@ -1449,4 +1450,19 @@ void CheckPlayerHasFollower(void)
     gSpecialVar_Result = gSaveBlock2Ptr->follower.inProgress;
 }
 
+u16 GetFollowerPartnerId(void)
+{
+    if (!PlayerHasFollower())
+        return PARTNER_NONE;
 
+    if (gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL || gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_RIVAL_MAY_NORMAL)
+        return TRAINER_RIVAL_OVERRIDE;
+
+    if (gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_WALLY)
+        return TRAINER_WALLY_OVERRIDE;
+
+    if (gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_RED)
+        return TRAINER_RED_OVERRIDE;
+
+    return PARTNER_NONE;
+}

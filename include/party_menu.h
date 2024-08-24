@@ -98,6 +98,7 @@ void ChooseMonForTradingBoard(u8 menuType, MainCallback callback);
 void ChooseMonForMoveTutor(void);
 void ChooseMonForWirelessMinigame(void);
 void OpenPartyMenuInBattle(u8 partyAction);
+void OpenPartyMenuChooseMonToSendToPC(void);
 void ChooseMonForInBattleItem(void);
 void BufferBattlePartyCurrentOrder(void);
 void BufferBattlePartyCurrentOrderBySide(u8 battlerId, u8 flankId);
@@ -119,6 +120,7 @@ void BufferMoveDeleterNicknameAndMove(void);
 void GetNumMovesSelectedMonHas(void);
 void MoveDeleterChooseMoveToForget(void);
 void TryTradeEvolution(void);
+void ChooseMonForBlender(void);
 
 void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
 void ItemUseCB_Mints(u8 taskId, TaskFunc task);

@@ -753,8 +753,9 @@
 #define STRINGID_MAYDEVONSCOPEUNVEILED                751
 #define STRINGID_BRENDANDEVONSCOPEUNVEILED            752
 #define STRINGID_GHOSTWASOPPONENT                     753
+#define STRINGID_SENDWHICHMONTOPC                     754
 
-#define BATTLESTRINGS_COUNT                           754
+#define BATTLESTRINGS_COUNT                           755
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,

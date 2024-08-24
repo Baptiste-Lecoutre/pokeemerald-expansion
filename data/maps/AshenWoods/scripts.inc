@@ -52,3 +52,34 @@ AshenWoods_Text_Mushrooms:
 	.string "a highly sought after ingredient.\p"
 	.string "They're quite valuable, and they\n"
 	.string "seem to grow back overnight!\n"
+
+AshenWoods_EventScript_WeAreInTheAshenWoods::
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	checkplayergender
+	goto_if_eq VAR_RESULT, MALE, AshenWoods_EventScript_MayWeAreInTheAshenWoods
+	goto_if_eq VAR_RESULT, FEMALE, AshenWoods_EventScript_BrendanWeAreInTheAshenWoods
+AshenWoods_EventScript_WeAreInTheAshenWoodsEnd::
+	setvar VAR_LAVARIDGE_TOWN_STATE, 4
+	end
+
+AshenWoods_EventScript_MayWeAreInTheAshenWoods::
+	msgbox AshenWoods_Text_MayHereWeAre, MSGBOX_DEFAULT
+	closemessage
+	goto AshenWoods_EventScript_WeAreInTheAshenWoodsEnd
+
+AshenWoods_EventScript_BrendanWeAreInTheAshenWoods::
+	msgbox AshenWoods_Text_BrendanHereWeAre, MSGBOX_DEFAULT
+	closemessage
+	goto AshenWoods_EventScript_WeAreInTheAshenWoodsEnd
+
+AshenWoods_Text_MayHereWeAre:
+	.string "May: The Ashen Woods…\n"
+	.string "Here we are!\p"
+	.string "Let's look for the little girl now!$"
+
+AshenWoods_Text_BrendanHereWeAre:
+	.string "Brendan: The Ashen Woods…\n"
+	.string "Finally!\p"
+	.string "Let's look for this girl!$"
