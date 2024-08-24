@@ -1799,6 +1799,8 @@ extern const u32 gIntroFlygon_Gfx[];
 // party menu graphics
 extern const u32 gPartyMenuBg_Gfx[];
 extern const u32 gPartyMenuBg_Tilemap[];
+extern const u32 gPartyMenuBg_DoubleTilemap[];
+extern const u32 gPartyMenuBg_ShowcaseTilemap[];
 extern const u32 gPartyMenuBg_Pal[];
 
 // berry pics
