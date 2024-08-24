@@ -78,7 +78,7 @@ SlateportCity_OceanicMuseum_2F_EventScript_CaptStern::
 	fadescreen FADE_TO_BLACK
 	playfanfare MUS_HEAL
 	waitfanfare
-	special HealPlayerParty
+	special HealPlayerPartyPokeVial
 	callnative UpdateFollowingPokemon
 	removeobject LOCALID_CAPT_STERN
 	setflag FLAG_HIDE_ROUTE_110_TEAM_AQUA
