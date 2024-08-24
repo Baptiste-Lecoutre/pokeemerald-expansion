@@ -617,3 +617,4 @@ gSpecials::
 	def_special SetObjectEventMovementType
 	def_special ChooseMonForBlender
 	def_special TryEvolveMilcery
+	def_special HealPlayerPartyPokeVial
