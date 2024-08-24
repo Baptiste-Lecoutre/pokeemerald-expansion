@@ -82,7 +82,7 @@ MossdeepCity_House1_EventScript_CynthiaHeal::
 	msgbox MossdeepCity_House1_Text_LetMeHealYourPokemon, MSGBOX_DEFAULT
 	playfanfare MUS_HEAL
 	waitfanfare
-	special HealPlayerParty
+	special HealPlayerPartyPokeVial
 	return
 
 MossdeepCity_House1_EventScript_Cynthia::
