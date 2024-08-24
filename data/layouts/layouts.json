@@ -147,7 +147,7 @@
       "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_General",
-      "secondary_tileset": "gTileset_Mauville",
+      "secondary_tileset": "gTileset_Verdanturf",
       "border_filepath": "data/layouts/VerdanturfTown/border.bin",
       "blockdata_filepath": "data/layouts/VerdanturfTown/map.bin"
     },
@@ -4477,7 +4477,7 @@
       "width": 15,
       "height": 17,
       "primary_tileset": "gTileset_General",
-      "secondary_tileset": "gTileset_Mauville",
+      "secondary_tileset": "gTileset_Verdanturf",
       "border_filepath": "data/layouts/VerdanturfMeadow/border.bin",
       "blockdata_filepath": "data/layouts/VerdanturfMeadow/map.bin"
     },
