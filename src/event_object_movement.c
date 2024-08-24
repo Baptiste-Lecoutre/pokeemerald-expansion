@@ -2170,6 +2170,7 @@ void UpdateFollowingPokemon(void)
     // 1. GetFollowerInfo returns FALSE
     // 2. Map is indoors and gfx is larger than 32x32
     // 3. flag is set
+    // 4. a Follow Me follower is present
     if (OW_POKEMON_OBJECT_EVENTS == FALSE
      || OW_FOLLOWERS_ENABLED == FALSE
      || !GetFollowerInfo(&species, &form, &shiny)
@@ -10931,7 +10932,7 @@ bool8 MovementAction_EmoteX_Step0(struct ObjectEvent *objectEvent, struct Sprite
     return TRUE;
 }
 
-// NEW
+// follow_me
 u16 GetMiniStepCount(u8 speed)
 {
     return (u16)sStepTimes[speed];

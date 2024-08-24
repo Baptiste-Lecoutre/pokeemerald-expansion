@@ -64,7 +64,6 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	removeobject LOCALID_GIRL
 	setflag FLAG_TEMP_B
 	fadescreenswapbuffers FADE_FROM_BLACK
-	callnative UpdateFollowingPokemon
 	releaseall
 	end
 

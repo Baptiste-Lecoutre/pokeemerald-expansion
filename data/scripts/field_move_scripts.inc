@@ -565,7 +565,7 @@ FollowerIntoPlayerScript::
 	callnative FollowerIntoPlayer
 	compare VAR_RESULT 0xFFFF
 	goto_if_eq FollowerPositionFixScriptReturn
-	setvar 0x8005 0xFE  @ follower
+	setvar 0x8005 OBJ_EVENT_ID_FOLLOWER_NPC  @ follower
 	call WalkCall
 	setvar 0x8000 0x1
 	callnative FollowerIntoPlayer

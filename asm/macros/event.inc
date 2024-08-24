@@ -1932,10 +1932,14 @@
 
 @NPC follower macros
     @ sets an NPC up to follow the player
-    .macro setfollower localId:req, flags:req
-    .byte 0xea
+    .macro setfollower localId:req, flags:req, script
+    .ifnb \script
+		loadword 0, \script
+	.endif
+	.byte 0xea
     .byte \localId
     .2byte \flags
+	callnative UpdateFollowingPokemon
     .endm
     
     @ remove the following NPC (assumes there will only ever be one)

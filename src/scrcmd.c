@@ -2635,6 +2635,9 @@ bool8 ScrCmd_setfollower(struct ScriptContext *ctx)
 bool8 ScrCmd_destroyfollower(struct ScriptContext *ctx)
 {
     DestroyFollower();
+    if (OW_FOLLOWERS_ENABLED == TRUE) {
+        UpdateFollowingPokemon();
+    }
     return FALSE;
 }
 
