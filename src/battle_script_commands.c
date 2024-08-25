@@ -2157,7 +2157,7 @@ END:
         }
     }
 
-    // Mega Raid shields prevent being KO'd 
+    /*// Mega Raid shields prevent being KO'd 
     if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
         && gBattleMoveDamage >= gBattleMons[gBattlerTarget].hp)
     {
@@ -2194,6 +2194,60 @@ END:
         {
             gBattleStruct->raid.shieldedHP -= gBattleMoveDamage;
             gBattleStruct->raid.state |= RAID_UPDATE_SHIELD;
+        }
+    }*/
+
+    if (IsRaidBoss(gBattlerTarget))
+    {
+        switch (gRaidTypes[gRaidData.raidType].shield)
+        {
+        default:
+        case RAID_SHIELD_NONE:
+            break;
+        case RAID_SHIELD_MAX:
+            // If an attack will trigger a Max Raid Boss's shield, it will not go past that threshold.
+            if (gBattleMoveDamage > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
+            {
+                gBattleMoveDamage = GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP);
+                gBattleStruct->raid.state |= RAID_CREATE_SHIELD;
+            }
+            // Max Raid shields apply a damage reduction that can fully negate damage.
+            if (!IsRaidBoss(gBattlerAttacker) && gBattleStruct->raid.shield > 0 && gBattleMoveDamage)
+            {
+                gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
+                gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+            }
+            break;
+        case RAID_SHIELD_MEGA:
+            // Mega Raid shields prevent being KO'd 
+            if (gBattleStruct->raid.shield > 0 && gBattleMoveDamage >= gBattleMons[gBattlerTarget].hp)
+            {
+                gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - 1;
+                gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+            }
+            break;
+        case RAID_SHIELD_TERA:
+            // If an attack will trigger a Tera Raid Boss's shield, allow to go beyond.
+            if (gBattleStruct->raid.shield == 0 && gBattleMoveDamage > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
+            {
+                gBattleStruct->raid.state |= RAID_CREATE_SHIELD;
+            }
+            // Tera Raid shields apply a damage reduction that can fully negate damage.
+            if (gBattleMoveDamage && gBattleStruct->raid.shield > 0)
+            {
+                gBattleMoveDamage = UQ_4_12_TO_INT((gBattleMoveDamage * GetShieldDamageReduction()) + UQ_4_12_ROUND);
+                if (gBattleStruct->raid.shieldedHP < gBattleMoveDamage)
+                {
+                    gBattleStruct->raid.shieldedHP = 0;
+                    gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+                }
+                else
+                {
+                    gBattleStruct->raid.shieldedHP -= gBattleMoveDamage;
+                    gBattleStruct->raid.state |= RAID_UPDATE_SHIELD;
+                }
+            }
+            break;
         }
     }
 }

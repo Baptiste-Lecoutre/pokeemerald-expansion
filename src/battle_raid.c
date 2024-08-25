@@ -30,6 +30,12 @@
 
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
+    [RAID_TYPE_NONE] = {
+        .shield = RAID_SHIELD_NONE,
+        .shockwave = RAID_SHOCKWAVE_NONE,
+        .rules = RAID_RULES_NONE,
+        .gimmick = RAID_GIMMICK_NONE,
+    },
     [RAID_TYPE_MAX] = {
         .shield = RAID_SHIELD_MAX,
         .shockwave = RAID_SHOCKWAVE_MAX,
@@ -107,6 +113,7 @@ const u8 gRaidBattleLevelRanges[MAX_RAID_RANK + 1][2] =
 
 const u8 gRaidShockwaveChance[NUM_RAID_SHOCKWAVE][MAX_RAID_RANK + 1] = 
 {
+    [RAID_SHOCKWAVE_NONE] = {0, 0, 0, 0, 0, 0, 0, 0},
     [RAID_SHOCKWAVE_MAX] = {0, 0, 0, 10, 15, 20, 25, 30},
     [RAID_SHOCKWAVE_TERA] = {0, 0, 0, 10, 15, 20, 25, 30},
     [RAID_SHOCKWAVE_MEGA] = {0, 0, 0, 5, 10, 15, 20, 25},
@@ -917,9 +924,10 @@ bool32 UpdateRaidShield(void)
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             gBattleStruct->raid.shieldedHP = GetTeraRaidShieldProtectedHP();//20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
 
-        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
+        /*if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)*/
+        if (gRaidTypes[gRaidData.raidType].shield != RAID_SHIELD_NONE)
             CreateAllRaidBarrierSprites();
         
         // Play animation and message.
@@ -930,6 +938,7 @@ bool32 UpdateRaidShield(void)
     if (gBattleStruct->raid.state & RAID_BREAK_SHIELD && gBattleMoveDamage > 0)
     {
         gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
+        gBattlerTarget = GetRaidBossBattler();
         // Destroy an extra barrier with a Max Move.
         // TODO: Tera STAB moves will probably break 2 barriers, too.
         if (IsZMove(gLastUsedMove) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 2)
@@ -1005,14 +1014,15 @@ bool32 UpdateRaidShield(void)
     if (gBattleStruct->raid.state & RAID_RESHOW_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_RESHOW_SHIELD;
-        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
+        /*if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)*/
+        if (gRaidTypes[gRaidData.raidType].shield != RAID_SHIELD_NONE)
             CreateAllRaidBarrierSprites();
         retVal = TRUE;
     }
 
-    if (gBattleStruct->raid.state & RAID_UPDATE_SHIELD)
+    /*if (gBattleStruct->raid.state & RAID_UPDATE_SHIELD)
     {
         u32 i;
         gBattleStruct->raid.state &= ~RAID_UPDATE_SHIELD;
@@ -1023,7 +1033,7 @@ bool32 UpdateRaidShield(void)
             || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             CreateAllRaidBarrierSprites();
         retVal = TRUE;
-    }
+    }*/
     return retVal;
 }
 

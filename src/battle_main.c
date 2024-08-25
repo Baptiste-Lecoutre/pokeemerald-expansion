@@ -5462,6 +5462,8 @@ static bool32 TryDoGimmicksBeforeMoves(void)
         switch (gRaidTypes[gRaidData.raidType].shockwave)
         {
             default:
+            case RAID_SHOCKWAVE_NONE:
+                break;
             case RAID_SHOCKWAVE_MAX:
                 if (raidShockwaveNum == 1)
                 {
