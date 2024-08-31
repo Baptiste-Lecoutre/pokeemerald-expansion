@@ -1,5 +1,7 @@
 .set LOCALID_GRUNT_1, 1
 .set LOCALID_GRUNT_2, 6
+.set LOCALID_GRUNT_3, 17
+.set LOCALID_GRUNT_4, 18
 
 Route112_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route112_OnTransition
@@ -163,3 +165,66 @@ Route112_Movement_WalkDown:
 Route112_Text_AshenWoodsNotThisWay:
 	.string "Where are you going?\n"
 	.string "The Ashen Woods are not this way!$"
+
+Route112_EventScript_MagmaGruntBike::
+	lockall
+	delay 40
+	applymovement LOCALID_GRUNT_3, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	delay 20
+	msgbox Route112_Text_ThatHurtsSoMuch, MSGBOX_DEFAULT
+	closemessage
+	delay 40
+	applymovement LOCALID_GRUNT_4, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	delay 20
+	msgbox Route112_Text_DontWorry, MSGBOX_DEFAULT
+	closemessage
+	delay 40
+	applymovement LOCALID_GRUNT_3, Common_Movement_WalkInPlaceFasterUp
+	waitmovement 0
+	delay 20
+	msgbox Route112_Text_WhoUsesTheirBikeInStairs, MSGBOX_DEFAULT
+	closemessage
+	delay 40
+	applymovement LOCALID_GRUNT_4, Common_Movement_WalkInPlaceFasterLeft
+	waitmovement 0
+	delay 20
+	msgbox Route112_Text_KidsTheseDays, MSGBOX_DEFAULT
+	closemessage
+	delay 40
+	applymovement LOCALID_GRUNT_4, Common_Movement_WalkInPlaceFasterDown
+	waitmovement 0
+	playse SE_PIN
+	applymovement LOCALID_GRUNT_4, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_GRUNT_4, Common_Movement_Delay48
+	waitmovement 0
+	msgbox Route112_Text_HeyYou, MSGBOX_DEFAULT
+	closemessage
+	delay 40
+	applymovement LOCALID_GRUNT_4, Common_Movement_FaceOriginalDirection
+	waitmovement 0
+	releaseall
+	end
+
+Route112_Text_ThatHurtsSoMuch:
+	.string "That hurts so much!$"
+
+Route112_Text_DontWorry:
+	.string "Don't worry Bro, you'll be fine!\n"
+	.string "Hang on a bit more, we're almost there!$"
+
+Route112_Text_WhoUsesTheirBikeInStairs:
+	.string "Who uses their bike in stairs?\n"
+	.string "For real?$"
+
+Route112_Text_KidsTheseDays:
+	.string "Yes Bro, kids these days…\n"
+	.string "No respect whatsoever for their elder…$"
+
+Route112_Text_HeyYou:
+	.string "Hey you! Stop bothering us!\n"
+	.string "Can't you see my mate's suffering?\p"
+	.string "Go grab a bike in Mauville City\n"
+	.string "and play somewhere else!$"
