@@ -9,7 +9,6 @@
 #define FOLLOWER_FLAG_CAN_DIVE              0x20
 #define FOLLOWER_FLAG_CAN_ROCK_CLIMB        0x40    // need rock climb implemented
 #define FOLLOWER_FLAG_CLEAR_ON_WHITE_OUT    0x80
-#define FOLLOWER_FLAG_CUSTOM_FOLLOW_SCRIPT  0x100   // follower has custom script while following (use loadword prior to setfollower)
 
 #define FOLLOWER_FLAG_ALL_WATER             FOLLOWER_FLAG_CAN_SURF | FOLLOWER_FLAG_CAN_WATERFALL | FOLLOWER_FLAG_CAN_DIVE
 #define FOLLOWER_FLAG_ALL_LAND              FOLLOWER_FLAG_HAS_RUNNING_FRAMES | FOLLOWER_FLAG_CAN_BIKE | FOLLOWER_FLAG_CAN_LEAVE_ROUTE

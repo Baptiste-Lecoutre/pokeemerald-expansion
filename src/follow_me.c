@@ -71,7 +71,7 @@ static void Task_FollowerHandleEscalator(u8 taskId);
 static void Task_FollowerHandleEscalatorFinish(u8 taskId);
 static void CalculateFollowerEscalatorTrajectoryUp(struct Task *task);
 static void CalculateFollowerEscalatorTrajectoryDown(struct Task *task);
-static void TurnNPCIntoFollower(u8 localId, u16 followerFlags);
+static void TurnNPCIntoFollower(u8 localId, u16 followerFlags, bool8 setScript);
 
 // Const Data
 static const struct FollowerSpriteGraphics gFollowerAlternateSprites[] =
@@ -1219,7 +1219,7 @@ void CreateFollowerAvatar(void)
     gObjectEvents[gSaveBlock2Ptr->follower.objId].invisible = TRUE;
 }
 
-static void TurnNPCIntoFollower(u8 localId, u16 followerFlags)
+static void TurnNPCIntoFollower(u8 localId, u16 followerFlags, bool8 setScript)
 {
     struct ObjectEvent* follower;
     u8 eventObjId;
@@ -1240,7 +1240,7 @@ static void TurnNPCIntoFollower(u8 localId, u16 followerFlags)
             follower->movementType = MOVEMENT_TYPE_NONE; //Doesn't get to move on its own anymore
             gSprites[follower->spriteId].callback = MovementType_None; //MovementType_None
             SetObjEventTemplateMovementType(localId, 0);
-            if (followerFlags & FOLLOWER_FLAG_CUSTOM_FOLLOW_SCRIPT)
+            if (setScript)
                 script = (const u8 *)ReadWord(0);
             else
                 script = GetObjectEventScriptPointerByObjectEventId(eventObjId);
@@ -1388,9 +1388,9 @@ bool8 FollowerComingThroughDoor(void)
 //@Details: Sets up the follow me feature.
 //@Input:    local id - NPC to start following player.
 //            flags - Follower flags.
-void SetUpFollowerSprite(u8 localId, u16 flags)
+void SetUpFollowerSprite(u8 localId, u16 flags, bool8 setScript)
 {
-    TurnNPCIntoFollower(localId, flags);
+    TurnNPCIntoFollower(localId, flags, setScript);
 }
 
 //@Details: Ends the follow me feature.
