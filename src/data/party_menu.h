@@ -695,7 +695,7 @@ static const struct WindowTemplate sDoWhatWithItemMsgWindowTemplate =
     .width = 20,
     .height = 2,
     .paletteNum = 15,
-    .baseBlock = 0x299,
+    .baseBlock = 0x2A9, //0x299,
 };
 
 static const struct WindowTemplate sDoWhatWithMailMsgWindowTemplate =
@@ -706,7 +706,7 @@ static const struct WindowTemplate sDoWhatWithMailMsgWindowTemplate =
     .width = 18,
     .height = 2,
     .paletteNum = 15,
-    .baseBlock = 0x299,
+    .baseBlock = 0x2A9, //0x299,
 };
 
 static const struct WindowTemplate sWhichMoveMsgWindowTemplate =
@@ -717,7 +717,7 @@ static const struct WindowTemplate sWhichMoveMsgWindowTemplate =
     .width = 16,
     .height = 2,
     .paletteNum = 15,
-    .baseBlock = 0x299,
+    .baseBlock = 0x2A9, //0x299,
 };
 
 static const struct WindowTemplate sAlreadyHoldingOneMsgWindowTemplate =
@@ -728,7 +728,7 @@ static const struct WindowTemplate sAlreadyHoldingOneMsgWindowTemplate =
     .width = 20,
     .height = 4,
     .paletteNum = 15,
-    .baseBlock = 0x299,
+    .baseBlock = 0x2A9, //0x299,
 };
 
 static const struct WindowTemplate sOrderWhichApplianceMsgWindowTemplate =
@@ -739,7 +739,7 @@ static const struct WindowTemplate sOrderWhichApplianceMsgWindowTemplate =
     .width = 14,
     .height = 4,
     .paletteNum = 15,
-    .baseBlock = 0x299,
+    .baseBlock = 0x2A9, //0x299,
 };
 
 static const struct WindowTemplate sItemGiveTakeWindowTemplate =
