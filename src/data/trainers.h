@@ -1,3 +1,4 @@
+
     [TRAINER_NONE] =
     {
         .trainerClass = TRAINER_CLASS_PKMN_TRAINER_1,
