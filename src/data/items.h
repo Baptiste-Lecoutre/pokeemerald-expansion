@@ -7158,7 +7158,7 @@ const struct Item gItemsInfo[] =
     {
         .name = _("Adamant Orb"),
         .price = (I_PRICE >= GEN_7) ? 0 : 10000,
-        .holdEffect = HOLD_EFFECT_ADAMANT_ORB,
+        .holdEffect = HOLD_EFFECT_PRIMAL_ORB,//HOLD_EFFECT_ADAMANT_ORB,
         .holdEffectParam = 20,
         .description = COMPOUND_STRING(
             "Boosts the power of\n"
@@ -7176,7 +7176,7 @@ const struct Item gItemsInfo[] =
     {
         .name = _("Lustrous Orb"),
         .price = (I_PRICE >= GEN_7) ? 0 : 10000,
-        .holdEffect = HOLD_EFFECT_LUSTROUS_ORB,
+        .holdEffect = HOLD_EFFECT_PRIMAL_ORB,//HOLD_EFFECT_LUSTROUS_ORB,
         .holdEffectParam = 20,
         .description = COMPOUND_STRING(
             "Boosts the power of\n"
