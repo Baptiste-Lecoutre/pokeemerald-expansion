@@ -2646,6 +2646,7 @@ static void SpawnLightSprite(s16 x, s16 y, s16 camX, s16 camY, u32 lightType) {
         sprite->oam.priority = 2;
         sprite->subpriority = 0xFF;
         sprite->oam.objMode = 1; // BLEND
+        sprite->y += 10 + sprite->centerToCornerVecY;
         break;
     }
 }

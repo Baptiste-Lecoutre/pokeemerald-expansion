@@ -132,6 +132,22 @@ static const u16 sDoorNullPalette48[16] = {};
 static const u8 sDoorAnimTiles_TrainerHillRoofElevator[] = INCBIN_U8("graphics/door_anims/trainer_hill_roof_elevator.4bpp");
 static const u16 sDoorNullPalette49[16] = {};
 
+static const struct DoorAnimFrame sDoorAnimFrames_OpenSmall[] = {
+    {4, 0xFFFF},
+    {4, 0x0000},
+    {4, 0x0080},
+    {4, 0x0100},
+	{0, 0},
+};
+
+static const struct DoorAnimFrame sDoorAnimFrames_CloseSmall[] = {
+    {4, 0x0100},
+    {4, 0x0080},
+    {4, 0x0000},
+    {4, 0xFFFF},
+	{0, 0},
+};
+
 static const struct DoorAnimFrame sDoorOpenAnimFrames[] =
 {
     {4, -1},
@@ -169,7 +185,7 @@ static const struct DoorAnimFrame sBigDoorCloseAnimFrames[] =
 };
 
 static const u8 sDoorAnimPalettes_General[] = {1, 1, 1, 1, 1, 1, 1, 1};
-static const u8 sDoorAnimPalettes_PokeCenter[] = {1, 1, 1, 1, 1, 1, 1, 1};
+static const u8 sDoorAnimPalettes_PokeCenter[] = {0, 0, 0, 0, 0, 0, 0, 0};
 static const u8 sDoorAnimPalettes_Gym[] = {5, 5, 5, 5, 5, 5, 5, 5};
 static const u8 sDoorAnimPalettes_PokeMart[] = {0, 0, 1, 1, 1, 1, 1, 1};
 static const u8 sDoorAnimPalettes_Littleroot[] = {10, 10, 6, 6, 6, 6, 6, 6};
@@ -223,7 +239,7 @@ static const u8 sDoorAnimPalettes_TrainerHillRoofElevator[] = {9, 9, 7, 7, 7, 7,
 static const struct DoorGraphics sDoorAnimGraphicsTable[] =
 {
     {METATILE_General_Door,                                 DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_General, sDoorAnimPalettes_General},
-    {METATILE_General_Door_PokeCenter,                      DOOR_SOUND_SLIDING, 1, sDoorAnimTiles_PokeCenter, sDoorAnimPalettes_PokeCenter},
+    {METATILE_General_Door_PokeCenter,                      DOOR_SOUND_SLIDING, 0, sDoorAnimTiles_PokeCenter, sDoorAnimPalettes_PokeCenter},
     {METATILE_General_Door_Gym,                             DOOR_SOUND_SLIDING, 1, sDoorAnimTiles_Gym, sDoorAnimPalettes_Gym},
     {METATILE_General_Door_PokeMart,                        DOOR_SOUND_SLIDING, 1, sDoorAnimTiles_PokeMart, sDoorAnimPalettes_PokeMart},
     {METATILE_Petalburg_Door_Littleroot,                    DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_Littleroot, sDoorAnimPalettes_Littleroot},
@@ -336,6 +352,11 @@ static void DrawCurrentDoorAnimFrame(const struct DoorGraphics *gfx, u32 x, u32 
         BuildDoorTiles(&tiles[8], DOOR_TILE_START_SIZE2 + 12, &paletteNums[4]);
         DrawDoorMetatileAt(x + 1, y, &tiles[8]);
     }
+    else if (gfx->size == 0)
+    {
+        BuildDoorTiles(&tiles[0], DOOR_TILE_START_SIZE2 + 12, &paletteNums[4]);
+        DrawDoorMetatileAt(x, y, &tiles[0]);
+    }
     else
     {
         // Top metatile
@@ -350,11 +371,18 @@ static void DrawCurrentDoorAnimFrame(const struct DoorGraphics *gfx, u32 x, u32 
 
 static void DrawClosedDoorTiles(const struct DoorGraphics *gfx, u32 x, u32 y)
 {
-    CurrentMapDrawMetatileAt(x, y - 1);
-    CurrentMapDrawMetatileAt(x, y);
-
-    if (gfx->size == 2)
+    if(gfx->size == 0){
+		CurrentMapDrawMetatileAt(x, y);
+	}
+	else if (gfx->size == 1)
+	{
+		CurrentMapDrawMetatileAt(x, y - 1);
+		CurrentMapDrawMetatileAt(x, y);
+	}
+    else if (gfx->size == 2)
     {
+		CurrentMapDrawMetatileAt(x, y - 1);
+		CurrentMapDrawMetatileAt(x, y);
         CurrentMapDrawMetatileAt(x + 1, y - 1);
         CurrentMapDrawMetatileAt(x + 1, y);
     }
@@ -465,7 +493,12 @@ static void DrawOpenedDoor(const struct DoorGraphics *gfx, u32 x, u32 y)
 {
     gfx = GetDoorGraphics(gfx, MapGridGetMetatileIdAt(x, y));
     if (gfx != NULL)
-        DrawDoor(gfx, GetLastDoorFrame(sDoorOpenAnimFrames, sDoorOpenAnimFrames), x, y);
+    {
+        if (gfx->size == 0)
+			DrawDoor(gfx, GetLastDoorFrame(sDoorAnimFrames_OpenSmall, sDoorAnimFrames_OpenSmall), x, y);
+		else
+			DrawDoor(gfx, GetLastDoorFrame(sDoorOpenAnimFrames, sDoorOpenAnimFrames), x, y);
+    }
 }
 
 static s8 StartDoorOpenAnimation(const struct DoorGraphics *gfx, u32 x, u32 y)
@@ -479,6 +512,8 @@ static s8 StartDoorOpenAnimation(const struct DoorGraphics *gfx, u32 x, u32 y)
     {
         if (gfx->size == 2)
             return StartDoorAnimationTask(gfx, sBigDoorOpenAnimFrames, x, y);
+        else if(gfx->size == 0)
+            return StartDoorAnimationTask(gfx, sDoorAnimFrames_OpenSmall, x, y);
         else
             return StartDoorAnimationTask(gfx, sDoorOpenAnimFrames, x, y);
     }
@@ -489,6 +524,8 @@ static s8 StartDoorCloseAnimation(const struct DoorGraphics *gfx, u32 x, u32 y)
     gfx = GetDoorGraphics(gfx, MapGridGetMetatileIdAt(x, y));
     if (gfx == NULL)
         return -1;
+    else if(gfx->size == 0)
+        return StartDoorAnimationTask(gfx, sDoorAnimFrames_CloseSmall, x, y);
     else
         return StartDoorAnimationTask(gfx, sDoorCloseAnimFrames, x, y);
 }
