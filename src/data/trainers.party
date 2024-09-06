@@ -1762,7 +1762,7 @@ Gender: Female
 Music: Cool
 Items: Hyper Potion
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Zangoose
 Level: 26
@@ -1778,7 +1778,7 @@ Gender: Female
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Mawile
 Level: 29
@@ -1812,7 +1812,7 @@ Gender: Female
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Gigalith
 Level: 70
@@ -4725,7 +4725,7 @@ Gender: Male
 Music: Elite Four
 Items: Full Restore / Full Restore
 Double Battle: No
-AI: Basic Trainer / Setup First Turn
+AI: Basic Trainer / Force Setup First Turn
 Mugshot: Purple
 
 Mightyena
@@ -9918,7 +9918,7 @@ Pic: Brendan
 Gender: Male
 Music: Male
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Torchic
 Level: 5
@@ -10981,7 +10981,7 @@ Gender: Male
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Breloom
 Level: 31
@@ -11009,7 +11009,7 @@ Gender: Male
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Breloom
 Level: 37
@@ -11041,7 +11041,7 @@ Gender: Female
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Gloom
 Level: 26
@@ -11059,7 +11059,7 @@ Gender: Female
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Lotad
 Level: 28
@@ -11103,7 +11103,7 @@ Gender: Female
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Gloom
 Level: 30
@@ -11139,7 +11139,7 @@ Gender: Female
 Music: Cool
 Items: Full Restore
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Gloom
 Level: 36
@@ -11717,7 +11717,7 @@ Gender: Male
 Music: Cool
 Items: Hyper Potion
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Kecleon
 Level: 33
@@ -11775,7 +11775,7 @@ Pic: May
 Gender: Female
 Music: Female
 Double Battle: No
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Swellow
 Level: 14
@@ -13882,7 +13882,7 @@ Pic: Old Couple
 Gender: Male
 Music: Intense
 Double Battle: Yes
-AI: Check Bad Move / Try To Faint / Setup First Turn
+AI: Check Bad Move / Try To Faint / Force Setup First Turn
 
 Medicham
 Level: 49
