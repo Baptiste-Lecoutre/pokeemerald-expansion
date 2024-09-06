@@ -251,6 +251,12 @@ static const u8* const sBattleAnims_General[NUM_B_ANIMS_GENERAL] =
     [B_ANIM_TERA_CHARGE]            = gBattleAnimGeneral_TeraCharge,
     [B_ANIM_TERA_ACTIVATE]          = gBattleAnimGeneral_TeraActivate,
     [B_ANIM_SIMPLE_HEAL]            = gBattleAnimGeneral_SimpleHeal,
+    [B_ANIM_RAID_STORM_BREWS]       = gBattleAnimGeneral_RaidStormBrews,
+    [B_ANIM_RAID_SHIELD_APPEARED]   = gBattleAnimGeneral_RaidBarrierAppeared,
+    [B_ANIM_RAID_SHIELD_DISAPPEARED]= gBattleAnimGeneral_RaidBarrierDisappeared,
+    [B_ANIM_RAID_BARRIER_BROKEN]    = gBattleAnimGeneral_RaidShieldBroken,
+    [B_ANIM_RAID_SHOCKWAVE]         = gBattleAnimGeneral_RaidShockwave,
+    [B_ANIM_RAID_BOSS_EXPLOSION]    = gBattleAnimGeneral_RaidBossExplosion,
 };
 
 static const u8* const sBattleAnims_Special[NUM_B_ANIMS_SPECIAL] =

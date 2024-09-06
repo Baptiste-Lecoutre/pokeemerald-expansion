@@ -1003,6 +1003,12 @@ extern const u8 gBattleAnimGeneral_Fog[];
 extern const u8 gBattleAnimGeneral_TeraCharge[];
 extern const u8 gBattleAnimGeneral_TeraActivate[];
 extern const u8 gBattleAnimGeneral_SimpleHeal[];
+extern const u8 gBattleAnimGeneral_RaidStormBrews[];
+extern const u8 gBattleAnimGeneral_RaidBarrierAppeared[];
+extern const u8 gBattleAnimGeneral_RaidBarrierDisappeared[];
+extern const u8 gBattleAnimGeneral_RaidShieldBroken[];
+extern const u8 gBattleAnimGeneral_RaidShockwave[];
+extern const u8 gBattleAnimGeneral_RaidBossExplosion[];
 
 // special animations
 extern const u8 gBattleAnimSpecial_LevelUp[];

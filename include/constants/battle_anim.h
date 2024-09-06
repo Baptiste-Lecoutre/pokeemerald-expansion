@@ -589,7 +589,7 @@
 #define B_ANIM_RAID_SHOCKWAVE           57
 #define B_ANIM_RAID_BOSS_EXPLOSION      58
 
-#define NUM_B_ANIMS_GENERAL             53
+#define NUM_B_ANIMS_GENERAL             59
 
 // special animations table (sBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0
