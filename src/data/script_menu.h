@@ -105,50 +105,50 @@ static const struct MenuAction MultichoiceList_LevelMode[] =
 
 static const struct MenuAction MultichoiceList_Mechadoll1_Q1[] =
 {
-    {COMPOUND_STRING("ODDISH")},
-    {COMPOUND_STRING("POOCHYENA")},
-    {COMPOUND_STRING("TAILLOW")},
+    {COMPOUND_STRING("Oddish")},
+    {COMPOUND_STRING("Poochyena")},
+    {COMPOUND_STRING("Taillow")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll1_Q2[] =
 {
-    {COMPOUND_STRING("AZURILL")},
-    {COMPOUND_STRING("LOTAD")},
-    {COMPOUND_STRING("WINGULL")},
+    {COMPOUND_STRING("Azurill")},
+    {COMPOUND_STRING("Lotad")},
+    {COMPOUND_STRING("Wingull")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll1_Q3[] =
 {
-    {COMPOUND_STRING("DUSTOX")},
-    {COMPOUND_STRING("ZUBAT")},
-    {COMPOUND_STRING("NINCADA")},
+    {COMPOUND_STRING("Dustox")},
+    {COMPOUND_STRING("Zubat")},
+    {COMPOUND_STRING("Nincada")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll2_Q1[] =
 {
-    {COMPOUND_STRING("RALTS")},
-    {COMPOUND_STRING("ZIGZAGOON")},
-    {COMPOUND_STRING("SLAKOTH")},
+    {COMPOUND_STRING("Ralts")},
+    {COMPOUND_STRING("Zigzagoon")},
+    {COMPOUND_STRING("Slakoth")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll2_Q2[] =
 {
-    {COMPOUND_STRING("POOCHYENA")},
-    {COMPOUND_STRING("SHROOMISH")},
-    {COMPOUND_STRING("ZIGZAGOON")},
+    {COMPOUND_STRING("Poochyena")},
+    {COMPOUND_STRING("Shroomish")},
+    {COMPOUND_STRING("Zigzagoon")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll2_Q3[] =
 {
-    {COMPOUND_STRING("POOCHYENA")},
-    {COMPOUND_STRING("ZUBAT")},
-    {COMPOUND_STRING("CARVANHA")},
+    {COMPOUND_STRING("Poochyena")},
+    {COMPOUND_STRING("Zubat")},
+    {COMPOUND_STRING("Carvanha")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll3_Q1[] =
 {
-    {COMPOUND_STRING("BURN HEAL")},
-    {COMPOUND_STRING("HARBOR MAIL")},
+    {COMPOUND_STRING("Burn Heal")},
+    {COMPOUND_STRING("Harbor Mail")},
     {COMPOUND_STRING("Same price")},
 };
 

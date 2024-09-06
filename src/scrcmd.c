@@ -2531,18 +2531,6 @@ bool8 ScrCmd_warpwhitefade(struct ScriptContext *ctx)
     return TRUE;
 }
 
-bool8 ScrCmd_showitemdesc(struct ScriptContext *ctx)
-{
-    DrawHeaderBox();
-    return FALSE;
-}
-
-bool8 ScrCmd_hideitemdesc(struct ScriptContext *ctx)
-{
-    HideHeaderBox();
-    return FALSE;
-}
-
 // Checks if player's party contains a certain species OR one of its forms that
 // shares the same national dex number
 bool8 ScrCmd_checkPartyHasSpecies(struct ScriptContext *ctx)

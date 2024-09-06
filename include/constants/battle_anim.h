@@ -596,7 +596,7 @@
 #define B_ANIM_CRITICAL_CAPTURE_THROW   7
 #define B_ANIM_LVL_UP_EVOLVE            8
 
-#define NUM_B_ANIMS_SPECIAL             8
+#define NUM_B_ANIMS_SPECIAL             9
 
 // status animation table (sBattleAnims_StatusConditions)
 #define B_ANIM_STATUS_PSN               0
