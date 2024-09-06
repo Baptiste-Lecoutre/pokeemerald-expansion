@@ -1887,24 +1887,6 @@
 	_dynmultichoice \left, \top, \ignoreBPress, \maxBeforeScroll, \shouldSort, \initialSelected, \callbacks, NULL
 	.endm
 
-	.macro showdescription
-	.byte 0xe5
-	.endm
-
-	.macro showitemdesc
-	setvar VAR_0x8009, 0
-	showdescription
-	.endm
-
-	.macro showberrydesc
-	setvar VAR_0x8009, 1
-	showdescription
-	.endm
-
-	.macro hideitemdesc
-	.byte 0xe6
-	.endm
-
 	.macro checkPartyHasSpecies species:req
 	.byte 0xe7
 	.2byte \species
@@ -2433,4 +2415,21 @@
 	setvar VAR_0x8005, \localId
 	setvar VAR_0x8006, \movementType
 	special SetObjectEventMovementType
+	.endm
+
+	@ ============================ @
+	@ ITEM DESCRIPTION HEADER MACROS
+	@ Used with OW_SHOW_ITEM_DESCRIPTIONS config
+	.macro showitemdescription
+	callnative ScriptShowItemDescription
+	.byte 0
+	.endm
+
+	.macro showberrydescription
+	callnative ScriptShowItemDescription
+	.byte 1
+	.endm
+
+	.macro hideitemdescription
+	callnative ScriptHideItemDescription
 	.endm
