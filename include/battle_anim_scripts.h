@@ -1009,6 +1009,10 @@ extern const u8 gBattleAnimGeneral_RaidBarrierDisappeared[];
 extern const u8 gBattleAnimGeneral_RaidShieldBroken[];
 extern const u8 gBattleAnimGeneral_RaidShockwave[];
 extern const u8 gBattleAnimGeneral_RaidBossExplosion[];
+extern const u8 gBattleAnimGeneral_RaidShockwaveFocus[];
+extern const u8 gBattleAnimGeneral_MonScared[];
+extern const u8 gBAttleAnimGeneral_GhostGetOut[];
+extern const u8 gBattleAnimGeneral_GoGoggled[];
 
 // special animations
 extern const u8 gBattleAnimSpecial_LevelUp[];

@@ -593,7 +593,7 @@
 #define B_ANIM_GHOST_GET_OUT            61
 #define B_ANIM_GO_GOGGLED               62
 
-#define NUM_B_ANIMS_GENERAL             59
+#define NUM_B_ANIMS_GENERAL             63
 
 // special animations table (sBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

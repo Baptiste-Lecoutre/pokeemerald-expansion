@@ -257,6 +257,10 @@ static const u8* const sBattleAnims_General[NUM_B_ANIMS_GENERAL] =
     [B_ANIM_RAID_BARRIER_BROKEN]    = gBattleAnimGeneral_RaidShieldBroken,
     [B_ANIM_RAID_SHOCKWAVE]         = gBattleAnimGeneral_RaidShockwave,
     [B_ANIM_RAID_BOSS_EXPLOSION]    = gBattleAnimGeneral_RaidBossExplosion,
+    [B_ANIM_RAID_SHOCKWAVE_FOCUS]   = gBattleAnimGeneral_RaidShockwaveFocus,
+    [B_ANIM_MON_SCARED]             = gBattleAnimGeneral_MonScared,
+    [B_ANIM_GHOST_GET_OUT]          = gBAttleAnimGeneral_GhostGetOut,
+    [B_ANIM_GO_GOGGLED]             = gBattleAnimGeneral_GoGoggled,
 };
 
 static const u8* const sBattleAnims_Special[NUM_B_ANIMS_SPECIAL] =
