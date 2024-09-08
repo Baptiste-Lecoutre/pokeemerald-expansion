@@ -49,10 +49,7 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	waitmovement 0
 	msgbox HauntedMansion_3F_Text_TheGhostIsItGone, MSGBOX_DEFAULT
 	closemessage
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_FaceLeft
-	applymovement LOCALID_GIRL, Common_Movement_FaceRight
-	waitmovement 0
+	facefollower
 	checkplayergender
 	goto_if_eq VAR_RESULT, MALE, HauntedMansion_3F_EventScript_MayGoBack
 	goto_if_eq VAR_RESULT, FEMALE, HauntedMansion_3F_EventScript_BrendanGoBack

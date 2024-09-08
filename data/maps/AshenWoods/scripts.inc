@@ -54,9 +54,7 @@ AshenWoods_Text_Mushrooms:
 	.string "seem to grow back overnight!\n"
 
 AshenWoods_EventScript_WeAreInTheAshenWoods::
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_WalkInPlaceFasterLeft
-	waitmovement 0
+	facefollower
 	checkplayergender
 	goto_if_eq VAR_RESULT, MALE, AshenWoods_EventScript_MayWeAreInTheAshenWoods
 	goto_if_eq VAR_RESULT, FEMALE, AshenWoods_EventScript_BrendanWeAreInTheAshenWoods

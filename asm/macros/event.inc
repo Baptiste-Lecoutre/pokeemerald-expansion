@@ -1888,12 +1888,12 @@
 	.endm
 
 	.macro checkPartyHasSpecies species:req
-	.byte 0xe7
+	.byte 0xe5
 	.2byte \species
 	.endm
 
 	.macro isChosenMonSpecies species:req
-	.byte 0xe8
+	.byte 0xe6
 	.2byte \species
 	.endm
 
@@ -1903,7 +1903,7 @@
 	@ Running this command will not affect normal wild battles. You start the prepared battle with multi_wild.
 	@ If the player only has one Pokemon, a scripted double battle will be buggy.
 	.macro setsootopolisbattle species:req, level:req, item=ITEM_NONE, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE
-	.byte 0xe9
+	.byte 0xe7
 	.2byte \species
 	.byte \level
 	.2byte \item
@@ -1927,7 +1927,7 @@
 	.else
 		.set setScript, FALSE
 	.endif
-	.byte 0xea
+	.byte 0xe8
     .byte \localId
     .2byte \flags
 	.byte setScript
@@ -1937,17 +1937,17 @@
     
     @ remove the following NPC (assumes there will only ever be one)
     .macro destroyfollower
-    .byte 0xeb
+    .byte 0xe9
     .endm
     
     @ makes the player and follower face one another
     .macro facefollower
-    .byte 0xec
+    .byte 0xea
     .endm
     
     @ checks if you have a follower. returns the result to VAR_RESULT
     .macro checkfollower
-    .byte 0xed
+    .byte 0xeb
     .endm
 
 @ Supplementary
