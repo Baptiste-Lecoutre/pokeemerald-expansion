@@ -190,13 +190,14 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
     SetDirectionFromHeldKeys(heldKeys);
     input->dpadDirection = sCurrentDirection;
 
-#if DEBUG_OVERWORLD_MENU == TRUE && DEBUG_OVERWORLD_IN_MENU == FALSE
-    if ((heldKeys & DEBUG_OVERWORLD_HELD_KEYS) && input->DEBUG_OVERWORLD_TRIGGER_EVENT)
+    if(DEBUG_OVERWORLD_MENU && !DEBUG_OVERWORLD_IN_MENU)
     {
-        input->input_field_1_2 = TRUE;
-        input->DEBUG_OVERWORLD_TRIGGER_EVENT = FALSE;
+        if ((heldKeys & DEBUG_OVERWORLD_HELD_KEYS) && input->DEBUG_OVERWORLD_TRIGGER_EVENT)
+        {
+            input->input_field_1_2 = TRUE;
+            input->DEBUG_OVERWORLD_TRIGGER_EVENT = FALSE;
+        }
     }
-#endif
 }
 
 int ProcessPlayerFieldInput(struct FieldInput *input)
@@ -264,15 +265,14 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     if (input->pressedRButton && TryStartDexnavSearch())
         return TRUE;
 
-#if DEBUG_OVERWORLD_MENU == TRUE && DEBUG_OVERWORLD_IN_MENU == FALSE
-    if (input->input_field_1_2)
+    if(input->input_field_1_2 && DEBUG_OVERWORLD_MENU && !DEBUG_OVERWORLD_IN_MENU)
     {
         PlaySE(SE_WIN_OPEN);
         FreezeObjectEvents();
         Debug_ShowMainMenu();
         return TRUE;
     }
-#endif
+
     if (input->pressedLButton) {
         if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE))
         {
