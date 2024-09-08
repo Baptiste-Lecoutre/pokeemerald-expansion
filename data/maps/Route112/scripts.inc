@@ -149,7 +149,7 @@ Route112_EventScript_AshenWoodsNotThisWay::
 	msgbox Route112_Text_AshenWoodsNotThisWay, MSGBOX_DEFAULT
 	closemessage
 	applymovement OBJ_EVENT_ID_PLAYER, Route112_Movement_WalkLeft
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Route112_Movement_WalkDown
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, Route112_Movement_WalkDown
 	waitmovement 0
 	end
 

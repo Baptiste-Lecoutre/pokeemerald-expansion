@@ -1324,7 +1324,7 @@ u8 GetFirstInactiveObjectEventId(void)
 
 u8 GetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId)
 {
-    if (localId == OBJ_EVENT_ID_FOLLOWER_NPC)
+    if (localId == OBJ_EVENT_ID_FOLLOW_ME)
         return GetFollowerObjectId();
     else if (localId < OBJ_EVENT_ID_DYNAMIC_BASE)
         return GetObjectEventIdByLocalIdAndMapInternal(localId, mapNum, mapGroupId);

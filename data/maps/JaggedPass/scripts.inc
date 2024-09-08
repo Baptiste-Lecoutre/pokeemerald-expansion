@@ -270,7 +270,7 @@ JaggedPass_EventScript_AshenWoodsNotThisWay::
 	msgbox JaggedPass_Text_AshenWoodsNotThisWay, MSGBOX_DEFAULT
 	closemessage
 	applymovement OBJ_EVENT_ID_PLAYER, JaggedPass_Movement_WalkLeft
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, JaggedPass_Movement_WalkRight
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, JaggedPass_Movement_WalkRight
 	waitmovement 0
 	end
 

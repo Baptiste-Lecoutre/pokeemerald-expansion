@@ -3,7 +3,7 @@
 
 #include "constants/follow_me.h"
 
-#define DEFAULT_FOLLOWER_LOCAL_ID 0xFC
+#define DEFAULT_FOLLOWER_LOCAL_ID 0xFD
 
 #define MOVEMENT_INVALID 0xFE
 
@@ -36,7 +36,7 @@ void FollowMe(struct ObjectEvent* npc, u8 state, bool8 ignoreScriptActive);
 void FollowMe_Ledges(struct ObjectEvent* npc, struct Sprite* obj, u16* ledgeFramesTbl);
 bool8 FollowMe_IsCollisionExempt(struct ObjectEvent* obstacle, struct ObjectEvent* collider);
 void FollowMe_FollowerToWater(void);
-void FollowMe_BindToSurbBlobOnReloadScreen(void);
+void FollowMe_BindToSurfBlobOnReloadScreen(void);
 void PrepareFollowerDismountSurf(void);
 void StairsMoveFollower(void);
 void FollowMe_HandleBike(void);
@@ -51,6 +51,9 @@ void FollowerPositionFix(u8 offset);
 void SetFollowerSprite(u8 spriteIndex);
 bool8 PlayerHasFollower(void);
 u16 GetFollowerPartnerId(void);
+u8 GetFollowerMapObjId(void);
+u8 DetermineFollowerDirection(struct ObjectEvent* player, struct ObjectEvent* follower);
+u8 DetermineFollowerState(struct ObjectEvent* follower, u8 state, u8 direction);
 
 // moved from field_screen_effect.c
 void Task_DoDoorWarp(u8 taskId);
