@@ -44,8 +44,6 @@ struct Weather
             struct Sprite *leavesSprites2[NUM_SWIRL_LEAVES_SPRITES];
         } s2;
     } sprites;
-    u8 darkenedContrastColorMaps[NUM_WEATHER_COLOR_MAPS][32];
-    u8 contrastColorMaps[NUM_WEATHER_COLOR_MAPS][32];
     s8 colorMapIndex;
     s8 targetColorMapIndex;
     u8 colorMapStepDelay;
