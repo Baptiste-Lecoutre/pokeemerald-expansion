@@ -862,7 +862,7 @@ static bool32 AI_IsMoveEffectInPlus(u32 battlerAtk, u32 battlerDef, u32 move, s3
                 case MOVE_EFFECT_SP_DEF_MINUS_2:
                 case MOVE_EFFECT_ACC_MINUS_2:
                 case MOVE_EFFECT_EVS_MINUS_2:
-                    if (ShouldLowerStat(battlerDef, abilityDef, STAT_ATK + (gMovesInfo[move].additionalEffects[i].moveEffect - MOVE_EFFECT_ATK_MINUS_1)) && noOfHitsToKo != 1)
+                    if (ShouldLowerStat(battlerDef, abilityDef, STAT_ATK + (gMovesInfo[move].additionalEffects[i].moveEffect - MOVE_EFFECT_ATK_MINUS_2)) && noOfHitsToKo != 1)
                         return TRUE;
                     break;
             }
@@ -1113,6 +1113,26 @@ s32 AI_WhoStrikesFirst(u32 battlerAI, u32 battler, u32 moveConsidered)
     return AI_IS_SLOWER;
 }
 
+static bool32 CanEndureHit(u32 battler, u32 battlerTarget, u32 move)
+{
+    if (!BATTLER_MAX_HP(battlerTarget) || gMovesInfo[move].effect == EFFECT_MULTI_HIT)
+        return FALSE;
+    if (gMovesInfo[move].strikeCount > 1 && !(gMovesInfo[move].effect == EFFECT_DRAGON_DARTS && IsValidDoubleBattle(battlerTarget)))
+        return FALSE;
+    if (AI_DATA->holdEffects[battlerTarget] == HOLD_EFFECT_FOCUS_SASH)
+        return TRUE;
+
+    if (!DoesBattlerIgnoreAbilityChecks(AI_DATA->abilities[battler], move))
+    {
+        if (B_STURDY >= GEN_5 && AI_DATA->abilities[battlerTarget] == ABILITY_STURDY)
+            return TRUE;
+        if (gBattleMons[battlerTarget].species == SPECIES_MIMIKYU_DISGUISED)
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
 // Check if target has means to faint ai mon.
 bool32 CanTargetFaintAi(u32 battlerDef, u32 battlerAtk)
 {
@@ -1123,7 +1143,8 @@ bool32 CanTargetFaintAi(u32 battlerDef, u32 battlerAtk)
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         if (moves[i] != MOVE_NONE && moves[i] != MOVE_UNAVAILABLE && !(unusable & (1u << i))
-            && AI_DATA->simulatedDmg[battlerDef][battlerAtk][i].expected >= gBattleMons[battlerAtk].hp)
+            && AI_DATA->simulatedDmg[battlerDef][battlerAtk][i].expected >= gBattleMons[battlerAtk].hp
+            && !CanEndureHit(battlerDef, battlerAtk, moves[i]))
         {
             return TRUE;
         }
@@ -1210,7 +1231,13 @@ bool32 CanAIFaintTarget(u32 battlerAtk, u32 battlerDef, u32 numHits)
                 dmg *= numHits;
 
             if (gBattleMons[battlerDef].hp <= dmg)
-                return TRUE;
+            {
+                if (numHits > 1)
+                    return TRUE;
+
+                if (!CanEndureHit(battlerAtk, battlerDef, moves[i]))
+                    return TRUE;
+            }
         }
     }
 
@@ -1922,13 +1949,14 @@ bool32 ShouldLowerEvasion(u32 battlerAtk, u32 battlerDef, u32 defAbility)
 bool32 CanIndexMoveFaintTarget(u32 battlerAtk, u32 battlerDef, u32 index, u32 numHits)
 {
     s32 dmg;
+    u16 *moves = gBattleMons[battlerAtk].moves;
 
     if (numHits)
         dmg = AI_DATA->simulatedDmg[battlerAtk][battlerDef][index].expected * numHits;
     else
         dmg = AI_DATA->simulatedDmg[battlerAtk][battlerDef][index].minimum;
 
-    if (gBattleMons[battlerDef].hp <= dmg)
+    if (gBattleMons[battlerDef].hp <= dmg && !CanEndureHit(battlerAtk, battlerDef, moves[index]))
         return TRUE;
     return FALSE;
 }
@@ -2086,6 +2114,26 @@ bool32 HasAnyKnownMove(u32 battlerId)
             return TRUE;
     }
 
+    return FALSE;
+}
+
+bool32 HasMoveThatLowersOwnStats(u32 battlerId)
+{
+    s32 i, j;
+    u32 aiMove;
+    u16 *moves = GetMovesArray(battlerId);
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        aiMove = moves[i];
+        if (aiMove != MOVE_NONE && aiMove != MOVE_UNAVAILABLE)
+        {
+            for (j = 0; j < gMovesInfo[aiMove].numAdditionalEffects; j++)
+            {
+                if (IsSelfStatLoweringEffect(gMovesInfo[aiMove].additionalEffects[j].moveEffect) && gMovesInfo[aiMove].additionalEffects[j].self)
+                    return TRUE;
+            }
+        }
+    }
     return FALSE;
 }
 
@@ -2288,6 +2336,34 @@ bool32 IsStatLoweringEffect(u32 effect)
     case EFFECT_CAPTIVATE:
     case EFFECT_NOBLE_ROAR:
     case EFFECT_MEMENTO:
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+
+bool32 IsSelfStatLoweringEffect(u32 effect)
+{
+    // Self stat lowering moves like Overheart, Superpower etc.
+    switch (effect)
+    {
+    case MOVE_EFFECT_ATK_MINUS_1:
+    case MOVE_EFFECT_DEF_MINUS_1:
+    case MOVE_EFFECT_SPD_MINUS_1:
+    case MOVE_EFFECT_SP_ATK_MINUS_1:
+    case MOVE_EFFECT_SP_DEF_MINUS_1:
+    case MOVE_EFFECT_EVS_MINUS_1:
+    case MOVE_EFFECT_ACC_MINUS_1:
+    case MOVE_EFFECT_ATK_MINUS_2:
+    case MOVE_EFFECT_DEF_MINUS_2:
+    case MOVE_EFFECT_SPD_MINUS_2:
+    case MOVE_EFFECT_SP_ATK_MINUS_2:
+    case MOVE_EFFECT_SP_DEF_MINUS_2:
+    case MOVE_EFFECT_EVS_MINUS_2:
+    case MOVE_EFFECT_ACC_MINUS_2:
+    case MOVE_EFFECT_V_CREATE:
+    case MOVE_EFFECT_ATK_DEF_DOWN:
+    case MOVE_EFFECT_DEF_SPDEF_DOWN:
         return TRUE;
     default:
         return FALSE;
