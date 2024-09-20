@@ -480,7 +480,7 @@ static void DoStandardWildBattle(bool32 isDouble)
         VarSet(VAR_TEMP_E, 0);
         gBattleTypeFlags |= BATTLE_TYPE_PYRAMID;
     }
-    if (PlayerHasFollower())
+    if (GetFollowerPartnerId() && FOLLOWER_PARTNER_WILD_BATTLES == TRUE)
     {
         gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
         SavePlayerParty();
@@ -614,7 +614,7 @@ void BattleSetup_StartScriptedWildBattle(void)
         gBattleTypeFlags = BATTLE_TYPE_GHOST;
         SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, gText_Ghost);
     }
-    else if (PlayerHasFollower())
+    else if (GetFollowerPartnerId())
     {
         gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
         SavePlayerParty();
@@ -771,14 +771,15 @@ static void CB2_EndWildBattle(void)
     {
         SetMainCallback2(CB2_ReturnToField);
         DowngradeBadPoison();
-        if (PlayerHasFollower())
+        if (GetFollowerPartnerId())
         {
             if (!(gBattleTypeFlags & BATTLE_TYPE_GHOST))
             {
                 SaveChangesToPlayerParty();
                 LoadPlayerParty();
             }
-            HealPlayerParty();
+            if (HEAL_AFTER_FOLLOWER_BATTLE)
+                HealPlayerParty();
         }
         gFieldCallback = FieldCB_ReturnToFieldNoScriptCheckMusic;
     }
@@ -799,14 +800,15 @@ static void CB2_EndScriptedWildBattle(void)
     else
     {
         DowngradeBadPoison();
-        if (PlayerHasFollower())
+        if (GetFollowerPartnerId())
         {
             if (!(gBattleTypeFlags & BATTLE_TYPE_GHOST))
             {
                 SaveChangesToPlayerParty();
                 LoadPlayerParty();
             }
-            HealPlayerParty();
+            if (HEAL_AFTER_FOLLOWER_BATTLE)
+                HealPlayerParty();
         }
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
@@ -1464,7 +1466,7 @@ void BattleSetup_StartTrainerBattle(void)
     gWhichTrainerToFaceAfterBattle = 0;
     gMain.savedCallback = CB2_EndTrainerBattle;
 
-    if (sNoOfPossibleTrainerRetScripts == 2 && PlayerHasFollower())
+    if (sNoOfPossibleTrainerRetScripts == 2 && GetFollowerPartnerId())
     {
         gBattleTypeFlags |= BATTLE_TYPE_INGAME_PARTNER | BATTLE_TYPE_MULTI;
         SavePlayerParty();
@@ -1522,14 +1524,15 @@ static void HandleBattleVariantEndParty(void)
         FlagClear(B_FLAG_SKY_BATTLE);
     }
 
-    if (PlayerHasFollower())
+    if (GetFollowerPartnerId())
     {
         if (sNoOfPossibleTrainerRetScripts == 2)
         {
             SaveChangesToPlayerParty();
             LoadPlayerParty();
         }
-        HealPlayerParty();
+        if (HEAL_AFTER_FOLLOWER_BATTLE)
+            HealPlayerParty();
     }
 }
 

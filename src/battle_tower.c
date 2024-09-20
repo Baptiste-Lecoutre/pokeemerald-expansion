@@ -1975,7 +1975,7 @@ static void HandleSpecialTrainerBattleEnd(void)
         break;
     case SPECIAL_BATTLE_MULTI:
     case SPECIAL_BATTLE_RAID:
-        if (PlayerHasFollower())
+        if (GetFollowerPartnerId() && HEAL_AFTER_FOLLOWER_BATTLE)
             HealPlayerParty();
         for (i = 0; i < MULTI_PARTY_SIZE; i++)
         {

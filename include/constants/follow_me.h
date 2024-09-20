@@ -15,4 +15,16 @@
 #define FOLLOWER_FLAG_ALL                   FOLLOWER_FLAG_ALL_WATER | FOLLOWER_FLAG_ALL_LAND | FOLLOWER_FLAG_CLEAR_ON_WHITE_OUT
 
 
+// If set to TRUE, the Player's party will be automatically healed after every battle the follower partner participates in
+#define HEAL_AFTER_FOLLOWER_BATTLE          TRUE
+
+// If set to TRUE, a preview of the player's and partner's teams will be shown before every trainer battle
+#define FOLLOWER_PARTY_PREVIEW              FALSE
+
+// If set to TRUE, the follower partner will join you for wild battles
+#define FOLLOWER_PARTNER_WILD_BATTLES       TRUE
+
+// If set to FALSE, only one wild Pokemon will show up to the battle instead of two
+#define FOLLOWER_WILD_BATTLE_VS_2           TRUE
+
 #endif // GUARD_CONSTANTS_FOLLOW_ME_H

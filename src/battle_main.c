@@ -1433,7 +1433,7 @@ static void CB2_PreInitIngamePlayerPartnerBattle(void)
         *savedBattleTypeFlags = gBattleTypeFlags;
         gMain.savedCallback = CB2_PreInitIngamePlayerPartnerBattle;
 
-        if (!PlayerHasFollower()) // might need to tweak this check later on. good enough for now
+        if (!(GetFollowerPartnerId() && FOLLOWER_PARTY_PREVIEW == FALSE)) // might need to tweak this check later on. good enough for now
             ShowPartyMenuToShowcaseMultiBattleParty();
         break;
     case 1:

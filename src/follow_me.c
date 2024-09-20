@@ -1454,14 +1454,5 @@ u16 GetFollowerPartnerId(void)
     if (!PlayerHasFollower())
         return PARTNER_NONE;
 
-    if (gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL || gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_RIVAL_MAY_NORMAL)
-        return TRAINER_RIVAL_OVERRIDE;
-
-    if (gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_WALLY)
-        return TRAINER_WALLY_OVERRIDE;
-
-    if (gSaveBlock2Ptr->follower.graphicsId == OBJ_EVENT_GFX_RED)
-        return TRAINER_RED_OVERRIDE;
-
-    return PARTNER_NONE;
+    return gSaveBlock2Ptr->follower.battlePartner;
 }

@@ -99,7 +99,7 @@ LavaridgeTown_EventScript_BrendanGiveGoGoggles::
 
 LavaridgeTown_EventScript_RivalExit::
 	closemessage
-	setfollower LOCALID_RIVAL FOLLOWER_FLAG_ALL_LAND, LavaridgeTown_EventScript_FollowerScript
+	setfollower LOCALID_RIVAL, FOLLOWER_FLAG_ALL_LAND, LavaridgeTown_EventScript_FollowerScript, TRAINER_RIVAL_OVERRIDE
 	setvar VAR_LAVARIDGE_TOWN_STATE, 2
 	clearflag FLAG_HIDE_MAP_NAME_POPUP
 	savebgm MUS_DUMMY
