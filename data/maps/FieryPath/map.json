@@ -133,6 +133,13 @@
       "elevation": 3,
       "dest_map": "MAP_ROUTE112",
       "dest_warp_id": "5"
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "elevation": 0,
+      "dest_map": "MAP_FIERY_PATH2",
+      "dest_warp_id": "0"
     }
   ],
   "coord_events": [

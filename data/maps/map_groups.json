@@ -94,7 +94,8 @@
     "Underwater_Route129",
     "Underwater_Route105",
     "Underwater_Route125",
-    "Route110_CaveOfShock"
+    "Route110_CaveOfShock",
+    "Route109_South"
   ],
   "gMapGroup_IndoorLittleroot": [
     "LittlerootTown_BrendansHouse_1F",
@@ -655,6 +656,7 @@
     "HauntedMansion_2F",
     "HauntedMansion_3F",
     "MeteorFalls_B2F",
-    "MeteorFalls_B3F"
+    "MeteorFalls_B3F",
+    "FieryPath2"
   ]
 }

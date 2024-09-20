@@ -1268,3 +1268,7 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/MeteorFalls_B2F/scripts.inc"
 
 	.include "data/maps/MeteorFalls_B3F/scripts.inc"
+
+	.include "data/maps/FieryPath2/scripts.inc"
+
+	.include "data/maps/Route109_South/scripts.inc"
