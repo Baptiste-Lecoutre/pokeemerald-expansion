@@ -125,6 +125,9 @@ static const u8 sTileBitAttributes[NUM_METATILE_BEHAVIORS] =
     [MB_ISOLATED_HORIZONTAL_RAIL]        = TILE_FLAG_UNUSED,
     [MB_VERTICAL_RAIL]                   = TILE_FLAG_UNUSED,
     [MB_HORIZONTAL_RAIL]                 = TILE_FLAG_UNUSED,
+    [MB_SIGNPOST]                        = TILE_FLAG_UNUSED,
+    [MB_POKEMON_CENTER_SIGN]             = TILE_FLAG_UNUSED,
+    [MB_POKEMART_SIGN]                   = TILE_FLAG_UNUSED,
     [MB_ROCK_CLIMB]                      = TILE_FLAG_UNUSED,
 };
 
@@ -1404,6 +1407,29 @@ bool8 MetatileBehavior_IsTrainerHillTimer(u8 metatileBehavior)
         return FALSE;
 }
 
+bool32 MetatileBehavior_IsSignpost(u32 metatileBehavior)
+{
+    return (metatileBehavior == MB_SIGNPOST);
+}
+
+bool32 MetatileBehavior_IsPokemonCenterSign(u32 metatileBehavior)
+{
+    return (metatileBehavior == MB_POKEMON_CENTER_SIGN);
+}
+
+bool32 MetatileBehavior_IsPokeMartSign(u32 metatileBehavior)
+{
+    return (metatileBehavior == MB_POKEMART_SIGN);
+}
+
+bool8 MetatileBehavior_IsRockClimbable(u8 metatileBehavior)
+{
+    if (metatileBehavior == MB_ROCK_CLIMB)
+        return TRUE;
+    else
+        return FALSE;
+}
+
 bool8 MetatileBehavior_IsSpinRight(u8 metatileBehavior)
 {
     if (metatileBehavior == MB_SPIN_RIGHT)
@@ -1432,14 +1458,6 @@ bool8 MetatileBehavior_IsSpinDown(u8 metatileBehavior)
 {
     if (metatileBehavior == MB_SPIN_DOWN)
                 return TRUE;
-    else
-        return FALSE;
-}
-
-bool8 MetatileBehavior_IsRockClimbable(u8 metatileBehavior)
-{
-    if (metatileBehavior == MB_ROCK_CLIMB)
-        return TRUE;
     else
         return FALSE;
 }

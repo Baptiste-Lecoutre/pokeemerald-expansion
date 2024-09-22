@@ -226,74 +226,24 @@ const u8 *const gPyramidBagMenu_ReturnToStrings[] =
 };
 
 const u8 gText_ReturnToVar1[] = _("Return to\n{STR_VAR_1}.");
-const u8 gText_ItemsPocket[] = _("Items");
-const u8 gText_PokeBallsPocket[] = _("Poké Balls");
-const u8 gText_TMHMPocket[] = _("TMs & HMs");
-const u8 gText_BerriesPocket[] = _("Berries");
-const u8 gText_KeyItemsPocket[] = _("Key items");
-const u8 gText_MedicinePocket[] = _("Medicine");
-const u8 gText_BattleItemsPocket[] = _("Battle item");
-const u8 gText_PowerUpPocket[] = _("Power-up");
-const u8 gText_MegaStonesPocket[] = _("Mega stones");
-const u8 gText_ZCrystalsPocket[] = _("Z-crystals");
 
 const u8 *const gPocketNamesStringsTable[] =
 {
-    [ITEMS_POCKET] = gText_ItemsPocket,
-    [MEDICINE_POCKET] = gText_MedicinePocket,
-    [BALLS_POCKET] = gText_PokeBallsPocket,
-    [BATTLEITEMS_POCKET] = gText_BattleItemsPocket,
-    [BERRIES_POCKET] = gText_BerriesPocket,
-    [POWERUP_POCKET] = gText_PowerUpPocket,
-    [MEGASTONES_POCKET] = gText_MegaStonesPocket,
-    [ZCRYSTALS_POCKET] = gText_ZCrystalsPocket,
-    [TMHM_POCKET]  = gText_TMHMPocket,
-    [KEYITEMS_POCKET] = gText_KeyItemsPocket
+    [ITEMS_POCKET] =    COMPOUND_STRING("Items"),
+    [MEDICINE_POCKET] = COMPOUND_STRING("Medicine"),
+    [BALLS_POCKET] =    COMPOUND_STRING("Poké Balls"),
+    [BATTLEITEMS_POCKET] = COMPOUND_STRING("Battle Item"),
+    [BERRIES_POCKET] =  COMPOUND_STRING("Berries"),
+    [POWERUP_POCKET] = COMPOUND_STRING("Power-up"),
+    [MEGASTONES_POCKET] = COMPOUND_STRING("Mega stones"),
+    [ZCRYSTALS_POCKET] = COMPOUND_STRING("Z-crystals"),
+    [TMHM_POCKET]  =    COMPOUND_STRING("TMs & HMs"),
+    [KEYITEMS_POCKET] = COMPOUND_STRING("Key Items")
 };
 
 const u8 gText_NumberItem_TMBerry[] = _("{NO}{STR_VAR_1}{CLEAR 0x07}{STR_VAR_2}");
 const u8 gText_NumberItem_HM[] = _("{CLEAR_TO 0x11}{STR_VAR_1}{CLEAR 0x05}{STR_VAR_2}");
-const u8 gText_SizeSlash[] = _("Size /");
-const u8 gText_FirmSlash[] = _("Firm /");
-const u8 gText_Var1DotVar2[] = _("{STR_VAR_1}.{STR_VAR_2}”");
 
-// Berry firmness strings
-const u8 gBerryFirmnessString_VerySoft[] = _("Very soft");
-const u8 gBerryFirmnessString_Soft[] = _("Soft");
-const u8 gBerryFirmnessString_Hard[] = _("Hard");
-const u8 gBerryFirmnessString_VeryHard[] = _("Very hard");
-const u8 gBerryFirmnessString_SuperHard[] = _("Super hard");
-
-const u8 gText_NumberVar1Var2[] = _("{NO}{STR_VAR_1} {STR_VAR_2}");
-const u8 gText_BerryTag[] = _("Berry tag");
-const u8 gText_RedPokeblock[] = _("Red {POKEBLOCK}");
-const u8 gText_BluePokeblock[] = _("Blue {POKEBLOCK}");
-const u8 gText_PinkPokeblock[] = _("Pink {POKEBLOCK}");
-const u8 gText_GreenPokeblock[] = _("Green {POKEBLOCK}");
-const u8 gText_YellowPokeblock[] = _("Yellow {POKEBLOCK}");
-const u8 gText_PurplePokeblock[] = _("Purple {POKEBLOCK}");
-const u8 gText_IndigoPokeblock[] = _("Indigo {POKEBLOCK}");
-const u8 gText_BrownPokeblock[] = _("Brown {POKEBLOCK}");
-const u8 gText_LiteBluePokeblock[] = _("Liteblue {POKEBLOCK}");
-const u8 gText_OlivePokeblock[] = _("Olive {POKEBLOCK}");
-const u8 gText_GrayPokeblock[] = _("Gray {POKEBLOCK}");
-const u8 gText_BlackPokeblock[] = _("Black {POKEBLOCK}");
-const u8 gText_WhitePokeblock[] = _("White {POKEBLOCK}");
-const u8 gText_GoldPokeblock[] = _("Gold {POKEBLOCK}");
-const u8 gText_Spicy[] = _("Spicy");
-const u8 gText_Dry[] = _("Dry");
-const u8 gText_Sweet[] = _("Sweet");
-const u8 gText_Bitter[] = _("Bitter");
-const u8 gText_Sour[] = _("Sour");
-const u8 gText_Tasty[] = _("Tasty"); // Unused
-const u8 gText_Feel[] = _("Feel"); // Unused
-const u8 gText_StowCase[] = _("Stow Case.");
-const u8 gText_LvVar1[] = _("{LV}{STR_VAR_1}");
-const u8 gText_ThrowAwayVar1[] = _("Throw away this\n{STR_VAR_1}?");
-const u8 gText_Var1ThrownAway[] = _("The {STR_VAR_1}\nwas thrown away.");
-const u8 gText_Var1AteTheVar2[] = _("{STR_VAR_1} ate the\n{STR_VAR_2}.{PAUSE_UNTIL_PRESS}");
-const u8 gText_Var1HappilyAteVar2[] = _("{STR_VAR_1} happily ate the\n{STR_VAR_2}.{PAUSE_UNTIL_PRESS}");
-const u8 gText_Var1DisdainfullyAteVar2[] = _("{STR_VAR_1} disdainfully ate the\n{STR_VAR_2}.{PAUSE_UNTIL_PRESS}");
 const u8 gText_ShopBuy[] = _("Buy");
 const u8 gText_ShopSell[] = _("Sell");
 const u8 gText_ShopQuit[] = _("Quit");
@@ -314,8 +264,8 @@ const u8 gText_NoMoreRoomForThis[] = _("You have no more room for this\nitem.{PA
 const u8 gText_SpaceForVar1Full[] = _("The space for {STR_VAR_1} is full.{PAUSE_UNTIL_PRESS}");
 const u8 gText_AnythingElseICanHelp[] = _("Is there anything else I can help\nyou with?");
 const u8 gText_CanIHelpWithAnythingElse[] = _("Can I help you with anything else?");
-const u8 gText_ThrowInPremierBall[] = _("I'll throw in a PREMIER BALL, too.{PAUSE_UNTIL_PRESS}");
-const u8 gText_ThrowInPremierBalls[] = _("I'll throw in {STR_VAR_1} PREMIER BALLS, too.{PAUSE_UNTIL_PRESS}");
+const u8 gText_ThrowInPremierBall[] = _("I'll throw in a Premier Ball, too.{PAUSE_UNTIL_PRESS}");
+const u8 gText_ThrowInPremierBalls[] = _("I'll throw in {STR_VAR_1} Premier Balls, too.{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantBuyKeyItem[] = _("{STR_VAR_2}? Oh, no.\nI can't buy that.{PAUSE_UNTIL_PRESS}");
 const u8 gText_HowManyToSell[] = _("{STR_VAR_2}?\nHow many would you like to sell?");
 const u8 gText_ICanPayVar1[] = _("I can pay ¥{STR_VAR_1}.\nWould that be okay?");
