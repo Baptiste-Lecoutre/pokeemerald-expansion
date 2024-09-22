@@ -546,6 +546,7 @@ extern const u8 gText_Philip[];
 extern const u8 gText_Dennis[];
 extern const u8 gText_Roberto[];
 extern const u8 gText_FiveMarks[];
+extern const u8 gText_ThreeMarks[];
 
 extern const u8 gText_TotalRecordWLD[];
 extern const u8 gText_PlayersBattleResults[];
