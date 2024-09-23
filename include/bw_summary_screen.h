@@ -11,6 +11,8 @@
 #define BW_IV_EV_HIDDEN                             0       // don't show IVs and EVs
 #define BW_IV_EV_GRADED                             1       // show graded values for IVs and EVs
 #define BW_IV_EV_PRECISE                            2       // show precise values for IVs and EVs
+#define BW_SUMMARY_MON_IDLE_ANIMS_FRAMES            300     // number of frames between each idle anim IF BW_SUMMARY_MON_IDLE_ANIMS is true.
+                                                            // for reference, Emerald runs at 60FPS by default
 
 // configs
 #define BW_SUMMARY_AUTO_FORMAT_MOVE_DESCRIPTIONS    TRUE                // automatically formats move descriptions to fit the new box size. disable if you want to format them manually
@@ -20,13 +22,39 @@
 #define BW_SUMMARY_IV_EV_DISPLAY                    BW_IV_EV_PRECISE     // determines how to show IVs and EVs
 #define BW_SUMMARY_DECAP                            TRUE               // indicates if summary screen-specific strings should be decapitalized
 #define BW_SUMMARY_SHOW_FRIENDSHIP                  FALSE               // show a heart that fills up to indicate friendship value
-#define BW_SUMMARY_BW_TYPE_ICONS                    FALSE               // use Gen 5 style type icons instead of the default ones.
+#define BW_SUMMARY_BW_STATUS_ICONS                  TRUE                // use Gen 5 style status icons instead of the default ones.
+#define BW_SUMMARY_BW_TYPE_ICONS                    FALSE                // use Gen 5 style type icons instead of the default ones.
                                                                         // out of the box the vanilla icons don't fit well, this is mostly a compatibility
                                                                         // option for people who already use custom icons everywhere else
+#define BW_SUMMARY_SCROLLING_BG                     TRUE                // enables scrolling animated background
+#define BW_SUMMARY_ALPHA_BLEND                      TRUE                // enables alpha blending (semi-transparency)
+#define BW_SUMMARY_MON_IDLE_ANIMS                   TRUE                // loops the mon animations regularly as an "idle" anim
+#define BW_SUMMARY_MON_SHADOWS                      TRUE                // displays a shadow for the mon sprite
 
-//ravetodo
-// - hidden power
-// - extended move desc window
+/* Info for users
+
+General tilemap setup
+BG3 - scrolling grid background (or not scrolling if you turned the config off) 
+BG2 - main UI overlayed on scrolling BG
+BG1 - pop in move effect windows
+BG0 - text windows
+
+Mosaic effect used when transitioning between screens and actvating
+effect windows is controlled by tMosaicStrength in the relevant
+task functions.
+
+BG scrolling speed can be modified by altering the value parameter
+of the ChangeBgX and ChangeBgY functions in VBlank()
+
+*/
+
+/* ravetodo in future updates
+
+- hidden power
+- extended move desc window
+- ribbons
+
+*/
 
 void ShowPokemonSummaryScreen_BW(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, void (*callback)(void));
 void ShowSelectMovePokemonSummaryScreen_BW(struct Pokemon *mons, u8 monIndex, u8 maxMonIndex, void (*callback)(void), u16 newMove);
