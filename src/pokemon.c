@@ -11,6 +11,7 @@
 #include "battle_setup.h"
 #include "battle_tower.h"
 #include "battle_z_move.h"
+#include "bw_summary_screen.h"
 #include "data.h"
 #include "daycare.h"
 #include "dexnav.h"
@@ -6332,12 +6333,18 @@ static void Task_AnimateAfterDelay(u8 taskId)
     }
 }
 
+#define tIsShadow data[4]
+
 static void Task_PokemonSummaryAnimateAfterDelay(u8 taskId)
 {
     if (--gTasks[taskId].sAnimDelay == 0)
     {
         StartMonSummaryAnimation(READ_PTR_FROM_TASK(taskId, 0), gTasks[taskId].sAnimId);
-        SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
+        if (gTasks[taskId].tIsShadow)
+            SummaryScreen_SetShadowAnimDelayTaskId_BW(TASK_NONE); // needed to track anim delay task for mon shadow in BW summary screen
+        else
+            SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
+
         DestroyTask(taskId);
     }
 }
@@ -6397,7 +6404,7 @@ void DoMonFrontSpriteAnimation(struct Sprite *sprite, u16 species, bool8 noCry, 
     }
 }
 
-void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneFrame)
+void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneFrame, bool32 isShadow)
 {
     if (!gSaveBlock2Ptr->optionsPokemonAnim)
         sprite->callback = SpriteCallbackDummy;
@@ -6412,7 +6419,13 @@ void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneF
             STORE_PTR_IN_TASK(sprite, taskId, 0);
             gTasks[taskId].sAnimId = gSpeciesInfo[species].frontAnimId;
             gTasks[taskId].sAnimDelay = gSpeciesInfo[species].frontAnimDelay;
-            SummaryScreen_SetAnimDelayTaskId(taskId);
+            gTasks[taskId].tIsShadow = isShadow;  // needed to track anim delay task for mon shadow in BW summary screen
+
+            if (isShadow)
+                SummaryScreen_SetShadowAnimDelayTaskId_BW(taskId);
+            else
+                SummaryScreen_SetAnimDelayTaskId(taskId);
+
             SetSpriteCB_MonAnimDummy(sprite);
         }
         else
@@ -6422,6 +6435,8 @@ void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneF
         }
     }
 }
+
+#define tIsShadow data[4]
 
 void StopPokemonAnimationDelayTask(void)
 {

@@ -27,9 +27,10 @@
                                                                         // out of the box the vanilla icons don't fit well, this is mostly a compatibility
                                                                         // option for people who already use custom icons everywhere else
 #define BW_SUMMARY_SCROLLING_BG                     TRUE                // enables scrolling animated background
-#define BW_SUMMARY_ALPHA_BLEND                      TRUE                // enables alpha blending (semi-transparency)
+#define BW_SUMMARY_BG_BLEND                         TRUE                // enables alpha blending for the main UI (semi-transparency)
 #define BW_SUMMARY_MON_IDLE_ANIMS                   TRUE                // loops the mon animations regularly as an "idle" anim
 #define BW_SUMMARY_MON_SHADOWS                      TRUE                // displays a shadow for the mon sprite
+#define BW_SUMMARY_SHOW_TERA_TYPE                   FALSE               // show tera type icons
 
 /* Info for users
 
@@ -46,6 +47,15 @@ task functions.
 BG scrolling speed can be modified by altering the value parameter
 of the ChangeBgX and ChangeBgY functions in VBlank()
 
+Main UI and shadow transparency levels can be adjusted by changing the
+value written to the alpha blend register in this line in bw_summary_screen.c:
+
+static void InitBGs(void)
+...
+SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(14, 6));
+...
+}
+
 */
 
 /* ravetodo in future updates
@@ -61,6 +71,7 @@ void ShowSelectMovePokemonSummaryScreen_BW(struct Pokemon *mons, u8 monIndex, u8
 void ShowPokemonSummaryScreenHandleDeoxys_BW(u8 mode, struct BoxPokemon *mons, u8 monIndex, u8 maxMonIndex, void (*callback)(void));
 u8 GetMoveSlotToReplace_BW(void);
 void SummaryScreen_SetAnimDelayTaskId_BW(u8 taskId);
+void SummaryScreen_SetShadowAnimDelayTaskId_BW(u8 taskId);
 
 // The Pokémon Summary Screen can operate in different modes. Certain features,
 // such as move re-ordering, are available in the different modes.
