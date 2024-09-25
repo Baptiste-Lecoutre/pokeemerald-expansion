@@ -14,6 +14,7 @@
 #include "text_window.h"
 #include "international_string_util.h"
 #include "strings.h"
+#include "sound.h"
 #include "gba/m4a_internal.h"
 #include "constants/rgb.h"
 #include "menu_helpers.h"
@@ -246,24 +247,24 @@ struct // MENU_MAIN
     int (*processInput)(int selection);
 } static const sItemFunctionsMain[MENUITEM_MAIN_COUNT] =
 {
-    [MENUITEM_MAIN_AUTORUN]      = {DrawChoices_AutoRun,     ProcessInput_Options_Two},
-    [MENUITEM_MAIN_TEXTSPEED]    = {DrawChoices_TextSpeed,   ProcessInput_Options_Four},
-    [MENUITEM_MAIN_BATTLESCENE]  = {DrawChoices_BattleScene, ProcessInput_Options_Five},
-    [MENUITEM_MAIN_BATTLESTYLE]  = {DrawChoices_BattleStyle, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_TYPEEFFECTIVENESS] = {DrawChoices_TypeEffectiveness, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_FASTFIELDMOVE] = {DrawChoices_FastFieldMove,ProcessInput_Options_Two},
-    [MENUITEM_MAIN_SOUND]        = {DrawChoices_Sound,       ProcessInput_Options_Three},
-    [MENUITEM_MAIN_LOWHEALTHBEEP] = {DrawChoices_LowHealthBeep, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_SURFBIKEMUSIC] = {DrawChoices_SurfBikeMusic, ProcessInput_Options_Three},
-    [MENUITEM_MAIN_FISHREELING] = {DrawChoices_FishReeling, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_FASTEGGHATCH] = {DrawChoices_FastEggHatch, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_FASTEVOSCENE] = {DrawChoices_FastEvoScene, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_POKEMONANIM] = {DrawChoices_PokemonAnim, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_POKEMONFOLLOWER] = {DrawChoices_PokemonFollower, ProcessInput_Options_Two},
-    [MENUITEM_MAIN_BUTTONMODE]   = {DrawChoices_ButtonMode,  ProcessInput_Options_Three},
-//    [MENUITEM_MAIN_UNIT_SYSTEM]  = {DrawChoices_UnitSystem,  ProcessInput_Options_Two},
-    [MENUITEM_MAIN_FRAMETYPE]    = {DrawChoices_FrameType,   ProcessInput_FrameType},
-    [MENUITEM_MAIN_CANCEL]       = {NULL, NULL},
+    [MENUITEM_MAIN_AUTORUN]             = {DrawChoices_AutoRun,             ProcessInput_Options_Two},
+    [MENUITEM_MAIN_TEXTSPEED]           = {DrawChoices_TextSpeed,           ProcessInput_Options_Four},
+    [MENUITEM_MAIN_BATTLESCENE]         = {DrawChoices_BattleScene,         ProcessInput_Options_Two},
+    [MENUITEM_MAIN_BATTLESTYLE]         = {DrawChoices_BattleStyle,         ProcessInput_Options_Two},
+    [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = {DrawChoices_TypeEffectiveness,   ProcessInput_Options_Two},
+    [MENUITEM_MAIN_FASTFIELDMOVE]       = {DrawChoices_FastFieldMove,       ProcessInput_Options_Two},
+    [MENUITEM_MAIN_SOUND]               = {DrawChoices_Sound,               ProcessInput_Sound},
+    [MENUITEM_MAIN_LOWHEALTHBEEP]       = {DrawChoices_LowHealthBeep,       ProcessInput_Options_Two},
+    [MENUITEM_MAIN_SURFBIKEMUSIC]       = {DrawChoices_SurfBikeMusic,       ProcessInput_Options_Three},
+    [MENUITEM_MAIN_FISHREELING]         = {DrawChoices_FishReeling,         ProcessInput_Options_Two},
+    [MENUITEM_MAIN_FASTEGGHATCH]        = {DrawChoices_FastEggHatch,        ProcessInput_Options_Two},
+    [MENUITEM_MAIN_FASTEVOSCENE]        = {DrawChoices_FastEvoScene,        ProcessInput_Options_Two},
+    [MENUITEM_MAIN_POKEMONANIM]         = {DrawChoices_PokemonAnim,         ProcessInput_Options_Two},
+    [MENUITEM_MAIN_POKEMONFOLLOWER]     = {DrawChoices_PokemonFollower,     ProcessInput_Options_Two},
+    [MENUITEM_MAIN_BUTTONMODE]          = {DrawChoices_ButtonMode,          ProcessInput_Options_Three},
+//    [MENUITEM_MAIN_UNIT_SYSTEM]         = {DrawChoices_UnitSystem,          ProcessInput_Options_Two},
+    [MENUITEM_MAIN_FRAMETYPE]           = {DrawChoices_FrameType,           ProcessInput_FrameType},
+    [MENUITEM_MAIN_CANCEL]              = {NULL, NULL},
 };
 
 struct // MENU_CUSTOM
@@ -288,24 +289,24 @@ static const u8 gText_OptionMatchCalls[]  = _("Match Calls");
 static const u8 gText_Font[]  = _("Font");
 static const u8 *const sOptionMenuItemsNamesMain[MENUITEM_MAIN_COUNT] =
 {
-    [MENUITEM_MAIN_AUTORUN]     = gText_Autorun,
-    [MENUITEM_MAIN_TEXTSPEED]   = gText_TextSpeed,
-    [MENUITEM_MAIN_BATTLESCENE] = gText_BattleScene,
-    [MENUITEM_MAIN_BATTLESTYLE] = gText_BattleStyle,
-    [MENUITEM_MAIN_TYPEEFFECTIVENESS] = gText_TypeEffectiveness,
-    [MENUITEM_MAIN_FASTFIELDMOVE] = gText_FastFieldMove,
-    [MENUITEM_MAIN_SOUND]       = gText_Sound,
-    [MENUITEM_MAIN_LOWHEALTHBEEP] = gText_LowHealthBeep,
-    [MENUITEM_MAIN_SURFBIKEMUSIC] = gText_SurfBikeMusic,
-    [MENUITEM_MAIN_FISHREELING] = gText_FishReeling,
-    [MENUITEM_MAIN_FASTEGGHATCH] = gText_FastEggHatch,
-    [MENUITEM_MAIN_FASTEVOSCENE] = gText_FastEvoScene,
-    [MENUITEM_MAIN_POKEMONANIM] = gText_PokemonAnim,
-    [MENUITEM_MAIN_POKEMONFOLLOWER] = gText_FollowerPokemon,
-    [MENUITEM_MAIN_BUTTONMODE]  = gText_ButtonMode,
+    [MENUITEM_MAIN_AUTORUN]             = gText_Autorun,
+    [MENUITEM_MAIN_TEXTSPEED]           = gText_TextSpeed,
+    [MENUITEM_MAIN_BATTLESCENE]         = gText_BattleScene,
+    [MENUITEM_MAIN_BATTLESTYLE]         = gText_BattleStyle,
+    [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = gText_TypeEffectiveness,
+    [MENUITEM_MAIN_FASTFIELDMOVE]       = gText_FastFieldMove,
+    [MENUITEM_MAIN_SOUND]               = gText_Sound,
+    [MENUITEM_MAIN_LOWHEALTHBEEP]       = gText_LowHealthBeep,
+    [MENUITEM_MAIN_SURFBIKEMUSIC]       = gText_SurfBikeMusic,
+    [MENUITEM_MAIN_FISHREELING]         = gText_FishReeling,
+    [MENUITEM_MAIN_FASTEGGHATCH]        = gText_FastEggHatch,
+    [MENUITEM_MAIN_FASTEVOSCENE]        = gText_FastEvoScene,
+    [MENUITEM_MAIN_POKEMONANIM]         = gText_PokemonAnim,
+    [MENUITEM_MAIN_POKEMONFOLLOWER]     = gText_FollowerPokemon,
+    [MENUITEM_MAIN_BUTTONMODE]          = gText_ButtonMode,
 //    [MENUITEM_MAIN_UNIT_SYSTEM] = sText_UnitSystem,
-    [MENUITEM_MAIN_FRAMETYPE]   = gText_Frame,
-    [MENUITEM_MAIN_CANCEL]      = gText_OptionMenuSave,
+    [MENUITEM_MAIN_FRAMETYPE]           = gText_Frame,
+    [MENUITEM_MAIN_CANCEL]              = gText_OptionMenuSave,
 };
 
 static const u8 *const sOptionMenuItemsNamesCustom[MENUITEM_CUSTOM_COUNT] =
@@ -335,25 +336,25 @@ static bool8 CheckConditions(int selection)
     case MENU_MAIN:
         switch(selection)
         {
-        case MENUITEM_MAIN_AUTORUN:         return TRUE;
-        case MENUITEM_MAIN_TEXTSPEED:       return TRUE;
-        case MENUITEM_MAIN_BATTLESCENE:     return TRUE;
-        case MENUITEM_MAIN_BATTLESTYLE:     return TRUE;
-        case MENUITEM_MAIN_TYPEEFFECTIVENESS: return TRUE;
-        case MENUITEM_MAIN_FASTFIELDMOVE:   return TRUE;
-        case MENUITEM_MAIN_SOUND:           return TRUE;
-        case MENUITEM_MAIN_LOWHEALTHBEEP:   return TRUE;
-        case MENUITEM_MAIN_SURFBIKEMUSIC:   return TRUE;
-        case MENUITEM_MAIN_FISHREELING:     return TRUE;
-        case MENUITEM_MAIN_FASTEGGHATCH:    return TRUE;
-        case MENUITEM_MAIN_FASTEVOSCENE:    return TRUE;
-        case MENUITEM_MAIN_POKEMONANIM:     return TRUE;
-        case MENUITEM_MAIN_POKEMONFOLLOWER: return TRUE;
-        case MENUITEM_MAIN_BUTTONMODE:      return TRUE;
+        case MENUITEM_MAIN_AUTORUN:             return TRUE;
+        case MENUITEM_MAIN_TEXTSPEED:           return TRUE;
+        case MENUITEM_MAIN_BATTLESCENE:         return TRUE;
+        case MENUITEM_MAIN_BATTLESTYLE:         return TRUE;
+        case MENUITEM_MAIN_TYPEEFFECTIVENESS:   return TRUE;
+        case MENUITEM_MAIN_FASTFIELDMOVE:       return TRUE;
+        case MENUITEM_MAIN_SOUND:               return TRUE;
+        case MENUITEM_MAIN_LOWHEALTHBEEP:       return TRUE;
+        case MENUITEM_MAIN_SURFBIKEMUSIC:       return TRUE;
+        case MENUITEM_MAIN_FISHREELING:         return TRUE;
+        case MENUITEM_MAIN_FASTEGGHATCH:        return TRUE;
+        case MENUITEM_MAIN_FASTEVOSCENE:        return TRUE;
+        case MENUITEM_MAIN_POKEMONANIM:         return TRUE;
+        case MENUITEM_MAIN_POKEMONFOLLOWER:     return TRUE;
+        case MENUITEM_MAIN_BUTTONMODE:          return TRUE;
 //        case MENUITEM_MAIN_UNIT_SYSTEM:     return TRUE;
-        case MENUITEM_MAIN_FRAMETYPE:       return TRUE;
-        case MENUITEM_MAIN_CANCEL:          return TRUE;
-        case MENUITEM_MAIN_COUNT:           return TRUE;
+        case MENUITEM_MAIN_FRAMETYPE:           return TRUE;
+        case MENUITEM_MAIN_CANCEL:              return TRUE;
+        case MENUITEM_MAIN_COUNT:               return TRUE;
         }
     case MENU_CUSTOM:
         switch(selection)
@@ -387,24 +388,24 @@ static const u8 sText_Desc_UnitSystemMetric[]   = _("Display Berry and Pokémon 
 static const u8 sText_Desc_FrameType[]          = _("Choose the frame surrounding the\nwindows.");
 static const u8 *const sOptionMenuItemDescriptionsMain[MENUITEM_MAIN_COUNT][3] =
 {
-    [MENUITEM_MAIN_AUTORUN]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_TEXTSPEED]   = {sText_Desc_TextSpeed,            sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_BATTLESCENE] = {sText_Desc_BattleScene_On,       sText_Desc_BattleScene_Off, sText_Empty},
-    [MENUITEM_MAIN_BATTLESTYLE] = {sText_Desc_BattleStyle_Shift,    sText_Desc_BattleStyle_Set, sText_Empty},
-    [MENUITEM_MAIN_TYPEEFFECTIVENESS]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_FASTFIELDMOVE]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_SOUND]       = {sText_Desc_SoundMono,            sText_Desc_SoundStereo,     sText_Empty},
-    [MENUITEM_MAIN_LOWHEALTHBEEP]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_SURFBIKEMUSIC]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_FISHREELING]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_FASTEGGHATCH]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_FASTEVOSCENE]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_POKEMONANIM]     = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_AUTORUN]             = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_TEXTSPEED]           = {sText_Desc_TextSpeed,            sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_BATTLESCENE]         = {sText_Desc_BattleScene_On,       sText_Desc_BattleScene_Off, sText_Empty},
+    [MENUITEM_MAIN_BATTLESTYLE]         = {sText_Desc_BattleStyle_Shift,    sText_Desc_BattleStyle_Set, sText_Empty},
+    [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_FASTFIELDMOVE]       = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_SOUND]               = {sText_Desc_SoundMono,            sText_Desc_SoundStereo,     sText_Empty},
+    [MENUITEM_MAIN_LOWHEALTHBEEP]       = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_SURFBIKEMUSIC]       = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_FISHREELING]         = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_FASTEGGHATCH]        = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_FASTEVOSCENE]        = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_POKEMONANIM]         = {sText_Empty,                     sText_Empty,                sText_Empty},
     [MENUITEM_MAIN_POKEMONFOLLOWER]     = {sText_Empty,                     sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_BUTTONMODE]  = {sText_Desc_ButtonMode,           sText_Desc_ButtonMode_LR,   sText_Desc_ButtonMode_LA},
+    [MENUITEM_MAIN_BUTTONMODE]          = {sText_Desc_ButtonMode,           sText_Desc_ButtonMode_LR,   sText_Desc_ButtonMode_LA},
 //    [MENUITEM_MAIN_UNIT_SYSTEM] = {sText_Desc_UnitSystemImperial,   sText_Desc_UnitSystemMetric,sText_Empty},
-    [MENUITEM_MAIN_FRAMETYPE]   = {sText_Desc_FrameType,            sText_Empty,                sText_Empty},
-    [MENUITEM_MAIN_CANCEL]      = {sText_Desc_Save,                 sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_FRAMETYPE]           = {sText_Desc_FrameType,            sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_CANCEL]              = {sText_Desc_Save,                 sText_Empty,                sText_Empty},
 };
 
 // Custom
@@ -430,24 +431,24 @@ static const u8 *const sOptionMenuItemDescriptionsCustom[MENUITEM_CUSTOM_COUNT][
 static const u8 sText_Desc_Disabled_Textspeed[]     = _("Only active if xyz.");
 static const u8 *const sOptionMenuItemDescriptionsDisabledMain[MENUITEM_MAIN_COUNT] =
 {
-    [MENUITEM_MAIN_AUTORUN]     = sText_Empty,
-    [MENUITEM_MAIN_TEXTSPEED]   = sText_Desc_Disabled_Textspeed,
-    [MENUITEM_MAIN_BATTLESCENE] = sText_Empty,
-    [MENUITEM_MAIN_BATTLESTYLE] = sText_Empty,
-    [MENUITEM_MAIN_TYPEEFFECTIVENESS] = sText_Empty,
-    [MENUITEM_MAIN_FASTFIELDMOVE] = sText_Empty,
-    [MENUITEM_MAIN_SOUND]       = sText_Empty,
-    [MENUITEM_MAIN_LOWHEALTHBEEP] = sText_Empty,
-    [MENUITEM_MAIN_SURFBIKEMUSIC] = sText_Empty,
-    [MENUITEM_MAIN_FISHREELING] = sText_Empty,
-    [MENUITEM_MAIN_FASTEGGHATCH] = sText_Empty,
-    [MENUITEM_MAIN_FASTEVOSCENE] = sText_Empty,
-    [MENUITEM_MAIN_POKEMONANIM] = sText_Empty,
-    [MENUITEM_MAIN_POKEMONFOLLOWER] = sText_Empty,
-    [MENUITEM_MAIN_BUTTONMODE]  = sText_Empty,
+    [MENUITEM_MAIN_AUTORUN]             = sText_Empty,
+    [MENUITEM_MAIN_TEXTSPEED]           = sText_Desc_Disabled_Textspeed,
+    [MENUITEM_MAIN_BATTLESCENE]         = sText_Empty,
+    [MENUITEM_MAIN_BATTLESTYLE]         = sText_Empty,
+    [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = sText_Empty,
+    [MENUITEM_MAIN_FASTFIELDMOVE]       = sText_Empty,
+    [MENUITEM_MAIN_SOUND]               = sText_Empty,
+    [MENUITEM_MAIN_LOWHEALTHBEEP]       = sText_Empty,
+    [MENUITEM_MAIN_SURFBIKEMUSIC]       = sText_Empty,
+    [MENUITEM_MAIN_FISHREELING]         = sText_Empty,
+    [MENUITEM_MAIN_FASTEGGHATCH]        = sText_Empty,
+    [MENUITEM_MAIN_FASTEVOSCENE]        = sText_Empty,
+    [MENUITEM_MAIN_POKEMONANIM]         = sText_Empty,
+    [MENUITEM_MAIN_POKEMONFOLLOWER]     = sText_Empty,
+    [MENUITEM_MAIN_BUTTONMODE]          = sText_Empty,
 //    [MENUITEM_MAIN_UNIT_SYSTEM] = sText_Empty,
-    [MENUITEM_MAIN_FRAMETYPE]   = sText_Empty,
-    [MENUITEM_MAIN_CANCEL]      = sText_Empty,
+    [MENUITEM_MAIN_FRAMETYPE]           = sText_Empty,
+    [MENUITEM_MAIN_CANCEL]              = sText_Empty,
 };
 
 // Disabled Custom
@@ -754,23 +755,23 @@ void CB2_InitOptionPlusMenu(void)
         gMain.state++;
         break;
     case 6:
-        sOptions->sel[MENUITEM_MAIN_AUTORUN]     = gSaveBlock2Ptr->autoRun;
-        sOptions->sel[MENUITEM_MAIN_TEXTSPEED]   = gSaveBlock2Ptr->optionsTextSpeed;
-        sOptions->sel[MENUITEM_MAIN_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleScene;
-        sOptions->sel[MENUITEM_MAIN_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
-        sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS] = gSaveBlock2Ptr->optionsShowTypeEffectiveness;
-        sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE] = gSaveBlock2Ptr->optionsFastFieldMove;
-        sOptions->sel[MENUITEM_MAIN_SOUND]       = gSaveBlock2Ptr->optionsSound;
-        sOptions->sel[MENUITEM_MAIN_LOWHEALTHBEEP] = gSaveBlock2Ptr->optionsLowHealthMusic;
-        sOptions->sel[MENUITEM_MAIN_SURFBIKEMUSIC] = gSaveBlock2Ptr->optionsSurfBikeMusic;
-        sOptions->sel[MENUITEM_MAIN_FISHREELING] = gSaveBlock2Ptr->optionsFishReeling;
-        sOptions->sel[MENUITEM_MAIN_FASTEGGHATCH] = gSaveBlock2Ptr->optionsFastEggHatch;
-        sOptions->sel[MENUITEM_MAIN_FASTEVOSCENE] = gSaveBlock2Ptr->optionsFastEvolution;
-        sOptions->sel[MENUITEM_MAIN_POKEMONANIM] = gSaveBlock2Ptr->optionsPokemonAnim;
-        sOptions->sel[MENUITEM_MAIN_POKEMONFOLLOWER] = gSaveBlock2Ptr->optionsShowFollowerPokemon;
-        sOptions->sel[MENUITEM_MAIN_BUTTONMODE]  = gSaveBlock2Ptr->optionsButtonMode;
+        sOptions->sel[MENUITEM_MAIN_AUTORUN]            = gSaveBlock2Ptr->autoRun;
+        sOptions->sel[MENUITEM_MAIN_TEXTSPEED]          = gSaveBlock2Ptr->optionsTextSpeed;
+        sOptions->sel[MENUITEM_MAIN_BATTLESCENE]        = gSaveBlock2Ptr->optionsBattleScene;
+        sOptions->sel[MENUITEM_MAIN_BATTLESTYLE]        = gSaveBlock2Ptr->optionsBattleStyle;
+        sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS]  = gSaveBlock2Ptr->optionsShowTypeEffectiveness;
+        sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE]      = gSaveBlock2Ptr->optionsFastFieldMove;
+        sOptions->sel[MENUITEM_MAIN_SOUND]              = gSaveBlock2Ptr->optionsSound;
+        sOptions->sel[MENUITEM_MAIN_LOWHEALTHBEEP]      = gSaveBlock2Ptr->optionsLowHealthMusic;
+        sOptions->sel[MENUITEM_MAIN_SURFBIKEMUSIC]      = gSaveBlock2Ptr->optionsSurfBikeMusic;
+        sOptions->sel[MENUITEM_MAIN_FISHREELING]        = gSaveBlock2Ptr->optionsFishReeling;
+        sOptions->sel[MENUITEM_MAIN_FASTEGGHATCH]       = gSaveBlock2Ptr->optionsFastEggHatch;
+        sOptions->sel[MENUITEM_MAIN_FASTEVOSCENE]       = gSaveBlock2Ptr->optionsFastEvolution;
+        sOptions->sel[MENUITEM_MAIN_POKEMONANIM]        = gSaveBlock2Ptr->optionsPokemonAnim;
+        sOptions->sel[MENUITEM_MAIN_POKEMONFOLLOWER]    = gSaveBlock2Ptr->optionsShowFollowerPokemon;
+        sOptions->sel[MENUITEM_MAIN_BUTTONMODE]         = gSaveBlock2Ptr->optionsButtonMode;
 //        sOptions->sel[MENUITEM_MAIN_UNIT_SYSTEM] = gSaveBlock2Ptr->autoRun;//gSaveBlock2Ptr->optionsUnitSystem;
-        sOptions->sel[MENUITEM_MAIN_FRAMETYPE]   = gSaveBlock2Ptr->optionsWindowFrameType;
+        sOptions->sel[MENUITEM_MAIN_FRAMETYPE]          = gSaveBlock2Ptr->optionsWindowFrameType;
         
         sOptions->sel_custom[MENUITEM_CUSTOM_HP_BAR]      = gSaveBlock2Ptr->optionsFastEggHatch;//gSaveBlock2Ptr->optionsHpBarSpeed;
         sOptions->sel_custom[MENUITEM_CUSTOM_EXP_BAR]     = gSaveBlock2Ptr->optionsFastEvolution;//gSaveBlock2Ptr->optionsExpBarSpeed;
@@ -974,23 +975,22 @@ static void Task_OptionMenuProcessInput(u8 taskId)
 static void Task_OptionMenuSave(u8 taskId)
 {
     gSaveBlock2Ptr->autoRun = sOptions->sel[MENUITEM_MAIN_AUTORUN];
-    gSaveBlock2Ptr->optionsTextSpeed        = sOptions->sel[MENUITEM_MAIN_TEXTSPEED];
-    gSaveBlock2Ptr->optionsBattleScene   = sOptions->sel[MENUITEM_MAIN_BATTLESCENE];
-    gSaveBlock2Ptr->optionsBattleStyle      = sOptions->sel[MENUITEM_MAIN_BATTLESTYLE];
-    gSaveBlock2Ptr->optionsShowTypeEffectiveness = sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS];
-    gSaveBlock2Ptr->optionsFastFieldMove = sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE];
-    gSaveBlock2Ptr->optionsSound            = sOptions->sel[MENUITEM_MAIN_SOUND];
-    gSaveBlock2Ptr->optionsLowHealthMusic = sOptions->sel[MENUITEM_MAIN_LOWHEALTHBEEP];
-    gSaveBlock2Ptr->optionsSurfBikeMusic = sOptions->sel[MENUITEM_MAIN_SURFBIKEMUSIC];
-    gSaveBlock2Ptr->optionsFishReeling = sOptions->sel[MENUITEM_MAIN_FISHREELING];
-    gSaveBlock2Ptr->optionsFastEggHatch = sOptions->sel[MENUITEM_MAIN_FASTEGGHATCH];
-    gSaveBlock2Ptr->optionsFastEvolution = sOptions->sel[MENUITEM_MAIN_FASTEVOSCENE];
-    gSaveBlock2Ptr->optionsPokemonAnim = sOptions->sel[MENUITEM_MAIN_POKEMONANIM];
-    gSaveBlock2Ptr->optionsShowFollowerPokemon = sOptions->sel[MENUITEM_MAIN_POKEMONFOLLOWER];
-    gSaveBlock2Ptr->optionsButtonMode       = sOptions->sel[MENUITEM_MAIN_BUTTONMODE];
+    gSaveBlock2Ptr->optionsTextSpeed                = sOptions->sel[MENUITEM_MAIN_TEXTSPEED];
+    gSaveBlock2Ptr->optionsBattleScene              = sOptions->sel[MENUITEM_MAIN_BATTLESCENE];
+    gSaveBlock2Ptr->optionsBattleStyle              = sOptions->sel[MENUITEM_MAIN_BATTLESTYLE];
+    gSaveBlock2Ptr->optionsShowTypeEffectiveness    = sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS];
+    gSaveBlock2Ptr->optionsFastFieldMove            = sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE];
+    gSaveBlock2Ptr->optionsSound                    = sOptions->sel[MENUITEM_MAIN_SOUND];
+    gSaveBlock2Ptr->optionsLowHealthMusic           = sOptions->sel[MENUITEM_MAIN_LOWHEALTHBEEP];
+    gSaveBlock2Ptr->optionsSurfBikeMusic            = sOptions->sel[MENUITEM_MAIN_SURFBIKEMUSIC];
+    gSaveBlock2Ptr->optionsFishReeling              = sOptions->sel[MENUITEM_MAIN_FISHREELING];
+    gSaveBlock2Ptr->optionsFastEggHatch             = sOptions->sel[MENUITEM_MAIN_FASTEGGHATCH];
+    gSaveBlock2Ptr->optionsFastEvolution            = sOptions->sel[MENUITEM_MAIN_FASTEVOSCENE];
+    gSaveBlock2Ptr->optionsPokemonAnim              = sOptions->sel[MENUITEM_MAIN_POKEMONANIM];
+    gSaveBlock2Ptr->optionsShowFollowerPokemon      = sOptions->sel[MENUITEM_MAIN_POKEMONFOLLOWER];
+    gSaveBlock2Ptr->optionsButtonMode               = sOptions->sel[MENUITEM_MAIN_BUTTONMODE];
     //gSaveBlock2Ptr->optionsUnitSystem       = sOptions->sel[MENUITEM_MAIN_UNIT_SYSTEM];
-    gSaveBlock2Ptr->optionsWindowFrameType  = sOptions->sel[MENUITEM_MAIN_FRAMETYPE];
-//    gSaveBlock2Ptr->autoRun       = sOptions->sel[MENUITEM_MAIN_UNIT_SYSTEM];
+    gSaveBlock2Ptr->optionsWindowFrameType          = sOptions->sel[MENUITEM_MAIN_FRAMETYPE];
 
     //gSaveBlock2Ptr->optionsHpBarSpeed       = sOptions->sel_custom[MENUITEM_CUSTOM_HP_BAR];
     //gSaveBlock2Ptr->optionsExpBarSpeed      = sOptions->sel_custom[MENUITEM_CUSTOM_EXP_BAR];
@@ -1151,10 +1151,30 @@ static int ProcessInput_Options_Eleven(int selection)
 // Process Input functions ****SPECIFIC****
 static int ProcessInput_Sound(int selection)
 {
-    if (JOY_NEW(DPAD_LEFT | DPAD_RIGHT))
+    int previous = selection;
+
+    if (JOY_NEW(DPAD_RIGHT))
     {
-        selection ^= 1;
+        if (++selection > OPTIONS_SOUND_OFF)
+            selection = OPTIONS_SOUND_MONO;
+    }
+    if (JOY_NEW(DPAD_LEFT))
+    {
+        if (--selection < OPTIONS_SOUND_MONO)
+            selection = OPTIONS_SOUND_OFF;
+    }
+
+    if (selection != OPTIONS_SOUND_OFF)
+    {
+        gDisableMusic = FALSE;
         SetPokemonCryStereo(selection);
+        if (previous == OPTIONS_SOUND_OFF)
+            PlayNewMapMusic(GetCurrentMapMusic());
+    }
+    else
+    {
+        PlayBGM(0);
+        gDisableMusic = TRUE;
     }
 
     return selection;
@@ -1247,57 +1267,66 @@ static void ReDrawAll(void)
 }
 
 // Process Input functions ****SPECIFIC****
-static const u8 sText_Faster[] = _("FASTER");
-static const u8 sText_Instant[] = _("INSTANT");
-static const u8 *const sTextSpeedStrings[] = {gText_TextSpeedSlow, gText_TextSpeedMid, gText_TextSpeedFast, sText_Faster};
+static const u8 sText_Slow[] = _("Slow");
+static const u8 sText_Mid[] = _("Mid");
+static const u8 sText_Fast[] = _("Fast");
+static const u8 sText_Faster[] = _("Faster");
+static const u8 sText_Instant[] = _("Instant");
+static const u8 *const sTextSpeedStrings[] = {sText_Slow, sText_Mid, sText_Fast, sText_Instant};
 static void DrawChoices_TextSpeed(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_TEXTSPEED);
     DrawChoices_Options_Four(sTextSpeedStrings, selection, y, active);
 }
 
+static const u8 sText_Enable[] = _("Enable");
+static const u8 sText_Disable[] = _("Disable");
 static void DrawChoices_AutoRun(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_AUTORUN);
     u8 styles[2] = {0};
-    u8 enableStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Enable");
-    u8 disableStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Disable");
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(disableStr, 104, y, styles[0], active);
-    DrawOptionMenuChoice(enableStr, GetStringRightAlignXOffset(FONT_NORMAL, enableStr, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Disable, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Enable, GetStringRightAlignXOffset(FONT_NORMAL, sText_Enable, 198), y, styles[1], active);
 }
 
+
+static const u8 sText_Off[] = _("Off");
+static const u8 sText_On[] = _("On");
 static void DrawChoices_BattleScene(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_BATTLESCENE);
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOn, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOff, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOff, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_On, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Off, GetStringRightAlignXOffset(FONT_NORMAL, sText_Off, 198), y, styles[1], active);
 }
 
+static const u8 sText_Shift[] = _("Shift");
+static const u8 sText_Set[] = _("Set");
 static void DrawChoices_BattleStyle(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_BATTLESTYLE);
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleStyleShift, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleStyleSet, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleStyleSet, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Shift, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Set, GetStringRightAlignXOffset(FONT_NORMAL, sText_Set, 198), y, styles[1], active);
 }
 
+
+static const u8 sText_Hide[] = _("Hide");
+static const u8 sText_Show[] = _("Show");
 static void DrawChoices_TypeEffectiveness(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_TYPEEFFECTIVENESS);
     u8 styles[2] = {0};
-    u8 hideStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Hide");
-    u8 showStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}Show");
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(hideStr, 104, y, styles[0], active);
-    DrawOptionMenuChoice(showStr, GetStringRightAlignXOffset(FONT_NORMAL, showStr, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Hide, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Show, GetStringRightAlignXOffset(FONT_NORMAL, sText_Show, 198), y, styles[1], active);
 }
 
 static void DrawChoices_FastFieldMove(int selection, int y)
@@ -1306,21 +1335,22 @@ static void DrawChoices_FastFieldMove(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOff, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Off, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_On, GetStringRightAlignXOffset(FONT_NORMAL, sText_On, 198), y, styles[1], active);
 }
 
+static const u8 sText_Mono[]= _("Mono");
+static const u8 sText_Stereo[]= _("Stereo");
 static void DrawChoices_Sound(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_SOUND);
     u8 styles[3] = {0};
-    u8 sText_Off[]= _("Off");
-    int xMid = GetMiddleX(gText_SoundMono, gText_SoundStereo, sText_Off);
+    int xMid = GetMiddleX(sText_Mono, sText_Stereo, sText_Off);
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_SoundMono, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_SoundStereo, xMid, y, styles[1], active);
-    DrawOptionMenuChoice(sText_Off, GetStringRightAlignXOffset(FONT_NORMAL, sText_Off, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Mono, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Stereo, xMid, y, styles[1], active);
+    DrawOptionMenuChoice(sText_Off, GetStringRightAlignXOffset(FONT_NORMAL, sText_Off, 198), y, styles[2], active);
 }
 
 static void DrawChoices_LowHealthBeep(int selection, int y)
@@ -1329,23 +1359,23 @@ static void DrawChoices_LowHealthBeep(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOn, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOff, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOff, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_On, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Off, GetStringRightAlignXOffset(FONT_NORMAL, sText_Off, 198), y, styles[1], active);
 }
 
 static void DrawChoices_SurfBikeMusic(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_SURFBIKEMUSIC);
     u8 styles[3] = {0};
-    u8 noneStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}None");
-    u8 frlgStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}FRLG");
-    u8 rseStr[] = _("{COLOR GREEN}{SHADOW LIGHT_GREEN}RSE");
+    u8 noneStr[] = _("None");
+    u8 frlgStr[] = _("FRLG");
+    u8 rseStr[] = _("RSE");
     int xMid = GetMiddleX(noneStr, rseStr, frlgStr);
     styles[selection] = 1;
 
     DrawOptionMenuChoice(noneStr, 104, y, styles[0], active);
     DrawOptionMenuChoice(rseStr, xMid, y, styles[1], active);
-    DrawOptionMenuChoice(frlgStr, GetStringRightAlignXOffset(FONT_NORMAL, frlgStr, 198), y, styles[1], active);
+    DrawOptionMenuChoice(frlgStr, GetStringRightAlignXOffset(FONT_NORMAL, frlgStr, 198), y, styles[2], active);
 }
 
 static void DrawChoices_FishReeling(int selection, int y)
@@ -1354,8 +1384,8 @@ static void DrawChoices_FishReeling(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOn, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOff, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOff, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_On, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Off, GetStringRightAlignXOffset(FONT_NORMAL, sText_Off, 198), y, styles[1], active);
 }
 
 static void DrawChoices_FastEggHatch(int selection, int y)
@@ -1364,8 +1394,8 @@ static void DrawChoices_FastEggHatch(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOff, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Off, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_On, GetStringRightAlignXOffset(FONT_NORMAL, sText_On, 198), y, styles[1], active);
 }
 
 static void DrawChoices_FastEvoScene(int selection, int y)
@@ -1374,8 +1404,8 @@ static void DrawChoices_FastEvoScene(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOff, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Off, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_On, GetStringRightAlignXOffset(FONT_NORMAL, sText_On, 198), y, styles[1], active);
 }
 
 static void DrawChoices_PokemonAnim(int selection, int y)
@@ -1384,8 +1414,8 @@ static void DrawChoices_PokemonAnim(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOff, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Off, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_On, GetStringRightAlignXOffset(FONT_NORMAL, sText_On, 198), y, styles[1], active);
 }
 
 static void DrawChoices_PokemonFollower(int selection, int y)
@@ -1394,23 +1424,25 @@ static void DrawChoices_PokemonFollower(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOff, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Off, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_On, GetStringRightAlignXOffset(FONT_NORMAL, sText_On, 198), y, styles[1], active);
 }
 
+static const u8 sText_Normal[] = _("Normal");
+static const u8 sText_LR[] = _("LR");
+static const u8 sText_LEqualA[] = _("L=A");
 static void DrawChoices_ButtonMode(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_BUTTONMODE);
     u8 styles[3] = {0};
-    int xMid = GetMiddleX(gText_ButtonTypeNormal, gText_ButtonTypeLR, gText_ButtonTypeLEqualsA);
+    int xMid = GetMiddleX(sText_Normal, sText_LR, sText_LEqualA);
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_ButtonTypeNormal, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_ButtonTypeLR, xMid, y, styles[1], active);
-    DrawOptionMenuChoice(gText_ButtonTypeLEqualsA, GetStringRightAlignXOffset(1, gText_ButtonTypeLEqualsA, 198), y, styles[2], active);
+    DrawOptionMenuChoice(sText_Normal, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_LR, xMid, y, styles[1], active);
+    DrawOptionMenuChoice(sText_LEqualA, GetStringRightAlignXOffset(1, sText_LEqualA, 198), y, styles[2], active);
 }
 
-static const u8 sText_Normal[] = _("NORMAL");
 static void DrawChoices_BarSpeed(int selection, int y) //HP and EXP
 {
     bool8 active = CheckConditions(MENUITEM_CUSTOM_EXP_BAR);
@@ -1427,18 +1459,20 @@ static void DrawChoices_BarSpeed(int selection, int y) //HP and EXP
         DrawOptionMenuChoice(sText_Instant, 104, y, 1, active);
 }
 
-static const u8 gText_UnitSystemImperial[] = _("Imperial");
-static const u8 gText_UnitSystemMetric[] = _("Metric");
+static const u8 sText_Imperial[] = _("Imperial");
+static const u8 sText_Metric[] = _("Metric");
 static void DrawChoices_UnitSystem(int selection, int y)
 {
     bool8 active = FALSE;//CheckConditions(MENUITEM_MAIN_UNIT_SYSTEM);
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_UnitSystemImperial, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_UnitSystemMetric, GetStringRightAlignXOffset(1, gText_UnitSystemMetric, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Imperial, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Metric, GetStringRightAlignXOffset(1, sText_Metric, 198), y, styles[1], active);
 }
 
+static const u8 sText_FrameType[] = _("Type");
+static const u8 sText_FrameTypeNumber[] = _("");
 static void DrawChoices_FrameType(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_FRAMETYPE);
@@ -1446,8 +1480,8 @@ static void DrawChoices_FrameType(int selection, int y)
     u8 n = selection + 1;
     u16 i;
 
-    for (i = 0; gText_FrameTypeNumber[i] != EOS && i <= 5; i++)
-        text[i] = gText_FrameTypeNumber[i];
+    for (i = 0; sText_FrameTypeNumber[i] != EOS && i <= 5; i++)
+        text[i] = sText_FrameTypeNumber[i];
 
     // Convert a number to decimal string
     if (n / 10 != 0)
@@ -1467,20 +1501,20 @@ static void DrawChoices_FrameType(int selection, int y)
 
     text[i] = EOS;
 
-    DrawOptionMenuChoice(gText_FrameType, 104, y, 0, active);
+    DrawOptionMenuChoice(sText_FrameType, 104, y, 0, active);
     DrawOptionMenuChoice(text, 128, y, 1, active);
 }
 
-static const u8 gText_OptionFontEmerald[] = _("Emerald");
-static const u8 gText_OptionFontFireRed[] = _("Firered");
+static const u8 sText_Emerald[] = _("Emerald");
+static const u8 sText_FireRed[] = _("Firered");
 static void DrawChoices_Font(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_CUSTOM_FONT);
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_OptionFontEmerald, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_OptionFontFireRed, GetStringRightAlignXOffset(1, gText_OptionFontFireRed, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_Emerald, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_FireRed, GetStringRightAlignXOffset(1, sText_FireRed, 198), y, styles[1], active);
 }
 
 static void DrawChoices_MatchCall(int selection, int y)
@@ -1489,8 +1523,8 @@ static void DrawChoices_MatchCall(int selection, int y)
     u8 styles[2] = {0};
     styles[selection] = 1;
 
-    DrawOptionMenuChoice(gText_BattleSceneOn, 104, y, styles[0], active);
-    DrawOptionMenuChoice(gText_BattleSceneOff, GetStringRightAlignXOffset(1, gText_BattleSceneOff, 198), y, styles[1], active);
+    DrawOptionMenuChoice(sText_On, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Off, GetStringRightAlignXOffset(1, sText_Off, 198), y, styles[1], active);
 }
 
 
