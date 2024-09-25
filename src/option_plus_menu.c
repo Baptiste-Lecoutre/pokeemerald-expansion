@@ -42,6 +42,7 @@ enum
     MENUITEM_MAIN_FASTEGGHATCH,
     MENUITEM_MAIN_FASTEVOSCENE,
     MENUITEM_MAIN_POKEMONANIM,
+    MENUITEM_MAIN_POKEMONFOLLOWER,
     MENUITEM_MAIN_BUTTONMODE,
 //    MENUITEM_MAIN_UNIT_SYSTEM,
     MENUITEM_MAIN_FRAMETYPE,
@@ -194,6 +195,7 @@ static void DrawChoices_FishReeling(int selection, int y);
 static void DrawChoices_FastEggHatch(int selection, int y);
 static void DrawChoices_FastEvoScene(int selection, int y);
 static void DrawChoices_PokemonAnim(int selection, int y);
+static void DrawChoices_PokemonFollower(int selection, int y);
 static void DrawChoices_ButtonMode(int selection, int y);
 static void DrawChoices_BarSpeed(int selection, int y); //HP and EXP
 static void DrawChoices_UnitSystem(int selection, int y);
@@ -256,6 +258,7 @@ struct // MENU_MAIN
     [MENUITEM_MAIN_FASTEGGHATCH] = {DrawChoices_FastEggHatch, ProcessInput_Options_Two},
     [MENUITEM_MAIN_FASTEVOSCENE] = {DrawChoices_FastEvoScene, ProcessInput_Options_Two},
     [MENUITEM_MAIN_POKEMONANIM] = {DrawChoices_PokemonAnim, ProcessInput_Options_Two},
+    [MENUITEM_MAIN_POKEMONFOLLOWER] = {DrawChoices_PokemonFollower, ProcessInput_Options_Two},
     [MENUITEM_MAIN_BUTTONMODE]   = {DrawChoices_ButtonMode,  ProcessInput_Options_Three},
 //    [MENUITEM_MAIN_UNIT_SYSTEM]  = {DrawChoices_UnitSystem,  ProcessInput_Options_Two},
     [MENUITEM_MAIN_FRAMETYPE]    = {DrawChoices_FrameType,   ProcessInput_FrameType},
@@ -297,6 +300,7 @@ static const u8 *const sOptionMenuItemsNamesMain[MENUITEM_MAIN_COUNT] =
     [MENUITEM_MAIN_FASTEGGHATCH] = gText_FastEggHatch,
     [MENUITEM_MAIN_FASTEVOSCENE] = gText_FastEvoScene,
     [MENUITEM_MAIN_POKEMONANIM] = gText_PokemonAnim,
+    [MENUITEM_MAIN_POKEMONFOLLOWER] = gText_FollowerPokemon,
     [MENUITEM_MAIN_BUTTONMODE]  = gText_ButtonMode,
 //    [MENUITEM_MAIN_UNIT_SYSTEM] = sText_UnitSystem,
     [MENUITEM_MAIN_FRAMETYPE]   = gText_Frame,
@@ -343,6 +347,7 @@ static bool8 CheckConditions(int selection)
         case MENUITEM_MAIN_FASTEGGHATCH:    return TRUE;
         case MENUITEM_MAIN_FASTEVOSCENE:    return TRUE;
         case MENUITEM_MAIN_POKEMONANIM:     return TRUE;
+        case MENUITEM_MAIN_POKEMONFOLLOWER: return TRUE;
         case MENUITEM_MAIN_BUTTONMODE:      return TRUE;
 //        case MENUITEM_MAIN_UNIT_SYSTEM:     return TRUE;
         case MENUITEM_MAIN_FRAMETYPE:       return TRUE;
@@ -394,6 +399,7 @@ static const u8 *const sOptionMenuItemDescriptionsMain[MENUITEM_MAIN_COUNT][3] =
     [MENUITEM_MAIN_FASTEGGHATCH]     = {sText_Empty,                     sText_Empty,                sText_Empty},
     [MENUITEM_MAIN_FASTEVOSCENE]     = {sText_Empty,                     sText_Empty,                sText_Empty},
     [MENUITEM_MAIN_POKEMONANIM]     = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_POKEMONFOLLOWER]     = {sText_Empty,                     sText_Empty,                sText_Empty},
     [MENUITEM_MAIN_BUTTONMODE]  = {sText_Desc_ButtonMode,           sText_Desc_ButtonMode_LR,   sText_Desc_ButtonMode_LA},
 //    [MENUITEM_MAIN_UNIT_SYSTEM] = {sText_Desc_UnitSystemImperial,   sText_Desc_UnitSystemMetric,sText_Empty},
     [MENUITEM_MAIN_FRAMETYPE]   = {sText_Desc_FrameType,            sText_Empty,                sText_Empty},
@@ -436,6 +442,7 @@ static const u8 *const sOptionMenuItemDescriptionsDisabledMain[MENUITEM_MAIN_COU
     [MENUITEM_MAIN_FASTEGGHATCH] = sText_Empty,
     [MENUITEM_MAIN_FASTEVOSCENE] = sText_Empty,
     [MENUITEM_MAIN_POKEMONANIM] = sText_Empty,
+    [MENUITEM_MAIN_POKEMONFOLLOWER] = sText_Empty,
     [MENUITEM_MAIN_BUTTONMODE]  = sText_Empty,
 //    [MENUITEM_MAIN_UNIT_SYSTEM] = sText_Empty,
     [MENUITEM_MAIN_FRAMETYPE]   = sText_Empty,
@@ -759,6 +766,7 @@ void CB2_InitOptionPlusMenu(void)
         sOptions->sel[MENUITEM_MAIN_FASTEGGHATCH] = gSaveBlock2Ptr->optionsFastEggHatch;
         sOptions->sel[MENUITEM_MAIN_FASTEVOSCENE] = gSaveBlock2Ptr->optionsFastEvolution;
         sOptions->sel[MENUITEM_MAIN_POKEMONANIM] = gSaveBlock2Ptr->optionsPokemonAnim;
+        sOptions->sel[MENUITEM_MAIN_POKEMONFOLLOWER] = gSaveBlock2Ptr->optionsShowFollowerPokemon;
         sOptions->sel[MENUITEM_MAIN_BUTTONMODE]  = gSaveBlock2Ptr->optionsButtonMode;
 //        sOptions->sel[MENUITEM_MAIN_UNIT_SYSTEM] = gSaveBlock2Ptr->autoRun;//gSaveBlock2Ptr->optionsUnitSystem;
         sOptions->sel[MENUITEM_MAIN_FRAMETYPE]   = gSaveBlock2Ptr->optionsWindowFrameType;
@@ -977,6 +985,7 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsFastEggHatch = sOptions->sel[MENUITEM_MAIN_FASTEGGHATCH];
     gSaveBlock2Ptr->optionsFastEvolution = sOptions->sel[MENUITEM_MAIN_FASTEVOSCENE];
     gSaveBlock2Ptr->optionsPokemonAnim = sOptions->sel[MENUITEM_MAIN_POKEMONANIM];
+    gSaveBlock2Ptr->optionsShowFollowerPokemon = sOptions->sel[MENUITEM_MAIN_POKEMONFOLLOWER];
     gSaveBlock2Ptr->optionsButtonMode       = sOptions->sel[MENUITEM_MAIN_BUTTONMODE];
     //gSaveBlock2Ptr->optionsUnitSystem       = sOptions->sel[MENUITEM_MAIN_UNIT_SYSTEM];
     gSaveBlock2Ptr->optionsWindowFrameType  = sOptions->sel[MENUITEM_MAIN_FRAMETYPE];
@@ -1366,6 +1375,16 @@ static void DrawChoices_FastEvoScene(int selection, int y)
 static void DrawChoices_PokemonAnim(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_POKEMONANIM);
+    u8 styles[2] = {0};
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(gText_BattleSceneOff, 104, y, styles[0], active);
+    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), y, styles[1], active);
+}
+
+static void DrawChoices_PokemonFollower(int selection, int y)
+{
+    bool8 active = CheckConditions(MENUITEM_MAIN_POKEMONFOLLOWER);
     u8 styles[2] = {0};
     styles[selection] = 1;
 
