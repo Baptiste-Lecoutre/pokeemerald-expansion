@@ -192,7 +192,7 @@ static const u8 sDoorAnimPalettes_Littleroot[] = {10, 10, 6, 6, 6, 6, 6, 6};
 static const u8 sDoorAnimPalettes_BirchsLab[] = {8, 8, 8, 8, 8, 8, 8, 8};
 static const u8 sDoorAnimPalettes_RustboroTan[] = {11, 11, 11, 11, 11, 11, 11, 11};
 static const u8 sDoorAnimPalettes_RustboroGray[] = {10, 10, 10, 10, 10, 10, 10, 10};
-static const u8 sDoorAnimPalettes_FallarborLightRoof[] = {7, 7, 7, 7, 7, 7, 7, 7};
+static const u8 sDoorAnimPalettes_FallarborLightRoof[] = {12, 12, 12, 12, 12, 12, 12, 12};
 static const u8 sDoorAnimPalettes_Lilycove[] = {8, 8, 8, 8, 8, 8, 8, 8};
 static const u8 sDoorAnimPalettes_Oldale[] = {10, 10, 9, 9, 9, 9, 9, 9};
 static const u8 sDoorAnimPalettes_Mossdeep[] = {9, 9, 1, 1, 1, 1, 1, 1};
@@ -246,7 +246,7 @@ static const struct DoorGraphics sDoorAnimGraphicsTable[] =
     {METATILE_Petalburg_Door_BirchsLab,                     DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_BirchsLab, sDoorAnimPalettes_BirchsLab},
     {METATILE_Rustboro_Door_Tan,                            DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_RustboroTan, sDoorAnimPalettes_RustboroTan},
     {METATILE_Rustboro_Door_Gray,                           DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_RustboroGray, sDoorAnimPalettes_RustboroGray},
-    {METATILE_Fallarbor_Door_LightRoof,                     DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_FallarborLightRoof, sDoorAnimPalettes_FallarborLightRoof},
+    {METATILE_Fallarbor_Door_LightRoof,                     DOOR_SOUND_NORMAL,  0, sDoorAnimTiles_FallarborLightRoof, sDoorAnimPalettes_FallarborLightRoof},
     {METATILE_Petalburg_Door_Oldale,                        DOOR_SOUND_NORMAL,  0, sDoorAnimTiles_Oldale, sDoorAnimPalettes_Oldale},
     {METATILE_Mauville_Door,                                DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_Mauville, sDoorAnimPalettes_Mauville},
     {METATILE_Mauville_Door_Verdanturf,                     DOOR_SOUND_NORMAL,  1, sDoorAnimTiles_Verdanturf, sDoorAnimPalettes_Verdanturf},
@@ -301,13 +301,16 @@ static const struct DoorGraphics sDoorAnimGraphicsTable[] =
 //       animation is played they will be overwritten.
 #define DOOR_TILE_START_SIZE1 (NUM_TILES_TOTAL - 8)
 #define DOOR_TILE_START_SIZE2 (NUM_TILES_TOTAL - 16)
+#define DOOR_TILE_START_SIZE3 (NUM_TILES_TOTAL - 4)
 
 static void CopyDoorTilesToVram(const struct DoorGraphics *gfx, const struct DoorAnimFrame *frame)
 {
     if (gfx->size == 2)
         CpuFastCopy(gfx->tiles + frame->offset, (void *)(VRAM + TILE_OFFSET_4BPP(DOOR_TILE_START_SIZE2)), 16 * TILE_SIZE_4BPP);
-    else
+    else if (gfx->size == 1)
         CpuFastCopy(gfx->tiles + frame->offset, (void *)(VRAM + TILE_OFFSET_4BPP(DOOR_TILE_START_SIZE1)), 8 * TILE_SIZE_4BPP);
+    else
+        CpuFastCopy(gfx->tiles + frame->offset, (void *)(VRAM + TILE_OFFSET_4BPP(DOOR_TILE_START_SIZE3)), 4 * TILE_SIZE_4BPP);
 }
 
 static void BuildDoorTiles(u16 *tiles, u16 tileNum, const u8 *paletteNums)
@@ -354,7 +357,7 @@ static void DrawCurrentDoorAnimFrame(const struct DoorGraphics *gfx, u32 x, u32 
     }
     else if (gfx->size == 0)
     {
-        BuildDoorTiles(&tiles[0], DOOR_TILE_START_SIZE2 + 12, &paletteNums[4]);
+        BuildDoorTiles(&tiles[0], DOOR_TILE_START_SIZE1 + 4, &paletteNums[4]);
         DrawDoorMetatileAt(x, y, &tiles[0]);
     }
     else
