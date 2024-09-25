@@ -249,7 +249,7 @@ struct // MENU_MAIN
 {
     [MENUITEM_MAIN_AUTORUN]             = {DrawChoices_AutoRun,             ProcessInput_Options_Two},
     [MENUITEM_MAIN_TEXTSPEED]           = {DrawChoices_TextSpeed,           ProcessInput_Options_Four},
-    [MENUITEM_MAIN_BATTLESCENE]         = {DrawChoices_BattleScene,         ProcessInput_Options_Two},
+    [MENUITEM_MAIN_BATTLESCENE]         = {DrawChoices_BattleScene,         ProcessInput_Options_Five},
     [MENUITEM_MAIN_BATTLESTYLE]         = {DrawChoices_BattleStyle,         ProcessInput_Options_Two},
     [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = {DrawChoices_TypeEffectiveness,   ProcessInput_Options_Two},
     [MENUITEM_MAIN_FASTFIELDMOVE]       = {DrawChoices_FastFieldMove,       ProcessInput_Options_Two},
@@ -1236,6 +1236,28 @@ static void DrawChoices_Options_Four(const u8 *const *const strings, int selecti
     DrawOptionMenuChoice(strings[order[2]], GetStringRightAlignXOffset(1, strings[order[2]], 198), y, styles[order[2]], active);
 }
 
+static void DrawChoices_Options_Five(const u8 *const *const strings, int selection, int y, bool8 active)
+{
+    static const u8 choiceOrders[][3] =
+    {
+        {0, 1, 2},
+        {0, 1, 2},
+        {1, 2, 3},
+        {2, 3, 4},
+        {2, 3, 4},
+    };
+    u8 styles[5] = {0};
+    int xMid;
+    const u8 *order = choiceOrders[selection];
+
+    styles[selection] = 1;
+    xMid = GetMiddleX(strings[order[0]], strings[order[1]], strings[order[2]]);
+
+    DrawOptionMenuChoice(strings[order[0]], 104, y, styles[order[0]], active);
+    DrawOptionMenuChoice(strings[order[1]], xMid, y, styles[order[1]], active);
+    DrawOptionMenuChoice(strings[order[2]], GetStringRightAlignXOffset(1, strings[order[2]], 198), y, styles[order[2]], active);
+}
+
 static void ReDrawAll(void)
 {
     u8 menuItem = sOptions->menuCursor[sOptions->submenu] - sOptions->visibleCursor[sOptions->submenu];
@@ -1294,14 +1316,16 @@ static void DrawChoices_AutoRun(int selection, int y)
 
 static const u8 sText_Off[] = _("Off");
 static const u8 sText_On[] = _("On");
+static const u8 sText_Default[] = _("Default");
+static const u8 sText_Speed2x[] = _("2x");
+static const u8 sText_Speed3x[] = _("3x");
+static const u8 sText_Speed4x[] = _("4x");
+static const u8 sText_NoAnim[] = _("No Anim");
+static const u8 *const sBattleSpeedUpStrings[] = {sText_Default, sText_Speed2x, sText_Speed3x, sText_Speed4x, sText_NoAnim};
 static void DrawChoices_BattleScene(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_BATTLESCENE);
-    u8 styles[2] = {0};
-    styles[selection] = 1;
-
-    DrawOptionMenuChoice(sText_On, 104, y, styles[0], active);
-    DrawOptionMenuChoice(sText_Off, GetStringRightAlignXOffset(FONT_NORMAL, sText_Off, 198), y, styles[1], active);
+    DrawChoices_Options_Five(sBattleSpeedUpStrings, selection, y, active);
 }
 
 static const u8 sText_Shift[] = _("Shift");
