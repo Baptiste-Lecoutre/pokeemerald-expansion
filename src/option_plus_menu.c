@@ -171,6 +171,7 @@ static int XOptions_ProcessInput(int x, int selection);
 static int ProcessInput_Options_Two(int selection);
 static int ProcessInput_Options_Three(int selection);
 static int ProcessInput_Options_Four(int selection);
+static int ProcessInput_Options_Five(int selection);
 static int ProcessInput_Options_Eleven(int selection);
 static int ProcessInput_Sound(int selection);
 static int ProcessInput_FrameType(int selection);
@@ -247,7 +248,7 @@ struct // MENU_MAIN
 {
     [MENUITEM_MAIN_AUTORUN]      = {DrawChoices_AutoRun,     ProcessInput_Options_Two},
     [MENUITEM_MAIN_TEXTSPEED]    = {DrawChoices_TextSpeed,   ProcessInput_Options_Four},
-    [MENUITEM_MAIN_BATTLESCENE]  = {DrawChoices_BattleScene, ProcessInput_Options_Two},
+    [MENUITEM_MAIN_BATTLESCENE]  = {DrawChoices_BattleScene, ProcessInput_Options_Five},
     [MENUITEM_MAIN_BATTLESTYLE]  = {DrawChoices_BattleStyle, ProcessInput_Options_Two},
     [MENUITEM_MAIN_TYPEEFFECTIVENESS] = {DrawChoices_TypeEffectiveness, ProcessInput_Options_Two},
     [MENUITEM_MAIN_FASTFIELDMOVE] = {DrawChoices_FastFieldMove,ProcessInput_Options_Two},
@@ -755,7 +756,7 @@ void CB2_InitOptionPlusMenu(void)
     case 6:
         sOptions->sel[MENUITEM_MAIN_AUTORUN]     = gSaveBlock2Ptr->autoRun;
         sOptions->sel[MENUITEM_MAIN_TEXTSPEED]   = gSaveBlock2Ptr->optionsTextSpeed;
-        sOptions->sel[MENUITEM_MAIN_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleSceneOff;
+        sOptions->sel[MENUITEM_MAIN_BATTLESCENE] = gSaveBlock2Ptr->optionsBattleScene;
         sOptions->sel[MENUITEM_MAIN_BATTLESTYLE] = gSaveBlock2Ptr->optionsBattleStyle;
         sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS] = gSaveBlock2Ptr->optionsShowTypeEffectiveness;
         sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE] = gSaveBlock2Ptr->optionsFastFieldMove;
@@ -974,7 +975,7 @@ static void Task_OptionMenuSave(u8 taskId)
 {
     gSaveBlock2Ptr->autoRun = sOptions->sel[MENUITEM_MAIN_AUTORUN];
     gSaveBlock2Ptr->optionsTextSpeed        = sOptions->sel[MENUITEM_MAIN_TEXTSPEED];
-    gSaveBlock2Ptr->optionsBattleSceneOff   = sOptions->sel[MENUITEM_MAIN_BATTLESCENE];
+    gSaveBlock2Ptr->optionsBattleScene   = sOptions->sel[MENUITEM_MAIN_BATTLESCENE];
     gSaveBlock2Ptr->optionsBattleStyle      = sOptions->sel[MENUITEM_MAIN_BATTLESTYLE];
     gSaveBlock2Ptr->optionsShowTypeEffectiveness = sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS];
     gSaveBlock2Ptr->optionsFastFieldMove = sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE];
@@ -1135,6 +1136,11 @@ static int ProcessInput_Options_Three(int selection)
 static int ProcessInput_Options_Four(int selection)
 {
     return XOptions_ProcessInput(4, selection);
+}
+
+static int ProcessInput_Options_Five(int selection)
+{
+    return XOptions_ProcessInput(5, selection);
 }
 
 static int ProcessInput_Options_Eleven(int selection)
