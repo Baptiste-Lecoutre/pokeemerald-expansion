@@ -334,7 +334,15 @@ static bool8 CheckConditions(int selection)
         case MENUITEM_MAIN_TEXTSPEED:       return TRUE;
         case MENUITEM_MAIN_BATTLESCENE:     return TRUE;
         case MENUITEM_MAIN_BATTLESTYLE:     return TRUE;
+        case MENUITEM_MAIN_TYPEEFFECTIVENESS: return TRUE;
+        case MENUITEM_MAIN_FASTFIELDMOVE:   return TRUE;
         case MENUITEM_MAIN_SOUND:           return TRUE;
+        case MENUITEM_MAIN_LOWHEALTHBEEP:   return TRUE;
+        case MENUITEM_MAIN_SURFBIKEMUSIC:   return TRUE;
+        case MENUITEM_MAIN_FISHREELING:     return TRUE;
+        case MENUITEM_MAIN_FASTEGGHATCH:    return TRUE;
+        case MENUITEM_MAIN_FASTEVOSCENE:    return TRUE;
+        case MENUITEM_MAIN_POKEMONANIM:     return TRUE;
         case MENUITEM_MAIN_BUTTONMODE:      return TRUE;
 //        case MENUITEM_MAIN_UNIT_SYSTEM:     return TRUE;
         case MENUITEM_MAIN_FRAMETYPE:       return TRUE;
@@ -419,7 +427,15 @@ static const u8 *const sOptionMenuItemDescriptionsDisabledMain[MENUITEM_MAIN_COU
     [MENUITEM_MAIN_TEXTSPEED]   = sText_Desc_Disabled_Textspeed,
     [MENUITEM_MAIN_BATTLESCENE] = sText_Empty,
     [MENUITEM_MAIN_BATTLESTYLE] = sText_Empty,
+    [MENUITEM_MAIN_TYPEEFFECTIVENESS] = sText_Empty,
+    [MENUITEM_MAIN_FASTFIELDMOVE] = sText_Empty,
     [MENUITEM_MAIN_SOUND]       = sText_Empty,
+    [MENUITEM_MAIN_LOWHEALTHBEEP] = sText_Empty,
+    [MENUITEM_MAIN_SURFBIKEMUSIC] = sText_Empty,
+    [MENUITEM_MAIN_FISHREELING] = sText_Empty,
+    [MENUITEM_MAIN_FASTEGGHATCH] = sText_Empty,
+    [MENUITEM_MAIN_FASTEVOSCENE] = sText_Empty,
+    [MENUITEM_MAIN_POKEMONANIM] = sText_Empty,
     [MENUITEM_MAIN_BUTTONMODE]  = sText_Empty,
 //    [MENUITEM_MAIN_UNIT_SYSTEM] = sText_Empty,
     [MENUITEM_MAIN_FRAMETYPE]   = sText_Empty,
