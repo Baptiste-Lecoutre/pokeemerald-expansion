@@ -1,5 +1,6 @@
 #include "global.h"
 #include "option_menu.h"
+#include "option_plus_menu.h"
 #include "bg.h"
 #include "gpu_regs.h"
 #include "international_string_util.h"
@@ -18,6 +19,8 @@
 #include "window.h"
 #include "gba/m4a_internal.h"
 #include "constants/rgb.h"
+
+#define USE_OPTION_PLUS_MENU TRUE
 
 #define Y_DIFF 16 // Difference in pixels between items.
 
@@ -404,6 +407,13 @@ static void DrawChoices(u32 id, int y, u8 textSpeed)
 void CB2_InitOptionMenu(void)
 {
     u32 i;
+
+    if (USE_OPTION_PLUS_MENU)
+    {
+        CB2_InitOptionPlusMenu();
+        return;
+    }
+
     switch (gMain.state)
     {
     default:
