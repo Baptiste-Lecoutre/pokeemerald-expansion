@@ -20,7 +20,7 @@
 #include "gba/m4a_internal.h"
 #include "constants/rgb.h"
 
-#define USE_OPTION_PLUS_MENU FALSE
+#define USE_OPTION_PLUS_MENU TRUE
 
 #define Y_DIFF 16 // Difference in pixels between items.
 
