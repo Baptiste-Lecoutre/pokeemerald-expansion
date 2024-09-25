@@ -3730,6 +3730,10 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
     REG_BG1CNT |= BGCNT_CHARBASE(1); //Original char base that isn't getting used for some reason
 	REG_DISPCNT |= DISPCNT_BG1_ON; //Can't use ShowBg because that resets the charbase
 
+    SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG1 | BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_ALL);
+    SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(16, 8));
+    SetGpuReg(REG_OFFSET_BLDY, 0);
+
     LoadSpriteSheet(&gSpriteSheet_HeldItem);
     LoadSpritePalette(&gSpritePalette_HeldItem);
     LoadSpriteSheet(&sTeamPreviewFaintedMonIconSpriteSheet);

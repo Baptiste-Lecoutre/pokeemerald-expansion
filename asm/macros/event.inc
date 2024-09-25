@@ -1887,31 +1887,13 @@
 	_dynmultichoice \left, \top, \ignoreBPress, \maxBeforeScroll, \shouldSort, \initialSelected, \callbacks, NULL
 	.endm
 
-	.macro showdescription
-	.byte 0xe5
-	.endm
-
-	.macro showitemdesc
-	setvar VAR_0x8009, 0
-	showdescription
-	.endm
-
-	.macro showberrydesc
-	setvar VAR_0x8009, 1
-	showdescription
-	.endm
-
-	.macro hideitemdesc
-	.byte 0xe6
-	.endm
-
 	.macro checkPartyHasSpecies species:req
-	.byte 0xe7
+	.byte 0xe5
 	.2byte \species
 	.endm
 
 	.macro isChosenMonSpecies species:req
-	.byte 0xe8
+	.byte 0xe6
 	.2byte \species
 	.endm
 
@@ -1921,7 +1903,7 @@
 	@ Running this command will not affect normal wild battles. You start the prepared battle with multi_wild.
 	@ If the player only has one Pokemon, a scripted double battle will be buggy.
 	.macro setsootopolisbattle species:req, level:req, item=ITEM_NONE, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE
-	.byte 0xe9
+	.byte 0xe7
 	.2byte \species
 	.byte \level
 	.2byte \item
@@ -1931,26 +1913,48 @@
 	.endm
 
 @NPC follower macros
-    @ sets an NPC up to follow the player
-    .macro setfollower localId:req, flags:req
-    .byte 0xea
+    @ Sets an NPC up to follow the player.
+	@ If you want to specify a battle partner without specifying a custom script, you can set the script parameter to 0.
+    .macro setfollower localId:req, flags:req, script, battlePartner
+    checkfollower
+	goto_if_eq VAR_RESULT, TRUE, 1f
+	.ifnb \script
+		.if \script == 0
+			.set setScript, FALSE
+		.else
+			loadword 0, \script
+			.set setScript, TRUE
+		.endif
+	.else
+		.set setScript, FALSE
+	.endif
+	.byte 0xe8
     .byte \localId
     .2byte \flags
+	.byte setScript
+	.ifb \battlePartner
+		.set battlePartner, 0
+		.2byte battlePartner
+	.else
+		.2byte \battlePartner
+	.endif
+	callnative UpdateFollowingPokemon
+	1:
     .endm
     
-    @ remove the following NPC (assumes there will only ever be one)
+    @ Remove the following NPC (assumes there will only ever be one)
     .macro destroyfollower
-    .byte 0xeb
+    .byte 0xe9
     .endm
     
-    @ makes the player and follower face one another
+    @ Makes the player and follower face one another
     .macro facefollower
-    .byte 0xec
+    .byte 0xea
     .endm
     
-    @ checks if you have a follower. returns the result to VAR_RESULT
+    @ Checks if you have a follower. returns the result to VAR_RESULT
     .macro checkfollower
-    .byte 0xed
+    .byte 0xeb
     .endm
 
 @ Supplementary
@@ -2418,4 +2422,21 @@
 	setvar VAR_0x8005, \localId
 	setvar VAR_0x8006, \movementType
 	special SetObjectEventMovementType
+	.endm
+
+	@ ============================ @
+	@ ITEM DESCRIPTION HEADER MACROS
+	@ Used with OW_SHOW_ITEM_DESCRIPTIONS config
+	.macro showitemdescription
+	callnative ScriptShowItemDescription
+	.byte 0
+	.endm
+
+	.macro showberrydescription
+	callnative ScriptShowItemDescription
+	.byte 1
+	.endm
+
+	.macro hideitemdescription
+	callnative ScriptHideItemDescription
 	.endm

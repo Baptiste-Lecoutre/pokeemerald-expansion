@@ -872,8 +872,19 @@ void RockSmashWildEncounter(void)
         else if (WildEncounterCheck(wildPokemonInfo->encounterRate, TRUE) == TRUE
          && TryGenerateWildMon(wildPokemonInfo, WILD_AREA_ROCKS, WILD_CHECK_REPEL | WILD_CHECK_KEEN_EYE) == TRUE)
         {
-            BattleSetup_StartWildBattle();
-            gSpecialVar_Result = TRUE;
+            if (TryDoDoubleWildBattle())
+            {
+                struct Pokemon mon1 = gEnemyParty[0];
+                TryGenerateWildMon(wildPokemonInfo, WILD_AREA_ROCKS, WILD_CHECK_REPEL | WILD_CHECK_KEEN_EYE);
+                gEnemyParty[1] = mon1;
+                BattleSetup_StartDoubleWildBattle();
+                gSpecialVar_Result = TRUE;
+            }
+            else
+            {
+                BattleSetup_StartWildBattle();
+                gSpecialVar_Result = TRUE;
+            }
         }
         else
         {
@@ -1117,14 +1128,10 @@ static bool8 IsWildLevelAllowedByRepel(u8 wildLevel)
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_HP) && !GetMonData(&gPlayerParty[i], MON_DATA_IS_EGG))
+        if (I_REPEL_INCLUDE_FAINTED == GEN_1 || I_REPEL_INCLUDE_FAINTED >= GEN_6 || GetMonData(&gPlayerParty[i], MON_DATA_HP))
         {
-            u8 ourLevel = GetMonData(&gPlayerParty[i], MON_DATA_LEVEL);
-
-            if (wildLevel < ourLevel)
-                return FALSE;
-            else
-                return TRUE;
+            if (!GetMonData(&gPlayerParty[i], MON_DATA_IS_EGG))
+                return wildLevel >= GetMonData(&gPlayerParty[i], MON_DATA_LEVEL);
         }
     }
 
@@ -1245,7 +1252,7 @@ bool8 TryDoDoubleWildBattle(void)
 {
     if (CheckDevonScopeInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
         return FALSE;
-    else if (PlayerHasFollower())
+    else if (GetFollowerPartnerId() && FOLLOWER_PARTNER_WILD_BATTLES == TRUE && FOLLOWER_WILD_BATTLE_VS_2 == TRUE)
         return TRUE;
     else if (GetSafariZoneFlag()
       || (B_DOUBLE_WILD_REQUIRE_2_MONS == TRUE && GetMonsStateToDoubles() != PLAYER_HAS_TWO_USABLE_MONS))

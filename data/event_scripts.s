@@ -729,6 +729,11 @@ EventScript_BackupMrBrineyLocation::
 	.include "data/scripts/rival_graphics.inc"
 	.include "data/scripts/set_gym_trainers.inc"
 
+EventScript_CancelMessageBox::
+	special UseBlankMessageToCancelPokemonPic
+	release
+	end
+
 Common_EventScript_ShowBagIsFull::
 	msgbox gText_TooBadBagIsFull, MSGBOX_DEFAULT
 	release
@@ -1140,7 +1145,6 @@ EventScript_VsSeekerChargingDone::
 	.include "data/text/contest_strings.inc"
 	.include "data/text/contest_link.inc"
 	.include "data/text/contest_painting.inc"
-	.include "data/text/trick_house_mechadolls.inc"
 	.include "data/scripts/tv.inc"
 	.include "data/text/tv.inc"
 	.include "data/scripts/interview.inc"
@@ -1181,7 +1185,6 @@ EventScript_VsSeekerChargingDone::
 	.include "data/scripts/trainer_hill.inc"
 	.include "data/scripts/test_signpost.inc"
 	.include "data/scripts/follower.inc"
-	.include "data/text/frontier_brain.inc"
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"
     .include "data/scripts/dexnav.inc"
@@ -1269,3 +1272,7 @@ gText_OneDayImGoingToFightYou:
 	.include "data/maps/MeteorFalls_B2F/scripts.inc"
 
 	.include "data/maps/MeteorFalls_B3F/scripts.inc"
+
+	.include "data/maps/FieryPath2/scripts.inc"
+
+	.include "data/maps/Route109_South/scripts.inc"

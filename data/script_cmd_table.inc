@@ -229,16 +229,14 @@ gScriptCmdTable::
 	.4byte ScrCmd_bufferitemnameplural              @ 0xe2
 	.4byte ScrCmd_dynmultichoice                    @ 0xe3
 	.4byte ScrCmd_dynmultipush                      @ 0xe4
-	.4byte ScrCmd_showitemdesc              		@ 0xe5
-	.4byte ScrCmd_hideitemdesc              		@ 0xe6
-	.4byte ScrCmd_checkPartyHasSpecies      		@ 0xe7
-	.4byte ScrCmd_isChosenMonSpecies        		@ 0xe8
-	.4byte ScrCmd_setsootopolisbattle				@ 0xe9
+	.4byte ScrCmd_checkPartyHasSpecies      		@ 0xe5
+	.4byte ScrCmd_isChosenMonSpecies        		@ 0xe6
+	.4byte ScrCmd_setsootopolisbattle				@ 0xe7
 @@@ new script commands go here
-    .4byte ScrCmd_setfollower						@ 0xea
-    .4byte ScrCmd_destroyfollower					@ 0xeb
-    .4byte ScrCmd_facefollower						@ 0xec
-    .4byte ScrCmd_checkfollower						@ 0xed
+    .4byte ScrCmd_setfollower						@ 0xe8
+    .4byte ScrCmd_destroyfollower					@ 0xe9
+    .4byte ScrCmd_facefollower						@ 0xea
+    .4byte ScrCmd_checkfollower						@ 0xeb
 
 gScriptCmdTableEnd::
 	.4byte ScrCmd_nop

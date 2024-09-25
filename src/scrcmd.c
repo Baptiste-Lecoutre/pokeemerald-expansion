@@ -1304,6 +1304,7 @@ bool8 ScrCmd_releaseall(struct ScriptContext *ctx)
     ObjectEventClearHeldMovementIfFinished(&gObjectEvents[playerObjectId]);
     ScriptMovement_UnfreezeObjectEvents();
     UnfreezeObjectEvents();
+    gMsgBoxIsCancelable = FALSE;
     return FALSE;
 }
 
@@ -1322,6 +1323,7 @@ bool8 ScrCmd_release(struct ScriptContext *ctx)
     ObjectEventClearHeldMovementIfFinished(&gObjectEvents[playerObjectId]);
     ScriptMovement_UnfreezeObjectEvents();
     UnfreezeObjectEvents();
+    gMsgBoxIsCancelable = FALSE;
     return FALSE;
 }
 
@@ -2534,18 +2536,6 @@ bool8 ScrCmd_warpwhitefade(struct ScriptContext *ctx)
     return TRUE;
 }
 
-bool8 ScrCmd_showitemdesc(struct ScriptContext *ctx)
-{
-    DrawHeaderBox();
-    return FALSE;
-}
-
-bool8 ScrCmd_hideitemdesc(struct ScriptContext *ctx)
-{
-    HideHeaderBox();
-    return FALSE;
-}
-
 bool8 ScrCmd_setsootopolisbattle(struct ScriptContext *ctx)
 {
     u16 species1 = ScriptReadHalfword(ctx);
@@ -2627,14 +2617,21 @@ bool8 ScrCmd_setfollower(struct ScriptContext *ctx)
 {
     u8 localId = ScriptReadByte(ctx);
     u16 flags = ScriptReadHalfword(ctx);
-    
-    SetUpFollowerSprite(localId, flags);
+    bool8 setScript = ScriptReadByte(ctx);
+    u16 battlePartner = ScriptReadHalfword(ctx);
+
+    gSaveBlock2Ptr->follower.battlePartner = battlePartner;
+    SetUpFollowerSprite(localId, flags, setScript);
     return FALSE;
 }
 
 bool8 ScrCmd_destroyfollower(struct ScriptContext *ctx)
 {
+    gSaveBlock2Ptr->follower.battlePartner = 0;
     DestroyFollower();
+    if (OW_FOLLOWERS_ENABLED == TRUE) {
+        UpdateFollowingPokemon();
+    }
     return FALSE;
 }
 

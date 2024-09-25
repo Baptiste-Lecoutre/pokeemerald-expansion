@@ -1975,7 +1975,7 @@ static void HandleSpecialTrainerBattleEnd(void)
         break;
     case SPECIAL_BATTLE_MULTI:
     case SPECIAL_BATTLE_RAID:
-        if (PlayerHasFollower())
+        if (GetFollowerPartnerId() && HEAL_AFTER_FOLLOWER_BATTLE)
             HealPlayerParty();
         for (i = 0; i < MULTI_PARTY_SIZE; i++)
         {
@@ -2260,6 +2260,7 @@ static void SaveTowerChallenge(void)
     if (gSpecialVar_0x8005 == 0 && (challengeNum > 1 || gSaveBlock2Ptr->frontier.curChallengeBattleNum != 0))
         SaveBattleTowerRecord();
 
+    ClearEnemyPartyAfterChallenge();
     gSaveBlock2Ptr->frontier.challengeStatus = gSpecialVar_0x8005;
     VarSet(VAR_TEMP_CHALLENGE_STATUS, 0);
     gSaveBlock2Ptr->frontier.challengePaused = TRUE;

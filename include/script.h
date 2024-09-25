@@ -64,7 +64,9 @@ u8 GetNumberOfBadges(void);
 // srccmd.h
 void SetMovingNpcId(u16 npcId);
 
+extern u8 gMsgIsSignPost;
+extern u8 gMsgBoxIsCancelable;
+
 // NEW
 u8* ReadWord(u8 index);
-
 #endif // GUARD_SCRIPT_H

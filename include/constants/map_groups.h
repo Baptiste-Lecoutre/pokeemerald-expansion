@@ -64,6 +64,7 @@
 #define MAP_UNDERWATER_ROUTE105    (55 | (0 << 8))
 #define MAP_UNDERWATER_ROUTE125    (56 | (0 << 8))
 #define MAP_ROUTE110_CAVE_OF_SHOCK (57 | (0 << 8))
+#define MAP_ROUTE109_SOUTH         (58 | (0 << 8))
 
 // gMapGroup_IndoorLittleroot
 #define MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F    (0 | (1 << 8))
@@ -625,6 +626,7 @@
 #define MAP_HAUNTED_MANSION_3F                    (7 | (34 << 8))
 #define MAP_METEOR_FALLS_B2F                      (8 | (34 << 8))
 #define MAP_METEOR_FALLS_B3F                      (9 | (34 << 8))
+#define MAP_FIERY_PATH2                           (10 | (34 << 8))
 
 #define MAP_GROUPS_COUNT 35
 

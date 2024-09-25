@@ -4,10 +4,10 @@
 #include "constants/battle_raid.h"
 
 struct RaidType {
-    u8 shield:2;
-    u8 shockwave:2;
-    u8 rules:2;
-    u8 gimmick:2;
+    u16 shield:4;
+    u16 shockwave:4;
+    u16 rules:4;
+    u16 gimmick:4;
 };
 
 struct RaidData {

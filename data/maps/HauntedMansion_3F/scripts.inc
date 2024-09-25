@@ -21,16 +21,16 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	delay 40
 	waitmoncry
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_WalkInPlaceFasterDown
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, Common_Movement_WalkInPlaceFasterDown
 	applymovement LOCALID_GIRL, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	playse SE_PIN
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, Common_Movement_ExclamationMark
 	applymovement LOCALID_GIRL, Common_Movement_ExclamationMark
 	waitmovement 0
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, Common_Movement_Delay48
 	applymovement LOCALID_GIRL, Common_Movement_Delay48
 	waitmovement 0
 	msgbox HauntedMansion_3F_Text_WhatWasThatNoise, MSGBOX_DEFAULT
@@ -44,15 +44,12 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_LOST, HauntedMansion_3F_EventScript_LostGengarBattle
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_WalkInPlaceFasterLeft
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, Common_Movement_WalkInPlaceFasterLeft
 	applymovement LOCALID_GIRL, Common_Movement_WalkInPlaceFasterRight
 	waitmovement 0
 	msgbox HauntedMansion_3F_Text_TheGhostIsItGone, MSGBOX_DEFAULT
 	closemessage
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_FaceLeft
-	applymovement LOCALID_GIRL, Common_Movement_FaceRight
-	waitmovement 0
+	facefollower
 	checkplayergender
 	goto_if_eq VAR_RESULT, MALE, HauntedMansion_3F_EventScript_MayGoBack
 	goto_if_eq VAR_RESULT, FEMALE, HauntedMansion_3F_EventScript_BrendanGoBack

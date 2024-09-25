@@ -117,17 +117,15 @@ struct DisableStruct
     u8 disableTimer:4;
     u8 encoreTimer:4;
     u8 perishSongTimer:4;
-    u8 furyCutterCounter;
     u8 rolloutTimer:4;
     u8 rolloutTimerStartValue:4;
-    u8 chargeTimer:4;
     u8 tauntTimer:4;
+    u8 furyCutterCounter;
     u8 battlerPreventingEscape;
     u8 battlerWithSureHit;
     u8 isFirstTurn;
-    u8 truantCounter:1;
-    u8 truantSwitchInHack:1;
     u8 mimickedMoves:4;
+    u8 chargeTimer:4;
     u8 rechargeTimer;
     u8 autotomizeCount;
     u8 slowStartTimer;
@@ -140,6 +138,8 @@ struct DisableStruct
     u8 wrapTurns;
     u8 tormentTimer:4; // used for G-Max Meltdown
     u8 usedMoves:4;
+    u8 truantCounter:1;
+    u8 truantSwitchInHack:1;
     u8 noRetreat:1;
     u8 tarShot:1;
     u8 octolock:1;
@@ -223,7 +223,7 @@ struct SpecialStatus
     u8 faintedHasReplacement:1;
     u8 focusBanded:1;
     u8 focusSashed:1;
-    u8 unused:1;
+    u8 unused:2;
     // End of byte
     u8 sturdied:1;
     u8 stormDrainRedirected:1;
@@ -617,12 +617,10 @@ struct LostItem
     u16 stolen:1;
 };
 
-#if HQ_RANDOM == TRUE
 struct BattleVideo {
     u32 battleTypeFlags;
     rng_value_t rngSeed;
 };
-#endif
 
 enum BattleIntroStates
 {
@@ -724,12 +722,7 @@ struct BattleStruct
     u16 lastTakenMoveFrom[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT]; // a 2-D array [target][attacker]
     union {
         struct LinkBattlerHeader linkBattlerHeader;
-
-        #if HQ_RANDOM == FALSE
-        u32 battleVideo[2];
-        #else
         struct BattleVideo battleVideo;
-        #endif
     } multiBuffer;
     u8 wishPerishSongState;
     u8 wishPerishSongBattlerId;
@@ -843,6 +836,7 @@ struct BattleStruct
     u8 categoryOverride; // for Z-Moves and Max Moves
     u32 stellarBoostFlags[NUM_BATTLE_SIDES]; // stored as a bitfield of flags for all types for each side
     u8 fickleBeamBoosted:1;
+    u8 obedienceResult:3;
     u8 revealedEnemyMons;
     u32 battleTimer; // frame counter to measure battle time length
     u8 hasBattleInputStarted:1; // speed up battle
@@ -1006,7 +1000,10 @@ struct BattleHealthboxInfo
     u8 animationState;
     u8 partyStatusDelayTimer;
     u8 matrixNum;
-    u8 shadowSpriteId;
+
+    u8 shadowSpriteIdPrimary;
+    u8 shadowSpriteIdSecondary;
+
     u8 soundTimer;
     u8 introEndDelay;
     u8 field_A;
@@ -1182,11 +1179,10 @@ static inline u32 GetBattlerSide(u32 battler)
     return GetBattlerPosition(battler) & BIT_SIDE;
 }
 
-static inline struct Pokemon* GetBattlerData(u32 battlerId)
+static inline struct Pokemon* GetPartyBattlerData(u32 battler)
 {
-    u32 index = gBattlerPartyIndexes[battlerId];
-
-    return (GetBattlerSide(battlerId) == B_SIDE_OPPONENT) ? &gEnemyParty[index] : &gPlayerParty[index];
+    u32 index = gBattlerPartyIndexes[battler];
+    return (GetBattlerSide(battler) == B_SIDE_OPPONENT) ? &gEnemyParty[index] : &gPlayerParty[index];
 }
 
 static inline struct Pokemon *GetSideParty(u32 side)
@@ -1205,3 +1201,4 @@ static inline bool32 IsDoubleBattle(void)
 }
 
 #endif // GUARD_BATTLE_H
+

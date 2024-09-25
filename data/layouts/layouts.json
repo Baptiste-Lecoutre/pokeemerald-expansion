@@ -4760,6 +4760,26 @@
       "secondary_tileset": "gTileset_MeteorFalls",
       "border_filepath": "data/layouts/MeteorFalls_B3F/border.bin",
       "blockdata_filepath": "data/layouts/MeteorFalls_B3F/map.bin"
+    },
+    {
+      "id": "LAYOUT_FIERY_PATH2",
+      "name": "FieryPath2_Layout",
+      "width": 29,
+      "height": 38,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Lavaridge",
+      "border_filepath": "data/layouts/FieryPath2/border.bin",
+      "blockdata_filepath": "data/layouts/FieryPath2/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE109_SOUTH",
+      "name": "Route109_South_Layout",
+      "width": 48,
+      "height": 50,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Slateport",
+      "border_filepath": "data/layouts/Route109_South/border.bin",
+      "blockdata_filepath": "data/layouts/Route109_South/map.bin"
     }
   ]
 }

@@ -2,8 +2,7 @@ HauntedManor_MapScripts::
 	.byte 0
 
 HauntedManor_EventScript_RivalGivesGoGoggles::
-	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterUp
-	waitmovement 0
+	facefollower
 	checkplayergender
 	goto_if_eq VAR_RESULT, MALE, HauntedManor_EventScript_MayGoBack
 	goto_if_eq VAR_RESULT, FEMALE, HauntedManor_EventScript_BrendanGoBack

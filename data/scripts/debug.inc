@@ -1,4 +1,3 @@
-.if DEBUG_OVERWORLD_MENU == TRUE
 Debug_MessageEnd:
 	waitmessage
 	waitbuttonpress
@@ -18,10 +17,11 @@ Debug_CheatStart::
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG
 	setvar VAR_BIRCH_LAB_STATE, 2
 	setvar VAR_ROUTE101_STATE, 3
+	givemon SPECIES_GYARADOS, 90, item=ITEM_GYARADOSITE, nature=NATURE_ADAMANT, abilityNum=2, hpEv=252, atkEv=252, speedEv=252, hpIv=31, atkIv=31, defIv=31, speedIv=31, spAtkIv=31, spDefIv=31, move1=MOVE_WATERFALL, move2=MOVE_EARTHQUAKE, move3=MOVE_ICICLE_CRASH, move4=MOVE_DRAGON_DANCE, isShiny=TRUE, teraType=TYPE_GROUND
 	givemon SPECIES_RAYQUAZA, 90, ITEM_NONE
 	givemon SPECIES_SALAMENCE, 90, ITEM_NONE
 	givemon SPECIES_NECROZMA_DAWN_WINGS, 90, ITEM_ULTRANECROZIUM_Z
-	givemon SPECIES_LATIOS, 90, ITEM_LATIOSITE
+	setflag P_FLAG_FORCE_SHINY
 	givemon SPECIES_MEW, 1, ITEM_NONE
 	setflag FLAG_SYS_POKEDEX_GET
 	setflag FLAG_SYS_POKENAV_GET
@@ -37,13 +37,14 @@ Debug_CheatStart::
 	setvar VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 2 @ 2: Met Rival's Mom (and is corresponding gender)
 	setvar VAR_LITTLEROOT_HOUSES_STATE_MAY, 2 @ 2: Met Rival's Mom (and is corresponding gender)
 	setvar VAR_LITTLEROOT_RIVAL_STATE, 4 @ 4: Received Pokedex
-	setflag FLAG_RECEIVED_BIKE
+@	setflag FLAG_RECEIVED_BIKE
 	additem ITEM_ACRO_BIKE
 	additem ITEM_MEGA_RING
 	additem ITEM_Z_POWER_RING
 	additem ITEM_DYNAMAX_BAND
 	additem ITEM_EXP_SHARE
 	additem ITEM_TERA_ORB
+	additem ITEM_MASTER_BALL, 10
 	setflag B_FLAG_TERA_ORB_CHARGED
 	setvar VAR_BRINEY_HOUSE_STATE, 1
 	setvar VAR_ROUTE116_STATE, 2
@@ -486,5 +487,3 @@ Debug_EventScript_EWRAMCounters::
 Debug_EventScript_EWRAMCounters_Text::
 	.string "Follower Steps: {STR_VAR_1}.\n"
 	.string "Fishing Chain: {STR_VAR_2}.$"
-
-.endif

@@ -226,19 +226,11 @@
 #define VARIOUS_SET_BEAK_BLAST                       134
 #define VARIOUS_SWAP_SIDE_STATUSES                   135
 #define VARIOUS_SWAP_STATS                           136
-#define VARIOUS_TEATIME_INVUL                        137
-#define VARIOUS_TEATIME_TARGETS                      138
-#define VARIOUS_TRY_WIND_RIDER_POWER                 139
-#define VARIOUS_ACTIVATE_WEATHER_CHANGE_ABILITIES    140
-#define VARIOUS_ACTIVATE_TERRAIN_CHANGE_ABILITIES    141
-#define VARIOUS_STORE_HEALING_WISH                   142
-#define VARIOUS_HIT_SWITCH_TARGET_FAILED             143
-#define VARIOUS_TRY_REVIVAL_BLESSING                 144
-#define VARIOUS_GIVE_DROPPED_ITEMS                   145
-#define VARIOUS_JUMP_IF_NO_BALLS                     146
-#define VARIOUS_CATCH_RAID_BOSS                      147
-#define VARIOUS_HIDE_HEALTHBOXES                     148
-#define VARIOUS_DO_RAID_SHOCKWAVE                    149
+#define VARIOUS_GIVE_DROPPED_ITEMS                   137
+#define VARIOUS_JUMP_IF_NO_BALLS                     138
+#define VARIOUS_CATCH_RAID_BOSS                      139
+#define VARIOUS_HIDE_HEALTHBOXES                     140
+#define VARIOUS_DO_RAID_SHOCKWAVE                    141
 
 // Cmd_manipulatedamage
 #define DMG_CHANGE_SIGN            0

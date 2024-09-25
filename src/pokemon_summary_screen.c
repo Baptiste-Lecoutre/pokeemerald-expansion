@@ -1306,7 +1306,7 @@ static const struct SpritePalette sSummaryScreenMaxFriendshipIconSpritePalette =
 static u8 ShowCategoryIcon(u32 category)
 {
     if (sMonSummaryScreen->categoryIconSpriteId == 0xFF)
-        sMonSummaryScreen->categoryIconSpriteId = CreateSprite(&gSpriteTemplate_CategoryIcons, 48, 129, 0);
+        sMonSummaryScreen->categoryIconSpriteId = CreateSprite(&gSpriteTemplate_CategoryIcons, 48, 128, 0);
 
     gSprites[sMonSummaryScreen->categoryIconSpriteId].invisible = FALSE;
     StartSpriteAnim(&gSprites[sMonSummaryScreen->categoryIconSpriteId], category);
@@ -1875,15 +1875,13 @@ static void Task_HandleInput(u8 taskId)
             PlaySE(SE_SELECT);
             BeginCloseSummaryScreen(taskId);
         }
-    #if DEBUG_POKEMON_SPRITE_VISUALIZER == TRUE
-        else if (JOY_NEW(SELECT_BUTTON) && !gMain.inBattle)
+        else if (DEBUG_POKEMON_SPRITE_VISUALIZER && JOY_NEW(SELECT_BUTTON) && !gMain.inBattle)
         {
             sMonSummaryScreen->callback = CB2_Pokemon_Sprite_Visualizer;
             StopPokemonAnimations();
             PlaySE(SE_SELECT);
             CloseSummaryScreen(taskId);
         }
-    #endif
     }
 }
 
@@ -4170,27 +4168,23 @@ static void SetMonTypeIcons(void)
 static void SetMoveTypeIcons(void)
 {
     u32 i;
-    u32 type;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
     struct Pokemon *mon = &sMonSummaryScreen->currentMon;
+    u32 type;
+
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         if (summary->moves[i] != MOVE_NONE)
         {
+            type = gMovesInfo[summary->moves[i]].type;
             if (P_SHOW_DYNAMIC_TYPES)
-            {
                 type = CheckDynamicMoveType(mon, summary->moves[i], 0);
-                SetTypeSpritePosAndPal(type, 116, 20 + (i * 29), i + SPRITE_ARR_ID_TYPE + 2);  
-            }
-            else
-            {
-                SetTypeSpritePosAndPal(gMovesInfo[summary->moves[i]].type, 116, 20 + (i * 29), i + SPRITE_ARR_ID_TYPE + 2); 
-            }
+            SetTypeSpritePosAndPal(type, 116, 20 + (i * 29), i + SPRITE_ARR_ID_TYPE + 2);
         }
         else
         {
             SetSpriteInvisibility(i + SPRITE_ARR_ID_TYPE + 2, TRUE);
-        }     
+        }
     }
 }
 
@@ -4350,7 +4344,7 @@ static void SpriteCB_Pokemon(struct Sprite *sprite)
     {
         sprite->data[1] = IsMonSpriteNotFlipped(sprite->data[0]);
         PlayMonCry();
-        PokemonSummaryDoMonAnimation(sprite, sprite->data[0], summary->isEgg);
+        PokemonSummaryDoMonAnimation(sprite, sprite->data[0], summary->isEgg, FALSE);
     }
 }
 

@@ -5,10 +5,10 @@ HauntedMansion_1F_EventScript_DragapultGhost::
 	lockall
 	msgbox HauntedMansion_1F_Text_BeGoneIntruders
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, Common_Movement_ExclamationMark
 	waitmovement 0
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, Common_Movement_Delay48
 	waitmovement 0
 	checkplayergender
 	call_if_eq VAR_RESULT, MALE, HauntedMansion_1F_EventScript_MayUseDevonScope
@@ -22,7 +22,7 @@ HauntedMansion_1F_EventScript_DragapultGhostBattle:
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, HauntedMansion_1F_EventScript_DefeatedDragapultGhost
 	goto_if_eq VAR_RESULT, B_OUTCOME_CAUGHT, HauntedMansion_1F_EventScript_DefeatedDragapultGhost
 	applymovement OBJ_EVENT_ID_PLAYER, HauntedMansion_1F_Movement_ForcePlayerLeft
-	applymovement OBJ_EVENT_ID_FOLLOWER_NPC, HauntedMansion_1F_Movement_ForcePlayerLeft
+	applymovement OBJ_EVENT_ID_FOLLOW_ME, HauntedMansion_1F_Movement_ForcePlayerLeft
 	waitmovement 0
 	releaseall
 	end

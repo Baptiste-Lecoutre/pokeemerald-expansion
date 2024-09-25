@@ -68,7 +68,6 @@
 #include "constants/weather.h"
 #include "save.h"
 
-#if DEBUG_OVERWORLD_MENU == TRUE
 // *******************************
 enum DebugMenu
 {
@@ -662,7 +661,7 @@ static const u8 sDebugText_Give_BattlePoints[] =        _("Max Battle Points");
 static const u8 sDebugText_Give_DaycareEgg[] =          _("Daycare Egg");
 // Sound Menu
 static const u8 sDebugText_Sound_SFX[] =                _("SFX…{CLEAR_TO 110}{RIGHT_ARROW}");
-static const u8 sDebugText_Sound_SFX_ID[] =   	        _("SFX ID: {STR_VAR_3}   {START_BUTTON} Stop\n{STR_VAR_1}    \n{STR_VAR_2}");
+static const u8 sDebugText_Sound_SFX_ID[] =             _("SFX ID: {STR_VAR_3}   {START_BUTTON} Stop\n{STR_VAR_1}    \n{STR_VAR_2}");
 static const u8 sDebugText_Sound_Music[] =              _("Music…{CLEAR_TO 110}{RIGHT_ARROW}");
 static const u8 sDebugText_Sound_Music_ID[] =           _("Music ID: {STR_VAR_3}   {START_BUTTON} Stop\n{STR_VAR_1}    \n{STR_VAR_2}");
 // Berry Function Menu
@@ -3348,7 +3347,7 @@ static void DebugAction_Give_Pokemon_SelectLevel(u8 taskId)
         if (gTasks[taskId].tIsComplex == FALSE)
         {
             PlaySE(MUS_LEVEL_UP);
-            ScriptGiveMon(sDebugMonData->species, gTasks[taskId].tInput, ITEM_NONE);
+            ScriptGiveMon(sDebugMonData->species, gTasks[taskId].tInput, ITEM_NONE, FALSE);
             // Set flag for user convenience
             FlagSet(FLAG_SYS_POKEMON_GET);
             Free(sDebugMonData);
@@ -5310,5 +5309,3 @@ static void DebugAction_Util_CheckEWRAMCounters(u8 taskId)
 {
     Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_EWRAMCounters);
 }
-
-#endif //DEBUG_OVERWORLD_MENU == TRUE

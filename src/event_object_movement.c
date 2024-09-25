@@ -1324,7 +1324,7 @@ u8 GetFirstInactiveObjectEventId(void)
 
 u8 GetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId)
 {
-    if (localId == OBJ_EVENT_ID_FOLLOWER_NPC)
+    if (localId == OBJ_EVENT_ID_FOLLOW_ME)
         return GetFollowerObjectId();
     else if (localId < OBJ_EVENT_ID_DYNAMIC_BASE)
         return GetObjectEventIdByLocalIdAndMapInternal(localId, mapNum, mapGroupId);
@@ -2170,6 +2170,7 @@ void UpdateFollowingPokemon(void)
     // 1. GetFollowerInfo returns FALSE
     // 2. Map is indoors and gfx is larger than 32x32
     // 3. flag is set
+    // 4. a Follow Me follower is present
     if (OW_POKEMON_OBJECT_EVENTS == FALSE
      || OW_FOLLOWERS_ENABLED == FALSE
      || !GetFollowerInfo(&species, &form, &shiny)
@@ -9784,30 +9785,30 @@ static void DoTracksGroundEffect_BikeTireTracks(struct ObjectEvent *objEvent, st
 
 static void DoTracksGroundEffect_SlitherTracks(struct ObjectEvent *objEvent, struct Sprite *sprite, u8 a)
 {
-	//  Specifies which bike track shape to show next.
-	//  For example, when the bike turns from up to right, it will show
-	//  a track that curves to the right.
-	//  Each 4-byte row corresponds to the initial direction of the bike, and
-	//  each byte in that row is for the next direction of the bike in the order
-	//  of down, up, left, right.
-	static const u8 slitherTracks_Transitions[4][4] = {
-		{1, 2, 7, 8},
-		{1, 2, 6, 5},
-		{5, 8, 3, 4},
-		{6, 7, 3, 4},
-	};
+    //  Specifies which bike track shape to show next.
+    //  For example, when the bike turns from up to right, it will show
+    //  a track that curves to the right.
+    //  Each 4-byte row corresponds to the initial direction of the bike, and
+    //  each byte in that row is for the next direction of the bike in the order
+    //  of down, up, left, right.
+    static const u8 slitherTracks_Transitions[4][4] = {
+        {1, 2, 7, 8},
+        {1, 2, 6, 5},
+        {5, 8, 3, 4},
+        {6, 7, 3, 4},
+    };
 
-	if (objEvent->currentCoords.x != objEvent->previousCoords.x || objEvent->currentCoords.y != objEvent->previousCoords.y)
-	{
-		gFieldEffectArguments[0] = objEvent->previousCoords.x;
-		gFieldEffectArguments[1] = objEvent->previousCoords.y;
-		gFieldEffectArguments[2] = 149;
-		gFieldEffectArguments[3] = 2;
-		gFieldEffectArguments[4] =
-			slitherTracks_Transitions[objEvent->previousMovementDirection][objEvent->facingDirection - 5];
+    if (objEvent->currentCoords.x != objEvent->previousCoords.x || objEvent->currentCoords.y != objEvent->previousCoords.y)
+    {
+        gFieldEffectArguments[0] = objEvent->previousCoords.x;
+        gFieldEffectArguments[1] = objEvent->previousCoords.y;
+        gFieldEffectArguments[2] = 149;
+        gFieldEffectArguments[3] = 2;
+        gFieldEffectArguments[4] =
+        slitherTracks_Transitions[objEvent->previousMovementDirection][objEvent->facingDirection - 5];
         gFieldEffectArguments[5] = objEvent->previousMetatileBehavior;
-		FieldEffectStart(FLDEFF_TRACKS_SLITHER);
-	}
+        FieldEffectStart(FLDEFF_TRACKS_SLITHER);
+    }
 }
 
 void GroundEffect_Ripple(struct ObjectEvent *objEvent, struct Sprite *sprite)
@@ -10933,7 +10934,7 @@ bool8 MovementAction_EmoteX_Step0(struct ObjectEvent *objectEvent, struct Sprite
     return TRUE;
 }
 
-// NEW
+// follow_me
 u16 GetMiniStepCount(u8 speed)
 {
     return (u16)sStepTimes[speed];

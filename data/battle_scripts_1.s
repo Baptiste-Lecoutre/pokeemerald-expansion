@@ -509,7 +509,7 @@ BattleScript_EffectAttackUpUserAlly_TryAlly:
 BattleScript_EffectAttackUpUserAlly_End:
 	goto BattleScript_MoveEnd
 BattleScript_EffectAttackUpUserAlly_TryAlly_:
-	jumpifability BS_ATTACKER_PARTNER, ABILITY_SOUNDPROOF, BattleScript_EffectAttackUpUserAlly_TryAllyBlocked
+	jumpifblockedbysoundproof BS_ATTACKER_PARTNER, BattleScript_EffectAttackUpUserAlly_TryAllyBlocked
 	setstatchanger STAT_ATK, 1, FALSE
 	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_EffectAttackUpUserAlly_End
 	jumpifbyte CMP_NOT_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_EffectAttackUpUserAlly_AllyAnim
@@ -903,7 +903,7 @@ BattleScript_EffectTarShot::
 	printfromtable gStatDownStringIds
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_TryTarShot:
-	trytarshot BS_TARGET, BattleScript_MoveEnd
+	trytarshot BattleScript_MoveEnd
 	printstring STRINGID_PKMNBECAMEWEAKERTOFIRE
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
@@ -929,18 +929,9 @@ BattleScript_BothCanNoLongerEscape::
 	return
 
 BattleScript_EffectHyperspaceFury::
-	jumpifspecies BS_ATTACKER, SPECIES_HOOPA_UNBOUND, BattleScript_EffectHyperspaceFuryUnbound
+	jumpifspecies BS_ATTACKER, SPECIES_HOOPA_UNBOUND, BattleScript_EffectHit
 	jumpifspecies BS_ATTACKER, SPECIES_HOOPA_CONFINED, BattleScript_ButHoopaCantUseIt
 	goto BattleScript_PokemonCantUseTheMove
-
-BattleScript_EffectHyperspaceFuryUnbound::
-	attackcanceler
-	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
-	attackstring
-	pause B_WAIT_TIME_LONG
-	ppreduce
-	seteffectprimary MOVE_EFFECT_FEINT
-	goto BattleScript_HitFromCritCalc
 
 BattleScript_ButHoopaCantUseIt:
 	printstring STRINGID_BUTHOOPACANTUSEIT
@@ -1767,6 +1758,8 @@ BattleScript_EffectInstruct::
 	tryinstruct BattleScript_ButItFailed
 	attackanimation
 	waitanimation
+	copybyte gBattlerAttacker, gBattlerTarget
+	copybyte gBattlerTarget, gEffectBattler
 	printstring STRINGID_USEDINSTRUCTEDMOVE
 	waitmessage B_WAIT_TIME_LONG
 	setbyte sB_ANIM_TURN, 0
@@ -1846,7 +1839,7 @@ BattleScript_HitSwitchTargetForceRandomSwitchFailed:
 	goto BattleScript_MoveEnd
 
 BattleScript_EffectToxicThread::
-	setstatchanger STAT_SPEED, 2, TRUE
+	setstatchanger STAT_SPEED, 1, TRUE
 	attackcanceler
 	jumpifsubstituteblocks BattleScript_FailedFromAtkString
 	jumpifstat BS_TARGET, CMP_NOT_EQUAL, STAT_SPEED, MIN_STAT_STAGE, BattleScript_ToxicThreadWorks
@@ -4289,7 +4282,7 @@ BattleScript_EffectPerishSong::
 	waitmessage B_WAIT_TIME_LONG
 	setbyte gBattlerTarget, 0
 BattleScript_PerishSongLoop::
-	jumpifability BS_TARGET, ABILITY_SOUNDPROOF, BattleScript_PerishSongBlocked
+	jumpifblockedbysoundproof BS_TARGET, BattleScript_PerishSongBlocked
 	jumpifpranksterblocked BS_TARGET, BattleScript_PerishSongNotAffected
 BattleScript_PerishSongLoopIncrement::
 	addbyte gBattlerTarget, 1
@@ -4732,6 +4725,9 @@ BattleScript_ButItFailed::
 	resultmessage
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
+BattleScript_RestoreAttackerButItFailed:
+	restoreattacker
+	goto BattleScript_ButItFailed
 
 BattleScript_NotAffected::
 	pause B_WAIT_TIME_SHORT
@@ -5613,13 +5609,13 @@ BattleScript_LocalTrainerBattleWon::
 BattleScript_LocalTwoTrainersDefeated::
 	printstring STRINGID_TWOENEMIESDEFEATED
 BattleScript_LocalBattleWonLoseTexts::
-	trainerslidein BS_ATTACKER
+	trainerslidein BS_OPPONENT1
 	waitstate
 	printstring STRINGID_TRAINER1LOSETEXT
 	jumpifnotbattletype BATTLE_TYPE_TWO_OPPONENTS, BattleScript_LocalBattleWonReward
-	trainerslideout B_POSITION_OPPONENT_LEFT
+	trainerslideout BS_OPPONENT1
 	waitstate
-	trainerslidein BS_FAINTED
+	trainerslidein BS_OPPONENT2
 	waitstate
 	printstring STRINGID_TRAINER2LOSETEXT
 BattleScript_LocalBattleWonReward::
@@ -5672,15 +5668,15 @@ BattleScript_LocalBattleLostPrintTrainersWinText::
 	waitstate
 	returnopponentmon2toball BS_ATTACKER
 	waitstate
-	trainerslidein BS_ATTACKER
+	trainerslidein BS_OPPONENT1
 	waitstate
 	printstring STRINGID_TRAINER1WINTEXT
 	jumpifbattletype BATTLE_TYPE_TOWER_LINK_MULTI, BattleScript_LocalBattleLostDoTrainer2WinText
 	jumpifnotbattletype BATTLE_TYPE_TWO_OPPONENTS, BattleScript_LocalBattleLostEnd_
 BattleScript_LocalBattleLostDoTrainer2WinText::
-	trainerslideout B_POSITION_OPPONENT_LEFT
+	trainerslideout BS_OPPONENT1
 	waitstate
-	trainerslidein BS_FAINTED
+	trainerslidein BS_OPPONENT2
 	waitstate
 	printstring STRINGID_TRAINER2WINTEXT
 BattleScript_LocalBattleLostEnd_::
@@ -5691,12 +5687,12 @@ BattleScript_FrontierLinkBattleLost::
 	waitstate
 	returnopponentmon2toball BS_ATTACKER
 	waitstate
-	trainerslidein BS_ATTACKER
+	trainerslidein BS_OPPONENT1
 	waitstate
 	printstring STRINGID_TRAINER1WINTEXT
-	trainerslideout B_POSITION_OPPONENT_LEFT
+	trainerslideout BS_OPPONENT1
 	waitstate
-	trainerslidein BS_FAINTED
+	trainerslidein BS_OPPONENT2
 	waitstate
 	printstring STRINGID_TRAINER2WINTEXT
 	jumpifbattletype BATTLE_TYPE_RECORDED, BattleScript_FrontierLinkBattleLostEnd
@@ -5719,12 +5715,12 @@ BattleScript_TowerLinkBattleWon::
 	playtrainerdefeatbgm BS_ATTACKER
 	printstring STRINGID_BATTLEEND
 	waitmessage B_WAIT_TIME_LONG
-	trainerslidein BS_ATTACKER
+	trainerslidein BS_OPPONENT1
 	waitstate
 	printstring STRINGID_TRAINER1LOSETEXT
-	trainerslideout B_POSITION_OPPONENT_LEFT
+	trainerslideout BS_OPPONENT1
 	waitstate
-	trainerslidein BS_FAINTED
+	trainerslidein BS_OPPONENT2
 	waitstate
 	printstring STRINGID_TRAINER2LOSETEXT
 	jumpifbattletype BATTLE_TYPE_RECORDED, BattleScript_TowerLinkBattleWonEnd
@@ -5741,13 +5737,13 @@ BattleScript_FrontierTrainerBattleWon::
 BattleScript_FrontierTrainerBattleWon_TwoDefeated:
 	printstring STRINGID_TWOENEMIESDEFEATED
 BattleScript_FrontierTrainerBattleWon_LoseTexts:
-	trainerslidein BS_ATTACKER
+	trainerslidein BS_OPPONENT1
 	waitstate
 	printstring STRINGID_TRAINER1LOSETEXT
 	jumpifnotbattletype BATTLE_TYPE_TWO_OPPONENTS, BattleScript_TryPickUpItems
-	trainerslideout B_POSITION_OPPONENT_LEFT
+	trainerslideout BS_OPPONENT1
 	waitstate
-	trainerslidein BS_FAINTED
+	trainerslidein BS_OPPONENT2
 	waitstate
 	printstring STRINGID_TRAINER2LOSETEXT
 BattleScript_TryPickUpItems:
@@ -6475,12 +6471,14 @@ BattleScript_SeedSowerActivates::
 	return
 
 BattleScript_AngerShellActivates::
+	saveattacker
+	copybyte gBattlerAttacker, gBattlerTarget
 	call BattleScript_AbilityPopUp
 	jumpifstat BS_TARGET, CMP_LESS_THAN, STAT_ATK, MAX_STAT_STAGE, BattleScript_AngerShellTryDef
 	jumpifstat BS_TARGET, CMP_LESS_THAN, STAT_SPATK, MAX_STAT_STAGE, BattleScript_AngerShellTryDef
 	jumpifstat BS_TARGET, CMP_LESS_THAN, STAT_SPEED, MAX_STAT_STAGE, BattleScript_AngerShellTryDef
 	jumpifstat BS_TARGET, CMP_GREATER_THAN, STAT_DEF, MIN_STAT_STAGE, BattleScript_AngerShellTryDef
-	jumpifstat BS_TARGET, CMP_EQUAL, STAT_SPDEF, MIN_STAT_STAGE, BattleScript_ButItFailed
+	jumpifstat BS_TARGET, CMP_EQUAL, STAT_SPDEF, MIN_STAT_STAGE, BattleScript_RestoreAttackerButItFailed
 BattleScript_AngerShellTryDef::
 	setbyte sSTAT_ANIM_PLAYED, FALSE
 	modifybattlerstatstage BS_ATTACKER, STAT_DEF, DECREASE, 1, BattleScript_AngerShellTrySpDef, ANIM_ON
@@ -6494,6 +6492,7 @@ BattleScript_AngerShellTrySpAtk:
 BattleScript_AngerShellTrySpeed:
 	modifybattlerstatstage BS_ATTACKER, STAT_SPEED, INCREASE, 1, BattleScript_AngerShellRet, ANIM_ON
 BattleScript_AngerShellRet:
+	restoreattacker
 	return
 
 BattleScript_WindPowerActivates::

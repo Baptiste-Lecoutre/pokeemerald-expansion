@@ -117,7 +117,7 @@
       "elevation": 3,
       "var": "VAR_LAVARIDGE_TOWN_STATE",
       "var_value": "2",
-      "script": "EmberPath_EventScript_ThisIsTheWayTrigger1"
+      "script": "EmberPath_EventScript_ThisIsTheWay"
     },
     {
       "type": "trigger",
@@ -126,7 +126,7 @@
       "elevation": 3,
       "var": "VAR_LAVARIDGE_TOWN_STATE",
       "var_value": "2",
-      "script": "EmberPath_EventScript_ThisIsTheWayTrigger2"
+      "script": "EmberPath_EventScript_ThisIsTheWay"
     },
     {
       "type": "trigger",
@@ -135,7 +135,7 @@
       "elevation": 3,
       "var": "VAR_LAVARIDGE_TOWN_STATE",
       "var_value": "2",
-      "script": "EmberPath_EventScript_ThisIsTheWayTrigger3"
+      "script": "EmberPath_EventScript_ThisIsTheWay"
     }
   ],
   "bg_events": [

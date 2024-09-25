@@ -478,10 +478,12 @@
 #define OW_SPECIES(x) (((x)->graphicsId & OBJ_EVENT_GFX_SPECIES_MASK) - OBJ_EVENT_GFX_MON_BASE)
 #define OW_FORM(x) ((x)->graphicsId >> OBJ_EVENT_GFX_SPECIES_BITS)
 
-#define SHADOW_SIZE_S    0
-#define SHADOW_SIZE_M    1
-#define SHADOW_SIZE_L    2
-#define SHADOW_SIZE_NONE 3   // Originally SHADOW_SIZE_XL, which went unused due to shadowSize in ObjectEventGraphicsInfo being only 2 bits.
+#define SHADOW_SIZE_S       0
+#define SHADOW_SIZE_M       1
+#define SHADOW_SIZE_L       2
+#define SHADOW_SIZE_NONE    3   // Originally SHADOW_SIZE_XL, which went unused due to shadowSize in ObjectEventGraphicsInfo being only 2 bits.
+
+#define SHADOW_SIZE_XL_BATTLE_ONLY  SHADOW_SIZE_NONE    // Battle-only definition for XL shadow size.
 
 #define F_INANIMATE                        (1 << 6)
 #define F_DISABLE_REFLECTION_PALETTE_LOAD  (1 << 7)
@@ -498,13 +500,12 @@
 #define OBJ_KIND_NORMAL 0
 #define OBJ_KIND_CLONE  255 // Exclusive to FRLG
 
-// Special object event local ids
-#define OBJ_EVENT_ID_FOLLOWER_NPC 0xFC
 // Used for link player OWs in CreateLinkPlayerSprite
 #define OBJ_EVENT_ID_DYNAMIC_BASE 0xF0
 
 #define OBJ_EVENT_ID_PLAYER 0xFF
 #define OBJ_EVENT_ID_FOLLOWER 0xFE
+#define OBJ_EVENT_ID_FOLLOW_ME 0xFD
 #define OBJ_EVENT_ID_CAMERA 0x7F
 
 // Object event local ids referenced in C files

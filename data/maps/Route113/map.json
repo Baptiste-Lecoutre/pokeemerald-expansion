@@ -290,8 +290,8 @@
       "x": 41,
       "y": 12,
       "elevation": 0,
-      "dest_map": "MAP_TERRA_CAVE_ENTRANCE",
-      "dest_warp_id": "0"
+      "dest_map": "MAP_FIERY_PATH2",
+      "dest_warp_id": "1"
     },
     {
       "x": 88,
