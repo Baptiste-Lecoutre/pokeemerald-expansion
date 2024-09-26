@@ -18663,22 +18663,22 @@ ShadowShedShatteredWall:
 	end
 
 gBattleAnimMove_ShadowHold::
-	loadspritegfx ANIM_TAG_CHAIN_LINK @Chain
-	monbg ANIM_DEF_PARTNER
-	splitbgprio ANIM_TARGET
-	setalpha 12, 8
-	createvisualtask AnimTask_BlendBattleAnimPal, 0xa, F_PAL_BG, 0x1, 0x0, 0x10, 0x0
+	loadspritegfx ANIM_TAG_CHAIN_LINK
+	createvisualtask AnimTask_BlendParticle, 5, ANIM_TAG_CHAIN_LINK, 0, 9, 9, RGB_BLACK
+	monbg ANIM_TARGET
+	createvisualtask AnimTask_ShakeMon, 2, ANIM_TARGET, 3, 0, 10, 1
 	waitforvisualfinish
-	loopsewithpan SE_SHINY, SOUND_PAN_ATTACKER, 0x1c, 0x2
-	createsprite gSpiritShackleChainTemplate, ANIM_TARGET, 2, 0xfff0, 0xfff0
-	delay 0x4
-	createsprite gSpiritShackleChainTemplate, ANIM_TARGET, 2, 0xfff0, 0x0
-	delay 0x4
-	createsprite gSpiritShackleChainTemplate, ANIM_TARGET, 2, 0xfff0, 0x10
+	loopsewithpan SE_M_SCRATCH, SOUND_PAN_TARGET, 6, 2
+	createsprite gChainBindingSpriteTemplate, ANIM_TARGET, 4, 0, 16, 0, 1
+	delay 7
+	createsprite gChainBindingSpriteTemplate, ANIM_TARGET, 2, 0, 8, 1, 1
+	delay 3
+	createvisualtask AnimTask_ShakeMon2, 2, ANIM_TARGET, 2, 0, 8, 1
+	delay 20
+	setarg 7, 0xFFFF
+	playsewithpan SE_M_BIND, SOUND_PAN_TARGET
 	waitforvisualfinish
-	createvisualtask AnimTask_BlendBattleAnimPal, 0xa, F_PAL_BG, 0x1, 0x10, 0x0, 0x0
-	waitforvisualfinish
-	clearmonbg ANIM_DEF_PARTNER
+	clearmonbg ANIM_TARGET
 	blendoff
 	end
 
@@ -28663,7 +28663,7 @@ gBattleAnimStatus_Nightmare::
 
 
 
-gBattleAnimStatus_Shadow:
+gBattleAnimStatus_Shadow::
 	loadspritegfx ANIM_TAG_SHADOW_PARTICLES
 	loopsewithpan SE_M_SACRED_FIRE2, SOUND_PAN_TARGET, 13, 6
 	call ShadowAuraEffect
@@ -28676,7 +28676,7 @@ gBattleAnimStatus_Shadow:
 	waitforvisualfinish
 	end
 
-gBattleAnimStatus_ReverseMode:
+gBattleAnimStatus_ReverseMode::
 	loadspritegfx ANIM_TAG_SHADOW_PARTICLES
 	loadspritegfx ANIM_TAG_REVERSE_PARTICLES
 	loopsewithpan SE_M_EMBER, SOUND_PAN_ATTACKER, 5, 2
@@ -28684,7 +28684,7 @@ gBattleAnimStatus_ReverseMode:
 	call ReverseAuraEffect
 	end
 
-gBattleAnimStatus_EnterReverseMode:
+gBattleAnimStatus_EnterReverseMode::
 	loadspritegfx ANIM_TAG_SHADOW_PARTICLES
 	loadspritegfx ANIM_TAG_REVERSE_PARTICLES
 	loopsewithpan SE_M_SACRED_FIRE2, SOUND_PAN_TARGET, 13, 6
@@ -28699,7 +28699,7 @@ gBattleAnimStatus_EnterReverseMode:
 	waitforvisualfinish
 	end
 
-gBattleAnimGeneral_CallReverseMode:
+gBattleAnimGeneral_CallReverseMode::
 	loadspritegfx ANIM_TAG_SHADOW_PARTICLES
 	loadspritegfx ANIM_TAG_REVERSE_PARTICLES
 	loadspritegfx ANIM_TAG_THIN_RING
@@ -28717,8 +28717,7 @@ gBattleAnimGeneral_CallReverseMode:
 	end
 
 	
-
-gBattleAnimGeneral_StatsChange:
+gBattleAnimGeneral_StatsChange::
 	createvisualtask AnimTask_StatsChange, 5
 	waitforvisualfinish
 	end
@@ -29008,7 +29007,7 @@ gBattleAnimGeneral_ShadowSky::
 	waitforvisualfinish
 	end
 
-gBattleAnimGeneral_LeechSeedDrain:
+gBattleAnimGeneral_LeechSeedDrain::
 	createvisualtask AnimTask_GetBattlersFromArg, 5
 	delay 0
 	goto gBattleAnimMove_Absorb
@@ -29646,7 +29645,7 @@ gBattleAnimSpecial_LevelUpEvolve::
 
 @ TODOSHADOW Modify effect for shadow mon
 @ Healthbox blue flash effect on level up
-gBattleAnimSpecial_SectionUnlock:
+gBattleAnimSpecial_SectionUnlock::
 	playsewithpan SE_EXP_MAX, 0
 	createvisualtask AnimTask_LoadHealthboxPalsForLevelUp, 2
 	delay 0
@@ -29655,7 +29654,7 @@ gBattleAnimSpecial_SectionUnlock:
 	createvisualtask AnimTask_FreeHealthboxPalsForLevelUp, 2
 	end
 
-gBattleAnimSpecial_SwitchOutPlayerMon:
+gBattleAnimSpecial_SwitchOutPlayerMon::
 	createvisualtask AnimTask_SwitchOutBallEffect, 2
 	delay 10
 	createvisualtask AnimTask_SwitchOutShrinkMon, 2

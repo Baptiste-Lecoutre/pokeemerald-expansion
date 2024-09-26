@@ -20679,7 +20679,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .priority = 0,
         .category = DAMAGE_CATEGORY_PHYSICAL,
         .makesContact = TRUE,
-        .battleAnimScript = Move_SHADOW_BLITZ,
+        .battleAnimScript = gBattleAnimMove_ShadowBlitz,
     },
 
     [MOVE_SHADOW_WAVE] =
@@ -20696,7 +20696,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .category = DAMAGE_CATEGORY_SPECIAL,
-        .battleAnimScript = Move_SHADOW_WAVE,
+        .battleAnimScript = gBattleAnimMove_ShadowWave,
     },
 
     [MOVE_SHADOW_RUSH] =
@@ -20714,7 +20714,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .priority = 0,
         .category = DAMAGE_CATEGORY_PHYSICAL,
         .makesContact = TRUE,
-        .battleAnimScript = Move_SHADOW_RUSH,
+        .battleAnimScript = gBattleAnimMove_ShadowRush,
     },
 
     [MOVE_SHADOW_RAVE] =
@@ -20731,7 +20731,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .category = DAMAGE_CATEGORY_SPECIAL,
-        .battleAnimScript = Move_SHADOW_RAVE,
+        .battleAnimScript = gBattleAnimMove_ShadowRave,
     },
 
     [MOVE_SHADOW_FIRE] =
@@ -20752,7 +20752,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
             .moveEffect = MOVE_EFFECT_BURN,
             .chance = 10,
         }),
-        .battleAnimScript = Move_SHADOW_FIRE,
+        .battleAnimScript = gBattleAnimMove_ShadowFire,
     },
 
     [MOVE_SHADOW_CHILL] =
@@ -20773,7 +20773,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
             .moveEffect = MOVE_EFFECT_FREEZE_OR_FROSTBITE,
             .chance = 10,
         }),
-        .battleAnimScript = Move_SHADOW_CHILL,
+        .battleAnimScript = gBattleAnimMove_ShadowChill,
     },
 
     [MOVE_SHADOW_BOLT] =
@@ -20794,7 +20794,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
             .moveEffect = MOVE_EFFECT_PARALYSIS,
             .chance = 10,
         }),
-        .battleAnimScript = Move_SHADOW_BOLT,
+        .battleAnimScript = gBattleAnimMove_ShadowBolt,
     },
 
     [MOVE_SHADOW_STORM] =
@@ -20811,7 +20811,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .target = MOVE_TARGET_BOTH,
         .priority = 0,
         .category = DAMAGE_CATEGORY_SPECIAL,
-        .battleAnimScript = Move_SHADOW_STORM,
+        .battleAnimScript = gBattleAnimMove_ShadowStorm,
     },
 
     [MOVE_SHADOW_BLAST] =
@@ -20829,7 +20829,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .priority = 0,
         .category = DAMAGE_CATEGORY_PHYSICAL,
         .criticalHitStage = 1,
-        .battleAnimScript = Move_SHADOW_BLAST,
+        .battleAnimScript = gBattleAnimMove_ShadowBlast,
     },
 
     [MOVE_SHADOW_BREAK] =
@@ -20847,7 +20847,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .priority = 0,
         .category = DAMAGE_CATEGORY_PHYSICAL,
         .makesContact = TRUE,
-        .battleAnimScript = Move_SHADOW_BREAK,
+        .battleAnimScript = gBattleAnimMove_ShadowBreak,
     },
 
     [MOVE_SHADOW_END] =
@@ -20866,7 +20866,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .priority = 0,
         .category = DAMAGE_CATEGORY_PHYSICAL,
         .makesContact = TRUE,
-        .battleAnimScript = Move_SHADOW_END,
+        .battleAnimScript = gBattleAnimMove_ShadowEnd,
     },
 
     [MOVE_SHADOW_DOWN] =
@@ -20884,7 +20884,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .priority = 0,
         .category = DAMAGE_CATEGORY_STATUS,
         .zMove = { .effect = Z_EFFECT_ATK_UP_2 },
-        .battleAnimScript = Move_SHADOW_DOWN,
+        .battleAnimScript = gBattleAnimMove_ShadowDown,
     },
 
     [MOVE_SHADOW_HALF] =
@@ -20901,7 +20901,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .target = MOVE_TARGET_FOES_AND_ALLY,
         .priority = 0,
         .category = DAMAGE_CATEGORY_SPECIAL,
-        .battleAnimScript = Move_SHADOW_HALF,
+        .battleAnimScript = gBattleAnimMove_ShadowHalf,
     },
 
     [MOVE_SHADOW_MIST] =
@@ -20920,7 +20920,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .category = DAMAGE_CATEGORY_STATUS,
         .zMove = { .effect = Z_EFFECT_RECOVER_HP },
         .mirrorMoveBanned = TRUE,
-        .battleAnimScript = Move_SHADOW_MIST,
+        .battleAnimScript = gBattleAnimMove_ShadowMist,
     },
 
     [MOVE_SHADOW_SHED] =
@@ -20939,7 +20939,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .category = DAMAGE_CATEGORY_STATUS,
         .zMove = { .effect = Z_EFFECT_RECOVER_HP },
         .mirrorMoveBanned = TRUE,
-        .battleAnimScript = Move_SHADOW_SHED,
+        .battleAnimScript = gBattleAnimMove_ShadowShed,
     },
 
     [MOVE_SHADOW_HOLD] =
@@ -20957,7 +20957,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .priority = 0,
         .category = DAMAGE_CATEGORY_STATUS,
         .zMove = { .effect = Z_EFFECT_SPDEF_UP_1 },
-        .battleAnimScript = Move_SHADOW_HOLD,
+        .battleAnimScript = gBattleAnimMove_ShadowHold,
     },
 
     [MOVE_SHADOW_PANIC] =
@@ -20976,7 +20976,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .category = DAMAGE_CATEGORY_STATUS,
         .zMove = { .effect = Z_EFFECT_SPATK_UP_1 },
         .soundMove = TRUE,
-        .battleAnimScript = Move_SHADOW_PANIC,
+        .battleAnimScript = gBattleAnimMove_ShadowPanic,
     },
 
     [MOVE_SHADOW_SKY] =
@@ -20995,7 +20995,7 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
         .category = DAMAGE_CATEGORY_STATUS,
         .zMove = { .effect = Z_EFFECT_SPD_UP_1 },
         .mirrorMoveBanned = TRUE,
-        .battleAnimScript = Move_SHADOW_SKY,
+        .battleAnimScript = gBattleAnimMove_ShadowSky,
     },
 
     // Z-Moves
