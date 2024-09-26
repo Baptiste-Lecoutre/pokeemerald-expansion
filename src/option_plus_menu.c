@@ -35,6 +35,7 @@ enum
     MENUITEM_MAIN_BATTLESCENE,
     MENUITEM_MAIN_BATTLESTYLE,
     MENUITEM_MAIN_TYPEEFFECTIVENESS,
+    MENUITEM_MAIN_DAMAGENUMBERS,
     MENUITEM_MAIN_FASTFIELDMOVE,
     MENUITEM_MAIN_SOUND,
     MENUITEM_MAIN_LOWHEALTHBEEP,
@@ -189,6 +190,7 @@ static void DrawChoices_TextSpeed(int selection, int y);
 static void DrawChoices_BattleScene(int selection, int y);
 static void DrawChoices_BattleStyle(int selection, int y);
 static void DrawChoices_TypeEffectiveness(int selection, int y);
+static void DrawChoices_DamageNumbers(int selection, int y);
 static void DrawChoices_FastFieldMove(int selection, int y);
 static void DrawChoices_Sound(int selection, int y);
 static void DrawChoices_LowHealthBeep(int selection, int y);
@@ -252,6 +254,7 @@ struct // MENU_MAIN
     [MENUITEM_MAIN_BATTLESCENE]         = {DrawChoices_BattleScene,         ProcessInput_Options_Five},
     [MENUITEM_MAIN_BATTLESTYLE]         = {DrawChoices_BattleStyle,         ProcessInput_Options_Two},
     [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = {DrawChoices_TypeEffectiveness,   ProcessInput_Options_Two},
+    [MENUITEM_MAIN_DAMAGENUMBERS]       = {DrawChoices_DamageNumbers,       ProcessInput_Options_Two},
     [MENUITEM_MAIN_FASTFIELDMOVE]       = {DrawChoices_FastFieldMove,       ProcessInput_Options_Two},
     [MENUITEM_MAIN_SOUND]               = {DrawChoices_Sound,               ProcessInput_Sound},
     [MENUITEM_MAIN_LOWHEALTHBEEP]       = {DrawChoices_LowHealthBeep,       ProcessInput_Options_Two},
@@ -281,6 +284,7 @@ struct // MENU_CUSTOM
 };
 
 // Menu left side option names text
+static const u8 sText_DamageNumbers[] = _("Damage Numbers");
 static const u8 sText_HpBar[]       = _("HP BAR");
 static const u8 sText_ExpBar[]      = _("EXP BAR");
 static const u8 sText_UnitSystem[]  = _("UNIT SYSTEM");
@@ -294,6 +298,7 @@ static const u8 *const sOptionMenuItemsNamesMain[MENUITEM_MAIN_COUNT] =
     [MENUITEM_MAIN_BATTLESCENE]         = gText_BattleScene,
     [MENUITEM_MAIN_BATTLESTYLE]         = gText_BattleStyle,
     [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = gText_TypeEffectiveness,
+    [MENUITEM_MAIN_DAMAGENUMBERS]       = sText_DamageNumbers,
     [MENUITEM_MAIN_FASTFIELDMOVE]       = gText_FastFieldMove,
     [MENUITEM_MAIN_SOUND]               = gText_Sound,
     [MENUITEM_MAIN_LOWHEALTHBEEP]       = gText_LowHealthBeep,
@@ -341,6 +346,7 @@ static bool8 CheckConditions(int selection)
         case MENUITEM_MAIN_BATTLESCENE:         return TRUE;
         case MENUITEM_MAIN_BATTLESTYLE:         return TRUE;
         case MENUITEM_MAIN_TYPEEFFECTIVENESS:   return TRUE;
+        case MENUITEM_MAIN_DAMAGENUMBERS:       return TRUE;
         case MENUITEM_MAIN_FASTFIELDMOVE:       return TRUE;
         case MENUITEM_MAIN_SOUND:               return TRUE;
         case MENUITEM_MAIN_LOWHEALTHBEEP:       return TRUE;
@@ -393,6 +399,7 @@ static const u8 *const sOptionMenuItemDescriptionsMain[MENUITEM_MAIN_COUNT][3] =
     [MENUITEM_MAIN_BATTLESCENE]         = {sText_Desc_BattleScene_On,       sText_Desc_BattleScene_Off, sText_Empty},
     [MENUITEM_MAIN_BATTLESTYLE]         = {sText_Desc_BattleStyle_Shift,    sText_Desc_BattleStyle_Set, sText_Empty},
     [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = {sText_Empty,                     sText_Empty,                sText_Empty},
+    [MENUITEM_MAIN_DAMAGENUMBERS]       = {sText_Empty,                     sText_Empty,                sText_Empty},
     [MENUITEM_MAIN_FASTFIELDMOVE]       = {sText_Empty,                     sText_Empty,                sText_Empty},
     [MENUITEM_MAIN_SOUND]               = {sText_Desc_SoundMono,            sText_Desc_SoundStereo,     sText_Empty},
     [MENUITEM_MAIN_LOWHEALTHBEEP]       = {sText_Empty,                     sText_Empty,                sText_Empty},
@@ -436,6 +443,7 @@ static const u8 *const sOptionMenuItemDescriptionsDisabledMain[MENUITEM_MAIN_COU
     [MENUITEM_MAIN_BATTLESCENE]         = sText_Empty,
     [MENUITEM_MAIN_BATTLESTYLE]         = sText_Empty,
     [MENUITEM_MAIN_TYPEEFFECTIVENESS]   = sText_Empty,
+    [MENUITEM_MAIN_DAMAGENUMBERS]       = sText_Empty,
     [MENUITEM_MAIN_FASTFIELDMOVE]       = sText_Empty,
     [MENUITEM_MAIN_SOUND]               = sText_Empty,
     [MENUITEM_MAIN_LOWHEALTHBEEP]       = sText_Empty,
@@ -760,6 +768,7 @@ void CB2_InitOptionPlusMenu(void)
         sOptions->sel[MENUITEM_MAIN_BATTLESCENE]        = gSaveBlock2Ptr->optionsBattleScene;
         sOptions->sel[MENUITEM_MAIN_BATTLESTYLE]        = gSaveBlock2Ptr->optionsBattleStyle;
         sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS]  = gSaveBlock2Ptr->optionsShowTypeEffectiveness;
+        sOptions->sel[MENUITEM_MAIN_DAMAGENUMBERS]      = gSaveBlock2Ptr->optionsDamageNumbers;
         sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE]      = gSaveBlock2Ptr->optionsFastFieldMove;
         sOptions->sel[MENUITEM_MAIN_SOUND]              = gSaveBlock2Ptr->optionsSound;
         sOptions->sel[MENUITEM_MAIN_LOWHEALTHBEEP]      = gSaveBlock2Ptr->optionsLowHealthMusic;
@@ -979,6 +988,7 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsBattleScene              = sOptions->sel[MENUITEM_MAIN_BATTLESCENE];
     gSaveBlock2Ptr->optionsBattleStyle              = sOptions->sel[MENUITEM_MAIN_BATTLESTYLE];
     gSaveBlock2Ptr->optionsShowTypeEffectiveness    = sOptions->sel[MENUITEM_MAIN_TYPEEFFECTIVENESS];
+    gSaveBlock2Ptr->optionsDamageNumbers            = sOptions->sel[MENUITEM_MAIN_DAMAGENUMBERS];
     gSaveBlock2Ptr->optionsFastFieldMove            = sOptions->sel[MENUITEM_MAIN_FASTFIELDMOVE];
     gSaveBlock2Ptr->optionsSound                    = sOptions->sel[MENUITEM_MAIN_SOUND];
     gSaveBlock2Ptr->optionsLowHealthMusic           = sOptions->sel[MENUITEM_MAIN_LOWHEALTHBEEP];
@@ -1346,6 +1356,16 @@ static const u8 sText_Show[] = _("Show");
 static void DrawChoices_TypeEffectiveness(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_MAIN_TYPEEFFECTIVENESS);
+    u8 styles[2] = {0};
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(sText_Hide, 104, y, styles[0], active);
+    DrawOptionMenuChoice(sText_Show, GetStringRightAlignXOffset(FONT_NORMAL, sText_Show, 198), y, styles[1], active);
+}
+
+static void DrawChoices_DamageNumbers(int selection, int y)
+{
+    bool8 active = CheckConditions(MENUITEM_MAIN_DAMAGENUMBERS);
     u8 styles[2] = {0};
     styles[selection] = 1;
 
