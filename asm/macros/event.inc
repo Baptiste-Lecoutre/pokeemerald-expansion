@@ -1888,15 +1888,28 @@
 	.endm
 
 	.macro checkPartyHasSpecies species:req
-	.byte 0xe7
+	.byte 0xe6
 	.2byte \species
 	.endm
 
 	.macro isChosenMonSpecies species:req
-	.byte 0xe8
+	.byte 0xe7
 	.2byte \species
 	.endm
 
+
+	@ As setwildbattle, but with one extra arg for each species to determine shadow mon values.
+	.macro setwildshadowbattle species:req, level:req, item=ITEM_NONE, heartValue:req, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE, heartValue2=0
+	.byte 0xe5
+	.2byte \species
+	.byte \level
+	.2byte \item
+	.2byte \heartValue
+	.2byte \species2
+	.byte \level2
+	.2byte \item2
+	.2byte \heartValue2
+	.endm
 
 @ Supplementary
 

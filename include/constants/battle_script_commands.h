@@ -40,6 +40,7 @@
 #define sSWITCH_CASE                 (gBattleScripting + 0x36) // switchCase
 #define sBERRY_OVERRIDE              (gBattleScripting + 0x37) // overrideBerryRequirements
 #define sSTICKY_WEB_STAT_DROP        (gBattleScripting + 0x38) // stickyWebStatDrop
+#define sHEARTVALUE_STATE            (gBattleScripting + 0x39) // heartValueState
 
 // Array entries for battle communication
 #define MULTIUSE_STATE          0
@@ -226,7 +227,10 @@
 #define VARIOUS_SET_BEAK_BLAST                       134
 #define VARIOUS_SWAP_SIDE_STATUSES                   135
 #define VARIOUS_SWAP_STATS                           136
-#define VARIOUS_GIVE_DROPPED_ITEMS                   137
+#define VARIOUS_MODIFY_HEART_VALUE                   137
+#define VARIOUS_SET_SHADOW_SKY                       138
+#define VARIOUS_COLLECT_SNAGGED_MONS                 139
+#define VARIOUS_GIVE_DROPPED_ITEMS                   140
 
 // Cmd_manipulatedamage
 #define DMG_CHANGE_SIGN            0
@@ -305,7 +309,8 @@
 #define MOVEEND_SAME_MOVE_TURNS                   36
 #define MOVEEND_SET_EVOLUTION_TRACKER             37
 #define MOVEEND_CLEAR_BITS                        38
-#define MOVEEND_COUNT                             39
+#define MOVEEND_ENTER_REVERSE_MODE                39
+#define MOVEEND_COUNT                             40
 
 // switch cases
 #define B_SWITCH_NORMAL     0

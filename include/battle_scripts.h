@@ -123,6 +123,7 @@ extern const u8 BattleScript_MonWokeUpInUproar[];
 extern const u8 BattleScript_PoisonTurnDmg[];
 extern const u8 BattleScript_BurnTurnDmg[];
 extern const u8 BattleScript_FrostbiteTurnDmg[];
+extern const u8 BattleScript_ReverseModeTurnDmg[];
 extern const u8 BattleScript_MoveUsedIsFrozen[];
 extern const u8 BattleScript_MoveUsedUnfroze[];
 extern const u8 BattleScript_MoveUsedUnfrostbite[];
@@ -252,6 +253,9 @@ extern const u8 BattleScript_BallThrow[];
 extern const u8 BattleScript_BallThrowByWally[];
 extern const u8 BattleScript_SafariBallThrow[];
 extern const u8 BattleScript_SuccessBallThrow[];
+extern const u8 BattleScript_SuccessBallThrowShadow[];
+extern const u8 BattleScript_ShowCaughtTargetAsFainted[];
+extern const u8 BattleScript_TryPrintSnaggedMonInfo[];
 extern const u8 BattleScript_WallyBallThrow[];
 extern const u8 BattleScript_ShakeBallThrow[];
 extern const u8 BattleScript_TrainerBallBlock[];
@@ -514,6 +518,10 @@ extern const u8 BattleScript_Terastallization[];
 extern const u8 BattleScript_BoosterEnergyEnd2[];
 extern const u8 BattleScript_TeraShellDistortingTypeMatchups[];
 extern const u8 BattleScript_TeraFormChange[];
+extern const u8 BattleScript_TrainerCallToMonNormal[];
+extern const u8 BattleScript_TrainerCallToMonReverse[];
+extern const u8 BattleScript_ShadowSkyContinues[];
+extern const u8 BattleScript_ShadowSkyEnd[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];
@@ -845,5 +853,6 @@ extern const u8 BattleScript_EffectSpicyExtract[];
 extern const u8 BattleScript_DamageToQuarterTargetHP[];
 extern const u8 BattleScript_EffectFickleBeam[];
 extern const u8 BattleScript_FickleBeamDoubled[];
+extern const u8 BattleScript_EffectShadowSky[];
 
 #endif // GUARD_BATTLE_SCRIPTS_H

@@ -937,6 +937,24 @@ extern const u8 gBattleAnimMove_GMaxSteelsurge[];
 extern const u8 gBattleAnimMove_GMaxDepletion[];
 extern const u8 gBattleAnimMove_GMaxOneBlow[];
 extern const u8 gBattleAnimMove_GMaxRapidFlow[];
+extern const u8 gBattleAnimMove_ShadowBlitz[];
+extern const u8 gBattleAnimMove_ShadowWave[];
+extern const u8 gBattleAnimMove_ShadowRush[];
+extern const u8 gBattleAnimMove_ShadowRave[];
+extern const u8 gBattleAnimMove_ShadowFire[];
+extern const u8 gBattleAnimMove_ShadowChill[];
+extern const u8 gBattleAnimMove_ShadowBolt[];
+extern const u8 gBattleAnimMove_ShadowStorm[];
+extern const u8 gBattleAnimMove_ShadowBlast[];
+extern const u8 gBattleAnimMove_ShadowBreak[];
+extern const u8 gBattleAnimMove_ShadowEnd[];
+extern const u8 gBattleAnimMove_ShadowDown[];
+extern const u8 gBattleAnimMove_ShadowHalf[];
+extern const u8 gBattleAnimMove_ShadowMist[];
+extern const u8 gBattleAnimMove_ShadowShed[];
+extern const u8 gBattleAnimMove_ShadowHold[];
+extern const u8 gBattleAnimMove_ShadowPanic[];
+extern const u8 gBattleAnimMove_ShadowSky[];
 
 // status animations
 extern const u8 gBattleAnimStatus_Poison[];
@@ -948,6 +966,9 @@ extern const u8 gBattleAnimStatus_Paralysis[];
 extern const u8 gBattleAnimStatus_Freeze[];
 extern const u8 gBattleAnimStatus_Curse[];
 extern const u8 gBattleAnimStatus_Nightmare[];
+extern const u8 gBattleAnimStatus_Shadow[];
+extern const u8 gBattleAnimStatus_EnterReverseMode[];
+extern const u8 gBattleAnimStatus_ReverseMode[];
 
 // general animations
 extern const u8 gBattleAnimGeneral_StatsChange[];
@@ -1003,6 +1024,8 @@ extern const u8 gBattleAnimGeneral_Fog[];
 extern const u8 gBattleAnimGeneral_TeraCharge[];
 extern const u8 gBattleAnimGeneral_TeraActivate[];
 extern const u8 gBattleAnimGeneral_SimpleHeal[];
+extern const u8 gBattleAnimGeneral_ShadowSky[];
+extern const u8 gBattleAnimGeneral_CallReverseMode[];
 
 // special animations
 extern const u8 gBattleAnimSpecial_LevelUp[];
@@ -1013,6 +1036,7 @@ extern const u8 gBattleAnimSpecial_BallThrowWithTrainer[];
 extern const u8 gBattleAnimSpecial_SubstituteToMon[];
 extern const u8 gBattleAnimSpecial_MonToSubstitute[];
 extern const u8 gBattleAnimSpecial_CriticalCaptureBallThrow[];
+extern const u8 gBattleAnimSpecial_SectionUnlock[];
 extern const u8 gBattleAnimSpecial_LevelUpEvolve[];
 
 #endif // GUARD_BATTLE_ANIM_SCRIPTS_H
