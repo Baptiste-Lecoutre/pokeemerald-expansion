@@ -172,6 +172,8 @@ Debug_EventScript_Script_7::
 	end
 
 Debug_EventScript_Script_8::
+	setwildshadowbattle species=SPECIES_MAGIKARP, level=15, item=ITEM_GYARADOSITE, heartValue=0
+	dowildbattle
 	release
 	end
 
