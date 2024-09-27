@@ -18663,11 +18663,9 @@ ShadowShedShatteredWall:
 	end
 
 gBattleAnimMove_ShadowHold::
-	loadspritegfx ANIM_TAG_CHAIN_LINK
-	createvisualtask AnimTask_BlendParticle, 5, ANIM_TAG_CHAIN_LINK, 0, 9, 9, RGB_BLACK
+	loadspritegfx ANIM_TAG_PURPLE_CHAIN
+	createvisualtask AnimTask_BlendParticle, 5, ANIM_TAG_PURPLE_CHAIN, 0, 9, 9, RGB_BLACK
 	monbg ANIM_TARGET
-	createvisualtask AnimTask_ShakeMon, 2, ANIM_TARGET, 3, 0, 10, 1
-	waitforvisualfinish
 	loopsewithpan SE_M_SCRATCH, SOUND_PAN_TARGET, 6, 2
 	createsprite gChainBindingSpriteTemplate, ANIM_TARGET, 4, 0, 16, 0, 1
 	delay 7
