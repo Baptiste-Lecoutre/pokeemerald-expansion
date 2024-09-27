@@ -1135,7 +1135,7 @@ static const union AnimCmd *const sSpriteAnimTable_StatusCondition[] = {
 static const struct CompressedSpriteSheet sStatusIconsSpriteSheet =
 {
     .data = gStatusGfx_Icons,
-    .size = 0x400,
+    .size = 0x480,
     .tag = TAG_MON_STATUS
 };
 static const struct CompressedSpritePalette sStatusIconsSpritePalette =
