@@ -16008,7 +16008,11 @@ static void Cmd_trygivecaughtmonnick(void)
         if (!gPaletteFade.active)
         {
             HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
-            gBattlescriptCurrInstr = cmd->nextInstr;
+            
+            if (CalculatePlayerPartyCount() < PARTY_SIZE)
+                gBattlescriptCurrInstr = cmd->successInstr;
+            else
+                gBattlescriptCurrInstr = cmd->nextInstr;
 
         }
         break;
