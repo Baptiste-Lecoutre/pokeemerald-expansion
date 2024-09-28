@@ -2488,10 +2488,12 @@ static void FreeKeyItemWheelGfx(s16 *data) {
         if (tIconWindow[i] == WINDOW_NONE)
             continue;
         FillWindowPixelBuffer(tIconWindow[i], 0);
-        CopyWindowToVram(tIconWindow[i], COPYWIN_GFX);
+        ClearWindowTilemap(tIconWindow[i]);
+        CopyWindowToVram(tIconWindow[i], COPYWIN_MAP);
         RemoveWindow(tIconWindow[i]);
     }
     SetHBlankCallback(NULL);
+    DisableInterrupts(INTR_FLAG_HBLANK);
 }
 
 static void Task_KeyItemWheel(u8 taskId) {
@@ -2522,7 +2524,7 @@ static void Task_KeyItemWheel(u8 taskId) {
             CopyWindowToVram(j, COPYWIN_FULL);
         }
         SetHBlankCallback(HBlankCB_KeyItemWheel);
-        EnableInterrupts(INTR_FLAG_VBLANK | INTR_FLAG_HBLANK);
+        EnableInterrupts(INTR_FLAG_HBLANK);
         PlaySE(SE_WIN_OPEN);
         // in dark caves, we need to spawn OBJWIN sprites to show the boxes
         tState = (gSaveBlock1Ptr->flashLevel > 1) ? 4 : 1;
@@ -2530,7 +2532,7 @@ static void Task_KeyItemWheel(u8 taskId) {
     }
     case 1: // process input
     {
-        if (JOY_NEW(B_BUTTON)) {
+        if (JOY_NEW(B_BUTTON) || JOY_NEW(SELECT_BUTTON)) {
             PlaySE(SE_SELECT);
             tState = 3; // destroy and unfreeze
             break;
