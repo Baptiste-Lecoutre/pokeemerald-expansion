@@ -1002,9 +1002,10 @@ static const u8 sPartyBoxCurrSelectionPalIds2[] = {97, 103, 104};
 static const u8 sPartyBoxSelectedForActionPalIds2[] = {161, 167, 168};
 static const u8 sPartyBoxNoMonPalIds[] = {17, 27, 28};
 // Shadow Palettes
-static const u8 sPartyBoxShadowPalIds1[] = {31, 47, 31};
-static const u8 sPartyBoxCurrSelectionShadowPalIds[] = {31, 47, 31};
+static const u8 sPartyBoxShadowPalIds1[] = {157, 158, 159};//{31, 47, 31};
+static const u8 sPartyBoxCurrSelectionShadowPalIds1[] = {173, 174, 175};//{31, 47, 31};
 static const u8 sPartyBoxShadowPalIds2[] = {81, 87, 88};
+static const u8 sPartyBoxCurrSelectionShadowPalIds2[] = {170, 171, 172};//{97, 103, 104};
 
 static const u8 *const sActionStringTable[] =
 {
