@@ -161,6 +161,7 @@ BattleScript_SuccessBallThrow::
 	incrementgamestat GAME_STAT_POKEMON_CAPTURES
 	printstring STRINGID_GOTCHAPKMNCAUGHTPLAYER
 	jumpifbyte CMP_NOT_EQUAL, sEXP_CATCH, TRUE, BattleScript_TryPrintCaughtMonInfo
+	jumpifbattletype BATTLE_TYPE_RAID, BattleScript_TryPrintCaughtMonInfo
 	setbyte sGIVEEXP_STATE, 0
 	getexp BS_TARGET
 	sethword gBattle_BG2_X, 0
@@ -176,6 +177,10 @@ BattleScript_TryNicknameCaughtMon::
 	waitstate
 	setbyte gBattleCommunication, 0
 	trygivecaughtmonnick BattleScript_GiveCaughtMonEnd
+	printstring	STRINGID_SENDWHICHMONTOPC
+	waitstate
+	setbyte gBattleCommunication, 0
+	trychoosemontosendtopc BattleScript_GiveCaughtMonEnd
 	givecaughtmon
 	printfromtable gCaughtMonStringIds
 	waitmessage B_WAIT_TIME_LONG
@@ -246,6 +251,18 @@ BattleScript_TrainerBallBlock::
 	printstring STRINGID_TRAINERBLOCKEDBALL
 	waitmessage B_WAIT_TIME_LONG
 	printstring STRINGID_DONTBEATHIEF
+	waitmessage B_WAIT_TIME_LONG
+	finishaction
+
+BattleScript_RaidBallBlock::
+	waitmessage B_WAIT_TIME_LONG
+	printstring STRINGID_PKMNISTOOSTRONG
+	waitmessage B_WAIT_TIME_LONG
+	finishaction
+
+BattleScript_GhostBallDodge::
+	waitmessage B_WAIT_TIME_LONG
+	printstring STRINGID_ITDODGEDBALL
 	waitmessage B_WAIT_TIME_LONG
 	finishaction
 

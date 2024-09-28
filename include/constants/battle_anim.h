@@ -588,8 +588,18 @@
 #define B_ANIM_SIMPLE_HEAL              52
 #define B_ANIM_SHADOW_SKY_CONTINUES     53
 #define B_ANIM_CALL_REVERSE_MODE        54
+#define B_ANIM_RAID_STORM_BREWS         55
+#define B_ANIM_RAID_SHIELD_APPEARED     56
+#define B_ANIM_RAID_SHIELD_DISAPPEARED  57
+#define B_ANIM_RAID_BARRIER_BROKEN      58
+#define B_ANIM_RAID_SHOCKWAVE           59
+#define B_ANIM_RAID_BOSS_EXPLOSION      60
+#define B_ANIM_RAID_SHOCKWAVE_FOCUS     61
+#define B_ANIM_MON_SCARED               62
+#define B_ANIM_GHOST_GET_OUT            63
+#define B_ANIM_GO_GOGGLED               64
 
-#define NUM_B_ANIMS_GENERAL             55
+#define NUM_B_ANIMS_GENERAL             65
 
 // special animations table (sBattleAnims_Special)
 #define B_ANIM_LVL_UP                   0

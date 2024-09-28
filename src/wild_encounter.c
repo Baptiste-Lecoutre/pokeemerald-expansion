@@ -14,6 +14,7 @@
 #include "tv.h"
 #include "link.h"
 #include "script.h"
+#include "follow_me.h"
 #include "battle_debug.h"
 #include "battle_pike.h"
 #include "battle_pyramid.h"
@@ -42,6 +43,7 @@ enum {
     WILD_AREA_WATER,
     WILD_AREA_ROCKS,
     WILD_AREA_FISHING,
+    WILD_AREA_HONEY,
 };
 
 #define WILD_CHECK_REPEL    (1 << 0)
@@ -62,7 +64,6 @@ static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildM
 static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u16 ability, u8 *monIndex);
 #endif
 static bool8 IsAbilityAllowingEncounter(u8 level);
-static u8 GetMedianLevelOfPlayerParty(void);
 
 EWRAM_DATA static u8 sWildEncountersDisabled = 0;
 EWRAM_DATA static u32 sFeebasRngValue = 0;
@@ -254,6 +255,24 @@ u8 ChooseWildMonIndex_WaterRock(void)
     return wildMonIndex;
 }
 
+static u8 ChooseWildMonIndex_Honey(void)
+{
+    u8 rand = Random() % ENCOUNTER_CHANCE_HONEY_MONS_TOTAL;
+
+    if (rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_0)
+        return 0;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_0 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_1)
+        return 1;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_1 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_2)
+        return 2;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_2 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_3)
+        return 3;
+    else if (rand >= ENCOUNTER_CHANCE_HONEY_MONS_SLOT_3 && rand < ENCOUNTER_CHANCE_HONEY_MONS_SLOT_4)
+        return 4;
+    else
+        return 5;
+}
+
 // FISH_WILD_COUNT
 static u8 ChooseWildMonIndex_Fishing(u8 rod)
 {
@@ -307,7 +326,7 @@ static u8 ChooseWildMonIndex_Fishing(u8 rod)
 }
 
 // Used to scale wild Pokemon levels
-static u8 GetMedianLevelOfPlayerParty(void)
+u8 GetMedianLevelOfPlayerParty(void)
 {
     u8 i, j, temp, medianLevel, medianIndex = 0;
     u8 playerPartyCount = CalculatePlayerBattlerPartyCount();
@@ -578,6 +597,9 @@ static bool8 TryGenerateWildMon(const struct WildPokemonInfo *wildMonInfo, u8 ar
     case WILD_AREA_ROCKS:
         wildMonIndex = ChooseWildMonIndex_WaterRock();
         break;
+    case WILD_AREA_HONEY:
+        wildMonIndex = ChooseWildMonIndex_Honey();
+        break;
     }
 
     level = ChooseWildMonLevel(wildMonInfo->wildPokemon, wildMonIndex, area);
@@ -611,6 +633,8 @@ static bool8 SetUpMassOutbreakEncounter(u8 flags)
     CreateWildMon(gSaveBlock1Ptr->outbreakPokemonSpecies, gSaveBlock1Ptr->outbreakPokemonLevel);
     for (i = 0; i < MAX_MON_MOVES; i++)
         SetMonMoveSlot(&gEnemyParty[0], gSaveBlock1Ptr->outbreakPokemonMoves[i], i);
+    if (gSaveBlock1Ptr->outbreakPokemonItem != ITEM_NONE)
+        SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &gSaveBlock1Ptr->outbreakPokemonItem);
 
     return TRUE;
 }
@@ -848,13 +872,38 @@ void RockSmashWildEncounter(void)
         else if (WildEncounterCheck(wildPokemonInfo->encounterRate, TRUE) == TRUE
          && TryGenerateWildMon(wildPokemonInfo, WILD_AREA_ROCKS, WILD_CHECK_REPEL | WILD_CHECK_KEEN_EYE) == TRUE)
         {
-            BattleSetup_StartWildBattle();
-            gSpecialVar_Result = TRUE;
+            if (TryDoDoubleWildBattle())
+            {
+                struct Pokemon mon1 = gEnemyParty[0];
+                TryGenerateWildMon(wildPokemonInfo, WILD_AREA_ROCKS, WILD_CHECK_REPEL | WILD_CHECK_KEEN_EYE);
+                gEnemyParty[1] = mon1;
+                BattleSetup_StartDoubleWildBattle();
+                gSpecialVar_Result = TRUE;
+            }
+            else
+            {
+                BattleSetup_StartWildBattle();
+                gSpecialVar_Result = TRUE;
+            }
         }
         else
         {
             gSpecialVar_Result = FALSE;
         }
+    }
+    else
+    {
+        gSpecialVar_Result = FALSE;
+    }
+}
+
+void BerryWildEncounter(u8 headerId)
+{
+    if (gBerryTreeWildMonHeaders[headerId].landMonsInfo != NULL)
+    {
+        TryGenerateWildMon(gBerryTreeWildMonHeaders[headerId].landMonsInfo, WILD_AREA_LAND, 0);
+        BattleSetup_StartWildBattle();
+        gSpecialVar_Result = TRUE;
     }
     else
     {
@@ -1130,7 +1179,7 @@ static bool8 TryGetRandomWildMonIndexByType(const struct WildPokemon *wildMon, u
 
 #include "data.h"
 
-static u8 GetMaxLevelOfSpeciesInWildTable(const struct WildPokemon *wildMon, u16 species, u8 area)
+UNUSED static u8 GetMaxLevelOfSpeciesInWildTable(const struct WildPokemon *wildMon, u16 species, u8 area)
 {
     u8 i, maxLevel = 0, numMon = 0;
 
@@ -1190,9 +1239,22 @@ static void ApplyCleanseTagEncounterRateMod(u32 *encRate)
         *encRate = *encRate * 2 / 3;
 }
 
+bool32 CheckDevonScopeInHauntedMansion(u16 mapGroup, u16 mapNum)
+{
+    if (mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
+     && (u16)(mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
+        return TRUE;
+    else
+        return FALSE;
+}
+
 bool8 TryDoDoubleWildBattle(void)
 {
-    if (GetSafariZoneFlag()
+    if (CheckDevonScopeInHauntedMansion(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))
+        return FALSE;
+    else if (GetFollowerPartnerId() && FOLLOWER_PARTNER_WILD_BATTLES == TRUE && FOLLOWER_WILD_BATTLE_VS_2 == TRUE)
+        return TRUE;
+    else if (GetSafariZoneFlag()
       || (B_DOUBLE_WILD_REQUIRE_2_MONS == TRUE && GetMonsStateToDoubles() != PLAYER_HAS_TWO_USABLE_MONS))
         return FALSE;
     else if (B_FLAG_FORCE_DOUBLE_WILD != 0 && FlagGet(B_FLAG_FORCE_DOUBLE_WILD))
@@ -1232,4 +1294,14 @@ bool8 StandardWildEncounter_Debug(void)
 
     DoStandardWildBattle_Debug();
     return TRUE;
+}
+
+void HoneyWildEncounter(void)
+{
+    u16 headerId = GetCurrentMapWildMonHeaderId();
+
+    const struct WildPokemonInfo *wildPokemonInfo = gWildMonHeaders[headerId].honeyMonsInfo;
+
+    TryGenerateWildMon(wildPokemonInfo, WILD_AREA_HONEY, 0);
+    BattleSetup_StartWildBattle();
 }

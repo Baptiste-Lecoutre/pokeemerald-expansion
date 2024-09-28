@@ -147,7 +147,7 @@
       "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_General",
-      "secondary_tileset": "gTileset_Mauville",
+      "secondary_tileset": "gTileset_Verdanturf",
       "border_filepath": "data/layouts/VerdanturfTown/border.bin",
       "blockdata_filepath": "data/layouts/VerdanturfTown/map.bin"
     },
@@ -4445,7 +4445,7 @@
       "id": "LAYOUT_ASHEN_WOODS",
       "name": "AshenWoods_Layout",
       "width": 36,
-      "height": 46,
+      "height": 52,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Lavaridge",
       "border_filepath": "data/layouts/AshenWoods/border.bin",
@@ -4477,7 +4477,7 @@
       "width": 15,
       "height": 17,
       "primary_tileset": "gTileset_General",
-      "secondary_tileset": "gTileset_Mauville",
+      "secondary_tileset": "gTileset_Verdanturf",
       "border_filepath": "data/layouts/VerdanturfMeadow/border.bin",
       "blockdata_filepath": "data/layouts/VerdanturfMeadow/map.bin"
     },
@@ -4650,6 +4650,136 @@
       "secondary_tileset": "gTileset_Mossdeep",
       "border_filepath": "data/layouts/Route125_MirageIsland/border.bin",
       "blockdata_filepath": "data/layouts/Route125_MirageIsland/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE110_CAVE_OF_SHOCK",
+      "name": "Route110_CaveOfShock_Layout",
+      "width": 23,
+      "height": 40,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Mauville",
+      "border_filepath": "data/layouts/Route110_CaveOfShock/border.bin",
+      "blockdata_filepath": "data/layouts/Route110_CaveOfShock/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_OF_SHOCK",
+      "name": "CaveOfShock_Layout",
+      "width": 17,
+      "height": 33,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveOfShock/border.bin",
+      "blockdata_filepath": "data/layouts/CaveOfShock/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_METEOR_FALLS_B1F_2R",
+      "name": "Underwater_MeteorFalls_B1F_2R_Layout",
+      "width": 11,
+      "height": 18,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Underwater",
+      "border_filepath": "data/layouts/Underwater_MeteorFalls_B1F_2R/border.bin",
+      "blockdata_filepath": "data/layouts/Underwater_MeteorFalls_B1F_2R/map.bin"
+    },
+    {
+      "id": "LAYOUT_METEOR_FALLS_DRACO_CHAMBER",
+      "name": "MeteorFalls_DracoChamber_Layout",
+      "width": 17,
+      "height": 33,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/MeteorFalls_DracoChamber/border.bin",
+      "blockdata_filepath": "data/layouts/MeteorFalls_DracoChamber/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_METEOR_FALLS_DRACO_CHAMBER",
+      "name": "Underwater_MeteorFalls_DracoChamber_Layout",
+      "width": 17,
+      "height": 33,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Underwater",
+      "border_filepath": "data/layouts/Underwater_MeteorFalls_DracoChamber/border.bin",
+      "blockdata_filepath": "data/layouts/Underwater_MeteorFalls_DracoChamber/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANOR",
+      "name": "HauntedManor_Layout",
+      "width": 28,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Rustboro",
+      "border_filepath": "data/layouts/HauntedManor/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedManor/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANSION_1F",
+      "name": "HauntedMansion_1F_Layout",
+      "width": 21,
+      "height": 14,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_InsideShip",
+      "border_filepath": "data/layouts/HauntedMansion_1F/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedMansion_1F/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANSION_2F",
+      "name": "HauntedMansion_2F_Layout",
+      "width": 21,
+      "height": 14,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_InsideShip",
+      "border_filepath": "data/layouts/HauntedMansion_2F/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedMansion_2F/map.bin"
+    },
+    {
+      "id": "LAYOUT_HAUNTED_MANSION_3F",
+      "name": "HauntedMansion_3F_Layout",
+      "width": 13,
+      "height": 14,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_InsideShip",
+      "border_filepath": "data/layouts/HauntedMansion_3F/border.bin",
+      "blockdata_filepath": "data/layouts/HauntedMansion_3F/map.bin"
+    },
+    {
+      "id": "LAYOUT_METEOR_FALLS_B2F",
+      "name": "MeteorFalls_B2F_Layout",
+      "width": 33,
+      "height": 46,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MeteorFalls",
+      "border_filepath": "data/layouts/MeteorFalls_B2F/border.bin",
+      "blockdata_filepath": "data/layouts/MeteorFalls_B2F/map.bin"
+    },
+    {
+      "id": "LAYOUT_METEOR_FALLS_B3F",
+      "name": "MeteorFalls_B3F_Layout",
+      "width": 19,
+      "height": 12,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_MeteorFalls",
+      "border_filepath": "data/layouts/MeteorFalls_B3F/border.bin",
+      "blockdata_filepath": "data/layouts/MeteorFalls_B3F/map.bin"
+    },
+    {
+      "id": "LAYOUT_FIERY_PATH2",
+      "name": "FieryPath2_Layout",
+      "width": 29,
+      "height": 38,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Lavaridge",
+      "border_filepath": "data/layouts/FieryPath2/border.bin",
+      "blockdata_filepath": "data/layouts/FieryPath2/map.bin"
+    },
+    {
+      "id": "LAYOUT_ROUTE109_SOUTH",
+      "name": "Route109_South_Layout",
+      "width": 48,
+      "height": 50,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Slateport",
+      "border_filepath": "data/layouts/Route109_South/border.bin",
+      "blockdata_filepath": "data/layouts/Route109_South/map.bin"
     }
   ]
 }

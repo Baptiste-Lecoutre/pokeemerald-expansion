@@ -63,7 +63,7 @@
 #define BAG_ITEMS_COUNT 40
 #define BAG_KEYITEMS_COUNT 30
 #define BAG_POKEBALLS_COUNT 16
-#define BAG_TMHM_COUNT 108
+#define BAG_TMHM_COUNT 108//64
 #define BAG_BERRIES_COUNT 46
 #define BAG_MEDICINE_COUNT 34
 #define BAG_BATTLEITEMS_COUNT 47
@@ -81,6 +81,7 @@
 #define GIFT_RIBBONS_COUNT 11
 #define SAVED_TRENDS_COUNT 5
 #define PYRAMID_BAG_ITEMS_COUNT 10
+#define MAX_REGISTERED_ITEMS 4
 #define ROAMER_COUNT 1 // Number of maximum concurrent active roamers
 
 // Number of facilities for Ranking Hall.
@@ -151,9 +152,17 @@
 
 #define OPTIONS_SOUND_MONO 0
 #define OPTIONS_SOUND_STEREO 1
+#define OPTIONS_SOUND_OFF 2
 
 #define OPTIONS_BATTLE_STYLE_SHIFT 0
 #define OPTIONS_BATTLE_STYLE_SET 1
+
+#define OPTIONS_BATTLE_SCENE_1X 0
+#define OPTIONS_BATTLE_SCENE_2X 1
+#define OPTIONS_BATTLE_SCENE_3X 2
+#define OPTIONS_BATTLE_SCENE_4X 3
+#define OPTIONS_BATTLE_SCENE_DISABLED   4
+#define OPTIONS_BATTLE_SCENE_COUNT  5
 
 #define DIR_NONE        0
 #define DIR_SOUTH       1
@@ -179,18 +188,22 @@
 #define CONNECTION_DIVE     5
 #define CONNECTION_EMERGE   6
 
-#define	RED_COSTUME					0
-#define	LEAF_COSTUME				1
-#define	ETHAN_COSTUME				2
-#define	LYRA_COSTUME				3
-#define	KRIS_COSTUME				4
-#define BRENDAN_COSTUME       		5
-#define MAY_COSTUME       			6
-#define	LUCAS_COSTUME				7
-#define	DAWN_COSTUME				8
-#define	LUCAS_PLATINUM_COSTUME		9
-#define	DAWN_PLATINUM_COSTUME		10
-#define COSTUME_COUNT   			11
+/*#define RSE_COSTUME 0
+#define FRLG_COSTUME 1
+#define HGSS_COSTUME 2
+#define DPEARL_COSTUME 3
+#define PLATINUM_COSTUME 4
+#define LGPE_COSTUME 5
+#define COSTUME_COUNT 6*/
+
+#define GREEN_COSTUME 0
+#define RED_COSTUME 1
+#define BLUE_COSTUME 2
+#define YELLOW_COSTUME 3
+#define COSTUME_COUNT 4
+
+#define SIDEWAYS_STAIRS_IMPLEMENTED         FALSE
+#define POST_BATTLE_FOLLOWER_FIX            FALSE   //if you experience the follower de-syncing with the player after battle, set to TRUE
 
 #if TESTING
 #include "config/test.h"

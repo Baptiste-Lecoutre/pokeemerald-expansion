@@ -1897,6 +1897,65 @@
 	.2byte \species
 	.endm
 
+@ Prepares to start a wild battle against a 'species' at 'level' holding 'item'.
+	@ If 'species2' is something other than SPECIES_NONE, then the battle is a double battle
+	@ that is also against 'species2' at 'level2' holding 'item2'.
+	@ Running this command will not affect normal wild battles. You start the prepared battle with multi_wild.
+	@ If the player only has one Pokemon, a scripted double battle will be buggy.
+	.macro setsootopolisbattle species:req, level:req, item=ITEM_NONE, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE
+	.byte 0xe8
+	.2byte \species
+	.byte \level
+	.2byte \item
+	.2byte \species2
+	.byte \level2
+	.2byte \item2
+	.endm
+
+@NPC follower macros
+    @ Sets an NPC up to follow the player.
+	@ If you want to specify a battle partner without specifying a custom script, you can set the script parameter to 0.
+    .macro setfollower localId:req, flags:req, script, battlePartner
+    checkfollower
+	goto_if_eq VAR_RESULT, TRUE, 1f
+	.ifnb \script
+		.if \script == 0
+			.set setScript, FALSE
+		.else
+			loadword 0, \script
+			.set setScript, TRUE
+		.endif
+	.else
+		.set setScript, FALSE
+	.endif
+	.byte 0xe9
+    .byte \localId
+    .2byte \flags
+	.byte setScript
+	.ifb \battlePartner
+		.set battlePartner, 0
+		.2byte battlePartner
+	.else
+		.2byte \battlePartner
+	.endif
+	callnative UpdateFollowingPokemon
+	1:
+    .endm
+    
+    @ Remove the following NPC (assumes there will only ever be one)
+    .macro destroyfollower
+    .byte 0xea
+    .endm
+    
+    @ Makes the player and follower face one another
+    .macro facefollower
+    .byte 0xeb
+    .endm
+    
+    @ Checks if you have a follower. returns the result to VAR_RESULT
+    .macro checkfollower
+    .byte 0xec
+    .endm
 
 	@ As setwildbattle, but with one extra arg for each species to determine shadow mon values.
 	.macro setwildshadowbattle species:req, level:req, item=ITEM_NONE, heartValue:req, species2=SPECIES_NONE, level2=0, item2=ITEM_NONE, heartValue2=0
@@ -2106,6 +2165,16 @@
 	dofieldeffect FLDEFF_SPARKLE
 	.endm
 
+	@ Does a ground dust field effect (e.g. when a NPC appears, like when landing after a jump) at the given coordinates.
+	@ +7 corresponds to MAP_OFFSET, which I can not use in the C functions just like the sparkle field effect
+	.macro dofieldeffectgrounddust x:req, y:req, elevation: req, priority:req
+	setfieldeffectargument 0, \x + 7
+	setfieldeffectargument 1, \y + 7
+	setfieldeffectargument 2, \elevation
+	setfieldeffectargument 3, \priority
+	dofieldeffect FLDEFF_DUST
+	.endm
+
 	@ Prints a braille message, waits for an A or B press, then closes the message.
 	.macro braillemsgbox text:req
 	braillemessage \text
@@ -2199,6 +2268,18 @@
 	special TrySpecialOverworldEvo
 	.endm
 
+	@ Sets up a Raid Battle with fixed data.
+	@ This is designed for testing, but can be used to create event raids too!
+	.macro preparefixedraid type:req, rank:req, species:req, level:req, item=ITEM_NONE, teraType = TYPE_NONE
+	setflag FLAG_SYS_SPECIAL_RAID_BATTLE
+	setvar VAR_0x8001, \type
+	setvar VAR_0x8002, \rank
+	setvar VAR_0x8003, \species
+	setvar VAR_0x8007, \level
+	setvar VAR_0x8008, \item
+	setvar VAR_0x8009, \teraType
+	.endm
+	
 	.macro ai_vs_ai_battle trainer1:req, trainer2:req
 	setflag B_FLAG_AI_VS_AI_BATTLE
 	setvar VAR_0x8004, \trainer1
@@ -2346,6 +2427,14 @@
 	@ When OW_USE_FAKE_RTC and OW_FLAG_PAUSE_TIME is assigned, this macro will resume the flow of time if paused, and stop the flow of time otherwise.
 	.macro togglefakertc
 	callnative Script_ToggleFakeRtc
+	.endm
+
+	@ changes the movement type of an object event. Make sure VAR_0x8005 and 0x8006 are not in conflict with the reste of a script.
+	@ To be used surrounded by a lock & release.
+	.macro setobjecteventmovementtype localId:req, movementType:req
+	setvar VAR_0x8005, \localId
+	setvar VAR_0x8006, \movementType
+	special SetObjectEventMovementType
 	.endm
 
 	@ ============================ @

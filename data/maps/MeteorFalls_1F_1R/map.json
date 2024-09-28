@@ -80,7 +80,7 @@
       "flag": "FLAG_HIDE_METEOR_FALLS_TEAM_MAGMA"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_F",
       "x": 12,
       "y": 21,
       "elevation": 3,
@@ -212,6 +212,20 @@
       "y": 2,
       "elevation": 0,
       "dest_map": "MAP_METEOR_FALLS_STEVENS_CAVE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 20,
+      "y": 14,
+      "elevation": 0,
+      "dest_map": "MAP_METEOR_FALLS_DRACO_CHAMBER",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 27,
+      "y": 34,
+      "elevation": 0,
+      "dest_map": "MAP_METEOR_FALLS_B2F",
       "dest_warp_id": "0"
     }
   ],

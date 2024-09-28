@@ -10,11 +10,14 @@
 #include "map_name_popup.h"
 #include "menu.h"
 #include "menu_helpers.h"
+#include "overworld.h"
 #include "palette.h"
 #include "pokedex.h"
 #include "pokemon_icon.h"
 #include "region_map.h"
+#include "scanline_effect.h"
 #include "sound.h"
+#include "start_menu.h"
 #include "string_util.h"
 #include "strings.h"
 #include "script.h"
@@ -47,7 +50,6 @@ struct Menu
     bool8 APressMuted;
 };
 
-static u16 AddWindowParameterized(u8, u8, u8, u8, u8, u8, u16);
 static void WindowFunc_DrawStandardFrame(u8, u8, u8, u8, u8, u8);
 static void WindowFunc_DrawSignFrame(u8, u8, u8, u8, u8, u8);
 static inline void *GetWindowFunc_DialogueFrame(void);
@@ -73,6 +75,11 @@ static EWRAM_DATA u16 sTempTileDataBufferIdx = 0;
 static EWRAM_DATA void *sTempTileDataBuffer[0x20] = {NULL};
 
 const u16 gStandardMenuPalette[] = INCBIN_U16("graphics/interface/std_menu.gbapal");
+
+const struct ScanlineEffectParams gPopUpScanlineEffectParams =
+{
+    (void *)REG_ADDR_BG0VOFS, SCANLINE_EFFECT_DMACNT_16BIT, 1
+};
 
 static const u8 sTextSpeedFrameDelays[] =
 {
@@ -134,6 +141,7 @@ static const struct MenuInfoIcon sMenuInfoIcons[] =
     [TYPE_DRAGON + 1]   = { 32, 12, 0xA0 },
     [TYPE_DARK + 1]     = { 32, 12, 0x8C },
     [TYPE_FAIRY + 1]    = { 32, 12, 0x4  },
+    [TYPE_STELLAR + 1]  = { 32, 12, 0x8  },
     [MENU_INFO_ICON_TYPE]      = { 42, 12, 0xA8 },
     [MENU_INFO_ICON_POWER]     = { 42, 12, 0xC0 },
     [MENU_INFO_ICON_ACCURACY]  = { 42, 12, 0xC8 },
@@ -609,7 +617,12 @@ u8 GetPlayerTextSpeedDelay(void)
 u8 AddStartMenuWindow(u8 numActions)
 {
     if (sStartMenuWindowId == WINDOW_NONE)
-        sStartMenuWindowId = AddWindowParameterized(0, 22, 1, 7, (numActions * 2) + 2, 15, 0x139);
+    {
+        if (gShouldStartMenuIconsBePrinted)
+            sStartMenuWindowId = AddWindowParameterized(0, 22 - ICON_WINDOW_OFFSET, 1, 7 + ICON_WINDOW_OFFSET, (numActions * 2) + 4, 15, 0x139);
+        else
+            sStartMenuWindowId = AddWindowParameterized(0, 22, 1, 7, (numActions * 2) + 2, 15, 0x139);
+    }
     return sStartMenuWindowId;
 }
 
@@ -1065,8 +1078,24 @@ void RedrawMenuCursor(u8 oldPos, u8 newPos)
 
     width = GetMenuCursorDimensionByFont(sMenu.fontId, 0);
     height = GetMenuCursorDimensionByFont(sMenu.fontId, 1);
-    FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos + sMenu.top, width, height);
-    AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_SelectorArrow3, sMenu.left, sMenu.optionHeight * newPos + sMenu.top, 0, 0);
+    
+    // The first 2 conditionals have changes specially made for the expanded start menu
+    if (!IsAStartMenuIconAtPosition(newPos) && gShouldStartMenuIconsBePrinted)
+    {
+        FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos, width, height + 4);
+        AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_SelectorArrow3, sMenu.left, (sMenu.optionHeight * newPos) + (newPos * 3), 0, 0);
+    }
+    else if (IsAStartMenuIconAtPosition(newPos) && gShouldStartMenuIconsBePrinted)
+    {
+        FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos, width, height + 4);
+        // Don't Print the cursor if there is already an option
+        AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_Space, sMenu.left, sMenu.optionHeight * newPos + sMenu.top, 0, 0);
+    }
+    else
+    {
+        FillWindowPixelRect(sMenu.windowId, PIXEL_FILL(1), sMenu.left, sMenu.optionHeight * oldPos + sMenu.top, width, height);
+        AddTextPrinterParameterized(sMenu.windowId, sMenu.fontId, gText_SelectorArrow3, sMenu.left, sMenu.optionHeight * newPos + sMenu.top, 0, 0);
+    }
 }
 
 u8 Menu_MoveCursor(s8 cursorDelta)
@@ -1712,8 +1741,10 @@ void PrintMenuTable(u8 windowId, u8 itemCount, const struct MenuAction *menuActi
     u32 i;
 
     for (i = 0; i < itemCount; i++)
-        AddTextPrinterParameterized(windowId, FONT_NORMAL, menuActions[i].text, 8, (i * 16) + 1, TEXT_SKIP_DRAW, NULL);
-
+    {
+        StringExpandPlaceholders(gStringVar4, menuActions[i].text);
+        AddTextPrinterParameterized(windowId, FONT_NORMAL, gStringVar4, 8, (i * 16) + 1, TEXT_SKIP_DRAW, NULL);
+    }
     CopyWindowToVram(windowId, COPYWIN_GFX);
 }
 
@@ -2080,6 +2111,37 @@ void AddTextPrinterParameterized4(u8 windowId, u8 fontId, u8 left, u8 top, u8 le
     AddTextPrinter(&printer, speed, NULL);
 }
 
+void AddTextPrinterParameterized4Signed(u8 windowId, u8 fontId, u8 left, s8 top, u8 letterSpacing, u8 lineSpacing, const u8 *color, s8 speed, const u8 *str)
+{
+    struct TextPrinterTemplate printer;
+
+    printer.currentChar = str;
+    printer.windowId = windowId;
+    printer.fontId = fontId;
+    printer.x = left;
+    printer.currentX = printer.x;
+
+    if (top < 0)
+    {
+        printer.y = top * -1;
+        printer.unk = 1;
+    }
+    else
+    {
+        printer.y = top;
+        printer.unk = 0;
+    }
+
+    printer.currentY = printer.y;
+    printer.letterSpacing = letterSpacing;
+    printer.lineSpacing = lineSpacing;
+    printer.fgColor = color[1];
+    printer.bgColor = color[0];
+    printer.shadowColor = color[2];
+
+    AddTextPrinter(&printer, speed, NULL);
+}
+
 void AddTextPrinterParameterized5(u8 windowId, u8 fontId, const u8 *str, u8 left, u8 top, u8 speed, void (*callback)(struct TextPrinterTemplate *, u16), u8 letterSpacing, u8 lineSpacing)
 {
     struct TextPrinterTemplate printer;
@@ -2300,8 +2362,9 @@ void HBlankCB_DoublePopupWindow(void)
     if (scanline < 80 || scanline > 160)
     {
         REG_BG0VOFS = offset;
+
         if(OW_POPUP_BW_ALPHA_BLEND && !IsWeatherAlphaBlend())
-            REG_BLDALPHA = BLDALPHA_BLEND(15, 5);
+            REG_BLDALPHA = (gTimeOfDay == TIME_OF_DAY_NIGHT) ? BLDALPHA_BLEND(12, 12) : BLDALPHA_BLEND(7, 12); // 15, 5
     }
     else
     {

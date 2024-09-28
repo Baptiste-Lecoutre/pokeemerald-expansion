@@ -8,7 +8,7 @@ Route109_MapScripts::
 	.byte 0
 
 Route109_OnTransition::
-	goto_if_defeated TRAINER_MISTY, Route109_EventScript_HideMisty
+	call_if_defeated TRAINER_MISTY, Route109_EventScript_HideMisty
 	end
 
 Route109_EventScript_HideMisty::

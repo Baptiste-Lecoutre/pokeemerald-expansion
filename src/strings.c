@@ -119,11 +119,12 @@ const u8 gText_IdNumberSlash[] = _("IDNo. /"); // Unused
 const u8 gText_Name[] = _("Name");
 const u8 gText_IDNumber[] = _("IDNo.");
 const u8 gText_BirchInTrouble[] = _("Prof. Birch is in trouble!\nRelease a Pokémon and rescue him!");
-const u8 gText_ConfirmStarterChoice[] = _("You can change pocket using {L_BUTTON}{R_BUTTON}.\nDo you choose this Pokémon?");
+const u8 gText_ConfirmStarterChoice[] = _("Do you choose this Pokémon?");
 const u8 gText_Pokemon4[] = _("Pokémon"); // Unused
 const u8 gText_FlyToWhere[] = _("Fly to where?");
 const u8 gMenuText_Use[] = _("Use");
 const u8 gMenuText_Toss[] = _("Toss");
+const u8 gText_FieldMoves[] = _("Field Moves");
 const u8 gMenuText_Register[] = _("Register");
 const u8 gMenuText_Give[] = _("Give");
 const u8 gMenuText_CheckTag[] = _("Check tag");
@@ -176,6 +177,7 @@ const u8 gText_TooImportantToToss[] = _("That's much too\nimportant to toss\nout
 const u8 gText_TossHowManyVar1s[] = _("Toss out how many\n{STR_VAR_1}?");
 const u8 gText_ThrewAwayVar2Var1s[] = _("Threw away {STR_VAR_2}\n{STR_VAR_1}.");
 const u8 gText_ConfirmTossItems[] = _("Is it okay to\nthrow away {STR_VAR_2}\n{STR_VAR_1}?");
+const u8 gText_PressAnyDpadKey[] = _("Press any {DPAD_NONE} key\nto register item\nin that slot.");
 const u8 gText_DadsAdvice[] = _("Dad's advice…\n{PLAYER}, there's a time and place for\leverything!{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantDismountBike[] = _("You can't dismount your bike here.{PAUSE_UNTIL_PRESS}");
 const u8 gText_ItemFinderNearby[] = _("Huh?\nThe Itemfinder's responding!\pThere's an item buried around here!{PAUSE_UNTIL_PRESS}");
@@ -425,6 +427,8 @@ const u8 gText_PkmnSkills[] = _("Pokémon skills");
 const u8 gText_BattleMoves[] = _("Battle moves");
 const u8 gText_ContestMoves[] = _("Contest moves");
 const u8 gText_Info[] = _("Info");
+const u8 gText_PkmnIV[] = _("IVs");
+const u8 gText_PkmnEV[] = _("EVs");
 const u8 gText_EggWillTakeALongTime[] = _("It looks like this Egg will\ntake a long time to hatch.");
 const u8 gText_EggWillTakeSomeTime[] = _("What will hatch from this?\nIt will take some time.");
 const u8 gText_EggWillHatchSoon[] = _("It moves occasionally.\nIt should hatch soon.");
@@ -1263,7 +1267,7 @@ const u8 gText_SmallDot[] = _("·");
 const u8 gText_LargeDot[] = _("{EMOJI_CIRCLE}");
 const u8 gText_PageNav[] = _("{L_BUTTON}{R_BUTTON} PAGE");
 const u8 gText_TextSpeed[] = _("Text speed");
-const u8 gText_BattleScene[] = _("Battle scene");
+const u8 gText_BattleScene[] = _("Battle speed up");
 const u8 gText_BattleStyle[] = _("Battle style");
 const u8 gText_Sound[] = _("Sound");
 const u8 gText_Frame[] = _("Frame");
@@ -1298,6 +1302,7 @@ const u8 gText_FishReeling[] = _("Fish reeling");
 const u8 gText_FastEggHatch[] = _("Fast egg hatch");
 const u8 gText_FastEvoScene[] = _("Fast evo scene");
 const u8 gText_PokemonAnim[] = _("Pokemon anim");
+const u8 gText_FollowerPokemon[] = _("Follower Pokemon");
 const u8 gText_ExpTeamMod[] = _("Exp. modulation");
 const u8 gText_ExpMultiplier[] = _("Exp. multiplier");
 const u8 gText_PreventEvolution[] = _("Prevent evolution");
@@ -1340,7 +1345,7 @@ const u8 gText_MenuPokemon[] = _("Pokémon");
 const u8 gText_MenuBag[] = _("Bag");
 const u8 gText_MenuPokenav[] = _("PokéNav");
 const u8 gText_MenuPlayer[] = _("{PLAYER}");
-const u8 gText_MenuSave[] = _("Save {R_BUTTON}");
+const u8 gText_MenuSave[] = _("Save {SELECT_BUTTON}");
 const u8 gText_MenuOption[] = _("Option");
 const u8 gText_MenuExit[] = _("Exit");
 const u8 gText_MenuRetire[] = _("Retire");
@@ -1584,6 +1589,7 @@ const u8 gText_Anna[] = _("Anna");
 const u8 gText_ClearAllSaveData[] = _("Clear all save data areas?");
 const u8 gText_ClearingData[] = _("Clearing data…\nPlease wait.");
 const u8 gText_IsThisTheCorrectTime[] = _("Is this the correct time?");
+const u8 gText_TimeCanBeChangedAgain[] = _("Clock can be reset by pressing Start");
 const u8 gText_Confirm3[] = _("Confirm");
 const u8 gText_Cancel4[] = _("Cancel");
 const u8 gText_CommStandbyAwaitingOtherPlayer[] = _("Communication standby…\nAwaiting another player to choose.");
@@ -1875,10 +1881,16 @@ const u8 gText_TutorMoveSet6[] = _("Feather Badge");
 const u8 gText_TutorMoveSet7[] = _("Mind Badge");
 
 // Costumes
-const u8 gText_FirstDrawer[] = _("First");
-const u8 gText_SecondDrawer[] = _("Second");
-const u8 gText_ThirdDrawer[] = _("Third");
-const u8 gText_FourthDrawer[] = _("Fourth");
+//const u8 gText_FirstDrawer[] = _("Hoenn");
+//const u8 gText_SecondDrawer[] = _("Kanto");
+//const u8 gText_ThirdDrawer[] = _("Johto");
+//const u8 gText_FourthDrawer[] = _("Sinnoh");
+//const u8 gText_FifthDrawer[] = _("Hisui");
+//const u8 gText_SixthDrawer[] = _("Partner");
+const u8 gText_FirstDrawer[] = _("Emerald");
+const u8 gText_SecondDrawer[] = _("Ruby");
+const u8 gText_ThirdDrawer[] = _("Sapphire");
+const u8 gText_FourthDrawer[] = _("Amber");
 
 const u8 gText_RedCostume[] = _("Red");
 const u8 gText_LeafCostume[] = _("Green");
@@ -1891,6 +1903,8 @@ const u8 gText_LucasCostume[] = _("Diamond");
 const u8 gText_DawnCostume[] = _("Pearl");
 const u8 gText_LucasPlatinumCostume[] = _("Platinum 1");
 const u8 gText_DawnPlatinumCostume[] = _("Platinum 2");
+const u8 gText_ChaseCostume[] = _("Partner 1");
+const u8 gText_ElaineCostume[] = _("Partner 2");
 
 const u8 gText_RoamerEntei[] = _("Red dog");
 const u8 gText_RoamerSuicune[] = _("Red dog");
@@ -1936,8 +1950,75 @@ const u8 gText_FrenzyPlant[] = _("Frenzy Plant");
 const u8 gText_BlastBurn[] = _("Blast Burn");
 const u8 gText_HydroCannon[] = _("Hydro Cannon");
 
+// Battle Team Preview
+const u8 gText_TeamPreviewSingleDoubleText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}'s Party");
+const u8 gText_TeamPreviewMultiText[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}'s Party\n{B_TRAINER2_CLASS} {B_TRAINER2_NAME}'s Party");
+const u8 gText_TeamPreviewMultiLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party");
+const u8 gText_TeamPreviewSingleDoubleLinkText[] = _("{B_LINK_OPPONENT1_NAME}'s Party\n {B_LINK_OPPONENT2_NAME}'s Party");
+
+// Ghost battle
+ALIGNED(4) const u8 gText_Ghost[] = _("Ghost");
+
 // berries
 const u8 gText_Fertilize[] = _("Fertilize");
 const u8 gText_PlantBerry[] = _("Plant Berry");
+
+//Summary Screen Move Effects
+const u8 gText_Effect[]                 = _("Effect");
+const u8 gText_Chance[]                 = _("Chance");
+const u8 gText_Contact[]                = _("Contact");
+const u8 gText_Target[]                 = _("Target");
+const u8 gText_Priority[]               = _("Priority");
+const u8 gText_Critical[]               = _("High Critical");
+const u8 gText_Effect_None[]            = _("---");
+
+//Summary Screen Move Effects
+const u8 gText_Effect_Multi_Hit[]                = _("Multi Hit");
+const u8 gText_Effect_Three_Hits[]               = _("Three Hits");
+const u8 gText_Effect_Two_Hits[]                 = _("Two Hits");
+
+const u8 gText_Effect_Burn_Hit[]                 = _("Burn");
+const u8 gText_Effect_Poison_Hit[]               = _("Poison");
+const u8 gText_Effect_Paralyze_Hit[]             = _("Paralyze");
+const u8 gText_Effect_Freeze_Hit[]               = _("Freeze");
+const u8 gText_Effect_Confuse_Hit[]              = _("Confuse");
+
+const u8 gText_Effect_All_Stats_Up[]             = _("All+");
+const u8 gText_Effect_Attack_Up[]                = _("Atk+");
+const u8 gText_Effect_Attack_Down[]              = _("Atk-");
+const u8 gText_Effect_Defense_Up[]               = _("Def+");
+const u8 gText_Effect_Defense_Down[]             = _("Def-");
+const u8 gText_Effect_Sp_Attack_Up[]             = _("Sp.Atk+");
+const u8 gText_Effect_Sp_Attack_Down[]           = _("Sp.Atk-");
+const u8 gText_Effect_Sp_Defense_Up[]            = _("Sp.Def+");
+const u8 gText_Effect_Sp_Defense_Down[]          = _("Sp.Def-");
+const u8 gText_Effect_Speed_Up[]                 = _("Spd+");
+const u8 gText_Effect_Speed_Down[]               = _("Spd-");
+const u8 gText_Effect_Accuracy_Up[]              = _("Acc-");
+const u8 gText_Effect_Accuracy_Down[]            = _("Acc-");
+
+const u8 gText_Effect_Heal_HP[]                  = _("Heal HP");
+const u8 gText_Effect_Heal[]                     = _("Heal");
+const u8 gText_Effect_HP_Drain[]                 = _("Drain HP");
+
+const u8 gText_Effect_Hit[]                      = _("Hit");
+const u8 gText_Effect_Flinch[]                   = _("Flinch");
+const u8 gText_Effect_Recoil[]                   = _("Recoil");
+const u8 gText_Effect_Misc[]                     = _("Other");
+const u8 gText_Effect_Always_Crit[]              = _("Crit");
+const u8 gText_Effect_Protect[]                  = _("Protect");
+
+//Summary Screen Target
+const u8 gText_Effect_FoeAndAlly[]            = _("All");
+const u8 gText_Effect_BothFoes[]              = _("Both");
+const u8 gText_Effect_OneFoe[]                = _("One");
+const u8 gText_Effect_Self[]                  = _("Self");
+const u8 gText_Effect_Field[]                 = _("Field");
+
+//Summary Screen Makes Contact
+const u8 gText_Effect_ContactYes[]            = _("Yes");
+const u8 gText_Effect_ContactNo[]             = _("No");
+
+// Map Name Popups
 const u8 gText_AM[] = _("AM");
 const u8 gText_PM[] = _("PM");

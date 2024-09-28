@@ -231,6 +231,10 @@
 #define VARIOUS_SET_SHADOW_SKY                       138
 #define VARIOUS_COLLECT_SNAGGED_MONS                 139
 #define VARIOUS_GIVE_DROPPED_ITEMS                   140
+#define VARIOUS_JUMP_IF_NO_BALLS                     141
+#define VARIOUS_CATCH_RAID_BOSS                      142
+#define VARIOUS_HIDE_HEALTHBOXES                     143
+#define VARIOUS_DO_RAID_SHOCKWAVE                    144
 
 // Cmd_manipulatedamage
 #define DMG_CHANGE_SIGN            0
@@ -308,9 +312,10 @@
 #define MOVEEND_OPPORTUNIST                       35    // Occurs after other stat change items/abilities to try and copy the boosts
 #define MOVEEND_SAME_MOVE_TURNS                   36
 #define MOVEEND_SET_EVOLUTION_TRACKER             37
-#define MOVEEND_CLEAR_BITS                        38
-#define MOVEEND_ENTER_REVERSE_MODE                39
-#define MOVEEND_COUNT                             40
+#define MOVEEND_RAID                              38
+#define MOVEEND_CLEAR_BITS                        39
+#define MOVEEND_ENTER_REVERSE_MODE                40
+#define MOVEEND_COUNT                             41
 
 // switch cases
 #define B_SWITCH_NORMAL     0

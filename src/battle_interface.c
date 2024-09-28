@@ -1,6 +1,8 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
+#include "battle_setup.h"
+#include "dma3.h"
 #include "pokemon.h"
 #include "battle_controllers.h"
 #include "battle_interface.h"
@@ -22,14 +24,20 @@
 #include "safari_zone.h"
 #include "battle_anim.h"
 #include "data.h"
+#include "dexnav.h"
+#include "party_menu.h"
 #include "pokemon_summary_screen.h"
+#include "pokemon_icon.h"
 #include "strings.h"
 #include "battle_debug.h"
 #include "item.h"
 #include "item_icon.h"
 #include "item_use.h"
+#include "event_data.h"
 #include "test_runner.h"
+#include "constants/abilities.h"
 #include "constants/battle_anim.h"
+#include "constants/battle_tower.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/items.h"
@@ -661,12 +669,15 @@ u32 WhichBattleCoords(u32 battlerId) // 0 - singles, 1 - doubles
         && gPlayerPartyCount == 1
         && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
         return 0;
-    else if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
-             && gEnemyPartyCount == 1
-             && !(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS))
+
+    // gEnemyParty count is calculated at the start of battle.
+    if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
+        && ((!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && gEnemyPartyCount == 1)
+        || (BATTLE_TWO_VS_ONE_OPPONENT) || IsRaidBoss(battlerId))
+        && !WILD_DOUBLE_BATTLE)
         return 0;
-    else
-        return IsDoubleBattle();
+    
+    return IsDoubleBattle();
 }
 
 u8 CreateBattlerHealthboxSprites(u8 battlerId)
@@ -752,6 +763,14 @@ u8 CreateBattlerHealthboxSprites(u8 battlerId)
 
     CreateIndicatorSprite(battlerId);
 
+    if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+        UpdateRaidShield();
+    }
+    if (IsRaidBoss(battlerId) && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+        CreateRaidTimerSprites();
+
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
 
@@ -831,18 +850,36 @@ void SetBattleBarStruct(u8 battlerId, u8 healthboxSpriteId, s32 maxVal, s32 oldV
 
 void SetHealthboxSpriteInvisible(u8 healthboxSpriteId)
 {
+    u8 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
+
     gSprites[healthboxSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId].invisible = TRUE;
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = TRUE;
     UpdateIndicatorVisibilityAndType(healthboxSpriteId, TRUE);
+
+    if (IsRaidBoss(battlerId))
+    {
+        RaidBarrier_SetVisibilities(healthboxSpriteId, TRUE);
+        if ((gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+            RaidTimer_SetVisibilities(healthboxSpriteId, TRUE);
+    }
 }
 
 void SetHealthboxSpriteVisible(u8 healthboxSpriteId)
 {
+    u8 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
+
     gSprites[healthboxSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId].invisible = FALSE;
     gSprites[gSprites[healthboxSpriteId].oam.affineParam].invisible = FALSE;
     UpdateIndicatorVisibilityAndType(healthboxSpriteId, FALSE);
+
+    if (IsRaidBoss(battlerId))
+    {
+        RaidBarrier_SetVisibilities(healthboxSpriteId, FALSE);
+        if ((gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+            RaidTimer_SetVisibilities(healthboxSpriteId, FALSE);
+    }
 }
 
 static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
@@ -858,18 +895,29 @@ void DummyBattleInterfaceFunc(u8 healthboxSpriteId, bool8 isDoubleBattleBattlerO
 
 static void TryToggleHealboxVisibility(u32 priority, u32 healthboxLeftSpriteId, u32 healthboxRightSpriteId, u32 healthbarSpriteId)
 {
+    u8 battlerId = gSprites[healthboxLeftSpriteId].hMain_Battler;
     bool32 invisible = FALSE;
 
     if (priority == 0)  // start of anim -> make invisible
         invisible = TRUE;
     else if (priority == 1) // end of anim -> make visible
         invisible = FALSE;
+    
+    if (gBattleStruct->raid.state & RAID_CATCHING_BOSS && !invisible) // catching pesky bug
+        return;
 
     gSprites[healthboxLeftSpriteId].invisible = invisible;
     gSprites[healthboxRightSpriteId].invisible = invisible;
     gSprites[healthbarSpriteId].invisible = invisible;
 
     UpdateIndicatorVisibilityAndType(healthboxLeftSpriteId, invisible);
+
+    if (IsRaidBoss(battlerId))
+    {
+        RaidBarrier_SetVisibilities(healthboxLeftSpriteId, invisible);
+        if ((gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+            RaidTimer_SetVisibilities(healthboxLeftSpriteId, invisible);
+    }
 }
 
 void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
@@ -1725,7 +1773,7 @@ static void SpriteCB_StatusSummaryBalls_OnSwitchout(struct Sprite *sprite)
     sprite->y2 = gSprites[barSpriteId].y2;
 }
 
-static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
+void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
 {
     u8 nickname[POKEMON_NAME_LENGTH + 1];
     void *ptr;
@@ -1747,6 +1795,11 @@ static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
     if ((species == SPECIES_NIDORAN_F || species == SPECIES_NIDORAN_M) && StringCompare(nickname, GetSpeciesName(species)) == 0)
         gender = 100;
 
+    if (CheckBattleTypeGhost(mon, gSprites[healthboxSpriteId].hMain_Battler))
+        gender = 100;
+
+    // AddTextPrinterAndCreateWindowOnHealthbox's arguments are the same in all 3 cases.
+    // It's possible they may have been different in early development phases.
     switch (gender)
     {
     default:
@@ -1782,7 +1835,7 @@ static void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon)
     RemoveWindowOnHealthbox(windowId);
 }
 
-static void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
+void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
 {
     u8 battlerId, healthBarSpriteId;
 
@@ -1793,6 +1846,8 @@ static void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus)
 
     battlerId = gSprites[healthboxSpriteId].hMain_Battler;
     if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
+        return;
+    if (CheckBattleTypeGhost(&gEnemyParty[gBattlerPartyIndexes[battlerId]], battlerId))
         return;
     if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(GetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerId]], MON_DATA_SPECIES)), FLAG_GET_CAUGHT))
         return;
@@ -2089,9 +2144,53 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
 
 s32 MoveBattleBar(u8 battlerId, u8 healthboxSpriteId, u8 whichBar, u8 unused)
 {
-    s32 currentBarValue;
+    u32 s;
+    u32 speedScale = SpeedUp_GetBattleSpeedScale(TRUE);
+    s32 currentBarValue = 0;
 
-    if (whichBar == HEALTH_BAR) // health bar
+    for (s = 0; s < speedScale; s++)
+    {
+        if (whichBar == HEALTH_BAR) // health bar
+        {
+            u16 hpFraction = B_FAST_HP_DRAIN == FALSE ? 1 : max(gBattleSpritesDataPtr->battleBars[battlerId].maxValue / (B_HEALTHBAR_PIXELS / 2), 1);
+            currentBarValue = CalcNewBarValue(gBattleSpritesDataPtr->battleBars[battlerId].maxValue,
+                        gBattleSpritesDataPtr->battleBars[battlerId].oldValue,
+                        gBattleSpritesDataPtr->battleBars[battlerId].receivedValue,
+                        &gBattleSpritesDataPtr->battleBars[battlerId].currValue,
+                        B_HEALTHBAR_PIXELS / 8, hpFraction);
+        }
+        /*else // exp bar
+        {
+            // instant
+            if (gBattleSpritesDataPtr->battleBars[battlerId].currValue == -32768) // first function call
+            {
+                gBattleSpritesDataPtr->battleBars[battlerId].currValue = gBattleSpritesDataPtr->battleBars[battlerId].receivedValue;
+            }
+            else
+            {
+                currentBarValue = -1;
+            }
+        }
+
+        if (currentBarValue == -1)
+            break;*/
+        else // exp bar
+        {
+            u16 expFraction = GetScaledExpFraction(gBattleSpritesDataPtr->battleBars[battlerId].oldValue,
+                        gBattleSpritesDataPtr->battleBars[battlerId].receivedValue,
+                        gBattleSpritesDataPtr->battleBars[battlerId].maxValue, 8);
+            if (expFraction == 0)
+                expFraction = 1;
+            expFraction = abs(gBattleSpritesDataPtr->battleBars[battlerId].receivedValue / expFraction);
+
+            currentBarValue = CalcNewBarValue(gBattleSpritesDataPtr->battleBars[battlerId].maxValue,
+                        gBattleSpritesDataPtr->battleBars[battlerId].oldValue,
+                        gBattleSpritesDataPtr->battleBars[battlerId].receivedValue,
+                        &gBattleSpritesDataPtr->battleBars[battlerId].currValue,
+                        B_EXPBAR_PIXELS / 8, expFraction);
+        }
+    }
+    /*if (whichBar == HEALTH_BAR) // health bar
     {
         u16 hpFraction = B_FAST_HP_DRAIN == FALSE ? 1 : max(gBattleSpritesDataPtr->battleBars[battlerId].maxValue / (B_HEALTHBAR_PIXELS / 2), 1);
         currentBarValue = CalcNewBarValue(gBattleSpritesDataPtr->battleBars[battlerId].maxValue,
@@ -2139,7 +2238,7 @@ s32 MoveBattleBar(u8 battlerId, u8 healthboxSpriteId, u8 whichBar, u8 unused)
                     gBattleSpritesDataPtr->battleBars[battlerId].receivedValue,
                     &gBattleSpritesDataPtr->battleBars[battlerId].currValue,
                     B_EXPBAR_PIXELS / 8, expFraction);
-    }
+    }*/
 
     if (whichBar == EXP_BAR || whichBar == HEART_GAUGE || (whichBar == HEALTH_BAR && !gBattleSpritesDataPtr->battlerData[battlerId].hpNumbersNoBars))
         MoveBattleBarGraphically(battlerId, whichBar);
@@ -2166,7 +2265,13 @@ static void MoveBattleBarGraphically(u8 battlerId, u8 whichBar)
                             &gBattleSpritesDataPtr->battleBars[battlerId].currValue,
                             array, B_HEALTHBAR_PIXELS / 8);
 
-        if (filledPixelsCount > (B_HEALTHBAR_PIXELS * 50 / 100)) // more than 50 % hp
+        if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX)
+            barElementId = HEALTHBOX_GFX_HP_BAR_RED;
+        else if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
+            barElementId = HEALTHBOX_GFX_HP_BAR_YELLOW; //HEALTHBOX_GFX_12; // Exp bar for blue color
+        else if (IsRaidBoss(battlerId) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
+            barElementId = HEALTHBOX_GFX_HP_BAR_YELLOW;
+        else if (filledPixelsCount > (B_HEALTHBAR_PIXELS * 50 / 100)) // more than 50 % hp
             barElementId = HEALTHBOX_GFX_HP_BAR_GREEN;
         else if (filledPixelsCount > (B_HEALTHBAR_PIXELS * 20 / 100)) // more than 20% hp
             barElementId = HEALTHBOX_GFX_HP_BAR_YELLOW;
@@ -2955,7 +3060,7 @@ static const struct OamData sOamData_LastUsedBall =
 static const struct SpriteTemplate sSpriteTemplate_LastUsedBallWindow =
 {
     .tileTag = LAST_BALL_WINDOW_TAG,
-    .paletteTag = ABILITY_POP_UP_TAG,
+    .paletteTag = LAST_BALL_WINDOW_TAG,
     .oam = &sOamData_LastUsedBall,
     .anims = gDummySpriteAnimTable,
     .images = NULL,
@@ -2972,9 +3077,16 @@ static const struct SpriteTemplate sSpriteTemplate_LastUsedBallWindow =
 #else
     static const u8 ALIGNED(4) sLastUsedBallWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l.4bpp");
 #endif
+static const u16 sLastUsedBallWindowPalette[] = INCBIN_U16("graphics/battle_interface/last_used_ball.gbapal");
+
 static const struct SpriteSheet sSpriteSheet_LastUsedBallWindow =
 {
     sLastUsedBallWindowGfx, sizeof(sLastUsedBallWindowGfx), LAST_BALL_WINDOW_TAG
+};
+
+static const struct SpritePalette sSpritePalette_LastUsedBallWindow =
+{
+    sLastUsedBallWindowPalette, LAST_BALL_WINDOW_TAG
 };
 
 #define LAST_USED_BALL_X_F    14
@@ -3000,7 +3112,9 @@ bool32 CanThrowLastUsedBall(void)
         return FALSE;
     if (!CanThrowBall())
         return FALSE;
-    if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER))
+    if (FlagGet(FLAG_SOOTOPOLIS_BATTLE))
+        return FALSE;
+    if (gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FRONTIER | BATTLE_TYPE_RAID))
         return FALSE;
     if (!CheckBagHasItem(gBallToDisplay, 1))
         return FALSE;
@@ -3026,15 +3140,14 @@ void TryAddLastUsedBallItemSprites(void)
             gBallToDisplay = firstBall;
     }
 
-    if (!CanThrowLastUsedBall() && !((gBattleTypeFlags & BATTLE_TYPE_TRAINER) && FALSE)) // option to open the enemy party in summary screen
+    if (!CanThrowLastUsedBall() && !((gBattleTypeFlags & BATTLE_TYPE_TRAINER) /*&& FALSE*/)) // option to open the enemy party in summary screen
         return;
 
     // ball
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {
-        //gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, (CanThrowLastUsedBall() ? gLastThrownBall : ITEM_SCANNER));
-        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, gBallToDisplay);
-        gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_0;
+        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, (CanThrowLastUsedBall() ? gBallToDisplay : ITEM_SCANNER));
+        gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_0 - !CanThrowLastUsedBall();
         gSprites[gBattleStruct->ballSpriteIds[0]].y = LAST_USED_BALL_Y;
         gSprites[gBattleStruct->ballSpriteIds[0]].sHide = FALSE;   // restore
         gLastUsedBallMenuPresent = TRUE;
@@ -3042,7 +3155,7 @@ void TryAddLastUsedBallItemSprites(void)
     }
 
     // window
-    LoadSpritePalette(&sSpritePalette_AbilityPopUp);
+    LoadSpritePalette(&sSpritePalette_LastUsedBallWindow);
     if (GetSpriteTileStartByTag(LAST_BALL_WINDOW_TAG) == 0xFFFF)
         LoadSpriteSheet(&sSpriteSheet_LastUsedBallWindow);
 
@@ -3073,7 +3186,7 @@ UNUSED static void CreateLastUsedBallGfx(void)
 static void DestroyLastUsedBallWinGfx(struct Sprite *sprite)
 {
     FreeSpriteTilesByTag(LAST_BALL_WINDOW_TAG);
-    FreeSpritePaletteByTag(ABILITY_POP_UP_TAG);
+    FreeSpritePaletteByTag(LAST_BALL_WINDOW_TAG);
     DestroySprite(sprite);
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
 }
@@ -3118,30 +3231,10 @@ static void SpriteCB_LastUsedBall(struct Sprite *sprite)
     }
     else
     {
-        if (sprite->x != LAST_USED_BALL_X_F)
+        if (sprite->x != LAST_USED_BALL_X_F - !CanThrowLastUsedBall())
             sprite->x++;
     }
 }
-
-/*static void SpriteCB_LastUsedBallBounce(struct Sprite *sprite)
-{
-    if (sprite->sHide)
-    {
-        sprite->y--;
-        if (sprite->y < LAST_USED_BALL_Y -2)
-        {
-            DestroyLastUsedBallGfx(sprite);
-            CreateLastUsedBallGfx();
-        }
-    }
-    else
-    {
-        if (sprite->y != LAST_USED_BALL_Y)
-            sprite->y++;
-        else
-            sprite->callback = SpriteCB_LastUsedBall;
-    }
-}*/
 
 static void TryHideOrRestoreLastUsedBall(u8 caseId)
 {
@@ -3184,39 +3277,13 @@ void TryRestoreLastUsedBall(void)
 
     if (gBattleStruct->ballSpriteIds[0] != MAX_SPRITES)
         TryHideOrRestoreLastUsedBall(1);
-    else
+    else if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
         TryAddLastUsedBallItemSprites();
 }
 
-/*void TryChangeLastUsedBall(bool8 increase)
-{
-    if (increase)
-    {
-        do
-        {
-            gLastThrownBall++;
-            if (gLastThrownBall > LAST_BALL)
-                gLastThrownBall = FIRST_BALL;
-        } while (!CheckBagHasItem(gLastThrownBall, 1));
-        
-    }
-    else
-    {
-        do
-        {
-            if (gLastThrownBall == FIRST_BALL)
-                gLastThrownBall = LAST_BALL;
-            else
-                gLastThrownBall--;
-        } while (!CheckBagHasItem(gLastThrownBall, 1));
-    }
-    gSprites[gBattleStruct->ballSpriteIds[0]].callback = SpriteCB_LastUsedBallBounce;
-    gSprites[gBattleStruct->ballSpriteIds[0]].sHide = TRUE;
-}*/
-
 static void SpriteCB_LastUsedBallBounce(struct Sprite *sprite)
 {
-    if ((sprite->sTimer++ % 4) != 0)  // Change the image every 4 frame
+    if ((sprite->sTimer++ % 2) != 0)  // Change the image every 2 frame
         return;
     if (sprite->sBounce)
     {
@@ -3334,60 +3401,67 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows)
 // type icons during move selection
 #define TYPE_ICON_TAG 0x2720
 
-#define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (1 * 2 * frame * 32), .size = 1 * 2 * 32}
+#define type_icon_frame(ptr, frame) {.data = (u8 *)ptr + (2 * 2 * frame * 32), .size = 2 * 2 * 32}
 static const struct SpriteFrameImage sTypeIconPicTable[] = 
 {
-    [TYPE_NONE] =	    type_icon_frame(TypeIconsTiles, TYPE_MYSTERY),
-    [TYPE_NORMAL] =		type_icon_frame(TypeIconsTiles, TYPE_NORMAL),
-	[TYPE_FIGHTING] =	type_icon_frame(TypeIconsTiles, TYPE_FIGHTING),
-	[TYPE_FLYING] =		type_icon_frame(TypeIconsTiles, TYPE_FLYING),
-	[TYPE_POISON] =		type_icon_frame(TypeIconsTiles, TYPE_POISON),
-	[TYPE_GROUND] =		type_icon_frame(TypeIconsTiles, TYPE_GROUND),
-	[TYPE_ROCK] =		type_icon_frame(TypeIconsTiles, TYPE_ROCK),
-	[TYPE_BUG] =		type_icon_frame(TypeIconsTiles, TYPE_BUG),
-	[TYPE_GHOST] =		type_icon_frame(TypeIconsTiles, TYPE_GHOST),
-	[TYPE_STEEL] =		type_icon_frame(TypeIconsTiles, TYPE_STEEL),
-	[TYPE_MYSTERY] =	type_icon_frame(TypeIconsTiles, TYPE_MYSTERY),
-	[TYPE_FIRE] =		type_icon_frame(TypeIconsTiles, TYPE_FIRE),
-	[TYPE_WATER] =		type_icon_frame(TypeIconsTiles, TYPE_WATER),
-	[TYPE_GRASS] =		type_icon_frame(TypeIconsTiles, TYPE_GRASS),
-	[TYPE_ELECTRIC] =	type_icon_frame(TypeIconsTiles, TYPE_ELECTRIC),
-	[TYPE_PSYCHIC] =	type_icon_frame(TypeIconsTiles, TYPE_PSYCHIC),
-	[TYPE_ICE] =		type_icon_frame(TypeIconsTiles, TYPE_ICE),
-	[TYPE_DRAGON] =		type_icon_frame(TypeIconsTiles, TYPE_DRAGON),
-	[TYPE_DARK] =		type_icon_frame(TypeIconsTiles, TYPE_DARK),
-    [TYPE_FAIRY] =      type_icon_frame(TypeIconsTiles, TYPE_FAIRY),
-    [TYPE_STELLAR] =	type_icon_frame(TypeIconsTiles, TYPE_MYSTERY),
+    [TYPE_NONE] =       type_icon_frame(gTypeIconsTiles, TYPE_NONE),
+    [TYPE_NORMAL] =		type_icon_frame(gTypeIconsTiles, TYPE_NORMAL),
+	[TYPE_FIGHTING] =	type_icon_frame(gTypeIconsTiles, TYPE_FIGHTING),
+	[TYPE_FLYING] =		type_icon_frame(gTypeIconsTiles, TYPE_FLYING),
+	[TYPE_POISON] =		type_icon_frame(gTypeIconsTiles, TYPE_POISON),
+	[TYPE_GROUND] =		type_icon_frame(gTypeIconsTiles, TYPE_GROUND),
+	[TYPE_ROCK] =		type_icon_frame(gTypeIconsTiles, TYPE_ROCK),
+	[TYPE_BUG] =		type_icon_frame(gTypeIconsTiles, TYPE_BUG),
+	[TYPE_GHOST] =		type_icon_frame(gTypeIconsTiles, TYPE_GHOST),
+	[TYPE_STEEL] =		type_icon_frame(gTypeIconsTiles, TYPE_STEEL),
+	[TYPE_MYSTERY] =	type_icon_frame(gTypeIconsTiles, TYPE_MYSTERY),
+	[TYPE_FIRE] =		type_icon_frame(gTypeIconsTiles, TYPE_FIRE),
+	[TYPE_WATER] =		type_icon_frame(gTypeIconsTiles, TYPE_WATER),
+	[TYPE_GRASS] =		type_icon_frame(gTypeIconsTiles, TYPE_GRASS),
+	[TYPE_ELECTRIC] =	type_icon_frame(gTypeIconsTiles, TYPE_ELECTRIC),
+	[TYPE_PSYCHIC] =	type_icon_frame(gTypeIconsTiles, TYPE_PSYCHIC),
+	[TYPE_ICE] =		type_icon_frame(gTypeIconsTiles, TYPE_ICE),
+	[TYPE_DRAGON] =		type_icon_frame(gTypeIconsTiles, TYPE_DRAGON),
+	[TYPE_DARK] =		type_icon_frame(gTypeIconsTiles, TYPE_DARK),
+    [TYPE_FAIRY] =      type_icon_frame(gTypeIconsTiles, TYPE_FAIRY),
+    [TYPE_STELLAR] =    type_icon_frame(gTypeIconsTiles, TYPE_STELLAR),
 };
 
+#define ICON_MOVE_X 10
 static const struct Coords16 sTypeIconPositions[][MAX_BATTLERS_COUNT] = 
 {
     { // Single Battles
-        [B_POSITION_PLAYER_LEFT] = { 220, 86},
-        [B_POSITION_OPPONENT_LEFT] = {20, 26},
+        [B_POSITION_PLAYER_LEFT] = { 216, 86}, // 220 86
+        [B_POSITION_OPPONENT_LEFT] = {24, 25}, // 20 26
         [B_POSITION_PLAYER_RIGHT] = {270, 200}, // out of screen
         [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
     },
     { // Double Battles
-        [B_POSITION_PLAYER_LEFT] = { 225, 71},
-        [B_POSITION_OPPONENT_LEFT] = {20, 15},
-        [B_POSITION_PLAYER_RIGHT] = {220, 96},
-        [B_POSITION_OPPONENT_RIGHT] = {15, 40}, 
+        [B_POSITION_PLAYER_LEFT] = { 221, 71},
+        [B_POSITION_OPPONENT_LEFT] = {24, 14},
+        [B_POSITION_PLAYER_RIGHT] = {216, 96},
+        [B_POSITION_OPPONENT_RIGHT] = {19, 39}, 
     },
+    /*{ // Raid Battles
+        [B_POSITION_PLAYER_LEFT] = { 221, 71},
+        [B_POSITION_OPPONENT_LEFT] = {24, 25}, // position of singles
+        [B_POSITION_PLAYER_RIGHT] = {216, 96},
+        [B_POSITION_OPPONENT_RIGHT] = {270, 200}, // out of screen
+    },*/
 };
 
 static const struct OamData sTypeIconOAM =
 {
 	.affineMode = ST_OAM_AFFINE_OFF,
 	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(8x16),
-	.size = SPRITE_SIZE(8x16),
+	.shape = SPRITE_SHAPE(16x16),
+	.size = SPRITE_SIZE(16x16),
 	.priority = 2, // put to 2 so that the zmove trigger appears above the type icons // 1,//Same level as health bar 
 };
 
 static const struct SpritePalette sTypeIconPalTemplate = 
 {
-    .data = TypeIconsPal,
+    .data = gTypeIconsPal,
     .tag = TYPE_ICON_TAG,
 };
 
@@ -3406,28 +3480,45 @@ void TryLoadTypeIcons(u8 activeBattler)
 {
 	if (!(gBattleTypeFlags & BATTLE_TYPE_LINK) && TRUE && IndexOfSpritePaletteTag(TYPE_ICON_TAG) == 0xFF)
 	{
-        u8 position, battleType= IsDoubleBattle();
+        u8 position;
         LoadSpritePalette(&sTypeIconPalTemplate);
+
+        /*if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;*/
         
 		for (position = 0; position < gBattlersCount; ++position)
 		{
-            u8 typeNum, monNumTypes = 2;//(gBattleMons[GetBattlerAtPosition(position)].type1 == gBattleMons[GetBattlerAtPosition(position)].type2) ? 1 : 2;
-			if (!IsBattlerAlive(GetBattlerAtPosition(position)))
+            u8 typeNum, monNumTypes = 2;
+			u8 type1, type2;
+            struct Pokemon *illusionMon = GetIllusionMonPtr(GetBattlerAtPosition(position));
+            u8 battleType = WhichBattleCoords(GetBattlerAtPosition(position));
+
+            if (!IsBattlerAlive(GetBattlerAtPosition(position)))
 				continue;
+
+            if (illusionMon != NULL)
+            {
+                type1 = gSpeciesInfo[GetMonData(illusionMon, MON_DATA_SPECIES)].types[0];
+                type2 = gSpeciesInfo[GetMonData(illusionMon, MON_DATA_SPECIES)].types[1];
+            }
+            else
+            {
+                type1 = GetBattlerType(GetBattlerAtPosition(position), 0, FALSE);
+                type2 = GetBattlerType(GetBattlerAtPosition(position), 1, FALSE);
+
+                // also need to check for ghost battles and set to mystery type
+            }
+
+            if (type1 == type2)
+                monNumTypes = 1;
 
 			for (typeNum = 0; typeNum < monNumTypes; ++typeNum) //Load each type
 			{
 				u8 spriteId;
-                u8* type1Ptr = &gBattleMons[GetBattlerAtPosition(position)].types[0];
-                u8 type = *(type1Ptr + typeNum);
+                u8 type = (typeNum == 0) ? type1 : type2;
 
                 s16 x = sTypeIconPositions[battleType][position].x;
-				s16 y = sTypeIconPositions[battleType][position].y + (11 * typeNum); //2nd type is 11px below
-
-                //if (battleType)
-                //    y -= (3 * typeNum);
-                //if (monNumTypes == 1)
-                //    y += 6;
+				s16 y = sTypeIconPositions[battleType][position].y + ((monNumTypes == 1) ? 6 : (11 * typeNum)); //2nd type is 11px below
 
                 spriteId = CreateSpriteAtEnd(&sTypeIconSpriteTemplate, x, y, 0xFF);
                 
@@ -3447,7 +3538,7 @@ void TryLoadTypeIcons(u8 activeBattler)
                     else
                         sprite->x += 2 - typeNum * 2; 
 					
-                    RequestSpriteFrameImageCopy(type-1, sprite->oam.tileNum, sprite->images);
+                    RequestSpriteFrameImageCopy(type, sprite->oam.tileNum, sprite->images);
 				}
 			}
 		}
@@ -3458,11 +3549,14 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
 {
 	u8 position = sprite->data[0];
 	u8 activeBattler = sprite->data[1];
-    u8 battleType = IsDoubleBattle();
+    u8 battleType = WhichBattleCoords(GetBattlerAtPosition(position));
     s16 originalY;
 	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
 
-	if (sprite->data[2] == 12 - 2 * sprite->data[4])
+    /*if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+            battleType = 2;*/
+
+	if (sprite->data[2] == ICON_MOVE_X + 2 - 2 * sprite->data[4])
 	{
 		FreeSpritePaletteByTag(TYPE_ICON_TAG);
 		DestroySprite(sprite);
@@ -3472,9 +3566,11 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
 	//Type icons should prepare to destroy themselves if the Player is not choosing an action
 	if (gBattlerControllerFuncs[activeBattler] != PlayerHandleChooseMove
 	&&  gBattlerControllerFuncs[activeBattler] != HandleChooseMoveAfterDma3
-	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseTarget
 	&&  gBattlerControllerFuncs[activeBattler] != HandleMoveSwitching
-	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove)
+	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove
+    &&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseTarget
+    &&  gBattlerControllerFuncs[activeBattler] != HandleInputShowTargets
+    &&  gBattlerControllerFuncs[activeBattler] != HandleInputShowEntireFieldTargets)
 	{
         switch (position) {
 			case B_POSITION_PLAYER_LEFT:
@@ -3497,21 +3593,21 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
     switch (position) {
 		case B_POSITION_OPPONENT_LEFT:
 		case B_POSITION_OPPONENT_RIGHT:
-		    if (sprite->x > sTypeIconPositions[battleType][position].x - 10)
+		    if (sprite->x > sTypeIconPositions[battleType][position].x - ICON_MOVE_X)
     		    sprite->x -= 1;
-            if (sprite->x <= sTypeIconPositions[battleType][position].x - 10)
+            /*if (sprite->x <= sTypeIconPositions[battleType][position].x - ICON_MOVE_X)
                 sprite->oam.priority = 0;
             else
-                sprite->oam.priority = 1;
+                sprite->oam.priority = 1;*/
 			break;
 		case B_POSITION_PLAYER_LEFT:
 		case B_POSITION_PLAYER_RIGHT:
-			if (sprite->x < sTypeIconPositions[battleType][position].x + 10)
+			if (sprite->x < sTypeIconPositions[battleType][position].x + ICON_MOVE_X)
 			    sprite->x += 1;
-            if (sprite->x >= sTypeIconPositions[battleType][position].x + 10)
+            /*if (sprite->x >= sTypeIconPositions[battleType][position].x + ICON_MOVE_X)
                 sprite->oam.priority = 0;
             else
-                sprite->oam.priority = 1;
+                sprite->oam.priority = 1;*/
 			break;
 	}
 
@@ -3543,7 +3639,7 @@ static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
 };
 
 #define MOVE_INFO_WIN_X 20
-#define MOVE_INFO_WIN_Y_0 144
+#define MOVE_INFO_WIN_Y_0 143
 #define MOVE_INFO_WIN_Y_F (MOVE_INFO_WIN_Y_0 - 10)
 
 void TryLoadMoveInfoWindow(u32 battler)
@@ -3580,7 +3676,7 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 	&&  gBattlerControllerFuncs[activeBattler] != HandleChooseMoveAfterDma3 
 	&&  gBattlerControllerFuncs[activeBattler] != HandleMoveSwitching
 	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove)
-    || gDescriptionSubmenu)
+    ||  gBattleStruct->descriptionSubmenu)
     {
         sprite->y += 1;
         return;
@@ -3588,6 +3684,300 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 
     if (sprite->y > MOVE_INFO_WIN_Y_F) 
         sprite->y -= 1;
+}
+
+// Enemy team preview
+
+#define GFX_TAG_TEAM_PREVIEW_STATUS_ICON 0x8473
+#define GFX_TAG_FAINTED_TEAM_PREVIEW_ICON 0x8474
+
+static const u32 sTeamPreviewFaintedMonIconTiles[] = INCBIN_U32("graphics/battle_interface/teamPreviewFaintedMonIcon.4bpp");
+static const u32 sTeamPreviewStatusIconsTiles[] = INCBIN_U32("graphics/battle_interface/teamPreviewStatusIcons.4bpp.lz");
+
+static const struct OamData sMonIconOamData =
+{
+    .mosaic = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(32x32),
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(32x32),
+    .tileNum = 0,
+    .priority = 0,
+    .paletteNum = 0,
+};
+
+static const struct OamData sHeldItemOam =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0, //Above everything
+};
+
+static const struct SpriteTemplate sTeamPreviewFaintedSpriteTemplate =
+{
+	.tileTag = GFX_TAG_FAINTED_TEAM_PREVIEW_ICON,
+	.paletteTag = POKE_ICON_BASE_PAL_TAG,
+	.oam = &sMonIconOamData,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteTemplate sStatusIconTemplate =
+{
+	.tileTag = GFX_TAG_TEAM_PREVIEW_STATUS_ICON,
+	.paletteTag = POKE_ICON_BASE_PAL_TAG, //Used same palette as mon icon 0
+	.oam = &sHeldItemOam,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteTemplate sHeldItemTemplate =
+{
+    .tileTag = HELD_ITEM_TAG,
+    .paletteTag = HELD_ITEM_TAG,
+    .oam = &sHeldItemOam,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteSheet sTeamPreviewFaintedMonIconSpriteSheet = 
+{
+    sTeamPreviewFaintedMonIconTiles, (32 * 32) / 2, GFX_TAG_FAINTED_TEAM_PREVIEW_ICON
+};
+
+static const struct CompressedSpriteSheet sTeamPreviewStatusIconsSpriteSheet = 
+{
+    sTeamPreviewStatusIconsTiles, (8 * 8 * 6) / 2, GFX_TAG_TEAM_PREVIEW_STATUS_ICON
+};
+
+static bool8 CanShowEnemyMon(u8 monId)
+{
+    return (gBattleStruct->revealedEnemyMons & 1u << monId) != 0;
+}
+
+static bool8 EntireEnemyPartyRevealed(void)
+{
+	u32 i;
+
+	for (i = 0; i < PARTY_SIZE; ++i)
+	{
+		u16 species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG, NULL);
+
+		if (species != SPECIES_NONE && species != SPECIES_EGG)
+		{
+			if (!CanShowEnemyMon(i))
+				return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+void ChangeBattlerSpritesInvisibilities(bool8 invisible)
+{
+    u32 i;
+
+    for (i = 0; i < gBattlersCount; ++i)
+	{
+		u8 spriteId = gBattlerSpriteIds[i];
+
+        if (spriteId != 0xFF)
+			gSprites[spriteId].invisible = invisible;
+	}
+}
+
+static void Task_DisplayInBattleTeamPreview(u8 taskId)
+{
+    u32 i;
+    u8 spriteId;
+	s16 x, y;
+    const u8* string;
+
+    //Update Background
+	gBattle_BG0_Y = 0; //Hide action selection - must go before creating icons! Causes sprite bugs otherwise
+	gBattle_BG1_X = 0; //Fix bg offsets if necessary (gets messed up by some battle anims)
+	gBattle_BG1_Y = 0;
+
+    LZDecompressVram(gBattleTeamPreview_TileSet, (void *)(BG_CHAR_ADDR(1)));
+    LZDecompressVram(gBattleTeamPreview_TileMap, (void *)(BG_SCREEN_ADDR(28)));
+    LoadCompressedPalette(gBattleTeamPreview_Palette, BG_PLTT_ID(11), PLTT_SIZE_4BPP);
+
+    REG_BG1CNT |= BGCNT_CHARBASE(1); //Original char base that isn't getting used for some reason
+	REG_DISPCNT |= DISPCNT_BG1_ON; //Can't use ShowBg because that resets the charbase
+
+    SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG1 | BLDCNT_EFFECT_BLEND | BLDCNT_TGT2_ALL);
+    SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(16, 8));
+    SetGpuReg(REG_OFFSET_BLDY, 0);
+
+    LoadSpriteSheet(&gSpriteSheet_HeldItem);
+    LoadSpritePalette(&gSpritePalette_HeldItem);
+    LoadSpriteSheet(&sTeamPreviewFaintedMonIconSpriteSheet);
+    LoadCompressedSpriteSheet(&sTeamPreviewStatusIconsSpriteSheet);
+    LoadMonIconPalette(SPECIES_NONE); //Used for status icon sprites
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        u16 species = GetMonData(&gEnemyParty[i], MON_DATA_SPECIES_OR_EGG);
+
+        if (species != SPECIES_NONE && species != SPECIES_EGG)
+        {
+            u16 hp = GetMonData(&gEnemyParty[i], MON_DATA_HP);
+            void* callback = hp == 0 ? SpriteCallbackDummy : SpriteCB_MonIcon; //Don't animate when fainted
+
+            if (!CanShowEnemyMon(i))
+                continue;//species = SPECIES_NONE;
+            else if (GetMonAbility(&gEnemyParty[i]) == ABILITY_ILLUSION && !EntireEnemyPartyRevealed())
+            {
+                u8 battler;
+
+                if (i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)])
+                    species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
+                else if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && i == gBattlerPartyIndexes[battler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)])
+                    species = GetMonData(GetIllusionMonPtr(battler), MON_DATA_SPECIES_OR_EGG);
+            }
+
+            x = (64 + (32 / 2)) + (40 * (i % 3));
+			y = (20 + (32 / 2)) + (40 * (i / 3));
+
+            LoadMonIconPalette(species);
+            spriteId = CreateMonIcon(species, callback, x, y, 1, GetMonData(&gEnemyParty[i], MON_DATA_PERSONALITY));
+
+            if (spriteId < MAX_SPRITES)
+            {
+                struct Sprite* sprite = &gSprites[spriteId];
+                sprite->oam.priority = 0;
+
+                if (species != SPECIES_NONE)
+                {
+                    if (hp > 0)
+                    {
+                        u32 status = GetMonData(&gEnemyParty[i], MON_DATA_STATUS, NULL);
+
+                        if (GetMonData(&gEnemyParty[i], MON_DATA_HELD_ITEM) != ITEM_NONE)
+                        {
+                            x = (80 + (8 / 2)) + (40 * (i % 3)); //Based on the item icon positions on the summary screen
+							y = (44 + (8 / 2)) + (40 * (i / 3));
+							CreateSprite(&sHeldItemTemplate, x, y, 0);
+                        }
+
+                        if (status != 0)
+						{
+							x = (72 + (8 / 2)) + (40 * (i % 3));
+							y = (44 + (8 / 2)) + (40 * (i / 3));
+							spriteId = CreateSprite(&sStatusIconTemplate, x, y, 0);
+
+							if (spriteId < MAX_SPRITES)
+							{
+								u8 tileNum = 0;
+
+								if (status & STATUS1_POISON) //Not including Toxic
+									tileNum = 1;
+								else if (status & STATUS1_BURN)
+									tileNum = 2;
+								else if (status & STATUS1_FREEZE)
+									tileNum = 3;
+								else if (status & STATUS1_PARALYSIS)
+									tileNum = 4;
+								else if (status & STATUS1_TOXIC_POISON)
+									tileNum = 5;
+
+								gSprites[spriteId].oam.tileNum += (8 / 8) * (8 / 8) * tileNum; //Get the right status image
+							}
+						}
+                    }
+                    else
+                        CreateSprite(&sTeamPreviewFaintedSpriteTemplate, x, y, 0);
+                }
+            }
+        }
+    }
+
+    //Update Textbox
+	if (gBattleTypeFlags & BATTLE_TYPE_LINK)
+	{
+		if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
+		{
+			if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
+				string = gText_TeamPreviewMultiText;
+			else
+				string = gText_TeamPreviewMultiLinkText;
+		}
+		else
+			string = gText_TeamPreviewSingleDoubleLinkText;
+	}
+	else
+	{
+		if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
+			string = gText_TeamPreviewMultiText;
+		else
+			string = gText_TeamPreviewSingleDoubleText;
+	}
+
+    BattleStringExpandPlaceholdersToDisplayedString(string);
+	BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MSG);
+	DestroyTask(taskId);
+}
+
+void DisplayInBattleTeamPreview(void)
+{
+	CreateTask(Task_DisplayInBattleTeamPreview, 0); //Hide sprites and then load the BG
+}
+
+void HideInBattleTeamPreview(void)
+{
+    u32 i;
+	u8 pal0 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 0); 
+	u8 pal1 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 1);
+	u8 pal2 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 2);
+    u8 pal3 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 3); 
+	u8 pal4 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 4);
+	u8 pal5 = IndexOfSpritePaletteTag(POKE_ICON_BASE_PAL_TAG + 5);
+    u8 pal6 = IndexOfSpritePaletteTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON); //Fainted palette
+
+    //Hide BG
+	gBattle_BG0_Y = 160; //Show action selection
+	RequestDma3Fill(0, (void*)(BG_SCREEN_ADDR(28)), 0x1000, 1); //Wipe tilemap (tiles don't need to be wiped)
+
+    //Destroy Sprites
+	for (i = 0; i < MAX_SPRITES; ++i)
+	{
+		if (gSprites[i].inUse)
+		{
+			if (gSprites[i].template->tileTag == GFX_TAG_TEAM_PREVIEW_STATUS_ICON
+			|| gSprites[i].template->tileTag == GFX_TAG_FAINTED_TEAM_PREVIEW_ICON
+			|| gSprites[i].template->tileTag == HELD_ITEM_TAG)
+				DestroySprite(&gSprites[i]);
+			else if (gSprites[i].oam.paletteNum == pal0
+			|| gSprites[i].oam.paletteNum == pal1
+			|| gSprites[i].oam.paletteNum == pal2
+			|| gSprites[i].oam.paletteNum == pal3
+            || gSprites[i].oam.paletteNum == pal4
+			|| gSprites[i].oam.paletteNum == pal5
+			|| gSprites[i].oam.paletteNum == pal6)
+				FreeAndDestroyMonIconSprite(&gSprites[i]);
+		}
+	}
+
+	//Free Palettes
+	FreeSpriteTilesByTag(HELD_ITEM_TAG);
+	FreeSpriteTilesByTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON);
+	FreeSpriteTilesByTag(GFX_TAG_TEAM_PREVIEW_STATUS_ICON);
+	FreeSpritePaletteByTag(HELD_ITEM_TAG);
+	FreeSpritePaletteByTag(GFX_TAG_FAINTED_TEAM_PREVIEW_ICON);
+	FreeMonIconPalettes();
+
+	//Clear Textbox
+	BattlePutTextOnWindow(gText_EmptyString2, B_WIN_MSG); //Wipes the old string
 }
 
 void CategoryIcons_LoadSpritesGfx(void)

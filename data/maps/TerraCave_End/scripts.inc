@@ -35,11 +35,19 @@ TerraCave_End_EventScript_Groudon::
 	delay 40
 	waitmoncry
 	setvar VAR_LAST_TALKED, LOCALID_GROUDON
-	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
-	setwildbattle SPECIES_GROUDON, VAR_RESULT
+@	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+@	setwildbattle SPECIES_GROUDON, VAR_RESULT
+	specialvar VAR_RESULT, IsPokeballPocketEmpty
+	goto_if_eq VAR_RESULT, FALSE, TerraCave_End_EventScript_Groudon_PrepareRaid
+	additem ITEM_POKE_BALL
+TerraCave_End_EventScript_Groudon_PrepareRaid:
+	preparefixedraid RAID_TYPE_PRIMAL, 7, SPECIES_GROUDON, 70, ITEM_RED_ORB
+	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
+	special InitStoryRaid
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special BattleSetup_StartLegendaryBattle
-	waitstate
+@	special BattleSetup_StartLegendaryBattle
+@	waitstate
+	doraidbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	setvar VAR_TEMP_1, 0
 	specialvar VAR_RESULT, GetBattleOutcome
@@ -62,7 +70,7 @@ TerraCave_End_EventScript_RanFromGroudon::
 	goto Common_EventScript_LegendaryFlewAway
 	end
 
-TerraCave_End_Movement_GroudonApproach:
+TerraCave_End_Movement_GroudonApproachBroken:
 	init_affine_anim
 	walk_down_start_affine
 	delay_16
@@ -73,3 +81,12 @@ TerraCave_End_Movement_GroudonApproach:
 	walk_down_affine
 	step_end
 
+TerraCave_End_Movement_GroudonApproach:
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	delay_16
+	delay_16
+	walk_slow_down
+	step_end

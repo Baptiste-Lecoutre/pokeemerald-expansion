@@ -34,6 +34,7 @@
 #include "trainer_hill.h"
 #include "vs_seeker.h"
 #include "wild_encounter.h"
+#include "follow_me.h"
 #include "constants/event_bg.h"
 #include "constants/event_objects.h"
 #include "constants/field_poison.h"
@@ -46,7 +47,6 @@ static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
 static EWRAM_DATA u8 sCurrentDirection = 0;
 static EWRAM_DATA u8 sPreviousDirection = 0;
-static EWRAM_DATA u8 sRegisteredKeyItem = 0;
 
 u8 gSelectedObjectEvent;
 
@@ -107,7 +107,6 @@ void FieldClearPlayerInput(struct FieldInput *input)
     input->input_field_1_2 = FALSE;
     input->input_field_1_3 = FALSE;
     input->dpadDirection = 0;
-    input->dpadDirectionRegister = 4;
 }
 
 static u8 GetDirectionFromBitfield(u8 bitfield)
@@ -195,25 +194,8 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
             input->checkStandardWildEncounter = TRUE;
     }
 
-    if (!gSaveBlock2Ptr->showItemIconsWheel)
-    {
-        DestroyItemIconSprites();
-        SetDirectionFromHeldKeys(heldKeys);
-        input->dpadDirection = sCurrentDirection;
-    }
-    else
-    {
-        //sRegisteredKeyItem = 4;
-        if (newKeys & DPAD_UP || heldKeys & DPAD_UP)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 0;
-        else if (newKeys & DPAD_RIGHT || heldKeys & DPAD_RIGHT)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 1;
-        else if (newKeys & DPAD_DOWN || heldKeys & DPAD_DOWN)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 2;
-        else if (newKeys & DPAD_LEFT || heldKeys & DPAD_LEFT)
-            input->dpadDirectionRegister = sRegisteredKeyItem = 3;
-            
-    }
+    SetDirectionFromHeldKeys(heldKeys);
+    input->dpadDirection = sCurrentDirection;
 
     if(DEBUG_OVERWORLD_MENU && !DEBUG_OVERWORLD_IN_MENU)
     {
@@ -290,44 +272,15 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     if (input->pressedAButton && TrySetupDiveDownScript() == TRUE)
         return TRUE;
 
-    if (gSaveBlock2Ptr->showItemIconsWheel && (input->pressedAButton || input->pressedBButton))
-    {
-        gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-        sRegisteredKeyItem = 4;
-        DestroyItemIconSprites();
-    }
-
     if (input->pressedStartButton)
     {
         PlaySE(SE_WIN_OPEN);
-        gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-        DestroyItemIconSprites();
         ShowStartMenu();
         return TRUE;
     }
 
-    if (input->pressedSelectButton && PlayerHasOneRegisteredItem())
-    {
-        gSaveBlock2Ptr->showItemIconsWheel = !gSaveBlock2Ptr->showItemIconsWheel;
-        sRegisteredKeyItem = 4;
-        if (gSaveBlock2Ptr->showItemIconsWheel)
-            DrawRegisteredQuickAccess();
-        else 
-            DestroyItemIconSprites();
-    }
-
-    if (gSaveBlock2Ptr->showItemIconsWheel && sRegisteredKeyItem != 4)
-    {
-        if (input->dpadDirectionRegister == 4)
-        {
-            if (UseRegisteredKeyItemOnField(sRegisteredKeyItem) == TRUE)
-            {
-                sRegisteredKeyItem = 4;
-                gSaveBlock2Ptr->showItemIconsWheel = FALSE;
-                return TRUE;
-            }
-        }
-    }
+    if (input->pressedSelectButton && UseRegisteredKeyItemOnField() == TRUE)
+        return TRUE;
     
     if (input->tookStep && TryFindHiddenPokemon())
         return TRUE;
@@ -473,6 +426,8 @@ static const u8 *GetInteractedObjectEventScript(struct MapPosition *position, u8
 
     if (InTrainerHill() == TRUE)
         script = GetTrainerHillTrainerScript();
+    else if (objectEventId == GetFollowerObjectId())//(gObjectEvents[objectEventId].localId == OBJ_EVENT_ID_FOLLOW_ME)
+        script = GetFollowerScriptPointer();
     else
         script = GetObjectEventScriptPointerByObjectEventId(objectEventId);
 
@@ -619,10 +574,10 @@ static const u8 *GetInteractedMetatileScript(struct MapPosition *position, u8 me
 
 static const u8 *GetInteractedWaterScript(struct MapPosition *unused1, u8 metatileBehavior, u8 direction)
 {
-    if (FlagGet(FLAG_BADGE05_GET) == TRUE && PartyHasMonWithSurf() == TRUE && IsPlayerFacingSurfableFishableWater() == TRUE)
+    if (FlagGet(FLAG_BADGE05_GET) == TRUE && PartyHasMonWithSurf() == TRUE && IsPlayerFacingSurfableFishableWater() == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_SURF))
         return EventScript_UseSurf;
 
-    if (MetatileBehavior_IsWaterfall(metatileBehavior) == TRUE)
+    if (MetatileBehavior_IsWaterfall(metatileBehavior) == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_WATERFALL))
     {
         if (FlagGet(FLAG_BADGE08_GET) == TRUE && IsPlayerSurfingNorth() == TRUE)
             return EventScript_UseWaterfall;
@@ -634,6 +589,9 @@ static const u8 *GetInteractedWaterScript(struct MapPosition *unused1, u8 metati
 
 static bool32 TrySetupDiveDownScript(void)
 {
+    if (!CheckFollowerFlag(FOLLOWER_FLAG_CAN_DIVE))
+        return FALSE;
+    
     if (FlagGet(FLAG_BADGE07_GET) && TrySetDiveWarp() == 2)
     {
         ScriptContext_SetupScript(EventScript_UseDive);
@@ -644,6 +602,9 @@ static bool32 TrySetupDiveDownScript(void)
 
 static bool32 TrySetupDiveEmergeScript(void)
 {
+    if (!CheckFollowerFlag(FOLLOWER_FLAG_CAN_DIVE))
+        return FALSE;
+    
     if (FlagGet(FLAG_BADGE07_GET) && gMapHeader.mapType == MAP_TYPE_UNDERWATER && TrySetDiveWarp() == 1)
     {
         ScriptContext_SetupScript(EventScript_UseDiveUnderwater);
@@ -1351,5 +1312,6 @@ static bool8 SwapBike(void) {
         SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ACRO_BIKE);
         PlaySE(SE_BIKE_HOP);
     }
+    FollowMe_HandleBike();
     return FALSE;
 }

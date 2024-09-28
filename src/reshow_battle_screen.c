@@ -15,6 +15,7 @@
 #include "battle_interface.h"
 #include "battle_anim.h"
 #include "data.h"
+#include "item.h"
 
 // this file's functions
 static void CB2_ReshowBattleScreenAfterMenu(void);
@@ -24,17 +25,16 @@ static void ClearBattleBgCntBaseBlocks(void);
 
 static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] = 
 {
-    [RED_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_RED},
-    [LEAF_COSTUME]              = {TRAINER_BACK_PIC_LEAF, TRAINER_BACK_PIC_LEAF},
-    [BRENDAN_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_BRENDAN},
-    [MAY_COSTUME]               = {TRAINER_BACK_PIC_MAY, TRAINER_BACK_PIC_MAY},
-    [ETHAN_COSTUME]             = {TRAINER_BACK_PIC_ETHAN, TRAINER_BACK_PIC_ETHAN},
-    [LYRA_COSTUME]              = {TRAINER_BACK_PIC_LYRA, TRAINER_BACK_PIC_LYRA},
-    [KRIS_COSTUME]              = {TRAINER_BACK_PIC_KRIS, TRAINER_BACK_PIC_KRIS},
-    [LUCAS_COSTUME]             = {TRAINER_BACK_PIC_LUCAS, TRAINER_BACK_PIC_LUCAS},
-    [DAWN_COSTUME]              = {TRAINER_BACK_PIC_DAWN, TRAINER_BACK_PIC_DAWN},
-    [LUCAS_PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_LUCAS_PLATINUM},
-    [DAWN_PLATINUM_COSTUME]     = {TRAINER_BACK_PIC_DAWN_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
+    /*[FRLG_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_LEAF},
+    [RSE_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_MAY},
+    [HGSS_COSTUME]             = {TRAINER_BACK_PIC_ETHAN, TRAINER_BACK_PIC_KRIS},
+    [DPEARL_COSTUME]             = {TRAINER_BACK_PIC_LUCAS, TRAINER_BACK_PIC_DAWN},
+    [PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
+    [LGPE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_ELAINE},*/
+    [GREEN_COSTUME] = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_MAY},
+    [RED_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_RED, TRAINER_BACK_PIC_MAY_RED},
+    [BLUE_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_BLUE, TRAINER_BACK_PIC_MAY_BLUE},
+    [YELLOW_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_YELLOW, TRAINER_BACK_PIC_MAY_YELLOW},
 };
 
 void ReshowBattleScreenDummy(void)
@@ -200,7 +200,9 @@ static bool8 LoadBattlerSpriteGfx(u32 battler)
     {
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
+                DecompressGhostFrontPic(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
+            else if (!gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
                 BattleLoadMonSpriteGfx(&gEnemyParty[gBattlerPartyIndexes[battler]], battler);
             else
                 BattleLoadSubstituteOrMonSpriteGfx(battler, FALSE);
@@ -227,14 +229,19 @@ void CreateBattlerSprite(u32 battler)
     {
         u8 posY;
 
-        if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
+        if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
+            posY = GetGhostSpriteDefault_Y(battler);
+        else if (gBattleSpritesDataPtr->battlerData[battler].behindSubstitute)
             posY = GetSubstituteSpriteDefault_Y(battler);
         else
             posY = GetBattlerSpriteDefault_Y(battler);
 
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
+            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0
+                && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+                return;
+            if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
                 return;
             if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
                 return;
@@ -303,6 +310,9 @@ static void CreateHealthboxSprite(u32 battler)
             healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
 
         gHealthboxSpriteIds[battler] = healthboxSpriteId;
+        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+            return;
+
         InitBattlerHealthboxCoords(battler);
         SetHealthboxSpriteVisible(healthboxSpriteId);
 
@@ -327,6 +337,11 @@ static void CreateHealthboxSprite(u32 battler)
         {
             if (!IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[battler]]))
                 SetHealthboxSpriteInvisible(healthboxSpriteId);
+        }
+        // Hide healthboxes when catching a Raid boss.
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+        {
+            SetHealthboxSpriteInvisible(healthboxSpriteId);
         }
     }
 }

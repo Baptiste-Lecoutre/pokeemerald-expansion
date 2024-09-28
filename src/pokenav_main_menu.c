@@ -13,20 +13,6 @@
 #include "menu.h"
 #include "dma3.h"
 
-struct Pokenav_MainMenu
-{
-    void (*loopTask)(u32);
-    u32 (*isLoopTaskActiveFunc)(void);
-    u32 unused;
-    u32 currentTaskId;
-    u32 helpBarWindowId;
-    u32 palettes;
-    struct Sprite *spinningPokenav;
-    struct Sprite *leftHeaderSprites[2];
-    struct Sprite *submenuLeftHeaderSprites[2];
-    u8 tilemapBuffer[BG_SCREEN_SIZE];
-};
-
 // This struct uses a 32bit tag, and doesn't have a size field.
 // Needed to match LoadLeftHeaderGfxForSubMenu.
 struct CompressedSpriteSheetNoSize
@@ -46,7 +32,6 @@ static void MoveLeftHeader(struct Sprite *, s32, s32, s32);
 static void SpriteCB_MoveLeftHeader(struct Sprite *);
 static void InitPokenavMainMenuResources(void);
 static void CreateLeftHeaderSprites(void);
-static void InitHelpBar(void);
 static u32 LoopedTask_SlideMenuHeaderUp(s32);
 static u32 LoopedTask_SlideMenuHeaderDown(s32);
 static void DrawHelpBar(u32);
@@ -98,6 +83,7 @@ static const u8 *const sHelpBarTexts[HELPBAR_COUNT] =
     [HELPBAR_RIBBONS_MON_LIST]     = COMPOUND_STRING("{A_BUTTON}Ribbons {B_BUTTON}Cancel"),
     [HELPBAR_RIBBONS_LIST]         = COMPOUND_STRING("{A_BUTTON}Check {B_BUTTON}Cancel"),
     [HELPBAR_RIBBONS_CHECK]        = COMPOUND_STRING("{B_BUTTON}Cancel"),
+    [HELPBAR_CONDITION_SWITCH_VIEW]= COMPOUND_STRING("{SELECT_BUTTON} Stats"),
 };
 
 static const u8 sHelpBarTextColors[3] =
@@ -166,12 +152,12 @@ static const struct CompressedSpriteSheet sMenuLeftHeaderSpriteSheets[] =
 
 static const struct CompressedSpriteSheetNoSize sPokenavSubMenuLeftHeaderSpriteSheets[] =
 {
-    [POKENAV_GFX_ACCESS_PC - POKENAV_GFX_SUBMENUS_START] = {
+    [POKENAV_GFX_PARTY_MENU - POKENAV_GFX_SUBMENUS_START] = {
         .data = gPokenavLeftHeaderParty_Gfx,
         .tag = 1
     },
-    [POKENAV_GFX_PARTY_MENU - POKENAV_GFX_SUBMENUS_START] = {
-        .data = gPokenavLeftHeaderParty_Gfx,
+    [POKENAV_GFX_RIBBONS_MENU_COND - POKENAV_GFX_SUBMENUS_START] = {
+        .data = gPokenavLeftHeaderRibbons_Gfx,
         .tag = 1
     },
     [POKENAV_GFX_SEARCH_MENU - POKENAV_GFX_SUBMENUS_START] = {
@@ -316,9 +302,14 @@ u32 PokenavMainMenuLoopedTaskIsActive(void)
 
 void ShutdownPokenav(void)
 {
-    PlaySE(SE_POKENAV_OFF);
-    ResetBldCnt_();
-    BeginNormalPaletteFade(PALETTES_ALL, -1, 0, 16, RGB_BLACK);
+    if (GetPokenavMode() != POKENAV_MODE_TOWN_MAP_EXIT && GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT)
+    {
+        PlaySE(SE_POKENAV_OFF);
+        ResetBldCnt_();
+        BeginNormalPaletteFade(PALETTES_ALL, -1, 0, 16, RGB_BLACK);
+    }
+    else
+        ResetBldCnt_();
 }
 
 bool32 WaitForPokenavShutdownFade(void)
@@ -551,7 +542,7 @@ void InitBgTemplates(const struct BgTemplate *templates, int count)
         InitBgFromTemplate(templates++);
 }
 
-static void InitHelpBar(void)
+void InitHelpBar(void)
 {
     struct Pokenav_MainMenu *menu = GetSubstructPtr(POKENAV_SUBSTRUCT_MAIN_MENU);
 

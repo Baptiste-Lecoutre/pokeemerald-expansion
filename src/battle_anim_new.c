@@ -8726,7 +8726,8 @@ static void SpriteCB_TwinkleOnBattler(struct Sprite *sprite)
 
 void AnimTask_PrimalReversion(u8 taskId)
 {
-    if (gBattleMons[gBattleAnimAttacker].item == ITEM_RED_ORB || gBattleMons[gBattleAnimAttacker].item == ITEM_BLUE_ORB)
+    if (gBattleMons[gBattleAnimAttacker].item == ITEM_RED_ORB || gBattleMons[gBattleAnimAttacker].item == ITEM_BLUE_ORB
+     || gBattleMons[gBattleAnimAttacker].item == ITEM_ADAMANT_ORB || gBattleMons[gBattleAnimAttacker].item == ITEM_LUSTROUS_ORB)
         gBattleAnimArgs[0] = gBattleMons[gBattleAnimAttacker].item;
     else
         gBattleAnimArgs[0] = 0;
@@ -9283,6 +9284,23 @@ void AnimTask_GetWeatherToSet(u8 taskId)
             break;
     }
     DestroyAnimVisualTask(taskId);
+}
+
+// RAIDS
+void AnimTask_GetRaidBattleStormLevel(u8 taskId) // from CFRU
+{
+    switch (gBattleResults.battleTurnCounter)
+    {
+        case 1 ... RAID_STORM_TURNS_LEVEL_1:
+            gBattleAnimArgs[ARG_RET_ID] = 1;
+        case (RAID_STORM_TURNS_LEVEL_1 + 1) ... RAID_STORM_TURNS_LEVEL_2:
+            gBattleAnimArgs[ARG_RET_ID] = 2;
+        case (RAID_STORM_TURNS_LEVEL_2 + 1) ... RAID_STORM_TURNS_LEVEL_3:
+            gBattleAnimArgs[ARG_RET_ID] = 3;
+        case RAID_STORM_TURNS_MAX:
+            gBattleAnimArgs[ARG_RET_ID] = 4;
+    }
+	DestroyAnimVisualTask(taskId);
 }
 
 void AnimTask_SyrupBomb(u8 taskId)

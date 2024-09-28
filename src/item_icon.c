@@ -3,8 +3,11 @@
 #include "graphics.h"
 #include "item_icon.h"
 #include "malloc.h"
+#include "palette.h"
 #include "sprite.h"
+#include "window.h"
 #include "constants/items.h"
+#include "pokeball.h"
 #include "item.h"
 #include "battle_main.h"
 
@@ -13,7 +16,7 @@ EWRAM_DATA u8 *gItemIconDecompressionBuffer = NULL;
 EWRAM_DATA u8 *gItemIcon4x4Buffer = NULL;
 
 // const rom data
-//#include "data/item_icon_table.h"
+#include "data/item_icon_table.h"
 
 static const struct OamData sOamData_ItemIcon =
 {
@@ -26,6 +29,23 @@ static const struct OamData sOamData_ItemIcon =
     .x = 0,
     .matrixNum = 0,
     .size = SPRITE_SIZE(32x32),
+    .tileNum = 0,
+    .priority = 1,
+    .paletteNum = 2,
+    .affineParam = 0
+};
+
+static const struct OamData sOamData_BallIcon =
+{
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = 0,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(16x16),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(16x16),
     .tileNum = 0,
     .priority = 1,
     .paletteNum = 2,
@@ -48,6 +68,17 @@ const struct SpriteTemplate gItemIconSpriteTemplate =
     .tileTag = 0,
     .paletteTag = 0,
     .oam = &sOamData_ItemIcon,
+    .anims = sSpriteAnimTable_ItemIcon,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+const struct SpriteTemplate gBallIconSpriteTemplate =
+{
+    .tileTag = 0,
+    .paletteTag = 0,
+    .oam = &sOamData_BallIcon,
     .anims = sSpriteAnimTable_ItemIcon,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
@@ -122,6 +153,26 @@ u8 AddItemIconSprite(u16 tilesTag, u16 paletteTag, u16 itemId)
     }
 }
 
+u8 BlitItemIconToWindow(u16 itemId, u8 windowId, u16 x, u16 y, void * paletteDest) {
+    if (!AllocItemIconTemporaryBuffers())
+        return 16;
+
+    LZDecompressWram(GetItemIconPic(itemId), gItemIconDecompressionBuffer);
+    CopyItemIconPicTo4x4Buffer(gItemIconDecompressionBuffer, gItemIcon4x4Buffer);
+    BlitBitmapToWindow(windowId, gItemIcon4x4Buffer, x, y, 32, 32);
+
+    // if paletteDest is nonzero, copies the decompressed palette directly into it
+    // otherwise, loads the compressed palette into the windowId's BG palette ID
+    if (paletteDest) {
+        LZDecompressWram(GetItemIconPalette(itemId), gDecompressionBuffer);
+        CpuFastCopy(gDecompressionBuffer, paletteDest, PLTT_SIZE_4BPP);
+    } else {
+        LoadCompressedPalette(GetItemIconPalette(itemId), BG_PLTT_ID(gWindows[windowId].window.paletteNum), PLTT_SIZE_4BPP);
+    }
+    FreeItemIconTemporaryBuffers();
+    return 0;
+}
+
 u8 AddCustomItemIconSprite(const struct SpriteTemplate *customSpriteTemplate, u16 tilesTag, u16 paletteTag, u16 itemId)
 {
     if (!AllocItemIconTemporaryBuffers())
@@ -185,4 +236,40 @@ const void *GetItemIconPalette(u16 itemId)
         return gTypesInfo[gMovesInfo[gItemsInfo[itemId].secondaryId].type].paletteTMHM;
 
     return gItemsInfo[itemId].iconPalette;
+}
+
+u8 AddBallIconSprite(u16 tilesTag, u16 paletteTag, u8 ballId)
+{
+    if (!AllocItemIconTemporaryBuffers())
+    {
+        return MAX_SPRITES;
+    }
+    else
+    {
+        u8 spriteId;
+        struct SpriteSheet spriteSheet;
+        struct CompressedSpritePalette spritePalette;
+        struct SpriteTemplate *spriteTemplate;
+
+        if (ballId > ARRAY_COUNT(gBallIconTable) - 1)
+            ballId = 0;
+
+        LZDecompressWram(gBallIconTable[ballId][0], gItemIconDecompressionBuffer);
+        CpuCopy16(gItemIconDecompressionBuffer, gItemIcon4x4Buffer, 0x100);
+        spriteSheet.data = gItemIcon4x4Buffer;
+        spriteSheet.size = 0x100;
+        spriteSheet.tag = tilesTag;
+        LoadSpriteSheet(&spriteSheet);
+        spritePalette.data = gBallIconTable[ballId][1];
+        spritePalette.tag = paletteTag;
+        LoadCompressedSpritePalette(&spritePalette);
+        spriteTemplate = Alloc(sizeof(*spriteTemplate));
+        CpuCopy16(&gBallIconSpriteTemplate, spriteTemplate, sizeof(*spriteTemplate));
+        spriteTemplate->tileTag = tilesTag;
+        spriteTemplate->paletteTag = paletteTag;
+        spriteId = CreateSprite(spriteTemplate, 0, 0, 0);
+        FreeItemIconTemporaryBuffers();
+        Free(spriteTemplate);
+        return spriteId;
+    }
 }

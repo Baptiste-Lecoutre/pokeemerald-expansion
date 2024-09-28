@@ -25,6 +25,7 @@ struct MultiPartnerMenuPokemon
 
 enum {
     FIRST_TURN_EVENTS_START,
+    FIRST_TURN_EVENTS_RAID_INTRO,
     FIRST_TURN_EVENTS_OVERWORLD_WEATHER,
     FIRST_TURN_EVENTS_TERRAIN,
     FIRST_TURN_EVENTS_STARTING_STATUS,
@@ -53,6 +54,7 @@ void SpriteCB_ShowAsMoveTarget(struct Sprite *sprite);
 void SpriteCB_HideAsMoveTarget(struct Sprite *sprite);
 void SpriteCB_OpponentMonFromBall(struct Sprite *sprite);
 void SpriteCB_BattleSpriteStartSlideLeft(struct Sprite *sprite);
+void SpriteCB_MoveWildMonToLeft(struct Sprite *sprite);
 void SpriteCB_FaintSlideAnim(struct Sprite *sprite);
 void DoBounceEffect(u8 battler, u8 which, s8 delta, s8 amplitude);
 void EndBounceEffect(u8 battler, u8 which);
@@ -87,6 +89,9 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
 void ModifyPersonalityForNature(u32 *personality, u32 newNature);
 u32 GeneratePersonalityForGender(u32 gender, u32 species);
 void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMon *partyEntry);
+
+bool32 InBattleChoosingMoves(void);
+bool32 InBattleRunningActions(void);
 
 extern struct MultiPartnerMenuPokemon gMultiPartnerParty[MULTI_PARTY_SIZE];
 

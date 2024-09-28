@@ -19,6 +19,7 @@
 #include "gpu_regs.h"
 #include "overworld.h"
 #include "field_camera.h"
+#include "constants/map_types.h"
 
 #define DROUGHT_COLOR_INDEX(color) ((((color) >> 1) & 0xF) | (((color) >> 2) & 0xF0) | (((color) >> 3) & 0xF00))
 
@@ -455,7 +456,7 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
         palOffset = PLTT_ID(startPalIndex);
         UpdateAltBgPalettes(palettes & PALETTES_BG);
         // Thunder gamma-shift looks bad on night-blended palettes, so ignore time blending in some situations
-        if (!(colorMapIndex > 3) && MapHasNaturalLight(gMapHeader.mapType))
+        if (!(colorMapIndex > 3) && (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)))
           UpdatePalettesWithTime(palettes);
         else
           CpuFastCopy(gPlttBufferUnfaded + palOffset, gPlttBufferFaded + palOffset, PLTT_SIZE_4BPP * numPalettes);
@@ -467,7 +468,7 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
         {
             // don't blend special palettes immune to blending
             if (sPaletteColorMapTypes[curPalIndex] == COLOR_MAP_NONE ||
-                (curPalIndex >= 16 && GetSpritePaletteTagByPaletteNum(curPalIndex - 16) >> 15))
+                (curPalIndex >= 16 && IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(curPalIndex - 16))))
             {
                 // No palette change.
                 palOffset += 16;
@@ -525,7 +526,7 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
     }
     else
     {
-        if (MapHasNaturalLight(gMapHeader.mapType)) { // Time-blend
+        if (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)) { // Time-blend
             u32 palettes = ((1 << numPalettes) - 1) << startPalIndex;
             UpdateAltBgPalettes(palettes & PALETTES_BG);
             UpdatePalettesWithTime(palettes);
@@ -656,7 +657,7 @@ static void ApplyFogBlend(u8 blendCoeff, u32 blendColor)
     CpuFastCopy(gPlttBufferUnfaded, gPlttBufferFaded, PLTT_BUFFER_SIZE * 2);
     UpdatePalettesWithTime(PALETTES_ALL);
     // Then blend tile palettes [0, 12] faded->faded with fadeIn color
-    BlendPalettesFine(0x1FFF, gPlttBufferFaded, gPlttBufferFaded, blendCoeff, blendColor);
+    BlendPalettesFine(PALETTES_MAP, gPlttBufferFaded, gPlttBufferFaded, blendCoeff, blendColor);
 
     // Do fog blending on marked sprite palettes
     for (curPalIndex = 16; curPalIndex < 32; curPalIndex++) {
@@ -680,7 +681,7 @@ static bool8 LightenSpritePaletteInFog(u8 paletteIndex)
 {
     u16 i=0;
 
-    if (paletteIndex >= 16 && (GetSpritePaletteTagByPaletteNum(i - 16) >> 15)) // don't blend specialpalette tags
+    if (paletteIndex >= 16 && IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(paletteIndex - 16)))
         return FALSE;
 
     for (i = 0; i < gWeatherPtr->lightenedFogSpritePalsCount; i++)
@@ -780,6 +781,12 @@ void FadeScreen(u8 mode, s8 delay)
               (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
               (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
               currentTimeBlend.weight, fadeColor);
+          } else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) {
+            UpdateAltBgPalettes(PALETTES_BG);
+            BeginTimeOfDayPaletteFade(PALETTES_ALL, delay, 16, 0,
+              (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+              (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+              256, fadeColor);
           } else {
             BeginNormalPaletteFade(PALETTES_ALL, delay, 16, 0, fadeColor);
           }

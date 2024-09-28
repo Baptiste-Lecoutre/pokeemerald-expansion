@@ -30,6 +30,7 @@
 #include "trainer_pokemon_sprites.h"
 #include "trig.h"
 #include "util.h"
+#include "follow_me.h"
 #include "constants/field_effects.h"
 #include "constants/flags.h"
 #include "constants/event_objects.h"
@@ -145,6 +146,7 @@ static bool8 LavaridgeGym1FWarpEffect_Warp(struct Task *, struct ObjectEvent *, 
 
 static void Task_EscapeRopeWarpOut(u8);
 static void EscapeRopeWarpOutEffect_Init(struct Task *);
+static void EscapeRopeWarpOutEffect_HideFollower(struct Task *);
 static void EscapeRopeWarpOutEffect_Spin(struct Task *);
 
 static void FieldCallback_EscapeRopeWarpIn(void);
@@ -714,6 +716,7 @@ static bool8 (*const sLavaridgeGym1FWarpEffectFuncs[])(struct Task *, struct Obj
 static void (*const sEscapeRopeWarpOutEffectFuncs[])(struct Task *) =
 {
     EscapeRopeWarpOutEffect_Init,
+    EscapeRopeWarpOutEffect_HideFollower,
     EscapeRopeWarpOutEffect_Spin,
 };
 
@@ -1390,27 +1393,70 @@ static void FieldCallback_Fly_2(void)
 
 static void Task_UseFly(u8 taskId)
 {
+    struct ObjectEvent *follower = &gObjectEvents[GetFollowerMapObjId()];
     struct Task *task;
     task = &gTasks[taskId];
-    if (!task->data[0])
+    if (task->data[3] == 0)
     {
-        if (!IsWeatherNotFadingIn())
-            return;
-
-        gFieldEffectArguments[0] = GetCursorSelectionMonId();
-        if ((int)gFieldEffectArguments[0] > PARTY_SIZE - 1)
-            gFieldEffectArguments[0] = 0;
-
-        FieldEffectStart(FLDEFF_USE_FLY);
-        task->data[0]++;
+        if (!gSaveBlock2Ptr->follower.inProgress)
+        {
+            task->data[3] = 2;
+        }
+        else
+        {
+            u8 followerObjId = GetFollowerObjectId();
+            follower->singleMovementActive = FALSE;
+            follower->heldMovementActive = FALSE;
+            switch (DetermineFollowerDirection(&gObjectEvents[gPlayerAvatar.objectEventId], &gObjectEvents[followerObjId]))
+            {
+                case DIR_NORTH:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_UP);
+                    break;
+                case DIR_SOUTH:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_DOWN);
+                    break;
+                case DIR_EAST:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_RIGHT);
+                    break;
+                case DIR_WEST:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_LEFT);
+                    break;
+            }
+            task->data[3]++;
+        }
     }
-    if (!FieldEffectActiveListContains(FLDEFF_USE_FLY))
+    if (task->data[3] == 1)
     {
-        Overworld_ResetStateAfterFly();
-        WarpIntoMap();
-        SetMainCallback2(CB2_LoadMap);
-        gFieldCallback = FieldCallback_FlyIntoMap;
-        DestroyTask(taskId);
+        if (ObjectEventClearHeldMovementIfFinished(follower))
+        {
+            SetFollowerSprite(FOLLOWER_SPRITE_INDEX_NORMAL);
+            follower->invisible = TRUE;
+            gSaveBlock2Ptr->follower.comeOutDoorStairs = 0; // In case the follower was still coming out of a door.
+            task->data[3]++;
+        }
+    }
+    if (task->data[3] == 2)
+    {
+        if (!task->data[0])
+        {
+            if (!IsWeatherNotFadingIn())
+                return;
+
+            gFieldEffectArguments[0] = GetCursorSelectionMonId();
+            if ((int)gFieldEffectArguments[0] > PARTY_SIZE - 1)
+                gFieldEffectArguments[0] = 0;
+
+            FieldEffectStart(FLDEFF_USE_FLY);
+            task->data[0]++;
+        }
+        if (!FieldEffectActiveListContains(FLDEFF_USE_FLY))
+        {
+            Overworld_ResetStateAfterFly();
+            WarpIntoMap();
+            SetMainCallback2(CB2_LoadMap);
+            gFieldCallback = FieldCallback_FlyIntoMap;
+            DestroyTask(taskId);
+        }
     }
 }
 
@@ -1431,6 +1477,8 @@ static void FieldCallback_FlyIntoMap(void)
 
 static void Task_FlyIntoMap(u8 taskId)
 {
+    struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+    struct ObjectEvent *follower = &gObjectEvents[GetFollowerMapObjId()];
     struct Task *task;
     task = &gTasks[taskId];
     if (task->data[0] == 0)
@@ -1442,7 +1490,35 @@ static void Task_FlyIntoMap(u8 taskId)
         FieldEffectStart(FLDEFF_FLY_IN);
         task->data[0]++;
     }
-    if (!FieldEffectActiveListContains(FLDEFF_FLY_IN))
+    if (task->data[0] == 1)
+    {
+        if (!FieldEffectActiveListContains(FLDEFF_FLY_IN))
+        {
+            if (gSaveBlock2Ptr->follower.inProgress) {
+                follower->invisible = FALSE; // Show the follower after FLY
+                MoveObjectEventToMapCoords(follower, player->currentCoords.x, player->currentCoords.y);
+                ObjectEventTurn(follower, DIR_SOUTH); // Turn the follower SOUTH
+                follower->singleMovementActive = FALSE;
+                follower->heldMovementActive = FALSE;
+                ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_DOWN); // Follower takes a step SOUTH
+            }
+            task->data[0]++;
+        }
+    }
+    if (task->data[0] == 2)
+    {
+        if (gSaveBlock2Ptr->follower.inProgress && ObjectEventClearHeldMovementIfFinished(follower))
+        {
+            ObjectEventTurn(follower, DIR_NORTH); // Follower faces the player
+            gSaveBlock2Ptr->follower.warpEnd = 0;
+            task->data[0]++;
+        }
+        else if (!gSaveBlock2Ptr->follower.inProgress)
+        {
+            task->data[0]++;
+        }
+    }
+    if (task->data[0] == 3)
     {
         UnlockPlayerFieldControls();
         UnfreezeObjectEvents();
@@ -1582,6 +1658,9 @@ static bool8 FallWarpEffect_End(struct Task *task)
     UnfreezeObjectEvents();
     InstallCameraPanAheadCallback();
     DestroyTask(FindTaskIdByFunc(Task_FallWarpFieldEffect));
+    
+    FollowMe_WarpSetEnd();
+    
     return FALSE;
 }
 
@@ -1644,7 +1723,10 @@ static bool8 EscalatorWarpOut_WaitForPlayer(struct Task *task)
         task->tState++;
         task->data[2] = 0;
         task->data[3] = 0;
-        if ((u8)task->tGoingUp == FALSE)
+        
+        EscalatorMoveFollower(task->data[1]);
+        
+        if ((u8)task->data[1] == FALSE)
         {
             task->tState = 4; // jump to EscalatorWarpOut_Down_Ride
         }
@@ -1715,12 +1797,14 @@ static void RideDownEscalatorOut(struct Task *task)
     }
 }
 
+//Escalator_BeginFadeOutToNewMap
 static void FadeOutAtEndOfEscalator(void)
 {
     TryFadeOutOldMapMusic();
     WarpFadeOutScreen();
 }
 
+//Escalator_TransitionToWarpInEffect
 static void WarpAtEndOfEscalator(void)
 {
     if (!gPaletteFade.active && BGMusicStopped() == TRUE)
@@ -1736,6 +1820,7 @@ static void WarpAtEndOfEscalator(void)
 #undef tState
 #undef tGoingUp
 
+//FieldCB_EscalatorWarpIn
 static void FieldCallback_EscalatorWarpIn(void)
 {
     Overworld_PlaySpecialMapMusic();
@@ -1747,6 +1832,7 @@ static void FieldCallback_EscalatorWarpIn(void)
 
 #define tState data[0]
 
+//Task_EscalatorWarpInFieldEffect
 static void Task_EscalatorWarpIn(u8 taskId)
 {
     struct Task *task;
@@ -1754,6 +1840,7 @@ static void Task_EscalatorWarpIn(u8 taskId)
     while (sEscalatorWarpInFieldEffectFuncs[task->tState](task));
 }
 
+//EscalatorWarpInEffect_1
 static bool8 EscalatorWarpIn_Init(struct Task *task)
 {
     struct ObjectEvent *objectEvent;
@@ -1784,6 +1871,7 @@ static bool8 EscalatorWarpIn_Init(struct Task *task)
     return TRUE;
 }
 
+//EscalatorWarpInEffect_2
 static bool8 EscalatorWarpIn_Down_Init(struct Task *task)
 {
     struct Sprite *sprite;
@@ -1794,6 +1882,7 @@ static bool8 EscalatorWarpIn_Down_Init(struct Task *task)
     return FALSE;
 }
 
+//EscalatorWarpInEffect_3
 static bool8 EscalatorWarpIn_Down_Ride(struct Task *task)
 {
     struct Sprite *sprite;
@@ -2318,6 +2407,50 @@ static void EscapeRopeWarpOutEffect_Init(struct Task *task)
     task->tStartDir = GetPlayerFacingDirection();
 }
 
+static void EscapeRopeWarpOutEffect_HideFollower(struct Task *task)
+{
+    struct ObjectEvent *follower = &gObjectEvents[GetFollowerMapObjId()];
+    if (task->data[3] == 0)
+    {
+        if (!gSaveBlock2Ptr->follower.inProgress)
+        {
+            task->tState++;
+        }
+        else
+        {
+            u8 followerObjId = GetFollowerObjectId();
+            follower->singleMovementActive = FALSE;
+            follower->heldMovementActive = FALSE;
+            switch (DetermineFollowerDirection(&gObjectEvents[gPlayerAvatar.objectEventId], &gObjectEvents[followerObjId]))
+            {
+                case DIR_NORTH:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_UP);
+                    break;
+                case DIR_SOUTH:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_DOWN);
+                    break;
+                case DIR_EAST:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_RIGHT);
+                    break;
+                case DIR_WEST:
+                    ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_LEFT);
+                    break;
+            }
+            task->data[3]++;
+        }
+    }
+    if (task->data[3] == 1)
+    {
+        if (ObjectEventClearHeldMovementIfFinished(follower))
+        {
+            SetFollowerSprite(FOLLOWER_SPRITE_INDEX_NORMAL);
+            follower->invisible = TRUE;
+            gSaveBlock2Ptr->follower.comeOutDoorStairs = 0; // In case the follower was still coming out of a door.
+            task->tState++;
+        }
+    }
+}
+
 static void EscapeRopeWarpOutEffect_Spin(struct Task *task)
 {
     struct ObjectEvent *objectEvent;
@@ -2376,33 +2509,67 @@ static void EscapeRopeWarpInEffect_Init(struct Task *task)
     {
         task->tState++;
         task->tStartDir = GetPlayerFacingDirection();
+        task->data[3] = 0;
     }
 }
 
 static void EscapeRopeWarpInEffect_Spin(struct Task *task)
 {
     u8 spinDirections[5] = {DIR_SOUTH, DIR_WEST, DIR_EAST, DIR_NORTH, DIR_SOUTH};
-    struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
-    if (task->tSpinDelay == 0 || (--task->tSpinDelay) == 0)
+    struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+    struct ObjectEvent *follower = &gObjectEvents[GetFollowerMapObjId()];
+    if ((task->tSpinDelay == 0 || (--task->tSpinDelay) == 0) && task->data[3] == 0)
     {
-        if (ObjectEventIsMovementOverridden(objectEvent) && !ObjectEventClearHeldMovementIfFinished(objectEvent))
+        if (ObjectEventIsMovementOverridden(player) && !ObjectEventClearHeldMovementIfFinished(player))
         {
             return;
         }
         if (task->tNumTurns >= 32 && task->tStartDir == GetPlayerFacingDirection())
         {
-            objectEvent->invisible = FALSE;
-            UnlockPlayerFieldControls();
-            UnfreezeObjectEvents();
-            DestroyTask(FindTaskIdByFunc(Task_EscapeRopeWarpIn));
-            return;
+            task->data[3]++;
         }
-        ObjectEventSetHeldMovement(objectEvent, GetFaceDirectionMovementAction(spinDirections[objectEvent->facingDirection]));
+        if (task->data[3] == 0)
+            ObjectEventSetHeldMovement(player, GetFaceDirectionMovementAction(spinDirections[player->facingDirection]));
         if (task->tNumTurns < 32)
             task->tNumTurns++;
         task->tSpinDelay = task->tNumTurns >> 2;
     }
-    objectEvent->invisible ^= 1;
+    if (task->data[3] == 0)
+        player->invisible ^= 1;
+
+    if (task->data[3] == 1)
+    {
+        if (gSaveBlock2Ptr->follower.inProgress) {
+            follower->invisible = FALSE; // Show the follower after ESCAPE ROPE
+            MoveObjectEventToMapCoords(follower, player->currentCoords.x, player->currentCoords.y);
+            ObjectEventTurn(follower, DIR_SOUTH); // Turn the follower SOUTH
+            follower->singleMovementActive = FALSE;
+            follower->heldMovementActive = FALSE;
+            ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_DOWN); // Follower takes a step SOUTH
+            }
+        task->data[3]++;
+    }
+    if (task->data[3] == 2)
+    {
+        if (gSaveBlock2Ptr->follower.inProgress && ObjectEventClearHeldMovementIfFinished(follower))
+        {
+            ObjectEventTurn(follower, DIR_NORTH); // Follower faces the player
+            gSaveBlock2Ptr->follower.warpEnd = 0;
+            task->data[3]++;
+        }
+        else if (!gSaveBlock2Ptr->follower.inProgress)
+        {
+            task->data[3]++;
+        }
+    }
+    if (task->data[3] == 3)
+    {
+        player->invisible = FALSE;
+        UnlockPlayerFieldControls();
+        UnfreezeObjectEvents();
+        DestroyTask(FindTaskIdByFunc(Task_EscapeRopeWarpIn));
+        return;
+    }
 }
 
 #undef tState
@@ -2586,24 +2753,52 @@ static void TeleportWarpInFieldEffect_SpinEnter(struct Task *task)
         task->data[0]++;
         task->data[1] = 1;
         task->data[2] = 0;
+        task->data[3] = 0;
     }
 }
 
 static void TeleportWarpInFieldEffect_SpinGround(struct Task *task)
 {
     u8 spinDirections[5] = {DIR_SOUTH, DIR_WEST, DIR_EAST, DIR_NORTH, DIR_SOUTH};
-    struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
-    if ((--task->data[1]) == 0)
+    struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+    struct ObjectEvent *follower = &gObjectEvents[GetFollowerMapObjId()];
+    if ((--task->data[1]) == 0 && task->data[3] == 0)
     {
-        ObjectEventTurn(objectEvent, spinDirections[objectEvent->facingDirection]);
+        ObjectEventTurn(player, spinDirections[player->facingDirection]);
         task->data[1] = 8;
-        if ((++task->data[2]) > 4 && task->data[14] == objectEvent->facingDirection)
+        if ((++task->data[2]) > 4 && task->data[14] == player->facingDirection)
         {
-            UnlockPlayerFieldControls();
-            CameraObjectReset();
-            UnfreezeObjectEvents();
-            DestroyTask(FindTaskIdByFunc(Task_TeleportWarpIn));
+            if (gSaveBlock2Ptr->follower.inProgress) {
+                follower->invisible = FALSE; // Show the follower after TELEPORT
+                MoveObjectEventToMapCoords(follower, player->currentCoords.x, player->currentCoords.y);
+                ObjectEventTurn(follower, DIR_SOUTH); // Turn the follower SOUTH
+                follower->singleMovementActive = FALSE;
+                follower->heldMovementActive = FALSE;
+                ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_WALK_NORMAL_DOWN); // Follower takes a step SOUTH
+            }
+            task->data[3] = 1;
         }
+    }
+    if (task->data[3] == 1)
+    {
+        if (gSaveBlock2Ptr->follower.inProgress && ObjectEventClearHeldMovementIfFinished(follower))
+        {
+            ObjectEventTurn(player, DIR_SOUTH); // Player faces the follower
+            ObjectEventTurn(follower, DIR_NORTH); // Follower faces the player
+            gSaveBlock2Ptr->follower.warpEnd = 0;
+            task->data[3]++;
+        }
+        else if (!gSaveBlock2Ptr->follower.inProgress)
+        {
+            task->data[3]++;
+        }
+    }
+    if (task->data[3] == 2)
+    {
+        UnlockPlayerFieldControls();
+        CameraObjectReset();
+        UnfreezeObjectEvents();
+        DestroyTask(FindTaskIdByFunc(Task_TeleportWarpIn));
     }
 }
 
@@ -3136,6 +3331,9 @@ static void SurfFieldEffect_JumpOnSurfBlob(struct Task *task)
         ObjectEventSetGraphicsId(objectEvent, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_SURFING));
         ObjectEventClearHeldMovementIfFinished(objectEvent);
         ObjectEventSetHeldMovement(objectEvent, GetJumpSpecialMovementAction(objectEvent->movementDirection));
+
+        FollowMe_FollowerToWater();
+        
         gFieldEffectArguments[0] = task->tDestX;
         gFieldEffectArguments[1] = task->tDestY;
         gFieldEffectArguments[2] = gPlayerAvatar.objectEventId;
@@ -4028,12 +4226,12 @@ static u8 CreateRockClimbBlob(void)
     struct Sprite *sprite;
     
     SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
-    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_ROCK_CLIMB_BLOB], gFieldEffectArguments[0], gFieldEffectArguments[1], 0x96);
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_ROCK_CLIMB_BLOB], gFieldEffectArguments[0], gFieldEffectArguments[1], 150);
     if (spriteId != MAX_SPRITES)
     {
         sprite = &gSprites[spriteId];
         sprite->coordOffsetEnabled = TRUE;
-        sprite->oam.paletteNum = 0;
+        sprite->oam.paletteNum = LoadPlayerObjectEventPalette(gSaveBlock2Ptr->playerGender);
         sprite->data[2] = gFieldEffectArguments[2];
         sprite->data[3] = -1;
         sprite->data[6] = -1;
@@ -4074,6 +4272,8 @@ static bool8 RockClimb_Init(struct Task *task, struct ObjectEvent *objectEvent)
 {
     LockPlayerFieldControls();
     FreezeObjectEvents();
+    // Put follower into pokeball before using RockClimb
+    HideFollowerForFieldEffect();
     gPlayerAvatar.preventStep = TRUE;
     SetPlayerAvatarStateMask(PLAYER_AVATAR_FLAG_SURFING);
     PlayerGetDestCoords(&task->tDestX, &task->tDestY);
@@ -4084,7 +4284,12 @@ static bool8 RockClimb_Init(struct Task *task, struct ObjectEvent *objectEvent)
 
 static bool8 RockClimb_FieldMovePose(struct Task *task, struct ObjectEvent *objectEvent)
 {
-    if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
+    if (gSaveBlock2Ptr->optionsFastFieldMove)
+    {
+        ObjectEventClearHeldMovementIfActive(objectEvent);
+        task->tState = task->tState + 2;
+    }
+    else if (!ObjectEventIsMovementOverridden(objectEvent) || ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         SetPlayerAvatarFieldMove();
         ObjectEventSetHeldMovement(objectEvent, MOVEMENT_ACTION_START_ANIM_IN_DIRECTION);
@@ -4229,10 +4434,13 @@ static bool8 RockClimb_StopRockClimbInit(struct Task *task, struct ObjectEvent *
 
 static bool8 RockClimb_WaitStopRockClimb(struct Task *task, struct ObjectEvent *objectEvent)
 {
+    struct ObjectEvent *followerObject = GetFollowerObject();
     if (ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         ObjectEventSetGraphicsId(objectEvent, GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_NORMAL));
         ObjectEventSetHeldMovement(objectEvent, GetFaceDirectionMovementAction(objectEvent->facingDirection));
+        if (followerObject)
+          ObjectEventClearHeldMovementIfFinished(followerObject);
         gPlayerAvatar.preventStep = FALSE;
         UnfreezeObjectEvents();
         UnlockPlayerFieldControls();

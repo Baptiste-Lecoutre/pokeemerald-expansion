@@ -25,6 +25,7 @@ struct WildPokemonHeader
     const struct WildPokemonInfo *rockSmashMonsInfo;
     const struct WildPokemonInfo *hiddenMonsInfo;
     const struct WildPokemonInfo *fishingMonsInfo;
+    const struct WildPokemonInfo *honeyMonsInfo;
 };
 
 extern const struct WildPokemonHeader gWildMonHeaders[];
@@ -36,6 +37,7 @@ void DisableWildEncounters(bool8 disabled);
 u8 PickWildMonNature(void);
 bool8 StandardWildEncounter(u16 currMetaTileBehavior, u16 previousMetaTileBehavior);
 bool8 SweetScentWildEncounter(void);
+void BerryWildEncounter(u8 headerId);
 bool8 DoesCurrentMapHaveFishingMons(void);
 void FishingWildEncounter(u8 rod);
 u16 GetLocalWildMon(bool8 *isWaterMon);
@@ -49,6 +51,11 @@ u8 ChooseWildMonIndex_WaterRock(void);
 u8 ChooseHiddenMonIndex(void);
 bool32 MapHasNoEncounterData(void);
 bool8 StandardWildEncounter_Debug(void);
+u8 GetMedianLevelOfPlayerParty(void);
+void HoneyWildEncounter(void);
+void ResetChainFishingDexNavStreak(void);
+bool32 IsCurrentEncounterFishing(void);
 u32 CalculateChainFishingShinyRolls(void);
+bool32 CheckDevonScopeInHauntedMansion(u16 mapGroup, u16 mapNum);
 
 #endif // GUARD_WILD_ENCOUNTER_H

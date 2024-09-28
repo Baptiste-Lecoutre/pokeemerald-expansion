@@ -5,6 +5,7 @@
 #include "battle_interface.h"
 #include "battle_gimmick.h"
 #include "battle_z_move.h"
+#include "battle_raid.h"
 #include "battle_setup.h"
 #include "battle_util.h"
 #include "item.h"
@@ -59,6 +60,24 @@ void SetActiveGimmick(u32 battler, enum Gimmick gimmick)
 // Returns a battler's active gimmick, if any.
 enum Gimmick GetActiveGimmick(u32 battler)
 {
+    if (gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]])
+        return gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
+
+    if (IsRaidBoss(battler))
+    {
+        switch (gRaidTypes[gRaidData.raidType].gimmick)
+        {
+            default:
+            case RAID_GIMMICK_DYNAMAX:
+                return GIMMICK_DYNAMAX;
+            case RAID_GIMMICK_MEGA:
+                return GIMMICK_MEGA;
+            case RAID_GIMMICK_TERA:
+                return GIMMICK_TERA;
+            case RAID_GIMMICK_PRIMAL:
+                return GIMMICK_MEGA;
+        }
+    }
     return gBattleStruct->gimmick.activeGimmick[GetBattlerSide(battler)][gBattlerPartyIndexes[battler]];
 }
 
@@ -115,19 +134,19 @@ bool32 HasTrainerUsedGimmick(u32 battler, enum Gimmick gimmick)
 void SetGimmickAsActivated(u32 battler, enum Gimmick gimmick)
 {
     gBattleStruct->gimmick.activated[battler][gimmick] = TRUE;
-    if (IsDoubleBattle() && IsPartnerMonFromSameTrainer(battler))
+    if (IsDoubleBattle() && IsPartnerMonFromSameTrainer(battler) && !IsRaidBoss(battler))
         gBattleStruct->gimmick.activated[BATTLE_PARTNER(battler)][gimmick] = TRUE;
 }
 
-#define SINGLES_GIMMICK_TRIGGER_POS_X_OPTIMAL (30)
-#define SINGLES_GIMMICK_TRIGGER_POS_X_PRIORITY (31)
-#define SINGLES_GIMMICK_TRIGGER_POS_X_SLIDE (15)
-#define SINGLES_GIMMICK_TRIGGER_POS_Y_DIFF (-11)
+#define SINGLES_GIMMICK_TRIGGER_POS_X_OPTIMAL (29)
+#define SINGLES_GIMMICK_TRIGGER_POS_X_PRIORITY (30)
+#define SINGLES_GIMMICK_TRIGGER_POS_X_SLIDE (14)
+#define SINGLES_GIMMICK_TRIGGER_POS_Y_DIFF (-4)
 
-#define DOUBLES_GIMMICK_TRIGGER_POS_X_OPTIMAL (30)
-#define DOUBLES_GIMMICK_TRIGGER_POS_X_PRIORITY (31)
-#define DOUBLES_GIMMICK_TRIGGER_POS_X_SLIDE (15)
-#define DOUBLES_GIMMICK_TRIGGER_POS_Y_DIFF (-4)
+#define DOUBLES_GIMMICK_TRIGGER_POS_X_OPTIMAL SINGLES_GIMMICK_TRIGGER_POS_X_OPTIMAL
+#define DOUBLES_GIMMICK_TRIGGER_POS_X_PRIORITY SINGLES_GIMMICK_TRIGGER_POS_X_PRIORITY
+#define DOUBLES_GIMMICK_TRIGGER_POS_X_SLIDE SINGLES_GIMMICK_TRIGGER_POS_X_SLIDE
+#define DOUBLES_GIMMICK_TRIGGER_POS_Y_DIFF (-2)
 
 #define tBattler    data[0]
 #define tHide       data[1]

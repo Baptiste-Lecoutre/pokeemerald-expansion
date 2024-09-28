@@ -17,10 +17,14 @@ Debug_CheatStart::
 	setflag FLAG_HIDE_ROUTE_101_BIRCH_STARTERS_BAG
 	setvar VAR_BIRCH_LAB_STATE, 2
 	setvar VAR_ROUTE101_STATE, 3
-	givemon SPECIES_TREECKO, 20, ITEM_NONE
-	givemon SPECIES_TORCHIC, 20, ITEM_NONE
-	givemon SPECIES_MUDKIP, 20, ITEM_NONE
+	givemon SPECIES_GYARADOS, 90, item=ITEM_GYARADOSITE, nature=NATURE_ADAMANT, abilityNum=2, hpEv=252, atkEv=252, speedEv=252, hpIv=31, atkIv=31, defIv=31, speedIv=31, spAtkIv=31, spDefIv=31, move1=MOVE_WATERFALL, move2=MOVE_EARTHQUAKE, move3=MOVE_ICICLE_CRASH, move4=MOVE_DRAGON_DANCE, isShiny=TRUE, teraType=TYPE_GROUND
+	givemon SPECIES_RAYQUAZA, 90, ITEM_NONE
+	givemon SPECIES_SALAMENCE, 90, ITEM_NONE
+	givemon SPECIES_NECROZMA_DAWN_WINGS, 90, ITEM_ULTRANECROZIUM_Z
+	setflag P_FLAG_FORCE_SHINY
+	givemon SPECIES_MEW, 1, ITEM_NONE
 	setflag FLAG_SYS_POKEDEX_GET
+	setflag FLAG_SYS_POKENAV_GET
 	special SetUnlockedPokedexFlags
 	setflag FLAG_RECEIVED_POKEDEX_FROM_BIRCH
 	setvar VAR_CABLE_CLUB_TUTORIAL_STATE, 2
@@ -33,8 +37,15 @@ Debug_CheatStart::
 	setvar VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 2 @ 2: Met Rival's Mom (and is corresponding gender)
 	setvar VAR_LITTLEROOT_HOUSES_STATE_MAY, 2 @ 2: Met Rival's Mom (and is corresponding gender)
 	setvar VAR_LITTLEROOT_RIVAL_STATE, 4 @ 4: Received Pokedex
-	setflag FLAG_RECEIVED_BIKE
+@	setflag FLAG_RECEIVED_BIKE
 	additem ITEM_ACRO_BIKE
+	additem ITEM_MEGA_RING
+	additem ITEM_Z_POWER_RING
+	additem ITEM_DYNAMAX_BAND
+	additem ITEM_EXP_SHARE
+	additem ITEM_TERA_ORB
+	additem ITEM_MASTER_BALL, 10
+	setflag B_FLAG_TERA_ORB_CHARGED
 	setvar VAR_BRINEY_HOUSE_STATE, 1
 	setvar VAR_ROUTE116_STATE, 2
 	setflag FLAG_HIDE_ROUTE_116_MR_BRINEY
@@ -46,6 +57,8 @@ Debug_CheatStart::
 	setflag FLAG_BADGE06_GET
 	setflag FLAG_BADGE07_GET
 	setflag FLAG_BADGE08_GET
+@	setflag FLAG_IS_CHAMPION
+	setflag FLAG_MET_ARCHIE_METEOR_FALLS
 	setflag FLAG_VISITED_LITTLEROOT_TOWN
 	setflag FLAG_VISITED_OLDALE_TOWN
 	setflag FLAG_VISITED_DEWFORD_TOWN
@@ -159,16 +172,35 @@ Debug_EventScript_Script_4::
 	end
 
 Debug_EventScript_Script_5::
-	release
+	lockall
+	preparefixedraid RAID_TYPE_TERA, RAID_RANK_5, SPECIES_SALAMENCE, 50, ITEM_SALAMENCITE, TYPE_ELECTRIC
+	special InitRaidIntro
+	waitstate
+	goto_if_ne VAR_RESULT, FALSE, Debug_DoFixedRaid
+	releaseall
+	end
+
+Debug_DoFixedRaid:
+	doraidbattle
 	end
 
 Debug_EventScript_Script_6::
-	goto PKMN_Center_MinimalGrinding
+	setTeraType TYPE_STELLAR, 4
 	release
 	end
 
 Debug_EventScript_Script_7::
-	release
+	setvar VAR_SOOTOPOLIS_CITY_STATE, 4
+	setvar VAR_SKY_PILLAR_STATE, 1
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_STEVEN
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_ARCHIE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_MAXIE
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_RESIDENTS
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_GROUDON
+	clearflag FLAG_HIDE_SOOTOPOLIS_CITY_KYOGRE
+	setflag FLAG_HIDE_SOOTOPOLIS_CITY_MAN_1
+	setflag FLAG_LEGENDARIES_IN_SOOTOPOLIS
+	warp MAP_SOOTOPOLIS_CITY, 43, 32
 	end
 
 Debug_EventScript_Script_8::

@@ -838,6 +838,8 @@ static const struct MenuAction MultichoiceList_DresserDrawers[] =
     {gText_SecondDrawer},
     {gText_ThirdDrawer},
     {gText_FourthDrawer},
+//    {gText_FifthDrawer},
+//    {gText_SixthDrawer},
     {gText_Exit},
 };
 
@@ -869,6 +871,13 @@ static const struct MenuAction MultichoiceList_SinnohCostumes[] =
     {gText_DawnCostume},
     {gText_LucasPlatinumCostume},
     {gText_DawnPlatinumCostume},
+    {gText_Cancel2},
+};
+
+static const struct MenuAction MultichoiceList_LGPECostumes[] =
+{
+    {gText_ChaseCostume},
+    {gText_ElaineCostume},
     {gText_Cancel2},
 };
 
@@ -1051,6 +1060,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_JOHTO_COSTUMES]             = MULTICHOICE(MultichoiceList_JohtoCostumes),
     [MULTI_HOENN_COSTUMES]             = MULTICHOICE(MultichoiceList_HoennCostumes),
     [MULTI_SINNOH_COSTUMES]            = MULTICHOICE(MultichoiceList_SinnohCostumes),
+    [MULTI_LGPE_COSTUMES]              = MULTICHOICE(MultichoiceList_LGPECostumes),
     [MULTI_ROTOM_APPLIANCES]           = MULTICHOICE(MultichoiceList_RotomAppliances),
     [MULTI_DEOXYS_FORMES]              = MULTICHOICE(MultichoiceList_DeoxysFormes),
     [MULTI_STARTER_MOVES]              = MULTICHOICE(MultichoiceList_StarterMoves),

@@ -22,6 +22,7 @@
 #include "data.h"
 #include "palette.h"
 #include "contest.h"
+#include "item.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
 #include "constants/battle_palace.h"
@@ -504,6 +505,19 @@ void SpriteCB_TrainerSlideIn(struct Sprite *sprite)
     }
 }
 
+// fast battle intro
+void SpriteCB_TrainerSpawn(struct Sprite *sprite)
+{
+    if (!(gIntroSlideFlags & 1))
+    {
+        sprite->x2 = 0;
+        if (sprite->y2 != 0)
+            sprite->callback = SpriteCB_TrainerSlideVertical;
+        else
+            sprite->callback = SpriteCallbackDummy;
+    }
+}
+
 // Slide up to 0 if necessary (used by multi battle intro)
 static void SpriteCB_TrainerSlideVertical(struct Sprite *sprite)
 {
@@ -751,6 +765,18 @@ void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battler)
 
 void BattleGfxSfxDummy2(u16 species)
 {
+}
+
+void DecompressGhostFrontPic(struct Pokemon *unused, u8 battler)
+{
+    u16 paletteOffset;
+    u8 position = GetBattlerPosition(battler);
+
+    LZ77UnCompWram(gGhostFrontPic, gMonSpritesGfxPtr->spritesGfx[position]);
+    paletteOffset = OBJ_PLTT_ID(battler);
+    LZDecompressWram(gGhostPalette, gDecompressionBuffer);
+    LoadPalette(gDecompressionBuffer, paletteOffset, PLTT_SIZE_4BPP);
+    LoadPalette(gDecompressionBuffer, BG_PLTT_ID(8) + BG_PLTT_ID(battler), PLTT_SIZE_4BPP);
 }
 
 void DecompressTrainerFrontPic(u16 frontPicId, u8 battler)
@@ -1046,6 +1072,13 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool32 megaEvo, bo
 
     gSprites[gBattlerSpriteIds[battlerAtk]].y = GetBattlerSpriteDefault_Y(battlerAtk);
     StartSpriteAnim(&gSprites[gBattlerSpriteIds[battlerAtk]], 0);
+    
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && ShouldUnveilGhost() && GetBattlerSide(battlerAtk) == B_SIDE_OPPONENT)
+    {
+        SetMonData(&gEnemyParty[gBattlerPartyIndexes[battlerAtk]], MON_DATA_NICKNAME, gSpeciesInfo[targetSpecies].speciesName);
+        UpdateNickInHealthbox(gHealthboxSpriteIds[battlerAtk], &gEnemyParty[gBattlerPartyIndexes[battlerAtk]]);
+        TryAddPokeballIconToHealthbox(gHealthboxSpriteIds[battlerAtk], TRUE);
+    }
 }
 
 void BattleLoadSubstituteOrMonSpriteGfx(u8 battler, bool8 loadMonSprite)

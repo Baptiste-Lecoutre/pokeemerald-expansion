@@ -152,5 +152,9 @@ bool32 MetatileBehavior_IsSignpost(u32);
 bool32 MetatileBehavior_IsPokemonCenterSign(u32);
 bool32 MetatileBehavior_IsPokeMartSign(u32);
 bool8 MetatileBehavior_IsRockClimbable(u8 metatileBehavior);
+bool8 MetatileBehavior_IsSpinRight(u8);
+bool8 MetatileBehavior_IsSpinLeft(u8);
+bool8 MetatileBehavior_IsSpinUp(u8);
+bool8 MetatileBehavior_IsSpinDown(u8);
 
 #endif // GUARD_METATILE_BEHAVIOR_H

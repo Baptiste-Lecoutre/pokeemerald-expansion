@@ -5,6 +5,7 @@
 #include "battle_tower.h"
 #include "cable_club.h"
 #include "data.h"
+#include "daycare.h"
 #include "decoration.h"
 #include "diploma.h"
 #include "event_data.h"
@@ -32,6 +33,7 @@
 #include "overworld.h"
 #include "party_menu.h"
 #include "pokeblock.h"
+#include "pokedex.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
 #include "pokemon_summary_screen.h"
@@ -70,6 +72,7 @@
 #include "constants/battle_frontier.h"
 #include "constants/weather.h"
 #include "constants/metatile_labels.h"
+#include "constants/rgb.h"
 #include "palette.h"
 #include "battle_util.h"
 
@@ -2510,6 +2513,16 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_COSTUME:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 5;//7;
+        task->tLeft = 22;
+        task->tTop = 3;//1;
+        task->tWidth = 12;
+        task->tHeight = 10;//12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2933,6 +2946,16 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_KabukiTrim,
         gText_PharaohTrim,
         gText_BackToNatural,
+        gText_Exit
+    },
+    [SCROLL_MULTI_COSTUME] = 
+    {
+        gText_FirstDrawer,
+        gText_SecondDrawer,
+        gText_ThirdDrawer,
+        gText_FourthDrawer,
+//        gText_FifthDrawer,
+//        gText_SixthDrawer,
         gText_Exit
     },
 };
@@ -4135,7 +4158,7 @@ void SetDeoxysRockPalette(void)
     u32 paletteNum = IndexOfSpritePaletteTag(OBJ_EVENT_PAL_TAG_BIRTH_ISLAND_STONE);
     LoadPalette(&sDeoxysRockPalettes[(u8)VarGet(VAR_DEOXYS_ROCK_LEVEL)], OBJ_PLTT_ID(paletteNum), PLTT_SIZEOF(4));
     // Set faded to all black, weather blending handled during fade-in
-    CpuFill16(0, &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)], 32);
+    CpuFill16(RGB_BLACK, &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)], PLTT_SIZE_4BPP);
 }
 
 void SetPCBoxToSendMon(u8 boxId)
@@ -4530,16 +4553,18 @@ static void Task_LinkRetireStatusWithBattleTowerPartner(u8 taskId)
 
 void Script_DoRayquazaScene(void)
 {
-    if (!gSpecialVar_0x8004)
+    if (gSpecialVar_0x8004 == 0)
     {
         // Groudon/Kyogre fight scene
-        DoRayquazaScene(0, TRUE, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        DoRayquazaScene(0, 1, CB2_ReturnToFieldContinueScriptPlayMapMusic);
     }
-    else
+    else if (gSpecialVar_0x8004 == 1)
     {
         // Rayquaza arrives scene
-        DoRayquazaScene(1, FALSE, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        DoRayquazaScene(1, 0, CB2_ReturnToFieldContinueScript);
     }
+    else 
+        DoRayquazaScene(5, 2, CB2_ReturnToFieldContinueScriptPlayMapMusic);
 }
 
 #define playCount data[0]
@@ -5330,7 +5355,7 @@ void SwapPlayersCostume(void)
     BlendPalettes(0xFFFFFFFF, 16, 0);
 }
 
-u8 GetPlayerCostumeId(void)
+u16 GetPlayerCostumeId(void)
 {
     return GetPlayerAvatarGraphicsIdByStateIdAndGender(PLAYER_AVATAR_STATE_NORMAL, gSaveBlock2Ptr->playerGender);
 }
@@ -5561,13 +5586,6 @@ u8 CountRotomInParty (void)
 }
 
 /////// minimal grinding option in pkmn center
-const u16 sLevelCapAreaFlags[NUM_SOFT_CAPS] = 
-{
-    FLAG_VISITED_RUSTBORO_CITY, FLAG_VISITED_DEWFORD_TOWN, FLAG_VISITED_MAUVILLE_CITY, FLAG_VISITED_LAVARIDGE_TOWN,
-    FLAG_VISITED_PETALBURG_CITY, FLAG_VISITED_FORTREE_CITY, FLAG_VISITED_MOSSDEEP_CITY, FLAG_VISITED_SOOTOPOLIS_CITY,
-    FLAG_VISITED_EVER_GRANDE_CITY,
-};
-
 void BufferNextLevelCap(void)
 {
     u8 lvlCap = MAX_LEVEL;
@@ -5579,7 +5597,7 @@ void BufferNextLevelCap(void)
         if (!FlagGet(gLevelCapFlags[i]))
         {
             lvlCap = gLevelCaps[i];
-            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
+            if (!FlagGet(gLevelCapAreaFlags[i]) && i != 0)
                 lvlCap = gLevelCaps[i - 1];
             break;
         }
@@ -5588,23 +5606,11 @@ void BufferNextLevelCap(void)
     ConvertIntToDecimalStringN(gStringVar1, lvlCap, STR_CONV_MODE_LEFT_ALIGN, 3);
 }
 
-void IncreasePartyLevelToLevelCap(void)
+void IncreasePartyLevelToMaxLevel(void)
 {
     u32 i, targetExp, currExp;
-    u8 lvlCap = gLevelCaps[NUM_SOFT_CAPS - 1];
+    u8 highestLevel = GetHighestLevelInPlayerParty();
     u16 species;
-
-    // get lvl cap
-    for (i = 0; i < NUM_SOFT_CAPS; i++)
-    {
-        if (!FlagGet(gLevelCapFlags[i]))
-        {
-            lvlCap = gLevelCaps[i];
-            if (!FlagGet(sLevelCapAreaFlags[i]) && i != 0)
-                lvlCap = gLevelCaps[i - 1];
-            break;
-        }
-    }
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -5612,7 +5618,7 @@ void IncreasePartyLevelToLevelCap(void)
         if (species != SPECIES_NONE && species != SPECIES_EGG)
         {
             currExp = GetMonData(&gPlayerParty[i], MON_DATA_EXP);
-            targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][lvlCap - 2];
+            targetExp = gExperienceTables[gSpeciesInfo[species].growthRate][highestLevel];
 
             if (currExp < targetExp)
             {
@@ -5682,6 +5688,39 @@ void ChangePokemonNature (void)
     CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 }
 
+// Checks if Pokeball pocket is empty, to be called in scripts via "specialvar VAR_RESULT, IsPokeballPocketEmpty"
+bool8 IsPokeballPocketEmpty(void)
+{
+    return !IsBagPocketNonEmpty(POCKET_POKE_BALLS);
+}
+
+void SetFollowerPokemonOption(void)
+{
+    gSaveBlock2Ptr->optionsShowFollowerPokemon = VarGet(VAR_RESULT);
+
+    if (!gSaveBlock2Ptr->optionsShowFollowerPokemon)
+        RemoveFollowingPokemon();
+}
+
+u16 GetSpeciesForRandomEgg(void)
+{
+    u16 species = SPECIES_NONE;
+
+    do
+    {
+        species = (Random() % SPECIES_VENUSAUR_MEGA) + 1;
+    } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
+
+    return GetEggSpecies(species);
+}
+
+void IncrementAdoptionSpecials(void)
+{
+    VarSet(VAR_DAYCARE_ADOPTION_SPECIALS, (VarGet(VAR_DAYCARE_ADOPTION_SPECIALS + 1) % 50));
+    if (VarGet(VAR_DAYCARE_ADOPTION_SPECIALS) == 0)
+        VarSet(VAR_DAYCARE_ADOPTION_SPECIALS, 1);
+}
+
 void TrySkyBattle(void)
 {
     int i;
@@ -5731,4 +5770,22 @@ void UseBlankMessageToCancelPokemonPic(void)
     u8 t = EOS;
     AddTextPrinterParameterized(0, FONT_NORMAL, &t, 0, 1, 0, NULL);
     ScriptMenu_HidePokemonPic();
+}
+
+void SetPokedexSeenFlag(void)
+{
+    u32 species = VarGet(VAR_RESULT);
+    GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_SEEN);
+}
+
+void SetPokedexCaughtFlag(void)
+{
+    u32 species = VarGet(VAR_RESULT);
+    GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_CAUGHT);
+    GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_SEEN);
+}
+
+bool32 FollowerHasDevonScope(void)
+{
+    return (VarGet(VAR_LAVARIDGE_TOWN_STATE) >= 2 && VarGet(VAR_LAVARIDGE_TOWN_STATE) <= 6);
 }

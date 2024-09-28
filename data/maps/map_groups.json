@@ -33,7 +33,8 @@
     "gMapGroup_IndoorRoute113",
     "gMapGroup_IndoorRoute123",
     "gMapGroup_IndoorRoute119",
-    "gMapGroup_IndoorRoute124"
+    "gMapGroup_IndoorRoute124",
+    "gMapGroup_Dungeons2"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
@@ -92,7 +93,9 @@
     "Underwater_Route128",
     "Underwater_Route129",
     "Underwater_Route105",
-    "Underwater_Route125"
+    "Underwater_Route125",
+    "Route110_CaveOfShock",
+    "Route109_South"
   ],
   "gMapGroup_IndoorLittleroot": [
     "LittlerootTown_BrendansHouse_1F",
@@ -642,5 +645,18 @@
   ],
   "gMapGroup_IndoorRoute124": [
     "Route124_DivingTreasureHuntersHouse"
+  ],
+  "gMapGroup_Dungeons2": [
+    "Underwater_MeteorFalls_B1F_2R",
+    "MeteorFalls_DracoChamber",
+    "Underwater_MeteorFalls_DracoChamber",
+    "CaveOfShock",
+    "HauntedManor",
+    "HauntedMansion_1F",
+    "HauntedMansion_2F",
+    "HauntedMansion_3F",
+    "MeteorFalls_B2F",
+    "MeteorFalls_B3F",
+    "FieryPath2"
   ]
 }

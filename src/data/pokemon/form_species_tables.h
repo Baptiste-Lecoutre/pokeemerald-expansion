@@ -105,6 +105,8 @@ static const u16 sPikachuFormSpeciesIdTable[] = {
     SPECIES_PIKACHU_POP_STAR,
     SPECIES_PIKACHU_PH_D,
     SPECIES_PIKACHU_LIBRE,
+    SPECIES_PIKACHU_SURFING,
+    SPECIES_PIKACHU_FLYING,
 #endif
 #if P_CAP_PIKACHU_FORMS
     SPECIES_PIKACHU_ORIGINAL_CAP,
@@ -1090,6 +1092,7 @@ static const u16 sRotomFormSpeciesIdTable[] = {
 static const u16 sDialgaFormSpeciesIdTable[] = {
     SPECIES_DIALGA,
     SPECIES_DIALGA_ORIGIN,
+    SPECIES_DIALGA_PRIMAL,
     FORM_SPECIES_END,
 };
 #endif //P_FAMILY_DIALGA
@@ -1098,6 +1101,7 @@ static const u16 sDialgaFormSpeciesIdTable[] = {
 static const u16 sPalkiaFormSpeciesIdTable[] = {
     SPECIES_PALKIA,
     SPECIES_PALKIA_ORIGIN,
+    SPECIES_PALKIA_PRIMAL,
     FORM_SPECIES_END,
 };
 #endif //P_FAMILY_PALKIA

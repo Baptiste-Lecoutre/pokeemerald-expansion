@@ -9,7 +9,7 @@ VictoryRoad_1F_MapScripts::
 VictoryRoad_1F_OnTransition:
 	call Common_EventScript_SetupRivalGfxId
 	call VictoryRoad_1F_EventScript_HideRival
-	call_if_defeated TRAINER_WALLY_VR_1, VictoryRoad_1F_EventScript_HideRed
+	call_if_set FLAG_DEFEATED_WALLY_VICTORY_ROAD, VictoryRoad_1F_EventScript_HideRed
 	call_if_eq VAR_VICTORY_ROAD_1F_STATE, 1, VictoryRoad_1F_EventScript_SetEntranceWallyPos1
 	call_if_eq VAR_VICTORY_ROAD_1F_STATE, 2, VictoryRoad_1F_EventScript_SetEntranceWallyPos2
 	end
@@ -85,20 +85,26 @@ VictoryRoad_1F_EventScript_MayLaunchBattle1::
 
 VictoryRoad_1F_EventScript_BattleMayTorchic1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TORCHIC
-	goto VictoryRoad_1F_EventScript_EndMayBattle1
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_MAY_VICTORY_ROAD_TORCHIC
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndMayBattle1
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleMayTreecko1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TREECKO
-	goto VictoryRoad_1F_EventScript_EndMayBattle1
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_MAY_VICTORY_ROAD_TREECKO
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndMayBattle1
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleMayMudkip1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_MUDKIP
-	goto VictoryRoad_1F_EventScript_EndMayBattle1
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_MAY_VICTORY_ROAD_MUDKIP
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndMayBattle1
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_EndMayBattle1::
@@ -114,6 +120,7 @@ VictoryRoad_1F_EventScript_EndMayBattle1::
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_MayGladItWentWell, MSGBOX_DEFAULT
 	closemessage
+	special HealPlayerParty
 	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
 	waitmovement 0
 	setflag FLAG_TEMP_7
@@ -138,20 +145,26 @@ VictoryRoad_1F_EventScript_BrendanLaunchBattle1::
 
 VictoryRoad_1F_EventScript_BattleBrendanTreecko1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TREECKO
-	goto VictoryRoad_1F_EventScript_EndBrendanBattle1
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_BRENDAN_VICTORY_ROAD_TREECKO
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndBrendanBattle1
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleBrendanTorchic1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC
-	goto VictoryRoad_1F_EventScript_EndBrendanBattle1
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_BRENDAN_VICTORY_ROAD_TORCHIC
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndBrendanBattle1
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleBrendanMudkip1::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP
-	goto VictoryRoad_1F_EventScript_EndBrendanBattle1
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_BRENDAN_VICTORY_ROAD_MUDKIP
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndBrendanBattle1
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_EndBrendanBattle1::
@@ -167,6 +180,7 @@ VictoryRoad_1F_EventScript_EndBrendanBattle1::
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_BrendanGladItWentWell, MSGBOX_DEFAULT
 	closemessage
+	special HealPlayerParty
 	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
 	waitmovement 0
 	setflag FLAG_TEMP_7
@@ -232,20 +246,26 @@ VictoryRoad_1F_EventScript_MayLaunchBattle2::
 
 VictoryRoad_1F_EventScript_BattleMayTorchic2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TORCHIC
-	goto VictoryRoad_1F_EventScript_EndMayBattle2
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_MAY_VICTORY_ROAD_TORCHIC
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndMayBattle2
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleMayTreecko2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_TREECKO
-	goto VictoryRoad_1F_EventScript_EndMayBattle2
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_MAY_VICTORY_ROAD_TREECKO
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndMayBattle2
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleMayMudkip2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_MAY_VICTORY_ROAD_MUDKIP
-	goto VictoryRoad_1F_EventScript_EndMayBattle2
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_MAY_VICTORY_ROAD_MUDKIP
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndMayBattle2
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_EndMayBattle2::
@@ -261,6 +281,7 @@ VictoryRoad_1F_EventScript_EndMayBattle2::
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_MayGladItWentWell, MSGBOX_DEFAULT
 	closemessage
+	special HealPlayerParty
 	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
 	waitmovement 0
 	setflag FLAG_TEMP_7
@@ -285,20 +306,26 @@ VictoryRoad_1F_EventScript_BrendanLaunchBattle2::
 
 VictoryRoad_1F_EventScript_BattleBrendanTreecko2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TREECKO
-	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_BRENDAN_VICTORY_ROAD_TREECKO
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndBrendanBattle2
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleBrendanTorchic2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_TORCHIC
-	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_BRENDAN_VICTORY_ROAD_TORCHIC
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndBrendanBattle2
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_BattleBrendanMudkip2::
 	choose_mons
-	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, TRAINER_BRENDAN_VICTORY_ROAD_MUDKIP
-	goto VictoryRoad_1F_EventScript_EndBrendanBattle2
+	multi_2_vs_2 TRAINER_WALLY_VR_1, VictoryRoad_1F_Text_WallyEntranceDefeat, TRAINER_RED_VICTORY_ROAD, VictoryRoad_1F_Text_RedDefeat, PARTNER_BRENDAN_VICTORY_ROAD_MUDKIP
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, VictoryRoad_1F_EventScript_EndBrendanBattle2
+	fadescreen FADE_TO_BLACK
+	special SetCB2WhiteOut
 	end
 
 VictoryRoad_1F_EventScript_EndBrendanBattle2::
@@ -314,6 +341,7 @@ VictoryRoad_1F_EventScript_EndBrendanBattle2::
 	waitmovement 0
 	msgbox VictoryRoad_1F_Text_BrendanGladItWentWell, MSGBOX_DEFAULT
 	closemessage
+	special HealPlayerParty
 	applymovement LOCALID_RIVAL, VictoryRoad_1F_Movement_RivalExit
 	waitmovement 0
 	setflag FLAG_TEMP_7
@@ -553,12 +581,16 @@ VictoryRoad_1F_Text_RedIllTrainAndBecome:
 
 VictoryRoad_1F_Text_MayGladItWentWell:
 	.string "May: I'm glad everything went well!\p"
+	.string "Here, let me use my Pokévial to heal\n"
+	.string "your Pokémon.\p"
 	.string "I'll head back to the Pokémon center\n"
 	.string "and train more before challenging the\l"
 	.string "the Pokémon League. See you!$"
 
 VictoryRoad_1F_Text_BrendanGladItWentWell:
 	.string "Brendan: I'm glad everything went well!\p"
+	.string "Hum, I guess I'll use my Pokévial\n"
+	.string "to heal your Pokémon. There you go.\p"
 	.string "I'll head back to the Pokémon center\n"
 	.string "and train more before challenging the\l"
 	.string "the Pokémon League. See you!$"

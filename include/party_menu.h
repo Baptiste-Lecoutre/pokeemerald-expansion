@@ -26,12 +26,24 @@ extern u8 gSelectedMonPartyId;
 extern MainCallback gPostMenuFieldCallback;
 extern u8 gSelectedOrderFromParty[MAX_FRONTIER_PARTY_SIZE];
 extern u8 gBattlePartyCurrentOrder[PARTY_SIZE / 2];
-
+extern const struct SpritePalette gSpritePalette_HeldItem;
 extern const struct SpriteSheet gSpriteSheet_HeldItem;
+extern const struct SpriteTemplate sSpriteTemplate_MegaStone;
+extern const struct SpriteTemplate sSpriteTemplate_ZCrystal;
 extern const u16 gHeldItemPalette[];
+extern const u16 gZCrystalPalette[];
+extern const u16 gMegaStonePalette[];
 
 extern void (*gItemUseCB)(u8, TaskFunc);
 extern const struct SpriteTemplate gSpriteTemplate_StatusIcons;
+
+#define PARTY_MENU_STYLE_DEFAULT    0
+#define PARTY_MENU_STYLE_HGSS       1
+#define PARTY_MENU_STYLE_BW         2
+
+#define PARTY_MENU_STYLE            PARTY_MENU_STYLE_BW                       
+#define PARTY_MENU_ALPHA            (PARTY_MENU_STYLE == PARTY_MENU_STYLE_BW) // If TRUE, the columns have a transparent BG. 
+                                                                              // Only designed for the BW style, so looks ugly on other styles.
 
 void AnimatePartySlot(u8 slot, u8 animNum);
 bool8 IsMultiBattle(void);
@@ -49,6 +61,7 @@ bool8 FieldCallback_PrepareFadeInFromMenu(void);
 bool8 FieldCallback_PrepareFadeInForTeleport(void);
 void CB2_ReturnToPartyMenuFromFlyMap(void);
 void LoadHeldItemIcons(void);
+void LoadHeldStonesIcons(void);
 void DrawHeldItemIconsForTrade(u8 *partyCounts, u8 *partySpriteIds, u8 whichParty);
 void LoadPartyMenuAilmentGfx(void);
 void CB2_ShowPartyMenuForItemUse(void);
@@ -85,6 +98,7 @@ void ChooseMonForTradingBoard(u8 menuType, MainCallback callback);
 void ChooseMonForMoveTutor(void);
 void ChooseMonForWirelessMinigame(void);
 void OpenPartyMenuInBattle(u8 partyAction);
+void OpenPartyMenuChooseMonToSendToPC(void);
 void ChooseMonForInBattleItem(void);
 void BufferBattlePartyCurrentOrder(void);
 void BufferBattlePartyCurrentOrderBySide(u8 battlerId, u8 flankId);
@@ -106,6 +120,7 @@ void BufferMoveDeleterNicknameAndMove(void);
 void GetNumMovesSelectedMonHas(void);
 void MoveDeleterChooseMoveToForget(void);
 void TryTradeEvolution(void);
+void ChooseMonForBlender(void);
 
 void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
 void ItemUseCB_Mints(u8 taskId, TaskFunc task);

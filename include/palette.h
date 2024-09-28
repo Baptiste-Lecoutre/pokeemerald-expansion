@@ -14,6 +14,8 @@
 #define PALETTE_FADE_STATUS_LOADING 0xFF
 
 #define PALETTES_BG      0x0000FFFF
+// like PALETTES_BG but excludes UI pals [13, 15]
+#define PALETTES_MAP     0x00001FFF
 #define PALETTES_OBJECTS 0xFFFF0000
 #define PALETTES_ALL     (PALETTES_BG | PALETTES_OBJECTS)
 
@@ -23,6 +25,11 @@
 #define BG_PLTT_ID(n) (BG_PLTT_OFFSET + PLTT_ID(n))
 #define OBJ_PLTT_ID(n) (OBJ_PLTT_OFFSET + PLTT_ID(n))
 #define OBJ_PLTT_ID2(n) (PLTT_ID((n) + 16))
+
+// Used to determine whether a sprite palette tag
+// should be excluded from time (and weather) blending
+#define BLEND_IMMUNE_FLAG (1 << 15)
+#define IS_BLEND_IMMUNE_TAG(tag) ((tag) & BLEND_IMMUNE_FLAG)
 
 enum
 {
@@ -75,6 +82,7 @@ void LoadPaletteFast(const void *src, u32 offset, u32 size);
 void FillPalette(u32 value, u32 offset, u32 size);
 void TransferPlttBuffer(void);
 u32 UpdatePaletteFade(void);
+u32 PrevPaletteFadeResult(void);
 void ResetPaletteFade(void);
 bool32 BeginNormalPaletteFade(u32 selectedPalettes, s8 delay, u8 startY, u8 targetY, u32 blendColor);
 bool32 BeginTimeOfDayPaletteFade(u32, s8, u8, u8, struct BlendSettings *, struct BlendSettings *, u16, u16);
@@ -96,6 +104,7 @@ void TintPalette_GrayScale(u16 *palette, u32 count);
 void TintPalette_GrayScale2(u16 *palette, u32 count);
 void TintPalette_SepiaTone(u16 *palette, u32 count);
 void TintPalette_CustomTone(u16 *palette, u32 count, u16 rTone, u16 gTone, u16 bTone);
+void TintPalette_CustomTone_Blend(u16 *palette, u32 count, u16 rTone, u16 gTone, u16 bTone);
 
 static inline void SetBackdropFromColor(u32 color)
 {

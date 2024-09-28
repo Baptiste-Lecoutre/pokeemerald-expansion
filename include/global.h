@@ -524,6 +524,32 @@ struct RankingHall2P
     //u8 padding;
 };
 
+// follow me
+struct FollowerMapData
+{
+    /*0x0*/ u8 id;
+    /*0x1*/ u8 number;
+    /*0x2*/ u8 group;
+}; /* size = 0x4 */
+struct Follower
+{
+    /*0x00*/ u8 inProgress:1;
+             u8 warpEnd:1;
+             u8 createSurfBlob:3;
+             u8 comeOutDoorStairs:3;
+    /*0x01*/ u8 objId;
+    /*0x02*/ u8 currentSprite;
+    /*0x03*/ u8 delayedState;
+    /*0x04*/ struct FollowerMapData map;
+    /*0x08*/ struct Coords16 log;
+    /*0x0C*/ const u8* script;
+    /*0x10*/ u16 flag;
+    /*0x12*/ u16 graphicsId;
+    /*0x14*/ u16 flags;
+    /*0x15*/ u8 locked;
+    /*0x16*/ u16 battlePartner;
+}; /* size = 0x18 */
+
 #include "constants/items.h"
 #define ITEM_FLAGS_COUNT ((ITEMS_COUNT / 8) + ((ITEMS_COUNT % 8) ? 1 : 0))
 
@@ -542,9 +568,9 @@ struct SaveBlock2
              u16 optionsWindowFrameType:5; // Specifies one of the 20 decorative borders for text boxes
              u16 optionsSound:2; // OPTIONS_SOUND_[MONO/STEREO/OFF]
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
-             u16 optionsBattleSceneOff:1; // whether battle animations are disabled
+             u16 optionsBattleScene:3; // whether battle animations are disabled
              u16 regionMapZoom:1; // whether the map is zoomed in
-             //u16 padding1:4;
+             u16 optionsDamageNumbers:1;
              //u16 padding2;
     /*0x18*/ struct Pokedex pokedex;
     /*0x90*/ u8 filler_90[0x7];
@@ -566,7 +592,8 @@ struct SaveBlock2
 #endif //FREE_RECORD_MIXING_HALL_RECORDS
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
-    /*0xF2C*/ u16 autoRun:1;
+    /*0xF2C*/ struct Follower follower;
+    /*0xF??*/ u16 autoRun:1;
               u16 showItemIconsWheel:1;
               u16 optionsFastFieldMove:1;
               u16 optionsLevelCap:2;
@@ -576,6 +603,7 @@ struct SaveBlock2
               u16 optionsFishReeling:1;
               u16 optionsLowHealthMusic:1;
               u16 optionsShowTypeEffectiveness:1;
+              u16 optionsShowFollowerPokemon:1;
               u16 evolveOpponentsMons:1;
               u16 xpMulti:3;
               u16 xpTeamMod:1;
@@ -602,9 +630,8 @@ struct SaveBlock2
                 u16 randomLevels:1;
                 u16 randomStarters:1;
             u8 costumeId;
-                
-    
-}; // sizeof=0xF2C
+            u8 startShortcut;
+}; // sizeof=0xF??
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;
 
@@ -1119,7 +1146,7 @@ struct SaveBlock1
     /*0x2B93*/ u8 outbreakLocationMapGroup;
     /*0x2B94*/ u8 outbreakPokemonLevel;
     /*0x2B95*/ u8 outbreakUnused1;
-    /*0x2B96*/ u16 outbreakUnused2;
+    /*0x2B96*/ u16 outbreakPokemonItem;
     /*0x2B98*/ u16 outbreakPokemonMoves[MAX_MON_MOVES];
     /*0x2BA0*/ u8 outbreakUnused3;
     /*0x2BA1*/ u8 outbreakPokemonProbability;
@@ -1168,8 +1195,9 @@ struct SaveBlock1
 #endif //FREE_TRAINER_HILL
     /*0x3???*/ struct WaldaPhrase waldaPhrase;
     // sizeof: 0x3???
-                u16 registeredItemList[4];
+                u16 registeredItemList[MAX_REGISTERED_ITEMS];
                 u8 dexNavChain;
+                u8 raidAreaFlags[5]; // are raid battle done for the day? -> only routes for now
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;

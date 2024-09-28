@@ -340,6 +340,8 @@ static u32 LoopedTask_OpenMatchCall(s32 state)
         CopyBgTilemapBufferToVram(2);
         CopyPaletteIntoBufferUnfaded(sMatchCallUI_Pal, BG_PLTT_ID(2), sizeof(sMatchCallUI_Pal));
         CopyBgTilemapBufferToVram(2);
+        if (GetPokenavMode() == POKENAV_MODE_MATCH_CALL)
+            SetPokenavMode(POKENAV_MODE_MATCH_CALL_EXIT);
         return LT_INC_AND_PAUSE;
     case 1:
         if (FreeTempTileDataBuffersIfPossible())
@@ -385,7 +387,10 @@ static u32 LoopedTask_OpenMatchCall(s32 state)
         AllocMatchCallSprites();
         LoadLeftHeaderGfxForIndex(3);
         ShowLeftHeaderGfx(POKENAV_GFX_MATCH_CALL_MENU, TRUE, FALSE);
-        PokenavFadeScreen(POKENAV_FADE_FROM_BLACK);
+        if (GetPokenavMode() == POKENAV_MODE_MATCH_CALL_EXIT)
+            PokenavFadeScreen(POKENAV_FADE_FROM_BLACK_ALL);
+        else
+            PokenavFadeScreen(POKENAV_FADE_FROM_BLACK);
         return LT_INC_AND_PAUSE;
     case 7:
         if (IsPaletteFadeActive() || AreLeftHeaderSpritesMoving())
@@ -858,10 +863,18 @@ static u32 ExitMatchCall(s32 state)
     switch (state)
     {
     case 0:
-        PlaySE(SE_SELECT);
-        SetPokeballIconsFlashing(FALSE);
-        PokenavFadeScreen(POKENAV_FADE_TO_BLACK);
-        SlideMenuHeaderDown();
+        if (GetPokenavMode() != POKENAV_MODE_MATCH_CALL_EXIT)
+        {
+            PlaySE(SE_SELECT);
+            SetPokeballIconsFlashing(FALSE);
+            PokenavFadeScreen(POKENAV_FADE_TO_BLACK);
+            SlideMenuHeaderDown();
+        }
+        else
+        {
+            SetPokeballIconsFlashing(FALSE);
+            PokenavFadeScreen(POKENAV_FADE_TO_BLACK_ALL);
+        }
         return LT_INC_AND_PAUSE;
     case 1:
         if (IsPaletteFadeActive() || MainMenuLoopedTaskIsBusy())

@@ -491,6 +491,11 @@ bool32 TryRunFromBattle(u32 battler)
     {
         effect++;
     }
+    else if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
+    {
+        if (GetBattlerSide(battler) == B_SIDE_PLAYER)
+            ++effect;
+    }
     else
     {
         u8 runningFromBattler = BATTLE_OPPOSITE(battler);
@@ -762,7 +767,6 @@ void HandleAction_ActionFinished(void)
     gMoveResultFlags = 0;
     gBattleScripting.animTurn = 0;
     gBattleScripting.animTargetsHit = 0;
-    gLastLandedMoves[gBattlerAttacker] = 0;
     gLastHitByType[gBattlerAttacker] = 0;
     gBattleStruct->dynamicMoveType = 0;
     gBattleScripting.moveendState = 0;
@@ -771,6 +775,37 @@ void HandleAction_ActionFinished(void)
     gBattleScripting.multihitMoveEffect = 0;
     gBattleResources->battleScriptsStack->size = 0;
 
+    if (IsRaidBoss(gBattlerAttacker) && IsBattlerAlive(gBattlerAttacker)
+        && !gBattleStruct->raid.movedTwice
+        && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_RECHARGE)
+        && ((gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX && (IS_MOVE_STATUS(gLastLandedMoves[gBattlerAttacker]) || IsMaxMove(gLastLandedMoves[gBattlerAttacker])) && (Random() % 100 <= GetRaidRepeatedAttackChance()))
+            || (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA && (Random() % 100 <= GetRaidRepeatedAttackChance()))
+            || (IsBattlerAlive(BATTLE_OPPOSITE(gBattlerAttacker)) && gChosenActionByBattler[BATTLE_OPPOSITE(gBattlerAttacker)] == B_ACTION_USE_ITEM)
+            || (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))) && gChosenActionByBattler[BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))] == B_ACTION_USE_ITEM)))
+    {
+        u16 chosenMoveId;
+        u8 chosenMoveTarget;
+
+        if (IsWildMonSmart())
+            chosenMoveId = BattleAI_ChooseMoveOrAction();
+        else
+            chosenMoveId = Random() % MAX_MON_MOVES;
+        
+        chosenMoveTarget = GetMoveTarget(gBattleMons[gBattlerAttacker].moves[chosenMoveId], NO_TARGET_OVERRIDE);
+        if (gMovesInfo[gBattleMons[gBattlerAttacker].moves[chosenMoveId]].target == MOVE_TARGET_BOTH) // override to fix bug
+            chosenMoveTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
+
+        *(gBattleStruct->chosenMovePositions + gBattlerAttacker) = chosenMoveId;
+        gChosenMoveByBattler[gBattlerAttacker] = gBattleMons[gBattlerAttacker].moves[*(gBattleStruct->chosenMovePositions + gBattlerAttacker)];
+        *(gBattleStruct->moveTarget + gBattlerAttacker) = chosenMoveTarget;
+        gHitMarker &= ~HITMARKER_NO_ATTACKSTRING; // bug fix, could have issues
+        gCurrentActionFuncId = B_ACTION_USE_MOVE;
+        gBattleStruct->raid.movedTwice = TRUE;
+        gCurrentTurnActionNumber--;
+        return;
+    }
+    gLastLandedMoves[gBattlerAttacker] = 0; // ?
+    
     if (B_RECALC_TURN_AFTER_ACTIONS >= GEN_8 && !afterYouActive && !gBattleStruct->pledgeMove)
     {
         // i starts at `gCurrentTurnActionNumber` because we don't want to recalculate turn order for mon that have already
@@ -2429,6 +2464,8 @@ u8 DoBattlerEndTurnEffects(void)
             {
                 gBattleScripting.battler = battler;
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / 16;
+                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.shield && gBattleMoveDamage > gBattleMons[battler].hp)
+                    gBattleMoveDamage = gBattleMons[battler].hp - 1;
                 if (gBattleMoveDamage == 0)
                     gBattleMoveDamage = 1;
                 BattleScriptExecute(BattleScript_DamagingWeather);
@@ -2455,6 +2492,8 @@ u8 DoBattlerEndTurnEffects(void)
             {
                 gBattleScripting.battler = battler;
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / 16;
+                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.shield && gBattleMoveDamage > gBattleMons[battler].hp)
+                    gBattleMoveDamage = gBattleMons[battler].hp - 1;
                 if (gBattleMoveDamage == 0)
                     gBattleMoveDamage = 1;
                 BattleScriptExecute(BattleScript_DamagingWeather);
@@ -2689,6 +2728,12 @@ u8 DoBattlerEndTurnEffects(void)
 
                     if (gBattleMoveDamage == 0)
                         gBattleMoveDamage = 1;
+                    
+                    if (gBattleTypeFlags & BATTLE_TYPE_RAID
+                        && IsRaidBoss(battler)
+                        && gBattleStruct->raid.shield > 0
+                        && gBattleMoveDamage >= gBattleMons[battler].hp)
+                        gBattleMoveDamage = gBattleMons[battler].hp - 1;
                 }
                 else  // broke free
                 {
@@ -3529,6 +3574,18 @@ u8 AtkCanceller_UnableToUseMove(u32 moveType)
             }
             gBattleStruct->atkCancellerTracker++;
             break;
+        case CANCELLER_GHOST: // Ghost in haunted mansion
+            if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
+            {
+                if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER)
+                    gBattlescriptCurrInstr = BattleScript_TooScaredToMove;
+                else
+                    gBattlescriptCurrInstr = BattleScript_GhostGetOutGetOut;
+                gBattleCommunication[MULTISTRING_CHOOSER] = 0;
+                effect = 1;
+            }
+            gBattleStruct->atkCancellerTracker++;
+            break;
         case CANCELLER_IN_LOVE: // infatuation
             if (!gBattleStruct->isAtkCancelerForCalledMove && gBattleMons[gBattlerAttacker].status2 & STATUS2_INFATUATION)
             {
@@ -4188,6 +4245,10 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
         move = gCurrentMove;
 
     moveType = GetMoveType(move);
+
+    if ((gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost())
+     && (gLastUsedAbility == ABILITY_INTIMIDATE || gLastUsedAbility == ABILITY_TRACE))
+        return effect;
 
     switch (caseID)
     {
@@ -9161,7 +9222,7 @@ static inline u32 CalcMoveBasePower(u32 move, u32 battlerAtk, u32 battlerDef, u3
     return basePower;
 }
 
-static inline u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 battlerDef, u32 moveType, bool32 updateFlags, u32 atkAbility, u32 defAbility, u32 holdEffectAtk, u32 weather)
+u32 CalcMoveBasePowerAfterModifiers(u32 move, u32 battlerAtk, u32 battlerDef, u32 moveType, bool32 updateFlags, u32 atkAbility, u32 defAbility, u32 holdEffectAtk, u32 weather)
 {
     u32 i;
     u32 holdEffectParamAtk;
@@ -10347,7 +10408,7 @@ static inline s32 DoFutureSightAttackDamageCalc(u32 move, u32 battlerAtk, u32 ba
 
 #undef DAMAGE_APPLY_MODIFIER
 
-static u32 GetWeather(void)
+u32 GetWeather(void)
 {
     if (gBattleWeather == B_WEATHER_NONE || !WEATHER_HAS_EFFECT)
         return B_WEATHER_NONE;
@@ -10814,7 +10875,8 @@ bool32 IsBattlerMegaEvolved(u32 battler)
     // While Transform does copy stats and visuals, it shouldn't be counted as true Mega Evolution.
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
-    return (gSpeciesInfo[gBattleMons[battler].species].isMegaEvolution);
+    return (gSpeciesInfo[gBattleMons[battler].species].isMegaEvolution
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_MEGA && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerPrimalReverted(u32 battler)
@@ -10822,7 +10884,8 @@ bool32 IsBattlerPrimalReverted(u32 battler)
     // While Transform does copy stats and visuals, it shouldn't be counted as true Primal Revesion.
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
-    return (gSpeciesInfo[gBattleMons[battler].species].isPrimalReversion);
+    return (gSpeciesInfo[gBattleMons[battler].species].isPrimalReversion
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_PRIMAL && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerUltraBursted(u32 battler)
@@ -11598,7 +11661,9 @@ void CopyMonAbilityAndTypesToBattleMon(u32 battler, struct Pokemon *mon)
 void RecalcBattlerStats(u32 battler, struct Pokemon *mon)
 {
     CalculateMonStats(mon);
-    if (GetActiveGimmick(battler) == GIMMICK_DYNAMAX && gChosenActionByBattler[battler] != B_ACTION_SWITCH)
+    if (IsRaidBoss(battler) && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+        ApplyRaidHPMultiplier(battler, mon);
+    else if (GetActiveGimmick(battler) == GIMMICK_DYNAMAX && gChosenActionByBattler[battler] != B_ACTION_SWITCH)
         ApplyDynamaxHPMultiplier(battler, mon);
     CopyMonLevelAndBaseStatsToBattleMon(battler, mon);
     CopyMonAbilityAndTypesToBattleMon(battler, mon);
@@ -11801,6 +11866,10 @@ u8 GetBattlerType(u32 battler, u8 typeIndex, bool32 ignoreTera)
     types[1] = gBattleMons[battler].types[1];
     types[2] = gBattleMons[battler].types[2];
 
+    // Handle Ghost battles
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && !ShouldUnveilGhost() && GetBattlerSide(battler) == B_SIDE_OPPONENT)
+        return TYPE_MYSTERY;
+    
     // Handle Terastallization
     if (GetActiveGimmick(battler) == GIMMICK_TERA && teraType != TYPE_STELLAR && !ignoreTera)
         return GetBattlerTeraType(battler);

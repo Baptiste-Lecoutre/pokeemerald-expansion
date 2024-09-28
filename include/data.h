@@ -104,6 +104,7 @@ struct TrainerClass
     u8 name[13];
     u8 money;
     u16 ball;
+    s8 levelOffset;
 };
 
 struct TypeInfo
@@ -165,6 +166,8 @@ extern const struct SpriteFrameImage gTrainerBackPicTable_Lucas[];
 extern const struct SpriteFrameImage gTrainerBackPicTable_Dawn[];
 extern const struct SpriteFrameImage gTrainerBackPicTable_LucasPlatinum[];
 extern const struct SpriteFrameImage gTrainerBackPicTable_DawnPlatinum[];
+extern const struct SpriteFrameImage gTrainerBackPicTable_Chase[];
+extern const struct SpriteFrameImage gTrainerBackPicTable_Elaine[];
 
 extern const union AffineAnimCmd *const gAffineAnims_BattleSpritePlayerSide[];
 extern const union AffineAnimCmd *const gAffineAnims_BattleSpriteOpponentSide[];

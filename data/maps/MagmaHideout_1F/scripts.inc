@@ -6,7 +6,7 @@ MagmaHideout_1F_MapScripts::
 
 MagmaHideout_1F_OnTransition:
 	setvar VAR_JAGGED_PASS_ASH_WEATHER, 0
-	goto_if_defeated TRAINER_BLAINE, MagmaHideout_1F_EventScript_HideBlaine
+	call_if_defeated TRAINER_BLAINE, MagmaHideout_1F_EventScript_HideBlaine
 	end
 
 MagmaHideout_1F_EventScript_HideBlaine::

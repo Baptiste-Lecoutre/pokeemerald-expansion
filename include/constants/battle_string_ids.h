@@ -724,11 +724,49 @@
 #define STRINGID_REVERSEMODE_DAMAGE                   722
 #define STRINGID_REVERSEMODE_CALLED                   723
 #define STRINGID_GOTCHAPKMNCAUGHTTRAINER              724
-#define STRINGID_PKMNGAINEDEXPSHARE                   725
-#define STRINGID_PKMNDROPPEDITEM                      726
-#define STRINGID_BAGISFULL                            727
+#define STRINGID_PKMNAPPEARSMASSIVE                   725
+#define STRINGID_DYNAMAXENERGYGATHERED                726
+#define STRINGID_RAIDSHIELDAPPEARED                   727
+#define STRINGID_RAIDSHIELDDISAPPEARED                728
+#define STRINGID_CATCHRAIDMON                         729
+#define STRINGID_PKMNISTOOSTRONG                      730
+#define STRINGID_PKMNNULLIFIEDOTHERS                  731
+#define STRINGID_PKMNFOCUSEDONOPPONENTS               732
+#define STRINGID_PKMNRESETSTATINCREASE                733
+#define STRINGID_PKMNRECOVEREDFROMNEGATIVE            734
+#define STRINGID_PKMNSTOLETERACHARGE                  735
+#define STRINGID_PKMNEMITTEDWAVEOFENERGY              736
+#define STRINGID_PKMNCALMEDHEALEDITSELF               737
+#define STRINGID_MOVEPREVENTEDBYDYNAMAX               738
+#define STRINGID_RAIDPKMNDISAPPEARED                  739
+#define STRINGID_STORMSTARTEDBREWING                  740
+#define STRINGID_STORMGETTINGSTRONGER                 741
+#define STRINGID_STORMGETTINGEVENSTRONGER             742
+#define STRINGID_STORMGETTINGTOOSTRONG                743
+#define STRINGID_BLOWNOUTOFDEN                        744
+#define STRINGID_PKMNREMOVEDEFFECTSFROMSELF           745
+#define STRINGID_ENERGYGATHEREDAROUNDPKMN             746
+#define STRINGID_PKMNBROKEITSSTANCE                   747
+#define STRINGID_RAIDNOTMUCHTIMELEFT                  748
+#define STRINGID_RAIDPKMNRELEASEDENERGY               749
+#define STRINGID_BARRIERRESTOREDENERGY                750
+#define STRINGID_RAIDBOSSLOSTITSENERGY                751
+#define STRINGID_DYNAMAXENERGYSURROUNDS               752
+#define STRINGID_PLAYERTERAORBCHARGING                753
+#define STRINGID_PLAYERTERAORBCHARGED                 754
+#define STRINGID_PKMNGAINEDEXPSHARE                   755
+#define STRINGID_PKMNDROPPEDITEM                      756
+#define STRINGID_BAGISFULL                            757
+#define STRINGID_NORUNNINGFROMTHISBATTLE              758
+#define STRINGID_MONTOOSCAREDTOMOVE                   759
+#define STRINGID_GHOSTGETOUTGETOUT                    760
+#define STRINGID_DEVONSCOPEUNVEILED                   761
+#define STRINGID_MAYDEVONSCOPEUNVEILED                762
+#define STRINGID_BRENDANDEVONSCOPEUNVEILED            763
+#define STRINGID_GHOSTWASOPPONENT                     764
+#define STRINGID_SENDWHICHMONTOPC                     765
 
-#define BATTLESTRINGS_COUNT                           728
+#define BATTLESTRINGS_COUNT                           766
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
@@ -1063,5 +1101,25 @@
 // gItemDroppedStringIds
 #define B_MSG_ITEM_DROPPED   0
 #define B_MSG_BAG_IS_FULL    1
+
+// gRaidStateStringIds
+#define B_MSG_RAID_STORM_STARTED        0
+#define B_MSG_GETTING_STRONGER          1
+#define B_MSG_GETTING_EVEN_STRONGER     2
+#define B_MSG_GETTING_TOO_STRONG        3
+#define B_MSG_PKMN_RELEASED_ENERGY      4
+
+// gRaidShockwaveStringIds
+#define B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS   0
+#define B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED       1
+#define B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS  2
+#define B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF    3
+#define B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE      4
+#define B_MSG_SHOCKWAVE_MEGA_ZMOVE             5
+#define B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED     6
+
+// gRaidTeraOrbCharge
+#define B_MSG_TERA_ORB_CHARGING 0
+#define B_MSG_TERA_ORB_CHARGED  1
 
 #endif // GUARD_CONSTANTS_BATTLE_STRING_IDS_H

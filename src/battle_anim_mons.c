@@ -270,6 +270,14 @@ u8 GetSubstituteSpriteDefault_Y(u8 battlerId)
     return y;
 }
 
+u8 GetGhostSpriteDefault_Y(u8 battlerId)
+{
+    if (GetBattlerSide(battlerId) != B_SIDE_OPPONENT)
+        return GetBattlerSpriteCoord(battlerId, BATTLER_COORD_Y_PIC_OFFSET_DEFAULT);
+    else
+        return GetBattlerSpriteCoord(battlerId, BATTLER_COORD_Y);
+}
+
 u8 GetBattlerYCoordWithElevation(u8 battlerId)
 {
     u16 species;

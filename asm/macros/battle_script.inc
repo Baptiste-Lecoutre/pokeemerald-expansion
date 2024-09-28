@@ -1727,6 +1727,11 @@
 	.4byte \failInstr
 	.endm
 
+	.macro trychoosemontosendtopc successInstr:req
+	callnative BS_TryChooseMonToSendToPC
+	.4byte \successInstr
+	.endm
+
 @ various command changed to more readable macros
 	.macro cancelmultiturnmoves battler:req
 	various \battler, VARIOUS_CANCEL_MULTI_TURN_MOVES
@@ -2490,6 +2495,23 @@
 
 	.macro givedroppeditems
 	various BS_FAINTED, VARIOUS_GIVE_DROPPED_ITEMS
+	.endm
+
+	.macro jumpifnoballs, ptr:req
+	various 0, VARIOUS_JUMP_IF_NO_BALLS
+	.4byte \ptr
+	.endm
+
+	.macro catchraidboss
+	various 0, VARIOUS_CATCH_RAID_BOSS
+	.endm
+
+	.macro hidehealthboxes
+	various 0, VARIOUS_HIDE_HEALTHBOXES
+	.endm
+
+	.macro doraidshockwave
+	callnative BS_DoRaidShockwave @various 0, VARIOUS_DO_RAID_SHOCKWAVE
 	.endm
 
 	@ Tries to increase or decrease a battler's stat's stat stage by a specified amount. If impossible, jumps to \script.

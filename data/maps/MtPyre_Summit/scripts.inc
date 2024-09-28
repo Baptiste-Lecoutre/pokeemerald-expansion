@@ -1,3 +1,4 @@
+.set LOCALID_OLD_MAN, 1
 .set LOCALID_ARCHIE, 2
 .set LOCALID_OLD_LADY, 3
 .set LOCALID_GRUNT_1, 4
@@ -5,6 +6,8 @@
 .set LOCALID_GRUNT_3, 6
 .set LOCALID_GRUNT_4, 7
 .set LOCALID_MAXIE, 8
+.set LOCALID_LATIAS, 10
+.set LOCALID_LATIOS, 11
 
 MtPyre_Summit_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, MtPyre_Summit_OnTransition
@@ -12,7 +15,14 @@ MtPyre_Summit_MapScripts::
 
 MtPyre_Summit_OnTransition:
 	call_if_eq VAR_MT_PYRE_STATE, 2, MtPyre_Summit_EventScript_SetArchieMaxiePositions
+	call MtPyre_Summit_EventScript_HideLatis
 	end
+
+MtPyre_Summit_EventScript_HideLatis::
+	setflag FLAG_TEMP_1
+	removeobject LOCALID_LATIAS
+	removeobject LOCALID_LATIOS
+	return
 
 MtPyre_Summit_EventScript_SetArchieMaxiePositions::
 	setobjectxyperm LOCALID_MAXIE, 23, 6
@@ -64,12 +74,204 @@ MtPyre_Summit_EventScript_TeamAquaExits::
 	call_if_eq VAR_0x8008, 0, MtPyre_Summit_EventScript_OldLadyApproachPlayer0
 	call_if_eq VAR_0x8008, 1, MtPyre_Summit_EventScript_OldLadyApproachPlayer1
 	call_if_eq VAR_0x8008, 2, MtPyre_Summit_EventScript_OldLadyApproachPlayer2
-	msgbox MtPyre_Summit_Text_BothOrbsTakenMagmaLeftThis, MSGBOX_DEFAULT
+	msgbox MtPyre_Summit_Text_BothOrbsTaken, MSGBOX_DEFAULT
+	closemessage
+	call MtPyre_Summit_EventScript_LatisScene
+	msgbox MtPyre_Summit_Text_MagmaLeftThis, MSGBOX_DEFAULT
 	giveitem ITEM_MAGMA_EMBLEM
 	setflag FLAG_RECEIVED_RED_OR_BLUE_ORB
 	setflag FLAG_HIDE_JAGGED_PASS_MAGMA_GUARD
 	releaseall
 	end
+
+MtPyre_Summit_EventScript_LatisScene::
+	call MtPyre_Summit_EventScript_LatisAppear
+	call MtPyre_Summit_EventScript_LatisSceneTurnPlayer
+	msgbox MtPyre_Summit_Text_TheEonDuo, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_LATIAS, MtPyre_Summit_Movement_LatiSlowLeft
+	applymovement LOCALID_LATIOS, MtPyre_Summit_Movement_LatiSlowRight
+	waitmovement 0
+	setobjectmovementtype LOCALID_LATIAS, MOVEMENT_TYPE_WALK_IN_PLACE_LEFT
+	setobjectmovementtype LOCALID_LATIOS, MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT
+	delay 60
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, MtPyre_Summit_EventScript_LatiasLooksAtPlayer
+	call_if_eq VAR_RESULT, FEMALE, MtPyre_Summit_EventScript_LatiosLooksAtPlayer
+	call MtPyre_Summit_EventScript_LatisExit
+	msgbox MtPyre_Summit_Text_SymbolOfHope, MSGBOX_DEFAULT
+	closemessage
+	call_if_eq VAR_0x8008, 0, MtPyre_Summit_EventScript_RestoreNPCPlayerDirection0
+	call_if_eq VAR_0x8008, 1, MtPyre_Summit_EventScript_RestoreNPCPlayerDirection1
+	call_if_eq VAR_0x8008, 2, MtPyre_Summit_EventScript_RestoreNPCPlayerDirection2
+@	msgbox MtPyre_Summit_Text_InterestInYou, MSGBOX_DEFAULT
+@	closemessage
+	return
+
+MtPyre_Summit_EventScript_LatisAppear::
+	clearflag FLAG_TEMP_1
+	addobject LOCALID_LATIAS
+	addobject LOCALID_LATIOS
+	dofieldeffectgrounddust 19, 6, 3, 2
+	dofieldeffectgrounddust 27, 6, 3, 2
+	applymovement LOCALID_LATIAS, MtPyre_Summit_Movement_LatiFasterLeft
+	applymovement LOCALID_LATIOS, MtPyre_Summit_Movement_LatiFasterRight
+	waitmovement 0
+	playse SE_M_POISON_POWDER
+	dofieldeffectgrounddust 20, 6, 3, 2
+	dofieldeffectgrounddust 26, 6, 3, 2
+	waitfieldeffect FLDEFF_DUST
+	playmoncry SPECIES_LATIOS, CRY_MODE_NORMAL
+	playmoncry SPECIES_LATIAS, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	setobjectmovementtype LOCALID_LATIAS, MOVEMENT_TYPE_WALK_IN_PLACE_LEFT
+	setobjectmovementtype LOCALID_LATIOS, MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT
+	return
+
+MtPyre_Summit_EventScript_LatisSceneTurnPlayer::
+	applymovement LOCALID_OLD_LADY, Common_Movement_WalkInPlaceFasterRight
+	applymovement LOCALID_OLD_MAN, Common_Movement_WalkInPlaceFasterLeft
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	playse SE_PIN
+	applymovement LOCALID_OLD_LADY, Common_Movement_ExclamationMark
+	applymovement LOCALID_OLD_MAN, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	applymovement LOCALID_OLD_LADY, Common_Movement_Delay48
+	applymovement LOCALID_OLD_MAN, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
+	waitmovement 0
+	return
+
+MtPyre_Summit_EventScript_LatiasLooksAtPlayer::
+	applymovement LOCALID_LATIAS, MtPyre_Summit_Movement_LatiasLooksAtPlayer
+	waitmovement 0
+	setobjectmovementtype LOCALID_LATIAS, MOVEMENT_TYPE_WALK_IN_PLACE_LEFT
+	playmoncry SPECIES_LATIAS, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	delay 40
+	return
+
+MtPyre_Summit_EventScript_LatiosLooksAtPlayer::
+	applymovement LOCALID_OLD_LADY, Common_Movement_FaceLeft
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceLeft
+	applymovement LOCALID_LATIOS, MtPyre_Summit_Movement_LatiosLooksAtPlayer
+	waitmovement 0
+	setobjectmovementtype LOCALID_LATIOS, MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT
+	playmoncry SPECIES_LATIOS, CRY_MODE_NORMAL
+	delay 40
+	waitmoncry
+	delay 40
+	return
+
+MtPyre_Summit_EventScript_LatisExit::
+	applymovement LOCALID_LATIAS, Common_Movement_FaceLeft
+	applymovement LOCALID_LATIOS, Common_Movement_FaceRight
+	setflag FLAG_TEMP_1
+	removeobject LOCALID_LATIAS
+	removeobject LOCALID_LATIOS
+	playse SE_M_POISON_POWDER
+	checkplayergender
+	call_if_eq VAR_RESULT, MALE, MtPyre_Summit_EventScript_GroundDustMale
+	call_if_eq VAR_RESULT, FEMALE, MtPyre_Summit_EventScript_GroundDustFemale
+	return
+
+MtPyre_Summit_EventScript_GroundDustMale::
+	dofieldeffectgrounddust 21, 6, 3, 2
+	dofieldeffectgrounddust 25, 7, 3, 2
+	waitfieldeffect FLDEFF_DUST
+	return
+
+MtPyre_Summit_EventScript_GroundDustFemale::
+	dofieldeffectgrounddust 21, 7, 3, 2
+	dofieldeffectgrounddust 25, 6, 3, 2
+	waitfieldeffect FLDEFF_DUST
+	return
+
+MtPyre_Summit_EventScript_RestoreNPCPlayerDirection0::
+	applymovement LOCALID_OLD_MAN, Common_Movement_FaceDown
+	applymovement LOCALID_OLD_LADY, Common_Movement_FaceLeft
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceRight
+	waitmovement 0
+	return
+
+MtPyre_Summit_EventScript_RestoreNPCPlayerDirection1::
+	applymovement LOCALID_OLD_MAN, Common_Movement_FaceDown
+	applymovement LOCALID_OLD_LADY, Common_Movement_FaceDown
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceUp
+	waitmovement 0
+	return
+
+MtPyre_Summit_EventScript_RestoreNPCPlayerDirection2::
+	applymovement LOCALID_OLD_MAN, Common_Movement_FaceDown
+	applymovement LOCALID_OLD_LADY, Common_Movement_FaceRight
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceLeft
+	waitmovement 0
+	return
+
+MtPyre_Summit_Movement_LatiSlowLeft:
+	walk_slow_left
+	delay_8
+	step_end
+
+MtPyre_Summit_Movement_LatiSlowRight:
+	delay_8
+	walk_slow_right
+	step_end
+
+MtPyre_Summit_Movement_LatiFasterLeft:
+	walk_faster_left
+	step_end
+
+MtPyre_Summit_Movement_LatiFasterRight:
+	walk_faster_right
+	step_end
+
+MtPyre_Summit_Movement_LatiasLooksAtPlayer:
+	face_down
+	delay_16
+	delay_16
+	delay_16
+	face_left
+	delay_16
+	lock_facing_direction
+	walk_slow_down
+	unlock_facing_direction
+	step_end
+
+MtPyre_Summit_Movement_LatiosLooksAtPlayer:
+	face_down
+	delay_16
+	delay_16
+	delay_16
+	face_right
+	delay_16
+	lock_facing_direction
+	walk_slow_down
+	unlock_facing_direction
+	step_end
+
+MtPyre_Summit_Text_TheEonDuo:
+	.string "The Eon duo!\n"
+	.string "Latios and Latias!$"
+
+MtPyre_Summit_Text_SymbolOfHope:
+	.string "These Pokémons are the symbol of hope…\n"
+	.string "For them to show themselves now…\p"
+	.string "They must foresee terrible events\n"
+	.string "to happen…$"
+
+MtPyre_Summit_Text_InterestInYou:
+	.string "Latios and Latias…\n"
+	.string "They have unmistalenly shown their\l"
+	.string "interest in you…\p"
+	.string "… … … … … …\n"
+	.string "… … … … … …\p"
+	.string "Perhaps you are fated with\n"
+	.string "the task of stopping those men…$"
 
 MtPyre_Summit_EventScript_ArchieFacePlayer0::
 	applymovement LOCALID_ARCHIE, MtPyre_Summit_Movement_ArchieFacePlayer0
@@ -499,7 +701,7 @@ MtPyre_Summit_Text_ArchieWeGotTheOrbLetsGo:
 	.string "Okay, Team!\n"
 	.string "We're pulling out!$"
 
-MtPyre_Summit_Text_BothOrbsTakenMagmaLeftThis:
+MtPyre_Summit_Text_BothOrbsTaken:
 	.string "Oh, no…\n"
 	.string "This cannot happen…\p"
 	.string "Not only the Blue Orb, but even\n"
@@ -507,7 +709,16 @@ MtPyre_Summit_Text_BothOrbsTakenMagmaLeftThis:
 	.string "The Blue Orb and Red Orb must never\n"
 	.string "be separated. They belong together.\p"
 	.string "What are those men trying to do with\n"
-	.string "the two Orbs?\p"
+	.string "the two Orbs?$"
+
+MtPyre_Summit_Text_MagmaLeftThis:
+	.string "Latios and Latias…\n"
+	.string "They have unmistalenly shown their\l"
+	.string "interest in you…\p"
+	.string "… … … … … …\n"
+	.string "… … … … … …\p"
+	.string "Perhaps you are fated with\n"
+	.string "the task of stopping those men…\p"
 	.string "… … … … … …\n"
 	.string "… … … … … …\p"
 	.string "Oh, yes. Was it Team Magma who came\n"

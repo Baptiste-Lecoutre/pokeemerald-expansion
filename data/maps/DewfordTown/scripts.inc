@@ -11,17 +11,130 @@
 .equ LOCALID_BRINEY_R104, 8
 
 DewfordTown_MapScripts::
+	map_script MAP_SCRIPT_ON_LOAD, DewfordTown_OnLoad
 	map_script MAP_SCRIPT_ON_TRANSITION, DewfordTown_OnTransition
 	.byte 0
+
+DewfordTown_OnLoad:
+	call_if_unset FLAG_DELIVERED_STEVEN_LETTER, DewfordTown_EventScript_LockGymDoor
+	call_if_unset FLAG_DEFEATED_SANDYGAST_1_DEWFORD, DewfordTown_EventScript_LockGymDoor
+	call_if_unset FLAG_DEFEATED_SANDYGAST_2_DEWFORD, DewfordTown_EventScript_LockGymDoor
+	call_if_unset FLAG_DEFEATED_SANDYGAST_3_DEWFORD, DewfordTown_EventScript_LockGymDoor
+	call_if_unset FLAG_DEFEATED_SANDYGAST_4_DEWFORD, DewfordTown_EventScript_LockGymDoor
+	end
 
 DewfordTown_OnTransition:
 	setflag FLAG_VISITED_DEWFORD_TOWN
 	end
 
+DewfordTown_EventScript_LockGymDoor::
+	setmetatile 8, 17, METATILE_Dewford_GymDoor_Closed, TRUE
+	return
+
+DewfordTown_EventScript_Sandygast1::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_SANDYGAST, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_SANDYGAST, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveSandygast1
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveSandygast1
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveSandygast1
+	setflag FLAG_DEFEATED_SANDYGAST_1_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveSandygast1::
+	setflag FLAG_DEFEATED_SANDYGAST_1_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
+DewfordTown_EventScript_Sandygast2::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_SANDYGAST, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_SANDYGAST, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveSandygast2
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveSandygast2
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveSandygast2
+	setflag FLAG_DEFEATED_SANDYGAST_2_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveSandygast2::
+	setflag FLAG_DEFEATED_SANDYGAST_2_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
+DewfordTown_EventScript_Sandygast3::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_SANDYGAST, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_SANDYGAST, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveSandygast3
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveSandygast3
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveSandygast3
+	setflag FLAG_DEFEATED_SANDYGAST_3_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveSandygast3::
+	setflag FLAG_DEFEATED_SANDYGAST_3_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
+DewfordTown_EventScript_Sandygast4::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_SANDYGAST, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
+	setwildbattle SPECIES_SANDYGAST, VAR_RESULT
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DewfordTown_EventScript_RemoveSandygast4
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DewfordTown_EventScript_RemoveSandygast4
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DewfordTown_EventScript_RemoveSandygast4
+	setflag FLAG_DEFEATED_SANDYGAST_4_DEWFORD
+	release
+	end
+
+DewfordTown_EventScript_RemoveSandygast4::
+	setflag FLAG_DEFEATED_SANDYGAST_4_DEWFORD
+	goto Common_EventScript_RemoveStaticPokemon
+	end
+
 DewfordTown_EventScript_Briney::
 	lock
 	faceplayer
-	goto_if_unset FLAG_DELIVERED_STEVEN_LETTER, DewfordTown_EventScript_ReturnToPetalburgPrompt
+	goto_if_unset FLAG_BADGE02_GET, DewfordTown_EventScript_ReturnToPetalburgPrompt
 	message DewfordTown_Text_WhereAreWeBound
 	waitmessage
 	multichoicedefault 21, 6, MULTI_BRINEY_ON_DEWFORD, 2, FALSE
@@ -66,7 +179,15 @@ DewfordTown_EventScript_SailBackToPetalburg::
 	end
 
 DewfordTown_EventScript_Woman::
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_1_DEWFORD, DewfordTown_EventScript_WomanDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_2_DEWFORD, DewfordTown_EventScript_WomanDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_3_DEWFORD, DewfordTown_EventScript_WomanDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_4_DEWFORD, DewfordTown_EventScript_WomanDiglett
 	msgbox DewfordTown_Text_TinyIslandCommunity, MSGBOX_NPC
+	end
+
+DewfordTown_EventScript_WomanDiglett::
+	msgbox DewfordTown_Text_WomanDiglett, MSGBOX_NPC
 	end
 
 DewfordTown_EventScript_TownSign::
@@ -84,12 +205,21 @@ DewfordTown_EventScript_HallSign::
 DewfordTown_EventScript_OldRodFisherman::
 	lock
 	faceplayer
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_1_DEWFORD, DewfordTown_EventScript_OldRodFishermanDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_2_DEWFORD, DewfordTown_EventScript_OldRodFishermanDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_3_DEWFORD, DewfordTown_EventScript_OldRodFishermanDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_4_DEWFORD, DewfordTown_EventScript_OldRodFishermanDiglett
 	goto_if_set FLAG_DEWFORD_EVIOLITE, DewfordTown_EventScript_ReceivedEviolite
 	msgbox DewfordTown_Text_FishedUpEviolite
 	giveitem ITEM_EVIOLITE
-	goto_if_eq VAR_RESULT, 0, Common_EventScript_BagIsFull
+	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox DewfordTown_Text_ReceivedEviolite, MSGBOX_DEFAULT
 	setflag FLAG_DEWFORD_EVIOLITE
+	release
+	end
+
+DewfordTown_EventScript_OldRodFishermanDiglett::
+	msgbox DewfordTown_Text_FisherManDiglett, MSGBOX_DEFAULT
 	release
 	end
 
@@ -609,10 +739,19 @@ DewfordTown_Movement_BrineyExitBoat:
 DewfordTown_EventScript_TrendyPhraseBoy::
 	lock
 	faceplayer
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_1_DEWFORD, DewfordTown_EventScript_TrendyPhraseBoyDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_2_DEWFORD, DewfordTown_EventScript_TrendyPhraseBoyDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_3_DEWFORD, DewfordTown_EventScript_TrendyPhraseBoyDiglett
+	goto_if_unset FLAG_DEFEATED_SANDYGAST_4_DEWFORD, DewfordTown_EventScript_TrendyPhraseBoyDiglett
 	call Common_EventScript_BufferTrendyPhrase
 	msgbox DewfordTown_Text_XIsTheBiggestHappeningThingRight, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, DewfordTown_EventScript_ConfirmTrendyPhrase
 	goto_if_eq VAR_RESULT, NO, DewfordTown_EventScript_RejectTrendyPhrase
+	end
+
+DewfordTown_EventScript_TrendyPhraseBoyDiglett::
+	msgbox DewfordTown_Text_TrendyBoyDiglett, MSGBOX_NPC
+	release
 	end
 
 DewfordTown_EventScript_ConfirmTrendyPhrase::
@@ -683,8 +822,8 @@ DewfordTown_Text_PetalburgWereSettingSail2:
 	.string "Peeko, we're setting sail, my darling!$"
 
 DewfordTown_Text_GoDeliverIllBeWaiting:
-	.string "Mr. Briney: Then you go on and deliver\n"
-	.string "the Letter. I'll be waiting.$"
+	.string "Mr. Briney: Then you go on and do what\n"
+	.string "you have to. I'll be waiting.$"
 
 DewfordTown_Text_BrineyLandedInDewford:
 	.string "Mr. Briney: Ahoy!\n"
@@ -820,3 +959,18 @@ DewfordTown_Text_FishedUpEviolite:
 	.string "day.\p"
 	.string "It's of no use to me, so here,\n"
 	.string "you take it!$"
+
+DewfordTown_Text_FisherManDiglett:
+	.string "Hmm… All these Pokémon wreaking havoc\n"
+	.string "in town…\p"
+	.string "Not good for fishing, that's for sure!$"
+
+DewfordTown_Text_WomanDiglett:
+	.string "These Pokémon! What's happening to\n"
+	.string "them!?\p"
+	.string "Why are they in the town!?$"
+
+DewfordTown_Text_TrendyBoyDiglett:
+	.string "A bunch of Pokémon causing such mess,\n"
+	.string "is that something cool happening in\l"
+	.string "our town?$"

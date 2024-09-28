@@ -8,7 +8,9 @@ MauvilleCity_GameCorner_MapScripts::
 	.set TM_THUNDERBOLT_COINS, 4000
 	.set TM_ICE_BEAM_COINS, 4000
 	.set STARTER_COINS, 	2500
-	.set DOLL_COINS, 1000
+	.set HIDDEN_ABILITY_COINS, 	500
+	.set DOLL_COINS,  1000
+
 	.set COINS_PRICE_50,  1000
 	.set COINS_PRICE_500, 10000
 
@@ -782,7 +784,7 @@ MauvilleCity_GameCorner_EventScript_PrizeCornerStarter::
 	lock
 	faceplayer
 	msgbox MauvilleCity_GameCorner_Text_ExchangeCoinsForPokemon, MSGBOX_DEFAULT
-	checkitem ITEM_COIN_CASE, 1
+	checkitem ITEM_COIN_CASE
 	compare VAR_RESULT, TRUE
 	goto_if_eq MauvilleCity_GameCorner_EventScript_ChooseStarterPrizeMessage
 	release
@@ -954,14 +956,19 @@ MauvilleCity_GameCorner_EventScript_Sobble::
 	goto MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize
 	
 MauvilleCity_GameCorner_EventScript_ConfirmStarterPrize::
+	copyvar VAR_0x8008, VAR_0x8006
+	addvar VAR_0x8008, STARTER_COINS
 	bufferspeciesname 0, VAR_TEMP_1
 	msgbox MauvilleCity_GameCorner_Text_SoYourChoiceIsThePokemonX, MSGBOX_YESNO
-	compare VAR_RESULT, NO
-	goto_if_eq MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
+	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_CancelPokemonSelect
 	checkcoins VAR_0x8007
-	compare VAR_0x8007, VAR_0x8006
-	goto_if_lt MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter
-	goto MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	goto_if_lt VAR_0x8007, VAR_0x8006, MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter
+	goto_if_lt VAR_0x8007, VAR_0x8008, MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility
+	msgbox MauvilleCity_GameCorner_Text_DoYouWantYourXToBeShiny, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility
+	copyvar VAR_0x8006, VAR_0x8008
+	setflag P_FLAG_FORCE_SHINY
+	goto MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility
 	
 MauvilleCity_GameCorner_EventScript_NotEnoughCoinsForStarter::
 	msgbox MauvilleCity_GameCorner_Text_NotEnoughCoins, MSGBOX_DEFAULT
@@ -973,6 +980,16 @@ MauvilleCity_GameCorner_EventScript_CancelPokemonSelect::
 	hidecoinsbox 0, 0
 	release
 	end
+
+MauvilleCity_GameCorner_EventScript_ConfirmHiddenAbility::
+	copyvar VAR_0x8008, VAR_0x8006
+	addvar VAR_0x8008, HIDDEN_ABILITY_COINS
+	goto_if_lt VAR_0x8007, VAR_0x8008, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	msgbox MauvilleCity_GameCorner_Text_DoYouWantYourXToKnowHA, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_ReceivePokemon
+	copyvar VAR_0x8006, VAR_0x8008
+	setflag P_FLAG_FORCE_HIDDEN_ABILITY
+	goto MauvilleCity_GameCorner_EventScript_ReceivePokemon
 
 MauvilleCity_GameCorner_EventScript_ReceivePokemon::
 	msgbox MauvilleCity_GameCorner_Text_ThanksPleaseTakePokemon, MSGBOX_DEFAULT
@@ -1033,6 +1050,14 @@ MauvilleCity_GameCorner_Text_WhichStarterType:
 
 MauvilleCity_GameCorner_Text_SoYourChoiceIsThePokemonX:
 	.string "So your choice is {STR_VAR_1}?$"
+
+MauvilleCity_GameCorner_Text_DoYouWantYourXToBeShiny:
+	.string "Would you like your {STR_VAR_1}\n"
+	.string "to be shiny for 2500 more coins?$"
+
+MauvilleCity_GameCorner_Text_DoYouWantYourXToKnowHA:
+	.string "Your {STR_VAR_1} can have its\n"
+	.string "Hidden Ability for 500 more coins. Deal?$"
 
 MauvilleCity_GameCorner_Text_TakeCareOfPokemon:
 	.string "Take good care of {STR_VAR_1}!$"

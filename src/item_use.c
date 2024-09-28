@@ -39,6 +39,8 @@
 #include "string_util.h"
 #include "task.h"
 #include "text.h"
+#include "follow_me.h"
+#include "wild_encounter.h"
 #include "vs_seeker.h"
 #include "constants/event_bg.h"
 #include "constants/event_objects.h"
@@ -80,6 +82,8 @@ static void Task_UseLure(u8 taskId);
 static void Task_CloseCantUseKeyItemMessage(u8);
 static void SetDistanceOfClosestHiddenItem(u8, s16, s16);
 static void CB2_OpenPokeblockFromBag(void);
+//static void ItemUseOnFieldCB_Honey(u8 taskId);
+static void ItemUseOnFieldCB_HoneyFail(u8 taskId);
 static void ItemUseOnFieldCB_Honey(u8 taskId);
 static void ItemUseOnFieldCB_PokeVial(u8 taskId);
 static bool32 IsValidLocationForVsSeeker(void);
@@ -246,7 +250,7 @@ void ItemUseOutOfBattle_Bike(u8 taskId)
         DisplayCannotDismountBikeMessage(taskId, tUsingRegisteredKeyItem);
     else
     {
-        if (Overworld_IsBikingAllowed() == TRUE && IsBikingDisallowedByPlayer() == 0)
+        if (Overworld_IsBikingAllowed() == TRUE && IsBikingDisallowedByPlayer() == 0 && FollowerCanBike())
         {
             sItemUseOnFieldCB = ItemUseOnFieldCB_Bike;
             SetUpItemUseOnFieldCallback(taskId);
@@ -260,8 +264,10 @@ static void ItemUseOnFieldCB_Bike(u8 taskId)
 {
     if (ItemId_GetSecondaryId(gSpecialVar_ItemId) == MACH_BIKE)
         GetOnOffBike(PLAYER_AVATAR_FLAG_MACH_BIKE);
-    else // ACRO_BIKE
+    else
         GetOnOffBike(PLAYER_AVATAR_FLAG_ACRO_BIKE);
+    
+    FollowMe_HandleBike();
     ScriptUnfreezeObjectEvents();
     UnlockPlayerFieldControls();
     DestroyTask(taskId);
@@ -1052,6 +1058,8 @@ static void ItemUseOnFieldCB_EscapeRope(u8 taskId)
 
 bool8 CanUseDigOrEscapeRopeOnCurMap(void)
 {
+    if (!CheckFollowerFlag(FOLLOWER_FLAG_CAN_LEAVE_ROUTE))
+        return FALSE;
     if (gMapHeader.allowEscaping)
         return TRUE;
     else
@@ -1409,7 +1417,7 @@ void ItemUseOutOfBattle_Fusion(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
-void Task_UseHoneyOnField(u8 taskId)
+/*void Task_UseHoneyOnField(u8 taskId)
 {
     //ResetInitialPlayerAvatarState();
     StartSweetScentFieldEffect();
@@ -1432,7 +1440,7 @@ void ItemUseOutOfBattle_Honey(u8 taskId)
     gFieldCallback = FieldCB_UseItemOnField;
     gBagMenu->newScreenCallback = CB2_ReturnToField;
     Task_FadeAndCloseBagMenu(taskId);
-}
+}*/
 
 void ItemUseOutOfBattle_CannotUse(u8 taskId)
 {
@@ -1580,3 +1588,41 @@ void Task_ItemUse_CloseMessageBoxAndReturnToField_VsSeeker(u8 taskId)
 }
 
 #undef tUsingRegisteredKeyItem
+
+void ItemUseOutOfBattle_Honey(u8 taskId)
+{
+    s16 x, y;
+    u16 headerId = GetCurrentMapWildMonHeaderId();;
+
+    PlayerGetDestCoords(&x, &y);
+
+    if (MetatileBehavior_IsLandWildEncounter(MapGridGetMetatileBehaviorAt(x, y)) == TRUE // Player is on land encounter tile
+        && headerId != 0xFFFF // Map has wild Pokemon 
+        && gWildMonHeaders[headerId].honeyMonsInfo != NULL) // Map has honey encounters
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_Honey;
+    }
+    else // Honey fails to start encounter
+    {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_HoneyFail;
+    }
+    gFieldCallback = FieldCB_UseItemOnField;
+    gBagMenu->newScreenCallback = CB2_ReturnToField;
+    Task_FadeAndCloseBagMenu(taskId);
+}
+
+static void ItemUseOnFieldCB_Honey(u8 taskId)
+{
+    RemoveBagItem(gSpecialVar_ItemId, 1);
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_HoneyEncounter);
+    DestroyTask(taskId);
+}
+
+static void ItemUseOnFieldCB_HoneyFail(u8 taskId)
+{
+    RemoveBagItem(gSpecialVar_ItemId, 1);
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_FailSweetScent);
+    DestroyTask(taskId);
+}

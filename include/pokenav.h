@@ -54,6 +54,30 @@ struct PokenavMonList
     struct PokenavMonListItem monData[TOTAL_BOXES_COUNT * IN_BOX_COUNT + PARTY_SIZE];
 };
 
+struct Pokenav_Menu
+{
+    u16 menuType;
+    s16 cursorPos;
+    u16 currMenuItem;
+    u16 helpBarIndex;
+    u32 menuId;
+    u32 (*callback)(struct Pokenav_Menu *);
+};
+
+struct Pokenav_MainMenu
+{
+    void (*loopTask)(u32);
+    u32 (*isLoopTaskActiveFunc)(void);
+    u32 unused;
+    u32 currentTaskId;
+    u32 helpBarWindowId;
+    u32 palettes;
+    struct Sprite *spinningPokenav;
+    struct Sprite *leftHeaderSprites[2];
+    struct Sprite *submenuLeftHeaderSprites[2];
+    u8 tilemapBuffer[BG_SCREEN_SIZE];
+};
+
 // Return values of LoopedTask functions.
 #define LT_INC_AND_PAUSE 0
 #define LT_INC_AND_CONTINUE 1
@@ -65,8 +89,12 @@ struct PokenavMonList
 enum
 {
     POKENAV_MODE_NORMAL,           // Chosen from Start menu.
-    POKENAV_MODE_FORCE_CALL_READY, // PokéNav tutorial before calling Mr. Stone
-    POKENAV_MODE_FORCE_CALL_EXIT,  // PokéNav tutorial after calling Mr. Stone
+    POKENAV_MODE_FORCE_CALL_READY, // Pokenav tutorial before calling Mr. Stone
+    POKENAV_MODE_FORCE_CALL_EXIT,  // Pokenav tutorial after calling Mr. Stone
+    POKENAV_MODE_TOWN_MAP,         // Town Map from start menu
+    POKENAV_MODE_TOWN_MAP_EXIT,    // Town Map from start menu exit
+    POKENAV_MODE_MATCH_CALL,       // Match Call from start menu
+    POKENAV_MODE_MATCH_CALL_EXIT,  // Match Call from start menu exit
 };
 
 enum
@@ -101,8 +129,8 @@ enum
     POKENAV_GFX_MATCH_CALL_MENU,
     POKENAV_GFX_MAP_MENU_ZOOMED_OUT,
     POKENAV_GFX_MAP_MENU_ZOOMED_IN,
-    POKENAV_GFX_ACCESS_PC,
     POKENAV_GFX_PARTY_MENU,
+    POKENAV_GFX_RIBBONS_MENU_COND,
     POKENAV_GFX_SEARCH_MENU,
     POKENAV_GFX_COOL_MENU,
     POKENAV_GFX_BEAUTY_MENU,
@@ -112,7 +140,7 @@ enum
     POKENAV_GFX_MENUS_END,
 };
 
-#define POKENAV_GFX_SUBMENUS_START POKENAV_GFX_ACCESS_PC
+#define POKENAV_GFX_SUBMENUS_START POKENAV_GFX_PARTY_MENU
 
 #define POKENAV_MENU_IDS_START 100000
 enum
@@ -120,12 +148,14 @@ enum
     POKENAV_MAIN_MENU = POKENAV_MENU_IDS_START, // The main menu where the player selects Hoenn Map/Condition/Match Call/Ribbons
     POKENAV_MAIN_MENU_CURSOR_ON_MAP,
     POKENAV_MAIN_MENU_CURSOR_ON_DEXNAV,
+    POKENAV_MAIN_MENU_CURSOR_ON_TRAINER_RADAR,
     POKENAV_CONDITION_MENU,                     // The first Condition screen where the player selects Party or Search
     POKENAV_CONDITION_SEARCH_MENU,              // The Condition search menu where the player selects a search parameter
     POKENAV_MAIN_MENU_CURSOR_ON_MATCH_CALL,
     POKENAV_MAIN_MENU_CURSOR_ON_RIBBONS,
     POKENAV_REGION_MAP,
     POKENAV_DEXNAV,
+    POKENAV_TRAINER_RADAR,
     POKENAV_CONDITION_GRAPH_PARTY,              // The Condition graph screen when Party has been selected
     POKENAV_CONDITION_SEARCH_RESULTS,           // The list of results from a Condition search
     POKENAV_CONDITION_GRAPH_SEARCH,             // The Condition graph screen when a search result has been selected
@@ -152,12 +182,14 @@ enum
 {
     POKENAV_MENUITEM_MAP,
     POKENAV_MENUITEM_DEXNAV,
+    POKENAV_MENUITEM_TRAINER_RADAR,
+    POKENAV_MENUITEM_ACCESS_PC,
     POKENAV_MENUITEM_CONDITION,
     POKENAV_MENUITEM_MATCH_CALL,
     POKENAV_MENUITEM_RIBBONS,
     POKENAV_MENUITEM_SWITCH_OFF,
-    POKENAV_MENUITEM_CONDITION_ACCESS_PC,
     POKENAV_MENUITEM_CONDITION_PARTY,
+    POKENAV_MENUITEM_CONDITION_RIBBONS,
     POKENAV_MENUITEM_CONDITION_SEARCH,
     POKENAV_MENUITEM_CONDITION_CANCEL,
     POKENAV_MENUITEM_CONDITION_SEARCH_COOL,
@@ -185,6 +217,7 @@ enum
     HELPBAR_RIBBONS_MON_LIST,
     HELPBAR_RIBBONS_LIST,
     HELPBAR_RIBBONS_CHECK,
+    HELPBAR_CONDITION_SWITCH_VIEW,
     HELPBAR_COUNT
 };
 
@@ -253,6 +286,7 @@ enum RegionMapFuncIds
     POKENAV_MENU_FUNC_OPEN_FEATURE,
     POKENAV_MENU_FUNC_CANNOT_ACCESS_PC,
     POKENAV_MENU_FUNC_OPEN_DEXNAV,
+    POKENAV_MENU_FUNC_OPEN_TRAINER_RADAR,
 };
 
 enum
@@ -264,6 +298,7 @@ enum
     CONDITION_FUNC_SLIDE_MON_OUT,
     CONDITION_FUNC_ADD_MARKINGS,
     CONDITION_FUNC_CLOSE_MARKINGS,
+    CONDITION_FUNC_SWITCH_VIEW,
 };
 
 enum
@@ -317,6 +352,8 @@ void SetSelectedConditionSearch(u32);
 u32 GetSelectedConditionSearch(void);
 
 void CB2_InitPokeNav(void);
+void OpenPokenavForTownMap(MainCallback exitCallback);
+void OpenPokenavForMatchCall(MainCallback exitCallback);
 u32 CreateLoopedTask(LoopedTask loopedTask, u32 priority);
 bool32 FuncIsActiveLoopedTask(LoopedTask func);
 void *GetSubstructPtr(u32 index);
@@ -388,10 +425,12 @@ u32 PokenavMainMenuLoopedTaskIsActive(void);
 bool32 WaitForPokenavShutdownFade(void);
 void SetActiveMenuLoopTasks(void *func1, void *func2);
 void ShutdownPokenav(void);
+void FreePokenavResources(void);
 
 // pokenav_menu_handler.c
 bool32 PokenavCallback_Init_MainMenuCursorOnMap(void);
 bool32 PokenavCallback_Init_MainMenuCursorOnDexNav(void);
+bool32 PokenavCallback_Init_MainMenuCursorOnTrainerRadar(void);
 bool32 PokenavCallback_Init_MainMenuCursorOnMatchCall(void);
 bool32 PokenavCallback_Init_MainMenuCursorOnRibbons(void);
 bool32 PokenavCallback_Init_ConditionMenu(void);
@@ -402,6 +441,8 @@ int GetPokenavMenuType(void);
 int GetPokenavCursorPos(void);
 int GetCurrentMenuItemId(void);
 u16 GetHelpBarTextId(void);
+void InitHelpBar(void);
+void FreePokenavResources(void);
 
 // pokenav_menu_handler_gfx.c
 bool32 OpenPokenavMenuInitial(void);

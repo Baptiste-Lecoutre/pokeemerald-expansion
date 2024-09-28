@@ -108,6 +108,28 @@ const u16 ALIGNED(4) gTilesetPalettes_Mauville[][16] =
     INCBIN_U16("data/tilesets/secondary/mauville/palettes/15.gbapal"),
 };
 
+const u32 gTilesetTiles_Verdanturf[] = INCBIN_U32("data/tilesets/secondary/verdanturf/tiles.4bpp.lz");
+
+const u16 ALIGNED(4) gTilesetPalettes_Verdanturf[][16] =
+{
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/00.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/01.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/02.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/03.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/04.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/05.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/06.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/07.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/08.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/09.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/10.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/11.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/12.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/13.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/14.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/verdanturf/palettes/15.gbapal"),
+};
+
 const u32 gTilesetTiles_Lavaridge[] = INCBIN_U32("data/tilesets/secondary/lavaridge/tiles.4bpp.lz");
 
 const u16 ALIGNED(4) gTilesetPalettes_Lavaridge[][16] =
@@ -1634,3 +1656,22 @@ const u16 ALIGNED(4) gTilesetPalettes_UnionRoom[][16] =
 };
 
 const u32 gTilesetTiles_UnionRoom[] = INCBIN_U32("data/tilesets/secondary/union_room/tiles.4bpp.lz");
+
+const u16 gTilesetPalettes_GeneralSnow[][16] =
+{
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/00.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/01.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/02.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/03.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/04.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/05.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/06.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/07.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/08.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/09.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/10.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/11.gbapal"),
+    INCBIN_U16("data/tilesets/primary/general_snow/palettes/12.gbapal"),
+};
+
+const u32 gTilesetTiles_GeneralSnow[] = INCBIN_U32("data/tilesets/primary/general_snow/tiles.4bpp.lz");

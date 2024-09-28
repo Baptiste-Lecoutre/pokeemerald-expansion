@@ -1,2 +1,83 @@
 AshenWoods_MapScripts::
+	map_script MAP_SCRIPT_ON_RESUME, AshenWoods_OnResume
+	map_script MAP_SCRIPT_ON_TRANSITION, AshenWoods_OnTransition
 	.byte 0
+
+AshenWoods_OnResume::
+	setstepcallback STEP_CB_ASH
+	end
+
+AshenWoods_OnTransition::
+	special StorePlayerCoordsInVars
+	goto_if_gt VAR_0x8005, 27, AshenWoods_EventScript_SetWeatherFog
+	call_if_eq VAR_JAGGED_PASS_ASH_WEATHER, 1, AshenWoods_EventScript_SetWeatherAsh
+	end
+
+AshenWoods_EventScript_SetWeatherAsh::
+	setweather WEATHER_VOLCANIC_ASH
+	doweather
+	return
+
+AshenWoods_EventScript_SetWeatherFog::
+	setweather WEATHER_SHADE
+	doweather
+	end
+
+AshenWoods_EventScript_Chef::
+	msgbox AshenWoods_Text_Mushrooms, MSGBOX_NPC
+	end
+
+AshenWoods_EventScript_Alannah::
+	trainerbattle_single TRAINER_ALANNAH, AshenWoods_Text_AlannahIntro, AshenWoods_Text_AlannahDefeat
+	msgbox AshenWoods_Text_AlannahPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+AshenWoods_EventScript_Martin::
+	trainerbattle_single TRAINER_MARTIN, AshenWoods_Text_MartinIntro, AshenWoods_Text_MartinDefeat
+	msgbox AshenWoods_Text_MartinPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+AshenWoods_EventScript_Roman::
+	trainerbattle_single TRAINER_ROMAN, AshenWoods_Text_RomanIntro, AshenWoods_Text_RomanDefeat
+	msgbox AshenWoods_Text_RomanPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+AshenWoods_EventScript_Elmer::
+	trainerbattle_single TRAINER_ELMER, AshenWoods_Text_ElmerIntro, AshenWoods_Text_ElmerDefeat
+	msgbox AshenWoods_Text_ElmerPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+AshenWoods_Text_Mushrooms:
+	.string "The mushrooms that grow here are\n"
+	.string "a highly sought after ingredient.\p"
+	.string "They're quite valuable, and they\n"
+	.string "seem to grow back overnight!\n"
+
+AshenWoods_EventScript_WeAreInTheAshenWoods::
+	facefollower
+	checkplayergender
+	goto_if_eq VAR_RESULT, MALE, AshenWoods_EventScript_MayWeAreInTheAshenWoods
+	goto_if_eq VAR_RESULT, FEMALE, AshenWoods_EventScript_BrendanWeAreInTheAshenWoods
+AshenWoods_EventScript_WeAreInTheAshenWoodsEnd::
+	setvar VAR_LAVARIDGE_TOWN_STATE, 4
+	end
+
+AshenWoods_EventScript_MayWeAreInTheAshenWoods::
+	msgbox AshenWoods_Text_MayHereWeAre, MSGBOX_DEFAULT
+	closemessage
+	goto AshenWoods_EventScript_WeAreInTheAshenWoodsEnd
+
+AshenWoods_EventScript_BrendanWeAreInTheAshenWoods::
+	msgbox AshenWoods_Text_BrendanHereWeAre, MSGBOX_DEFAULT
+	closemessage
+	goto AshenWoods_EventScript_WeAreInTheAshenWoodsEnd
+
+AshenWoods_Text_MayHereWeAre:
+	.string "May: The Ashen Woods…\n"
+	.string "Here we are!\p"
+	.string "Let's look for the little girl now!$"
+
+AshenWoods_Text_BrendanHereWeAre:
+	.string "Brendan: The Ashen Woods…\n"
+	.string "Finally!\p"
+	.string "Let's look for this girl!$"

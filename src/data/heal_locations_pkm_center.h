@@ -1,4 +1,4 @@
-#define DEFAULT_POKEMON_CENTER_COORDS .x = 7, .y = 4
+#define DEFAULT_POKEMON_CENTER_COORDS .x = 8, .y = 4
 
 static const struct HealLocation sHealLocationsPokemonCenter[HEAL_LOCATION_COUNT - 1] =
 {

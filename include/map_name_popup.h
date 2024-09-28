@@ -8,4 +8,7 @@
 // Exported ROM declarations
 void HideMapNamePopUpWindow(void);
 void ShowMapNamePopup(void);
+
+#define MAP_POPUP_ALPHA_BLEND   FALSE
+
 #endif //GUARD_MAP_NAME_POPUP_H

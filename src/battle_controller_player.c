@@ -31,6 +31,7 @@
 #include "task.h"
 #include "test_runner.h"
 #include "text.h"
+#include "ui_battle_menu.h"
 #include "util.h"
 #include "window.h"
 #include "constants/battle.h"
@@ -110,6 +111,8 @@ static void Task_LaunchSectionUnlockAnim(u8 taskId);
 static void ReloadMoveNames(u32 battler);
 static void MoveSelectionDisplaySplitIcon(u32 battler);
 static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId);
+static void HandleInputTeamPreview(u32 battler);
+static void Controller_WaitForUIBattleMenu(u32 battler);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 {
@@ -176,21 +179,17 @@ static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(u32 battler) =
 
 static const u8 sCostumeBackPics[COSTUME_COUNT][GENDER_COUNT] = 
 {
-    [RED_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_RED},
-    [LEAF_COSTUME]              = {TRAINER_BACK_PIC_LEAF, TRAINER_BACK_PIC_LEAF},
-    [BRENDAN_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_BRENDAN},
-    [MAY_COSTUME]               = {TRAINER_BACK_PIC_MAY, TRAINER_BACK_PIC_MAY},
-    [ETHAN_COSTUME]             = {TRAINER_BACK_PIC_ETHAN, TRAINER_BACK_PIC_ETHAN},
-    [LYRA_COSTUME]              = {TRAINER_BACK_PIC_LYRA, TRAINER_BACK_PIC_LYRA},
-    [KRIS_COSTUME]              = {TRAINER_BACK_PIC_KRIS, TRAINER_BACK_PIC_KRIS},
-    [LUCAS_COSTUME]             = {TRAINER_BACK_PIC_LUCAS, TRAINER_BACK_PIC_LUCAS},
-    [DAWN_COSTUME]              = {TRAINER_BACK_PIC_DAWN, TRAINER_BACK_PIC_DAWN},
-    [LUCAS_PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_LUCAS_PLATINUM},
-    [DAWN_PLATINUM_COSTUME]     = {TRAINER_BACK_PIC_DAWN_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
+    /*[FRLG_COSTUME]               = {TRAINER_BACK_PIC_RED, TRAINER_BACK_PIC_LEAF},
+    [RSE_COSTUME]           = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_MAY},
+    [HGSS_COSTUME]             = {TRAINER_BACK_PIC_ETHAN, TRAINER_BACK_PIC_KRIS},
+    [DPEARL_COSTUME]             = {TRAINER_BACK_PIC_LUCAS, TRAINER_BACK_PIC_DAWN},
+    [PLATINUM_COSTUME]    = {TRAINER_BACK_PIC_LUCAS_PLATINUM, TRAINER_BACK_PIC_DAWN_PLATINUM},
+    [LGPE_COSTUME]             = {TRAINER_BACK_PIC_CHASE, TRAINER_BACK_PIC_ELAINE},*/
+    [GREEN_COSTUME] = {TRAINER_BACK_PIC_BRENDAN, TRAINER_BACK_PIC_MAY},
+    [RED_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_RED, TRAINER_BACK_PIC_MAY_RED},
+    [BLUE_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_BLUE, TRAINER_BACK_PIC_MAY_BLUE},
+    [YELLOW_COSTUME] = {TRAINER_BACK_PIC_BRENDAN_YELLOW, TRAINER_BACK_PIC_MAY_YELLOW},
 };
-
-EWRAM_DATA bool8 gDescriptionSubmenu = 0;
-EWRAM_DATA u8 sLastUsedBallHoldFrames = 0;
 
 void SetControllerToPlayer(u32 battler)
 {
@@ -314,9 +313,22 @@ static void HandleInputChooseAction(u32 battler)
         }
         else if (JOY_NEW(B_LAST_USED_BALL_BUTTON))
         {
-            gBattleStruct->ackBallUseBtn = TRUE;
-            gBattleStruct->ballSwapped = FALSE;
-            ArrowsChangeColorLastBallCycle(TRUE);
+            if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+            {
+                PlaySE(SE_SELECT);
+                TryHideLastUsedBall();
+                gBattleAnimAttacker = battler;
+                UpdateOamPriorityInAllHealthboxes(0, TRUE);
+                ChangeBattlerSpritesInvisibilities(TRUE);
+                DisplayInBattleTeamPreview();
+                gBattlerControllerFuncs[battler] = HandleInputTeamPreview;
+            }
+            else
+            {
+                gBattleStruct->ackBallUseBtn = TRUE;
+                gBattleStruct->ballSwapped = FALSE;
+                ArrowsChangeColorLastBallCycle(TRUE);
+            }
         }
 
         if (gBattleStruct->ackBallUseBtn)
@@ -444,7 +456,7 @@ static void HandleInputChooseAction(u32 battler)
         }
         else if (B_QUICK_MOVE_CURSOR_TO_RUN)
         {
-            if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER)) // If wild battle, pressing B moves cursor to "Run".
+            if (!(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_RAID))) // If wild battle, pressing B moves cursor to "Run".
             {
                 PlaySE(SE_SELECT);
                 ActionSelectionDestroyCursorAt(gActionSelectionCursor[battler]);
@@ -462,50 +474,35 @@ static void HandleInputChooseAction(u32 battler)
         BtlController_EmitTwoReturnValues(battler, BUFFER_B, B_ACTION_DEBUG, 0);
         PlayerBufferExecCompleted(battler);
     }
+    else if (JOY_NEW(L_BUTTON) && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
+    {
+        gBattlerControllerFuncs[battler] = Controller_WaitForUIBattleMenu;
+        BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 0x10, RGB_BLACK);
+        FreeAllWindowBuffers();
+        UI_Battle_Menu_Init(CB2_SetUpReshowBattleScreenAfterMenu);
+    }
     else if (B_LAST_USED_BALL == TRUE && B_LAST_USED_BALL_CYCLE == FALSE
-             && JOY_NEW(B_LAST_USED_BALL_BUTTON) && CanThrowLastUsedBall())
+             && JOY_NEW(B_LAST_USED_BALL_BUTTON)/* && CanThrowLastUsedBall()*/)
     {
-        PlaySE(SE_SELECT);
-        TryHideLastUsedBall();
-        BtlController_EmitTwoReturnValues(battler, BUFFER_B, B_ACTION_THROW_BALL, 0);
-        PlayerBufferExecCompleted(battler);
-    }
-    /*{
-        sLastUsedBallHoldFrames = sLastUsedBallHoldFrames < 0xFF ? sLastUsedBallHoldFrames+1 : 0xFF;
-
-        if (JOY_NEW(DPAD_RIGHT))
+        if (CanThrowLastUsedBall())
         {
             PlaySE(SE_SELECT);
-            TryChangeLastUsedBall(TRUE);
-            sLastUsedBallHoldFrames = 0xFF;
+            TryHideLastUsedBall();
+            BtlController_EmitTwoReturnValues(battler, BUFFER_B, B_ACTION_THROW_BALL, 0);
+            PlayerBufferExecCompleted(battler);
         }
-        else if (JOY_NEW(DPAD_LEFT))
+        else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
             PlaySE(SE_SELECT);
-            TryChangeLastUsedBall(FALSE);
-            sLastUsedBallHoldFrames = 0xFF;
+            TryHideLastUsedBall();
+            gBattleAnimAttacker = battler;
+            UpdateOamPriorityInAllHealthboxes(0, TRUE);
+            ChangeBattlerSpritesInvisibilities(TRUE);
+            DisplayInBattleTeamPreview();
+            gBattlerControllerFuncs[battler] = HandleInputTeamPreview;
         }
     }
-    else if (sLastUsedBallHoldFrames != 0)
-    {
-        if (sLastUsedBallHoldFrames < 60)
-        {
-            if (CanThrowLastUsedBall())
-            {
-                PlaySE(SE_SELECT);
-                TryHideLastUsedBall();
-                BtlController_EmitTwoReturnValues(battler, BUFFER_B, B_ACTION_THROW_BALL, 0);
-                PlayerBufferExecCompleted(battler);
-            }
-            else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER && FALSE) // option to open the enemy party in summary screen
-            {
-                PlaySE(SE_SELECT);
-                TryHideLastUsedBall();
 //                OpenEnemyParty(battler);
-            }
-        }
-        sLastUsedBallHoldFrames = 0;
-    }*/
 }
 
 void HandleInputChooseTarget(u32 battler)
@@ -760,21 +757,6 @@ void HandleInputChooseMove(u32 battler)
     else
         gPlayerDpadHoldFrames = 0;
 
-    /*if (gDescriptionSubmenu)
-    {
-        if (JOY_NEW(L_BUTTON) || JOY_NEW(R_BUTTON) || JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON) || JOY_NEW(START_BUTTON))
-        {
-            gDescriptionSubmenu = FALSE;
-            FillWindowPixelBuffer(B_WIN_MOVE_DESCRIPTION, PIXEL_FILL(0));
-            ClearStdWindowAndFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
-            CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_GFX);
-            PlaySE(SE_SELECT);
-            MoveSelectionDisplayPpNumber(battler);
-            MoveSelectionDisplayMoveType(battler);
-            TryLoadMoveInfoWindow(battler);
-        }
-    }
-    else if (JOY_NEW(A_BUTTON))*/
     if (JOY_NEW(A_BUTTON) && !gBattleStruct->descriptionSubmenu)
     {
         PlaySE(SE_SELECT);
@@ -983,6 +965,7 @@ void HandleInputChooseMove(u32 battler)
             PlaySE(SE_SELECT);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
+            TryLoadMoveInfoWindow(battler);
         }
     }
     else if (JOY_NEW(B_MOVE_DESCRIPTION_BUTTON) && B_MOVE_DESCRIPTION_BUTTON != B_LAST_USED_BALL_BUTTON)
@@ -999,11 +982,6 @@ void HandleInputChooseMove(u32 battler)
             ChangeGimmickTriggerSprite(gBattleStruct->gimmick.triggerSpriteId, gBattleStruct->gimmick.playerSelect);
             PlaySE(SE_SELECT);
         }
-    }
-    else if( JOY_NEW(L_BUTTON)) // Additional Battle Info
-    {
-        gDescriptionSubmenu = TRUE;
-        MoveSelectionDisplayMoveDescription(battler);
     }
 }
 
@@ -1698,6 +1676,14 @@ static void OpenPartyMenuToChooseMon(u32 battler)
     {
         u8 caseId;
 
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
+        {
+            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+            UpdateRaidShield();
+        }
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID))
+            DestroyRaidTimerSprites();
+
         gBattlerControllerFuncs[battler] = WaitForMonSelection;
         caseId = gTasks[gBattleControllerData[battler]].data[0];
         DestroyTask(gBattleControllerData[battler]);
@@ -1727,9 +1713,21 @@ static void OpenBagAndChooseItem(u32 battler)
     if (!gPaletteFade.active)
     {
         gBattlerControllerFuncs[battler] = CompleteWhenChoseItem;
+
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
+        {
+            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+            UpdateRaidShield();
+        }
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID))
+            DestroyRaidTimerSprites();
+
         ReshowBattleScreenDummy();
         FreeAllWindowBuffers();
-        CB2_BagMenuFromBattle();
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+            CB2_ChooseBall();
+        else
+            CB2_BagMenuFromBattle();
     }
 }
 
@@ -1886,12 +1884,16 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     PrependFontIdToFit(txtPtr, end, FONT_NORMAL, WindowWidthPx(B_WIN_MOVE_TYPE) - 25);
     BattlePutTextOnWindow(gDisplayedStringBattle, ShowTypeEffectiveness(moveInfo, battler, targetId));
 
-    MoveSelectionDisplaySplitIcon(battler);
+    if (B_PSS_SPLIT_ICONS == TRUE)
+        MoveSelectionDisplaySplitIcon(battler);
 }
 
 static void MoveSelectionDisplayMoveType(u32 battler)
 {
-    MoveSelectionDisplayMoveTypeDoubles(battler, GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
+    if (!IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)) && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))
+        MoveSelectionDisplayMoveTypeDoubles(battler, GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT));
+    else
+        MoveSelectionDisplayMoveTypeDoubles(battler, GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
 }
 
 static void MoveSelectionDisplaySplitIcon(u32 battler){
@@ -1912,9 +1914,18 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct*)(&gBattleResources->bufferA[battler][4]);
     u16 move = moveInfo->moves[gMoveSelectionCursor[battler]];
-    u16 pwr = gMovesInfo[move].power;
-    u16 acc = gMovesInfo[move].accuracy;
+    u16 pwr = 0; //gMovesInfo[move].power;
+    u16 acc = 0; //gMovesInfo[move].accuracy;
     u16 pri = gMovesInfo[move].priority;
+    u32 battlerAtk = battler;
+    u32 battlerDef = BATTLE_OPPOSITE(battlerAtk);
+    u32 moveType = gMovesInfo[move].type;
+    u32 atkAbility = GetBattlerAbility(battlerAtk);
+    u32 defAbility = GetBattlerAbility(battlerDef);
+    u32 holdEffectAtk = GetBattlerHoldEffect(battlerAtk, TRUE);
+    u32 holdEffectDef = GetBattlerHoldEffect(battlerDef, TRUE);
+    u32 weather = gBattleWeather;
+    bool32 updateFlags = FALSE;
     u8 pwr_num[3], acc_num[3], pri_num[3];
     u8 pwr_desc[7] = _("PWR: ");
     u8 acc_desc[7] = _("ACC: ");
@@ -1924,6 +1935,18 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
     u8 pri_start[] = _("{CLEAR_TO 0x6D}");
     LoadMessageBoxAndBorderGfx();
     DrawStdWindowFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
+
+    if (B_UPDATED_BATTLE_MOVE_INFO == TRUE) // in include/config/battle.h
+    {
+        pwr = CalcMoveBasePowerAfterModifiers(move, battlerAtk, battlerDef, moveType, updateFlags, atkAbility, defAbility, holdEffectAtk, weather);  // shows real base power after modifiers
+        acc = GetTotalAccuracy(battlerAtk, battlerDef, move, atkAbility, defAbility, holdEffectAtk, holdEffectDef);                               // shows real accuracy after modifiers
+    }
+    else
+    {
+        pwr = gMovesInfo[move].power; // for base power without modifiers
+        acc = gMovesInfo[move].accuracy; // for base accuracy without modifiers
+    }
+
     if (pwr < 2)
         StringCopy(pwr_num, gText_BattleSwitchWhich5);
     else
@@ -2583,6 +2606,15 @@ static void Controller_WaitForDebug(u32 battler)
 static void PlayerHandleBattleDebug(u32 battler)
 {
     BeginNormalPaletteFade(-1, 0, 0, 0x10, 0);
+
+    if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
+    {
+        gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
+        UpdateRaidShield();
+    }
+    if ((gBattleTypeFlags & BATTLE_TYPE_RAID))
+            DestroyRaidTimerSprites();
+
     SetMainCallback2(CB2_BattleDebugMenu);
     gBattlerControllerFuncs[battler] = Controller_WaitForDebug;
 }
@@ -2744,3 +2776,23 @@ static void PlayerHandleHeartValueUpdate(u32 battler)
 #undef tHgTask_amount_1
 #undef tHgTask_amount_2
 #undef tHgTask_frames
+
+static void HandleInputTeamPreview(u32 battler)
+{
+	if (JOY_NEW(A_BUTTON | B_BUTTON | L_BUTTON | R_BUTTON | START_BUTTON | SELECT_BUTTON | DPAD_ANY))
+	{
+		PlaySE(SE_SELECT);
+		TryRestoreLastUsedBall();
+		gBattleAnimAttacker = battler;
+		UpdateOamPriorityInAllHealthboxes(1, TRUE);
+		ChangeBattlerSpritesInvisibilities(FALSE);
+		HideInBattleTeamPreview();
+		gBattlerControllerFuncs[battler] = HandleInputChooseAction;
+	}
+}
+
+static void Controller_WaitForUIBattleMenu(u32 battler)
+{
+    if (gMain.callback2 == BattleMainCB2)
+        PlayerHandleChooseAction(battler);
+}

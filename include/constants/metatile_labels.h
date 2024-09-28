@@ -151,6 +151,7 @@
 // gTileset_Dewford
 #define METATILE_Dewford_Door              0x225
 #define METATILE_Dewford_Door_BattleTower  0x25D
+#define METATILE_Dewford_GymDoor_Closed    0x34F
 
 // gTileset_EliteFour
 #define METATILE_EliteFour_EntryDoor_ClosedBottom    0x20E
@@ -361,10 +362,17 @@
 #define METATILE_MauvilleGym_RedBeamV2_On     0x249
 
 // gTileset_MeteorFalls
-#define METATILE_MeteorFalls_CaveEntrance_Bottom  0x24E
-#define METATILE_MeteorFalls_CaveEntrance_Left    0x24D
-#define METATILE_MeteorFalls_CaveEntrance_Right   0x24F
-#define METATILE_MeteorFalls_CaveEntrance_Top     0x246
+#define METATILE_MeteorFalls_CaveEntrance_Bottom      0x24E
+#define METATILE_MeteorFalls_CaveEntrance_Left        0x24D
+#define METATILE_MeteorFalls_CaveEntrance_LeftPillar  0x291
+#define METATILE_MeteorFalls_CaveEntrance_Right       0x24F
+#define METATILE_MeteorFalls_CaveEntrance_Top         0x246
+#define METATILE_MeteorFalls_LeftPillar               0x244
+#define METATILE_MeteorFalls_MiddlePillar             0x292
+
+// gTileset_MirageTower
+#define METATILE_MirageTower_Floor  0x211
+#define METATILE_MirageTower_Ledge  0x209
 
 // gTileset_Mossdeep
 #define METATILE_Mossdeep_Door              0x2A1

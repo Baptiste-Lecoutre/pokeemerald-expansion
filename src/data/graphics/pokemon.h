@@ -695,13 +695,27 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
     const u32 gMonShinyPalette_PikachuLibre[] = INCBIN_U32("graphics/pokemon/pikachu/libre/shiny.gbapal.lz");
     const u8 gMonIcon_PikachuLibre[] = INCBIN_U8("graphics/pokemon/pikachu/libre/icon.4bpp");
 
+    const u32 gMonFrontPic_PikachuSurfing[] = INCBIN_U32("graphics/pokemon/pikachu/surfing/front.4bpp.lz");
+    const u32 gMonPalette_PikachuSurfing[] = INCBIN_U32("graphics/pokemon/pikachu/surfing/normal.gbapal.lz");
+    const u32 gMonBackPic_PikachuSurfing[] = INCBIN_U32("graphics/pokemon/pikachu/surfing/back.4bpp.lz");
+    const u32 gMonShinyPalette_PikachuSurfing[] = INCBIN_U32("graphics/pokemon/pikachu/surfing/shiny.gbapal.lz");
+    const u8 gMonIcon_PikachuSurfing[] = INCBIN_U8("graphics/pokemon/pikachu/surfing/icon.4bpp");
+
+    const u32 gMonFrontPic_PikachuFlying[] = INCBIN_U32("graphics/pokemon/pikachu/flying/front.4bpp.lz");
+    const u32 gMonPalette_PikachuFlying[] = INCBIN_U32("graphics/pokemon/pikachu/flying/normal.gbapal.lz");
+    const u32 gMonBackPic_PikachuFlying[] = INCBIN_U32("graphics/pokemon/pikachu/flying/back.4bpp.lz");
+    const u32 gMonShinyPalette_PikachuFlying[] = INCBIN_U32("graphics/pokemon/pikachu/flying/shiny.gbapal.lz");
+    const u8 gMonIcon_PikachuFlying[] = INCBIN_U8("graphics/pokemon/pikachu/flying/icon.4bpp");
+
 #if OW_POKEMON_OBJECT_EVENTS
-    // const u32 gObjectEventPic_PikachuCosplay[] = INCBIN_COMP("graphics/pokemon/pikachu/cosplay/overworld.4bpp");
-    // const u32 gObjectEventPic_PikachuRockStar[] = INCBIN_COMP("graphics/pokemon/pikachu/rock_star/overworld.4bpp");
-    // const u32 gObjectEventPic_PikachuBelle[] = INCBIN_COMP("graphics/pokemon/pikachu/belle/overworld.4bpp");
-    // const u32 gObjectEventPic_PikachuPopStar[] = INCBIN_COMP("graphics/pokemon/pikachu/pop_star/overworld.4bpp");
-    // const u32 gObjectEventPic_PikachuPhD[] = INCBIN_COMP("graphics/pokemon/pikachu/ph_d/overworld.4bpp");
-    // const u32 gObjectEventPic_PikachuLibre[] = INCBIN_COMP("graphics/pokemon/pikachu/libre/overworld.4bpp");
+    // const u32 gObjectEventPic_PikachuCosplay[] = INCBIN_COMP("graphics/pokemon/pikachu/cosplay/follower.4bpp");
+    // const u32 gObjectEventPic_PikachuRockStar[] = INCBIN_COMP("graphics/pokemon/pikachu/rock_star/follower.4bpp");
+    // const u32 gObjectEventPic_PikachuBelle[] = INCBIN_COMP("graphics/pokemon/pikachu/belle/follower.4bpp");
+    // const u32 gObjectEventPic_PikachuPopStar[] = INCBIN_COMP("graphics/pokemon/pikachu/pop_star/follower.4bpp");
+    // const u32 gObjectEventPic_PikachuPhD[] = INCBIN_COMP("graphics/pokemon/pikachu/ph_d/follower.4bpp");
+    // const u32 gObjectEventPic_PikachuLibre[] = INCBIN_COMP("graphics/pokemon/pikachu/libre/follower.4bpp");
+    // const u32 gObjectEventPic_PikachuSurfing[] = INCBIN_COMP("graphics/pokemon/pikachu/surfing/follower.4bpp");
+    // const u32 gObjectEventPic_PikcahuFlying[] = INCBIN_COMP("graphics/pokemon/pikachu/flying/follower.4bpp");
 #endif //OW_POKEMON_OBJECT_EVENTS
 #endif //P_COSPLAY_PIKACHU_FORMS
 
@@ -10848,6 +10862,12 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
     const u32 gShinyOverworldPalette_DialgaOrigin[] = INCBIN_U32("graphics/pokemon/dialga/origin/overworld_shiny.gbapal.lz");
 #endif //OW_PKMN_OBJECTS_SHARE_PALETTES
 #endif //OW_POKEMON_OBJECT_EVENTS
+
+    const u32 gMonFrontPic_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/front.4bpp.lz");
+    const u32 gMonPalette_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/normal.gbapal.lz");
+    const u32 gMonBackPic_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/back.4bpp.lz");
+    const u32 gMonShinyPalette_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/shiny.gbapal.lz");
+    const u8 gMonIcon_DialgaPrimal[] = INCBIN_U8("graphics/pokemon/dialga/primal/icon.4bpp");
 #endif //P_FAMILY_DIALGA
 
 #if P_FAMILY_PALKIA
@@ -10879,6 +10899,12 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
     const u32 gShinyOverworldPalette_PalkiaOrigin[] = INCBIN_U32("graphics/pokemon/palkia/origin/overworld_shiny.gbapal.lz");
 #endif //OW_PKMN_OBJECTS_SHARE_PALETTES
 #endif //OW_POKEMON_OBJECT_EVENTS
+
+    const u32 gMonFrontPic_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/front.4bpp.lz");
+    const u32 gMonPalette_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/normal.gbapal.lz");
+    const u32 gMonBackPic_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/back.4bpp.lz");
+    const u32 gMonShinyPalette_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/shiny.gbapal.lz");
+    const u8 gMonIcon_PalkiaPrimal[] = INCBIN_U8("graphics/pokemon/palkia/primal/icon.4bpp");
 #endif //P_FAMILY_PALKIA
 
 #if P_FAMILY_HEATRAN

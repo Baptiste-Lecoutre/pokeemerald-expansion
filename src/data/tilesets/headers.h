@@ -82,6 +82,17 @@ const struct Tileset gTileset_Mauville =
     .callback = InitTilesetAnim_Mauville,
 };
 
+const struct Tileset gTileset_Verdanturf =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_Verdanturf,
+    .palettes = gTilesetPalettes_Verdanturf,
+    .metatiles = gMetatiles_Verdanturf,
+    .metatileAttributes = gMetatileAttributes_Verdanturf,
+    .callback = InitTilesetAnim_Verdanturf,
+};
+
 const struct Tileset gTileset_Lavaridge =
 {
     .isCompressed = TRUE,
@@ -847,5 +858,16 @@ const struct Tileset gTileset_UnionRoom =
     .palettes = gTilesetPalettes_UnionRoom,
     .metatiles = gMetatiles_UnionRoom,
     .metatileAttributes = gMetatileAttributes_UnionRoom,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_GeneralSnow =
+{
+    .isCompressed = TRUE,
+    .isSecondary = FALSE,
+    .tiles = gTilesetTiles_GeneralSnow,
+    .palettes = gTilesetPalettes_GeneralSnow,
+    .metatiles = gMetatiles_GeneralSnow,
+    .metatileAttributes = gMetatileAttributes_GeneralSnow,
     .callback = NULL,
 };

@@ -44,21 +44,28 @@ SkyPillar_Top_EventScript_RayquazaFaceDown::
 
 SkyPillar_Top_EventScript_Rayquaza::
 	lockall
-	waitse
+	specialvar VAR_RESULT, IsPokeballPocketEmpty
+	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_RayquazaPrepareRaid
+	additem ITEM_POKE_BALL
+SkyPillar_Top_EventScript_RayquazaPrepareRaid:
+	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_7, SPECIES_RAYQUAZA, 70, ITEM_NONE
+	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
+	special InitStoryRaid
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
-	setwildbattle SPECIES_RAYQUAZA, VAR_RESULT
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	special BattleSetup_StartLegendaryBattle
-	waitstate
+	doraidbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, SkyPillar_Top_EventScript_DefeatedRayquaza
 	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, SkyPillar_Top_EventScript_RanFromRayquaza
 	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, SkyPillar_Top_EventScript_RanFromRayquaza
 	setflag FLAG_DEFEATED_RAYQUAZA
+	releaseall
+	end
+
+SkyPillar_Top_EventScript_ReleaseEnd::
 	releaseall
 	end
 
@@ -127,7 +134,7 @@ SkyPillar_Top_EventScript_AwakenRayquaza::
 	applymovement OBJ_EVENT_ID_CAMERA, SkyPillar_Top_Movement_CameraPanDown
 	waitmovement 0
 	special RemoveCameraObject
-	setvar VAR_SOOTOPOLIS_CITY_STATE, 5
+@	setvar VAR_SOOTOPOLIS_CITY_STATE, 5
 	setvar VAR_SKY_PILLAR_STATE, 1
 	setvar VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE, 1
 	releaseall

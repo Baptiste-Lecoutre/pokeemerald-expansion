@@ -230,6 +230,42 @@
       "var": "VAR_JAGGED_PASS_STATE",
       "var_value": "1",
       "script": "JaggedPass_EventScript_OpenMagmaHideout"
+    },
+    {
+      "type": "trigger",
+      "x": 12,
+      "y": 29,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "JaggedPass_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 12,
+      "y": 29,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "3",
+      "script": "JaggedPass_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 12,
+      "y": 29,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "4",
+      "script": "JaggedPass_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 12,
+      "y": 29,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "5",
+      "script": "JaggedPass_EventScript_AshenWoodsNotThisWay"
     }
   ],
   "bg_events": [
@@ -244,7 +280,7 @@
     {
       "type": "hidden_item",
       "x": 7,
-      "y": 29,
+      "y": 31,
       "elevation": 3,
       "item": "ITEM_GREAT_BALL",
       "flag": "FLAG_HIDDEN_ITEM_JAGGED_PASS_GREAT_BALL"

@@ -42,6 +42,7 @@ extern const u8 BattleScript_RanAwayUsingMonAbility[];
 extern const u8 BattleScript_GotAwaySafely[];
 extern const u8 BattleScript_WildMonFled[];
 extern const u8 BattleScript_PrintCantRunFromTrainer[];
+extern const u8 BattleScript_PrintCantEscapeFromThisBattle[];
 extern const u8 BattleScript_PrintFailedToRunString[];
 extern const u8 BattleScript_PrintCantEscapeFromBattle[];
 extern const u8 BattleScript_PrintFullBox[];
@@ -561,6 +562,33 @@ extern const u8 BattleScript_RemoveGenericType[];
 extern const u8 BattleScript_DynamaxBegins[];
 extern const u8 BattleScript_DynamaxEnds[];
 extern const u8 BattleScript_MoveBlockedByDynamax[];
+
+// raids
+extern const u8 BattleScript_RaidIntro[];
+extern const u8 BattleScript_MaxRaidStormBrews[];
+extern const u8 BattleScript_RaidShieldAppeared[];
+extern const u8 BattleScript_RaidShieldDisappeared[];
+extern const u8 BattleScript_RaidBarrierBroken[];
+extern const u8 BattleScript_RaidShockwave[];
+extern const u8 BattleScript_MaxRaidShockwaveFocus[];
+extern const u8 BattleScript_RaidVictory[];
+extern const u8 BattleScript_FaintRaidBoss[];
+extern const u8 BattleScript_RaidDefeat[];
+extern const u8 BattleScript_TeraRaidTimerLow[];
+extern const u8 BattleScript_RaidBallBlock[];
+extern const u8 BattleScript_RaidMoveDynamaxEnergy[];
+extern const u8 BattleScript_RaidHandleTeraOrbCharge[];
+extern const u8 BattleScript_RaidBossRaiseStat[];
+
+// ghosts
+extern const u8 BattleScript_GhostBallDodge[];
+extern const u8 BattleScript_GhostGetOutGetOut[];
+extern const u8 BattleScript_TooScaredToMove[];
+extern const u8 BattleScript_DevonScopeUnveiled[];
+extern const u8 BattleScript_MayDevonScopeUnveiled[];
+extern const u8 BattleScript_BrendanDevonScopeUnveiled[];
+
+// other
 extern const u8 BattleScript_ItemDropped[];
 
 // Battle move scripts

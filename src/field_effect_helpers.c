@@ -1103,6 +1103,7 @@ void StartAshFieldEffect(s16 x, s16 y, u16 metatileId, s16 delay)
     gFieldEffectArguments[3] = 1; // priority
     gFieldEffectArguments[4] = metatileId;
     gFieldEffectArguments[5] = delay;
+    PlaySE(SE_M_POISON_POWDER);
     FieldEffectStart(FLDEFF_ASH);
 }
 

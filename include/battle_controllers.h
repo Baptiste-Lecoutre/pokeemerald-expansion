@@ -88,6 +88,7 @@ enum {
     BALL_3_SHAKES_FAIL,
     BALL_3_SHAKES_SUCCESS,
     BALL_TRAINER_BLOCK,
+    BALL_GHOST_DODGE,
 };
 
 enum {
@@ -323,6 +324,8 @@ void HandleInputShowEntireFieldTargets(u32 battler);
 void HandleInputShowTargets(u32 battler);
 void HandleMoveSwitching(u32 battler);
 void HandleChooseMoveAfterDma3(u32 battler);
+void HandleInputShowTargets(u32 battler);
+void HandleInputShowEntireFieldTargets(u32 battler);
 
 // recorded player controller
 void SetControllerToRecordedPlayer(u32 battler);
@@ -348,5 +351,8 @@ void SetControllerToLinkOpponent(u32 battler);
 
 // link partner
 void SetControllerToLinkPartner(u32 battler);
+
+// Battle speed up (credits to Pokabbie & Alex for porting it)
+u32 SpeedUp_GetBattleSpeedScale(bool32 forHealthBar);
 
 #endif // GUARD_BATTLE_CONTROLLERS_H

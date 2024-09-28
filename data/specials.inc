@@ -60,6 +60,10 @@ gSpecials::
 	def_special ObjectEventInteractionPickBerryTree
 	def_special ObjectEventInteractionRemoveBerryTree
 	def_special ObjectEventInteractionWaterBerryTree
+	def_special ObjectEventInteractionBerryTreePokemonEncounter
+	def_special SetBerryEncounters
+	def_special GetBerryEncounter
+	def_special DoBerryEncounter
 	def_special PlayerHasBerries
 	def_special IsEnigmaBerryValid
 	def_special GetTrainerBattleMode
@@ -169,6 +173,7 @@ gSpecials::
 	def_special Special_ViewWallClock
 	def_special ChooseStarter
 	def_special StartWallyTutorialBattle
+	def_special StartWallyLatiBattle
 	def_special ChangePokemonNickname
 	def_special ChoosePartyMon
 	def_special GetFirstFreePokeblockSlot
@@ -418,7 +423,6 @@ gSpecials::
 	def_special CallApprenticeFunction
 	def_special ShouldTryGetTrainerScript
 	def_special ShowMapNamePopup
-	def_special ShowMapNamePopup
 	def_special DoMirageTowerCeilingCrumble
 	def_special SetMirageTowerVisibility
 	def_special StartPlayerDescendMirageTower
@@ -562,10 +566,16 @@ gSpecials::
 	def_special GetPlayerCostumeId
 	def_special GetStaticEncounterLevel
  	def_special GetHighestLevelInPlayerParty
+	def_special InitRaidIntro
 	def_special FossilToSpecies
 	def_special IsItemFossil
 	def_special DoesPlayerHaveFossil
 	def_special Bag_ChooseItem
+	def_special IsRaidBattleAvailable
+	def_special SetRaidBattleFlag
+	def_special ClearRaidBattleFlag
+	def_special ClearAllRaidBattleFlags
+	def_special GiveRaidBattleRewards
 	def_special ChangeMonSpecies
 	def_special CountRotomInParty
 	def_special GetRotomState
@@ -574,10 +584,17 @@ gSpecials::
 	def_special DoesRotomKnowSpecialMove
 	def_special GetRotomNewSpecialMove
 	def_special BufferNextLevelCap
-	def_special IncreasePartyLevelToLevelCap
+	def_special IncreasePartyLevelToMaxLevel
 	def_special CheckSpeciesInParty
 	def_special ChangePokemonNature
 	def_special BufferChosenMonNature
+	def_special DoRegielekiPuzzle
+	def_special IsPokeballPocketEmpty
+ 	def_special SetFollowerPokemonOption
+	def_special InitStoryRaid
+	def_special HoneyWildEncounter
+	def_special GetSpeciesForRandomEgg
+	def_special IncrementAdoptionSpecials
 	def_special GetNumberSprayStrength
 	def_special GetSprayId
 	def_special GetLastUsedSprayType
@@ -597,4 +614,9 @@ gSpecials::
 	def_special Script_GetChosenMonOffensiveIVs
 	def_special Script_GetChosenMonDefensiveIVs
 	def_special UseBlankMessageToCancelPokemonPic
+	def_special SetPokedexSeenFlag
+	def_special SetPokedexCaughtFlag
+	def_special SetObjectEventMovementType
+	def_special ChooseMonForBlender
+	def_special TryEvolveMilcery
 	def_special HealPlayerPartyPokeVial

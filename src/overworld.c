@@ -13,6 +13,7 @@
 #include "field_camera.h"
 #include "field_control_avatar.h"
 #include "field_effect.h"
+#include "field_effect_helpers.h"
 #include "field_message_box.h"
 #include "field_player_avatar.h"
 #include "field_screen_effect.h"
@@ -66,7 +67,9 @@
 #include "wild_encounter.h"
 #include "vs_seeker.h"
 #include "frontier_util.h"
+#include "follow_me.h"
 #include "constants/abilities.h"
+#include "constants/event_objects.h"
 #include "constants/layouts.h"
 #include "constants/map_types.h"
 #include "constants/moves.h"
@@ -74,6 +77,7 @@
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
 #include "constants/weather.h"
+#include "constants/event_object_movement.h"
 
 struct CableClubPlayer
 {
@@ -454,6 +458,8 @@ static void Overworld_ResetStateAfterWhiteOut(void)
         VarSet(VAR_SHOULD_END_ABNORMAL_WEATHER, 0);
         VarSet(VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_NONE);
     }
+    
+    FollowMe_TryRemoveFollowerOnWhiteOut();
 }
 
 static void UpdateMiscOverworldStates(void)
@@ -833,8 +839,6 @@ bool8 SetDiveWarpDive(u16 x, u16 y)
 
 void LoadMapFromCameraTransition(u8 mapGroup, u8 mapNum)
 {
-    s32 paletteIndex;
-
     SetWarpDestination(mapGroup, mapNum, WARP_ID_NONE, -1, -1);
 
     // Dont transition map music between BF Outside West/East
@@ -1042,7 +1046,7 @@ bool32 Overworld_IsBikingAllowed(void)
 // Flash level of 8 is fully black
 void SetDefaultFlashLevel(void)
 {
-    if (CheckBagHasItem(ITEM_HM05_FLASH ,1) && CanLearnFlashInParty())
+    if (CheckBagHasItem(ITEM_HM05_FLASH ,1) && CanLearnFlashInParty() && FlagGet(FLAG_BADGE02_GET))
         FlagSet(FLAG_SYS_USE_FLASH);
     if (!gMapHeader.cave)
         gSaveBlock1Ptr->flashLevel = 0;
@@ -1116,7 +1120,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
 
 static bool16 NoMusicInSotopolisWithLegendaries(struct WarpData *warp)
 {
-    if (VarGet(VAR_SKY_PILLAR_STATE) != 1)
+    if (VarGet(VAR_SKY_PILLAR_STATE) != 1 && VarGet(VAR_SKY_PILLAR_STATE) != 4 && VarGet(VAR_SKY_PILLAR_STATE) != 5)
         return FALSE;
     else if (warp->mapGroup != MAP_GROUP(SOOTOPOLIS_CITY))
         return FALSE;
@@ -1540,6 +1544,10 @@ static void DoCB1_Overworld(u16 newKeys, u16 heldKeys)
             PlayerStep(inputStruct.dpadDirection, newKeys, heldKeys);
         }
     }
+    
+    // if stop running but keep holding B -> fix follower frame
+    if (PlayerHasFollower() && IsPlayerOnFoot() && IsPlayerStandingStill())
+        ObjectEventSetHeldMovement(&gObjectEvents[GetFollowerObjectId()], GetFaceDirectionAnimNum(gObjectEvents[GetFollowerObjectId()].facingDirection));
 }
 
 void CB1_Overworld(void)
@@ -1552,9 +1560,9 @@ void CB1_Overworld(void)
 
 const struct BlendSettings gTimeOfDayBlend[] =
 {
-  [TIME_OF_DAY_NIGHT] = {.coeff = 10, .blendColor = TINT_NIGHT, .isTint = TRUE},
-  [TIME_OF_DAY_TWILIGHT] = {.coeff = 4, .blendColor = 0xA8B0E0, .isTint = TRUE},
-  [TIME_OF_DAY_DAY] = {.coeff = 0, .blendColor = 0},
+    [TIME_OF_DAY_NIGHT] = {.coeff = 10, .blendColor = TINT_NIGHT, .isTint = TRUE},
+    [TIME_OF_DAY_TWILIGHT] = {.coeff = 4, .blendColor = 0xA8B0E0, .isTint = TRUE},
+    [TIME_OF_DAY_DAY] = {.coeff = 0, .blendColor = 0},
 };
 
 u8 UpdateTimeOfDay(void) {
@@ -1602,8 +1610,12 @@ u8 UpdateTimeOfDay(void) {
 }
 
 bool8 MapHasNaturalLight(u8 mapType) { // Whether a map type is naturally lit/outside
-  return mapType == MAP_TYPE_TOWN || mapType == MAP_TYPE_CITY || mapType == MAP_TYPE_ROUTE
-      || mapType == MAP_TYPE_OCEAN_ROUTE;
+    return (
+        mapType == MAP_TYPE_TOWN
+        || mapType == MAP_TYPE_CITY
+        || mapType == MAP_TYPE_ROUTE
+        || mapType == MAP_TYPE_OCEAN_ROUTE
+    );
 }
 
 // Update & mix day / night bg palettes (into unfaded)
@@ -1611,20 +1623,20 @@ void UpdateAltBgPalettes(u16 palettes) {
     const struct Tileset *primary = gMapHeader.mapLayout->primaryTileset;
     const struct Tileset *secondary = gMapHeader.mapLayout->secondaryTileset;
     u32 i = 1;
-    if (!MapHasNaturalLight(gMapHeader.mapType))
+    if (!MapHasNaturalLight(gMapHeader.mapType) && (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType != MAP_TYPE_UNDERGROUND))
         return;
     palettes &= ~((1 << NUM_PALS_IN_PRIMARY) - 1) | primary->swapPalettes;
     palettes &= ((1 << NUM_PALS_IN_PRIMARY) - 1) | (secondary->swapPalettes << NUM_PALS_IN_PRIMARY);
-    palettes &= 0x1FFE; // don't blend palette 0, [13,15]
+    palettes &= PALETTES_MAP ^ (1 << 0); // don't blend palette 0, [13,15]
     palettes >>= 1; // start at palette 1
     if (!palettes)
         return;
     while (palettes) {
         if (palettes & 1) {
             if (i < NUM_PALS_IN_PRIMARY)
-                AvgPaletteWeighted(&((u16*)primary->palettes)[i*16], &((u16*)primary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, currentTimeBlend.altWeight);
+                AvgPaletteWeighted(&((u16*)primary->palettes)[i*16], &((u16*)primary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) ? 0 : currentTimeBlend.altWeight);
             else
-                AvgPaletteWeighted(&((u16*)secondary->palettes)[i*16], &((u16*)secondary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, currentTimeBlend.altWeight);
+                AvgPaletteWeighted(&((u16*)secondary->palettes)[i*16], &((u16*)secondary->palettes)[((i+9)%16)*16], gPlttBufferUnfaded + i * 16, (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) ? 0 : currentTimeBlend.altWeight);
         }
         i++;
         palettes >>= 1;
@@ -1632,40 +1644,74 @@ void UpdateAltBgPalettes(u16 palettes) {
 }
 
 void UpdatePalettesWithTime(u32 palettes) {
-  if (MapHasNaturalLight(gMapHeader.mapType)) {
-    u32 i;
-    u32 mask = 1 << 16;
-    if (palettes >= 0x10000)
-      for (i = 0; i < 16; i++, mask <<= 1)
-        if (GetSpritePaletteTagByPaletteNum(i) >> 15) // Don't blend special sprite palette tags
-          palettes &= ~(mask);
+    if (MapHasNaturalLight(gMapHeader.mapType)) {
+        u32 i;
+        u32 mask = 1 << 16;
+        if (palettes >= (1 << 16))
+        for (i = 0; i < 16; i++, mask <<= 1)
+            if (IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(i)))
+                palettes &= ~(mask);
 
-    palettes &= 0xFFFF1FFF; // Don't blend UI BG palettes [13,15]
+    palettes &= PALETTES_MAP | PALETTES_OBJECTS; // Don't blend UI pals
     if (!palettes)
-      return;
-    TimeMixPalettes(palettes,
-      gPlttBufferUnfaded,
-      gPlttBufferFaded,
-      (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
-      (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
-      currentTimeBlend.weight);
-  }
+        return;
+    TimeMixPalettes(
+        palettes,
+        gPlttBufferUnfaded,
+        gPlttBufferFaded,
+        (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
+        (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
+        currentTimeBlend.weight
+    );
+    }
+    else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) {
+        u32 i;
+        u32 mask = 1 << 16;
+        if (palettes >= (1 << 16))
+        for (i = 0; i < 16; i++, mask <<= 1)
+            if (IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(i)))
+                palettes &= ~(mask);
+
+    palettes &= PALETTES_MAP | PALETTES_OBJECTS; // Don't blend UI pals
+    if (!palettes)
+        return;
+    TimeMixPalettes(
+        palettes,
+        gPlttBufferUnfaded,
+        gPlttBufferFaded,
+        (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+        (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+        256
+    );
+    }
 }
 
 u8 UpdateSpritePaletteWithTime(u8 paletteNum) {
-  if (MapHasNaturalLight(gMapHeader.mapType)) {
-    u16 offset;
-    if (GetSpritePaletteTagByPaletteNum(paletteNum) >> 15)
-      return paletteNum;
-    offset = (paletteNum + 16) << 4;
-    TimeMixPalettes(1,
-      gPlttBufferUnfaded + offset,
-      gPlttBufferFaded + offset,
-      (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
-      (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
-      currentTimeBlend.weight);
-  }
-  return paletteNum;
+    if (MapHasNaturalLight(gMapHeader.mapType)) {
+        if (IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(paletteNum)))
+        return paletteNum;
+    TimeMixPalettes(
+        1,
+        &gPlttBufferUnfaded[OBJ_PLTT_ID(paletteNum)],
+        &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)],
+        (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
+        (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
+        currentTimeBlend.weight
+    );
+    }
+    else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) {
+        if (IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(paletteNum)))
+        return paletteNum;
+    TimeMixPalettes(
+        1,
+        &gPlttBufferUnfaded[OBJ_PLTT_ID(paletteNum)],
+        &gPlttBufferFaded[OBJ_PLTT_ID(paletteNum)],
+        (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+        (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+        256
+    );
+    }
+    return paletteNum;
 }
 
 static void OverworldBasic(void)
@@ -1681,19 +1727,20 @@ static void OverworldBasic(void)
     DoScheduledBgTilemapCopiesToVram();
     // Every minute if no palette fade is active, update TOD blending as needed
     if (!gPaletteFade.active && ++gTimeUpdateCounter >= 3600) {
-      struct TimeBlendSettings cachedBlend = {
-        .time0 = currentTimeBlend.time0,
-        .time1 = currentTimeBlend.time1,
-        .weight = currentTimeBlend.weight,
-      };
-      gTimeUpdateCounter = 0;
-      UpdateTimeOfDay();
-      if (cachedBlend.time0 != currentTimeBlend.time0
-       || cachedBlend.time1 != currentTimeBlend.time1
-       || cachedBlend.weight != currentTimeBlend.weight) {
+        struct TimeBlendSettings cachedBlend = {
+            .time0 = currentTimeBlend.time0,
+            .time1 = currentTimeBlend.time1,
+            .weight = currentTimeBlend.weight,
+        };
+        gTimeUpdateCounter = 0;
+        UpdateTimeOfDay();
+        if (cachedBlend.time0 != currentTimeBlend.time0
+            || cachedBlend.time1 != currentTimeBlend.time1
+            || cachedBlend.weight != currentTimeBlend.weight)
+        {
            UpdateAltBgPalettes(PALETTES_BG);
            UpdatePalettesWithTime(PALETTES_ALL);
-       }
+        }
     }
 }
 
@@ -2195,7 +2242,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         ResetScreenForMapLoad();
         ResumeMap(FALSE);
         InitObjectEventsReturnToField();
-        if (gFieldCallback == FieldCallback_UseFly) //optionsShowFollowerPokemon
+        if (gFieldCallback == FieldCallback_UseFly || !gSaveBlock2Ptr->optionsShowFollowerPokemon || PlayerHasFollower())
             RemoveFollowingPokemon();
         else
             UpdateFollowingPokemon();
@@ -2205,6 +2252,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
     case 1:
         InitViewGraphics();
         TryLoadTrainerHillEReaderPalette();
+        FollowMe_BindToSurfBlobOnReloadScreen();
         (*state)++;
         break;
     case 2:
@@ -2405,6 +2453,8 @@ static void InitObjectEventsLocal(void)
     TrySpawnObjectEvents(0, 0);
     UpdateFollowingPokemon();
     TryRunOnWarpIntoMapScript();
+    
+    FollowMe_HandleSprite();
 }
 
 static void InitObjectEventsReturnToField(void)
@@ -3430,6 +3480,8 @@ static void CreateLinkPlayerSprite(u8 linkPlayerId, u8 gameVersion)
         sprite->coordOffsetEnabled = TRUE;
         sprite->data[0] = linkPlayerId;
         objEvent->triggerGroundEffectsOnMove = FALSE;
+        objEvent->localId = OBJ_EVENT_ID_DYNAMIC_BASE + linkPlayerId;
+        SetUpShadow(objEvent, sprite);
     }
 }
 

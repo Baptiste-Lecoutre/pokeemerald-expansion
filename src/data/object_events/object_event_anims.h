@@ -642,6 +642,46 @@ static const union AnimCmd sAnim_GoFastestEast[] =
     ANIMCMD_JUMP(0),
 };
 
+static const union AnimCmd sAnim_SpinSouth[] =
+{
+    ANIMCMD_FRAME(0, 2),
+    ANIMCMD_FRAME(2, 2, .hFlip = TRUE),
+    ANIMCMD_FRAME(1, 2),
+    ANIMCMD_FRAME(2, 2),
+    ANIMCMD_LOOP(1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_SpinNorth[] =
+{
+    ANIMCMD_FRAME(1, 2),
+    ANIMCMD_FRAME(2, 2),
+    ANIMCMD_FRAME(0, 2),
+    ANIMCMD_FRAME(2, 2, .hFlip = TRUE),
+    ANIMCMD_LOOP(1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_SpinWest[] =
+{
+    ANIMCMD_FRAME(2, 2),
+    ANIMCMD_FRAME(0, 2),
+    ANIMCMD_FRAME(2, 2, .hFlip = TRUE),
+    ANIMCMD_FRAME(1, 2),
+    ANIMCMD_LOOP(1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_SpinEast[] =
+{
+    ANIMCMD_FRAME(2, 2, .hFlip = TRUE),
+    ANIMCMD_FRAME(1, 2),
+    ANIMCMD_FRAME(2, 2),
+    ANIMCMD_FRAME(0, 2),
+    ANIMCMD_LOOP(1),
+    ANIMCMD_END,
+};
+
 static const union AnimCmd sAnim_RunSouth[] =
 {
     ANIMCMD_FRAME(12, 5),
@@ -1356,6 +1396,10 @@ static const union AnimCmd *const sAnimTable_BrendanMayNormal[] = {
     [ANIM_RUN_NORTH] = sAnim_RunNorth,
     [ANIM_RUN_WEST] = sAnim_RunWest,
     [ANIM_RUN_EAST] = sAnim_RunEast,
+    [ANIM_SPIN_SOUTH] = sAnim_SpinSouth,
+    [ANIM_SPIN_NORTH] = sAnim_SpinNorth,
+    [ANIM_SPIN_WEST] = sAnim_SpinWest,
+    [ANIM_SPIN_EAST] = sAnim_SpinEast,
 };
 
 static const union AnimCmd *const sAnimTable_AcroBike[] = {
@@ -1498,6 +1542,70 @@ static const union AffineAnimCmd *const sAffineAnimTable_KyogreGroudon[] = {
     sAffineAnim_KyogreGroudon_AttackEast,   // Unused
     sAffineAnim_KyogreGroudon_DipWest,      // Unused
     sAffineAnim_KyogreGroudon_DipEast,      // Unused
+};
+
+static const union AnimCmd sAnim_RollSouth[] =
+{
+    ANIMCMD_FRAME(5, 3),
+    ANIMCMD_FRAME(8, 3),
+    ANIMCMD_FRAME(11, 3),
+    ANIMCMD_FRAME(14, 3),
+    ANIMCMD_FRAME(17, 3),
+    ANIMCMD_FRAME(20, 3),
+    ANIMCMD_FRAME(23, 3),
+    ANIMCMD_FRAME(2, 3),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd sAnim_RollNorth[] =
+{
+    ANIMCMD_FRAME(3, 3),
+    ANIMCMD_FRAME(6, 3),
+    ANIMCMD_FRAME(9, 3),
+    ANIMCMD_FRAME(12, 3),
+    ANIMCMD_FRAME(15, 3),
+    ANIMCMD_FRAME(18, 3),
+    ANIMCMD_FRAME(21, 3),
+    ANIMCMD_FRAME(0, 3),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd sAnim_RollWest[] =
+{
+    ANIMCMD_FRAME(4, 3),
+    ANIMCMD_FRAME(7, 3),
+    ANIMCMD_FRAME(10, 3),
+    ANIMCMD_FRAME(13, 3),
+    ANIMCMD_FRAME(16, 3),
+    ANIMCMD_FRAME(19, 3),
+    ANIMCMD_FRAME(22, 3),
+    ANIMCMD_FRAME(1, 3),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd sAnim_RollEast[] =
+{
+    ANIMCMD_FRAME(4, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(7, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(10, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(10, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(13, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(16, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(19, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(22, 3, .hFlip = TRUE),
+    ANIMCMD_FRAME(1, 3, .hFlip = TRUE),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd *const sAnimTable_Spheal[] = {
+    [ANIM_STD_FACE_SOUTH] = sAnim_FaceSouth,
+    [ANIM_STD_FACE_NORTH] = sAnim_FaceNorth,
+    [ANIM_STD_FACE_WEST] = sAnim_FaceWest,
+    [ANIM_STD_FACE_EAST] = sAnim_FaceEast,
+    [ANIM_STD_GO_SOUTH] = sAnim_RollSouth,
+    [ANIM_STD_GO_NORTH] = sAnim_RollNorth,
+    [ANIM_STD_GO_WEST] = sAnim_RollWest,
+    [ANIM_STD_GO_EAST] = sAnim_RollEast,
 };
 
 // For animations with alternating steps

@@ -12,8 +12,16 @@ MeteorFalls_1F_1R_MapScripts::
 
 MeteorFalls_1F_1R_OnLoad:
 	call_if_set FLAG_SYS_GAME_CLEAR, MeteorFalls_1F_1R_EventScript_OpenStevensCave
+	call_if_unset FLAG_REGI_DOORS_OPENED, MeteorFalls_1F_1R_CloseRegiEntrance
 	call Common_EventScript_SetupRivalGfxId
 	end
+
+MeteorFalls_1F_1R_CloseRegiEntrance::
+	setmetatile 20, 13, 0x244, TRUE
+	setmetatile 19, 14, 0x22E, TRUE
+	setmetatile 20, 14, 0x244, TRUE
+	setmetatile 21, 14, 0x244, TRUE
+	return
 
 MeteorFalls_1F_1R_EventScript_OpenStevensCave::
 	setmetatile 4, 1, METATILE_MeteorFalls_CaveEntrance_Top, TRUE
@@ -105,6 +113,7 @@ MeteorFalls_1F_1R_EventScript_MagmaAfterBattle::
 	applymovement LOCALID_RIVAL, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
 	msgbox MeteorFalls_1F_1R_Text_StevenGiveMegaRing, MSGBOX_DEFAULT
+	special HealPlayerParty
 	giveitem ITEM_MEGA_RING, 1
 	msgbox MeteorFalls_1F_1R_Text_StevenExplainMegaRing, MSGBOX_DEFAULT
 	giveitem ITEM_SCEPTILITE
@@ -202,7 +211,7 @@ MeteorFalls_1F_1R_EventScript_MultiBrendan::
 	end
 
 MeteorFalls_1F_1R_EventScript_MayBattleTreecko::
-    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, TRAINER_MAY_TREECKO_METEOR_FALLS
+    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_MAY_TREECKO_METEOR_FALLS
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -211,7 +220,7 @@ MeteorFalls_1F_1R_EventScript_MayBattleTreecko::
     end
 
 MeteorFalls_1F_1R_EventScript_MayBattleTorchic::
-    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, TRAINER_MAY_TORCHIC_METEOR_FALLS
+    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_MAY_TORCHIC_METEOR_FALLS
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -220,7 +229,7 @@ MeteorFalls_1F_1R_EventScript_MayBattleTorchic::
     end
 
 MeteorFalls_1F_1R_EventScript_MayBattleMudkip::
-    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, TRAINER_MAY_MUDKIP_METEOR_FALLS
+    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_MAY_MUDKIP_METEOR_FALLS
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -229,7 +238,7 @@ MeteorFalls_1F_1R_EventScript_MayBattleMudkip::
     end
 
 MeteorFalls_1F_1R_EventScript_BrendanBattleTreecko::
-    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, TRAINER_BRENDAN_TREECKO_METEOR_FALLS
+    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_BRENDAN_TREECKO_METEOR_FALLS
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -238,7 +247,7 @@ MeteorFalls_1F_1R_EventScript_BrendanBattleTreecko::
     end
 
 MeteorFalls_1F_1R_EventScript_BrendanBattleTorchic::
-    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, TRAINER_BRENDAN_TORCHIC_METEOR_FALLS
+    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_BRENDAN_TORCHIC_METEOR_FALLS
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -247,7 +256,7 @@ MeteorFalls_1F_1R_EventScript_BrendanBattleTorchic::
     end
 
 MeteorFalls_1F_1R_EventScript_BrendanBattleMudkip::
-    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, TRAINER_BRENDAN_MUDKIP_METEOR_FALLS
+    multi_2_vs_2 TRAINER_COURTNEY_METEOR_FALLS, MeteorFalls_1F_1R_Text_CourtneyLose, TRAINER_GRUNT_METEOR_FALLS, MeteorFalls_1F_1R_Text_GruntLose, PARTNER_BRENDAN_MUDKIP_METEOR_FALLS
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, B_OUTCOME_LOST
 	goto_if_eq MeteorFalls_1F_1R_EventScript_Lost
@@ -536,6 +545,8 @@ MeteorFalls_1F_1R_Text_StevenGiveMegaRing:
 	.string "grunts of Team Aqua and Team Magma.\p"
 	.string "These people are dangerous, someone\n"
 	.string "needs to stop them.\p"
+	.string "Here, let me heal your Pokémon after\n"
+	.string "the battle you just fought.\p"
 	.string "Since you have made it until here,\n"
 	.string "I should give this Mega Ring, it\l"
 	.string "will help you in upcoming battles.$"

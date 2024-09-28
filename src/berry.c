@@ -12,6 +12,7 @@
 #include "script_pokemon_util.h"
 #include "string_util.h"
 #include "text.h"
+#include "wild_encounter.h"
 #include "constants/event_object_movement.h"
 #include "constants/items.h"
 
@@ -1763,6 +1764,104 @@ bool32 ObjectEventInteractionWaterBerryTree(void)
         return FALSE;
     }
     return TRUE;
+}
+
+// Used when encountering a Pokemon on a growing berry tree to set the encounter to "done"
+void ObjectEventInteractionBerryTreePokemonEncounter(void)
+{
+    struct BerryTree *tree = GetBerryTreeInfo(GetObjectEventBerryTreeId(gSelectedObjectEvent));
+
+    switch (tree->stage)
+    {
+    case BERRY_STAGE_SPROUTED:
+    case BERRY_STAGE_TALLER:
+        tree->EncounterSproutStage = TRUE;
+        break;
+    case BERRY_STAGE_FLOWERING:
+    case BERRY_STAGE_BERRIES:
+        tree->EncounterFlowerStage = TRUE;
+        break;
+    default:
+        break;
+    }
+}
+
+// Sets encounter bits for a Berry tree. If true, the player won't encounter a Pokemon at that stage.
+// Should be called when a berry is planted.
+void SetBerryEncounters(void)
+{
+    struct BerryTree *tree = GetBerryTreeInfo(GetObjectEventBerryTreeId(gSelectedObjectEvent));
+
+    if (Random() % 2)
+    {
+        tree->EncounterSproutStage = TRUE;
+    }
+    if (Random() % 2)
+    {
+        tree->EncounterFlowerStage = TRUE;
+    }
+}
+
+// Checks whether the player should encounter a Pokemon when interacting with a berry tree.
+// Result is stored in gSpecialVar_Result, and is either true or false.
+void GetBerryEncounter(void)
+{
+    struct BerryTree *tree = GetBerryTreeInfo(GetObjectEventBerryTreeId(gSelectedObjectEvent));
+
+    if (VarGet(VAR_REPEL_STEP_COUNT) == 0)
+    {
+        if (tree->EncounterSproutStage && tree->stage == BERRY_STAGE_SPROUTED)
+        {
+            gSpecialVar_Result = FALSE;
+        }
+        else if (tree->EncounterSproutStage && tree->stage == BERRY_STAGE_TALLER)
+        {
+            gSpecialVar_Result = FALSE;
+        }
+        else if (tree->EncounterFlowerStage && tree->stage == BERRY_STAGE_FLOWERING)
+        {
+            gSpecialVar_Result = FALSE;
+        }
+        else if (tree->EncounterFlowerStage && tree->stage == BERRY_STAGE_BERRIES)
+        {
+            gSpecialVar_Result = FALSE;
+        }
+        else
+        {
+            gSpecialVar_Result = TRUE;
+        }
+    }
+    else
+    {
+        gSpecialVar_Result = FALSE;
+    }
+}
+
+void DoBerryEncounter(void)
+{
+    struct BerryTree *tree = GetBerryTreeInfo(GetObjectEventBerryTreeId(gSelectedObjectEvent));
+    // Get encounter list based on growth stage of berry
+
+    u8 berryStage;
+
+    if (tree->stage == BERRY_STAGE_SPROUTED)
+    {
+        berryStage = 0;
+    }
+    else if (tree->stage == BERRY_STAGE_TALLER)
+    {
+        berryStage = 1;
+    }   
+    else if (tree->stage == BERRY_STAGE_FLOWERING)
+    {
+        berryStage = 2;
+    }
+    else
+    {
+        berryStage = 3;
+    }
+
+    BerryWildEncounter(berryStage);
 }
 
 bool8 IsPlayerFacingEmptyBerryTreePatch(void)

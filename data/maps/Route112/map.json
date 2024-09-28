@@ -211,6 +211,58 @@
       "trainer_sight_or_berry_tree_id": "3",
       "script": "Route112_EventScript_Shayla",
       "flag": "0"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": -3,
+      "y": 45,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "2",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_RAID_DEN",
+      "x": 11,
+      "y": 46,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "EventScript_RaidBattle",
+      "flag": "0"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 20,
+      "y": 40,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route112_EventScript_MagmaGruntBike",
+      "flag": "FLAG_RECEIVED_BIKE"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 21,
+      "y": 40,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route112_EventScript_MagmaGruntBike",
+      "flag": "FLAG_RECEIVED_BIKE"
     }
   ],
   "warp_events": [
@@ -258,7 +310,186 @@
     }
   ],
   "coord_events": [
-
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 49,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 50,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 51,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 52,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 53,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "2",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 49,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "3",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 50,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "3",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 51,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "3",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 52,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "3",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 53,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "3",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 49,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "4",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 50,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "4",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 51,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "4",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 52,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "4",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 53,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "4",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 49,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "5",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 50,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "5",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 51,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "5",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 52,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "5",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    },
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 53,
+      "elevation": 3,
+      "var": "VAR_LAVARIDGE_TOWN_STATE",
+      "var_value": "5",
+      "script": "Route112_EventScript_AshenWoodsNotThisWay"
+    }
   ],
   "bg_events": [
     {

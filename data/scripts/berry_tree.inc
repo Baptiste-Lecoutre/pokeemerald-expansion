@@ -97,7 +97,21 @@ BerryTree_EventScript_CheckBerryStage2::
 	message BerryTree_Text_BerryGrowthStage2
 	waitmessage
 	waitbuttonpress
-	goto BerryTree_EventScript_WantToWater
+	special GetBerryEncounter
+	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_WantToWater
+	special ObjectEventInteractionBerryTreePokemonEncounter
+	playse SE_PIN
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	message BerryTree_Text_BerryEncounterStage2
+	waitmessage
+	waitbuttonpress
+	closemessage
+	special DoBerryEncounter
+	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_End
+	waitstate
+	releaseall
+	end
 
 BerryTree_EventScript_CheckBerryStage3::
 	lockall
@@ -105,7 +119,21 @@ BerryTree_EventScript_CheckBerryStage3::
 	message BerryTree_Text_BerryGrowthStage3
 	waitmessage
 	waitbuttonpress
-	goto BerryTree_EventScript_WantToWater
+	special GetBerryEncounter
+	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_WantToWater
+	special ObjectEventInteractionBerryTreePokemonEncounter
+	playse SE_PIN
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	message BerryTree_Text_BerryEncounterStage3
+	waitmessage
+	waitbuttonpress
+	closemessage
+	special DoBerryEncounter
+	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_End
+	waitstate
+	releaseall
+	end
 
 BerryTree_EventScript_CheckBerryStageTrunk::
 	lockall
@@ -130,7 +158,40 @@ BerryTree_EventScript_CheckBerryStage4::
 	message BerryTree_Text_BerryGrowthStage4
 	waitmessage
 	waitbuttonpress
-	goto BerryTree_EventScript_WantToWater
+	special GetBerryEncounter
+	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_WantToWater
+	special ObjectEventInteractionBerryTreePokemonEncounter
+	playse SE_PIN
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	message BerryTree_Text_BerryEncounterStage4
+	waitmessage
+	waitbuttonpress
+	closemessage
+	special DoBerryEncounter
+	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_End
+	waitstate
+	releaseall
+	end
+
+BerryTreeBerriesEncounter::
+	special ObjectEventInteractionBerryTreePokemonEncounter
+	playse SE_PIN
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
+	waitmovement 0
+	message BerryTree_Text_BerryEncounterStage5
+	waitmessage
+	waitbuttonpress
+	closemessage
+	special DoBerryEncounter
+	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_End
+	waitstate
+	releaseall
+	end
+
+BerryTree_EventScript_End::
+	releaseall
+	end
 
 @ VAR_0x8005 here is the number of times watered
 @ Buffered by ObjectEventInteractionGetBerryTreeData
@@ -167,6 +228,8 @@ BerryTree_EventScript_CheckBerryFullyGrown::
 .set BERRY_MUTATION_SPACE_IN_BAG, 3
 
 BerryTree_EventScript_PickBerry::
+	special GetBerryEncounter
+	goto_if_eq VAR_RESULT, TRUE, BerryTreeBerriesEncounter
 	special ObjectEventInteractionPickBerryTree
 	goto_if_eq VAR_0x8004, BERRY_NORMAL_BAG_FULL, BerryTree_EventScript_BerryPocketFull
 .if OW_BERRY_MUTATIONS == TRUE
@@ -251,6 +314,7 @@ BerryTree_EventScript_PlantBerry::
 	incrementgamestat GAME_STAT_PLANTED_BERRIES
 	special IncrementDailyPlantedBerries
 	special ObjectEventInteractionGetBerryCountString
+	special SetBerryEncounters
 	message BerryTree_Text_PlantedOneBerry
 	waitmessage
 	waitbuttonpress
@@ -468,3 +532,19 @@ BerryTree_EventScript_EncounterPests::
 BerryTree_Text_APokemonAppeared:
 	.string "A Pokémon appeared!$"
 .endif
+
+BerryTree_Text_BerryEncounterStage2:
+	.string "A Pokémon was nibbling on the\n"
+	.string "{STR_VAR_1} sprout's leaves!$"
+
+BerryTree_Text_BerryEncounterStage3:
+	.string "A Pokémon was hiding in the\n"
+	.string "{STR_VAR_1} tree!$"
+
+BerryTree_Text_BerryEncounterStage4:
+	.string "A Pokémon was drawn to the\n"
+	.string "{STR_VAR_1} flowers!$"
+
+BerryTree_Text_BerryEncounterStage5:
+	.string "A Pokémon was feeding on the\n"
+	.string "{STR_VAR_1}!$"

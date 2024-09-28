@@ -38,12 +38,12 @@ const struct Coords16 sTypeIconPositions[][2] =
 {
     [B_POSITION_PLAYER_LEFT] =
     {
-        [FALSE] = {221, 86},
+        [FALSE] = {220, 86}, // 221, 86
         [TRUE] = {144, 71},
     },
     [B_POSITION_OPPONENT_LEFT] =
     {
-        [FALSE] = {20, 26},
+        [FALSE] = {22, 25}, //20, 26
         [TRUE] = {97, 14},
     },
     [B_POSITION_PLAYER_RIGHT] =
@@ -358,6 +358,9 @@ static void CreateSpriteFromType(u32 position, bool32 useDoubleBattleCoords, u32
 
     SetTypeIconXY(&x, &y, position, useDoubleBattleCoords, typeNum);
 
+    if (types[0] == types[1])
+        y += 6;
+
     CreateSpriteAndSetTypeSpriteAttributes(types[typeNum], x, y, position, battler, useDoubleBattleCoords);
 }
 
@@ -401,7 +404,7 @@ static bool32 ShouldFlipTypeIcon(bool32 useDoubleBattleCoords, u32 position, u32
 {
     bool32 side = (useDoubleBattleCoords) ? B_SIDE_OPPONENT : B_SIDE_PLAYER;
 
-    if (GetBattlerSide(GetBattlerAtPosition(position)) != side)
+    if (GetBattlerSide(GetBattlerAtPosition(position)) != B_SIDE_PLAYER)
         return FALSE;
 
     return !gTypesInfo[typeId].isSpecialCaseType;

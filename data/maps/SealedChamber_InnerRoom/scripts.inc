@@ -15,6 +15,12 @@ SealedChamber_InnerRoom_EventScript_Regigigas::
 	setvar VAR_0x8007, 3
 	specialvar VAR_RESULT, CheckSpeciesInParty
 	goto_if_eq VAR_RESULT, FALSE, SealedChamber_InnerRoom_EventScript_RegigigasStatue
+	setvar VAR_0x8004, SPECIES_REGIDRAGO
+	setvar VAR_0x8005, SPECIES_REGIELEKI
+	setvar VAR_0x8006, 0xFFFF
+	setvar VAR_0x8007, 2
+	specialvar VAR_RESULT, CheckSpeciesInParty
+	goto_if_eq VAR_RESULT, FALSE, SealedChamber_InnerRoom_EventScript_RegigigasStatue
 	waitse
 	playmoncry SPECIES_REGIGIGAS, 2
 	delay 40

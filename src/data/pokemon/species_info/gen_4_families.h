@@ -5609,6 +5609,72 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .formSpeciesIdTable = sDialgaFormSpeciesIdTable,
         .formChangeTable = sDialgaFormChangeTable,
     },
+
+    [SPECIES_DIALGA_PRIMAL] =
+    {
+        .baseHP        = 100,
+        .baseAttack    = 120,
+        .baseDefense   = 150,
+        .baseSpeed     = 90,
+        .baseSpAttack  = 190,
+        .baseSpDefense = 130,
+        .types = MON_TYPES(TYPE_STEEL, TYPE_DRAGON),
+        .catchRate = 3,
+        .expYield = DIALGA_EXP_YIELD,
+        .evYield_SpAttack = 3,
+        .genderRatio = MON_GENDERLESS,
+        .eggCycles = 120,
+        .friendship = 0,
+        .growthRate = GROWTH_SLOW,
+        .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
+        .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_TELEPATHY }, // from radical red: Ability Primal Armor: receives half damage from super effective attacks
+        .bodyColor = BODY_COLOR_WHITE,
+        .speciesName = _("Dialga"),
+        .cryId = CRY_DIALGA,
+        .natDexNum = NATIONAL_DEX_DIALGA,
+        .categoryName = _("Temporal"),
+        .height = 105,//54,
+        .weight = 9800,//6830,
+        .description = COMPOUND_STRING(
+            "A Pokémon spoken of in legend.\n"
+            "It completely controls the flow of time.\n"
+            "It uses its power to travel at will\n"
+            "through the past and future."),
+        .pokemonScale = 256,
+        .pokemonOffset = 0,
+        .trainerScale = 721,
+        .trainerOffset = 19,
+        .frontPic = gMonFrontPic_DialgaPrimal,
+        .frontPicSize = MON_COORDS_SIZE(64, 64),
+        .frontPicYOffset = 0,
+        .frontAnimFrames = sAnims_DialgaPrimal,
+        //.frontAnimId = ANIM_H_SHAKE,
+        .backPic = gMonBackPic_DialgaPrimal,
+        .backPicSize = MON_COORDS_SIZE(64, 64),
+        .backPicYOffset = 0,
+        .backAnimId = BACK_ANIM_V_SHAKE,
+        .palette = gMonPalette_DialgaPrimal,
+        .shinyPalette = gMonShinyPalette_DialgaPrimal,
+        .iconSprite = gMonIcon_DialgaPrimal,
+        .iconPalIndex = 0,
+        FOOTPRINT(Dialga)
+        OVERWORLD(
+            sPicTable_Dialga,
+            SIZE_64x64,
+            SHADOW_SIZE_M,
+            TRACKS_FOOT,
+            gOverworldPalette_Dialga,
+            gShinyOverworldPalette_Dialga
+        )
+        .isLegendary = TRUE,
+        .isPrimalReversion = TRUE,
+        .isFrontierBanned = TRUE,
+        .perfectIVCount = LEGENDARY_PERFECT_IV_COUNT,
+        .levelUpLearnset = sDialgaLevelUpLearnset,
+        .teachableLearnset = sDialgaTeachableLearnset,
+        .formSpeciesIdTable = sDialgaFormSpeciesIdTable,
+        .formChangeTable = sDialgaFormChangeTable,
+    },
 #endif //P_FAMILY_DIALGA
 
 #if P_FAMILY_PALKIA
@@ -5744,6 +5810,72 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
             gShinyOverworldPalette_PalkiaOrigin
         )
         .isLegendary = TRUE,
+        .isFrontierBanned = TRUE,
+        .perfectIVCount = LEGENDARY_PERFECT_IV_COUNT,
+        .levelUpLearnset = sPalkiaLevelUpLearnset,
+        .teachableLearnset = sPalkiaTeachableLearnset,
+        .formSpeciesIdTable = sPalkiaFormSpeciesIdTable,
+        .formChangeTable = sPalkiaFormChangeTable,
+    },
+
+    [SPECIES_PALKIA_PRIMAL] =
+    {
+        .baseHP        = 90,
+        .baseAttack    = 170,
+        .baseDefense   = 125,
+        .baseSpeed     = 100,
+        .baseSpAttack  = 150,
+        .baseSpDefense = 145,
+        .types = MON_TYPES(TYPE_WATER, TYPE_DRAGON),
+        .catchRate = 3,
+        .expYield = PALKIA_EXP_YIELD,
+        .evYield_SpAttack = 3,
+        .genderRatio = MON_GENDERLESS,
+        .eggCycles = 120,
+        .friendship = 0,
+        .growthRate = GROWTH_SLOW,
+        .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
+        .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_TELEPATHY }, // new ability: +50% damage if super effective?
+        .bodyColor = BODY_COLOR_PURPLE,
+        .speciesName = _("Palkia"),
+        .cryId = CRY_PALKIA,
+        .natDexNum = NATIONAL_DEX_PALKIA,
+        .categoryName = _("Spatial"),
+        .height = 80,//42,
+        .weight = 4500,//3360,
+        .description = COMPOUND_STRING(
+            "Palkia has the ability to distort space.\n"
+            "Its total control over the boundaries of\n"
+            "space enable it to transport itself to\n"
+            "faraway places and other dimensions."),
+        .pokemonScale = 256,
+        .pokemonOffset = 0,
+        .trainerScale = 650,
+        .trainerOffset = 16,
+        .frontPic = gMonFrontPic_PalkiaPrimal,
+        .frontPicSize = MON_COORDS_SIZE(64, 64),
+        .frontPicYOffset = 0,
+        .frontAnimFrames = sAnims_PalkiaPrimal,
+        //.frontAnimId = ANIM_V_SHAKE,
+        .backPic = gMonBackPic_PalkiaPrimal,
+        .backPicSize = MON_COORDS_SIZE(64, 64),
+        .backPicYOffset = 6,
+        .backAnimId = BACK_ANIM_H_SHAKE,
+        .palette = gMonPalette_PalkiaPrimal,
+        .shinyPalette = gMonShinyPalette_PalkiaPrimal,
+        .iconSprite = gMonIcon_PalkiaPrimal,
+        .iconPalIndex = 2,
+        FOOTPRINT(Palkia)
+        OVERWORLD(
+            sPicTable_Palkia,
+            SIZE_64x64,
+            SHADOW_SIZE_M,
+            TRACKS_FOOT,
+            gOverworldPalette_Palkia,
+            gShinyOverworldPalette_Palkia
+        )
+        .isLegendary = TRUE,
+        .isPrimalReversion = TRUE,
         .isFrontierBanned = TRUE,
         .perfectIVCount = LEGENDARY_PERFECT_IV_COUNT,
         .levelUpLearnset = sPalkiaLevelUpLearnset,

@@ -10,6 +10,7 @@
 #include "palette.h"
 #include "pokedex.h"
 #include "pokemon.h"
+#include "random.h"
 #include "scanline_effect.h"
 #include "sound.h"
 #include "sprite.h"
@@ -44,6 +45,7 @@ static void Task_HandleConfirmStarterInput(u8 taskId);
 static void Task_DeclineStarter(u8 taskId);
 static void Task_MoveStarterChooseCursor(u8 taskId);
 static void Task_CreateStarterLabel(u8 taskId);
+static void CreateChangePocketPrompt(void);
 static void CreateStarterPokemonLabel(u8 selection, u8 region);
 static u8 CreatePokemonFrontSprite(u16 species, u8 x, u8 y);
 static void SpriteCB_SelectionHand(struct Sprite *sprite);
@@ -51,6 +53,7 @@ static void SpriteCB_Pokeball(struct Sprite *sprite);
 static void SpriteCB_StarterPokemon(struct Sprite *sprite);
 
 static u16 sStarterLabelWindowId;
+static u16 sChangePocketPromptWindowId;
 
 const u16 gBirchBagGrass_Pal[] = INCBIN_U16("graphics/starter_choose/tiles.gbapal");
 static const u16 sPokeballSelection_Pal[] = INCBIN_U16("graphics/starter_choose/pokeball_selection.gbapal");
@@ -97,6 +100,17 @@ static const struct WindowTemplate sWindowTemplate_StarterLabel =
     .baseBlock = 0x0274
 };
 
+static const struct WindowTemplate sWindowTemplate_ChangePocketPrompt =
+{
+    .bg = 0,
+    .tilemapLeft = 0,
+    .tilemapTop = 0,
+    .width = 17,
+    .height = 3,
+    .paletteNum = 14,
+    .baseBlock = 0x0300
+};
+
 static const u8 sPokeballCoords[STARTER_MON_COUNT][2] =
 {
     {60, 64},
@@ -113,9 +127,9 @@ static const u8 sStarterLabelCoords[STARTER_MON_COUNT][2] =
 
 static const u16 sStarterMon[STARTER_MON_COUNT][REGION_COUNT] =
 {
-    {SPECIES_BULBASAUR, SPECIES_CHIKORITA, SPECIES_TREECKO, SPECIES_TURTWIG, SPECIES_SNIVY, SPECIES_CHESPIN, SPECIES_ROWLET, SPECIES_GROOKEY},
-    {SPECIES_CHARMANDER, SPECIES_CYNDAQUIL, SPECIES_TORCHIC, SPECIES_CHIMCHAR, SPECIES_TEPIG, SPECIES_FENNEKIN, SPECIES_LITTEN, SPECIES_SCORBUNNY},
-    {SPECIES_SQUIRTLE, SPECIES_TOTODILE, SPECIES_MUDKIP, SPECIES_PIPLUP, SPECIES_OSHAWOTT, SPECIES_FROAKIE, SPECIES_POPPLIO, SPECIES_SOBBLE},
+    {SPECIES_BULBASAUR, SPECIES_CHIKORITA, SPECIES_TREECKO, SPECIES_TURTWIG, SPECIES_SNIVY, SPECIES_CHESPIN, SPECIES_ROWLET, SPECIES_GROOKEY},// SPECIES_SPRIGATITO},
+    {SPECIES_CHARMANDER, SPECIES_CYNDAQUIL, SPECIES_TORCHIC, SPECIES_CHIMCHAR, SPECIES_TEPIG, SPECIES_FENNEKIN, SPECIES_LITTEN, SPECIES_SCORBUNNY},// SPECIES_FUECOCO},
+    {SPECIES_SQUIRTLE, SPECIES_TOTODILE, SPECIES_MUDKIP, SPECIES_PIPLUP, SPECIES_OSHAWOTT, SPECIES_FROAKIE, SPECIES_POPPLIO, SPECIES_SOBBLE},// SPECIES_QUAXLY},
 };
 
 static const struct BgTemplate sBgTemplates[3] =
@@ -465,6 +479,7 @@ void CB2_ChooseStarter(void)
     gSprites[spriteId].sBallId = 2;
 
     sStarterLabelWindowId = WINDOW_NONE;
+    sChangePocketPromptWindowId = WINDOW_NONE;
 }
 
 static void CB2_StarterChoose(void)
@@ -479,6 +494,7 @@ static void CB2_StarterChoose(void)
 static void Task_StarterChoose(u8 taskId)
 {
     CreateStarterPokemonLabel(gTasks[taskId].tStarterSelection, gTasks[taskId].tRegionSelection);
+    CreateChangePocketPrompt();
     DrawStdFrameWithCustomTileAndPalette(0, FALSE, 0x2A8, 0xD);
     AddTextPrinterParameterized(0, FONT_NORMAL, gText_BirchInTrouble, 0, 1, 0, NULL);
     PutWindowTilemap(0);
@@ -518,14 +534,14 @@ static void Task_HandleStarterChooseInput(u8 taskId)
         gTasks[taskId].tStarterSelection++;
         gTasks[taskId].func = Task_MoveStarterChooseCursor;
     }
-    else if (JOY_NEW(R_BUTTON))
+    else if (JOY_NEW(DPAD_UP))
     {
         gTasks[taskId].tRegionSelection++;
         if (gTasks[taskId].tRegionSelection > REGION_COUNT-1)
             gTasks[taskId].tRegionSelection = 0;
         gTasks[taskId].func = Task_MoveStarterChooseCursor;
     }
-    else if (JOY_NEW(L_BUTTON))
+    else if (JOY_NEW(DPAD_DOWN))
     {
         if (gTasks[taskId].tRegionSelection == 0)
             gTasks[taskId].tRegionSelection = REGION_COUNT - 1;
@@ -586,6 +602,27 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
 static void Task_DeclineStarter(u8 taskId)
 {
     gTasks[taskId].func = Task_StarterChoose;
+}
+
+static const u8 sText_ChangePocketPrompt[] = _("Change pocket using {DPAD_UPDOWN}");
+static void CreateChangePocketPrompt(void)
+{
+    struct WindowTemplate winTemplate;
+    s32 width;
+    u8 labelLeft, labelRight, labelTop, labelBottom;
+
+    winTemplate = sWindowTemplate_ChangePocketPrompt;
+    winTemplate.tilemapLeft = 6;
+    winTemplate.tilemapTop = 0;
+
+    sChangePocketPromptWindowId = AddWindow(&winTemplate);
+    FillWindowPixelBuffer(sChangePocketPromptWindowId, PIXEL_FILL(0));
+
+    width = GetStringCenterAlignXOffset(FONT_NARROW, sText_ChangePocketPrompt, 8*winTemplate.width);
+    AddTextPrinterParameterized3(sChangePocketPromptWindowId, FONT_NARROW, width, 1, sTextColors, 0, sText_ChangePocketPrompt);
+
+    PutWindowTilemap(sChangePocketPromptWindowId);
+    ScheduleBgCopyTilemapToVram(0);
 }
 
 static void CreateStarterPokemonLabel(u8 selection, u8 region)
@@ -651,7 +688,10 @@ static u8 CreatePokemonFrontSprite(u16 species, u8 x, u8 y)
 {
     u8 spriteId;
 
-    spriteId = CreateMonPicSprite_Affine(species, FALSE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+    if (GET_SHINY_VALUE(gSaveBlock2Ptr->playerTrainerId[0] | (gSaveBlock2Ptr->playerTrainerId[1] << 8) | (gSaveBlock2Ptr->playerTrainerId[2] << 16) | (gSaveBlock2Ptr->playerTrainerId[3] << 24), Random32()) < SHINY_ODDS)
+        FlagSet(P_FLAG_FORCE_SHINY);
+
+    spriteId = CreateMonPicSprite_Affine(species, FlagGet(P_FLAG_FORCE_SHINY), 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     gSprites[spriteId].oam.priority = 0;
     return spriteId;
 }

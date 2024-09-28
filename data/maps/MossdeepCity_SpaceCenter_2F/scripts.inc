@@ -257,7 +257,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_ChoosePartyForMultiBattle::
 	goto MossdeepCity_SpaceCenter_2F_EventScript_ReadyForBattlePrompt
 
 MossdeepCity_SpaceCenter_2F_EventScript_DoStevenMultiBattle::
-	multi_2_vs_2 TRAINER_MAXIE_MOSSDEEP, MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand, TRAINER_TABITHA_MOSSDEEP, MossdeepCity_SpaceCenter_Text_TabithaDefeat, PARTNER_STEVEN
+	multi_2_vs_2 TRAINER_MAXIE_MOSSDEEP, MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand, TRAINER_COURTNEY_MOSSDEEP, MossdeepCity_SpaceCenter_Text_CourtneyDefeat, PARTNER_STEVEN
 	switch VAR_RESULT
 	case 1, MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha
 	fadescreen FADE_TO_BLACK
@@ -331,6 +331,11 @@ MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayerSouth::
 MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayerWest::
 	turnobject LOCALID_STEVEN, DIR_EAST
 	return
+
+MossdeepCity_SpaceCenter_1F_EventScript_Tabitha::
+	trainerbattle_single TRAINER_TABITHA_MOSSDEEP, MossdeepCity_SpaceCenter_Text_TabithaIntro, MossdeepCity_SpaceCenter_Text_TabithaDefeat
+	msgbox MossdeepCity_SpaceCenter_Text_TabithaPostBattle, MSGBOX_AUTOCLOSE
+	end
 
 MossdeepCity_SpaceCenter_2F_EventScript_RivalRayquazaCall::
 	lockall
@@ -468,7 +473,7 @@ MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand:
 	.string "All I want…\n"
 	.string "I just want to expand the land mass…$"
 
-MossdeepCity_SpaceCenter_Text_TabithaDefeat:
+MossdeepCity_SpaceCenter_Text_CourtneyDefeat:
 	.string "I'm with our leader…$"
 
 MossdeepCity_SpaceCenter_2F_Text_MaxieWeFailedIsAquaAlsoMisguided:
@@ -501,3 +506,17 @@ MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome:
 	.string "after this.\p"
 	.string "Oh, yes, I don't live in Rustboro City.\n"
 	.string "I live right here on this island.$"
+
+MossdeepCity_SpaceCenter_Text_TabithaIntro:
+	.string "Hehehe!\p"
+	.string "We're taking the fuel, and no amount\n"
+	.string "of meddling is going to stop us!$"
+
+MossdeepCity_SpaceCenter_Text_TabithaDefeat:
+	.string "Hehe…\n"
+	.string "Well, maybe that's enough to stop me…$"
+
+MossdeepCity_SpaceCenter_Text_TabithaPostBattle:
+	.string "Hehe…\p"
+	.string "It's all up to our Leader and Courtney\n"
+	.string "now.$"

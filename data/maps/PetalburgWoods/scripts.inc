@@ -8,7 +8,7 @@ PetalburgWoods_MapScripts::
 
 PetalburgWoods_OnTransition:
 	goto_if_unset FLAG_BADGE01_GET, PetalburgWoods_EventScript_HideRed
-	goto_if_defeated TRAINER_RED_PETALBURG_WOODS, PetalburgWoods_EventScript_HideRed
+	call_if_defeated TRAINER_RED_PETALBURG_WOODS, PetalburgWoods_EventScript_HideRed
 	end
 
 PetalburgWoods_EventScript_HideRed:
@@ -167,7 +167,7 @@ PetalburgWoods_EventScript_DevonResearcherPostBattle::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterDown
 	waitmovement 0
 	msgbox PetalburgWoods_Text_ThatWasAwfullyClose, MSGBOX_DEFAULT
-	giveitem ITEM_GREAT_BALL
+	giveitem ITEM_EXP_SHARE
 	goto_if_eq VAR_RESULT, FALSE, PetalburgWoods_EventScript_BagFull
 	goto PetalburgWoods_EventScript_DevonResearcherFinish
 	end
@@ -443,8 +443,8 @@ PetalburgWoods_Text_ThatWasAwfullyClose:
 	.string "That was awfully close!\p"
 	.string "Thanks to you, he didn't rob me of\n"
 	.string "these important papers.\p"
-	.string "I know, I'll give you a Great Ball as\n"
-	.string "my thanks!$"
+	.string "I know, I'll give you an Exp. Share\n"
+	.string "as my thanks!$"
 
 PetalburgWoods_Text_TeamAquaAfterSomethingInRustboro:
 	.string "Didn't that Team Aqua thug say\n"

@@ -57,6 +57,8 @@
 #include "constants/vars.h"
 #include "constants/weather.h"
 #include "constants/mirage_locations.h"
+#include "constants/follow_me.h"
+#include "constants/battle_raid.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -690,6 +692,7 @@ EventScript_SetBrineyLocation_Route109::
 	.include "data/scripts/record_mix.inc"
 	.include "data/scripts/pc.inc"
 	.include "data/scripts/pkmn_center_move_tutor.inc"
+	.include "data/scripts/poke_mart.inc"
 
 @ scripts/notices.inc? signs.inc? See comment about text/notices.inc
 Common_EventScript_ShowPokemartSign::
@@ -909,7 +912,7 @@ gText_SandstormIsVicious::
 	.string "It's impossible to keep going.$"
 
 gText_SelectWithoutRegisteredItem::
-	.string "An item in the Bag can be\n"
+	.string "Up to four items in the Bag can be\n"
 	.string "registered for easy use.$"
 
 gText_PokemonTrainerSchoolEmail::
@@ -1186,6 +1189,7 @@ EventScript_VsSeekerChargingDone::
 	.include "data/text/birch_speech.inc"
     .include "data/scripts/dexnav.inc"
 	.include "data/scripts/costume_swap.inc"
+	.include "data/scripts/raid_battle.inc"
     
 
 	.include "data/maps/PetalburgWoods_2/scripts.inc"
@@ -1245,3 +1249,30 @@ gText_OneDayImGoingToFightYou:
 
 	.include "data/scripts/furfrou.inc"
 	.include "data/scripts/rotom.inc"
+	.include "data/scripts/honey.inc"
+
+	.include "data/maps/Route110_CaveOfShock/scripts.inc"
+
+	.include "data/maps/CaveOfShock/scripts.inc"
+
+	.include "data/maps/Underwater_MeteorFalls_B1F_2R/scripts.inc"
+
+	.include "data/maps/MeteorFalls_DracoChamber/scripts.inc"
+
+	.include "data/maps/Underwater_MeteorFalls_DracoChamber/scripts.inc"
+
+	.include "data/maps/HauntedManor/scripts.inc"
+
+	.include "data/maps/HauntedMansion_1F/scripts.inc"
+
+	.include "data/maps/HauntedMansion_2F/scripts.inc"
+
+	.include "data/maps/HauntedMansion_3F/scripts.inc"
+
+	.include "data/maps/MeteorFalls_B2F/scripts.inc"
+
+	.include "data/maps/MeteorFalls_B3F/scripts.inc"
+
+	.include "data/maps/FieryPath2/scripts.inc"
+
+	.include "data/maps/Route109_South/scripts.inc"

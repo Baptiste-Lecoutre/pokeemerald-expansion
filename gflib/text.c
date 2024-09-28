@@ -23,6 +23,7 @@ static u16 FontFunc_ShortCopy2(struct TextPrinter *);
 static u16 FontFunc_ShortCopy3(struct TextPrinter *);
 static u16 FontFunc_Narrow(struct TextPrinter *);
 static u16 FontFunc_SmallNarrow(struct TextPrinter *);
+static u16 FontFunc_BW_Summary_Screen(struct TextPrinter *);
 static u16 FontFunc_Narrower(struct TextPrinter *);
 static u16 FontFunc_SmallNarrower(struct TextPrinter *);
 static u16 FontFunc_ShortNarrow(struct TextPrinter *);
@@ -103,6 +104,7 @@ static const struct GlyphWidthFunc sGlyphWidthFuncs[] =
     { FONT_NARROWER,       GetGlyphWidth_Narrower },
     { FONT_SMALL_NARROWER, GetGlyphWidth_SmallNarrower },
     { FONT_SHORT_NARROW,   GetGlyphWidth_ShortNarrow },
+    { FONT_BW_SUMMARY_SCREEN, GetGlyphWidth_Short },
 };
 
 struct
@@ -261,6 +263,16 @@ static const struct FontInfo sFontInfos[] =
         .bgColor = 1,
         .shadowColor = 3,
     },
+    [FONT_BW_SUMMARY_SCREEN] = {
+        .fontFunction = FontFunc_BW_Summary_Screen,
+        .maxLetterWidth = 6,
+        .maxLetterHeight = 14,
+        .letterSpacing = 0,
+        .lineSpacing = 0,
+        .fgColor = 2,
+        .bgColor = 1,
+        .shadowColor = 3,
+    },
 };
 
 static const u8 sMenuCursorDimensions[][2] =
@@ -278,6 +290,7 @@ static const u8 sMenuCursorDimensions[][2] =
     [FONT_NARROWER]       = { 8,  15 },
     [FONT_SMALL_NARROWER] = { 8,   8 },
     [FONT_SHORT_NARROW]   = { 8,  14 },
+    [FONT_BW_SUMMARY_SCREEN] = { 8,  14 },
 };
 
 static const u16 sFontBoldJapaneseGlyphs[] = INCBIN_U16("graphics/fonts/bold.hwjpnfont");
@@ -646,10 +659,11 @@ static u8 UNUSED GetLastTextColor(u8 colorType)
     }
 }
 
-inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, u32 i, u32 *glyphPixels, s32 width, s32 height)
+inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, s64 i, u32 *glyphPixels, s32 width, s32 height)
 {
-    u32 xAdd, yAdd, pixelData, bits, toOrr, dummyX;
-    u8 *dst;
+    u32 xAdd, pixelData, bits, toOrr, dummyX;
+    s64 yAdd;
+    u8 *dst = 0;
 
     xAdd = j + width;
     yAdd = i + height;
@@ -661,7 +675,8 @@ inline static void GLYPH_COPY(u8 *windowTiles, u32 widthOffset, u32 j, u32 i, u3
         {
             if ((toOrr = pixelData & 0xF))
             {
-                dst = windowTiles + ((j / 8) * 32) + ((j % 8) / 2) + ((i / 8) * widthOffset) + ((i % 8) * 4);
+                if (i >= 0)
+                    dst = windowTiles + ((j / 8) * 32) + ((j % 8) / 2) + ((i / 8) * widthOffset) + ((i % 8) * 4);
                 bits = ((j & 1) * 4);
                 *dst = (toOrr << bits) | (*dst & (0xF0 >> bits));
             }
@@ -675,8 +690,9 @@ void CopyGlyphToWindow(struct TextPrinter *textPrinter)
     struct Window *window;
     struct WindowTemplate *template;
     u32 *glyphPixels;
-    u32 currX, currY, widthOffset;
+    u32 currX, widthOffset;
     s32 glyphWidth, glyphHeight;
+    s64 currY;
     u8 *windowTiles;
 
     window = &gWindows[textPrinter->printerTemplate.windowId];
@@ -689,7 +705,10 @@ void CopyGlyphToWindow(struct TextPrinter *textPrinter)
         glyphHeight = gCurGlyph.height;
 
     currX = textPrinter->printerTemplate.currentX;
-    currY = textPrinter->printerTemplate.currentY;
+    if (textPrinter->printerTemplate.unk)
+        currY = textPrinter->printerTemplate.currentY - (textPrinter->printerTemplate.y * 2);
+    else
+        currY = textPrinter->printerTemplate.currentY;
     glyphPixels = gCurGlyph.gfxBufferTop;
     windowTiles = window->tileData;
     widthOffset = template->width * 32;
@@ -882,6 +901,18 @@ static u16 FontFunc_ShortNarrow(struct TextPrinter *textPrinter)
     return RenderText(textPrinter);
 }
 
+static u16 FontFunc_BW_Summary_Screen(struct TextPrinter *textPrinter)
+{
+    struct TextPrinterSubStruct *subStruct = (struct TextPrinterSubStruct *)(&textPrinter->subStructFields);
+
+    if (subStruct->hasFontIdBeenSet == FALSE)
+    {
+        subStruct->fontId = FONT_BW_SUMMARY_SCREEN;
+        subStruct->hasFontIdBeenSet = TRUE;
+    }
+    return RenderText(textPrinter);
+}
+
 void TextPrinterInitDownArrowCounters(struct TextPrinter *textPrinter)
 {
     struct TextPrinterSubStruct *subStruct = (struct TextPrinterSubStruct *)(&textPrinter->subStructFields);
@@ -902,7 +933,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
     struct TextPrinterSubStruct *subStruct = (struct TextPrinterSubStruct *)(&textPrinter->subStructFields);
     const u8 *arrowTiles;
     u32 x = gTextFlags.useAlternateDownArrow ? ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 8) : ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 12);
-    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 12);
+    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 14);
 
     if (gTextFlags.autoScroll == 0)
     {
@@ -927,7 +958,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
                 arrowTiles = sDownArrowTiles;
                 break;
             case TRUE:
-                arrowTiles = sDarkDownArrowTiles;
+                arrowTiles = sDownArrowTiles; //sDarkDownArrowTiles;
                 break;
             }
 
@@ -953,7 +984,7 @@ void TextPrinterDrawDownArrow(struct TextPrinter *textPrinter)
 void TextPrinterClearDownArrow(struct TextPrinter *textPrinter)
 {
     u32 x = gTextFlags.useAlternateDownArrow ? ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 8) : ((gWindows[textPrinter->printerTemplate.windowId].window.width * 8) - 12);
-    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 12);
+    u32 y = ((gWindows[textPrinter->printerTemplate.windowId].window.height * 8) - 14);
     FillWindowPixelRect(
         textPrinter->printerTemplate.windowId,
         textPrinter->printerTemplate.bgColor << 4 | textPrinter->printerTemplate.bgColor,
@@ -1046,7 +1077,7 @@ void DrawDownArrow(u8 windowId, u16 x, u16 y, u8 bgColor, bool32 drawArrow, u8 *
                 arrowTiles = sDownArrowTiles;
                 break;
             case TRUE:
-                arrowTiles = sDarkDownArrowTiles;
+                arrowTiles = sDownArrowTiles; //sDarkDownArrowTiles;
                 break;
             }
 
@@ -1095,6 +1126,8 @@ static u16 RenderText(struct TextPrinter *textPrinter)
         case CHAR_NEWLINE:
             textPrinter->printerTemplate.currentX = textPrinter->printerTemplate.x;
             textPrinter->printerTemplate.currentY += (gFonts[textPrinter->printerTemplate.fontId].maxLetterHeight + textPrinter->printerTemplate.lineSpacing);
+            if (subStruct->fontId == FONT_BW_SUMMARY_SCREEN)
+                textPrinter->printerTemplate.currentY -= 2;
             return RENDER_REPEAT;
         case PLACEHOLDER_BEGIN:
             textPrinter->printerTemplate.currentChar++;
@@ -1259,6 +1292,7 @@ static u16 RenderText(struct TextPrinter *textPrinter)
         case FONT_SHORT_COPY_1:
         case FONT_SHORT_COPY_2:
         case FONT_SHORT_COPY_3:
+        case FONT_BW_SUMMARY_SCREEN:
             DecompressGlyph_Short(currChar, textPrinter->japanese);
             break;
         case FONT_NARROW:

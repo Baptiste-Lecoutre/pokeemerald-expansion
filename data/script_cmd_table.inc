@@ -232,6 +232,12 @@ gScriptCmdTable::
 	.4byte ScrCmd_setwildshadowbattle               @ 0xe5
 	.4byte ScrCmd_checkPartyHasSpecies      		@ 0xe6
 	.4byte ScrCmd_isChosenMonSpecies        		@ 0xe7
+	.4byte ScrCmd_setsootopolisbattle				@ 0xe8
+@@@ new script commands go here
+    .4byte ScrCmd_setfollower						@ 0xe9
+    .4byte ScrCmd_destroyfollower					@ 0xea
+    .4byte ScrCmd_facefollower						@ 0xeb
+    .4byte ScrCmd_checkfollower						@ 0xec
 
 gScriptCmdTableEnd::
 	.4byte ScrCmd_nop

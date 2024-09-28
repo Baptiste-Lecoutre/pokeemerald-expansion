@@ -23,6 +23,8 @@
 #include "field_message_box.h"
 #include "tv.h"
 #include "battle_factory.h"
+#include "follow_me.h"
+#include "script_pokemon_util.h"
 #include "constants/abilities.h"
 #include "constants/apprentice.h"
 #include "constants/battle_dome.h"
@@ -39,6 +41,7 @@
 #include "constants/trainers.h"
 #include "constants/event_objects.h"
 #include "constants/moves.h"
+#include "constants/songs.h"
 
 // EWRAM vars.
 EWRAM_DATA const struct BattleFrontierTrainer *gFacilityTrainers = NULL;
@@ -75,7 +78,6 @@ static void FillTentTrainerParty_(u16 trainerId, u8 firstMonId, u8 monCount);
 static void FillFactoryFrontierTrainerParty(u16 trainerId, u8 firstMonId);
 static void FillFactoryTentTrainerParty(u16 trainerId, u8 firstMonId);
 static u8 GetFrontierTrainerFixedIvs(u16 trainerId);
-static void FillPartnerParty(u16 trainerId);
 #if FREE_BATTLE_TOWER_E_READER == FALSE
 static void SetEReaderTrainerChecksum(struct BattleTowerEReaderTrainer *ereaderTrainer);
 #endif //FREE_BATTLE_TOWER_E_READER
@@ -1972,7 +1974,10 @@ static void HandleSpecialTrainerBattleEnd(void)
         CopyEReaderTrainerFarewellMessage();
         break;
     case SPECIAL_BATTLE_MULTI:
-        for (i = 0; i < 3; i++)
+    case SPECIAL_BATTLE_RAID:
+        if (GetFollowerPartnerId() && HEAL_AFTER_FOLLOWER_BATTLE)
+            HealPlayerParty();
+        for (i = 0; i < MULTI_PARTY_SIZE; i++)
         {
             if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES))
                 gSaveBlock1Ptr->playerParty[i] = gPlayerParty[i];
@@ -2125,11 +2130,16 @@ void DoSpecialTrainerBattle(void)
             gBattleTypeFlags = BATTLE_TYPE_TRAINER | BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
         }
 
-        gPartnerTrainerId = VarGet(gSpecialVar_0x8006) + TRAINER_PARTNER(PARTNER_NONE);
+        gPartnerTrainerId = TRAINER_PARTNER(OverrideRaidPartnerTrainerId(gSpecialVar_0x8006)); // automatic handling of the wally/red/rival partners over story progression
         FillPartnerParty(gPartnerTrainerId);
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);
-        if (gSpecialVar_0x8005 & MULTI_BATTLE_2_VS_WILD)
+        if (FlagGet(FLAG_SOOTOPOLIS_BATTLE))
+        {
+            PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
+            BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);
+        }
+        else if (gSpecialVar_0x8005 & MULTI_BATTLE_2_VS_WILD)
             BattleTransition_StartOnField(GetWildBattleTransition());
         else
             BattleTransition_StartOnField(GetTrainerBattleTransition());
@@ -2137,6 +2147,50 @@ void DoSpecialTrainerBattle(void)
         if (gSpecialVar_0x8005 & MULTI_BATTLE_CHOOSE_MONS) // Skip mons restoring(done in the script)
             gBattleScripting.specialTrainerBattleType = 0xFF;
         break;
+    // TODO: Does this belong with all the other multi battles?
+    case SPECIAL_BATTLE_RAID:
+        {
+        gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;
+        gTrainerBattleOpponent_B = 0xFFFF;
+
+        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
+             && (u16)(gSaveBlock1Ptr->location.mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
+        {
+            gBattleTypeFlags |= BATTLE_TYPE_GHOST;
+            SetMonData(&gEnemyParty[0], MON_DATA_NICKNAME, gText_Ghost);
+        }
+        
+        if (gRaidData.partnerNum != 0)
+        {
+            gBattleTypeFlags |= (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER);
+            gPartnerTrainerId = TRAINER_PARTNER(gRaidData.partnerNum);
+            FillPartnerParty(gPartnerTrainerId);
+        }
+
+        CreateTask(Task_StartBattleAfterTransition, 1);
+        
+        switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
+        {
+            case SPECIES_RAYQUAZA:
+                PlayMapChosenOrBattleBGM(MUS_VS_RAYQUAZA);
+                BattleTransition_StartOnField(B_TRANSITION_RAYQUAZA);
+                break;
+            case SPECIES_KYOGRE:
+                PlayMapChosenOrBattleBGM(MUS_VS_KYOGRE_GROUDON);
+                BattleTransition_StartOnField(B_TRANSITION_KYOGRE);
+                break;
+            case SPECIES_GROUDON:
+                PlayMapChosenOrBattleBGM(MUS_VS_KYOGRE_GROUDON);
+                BattleTransition_StartOnField(B_TRANSITION_GROUDON);
+                break;
+            default:
+                PlayMapChosenOrBattleBGM(0);
+                BattleTransition_StartOnField(GetRaidBattleTransition());
+                break;
+        }
+        
+        break;
+        }
     }
 }
 
@@ -2989,7 +3043,7 @@ void TryHideBattleTowerReporter(void)
 
 #define STEVEN_OTID 61226
 
-static void FillPartnerParty(u16 trainerId)
+void FillPartnerParty(u16 trainerId)
 {
     s32 i, j, k;
     u32 firstIdPart = 0, secondIdPart = 0, thirdIdPart = 0;
@@ -2997,6 +3051,7 @@ static void FillPartnerParty(u16 trainerId)
     u16 monId;
     u32 otID;
     u8 trainerName[(PLAYER_NAME_LENGTH * 3) + 1];
+    u8 playerLevel = GetHighestLevelInPlayerParty();
     s32 ball = -1;
     SetFacilityPtrsGetLevel();
 
@@ -3039,7 +3094,7 @@ static void FillPartnerParty(u16 trainerId)
             else if (partyData[i].gender == TRAINER_MON_FEMALE)
                 personality = (personality & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[i].species);
             ModifyPersonalityForNature(&personality, partyData[i].nature);
-            CreateMon(&gPlayerParty[i + 3], partyData[i].species, partyData[i].lvl, 0, TRUE, personality, OT_ID_PRESET, otID);
+            CreateMon(&gPlayerParty[i + 3], partyData[i].species, playerLevel, 0, TRUE, personality, OT_ID_PRESET, otID);
             j = partyData[i].isShiny;
             SetMonData(&gPlayerParty[i + 3], MON_DATA_IS_SHINY, &j);
             SetMonData(&gPlayerParty[i + 3], MON_DATA_HELD_ITEM, &partyData[i].heldItem);

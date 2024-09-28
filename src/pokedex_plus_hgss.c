@@ -298,7 +298,7 @@ static const u32 sPokedexPlusHGSS_ScreenSearchNational_Tilemap[] = INCBIN_U32("g
 
 #define SCROLLING_MON_X 146
 #define HGSS_DECAPPED FALSE
-#define HGSS_DARK_MODE FALSE
+#define HGSS_DARK_MODE TRUE
 #define HGSS_HIDE_UNSEEN_EVOLUTION_NAMES FALSE
 
 // For scrolling search parameter
@@ -325,7 +325,7 @@ static EWRAM_DATA struct PokedexListItem *sPokedexListItem = NULL;
 #define MOVES_COUNT_TOTAL (EGG_MOVES_ARRAY_COUNT + MAX_LEVEL_UP_MOVES + NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES)
 EWRAM_DATA static u16 sStatsMoves[MOVES_COUNT_TOTAL] = {0};
 EWRAM_DATA static u16 sStatsMovesTMHM_ID[NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES] = {0};
-
+EWRAM_DATA u16 gSpeciesToLoad = SPECIES_NONE;
 
 struct SearchOptionText
 {
@@ -623,6 +623,7 @@ static u8 ShowCategoryIcon(u32 category);
 static void DestroyCategoryIcon(void);
 
 static u16 NationalPokedexNumToSpeciesHGSS(u16 nationalNum);
+static u16 SpeciesToDexListNum(u16 species);
 
 //Stat bars by DizzyEgg
 #define TAG_STAT_BAR 4097
@@ -2086,6 +2087,11 @@ void CB2_OpenPokedexPlusHGSS(void)
         SetMainCallback2(CB2_Pokedex);
         CreatePokedexList(sPokedexView->dexMode, sPokedexView->dexOrder);
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x80);
+
+        // force load species from party menu
+        if (gSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->selectedPokemon = SpeciesToDexListNum(gSpeciesToLoad);
+
         break;
     }
 }
@@ -2170,6 +2176,21 @@ static void Task_OpenPokedexMainPage(u8 taskId)
 static void Task_HandlePokedexInput(u8 taskId)
 {
     SetGpuReg(REG_OFFSET_BG0VOFS, sPokedexView->menuY);
+
+    // force load species from party menu
+    if (gSpeciesToLoad != SPECIES_NONE)
+    {
+        if (GetFormIdFromFormSpeciesId(gSpeciesToLoad) != 0)
+            sPokedexView->formSpecies = gSpeciesToLoad;
+
+        TryDestroyStatBars();
+        UpdateSelectedMonSpriteId();
+        BeginNormalPaletteFade(~(1 << (gSprites[sPokedexView->selectedMonSpriteId].oam.paletteNum + 16)), 0, 0, 0x10, RGB_BLACK);
+        gSprites[sPokedexView->selectedMonSpriteId].callback = SpriteCB_MoveMonForInfoScreen;
+        gTasks[taskId].func = Task_OpenInfoScreenAfterMonMovement;
+        PlaySE(SE_PIN);
+        FreeWindowAndBgBuffers();
+    }
 
     if (sPokedexView->menuY)
     {
@@ -2324,7 +2345,6 @@ static void Task_WaitForExitInfoScreen(u8 taskId)
     }
     else
     {
-        // Exiting, back to list view
         sLastSelectedPokemon = sPokedexView->selectedPokemon;
         sPokeBallRotation = sPokedexView->pokeBallRotation;
         gTasks[taskId].func = Task_OpenPokedexMainPage;
@@ -2532,20 +2552,16 @@ static void CreatePokedexList(u8 dexMode, u8 order)
         }
         else
         {
-            s16 r5, r10;
-            for (i = 0, r5 = 0, r10 = 0; i < temp_dexCount; i++)
+            // only show seen mons
+            for (i = 0; i < temp_dexCount; i++)
             {
                 temp_dexNum = i + 1;
                 if (GetSetPokedexFlag(temp_dexNum, FLAG_GET_SEEN))
-                    r10 = 1;
-                if (r10)
                 {
-                    sPokedexView->pokedexList[r5].dexNum = temp_dexNum;
-                    sPokedexView->pokedexList[r5].seen = GetSetPokedexFlag(temp_dexNum, FLAG_GET_SEEN);
-                    sPokedexView->pokedexList[r5].owned = GetSetPokedexFlag(temp_dexNum, FLAG_GET_CAUGHT);
-                    if (sPokedexView->pokedexList[r5].seen)
-                        sPokedexView->pokemonListCount = r5 + 1;
-                    r5++;
+                    sPokedexView->pokedexList[sPokedexView->pokemonListCount].dexNum = temp_dexNum;
+                    sPokedexView->pokedexList[sPokedexView->pokemonListCount].seen = TRUE;
+                    sPokedexView->pokedexList[sPokedexView->pokemonListCount].owned = GetSetPokedexFlag(temp_dexNum, FLAG_GET_CAUGHT);
+                    sPokedexView->pokemonListCount++;
                 }
             }
         }
@@ -2793,6 +2809,10 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
     u16 dexNum;
     u8 spriteId;
 
+    // if we load in a particular form from the party menu, we need to load the sprite for it
+    // but only for the middle mon
+    bool8 loadForm = gSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gSpeciesToLoad) != 0;
+
     gPaletteFade.bufferTransferDisabled = TRUE;
 
     for (i = 0; i < MAX_MONS_ON_SCREEN; i++)
@@ -2812,9 +2832,15 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
     dexNum = GetPokemonSpriteToDisplay(selectedMon);
     if (dexNum != 0xFFFF)
     {
+        if (loadForm)
+            sPokedexView->formSpecies = gSpeciesToLoad;
+
         spriteId = CreatePokedexMonSprite(dexNum, SCROLLING_MON_X, 0x50);
         gSprites[spriteId].callback = SpriteCB_PokedexListMonSprite;
         gSprites[spriteId].data[5] = 0;
+
+        if (loadForm)
+            sPokedexView->formSpecies = 0;
     }
 
     // Create bottom mon sprite
@@ -3952,6 +3978,12 @@ static void Task_ExitInfoScreen(u8 taskId)
     {
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         FreeInfoScreenWindowAndBgBuffers();
+        if (gSpeciesToLoad != SPECIES_NONE)
+        {
+            SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
+            gSpeciesToLoad = SPECIES_NONE;
+            m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
+        }
         DestroyTask(taskId);
     }
 }
@@ -8588,4 +8620,18 @@ static void PrintSearchParameterTitle(u32 y, const u8 *str)
 static void ClearSearchParameterBoxText(void)
 {
     ClearSearchMenuRect(144, 8, 96, 96);
+}
+
+static u16 SpeciesToDexListNum(u16 species)
+{
+    int i;
+    u16 targetNum = SpeciesToPokedexNum(species);
+
+    for (i = 0; i < NATIONAL_DEX_COUNT; i++)
+    {
+        if (sPokedexView->pokedexList[i].dexNum == targetNum)
+            return i;
+    }
+
+    return SPECIES_NONE;
 }

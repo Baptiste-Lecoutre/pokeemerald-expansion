@@ -7,7 +7,7 @@ Route131_MapScripts::
 Route131_OnTransition:
 	call_if_ge VAR_SOOTOPOLIS_CITY_STATE, 4, Route131_EventScript_CheckSetAbnormalWeather
 	call Route131_EventScript_SetLayout
-	goto_if_defeated TRAINER_BLUE, Route131_EventScript_HideBlue
+	call_if_defeated TRAINER_BLUE, Route131_EventScript_HideBlue
 	end
 
 Route131_EventScript_HideBlue::

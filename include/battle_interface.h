@@ -91,6 +91,13 @@ enum
 #define TAG_HEALTHBOX_OPPONENT1_PAL     0xD77F
 #define TAG_HEALTHBOX_OPPONENT2_PAL     0xD780
 
+#define TAG_RAID_BARRIER_TILE           0xD794
+#define TAG_MEGA_BARRIER_PAL            0xD795
+#define TAG_TERA_BARRIER_PAL            0xD796
+#define TAG_RAID_TIMER_LEFT_TILE        0xD797
+#define TAG_RAID_TIMER_RIGHT_TILE       0xD798
+#define TAG_RAID_TIMER_PAL              0xD799
+
 enum
 {
     HEALTHBOX_ALL,
@@ -122,6 +129,8 @@ void SwapHpBarsWithHpText(void);
 u8 CreatePartyStatusSummarySprites(u8 battler, struct HpAndStatus *partyInfo, bool8 skipPlayer, bool8 isBattleStart);
 void Task_HidePartyStatusSummary(u8 taskId);
 void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elementId);
+void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon);
+void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus);
 s32 MoveBattleBar(u8 battler, u8 healthboxSpriteId, u8 whichBar, u8 unused);
 u8 GetScaledHPFraction(s16 hp, s16 maxhp, u8 scale);
 u8 GetHPBarLevel(s16 hp, s16 maxhp);
@@ -136,6 +145,9 @@ void ArrowsChangeColorLastBallCycle(bool32 showArrows);
 void UpdateAbilityPopup(u8 battlerId);
 void TryLoadTypeIcons(u8 activeBattler);
 void TryLoadMoveInfoWindow(u32 battler);
+void ChangeBattlerSpritesInvisibilities(bool8 invisible);
+void DisplayInBattleTeamPreview(void);
+void HideInBattleTeamPreview(void);
 void CategoryIcons_LoadSpritesGfx(void);
 
 #endif // GUARD_BATTLE_INTERFACE_H

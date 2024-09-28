@@ -85,7 +85,8 @@ struct BerryTree
     u8 watered:4; // Used to keep track of bonuses in case of gradient watering
     u16 moistureLevel:7;
     u16 moistureClock:7;
-    u16 padding:2;
+    u16 EncounterSproutStage:1;
+    u16 EncounterFlowerStage:1;
 };
 
 #endif // GUARD_GLOBAL_BERRY_H

@@ -5247,7 +5247,7 @@ const struct Item gItemsInfo[] =
             "A red, glowing orb\n"
             "said to contain an\n"
             "ancient power."),
-        .pocket = POCKET_ITEMS,
+        .pocket = POCKET_MEGA_STONES,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .iconPic = gItemIcon_RedOrb,
@@ -5263,7 +5263,7 @@ const struct Item gItemsInfo[] =
             "A blue, glowing orb\n"
             "said to contain an\n"
             "ancient power."),
-        .pocket = POCKET_ITEMS,
+        .pocket = POCKET_MEGA_STONES,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .iconPic = gItemIcon_BlueOrb,
@@ -7158,7 +7158,7 @@ const struct Item gItemsInfo[] =
     {
         .name = _("Adamant Orb"),
         .price = (I_PRICE >= GEN_7) ? 0 : 10000,
-        .holdEffect = HOLD_EFFECT_ADAMANT_ORB,
+        .holdEffect = HOLD_EFFECT_PRIMAL_ORB,//HOLD_EFFECT_ADAMANT_ORB,
         .holdEffectParam = 20,
         .description = COMPOUND_STRING(
             "Boosts the power of\n"
@@ -7176,7 +7176,7 @@ const struct Item gItemsInfo[] =
     {
         .name = _("Lustrous Orb"),
         .price = (I_PRICE >= GEN_7) ? 0 : 10000,
-        .holdEffect = HOLD_EFFECT_LUSTROUS_ORB,
+        .holdEffect = HOLD_EFFECT_PRIMAL_ORB,//HOLD_EFFECT_LUSTROUS_ORB,
         .holdEffectParam = 20,
         .description = COMPOUND_STRING(
             "Boosts the power of\n"
@@ -12256,6 +12256,7 @@ const struct Item gItemsInfo[] =
     {
         .name = _("Dynamax Band"),
         .price = 0,
+        .importance = 1,
         .description = COMPOUND_STRING(
             "A band carrying a\n"
             "Wishing Star that\n"

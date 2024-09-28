@@ -81,8 +81,7 @@ EventScript_BufferZCrystalsPocket::
 	return
 
 EventScript_ObtainedItem::
-	compare VAR_0x8001, TRUE
-	goto_if_eq EventScript_ObtainedItemMessage
+	goto_if_eq VAR_0x8001, TRUE, EventScript_ObtainedItemMessage
 	buffernumberstring 0, VAR_0x8001
 	message gText_ObtainedTheItems
 	goto EventScript_ContinueObtainedItem
@@ -187,8 +186,7 @@ EventScript_FoundTMHMMessage::
 	return
 
 EventScript_FoundItem::
-	compare VAR_0x8001, TRUE
-	goto_if_eq EventScript_FoundItemMessage
+	goto_if_eq VAR_0x8001, TRUE, EventScript_FoundItemMessage
 	buffernumberstring 0, VAR_0x8001
 	message gText_PlayerFoundItems
 	return

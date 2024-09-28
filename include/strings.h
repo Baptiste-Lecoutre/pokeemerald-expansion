@@ -172,6 +172,7 @@ extern const u8 gText_EmptyString2[];
 extern const u8 gText_Confirm3[];
 extern const u8 gText_Cancel4[];
 extern const u8 gText_IsThisTheCorrectTime[];
+extern const u8 gText_TimeCanBeChangedAgain[];
 extern const u8 gText_PkmnFainted_FldPsn[];
 extern const u8 gText_Coins[];
 extern const u8 gText_Silver[];
@@ -189,6 +190,7 @@ extern const u8 gMenuText_CheckTag[];
 extern const u8 gMenuText_Confirm[];
 extern const u8 gMenuText_Show[];
 extern const u8 gMenuText_Give2[];
+extern const u8 gText_FieldMoves[];
 
 extern const u8 gText_EggNickname[];
 extern const u8 gText_Pokemon[];
@@ -298,6 +300,7 @@ extern const u8 gText_FishReeling[];
 extern const u8 gText_FastEggHatch[];
 extern const u8 gText_FastEvoScene[];
 extern const u8 gText_PokemonAnim[];
+extern const u8 gText_FollowerPokemon[];
 extern const u8 gText_ExpTeamMod[];
 extern const u8 gText_ExpMultiplier[];
 extern const u8 gText_PreventEvolution[];
@@ -361,6 +364,7 @@ extern const u8 gText_Var1IsSelected[];
 extern const u8 gText_TossHowManyVar1s[];
 extern const u8 gText_ConfirmTossItems[];
 extern const u8 gText_ThrewAwayVar2Var1s[];
+extern const u8 gText_PressAnyDpadKey[];
 extern const u8 gText_CantWriteMail[];
 extern const u8 gText_NoPokemon[];
 extern const u8 gText_Var1CantBeHeld[];
@@ -461,6 +465,7 @@ extern const u8 gText_Plus[];
 extern const u8 gText_CryOf[];
 extern const u8 gText_SizeComparedTo[];
 extern const u8 gText_PokedexRegistration[];
+extern const u8 gText_Pokedex[];
 extern const u8 gText_NumberClear01[];
 extern const u8 gText_5MarksPokemon[];
 extern const u8 gText_UnkHeight[];
@@ -545,6 +550,7 @@ extern const u8 gText_Philip[];
 extern const u8 gText_Dennis[];
 extern const u8 gText_Roberto[];
 extern const u8 gText_FiveMarks[];
+extern const u8 gText_ThreeMarks[];
 
 extern const u8 gText_TotalRecordWLD[];
 extern const u8 gText_PlayersBattleResults[];
@@ -915,6 +921,8 @@ extern const u8 gText_XNatureFatefulEncounter[];
 extern const u8 gText_XNatureProbablyMetAt[];
 extern const u8 gText_XNatureObtainedInTrade[];
 extern const u8 gText_EmptyString5[];
+extern const u8 gText_PkmnIV[];
+extern const u8 gText_PkmnEV[];
 extern const u8 gText_EggWillTakeALongTime[];
 extern const u8 gText_EggAboutToHatch[];
 extern const u8 gText_EggWillHatchSoon[];
@@ -3131,11 +3139,15 @@ extern const u8 gText_LucasCostume[];
 extern const u8 gText_DawnCostume[];
 extern const u8 gText_LucasPlatinumCostume[];
 extern const u8 gText_DawnPlatinumCostume[];
+extern const u8 gText_ChaseCostume[];
+extern const u8 gText_ElaineCostume[];
 
 extern const u8 gText_FirstDrawer[];
 extern const u8 gText_SecondDrawer[];
 extern const u8 gText_ThirdDrawer[];
 extern const u8 gText_FourthDrawer[];
+//extern const u8 gText_FifthDrawer[];
+//extern const u8 gText_SixthDrawer[];
 
 extern const u8 gText_RoamerEntei[];
 extern const u8 gText_RoamerSuicune[];
@@ -3178,10 +3190,72 @@ extern const u8 gText_FrenzyPlant[];
 extern const u8 gText_BlastBurn[];
 extern const u8 gText_HydroCannon[];
 
+extern const u8 gText_TeamPreviewSingleDoubleText[];
+extern const u8 gText_TeamPreviewMultiText[];
+extern const u8 gText_TeamPreviewMultiLinkText[];
+extern const u8 gText_TeamPreviewSingleDoubleLinkText[];
+
+extern const u8 gText_Ghost[];
+
 // berries
 extern const u8 gText_Fertilize[];
 extern const u8 gText_PlantBerry[];
 
+extern const u8 gText_Effect[];
+extern const u8 gText_Chance[];
+extern const u8 gText_Contact[];
+extern const u8 gText_Target[];
+extern const u8 gText_Priority[];
+extern const u8 gText_Critical[];
+extern const u8 gText_EVs[];
+extern const u8 gText_Stats[];
+extern const u8 gText_BaseStats[];
+extern const u8 gText_Effect_None[];
+
+extern const u8 gText_Effect_FoeAndAlly[];
+extern const u8 gText_Effect_BothFoes[];
+extern const u8 gText_Effect_OneFoe[];
+extern const u8 gText_Effect_Self[];
+extern const u8 gText_Effect_Field[];
+
+extern const u8 gText_Effect_ContactYes[];
+extern const u8 gText_Effect_ContactNo[];
+
+//Summary Screen Move Effects
+//Multi Hits
+extern const u8 gText_Effect_Multi_Hit[];
+extern const u8 gText_Effect_Three_Hits[];
+extern const u8 gText_Effect_Two_Hits[];
+//Status
+extern const u8 gText_Effect_Burn_Hit[];
+extern const u8 gText_Effect_Poison_Hit[];
+extern const u8 gText_Effect_Paralyze_Hit[];
+extern const u8 gText_Effect_Freeze_Hit[];
+extern const u8 gText_Effect_Confuse_Hit[];
+//Stat Up/Down
+extern const u8 gText_Effect_All_Stats_Up[];
+extern const u8 gText_Effect_Attack_Up[];
+extern const u8 gText_Effect_Attack_Down[];
+extern const u8 gText_Effect_Defense_Up[];
+extern const u8 gText_Effect_Defense_Down[];
+extern const u8 gText_Effect_Sp_Attack_Up[];
+extern const u8 gText_Effect_Sp_Attack_Down[];
+extern const u8 gText_Effect_Sp_Defense_Up[];
+extern const u8 gText_Effect_Sp_Defense_Down[];
+extern const u8 gText_Effect_Speed_Up[];
+extern const u8 gText_Effect_Speed_Down[];
+extern const u8 gText_Effect_Accuracy_Up[];
+extern const u8 gText_Effect_Accuracy_Down[];
+extern const u8 gText_Effect_Heal_HP[];
+extern const u8 gText_Effect_Heal[];
+extern const u8 gText_Effect_HP_Drain[];
+//Misc
+extern const u8 gText_Effect_Hit[];
+extern const u8 gText_Effect_Misc[];
+extern const u8 gText_Effect_Flinch[];
+extern const u8 gText_Effect_Recoil[];
+extern const u8 gText_Effect_Always_Crit[];
+extern const u8 gText_Effect_Protect[];
 // Map name pop-up
 extern const u8 gText_AM[];
 extern const u8 gText_PM[];

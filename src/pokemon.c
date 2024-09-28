@@ -11,6 +11,7 @@
 #include "battle_setup.h"
 #include "battle_tower.h"
 #include "battle_z_move.h"
+#include "bw_summary_screen.h"
 #include "data.h"
 #include "daycare.h"
 #include "dexnav.h"
@@ -955,6 +956,78 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_BattleSpriteStartSlideLeft,
     },
+    [TRAINER_BACK_PIC_CHASE] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Chase,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_ELAINE] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Elaine,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_BRENDAN_RED] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Brendan,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_BRENDAN_BLUE] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Brendan,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_BRENDAN_YELLOW] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_Brendan,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_MAY_RED] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_May,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_MAY_BLUE] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_May,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
+    [TRAINER_BACK_PIC_MAY_YELLOW] = {
+        .tileTag = TAG_NONE,
+        .paletteTag = 0,
+        .oam = &gOamData_BattleSpritePlayerSide,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_May,
+        .affineAnims = gAffineAnims_BattleSpritePlayerSide,
+        .callback = SpriteCB_BattleSpriteStartSlideLeft,
+    },
 };
 
 #define NUM_SECRET_BASE_CLASSES 5
@@ -1347,7 +1420,18 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         }
     }
 
-    if (gSpeciesInfo[species].abilities[1])
+    if (P_FLAG_FORCE_HIDDEN_ABILITY != 0 && FlagGet(P_FLAG_FORCE_HIDDEN_ABILITY))
+    {
+        if (gSpeciesInfo[species].abilities[2])
+            value = 2;
+        else if (gSpeciesInfo[species].abilities[1])
+            value = personality & 1;
+        else
+            value = 0;
+        FlagClear(P_FLAG_FORCE_HIDDEN_ABILITY);
+        SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
+    }
+    else if (gSpeciesInfo[species].abilities[1])
     {
         value = personality & 1;
         SetBoxMonData(boxMon, MON_DATA_ABILITY_NUM, &value);
@@ -3484,7 +3568,15 @@ u8 GiveMonToPlayer(struct Pokemon *mon)
     }
 
     if (i >= PARTY_SIZE)
+    {
+        if (gSpecialVar_0x8004 < PARTY_SIZE)
+        {
+            CopyMon(&gEnemyParty[PARTY_SIZE-1], &gPlayerParty[gSpecialVar_0x8004], sizeof(*mon));
+            CopyMon(&gPlayerParty[gSpecialVar_0x8004], mon, sizeof(*mon));
+            CopyMon(mon, &gEnemyParty[PARTY_SIZE-1], sizeof(*mon));
+        }
         return CopyMonToPC(mon);
+    }
 
     CopyMon(&gPlayerParty[i], mon, sizeof(*mon));
     gPlayerPartyCount = i + 1;
@@ -3527,14 +3619,12 @@ u8 CopyMonToPC(struct Pokemon *mon)
 
 u8 CalculatePartyCount(struct Pokemon *party)
 {
-    u32 partyCount = 0;
+    u32 i, partyCount = 0;
 
-    while (partyCount < PARTY_SIZE
-        && GetMonData(&party[partyCount], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
-    {
-        partyCount++;
-    }
-
+    for (i = 0; i < PARTY_SIZE; i++)
+        if (GetMonData(&party[i], MON_DATA_SPECIES, NULL) != SPECIES_NONE)
+            partyCount++;
+    
     return partyCount;
 }
 
@@ -3598,7 +3688,7 @@ u8 GetMonsStateToDoubles_2(void)
     s32 aliveCount = 0;
     s32 i;
 
-    if (OW_DOUBLE_APPROACH_WITH_ONE_MON)
+    if (OW_DOUBLE_APPROACH_WITH_ONE_MON || gSaveBlock2Ptr->follower.battlePartner)
         return PLAYER_HAS_TWO_USABLE_MONS;
 
     for (i = 0; i < PARTY_SIZE; i++)
@@ -4582,14 +4672,18 @@ u8 GetNatureFromPersonality(u32 personality)
     return personality % NUM_NATURES;
 }
 
-static u32 GetGMaxTargetSpecies(u32 species)
+u32 GetGMaxTargetSpecies(u32 species)
 {
     const struct FormChange *formChanges = GetSpeciesFormChanges(species);
     u32 i;
-    for (i = 0; formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
+
+    if (formChanges != NULL)
     {
-        if (formChanges[i].method == FORM_CHANGE_BATTLE_GIGANTAMAX)
-            return formChanges[i].targetSpecies;
+        for (i = 0; formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
+        {
+            if (formChanges[i].method == FORM_CHANGE_BATTLE_GIGANTAMAX)
+                return formChanges[i].targetSpecies;
+        }
     }
     return SPECIES_NONE;
 }
@@ -6020,8 +6114,8 @@ u16 GetBattleBGM(void)
         case TRAINER_CLASS_RIVAL:
             if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
                 return MUS_VS_RIVAL;
-            if (!StringCompare(GetTrainerNameFromId(gTrainerBattleOpponent_A), gText_BattleWallyName))
-                return MUS_VS_TRAINER;
+            /*if (!StringCompare(GetTrainerNameFromId(gTrainerBattleOpponent_A), gText_BattleWallyName))
+                return MUS_VS_TRAINER;*/ //Wally uses the rival theme
             return MUS_VS_RIVAL;
         case TRAINER_CLASS_ELITE_FOUR:
             return MUS_VS_ELITE_FOUR;
@@ -6037,6 +6131,8 @@ u16 GetBattleBGM(void)
             return MUS_VS_TRAINER;
         }
     }
+    else if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+        return MUS_VS_FRONTIER_BRAIN;
     else
         return MUS_VS_WILD;
 }
@@ -6353,12 +6449,18 @@ static void Task_AnimateAfterDelay(u8 taskId)
     }
 }
 
+#define tIsShadow data[4]
+
 static void Task_PokemonSummaryAnimateAfterDelay(u8 taskId)
 {
     if (--gTasks[taskId].sAnimDelay == 0)
     {
         StartMonSummaryAnimation(READ_PTR_FROM_TASK(taskId, 0), gTasks[taskId].sAnimId);
-        SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
+        if (gTasks[taskId].tIsShadow)
+            SummaryScreen_SetShadowAnimDelayTaskId_BW(TASK_NONE); // needed to track anim delay task for mon shadow in BW summary screen
+        else
+            SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
+
         DestroyTask(taskId);
     }
 }
@@ -6418,7 +6520,7 @@ void DoMonFrontSpriteAnimation(struct Sprite *sprite, u16 species, bool8 noCry, 
     }
 }
 
-void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneFrame)
+void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneFrame, bool32 isShadow)
 {
     if (!gSaveBlock2Ptr->optionsPokemonAnim)
         sprite->callback = SpriteCallbackDummy;
@@ -6433,7 +6535,13 @@ void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneF
             STORE_PTR_IN_TASK(sprite, taskId, 0);
             gTasks[taskId].sAnimId = gSpeciesInfo[species].frontAnimId;
             gTasks[taskId].sAnimDelay = gSpeciesInfo[species].frontAnimDelay;
-            SummaryScreen_SetAnimDelayTaskId(taskId);
+            gTasks[taskId].tIsShadow = isShadow;  // needed to track anim delay task for mon shadow in BW summary screen
+
+            if (isShadow)
+                SummaryScreen_SetShadowAnimDelayTaskId_BW(taskId);
+            else
+                SummaryScreen_SetAnimDelayTaskId(taskId);
+
             SetSpriteCB_MonAnimDummy(sprite);
         }
         else
@@ -6443,6 +6551,8 @@ void PokemonSummaryDoMonAnimation(struct Sprite *sprite, u16 species, bool8 oneF
         }
     }
 }
+
+#define tIsShadow data[4]
 
 void StopPokemonAnimationDelayTask(void)
 {
@@ -7249,43 +7359,78 @@ u16 GetTrainerFrontSpriteBasedOnPlayerCostumeAndGender(u8 costumeId, u8 playerGe
 
     switch (costumeId)
     {
-        default:
-        case BRENDAN_COSTUME:
-            trainerPic = TRAINER_PIC_BRENDAN;
+        /*case FRLG_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_RED : TRAINER_PIC_LEAF;
             break;
-        case MAY_COSTUME:
-            trainerPic = TRAINER_PIC_MAY;
+        default:
+        case RSE_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN : TRAINER_PIC_MAY;
+            break;
+        case HGSS_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_ETHAN : TRAINER_PIC_LYRA;
+            break;
+        case DPEARL_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_LUCAS : TRAINER_PIC_DAWN;
+            break;
+        case PLATINUM_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_LUCAS_PLATINUM : TRAINER_PIC_DAWN_PLATINUM;
+            break;
+        case LGPE_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_CHASE : TRAINER_PIC_ELAINE;
+            break;*/
+        default:
+        case GREEN_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN : TRAINER_PIC_MAY;
             break;
         case RED_COSTUME:
-            trainerPic = TRAINER_PIC_RED;
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN_RED : TRAINER_PIC_MAY_RED;
             break;
-        case LEAF_COSTUME:
-            trainerPic = TRAINER_PIC_LEAF;
+        case BLUE_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN_BLUE : TRAINER_PIC_MAY_BLUE;
             break;
-        case ETHAN_COSTUME:
-            trainerPic = TRAINER_PIC_ETHAN;
-            break;
-        case LYRA_COSTUME:
-            trainerPic = TRAINER_PIC_LYRA;
-            break;
-        case KRIS_COSTUME:
-            trainerPic = TRAINER_PIC_KRIS;
-            break;
-        case LUCAS_COSTUME:
-            trainerPic = TRAINER_PIC_LUCAS;
-            break;
-        case DAWN_COSTUME:
-            trainerPic = TRAINER_PIC_DAWN;
-            break;
-        case LUCAS_PLATINUM_COSTUME:
-            trainerPic = TRAINER_PIC_LUCAS_PLATINUM;
-            break;
-        case DAWN_PLATINUM_COSTUME:
-            trainerPic = TRAINER_PIC_DAWN_PLATINUM;
+        case YELLOW_COSTUME:
+            trainerPic = gSaveBlock2Ptr->playerGender == MALE ? TRAINER_PIC_BRENDAN_YELLOW : TRAINER_PIC_MAY_YELLOW;
             break;
     }
 
     return trainerPic;
+}
+
+bool8 CheckBattleTypeGhost(struct Pokemon *mon, u8 battlerId)
+{
+    u8 buffer[POKEMON_NAME_BUFFER_SIZE];
+
+    if (gBattleTypeFlags & BATTLE_TYPE_GHOST && GetBattlerSide(battlerId) != B_SIDE_PLAYER)
+    {
+        GetMonData(mon, MON_DATA_NICKNAME, buffer);
+        StringGet_Nickname(buffer);
+        if (!StringCompare(buffer, gText_Ghost))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 ShouldUnveilGhost(void)
+{
+    if (CheckBagHasItem(ITEM_DEVON_SCOPE, 1))
+        return TRUE;
+    else if (FollowerHasDevonScope())
+        return TRUE;
+    else
+        return FALSE;
+}
+
+void ShuffleStatArray(u8* statArray)
+{
+    int i;
+
+    // Shuffle the stats array using Fisher-Yates shuffle
+    for (i = NUM_STATS - 1; i > 0; i--)
+    {
+        u8 temp;
+        int j = Random() % (i + 1);
+        SWAP(statArray[i], statArray[j], temp);
+    }
 }
 
 u16 GetCryIdBySpecies(u16 species)
@@ -7468,4 +7613,27 @@ u16 ModifyHeartValueInBattle(u8 battlerId, u16 amount)
     // SetMonData(&gPlayerParty[gBattlerPartyIndexes[battlerId]], MON_DATA_HEART_VALUE, &newVal);
     
     return amount;
+}
+
+bool32 IsMilceryAndCanEvolve(struct Pokemon *mon) {
+    u16 species = GetMonData(mon, MON_DATA_SPECIES, 0);
+    u16 heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, 0);
+    bool32 holdingSweet = FALSE;
+
+    switch(heldItem) {
+        case ITEM_STRAWBERRY_SWEET:
+        case ITEM_LOVE_SWEET: 
+        case ITEM_BERRY_SWEET:
+        case ITEM_CLOVER_SWEET:
+        case ITEM_FLOWER_SWEET:
+        case ITEM_STAR_SWEET:
+        case ITEM_RIBBON_SWEET:
+            holdingSweet = TRUE;
+            break;
+        default:
+            holdingSweet = FALSE;
+            break;
+    }
+
+    return (species == SPECIES_MILCERY && holdingSweet);
 }

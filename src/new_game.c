@@ -96,8 +96,9 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->optionsWindowFrameType = 0;
     gSaveBlock2Ptr->optionsSound = OPTIONS_SOUND_MONO;
     gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SET;
-    gSaveBlock2Ptr->optionsBattleSceneOff = FALSE;
+    gSaveBlock2Ptr->optionsBattleScene = OPTIONS_BATTLE_SCENE_1X;
     gSaveBlock2Ptr->regionMapZoom = FALSE;
+    gSaveBlock2Ptr->startShortcut = 0;
 
     gSaveBlock2Ptr->optionsFastFieldMove = FALSE;
     gSaveBlock2Ptr->optionsLevelCap = 1;
@@ -105,8 +106,9 @@ static void SetDefaultOptions(void)
     gSaveBlock2Ptr->optionsFastEvolution = FALSE;
     gSaveBlock2Ptr->optionsFastEggHatch = FALSE;
     gSaveBlock2Ptr->optionsFishReeling = FALSE;
-    gSaveBlock2Ptr->optionsLowHealthMusic = FALSE;
+    gSaveBlock2Ptr->optionsLowHealthMusic = TRUE;
     gSaveBlock2Ptr->optionsShowTypeEffectiveness = FALSE;
+    gSaveBlock2Ptr->optionsShowFollowerPokemon = TRUE;
     gSaveBlock2Ptr->optionsSurfBikeMusic = 1;
     gSaveBlock2Ptr->optionsPokemonAnim = TRUE;
     gSaveBlock2Ptr->autoRun = TRUE;
@@ -244,7 +246,9 @@ void NewGameInitData(void)
     ResetContestLinkResults();
     gSaveBlock1Ptr->dexNavChain = 0;
     gSaveBlock2Ptr->autoRun = TRUE;
-    gSaveBlock2Ptr->costumeId = 5;
+    
+    memset(&gSaveBlock2Ptr->follower, 0, sizeof(gSaveBlock2Ptr->follower));
+    gSaveBlock2Ptr->costumeId = 0;
     ResetItemFlags();
 }
 

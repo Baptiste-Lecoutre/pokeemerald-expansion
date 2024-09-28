@@ -128,6 +128,9 @@ static void Task_FrontierSquares(u8);
 static void Task_FrontierSquaresScroll(u8);
 static void Task_FrontierSquaresSpiral(u8);
 static void Task_Rocket(u8);
+static void Task_MaxRaid(u8);
+static void Task_TeraRaid(u8);
+static void Task_MegaRaid(u8);
 static void VBlankCB_BattleTransition(void);
 static void VBlankCB_Swirl(void);
 static void HBlankCB_Swirl(void);
@@ -161,6 +164,12 @@ static bool8 Magma_Init(struct Task *);
 static bool8 Magma_SetGfx(struct Task *);
 static bool8 Rocket_Init(struct Task *);
 static bool8 Rocket_SetGfx(struct Task *);
+static bool8 MaxRaid_Init(struct Task *);
+static bool8 MaxRaid_SetGfx(struct Task *);
+static bool8 TeraRaid_Init(struct Task *);
+static bool8 TeraRaid_SetGfx(struct Task *);
+static bool8 MegaRaid_Init(struct Task *);
+static bool8 MegaRaid_SetGfx(struct Task *);
 static bool8 FramesCountdown(struct Task *);
 static bool8 Regi_Init(struct Task *);
 static bool8 Regice_SetGfx(struct Task *);
@@ -303,12 +312,21 @@ static const u8 sUnusedLass_Gfx[] = INCBIN_U8("graphics/battle_transitions/unuse
 static const u32 sShrinkingBoxTileset[] = INCBIN_U32("graphics/battle_transitions/shrinking_box.4bpp");
 static const u16 sEvilTeam_Palette[] = INCBIN_U16("graphics/battle_transitions/evil_team.gbapal");
 static const u16 sRocketTeam_Palette[] = INCBIN_U16("graphics/battle_transitions/rocket_team.gbapal");
+static const u16 sMaxRaid_Palette[] = INCBIN_U16("graphics/battle_transitions/max_raid_battle.gbapal");
+static const u16 sTeraRaid_Palette[] = INCBIN_U16("graphics/battle_transitions/tera_raid_battle.gbapal");
+static const u16 sMegaRaid_Palette[] = INCBIN_U16("graphics/battle_transitions/mega_raid_battle.gbapal");
 static const u32 sTeamAqua_Tileset[] = INCBIN_U32("graphics/battle_transitions/team_aqua.4bpp.lz");
 static const u32 sTeamAqua_Tilemap[] = INCBIN_U32("graphics/battle_transitions/team_aqua.bin.lz");
 static const u32 sTeamMagma_Tileset[] = INCBIN_U32("graphics/battle_transitions/team_magma.4bpp.lz");
 static const u32 sTeamMagma_Tilemap[] = INCBIN_U32("graphics/battle_transitions/team_magma.bin.lz");
 static const u32 sTeamRocket_Tileset[] = INCBIN_U32("graphics/battle_transitions/team_rocket.4bpp.lz");
 static const u32 sTeamRocket_Tilemap[] = INCBIN_U32("graphics/battle_transitions/team_rocket.bin.lz");
+static const u32 sMaxRaid_Tileset[] = INCBIN_U32("graphics/battle_transitions/max_raid_battle.4bpp.lz");
+static const u32 sMaxRaid_Tilemap[] = INCBIN_U32("graphics/battle_transitions/max_raid_battle.bin.lz");
+static const u32 sTeraRaid_Tileset[] = INCBIN_U32("graphics/battle_transitions/tera_raid_battle.4bpp.lz");
+static const u32 sTeraRaid_Tilemap[] = INCBIN_U32("graphics/battle_transitions/tera_raid_battle.bin.lz");
+static const u32 sMegaRaid_Tileset[] = INCBIN_U32("graphics/battle_transitions/mega_raid_battle.4bpp.lz");
+static const u32 sMegaRaid_Tilemap[] = INCBIN_U32("graphics/battle_transitions/mega_raid_battle.bin.lz");
 static const u32 sRegis_Tileset[] = INCBIN_U32("graphics/battle_transitions/regis.4bpp");
 static const u16 sRegice_Palette[] = INCBIN_U16("graphics/battle_transitions/regice.gbapal");
 static const u16 sRegisteel_Palette[] = INCBIN_U16("graphics/battle_transitions/registeel.gbapal");
@@ -387,6 +405,9 @@ static const TaskFunc sTasks_Main[B_TRANSITION_COUNT] =
     [B_TRANSITION_FRONTIER_CIRCLES_ASYMMETRIC_SPIRAL_IN_SEQ] = Task_FrontierCirclesAsymmetricSpiralInSeq,
     [B_TRANSITION_FRONTIER_CIRCLES_SYMMETRIC_SPIRAL_IN_SEQ] = Task_FrontierCirclesSymmetricSpiralInSeq,
     [B_TRANSITION_ROCKET] = Task_Rocket,
+    [B_TRANSITION_MAX_RAID] = Task_MaxRaid,
+    [B_TRANSITION_TERA_RAID] = Task_TeraRaid,
+    [B_TRANSITION_MEGA_RAID] = Task_MegaRaid,
 };
 
 static const TransitionStateFunc sTaskHandlers[] =
@@ -442,6 +463,39 @@ static const TransitionStateFunc sRocket_Funcs[] =
 {
     Rocket_Init,
     Rocket_SetGfx,
+    PatternWeave_Blend1,
+    PatternWeave_Blend2,
+    PatternWeave_FinishAppear,
+    FramesCountdown,
+    PatternWeave_CircularMask
+};
+
+static const TransitionStateFunc sMaxRaid_Funcs[] =
+{
+    MaxRaid_Init,
+    MaxRaid_SetGfx,
+    PatternWeave_Blend1,
+    PatternWeave_Blend2,
+    PatternWeave_FinishAppear,
+    FramesCountdown,
+    PatternWeave_CircularMask
+};
+
+static const TransitionStateFunc sTeraRaid_Funcs[] =
+{
+    TeraRaid_Init,
+    TeraRaid_SetGfx,
+    PatternWeave_Blend1,
+    PatternWeave_Blend2,
+    PatternWeave_FinishAppear,
+    FramesCountdown,
+    PatternWeave_CircularMask
+};
+
+static const TransitionStateFunc sMegaRaid_Funcs[] =
+{
+    MegaRaid_Init,
+    MegaRaid_SetGfx,
     PatternWeave_Blend1,
     PatternWeave_Blend2,
     PatternWeave_FinishAppear,
@@ -1341,6 +1395,21 @@ static void Task_Rocket(u8 taskId)
     while (sRocket_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
 }
 
+static void Task_MaxRaid(u8 taskId)
+{
+    while (sMaxRaid_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
+}
+
+static void Task_TeraRaid(u8 taskId)
+{
+    while (sTeraRaid_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
+}
+
+static void Task_MegaRaid(u8 taskId)
+{
+    while (sMegaRaid_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
+}
+
 static void Task_Regice(u8 taskId)
 {
     while (sRegice_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
@@ -1431,6 +1500,51 @@ static bool8 Rocket_Init(struct Task *task)
     return FALSE;
 }
 
+static bool8 MaxRaid_Init(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    task->tEndDelay = 60;
+    InitPatternWeaveTransition(task);
+    GetBg0TilesDst(&tilemap, &tileset);
+    CpuFill16(0, tilemap, BG_SCREEN_SIZE);
+    LZ77UnCompVram(sMaxRaid_Tileset, tileset);
+    LoadPalette(sMaxRaid_Palette, BG_PLTT_ID(15), sizeof(sMaxRaid_Palette));
+
+    task->tState++;
+    return FALSE;
+}
+
+static bool8 TeraRaid_Init(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    task->tEndDelay = 60;
+    InitPatternWeaveTransition(task);
+    GetBg0TilesDst(&tilemap, &tileset);
+    CpuFill16(0, tilemap, BG_SCREEN_SIZE);
+    LZ77UnCompVram(sTeraRaid_Tileset, tileset);
+    LoadPalette(sTeraRaid_Palette, BG_PLTT_ID(15), sizeof(sTeraRaid_Palette));
+
+    task->tState++;
+    return FALSE;
+}
+
+static bool8 MegaRaid_Init(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    task->tEndDelay = 60;
+    InitPatternWeaveTransition(task);
+    GetBg0TilesDst(&tilemap, &tileset);
+    CpuFill16(0, tilemap, BG_SCREEN_SIZE);
+    LZ77UnCompVram(sMegaRaid_Tileset, tileset);
+    LoadPalette(sMegaRaid_Palette, BG_PLTT_ID(15), sizeof(sMegaRaid_Palette));
+
+    task->tState++;
+    return FALSE;
+}
+
 static bool8 Regi_Init(struct Task *task)
 {
     u16 *tilemap, *tileset;
@@ -1509,6 +1623,42 @@ static bool8 Rocket_SetGfx(struct Task *task)
 
     GetBg0TilesDst(&tilemap, &tileset);
     LZ77UnCompVram(sTeamRocket_Tilemap, tilemap);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+
+    task->tState++;
+    return FALSE;
+}
+
+static bool8 MaxRaid_SetGfx(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    GetBg0TilesDst(&tilemap, &tileset);
+    LZ77UnCompVram(sMaxRaid_Tilemap, tilemap);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+
+    task->tState++;
+    return FALSE;
+}
+
+static bool8 TeraRaid_SetGfx(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    GetBg0TilesDst(&tilemap, &tileset);
+    LZ77UnCompVram(sTeraRaid_Tilemap, tilemap);
+    SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
+
+    task->tState++;
+    return FALSE;
+}
+
+static bool8 MegaRaid_SetGfx(struct Task *task)
+{
+    u16 *tilemap, *tileset;
+
+    GetBg0TilesDst(&tilemap, &tileset);
+    LZ77UnCompVram(sMegaRaid_Tilemap, tilemap);
     SetSinWave((s16*)gScanlineEffectRegBuffers[0], 0, task->tSinIndex, 132, task->tAmplitude, DISPLAY_HEIGHT);
 
     task->tState++;

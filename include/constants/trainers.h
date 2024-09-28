@@ -128,7 +128,15 @@
 #define TRAINER_PIC_LUCAS_PLATINUM        110
 #define TRAINER_PIC_DAWN_PLATINUM         111
 #define TRAINER_PIC_MAGMA_ADMIN_F         112
-#define TRAINER_PIC_COUNT                 113
+#define TRAINER_PIC_CHASE                 113
+#define TRAINER_PIC_ELAINE                114
+#define TRAINER_PIC_BRENDAN_RED           115
+#define TRAINER_PIC_BRENDAN_BLUE          116
+#define TRAINER_PIC_BRENDAN_YELLOW        117
+#define TRAINER_PIC_MAY_RED               118
+#define TRAINER_PIC_MAY_BLUE              119
+#define TRAINER_PIC_MAY_YELLOW            120
+#define TRAINER_PIC_COUNT                 121
 
 // The player back pics are assumed to alternate according to the gender values (MALE/FEMALE)
 #define TRAINER_BACK_PIC_BRENDAN                0
@@ -146,6 +154,14 @@
 #define TRAINER_BACK_PIC_DAWN                   12
 #define TRAINER_BACK_PIC_LUCAS_PLATINUM         13
 #define TRAINER_BACK_PIC_DAWN_PLATINUM          14
+#define TRAINER_BACK_PIC_CHASE                  15
+#define TRAINER_BACK_PIC_ELAINE                 16
+#define TRAINER_BACK_PIC_BRENDAN_RED            17
+#define TRAINER_BACK_PIC_BRENDAN_BLUE           18
+#define TRAINER_BACK_PIC_BRENDAN_YELLOW         19
+#define TRAINER_BACK_PIC_MAY_RED                20
+#define TRAINER_BACK_PIC_MAY_BLUE               21
+#define TRAINER_BACK_PIC_MAY_YELLOW             22
 
 #define FACILITY_CLASS_HIKER                 0x0
 #define FACILITY_CLASS_AQUA_GRUNT_M          0x1
@@ -237,8 +253,10 @@
 #define FACILITY_CLASS_DAWN                  0x57
 #define FACILITY_CLASS_LUCAS_PLATINUM        0x58
 #define FACILITY_CLASS_DAWN_PLATINUM         0x59
+#define FACILITY_CLASS_CHASE                 0x5a
+#define FACILITY_CLASS_ELAINE                0x5b
 
-#define FACILITY_CLASSES_COUNT               0x5a
+#define FACILITY_CLASSES_COUNT               0x5c
 
 #define RS_FACILITY_CLASS_AQUA_LEADER_ARCHIE    0x0
 #define RS_FACILITY_CLASS_AQUA_GRUNT_M          0x1

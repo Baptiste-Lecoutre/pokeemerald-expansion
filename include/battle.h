@@ -4,6 +4,7 @@
 // should they be included here or included individually by every file?
 #include "constants/battle.h"
 #include "constants/form_change_types.h"
+#include "constants/battle_raid.h"
 #include "battle_main.h"
 #include "battle_message.h"
 #include "battle_util.h"
@@ -15,6 +16,7 @@
 #include "pokeball.h"
 #include "battle_debug.h"
 #include "battle_dynamax.h"
+#include "battle_raid.h"
 #include "battle_terastal.h"
 #include "battle_gimmick.h"
 #include "random.h" // for rng_value_t
@@ -594,6 +596,21 @@ struct BattleGimmickData
     bool8 activated[MAX_BATTLERS_COUNT][GIMMICKS_COUNT]; // stores whether a trainer has used gimmick
 };
 
+struct RaidBattleData
+{
+    u8 state;             // stores the progress of the raid, intro and catching included
+    u16 shieldedHP;           // stores either num. of shields (GEN_8) or amount of HP protected (GEN_9)
+    u8 nextShield;        // stores the HP fraction threshold (0 to 100) that the next shield should occur
+    u8 shieldsRemaining;  // stores the remaining num. of shields
+    u8 shield:3;
+    u8 energy:2;            // stores Dynamax Energy position or Tera Orb charge
+    bool8 usedShockwave:1;// stores whether the raid boss has used its shockwave during the turn
+    bool8 movedTwice:1;   // stores whether the raid boss has moves twice during the turn
+    bool8 statIncreased:1;// stores whether the raid boss stats have increased after fainting a mon
+    u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for Gen 8-style shields
+    u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
+};
+
 struct LostItem
 {
     u16 originalItem:15;
@@ -741,6 +758,7 @@ struct BattleStruct
     struct ZMoveData zmove;
     struct DynamaxData dynamax;
     struct BattleGimmickData gimmick;
+    struct RaidBattleData raid;
     const u8 *trainerSlideMsg;
     bool8 trainerSlideLowHpMsgDone;
     enum BattleIntroStates introState:8;
@@ -819,6 +837,9 @@ struct BattleStruct
     u32 stellarBoostFlags[NUM_BATTLE_SIDES]; // stored as a bitfield of flags for all types for each side
     u8 fickleBeamBoosted:1;
     u8 obedienceResult:3;
+    u8 revealedEnemyMons;
+    u32 battleTimer; // frame counter to measure battle time length
+    u8 hasBattleInputStarted:1; // speed up battle
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -1144,9 +1165,8 @@ extern bool8 gLastUsedBallMenuPresent;
 extern u8 gPartyCriticalHits[PARTY_SIZE];
 extern u8 gCategoryIconSpriteId;
 
-extern bool8 gDescriptionSubmenu;
-
-#define NUM_SOFT_CAPS 9
+#define NUM_SOFT_CAPS 10
+extern const u16 gLevelCapAreaFlags[NUM_SOFT_CAPS];
 extern const u16 gLevelCapFlags[NUM_SOFT_CAPS];
 extern const u16 gLevelCaps[NUM_SOFT_CAPS];
 

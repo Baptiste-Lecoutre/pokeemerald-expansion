@@ -2,7 +2,7 @@
   "id": "MAP_MOSSDEEP_CITY_HOUSE3",
   "name": "MossdeepCity_House3",
   "layout": "LAYOUT_HOUSE2",
-  "music": "MUS_RUSTBORO",
+  "music": "MUS_DEWFORD",
   "region_map_section": "MAPSEC_MOSSDEEP_CITY",
   "requires_flash": false,
   "weather": "WEATHER_NONE",
@@ -25,7 +25,20 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "MossdeepCity_House3_EventScript_SuperRodFisherman",
-      "flag": "0"
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_SPECIES(WAILORD)",
+      "x": 4,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "MossdeepCity_House3_EventScript_Wailord",
+      "flag": "FLAG_TEMP_2"
     }
   ],
   "warp_events": [
