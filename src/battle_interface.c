@@ -3799,7 +3799,7 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
 									tileNum = 1;
 								else if (status & STATUS1_BURN)
 									tileNum = 2;
-								else if (status & STATUS1_FREEZE)
+								else if (status & (STATUS1_FREEZE | STATUS1_FROSTBITE))
 									tileNum = 3;
 								else if (status & STATUS1_PARALYSIS)
 									tileNum = 4;
