@@ -3420,6 +3420,7 @@ static const struct SpriteFrameImage sTypeIconPicTable[] =
 	[TYPE_DARK] =		type_icon_frame(gTypeIconsTiles, TYPE_DARK),
     [TYPE_FAIRY] =      type_icon_frame(gTypeIconsTiles, TYPE_FAIRY),
     [TYPE_STELLAR] =    type_icon_frame(gTypeIconsTiles, TYPE_STELLAR),
+    [TYPE_SHADOW] =     type_icon_frame(gTypeIconsTiles, TYPE_SHADOW),
 };
 
 #define ICON_MOVE_X 10

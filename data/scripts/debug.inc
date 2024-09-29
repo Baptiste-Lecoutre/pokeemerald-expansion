@@ -185,7 +185,7 @@ Debug_DoFixedRaid:
 	end
 
 Debug_EventScript_Script_6::
-	setTeraType TYPE_STELLAR, 4
+	setTeraType TYPE_SHADOW, 4
 	release
 	end
 

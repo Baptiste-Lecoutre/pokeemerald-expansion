@@ -142,6 +142,7 @@ static const struct MenuInfoIcon sMenuInfoIcons[] =
     [TYPE_DARK + 1]     = { 32, 12, 0x8C },
     [TYPE_FAIRY + 1]    = { 32, 12, 0x4  },
     [TYPE_STELLAR + 1]  = { 32, 12, 0x8  },
+    [TYPE_SHADOW + 1]   = { 32, 12, 0xC  },
     [MENU_INFO_ICON_TYPE]      = { 42, 12, 0xA8 },
     [MENU_INFO_ICON_POWER]     = { 42, 12, 0xC0 },
     [MENU_INFO_ICON_ACCURACY]  = { 42, 12, 0xC8 },
