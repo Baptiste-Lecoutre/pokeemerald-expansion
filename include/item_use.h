@@ -15,6 +15,7 @@ void ItemUseOutOfBattle_Medicine(u8);
 void ItemUseOutOfBattle_AbilityCapsule(u8);
 void ItemUseOutOfBattle_AbilityPatch(u8);
 void ItemUseOutOfBattle_Mint(u8);
+void ItemUseOutOfBattle_TeraShard(u8);
 void ItemUseOutOfBattle_ResetEVs(u8);
 void ItemUseOutOfBattle_ReduceEV(u8);
 void ItemUseOutOfBattle_SacredAsh(u8);
@@ -65,6 +66,5 @@ void ItemUseOutOfBattle_SootSack(u8);
 u16 GetAshCount(void);
 void ItemUseOutOfBattle_PokeBall(u8);
 void ItemUseOutOfBattle_PokeVial(u8);
-void ItemUseOutOfBattle_Mints(u8 taskId);
 
 #endif // GUARD_ITEM_USE_H

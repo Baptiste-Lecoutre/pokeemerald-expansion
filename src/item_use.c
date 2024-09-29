@@ -823,6 +823,12 @@ void ItemUseOutOfBattle_Mint(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
+void ItemUseOutOfBattle_TeraShard(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_TeraShard;
+    SetUpItemUseCallback(taskId);
+}
+
 void ItemUseOutOfBattle_ResetEVs(u8 taskId)
 {
     gItemUseCB = ItemUseCB_ResetEVs;
@@ -1501,12 +1507,6 @@ static void ItemUseOnFieldCB_PokeVial(u8 taskId)
     HealPlayerPartyPokeVial();
     VarSet(VAR_POKE_VIAL_CHARGES, VarGet(VAR_POKE_VIAL_CHARGES) - 1);
     DisplayItemMessageOnField(taskId, gText_UsedPokeVial, Task_CloseCantUseKeyItemMessage);
-}
-
-void ItemUseOutOfBattle_Mints(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_Mints;
-    SetUpItemUseCallback(taskId);
 }
 
 void ItemUseOutOfBattle_EonFlute(u8 taskId)
