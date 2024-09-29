@@ -5268,6 +5268,8 @@ void Task_Mint(u8 taskId)
 {
     static const u8 askText[] = _("It might affect {STR_VAR_1}'s stats.\nAre you sure you want to use it?");
     static const u8 doneText[] = _("{STR_VAR_1}'s stats may have changed due\nto the effects of the {STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
+    static const u8 sText_AskMint[] = _("Would you like to change {STR_VAR_1}'s\nnature to {STR_VAR_2}?");
+    static const u8 sText_MintDone[] = _("{STR_VAR_1}'s nature became\n{STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
     s16 *data = gTasks[taskId].data;
 
     switch (tState)
@@ -5285,8 +5287,8 @@ void Task_Mint(u8 taskId)
         }
         gPartyMenuUseExitCallback = TRUE;
         GetMonNickname(&gPlayerParty[tMonId], gStringVar1);
-        CopyItemName(gSpecialVar_ItemId, gStringVar2);
-        StringExpandPlaceholders(gStringVar4, askText);
+        StringCopy(gStringVar2, gNaturesInfo[tNewNature].name);
+        StringExpandPlaceholders(gStringVar4, sText_AskMint);
         PlaySE(SE_SELECT);
         DisplayPartyMenuMessage(gStringVar4, 1);
         ScheduleBgCopyTilemapToVram(2);
@@ -5320,7 +5322,7 @@ void Task_Mint(u8 taskId)
         break;
     case 3:
         PlaySE(SE_USE_ITEM);
-        StringExpandPlaceholders(gStringVar4, doneText);
+        StringExpandPlaceholders(gStringVar4, sText_MintDone);
         DisplayPartyMenuMessage(gStringVar4, 1);
         ScheduleBgCopyTilemapToVram(2);
         tState++;
@@ -5354,6 +5356,101 @@ void ItemUseCB_Mint(u8 taskId, TaskFunc task)
 #undef tMonId
 #undef tOldNature
 #undef tNewNature
+#undef tOldFunc
+
+#define tState       data[0]
+#define tMonId       data[1]
+#define tOldTeraType data[2]
+#define tNewTeraType data[3]
+#define tOldFunc     4
+
+void Task_TeraShard(u8 taskId)
+{
+    static const u8 askTeraText[] = _("Change {STR_VAR_1}'s Tera type using\nthe {STR_VAR_2}?");
+    s16 *data = gTasks[taskId].data;
+
+    switch (tState)
+    {
+    case 0:
+        // Can't use.
+        if (tOldTeraType == tNewTeraType || gSpeciesInfo[GetMonData(&gPlayerParty[tMonId], MON_DATA_SPECIES)].forceTeraType)
+        {
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gText_WontHaveEffect, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+            return;
+        }
+        gPartyMenuUseExitCallback = TRUE;
+        GetMonNickname(&gPlayerParty[tMonId], gStringVar1);
+        CopyItemName(gSpecialVar_ItemId, gStringVar2);
+        StringExpandPlaceholders(gStringVar4, askTeraText);
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gStringVar4, 1);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 1:
+        if (!IsPartyMenuTextPrinterActive())
+        {
+            PartyMenuDisplayYesNoMenu();
+            tState++;
+        }
+        break;
+    case 2:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+        case 0:
+            tState++;
+            break;
+        case 1:
+        case MENU_B_PRESSED:
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            ScheduleBgCopyTilemapToVram(2);
+            // Don't exit party selections screen, return to choosing a mon.
+            ClearStdWindowAndFrameToTransparent(6, 0);
+            ClearWindowTilemap(6);
+            DisplayPartyMenuStdMessage(5);
+            gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
+            return;
+        }
+        break;
+    case 3:
+        PlaySE(SE_USE_ITEM);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 4:
+        if (!IsPartyMenuTextPrinterActive())
+            tState++;
+        break;
+    case 5:
+        SetMonData(&gPlayerParty[tMonId], MON_DATA_TERA_TYPE, &tNewTeraType);
+        CalculateMonStats(&gPlayerParty[tMonId]);
+        RemoveBagItem(gSpecialVar_ItemId, 1);
+        gTasks[taskId].func = Task_ClosePartyMenu;
+        break;
+    }
+}
+
+void ItemUseCB_TeraShard(u8 taskId, TaskFunc task)
+{
+    s16 *data = gTasks[taskId].data;
+
+    tState = 0;
+    tMonId = gPartyMenu.slotId;
+    tOldTeraType = GetMonData(&gPlayerParty[tMonId], MON_DATA_TERA_TYPE);
+    tNewTeraType = ItemId_GetSecondaryId(gSpecialVar_ItemId);
+    SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
+    gTasks[taskId].func = Task_TeraShard;
+}
+
+#undef tState
+#undef tMonId
+#undef tOldTeraType
+#undef tNewTeraType
 #undef tOldFunc
 
 static void Task_DisplayHPRestoredMessage(u8 taskId)
@@ -8417,104 +8514,6 @@ void CanRegionFormChange(void)
     u16 species = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES);
 
     gSpecialVar_Result = GetNextRegionalForm(species);
-}
-
-// mints
-#define tState          data[0]
-#define tSpecies        data[1]
-#define tCurrNature     data[2]
-#define tMonId          data[3]
-#define tOldFunc        4
-#define tNewNature      data[6]
-
-static const u8 sText_AskMint[] = _("Would you like to change {STR_VAR_1}'s\nnature to {STR_VAR_2}?");
-static const u8 sText_MintDone[] = _("{STR_VAR_1}'s nature became\n{STR_VAR_2}!{PAUSE_UNTIL_PRESS}");
-static void Task_Mints(u8 taskId)
-{
-    s16 *data = gTasks[taskId].data;
-
-    switch (tState)
-    {
-    case 0:
-        // Can't use.
-        if (tCurrNature == tNewNature)
-        {
-            gPartyMenuUseExitCallback = FALSE;
-            PlaySE(SE_SELECT);
-            DisplayPartyMenuMessage(gText_WontHaveEffect, 1);
-            ScheduleBgCopyTilemapToVram(2);
-            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
-            return;
-        }
-
-        gPartyMenuUseExitCallback = TRUE;
-        GetMonNickname(&gPlayerParty[tMonId], gStringVar1);
-        StringCopy(gStringVar2, gNaturesInfo[tNewNature].name);
-        StringExpandPlaceholders(gStringVar4, sText_AskMint);
-        PlaySE(SE_SELECT);
-        DisplayPartyMenuMessage(gStringVar4, 1);
-        ScheduleBgCopyTilemapToVram(2);
-        tState++;
-        break;
-    case 1:
-        if (!IsPartyMenuTextPrinterActive())
-        {
-            PartyMenuDisplayYesNoMenu();
-            tState++;
-        }
-        break;
-    case 2:
-        switch (Menu_ProcessInputNoWrapClearOnChoose())
-        {
-        case 0:
-            tState++;
-            break;
-        case 1:
-        case MENU_B_PRESSED:
-            gPartyMenuUseExitCallback = FALSE;
-            PlaySE(SE_SELECT);
-            ScheduleBgCopyTilemapToVram(2);
-
-            // Don't exit party selections screen, return to choosing a mon.
-            ClearStdWindowAndFrameToTransparent(6, 0);
-            ClearWindowTilemap(6);
-            DisplayPartyMenuStdMessage(PARTY_MSG_USE_ON_WHICH_MON);
-            gTasks[taskId].func = (TaskFunc)GetWordTaskArg(taskId, tOldFunc);
-            return;
-        }
-        break;
-    case 3:
-        PlaySE(SE_USE_ITEM);
-        StringExpandPlaceholders(gStringVar4, sText_MintDone);
-        DisplayPartyMenuMessage(gStringVar4, 1);
-        ScheduleBgCopyTilemapToVram(2);
-        tState++;
-        break;
-    case 4:
-        if (!IsPartyMenuTextPrinterActive())
-            tState++;
-        break;
-    case 5:
-        //SetMonData(&gPlayerParty[tMonId], MON_DATA_NATURE, &tNewNature); // BoxMonRefactor removed this field and added new functions for mints
-        CalculateMonStats(&gPlayerParty[tMonId]);
-
-        RemoveBagItem(gSpecialVar_ItemId, 1);
-        gTasks[taskId].func = Task_ClosePartyMenu;
-        break;
-    }
-}
-
-void ItemUseCB_Mints(u8 taskId, TaskFunc task)
-{
-    s16 *data = gTasks[taskId].data;
-
-    tState = 0;
-    tMonId = gPartyMenu.slotId;
-    tSpecies = GetMonData(&gPlayerParty[tMonId], MON_DATA_SPECIES);
-    tCurrNature = GetNature(&gPlayerParty[tMonId]);
-    tNewNature = ItemId_GetSecondaryId(gSpecialVar_ItemId);
-    SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
-    gTasks[taskId].func = Task_Mints;
 }
 
 static void FieldCallback_RockClimb(void)

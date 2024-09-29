@@ -71,6 +71,7 @@ void ItemUseCB_Medicine(u8 taskId, TaskFunc task);
 void ItemUseCB_AbilityCapsule(u8 taskId, TaskFunc task);
 void ItemUseCB_AbilityPatch(u8 taskId, TaskFunc task);
 void ItemUseCB_Mint(u8 taskId, TaskFunc task);
+void ItemUseCB_TeraShard(u8 taskId, TaskFunc task);
 void ItemUseCB_ResetEVs(u8 taskId, TaskFunc task);
 void ItemUseCB_ReduceEV(u8 taskId, TaskFunc task);
 void ItemUseCB_PPRecovery(u8 taskId, TaskFunc task);
@@ -123,6 +124,5 @@ void TryTradeEvolution(void);
 void ChooseMonForBlender(void);
 
 void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
-void ItemUseCB_Mints(u8 taskId, TaskFunc task);
 
 #endif // GUARD_PARTY_MENU_H
