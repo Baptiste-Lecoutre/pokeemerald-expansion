@@ -248,7 +248,6 @@ void NewGameInitData(void)
     gSaveBlock2Ptr->autoRun = TRUE;
     
     memset(&gSaveBlock2Ptr->follower, 0, sizeof(gSaveBlock2Ptr->follower));
-    gSaveBlock2Ptr->costumeId = 0;
     ResetItemFlags();
 }
 
