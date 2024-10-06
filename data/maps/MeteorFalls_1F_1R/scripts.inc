@@ -17,10 +17,10 @@ MeteorFalls_1F_1R_OnLoad:
 	end
 
 MeteorFalls_1F_1R_CloseRegiEntrance::
-	setmetatile 20, 13, 0x244, TRUE
-	setmetatile 19, 14, 0x22E, TRUE
-	setmetatile 20, 14, 0x244, TRUE
-	setmetatile 21, 14, 0x244, TRUE
+	setmetatile 20, 13, 0x844, TRUE
+	setmetatile 19, 14, 0x82E, TRUE
+	setmetatile 20, 14, 0x844, TRUE
+	setmetatile 21, 14, 0x844, TRUE
 	return
 
 MeteorFalls_1F_1R_EventScript_OpenStevensCave::

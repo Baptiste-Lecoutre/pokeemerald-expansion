@@ -214,7 +214,7 @@
     {
       "id": "LAYOUT_ROUTE106",
       "name": "Route106_Layout",
-      "width": 80,
+      "width": 100,
       "height": 20,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Dewford",
@@ -244,7 +244,7 @@
     {
       "id": "LAYOUT_ROUTE109",
       "name": "Route109_Layout",
-      "width": 40,
+      "width": 41,
       "height": 63,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Slateport",
