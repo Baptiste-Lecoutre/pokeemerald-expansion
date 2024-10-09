@@ -124,5 +124,6 @@ void TryTradeEvolution(void);
 void ChooseMonForBlender(void);
 
 void ItemUseCB_PokeBall(u8 taskId, TaskFunc task);
+bool32 IsItemFlute(u16 item);
 
 #endif // GUARD_PARTY_MENU_H

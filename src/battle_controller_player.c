@@ -45,7 +45,7 @@
 #include "constants/songs.h"
 #include "constants/trainers.h"
 #include "constants/rgb.h"
-#include "level_caps.h"
+#include "caps.h"
 #include "menu.h"
 #include "pokemon_summary_screen.h"
 #include "type_icons.h"
@@ -436,8 +436,8 @@ static void HandleInputChooseAction(u32 battler)
          && !(gAbsentBattlerFlags & (1u << GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)))
          && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
         {
-            // Return item to bag if partner had selected one.
-            if (gBattleResources->bufferA[battler][1] == B_ACTION_USE_ITEM)
+            // Return item to bag if partner had selected one (except flutes).
+            if (gBattleResources->bufferA[battler][1] == B_ACTION_USE_ITEM && !IsItemFlute(itemId))
             {
                 AddBagItem(itemId, 1);
             }
@@ -1848,9 +1848,9 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     {
         speciesId = gBattleMons[battler].species;
 
-        if (speciesId == SPECIES_OGERPON_WELLSPRING_MASK || speciesId == SPECIES_OGERPON_WELLSPRING_MASK_TERA
-            || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK || speciesId == SPECIES_OGERPON_HEARTHFLAME_MASK_TERA
-            || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK || speciesId == SPECIES_OGERPON_CORNERSTONE_MASK_TERA)
+        if (speciesId == SPECIES_OGERPON_WELLSPRING || speciesId == SPECIES_OGERPON_WELLSPRING_TERA
+            || speciesId == SPECIES_OGERPON_HEARTHFLAME || speciesId == SPECIES_OGERPON_HEARTHFLAME_TERA
+            || speciesId == SPECIES_OGERPON_CORNERSTONE || speciesId == SPECIES_OGERPON_CORNERSTONE_TERA)
             type = gBattleMons[battler].types[1];
     }
     else if (gMovesInfo[moveInfo->moves[gMoveSelectionCursor[battler]]].category == DAMAGE_CATEGORY_STATUS

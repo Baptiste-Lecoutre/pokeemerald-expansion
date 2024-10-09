@@ -186,13 +186,13 @@ void InitRoamer(void)
            TryAddRoamer(SPECIES_ENAMORUS, 40);
            break;
         case 10:
-           TryAddRoamer(SPECIES_MOLTRES_GALARIAN, 40);
+           TryAddRoamer(SPECIES_MOLTRES_GALAR, 40);
            break;
         case 11:
-           TryAddRoamer(SPECIES_ZAPDOS_GALARIAN, 40);
+           TryAddRoamer(SPECIES_ZAPDOS_GALAR, 40);
            break;
         case 12:
-           TryAddRoamer(SPECIES_ARTICUNO_GALARIAN, 40);
+           TryAddRoamer(SPECIES_ARTICUNO_GALAR, 40);
            break;
         case 13:
            TryAddRoamer(SPECIES_ZACIAN, 40);

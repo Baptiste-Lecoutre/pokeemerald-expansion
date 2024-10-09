@@ -113,6 +113,7 @@ extern const struct OamData gObjectEventBaseOam_64x64;
 extern const struct SubspriteTable sOamTables_32x32[];
 extern const struct SubspriteTable sOamTables_64x64[];
 extern const union AnimCmd *const sAnimTable_Following[];
+extern const union AnimCmd *const sAnimTable_Following_Asym[];
 extern const struct SpriteTemplate *const gFieldEffectObjectTemplatePointers[];
 extern const u8 gReflectionEffectPaletteMap[];
 
@@ -315,7 +316,7 @@ bool8 IsElevationMismatchAt(u8, s16, s16);
 u8 MovementType_WanderAround_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step2(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_WanderAround_Step3(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_Wander_Step3(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step5(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step6(struct ObjectEvent *, struct Sprite *);
@@ -338,14 +339,12 @@ u8 MovementType_LookAround_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step2(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_WanderUpAndDown_Step3(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step5(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step6(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step2(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_WanderLeftAndRight_Step3(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step5(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step6(struct ObjectEvent *, struct Sprite *);
@@ -489,6 +488,15 @@ void SetVirtualObjectInvisibility(u8 virtualObjId, bool32 invisible);
 bool32 IsVirtualObjectInvisible(u8 virtualObjId);
 void SetVirtualObjectSpriteAnim(u8 virtualObjId, u8 animNum);
 bool32 IsVirtualObjectAnimating(u8 virtualObjId);
+u8 GetObjectEventIdByLocalId(u8 localId);
+bool32 IsFollowerVisible(void);
+
+// run slow
+u8 GetPlayerRunSlowMovementAction(u32);
+//sideways stairs
+u8 GetSidewaysStairsToRightDirection(s16, s16, u8);
+u8 GetSidewaysStairsToLeftDirection(s16, s16, u8);
+u8 GetSidewaysStairsCollision(struct ObjectEvent *objectEvent, u8 dir, u8 currentBehavior, u8 nextBehavior, u8 collision);
 
 // NEW
 u16 GetMiniStepCount(u8 speed);
