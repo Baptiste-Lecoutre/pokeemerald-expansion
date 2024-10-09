@@ -4420,7 +4420,7 @@ static const struct TrainerMon sParty_Martin[] = {
     {
     .iv = TRAINER_PARTY_IVS(4, 4, 4, 4, 4, 4),
     .lvl = 37,
-    .species = SPECIES_MUK_ALOLAN,
+    .species = SPECIES_MUK_ALOLA,
     .moves = {MOVE_POISON_JAB, MOVE_CRUNCH, MOVE_ACID_SPRAY, MOVE_DISABLE}
     },
     {
