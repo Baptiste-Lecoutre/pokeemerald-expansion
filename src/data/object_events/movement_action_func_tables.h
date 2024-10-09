@@ -600,10 +600,6 @@ u8 (*const *const gMovementActionFuncs[])(struct ObjectEvent *, struct Sprite *)
     [MOVEMENT_ACTION_ACRO_END_WHEELIE_MOVE_UP] = gMovementActionFuncs_AcroEndWheelieMoveUp,
     [MOVEMENT_ACTION_ACRO_END_WHEELIE_MOVE_LEFT] = gMovementActionFuncs_AcroEndWheelieMoveLeft,
     [MOVEMENT_ACTION_ACRO_END_WHEELIE_MOVE_RIGHT] = gMovementActionFuncs_AcroEndWheelieMoveRight,
-    [MOVEMENT_ACTION_SPIN_DOWN] = gMovementActionFuncs_SpinDown,
-    [MOVEMENT_ACTION_SPIN_UP] gMovementActionFuncs_SpinUp,
-    [MOVEMENT_ACTION_SPIN_LEFT] gMovementActionFuncs_SpinLeft,
-    [MOVEMENT_ACTION_SPIN_RIGHT] gMovementActionFuncs_SpinRight,
     [MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_UP_LEFT] = gMovementActionFuncs_WalkNormalDiagonalUpLeft,
     [MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_UP_RIGHT] = gMovementActionFuncs_WalkNormalDiagonalUpRight,
     [MOVEMENT_ACTION_WALK_NORMAL_DIAGONAL_DOWN_LEFT] = gMovementActionFuncs_WalkNormalDiagonalDownLeft,
@@ -635,6 +631,11 @@ u8 (*const *const gMovementActionFuncs[])(struct ObjectEvent *, struct Sprite *)
     [MOVEMENT_ACTION_WALK_FAST_DIAGONAL_UP_RIGHT] = gMovementActionFuncs_WalkFastDiagonalUpRight,
     [MOVEMENT_ACTION_WALK_FAST_DIAGONAL_DOWN_LEFT] = gMovementActionFuncs_WalkFastDiagonalDownLeft,
     [MOVEMENT_ACTION_WALK_FAST_DIAGONAL_DOWN_RIGHT] = gMovementActionFuncs_WalkFastDiagonalDownRight,
+    // spin tiles
+    [MOVEMENT_ACTION_SPIN_DOWN] = gMovementActionFuncs_SpinDown,
+    [MOVEMENT_ACTION_SPIN_UP] gMovementActionFuncs_SpinUp,
+    [MOVEMENT_ACTION_SPIN_LEFT] gMovementActionFuncs_SpinLeft,
+    [MOVEMENT_ACTION_SPIN_RIGHT] gMovementActionFuncs_SpinRight,
 };
 
 u8 (*const gMovementActionFuncs_FaceDown[])(struct ObjectEvent *, struct Sprite *) = {

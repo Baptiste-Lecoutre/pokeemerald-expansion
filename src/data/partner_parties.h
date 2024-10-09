@@ -1342,7 +1342,7 @@ static const struct TrainerMon sParty_RedFallarborPartner[] = {
     .iv = TRAINER_PARTY_IVS(6, 6, 6, 6, 6, 6),
     .lvl = 37,
     .heldItem = ITEM_LIGHT_BALL,
-    .species = SPECIES_PIKACHU_PH_D,
+    .species = SPECIES_PIKACHU_PHD,
     .moves = {MOVE_THUNDERBOLT, MOVE_PSYCHIC, MOVE_NASTY_PLOT, MOVE_BODY_SLAM},
     },
     {
