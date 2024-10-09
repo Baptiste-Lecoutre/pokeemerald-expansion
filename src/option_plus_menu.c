@@ -530,7 +530,8 @@ static void VBlankCB(void)
     LoadOam();
     ProcessSpriteCopyRequests();
     TransferPlttBuffer();
-    ChangeBgY(3, 96, BG_COORD_ADD);
+    ChangeBgY(3, 64, BG_COORD_ADD);
+    ChangeBgX(3, 64, BG_COORD_ADD);
 }
 
 static const u8 sText_TopBar_Main[]         = _("GENERAL");
@@ -562,7 +563,7 @@ static void DrawOptionMenuTexts(void) //left side text
     u8 i;
 
     FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(0));
-    for (i = 0; i < MenuItemCount(); i++)
+    for (i = 0; i < min(OPTIONS_ON_SCREEN, MenuItemCount()); i++)
         DrawLeftSideOptionText(i, (i * Y_DIFF) + 1);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
 }
