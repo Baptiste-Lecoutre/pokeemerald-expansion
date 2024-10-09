@@ -177,6 +177,7 @@ bool32 Overworld_RecvKeysFromLinkIsRunning(void);
 bool32 Overworld_SendKeysToLinkIsRunning(void);
 bool32 IsSendingKeysOverCable(void);
 void ClearLinkPlayerObjectEvents(void);
+void CB2_ReturnToFullScreenStartMenu(void);
 
 // Item Description Headers
 enum ItemObtainFlags
