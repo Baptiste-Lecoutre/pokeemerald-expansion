@@ -33,7 +33,7 @@
 #include "item.h"
 #include "item_menu.h"
 #include "item_use.h"
-#include "level_caps.h"
+#include "caps.h"
 #include "link.h"
 #include "link_rfu.h"
 #include "mail.h"
@@ -4793,7 +4793,7 @@ static bool8 NotUsingHPEVItemOnShedinja(struct Pokemon *mon, u16 item)
     return TRUE;
 }
 
-static bool8 IsItemFlute(u16 item)
+bool32 IsItemFlute(u16 item)
 {
     if (item == ITEM_BLUE_FLUTE || item == ITEM_RED_FLUTE || item == ITEM_YELLOW_FLUTE)
         return TRUE;

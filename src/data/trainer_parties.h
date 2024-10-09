@@ -1306,7 +1306,7 @@ static const struct TrainerMon sParty_RedFallarbor[] = {
     .iv = TRAINER_PARTY_IVS(6, 6, 6, 6, 6, 6),
     .lvl = 37,
     .heldItem = ITEM_LIGHT_BALL,
-    .species = SPECIES_PIKACHU_PH_D,
+    .species = SPECIES_PIKACHU_PHD,
     .moves = {MOVE_THUNDERBOLT, MOVE_PSYCHIC, MOVE_NASTY_PLOT, MOVE_BODY_SLAM},
     },
     {
@@ -1344,7 +1344,7 @@ static const struct TrainerMon sParty_RedRoute121[] = {
     .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
     .lvl = 65,
     .heldItem = ITEM_LIGHT_BALL,
-    .species = SPECIES_PIKACHU_PH_D,//FLYING,
+    .species = SPECIES_PIKACHU_PHD,//FLYING,
     .moves = {MOVE_THUNDERBOLT, MOVE_AERIAL_ACE, MOVE_THUNDER_WAVE, MOVE_BODY_SLAM},
     },
     {
@@ -4025,7 +4025,7 @@ static const struct TrainerMon sParty_Justin[] = {
     {
     .iv = TRAINER_PARTY_IVS(10, 10, 10, 10, 10, 10),
     .lvl = 40,
-    .species = SPECIES_SANDSLASH_ALOLAN,
+    .species = SPECIES_SANDSLASH_ALOLA,
     }
 };
 
@@ -4184,7 +4184,7 @@ static const struct TrainerMon sParty_Derek[] = {
     {
     .iv = TRAINER_PARTY_IVS(18, 18, 18, 18, 18, 18),
     .lvl = 32,
-    .species = SPECIES_WORMADAM_SANDY_CLOAK,
+    .species = SPECIES_WORMADAM_SANDY,
     }
 };
 
@@ -4864,7 +4864,7 @@ static const struct TrainerMon sParty_Wattson1[] = {
     {
     .iv = TRAINER_PARTY_IVS(26, 26, 26, 26, 26, 26),
     .lvl = 35,
-    .species = SPECIES_RAICHU_ALOLAN,
+    .species = SPECIES_RAICHU_ALOLA,
     .heldItem = ITEM_SHUCA_BERRY,
     .moves = {MOVE_VOLT_SWITCH, MOVE_PSYCHIC, MOVE_GRASS_KNOT, MOVE_SURF}
     },
@@ -6214,7 +6214,7 @@ static const struct TrainerMon sParty_Benjamin1[] = {
     {
     .iv = TRAINER_PARTY_IVS(4, 4, 4, 4, 4, 4),
     .lvl = 26,
-    .species = SPECIES_GEODUDE_ALOLAN,
+    .species = SPECIES_GEODUDE_ALOLA,
     },
     {
     .iv = TRAINER_PARTY_IVS(4, 4, 4, 4, 4, 4),
@@ -7534,7 +7534,7 @@ static const struct TrainerMon sParty_Martha[] = {
     {
     .iv = TRAINER_PARTY_IVS(9, 9, 9, 9, 9, 9),
     .lvl = 40,
-    .species = SPECIES_MEOWSTIC_FEMALE,
+    .species = SPECIES_MEOWSTIC_F,
     },
     {
     .iv = TRAINER_PARTY_IVS(9, 9, 9, 9, 9, 9),
