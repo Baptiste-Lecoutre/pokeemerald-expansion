@@ -18,6 +18,7 @@ void SaveForBattleTowerLink(void);
 void HideStartMenu(void);
 void AppendToList(u8 *list, u8 *pos, u8 newEntry);
 void SaveStartCallback_FullStartMenu(void);
+void ShowThrobber(void);
 
 // For Start Menu Icons
 extern bool8 gShouldStartMenuIconsBePrinted; // TRUE when the start menu is open. FALSE when it's closed
