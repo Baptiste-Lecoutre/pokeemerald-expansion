@@ -35,7 +35,7 @@
 #include "pokedex.h"
 #include "mail.h"
 #include "field_weather.h"
-#include "level_caps.h"
+#include "caps.h"
 #include "constants/abilities.h"
 #include "constants/battle_anim.h"
 #include "constants/battle_move_effects.h"
