@@ -505,41 +505,41 @@ static const u16 sIsValidSpecies[] =
     SPECIES_ARCTOVISH,
     SPECIES_DURALUDON,
     SPECIES_DREEPY,
-    SPECIES_RATTATA_ALOLAN,
-    SPECIES_SANDSHREW_ALOLAN,
-    SPECIES_VULPIX_ALOLAN,
-    SPECIES_DIGLETT_ALOLAN,
-    SPECIES_MEOWTH_ALOLAN,
-    SPECIES_GEODUDE_ALOLAN,
-    SPECIES_GRIMER_ALOLAN,
-    SPECIES_MEOWTH_GALARIAN,
-    SPECIES_PONYTA_GALARIAN,
-    SPECIES_SLOWPOKE_GALARIAN,
-    SPECIES_FARFETCHD_GALARIAN,
-    SPECIES_MR_MIME_GALARIAN,
-    SPECIES_CORSOLA_GALARIAN,
-    SPECIES_ZIGZAGOON_GALARIAN,
-    SPECIES_DARUMAKA_GALARIAN,
-    SPECIES_YAMASK_GALARIAN,
-    SPECIES_STUNFISK_GALARIAN,
-    SPECIES_GROWLITHE_HISUIAN,
-    SPECIES_VOLTORB_HISUIAN,
-    SPECIES_QWILFISH_HISUIAN,
-    SPECIES_SNEASEL_HISUIAN,
-    SPECIES_ZORUA_HISUIAN,
-    SPECIES_BURMY_SANDY_CLOAK,
-    SPECIES_BURMY_TRASH_CLOAK,
-    SPECIES_SHELLOS_EAST_SEA,
+    SPECIES_RATTATA_ALOLA,
+    SPECIES_SANDSHREW_ALOLA,
+    SPECIES_VULPIX_ALOLA,
+    SPECIES_DIGLETT_ALOLA,
+    SPECIES_MEOWTH_ALOLA,
+    SPECIES_GEODUDE_ALOLA,
+    SPECIES_GRIMER_ALOLA,
+    SPECIES_MEOWTH_GALAR,
+    SPECIES_PONYTA_GALAR,
+    SPECIES_SLOWPOKE_GALAR,
+    SPECIES_FARFETCHD_GALAR,
+    SPECIES_MR_MIME_GALAR,
+    SPECIES_CORSOLA_GALAR,
+    SPECIES_ZIGZAGOON_GALAR,
+    SPECIES_DARUMAKA_GALAR,
+    SPECIES_YAMASK_GALAR,
+    SPECIES_STUNFISK_GALAR,
+    SPECIES_GROWLITHE_HISUI,
+    SPECIES_VOLTORB_HISUI,
+    SPECIES_QWILFISH_HISUI,
+    SPECIES_SNEASEL_HISUI,
+    SPECIES_ZORUA_HISUI,
+    SPECIES_BURMY_SANDY,
+    SPECIES_BURMY_TRASH,
+    SPECIES_SHELLOS_EAST,
     SPECIES_BASCULIN_BLUE_STRIPED,
     SPECIES_BASCULIN_WHITE_STRIPED,
     SPECIES_DEERLING_SUMMER,
     SPECIES_DEERLING_AUTUMN,
     SPECIES_DEERLING_WINTER,
-    SPECIES_FLABEBE_YELLOW_FLOWER,
-    SPECIES_FLABEBE_ORANGE_FLOWER,
-    SPECIES_FLABEBE_BLUE_FLOWER,
-    SPECIES_FLABEBE_WHITE_FLOWER,
-    SPECIES_MEOWSTIC_FEMALE,
+    SPECIES_FLABEBE_YELLOW,
+    SPECIES_FLABEBE_ORANGE,
+    SPECIES_FLABEBE_BLUE,
+    SPECIES_FLABEBE_WHITE,
+    SPECIES_MEOWSTIC_F,
     SPECIES_PUMPKABOO_SMALL,
     SPECIES_PUMPKABOO_LARGE,
     SPECIES_PUMPKABOO_SUPER,
@@ -554,7 +554,7 @@ static const u16 sIsValidSpecies[] =
     SPECIES_MINIOR_METEOR_INDIGO,
     SPECIES_MINIOR_METEOR_VIOLET,
     SPECIES_SINISTEA_ANTIQUE,
-    SPECIES_INDEEDEE_FEMALE,
+    SPECIES_INDEEDEE_F,
 #endif
 };
 
@@ -791,7 +791,7 @@ u16 determineEvolution(struct Pokemon *mon)
               || species == SPECIES_BUNEARY || species == SPECIES_SWOOBAT || species == SPECIES_SWADLOON)
               && level >= 16)
                 targetSpecies = evolutions[i].targetSpecies;
-            else if (species == SPECIES_MEOWTH_ALOLAN && level >= 28)
+            else if (species == SPECIES_MEOWTH_ALOLA && level >= 28)
                 targetSpecies = evolutions[i].targetSpecies;
             else if ((species == SPECIES_GOLBAT || species == SPECIES_CHANSEY
                    || species == SPECIES_MUNCHLAX) && level >= 35)
@@ -905,8 +905,8 @@ u16 determineEvolution(struct Pokemon *mon)
             }
             else if ((species == SPECIES_MURKROW || species == SPECIES_MISDREAVUS
                    || species == SPECIES_MUNNA || species == SPECIES_DOUBLADE
-                   || species == SPECIES_SINISTEA || species == SPECIES_SANDSHREW_ALOLAN
-                   || species == SPECIES_VULPIX_ALOLAN || species == SPECIES_SINISTEA_ANTIQUE)
+                   || species == SPECIES_SINISTEA || species == SPECIES_SANDSHREW_ALOLA
+                   || species == SPECIES_VULPIX_ALOLA || species == SPECIES_SINISTEA_ANTIQUE)
                    && level >= 25)
             {
                 targetSpecies = evolutions[i].targetSpecies;
@@ -914,15 +914,15 @@ u16 determineEvolution(struct Pokemon *mon)
             else if ((species == SPECIES_PANSAGE || species == SPECIES_PANSEAR
                    || species == SPECIES_PANPOUR || species == SPECIES_COTTONEE
                    || species == SPECIES_PETILIL || species == SPECIES_MINCCINO
-                   || species == SPECIES_FLOETTE || species == SPECIES_FLOETTE_YELLOW_FLOWER
-                   || species == SPECIES_FLOETTE_ORANGE_FLOWER || species == SPECIES_FLOETTE_BLUE_FLOWER
-                   || species == SPECIES_FLOETTE_WHITE_FLOWER) && level >= 15)
+                   || species == SPECIES_FLOETTE || species == SPECIES_FLOETTE_YELLOW
+                   || species == SPECIES_FLOETTE_ORANGE || species == SPECIES_FLOETTE_BLUE
+                   || species == SPECIES_FLOETTE_WHITE) && level >= 15)
             {
                 targetSpecies = evolutions[i].targetSpecies;
             }
             else if ((species == SPECIES_EELEKTRIK || species == SPECIES_LAMPENT
                    || species == SPECIES_HELIOPTILE || species == SPECIES_CHARJABUG
-                   || species == SPECIES_DARUMAKA_GALARIAN) && level >= 35)
+                   || species == SPECIES_DARUMAKA_GALAR) && level >= 35)
             {
                 targetSpecies = evolutions[i].targetSpecies;
             }
@@ -933,12 +933,12 @@ u16 determineEvolution(struct Pokemon *mon)
                 else
                     targetSpecies = SPECIES_APPLETUN;
             }
-            else if (species == SPECIES_SLOWPOKE_GALARIAN && level >= 37)
+            else if (species == SPECIES_SLOWPOKE_GALAR && level >= 37)
             {
                 if ((Random() % 2) == 0)
-                    targetSpecies = SPECIES_SLOWBRO_GALARIAN;
+                    targetSpecies = SPECIES_SLOWBRO_GALAR;
                 else
-                    targetSpecies = SPECIES_SLOWKING_GALARIAN;
+                    targetSpecies = SPECIES_SLOWKING_GALAR;
             }
             break;
         case EVO_ITEM_FEMALE:
