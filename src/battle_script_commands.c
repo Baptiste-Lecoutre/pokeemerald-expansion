@@ -9191,6 +9191,7 @@ static void Cmd_various(void)
     {
     // Roar will fail in a double wild battle when used by the player against one of the two alive wild mons.
     // Also when an opposing wild mon uses it againt its partner.
+    // Also when B_FLAG_NO_RUNNING is enabled.
     case VARIOUS_JUMP_IF_ROAR_FAILS:
     {
         VARIOUS_ARGS(const u8 *jumpInstr);
@@ -9202,6 +9203,8 @@ static void Cmd_various(void)
         else if (WILD_DOUBLE_BATTLE
                  && GetBattlerSide(gBattlerAttacker) == B_SIDE_OPPONENT
                  && GetBattlerSide(gBattlerTarget) == B_SIDE_OPPONENT)
+            gBattlescriptCurrInstr = cmd->jumpInstr;
+        else if (FlagGet(B_FLAG_NO_RUNNING))
             gBattlescriptCurrInstr = cmd->jumpInstr;
         else
             gBattlescriptCurrInstr = cmd->nextInstr;
@@ -9966,6 +9969,7 @@ static void Cmd_various(void)
             if (gBattleMons[gBattlerTarget].ability == ABILITY_NEUTRALIZING_GAS)
                 gSpecialStatuses[gBattlerTarget].neutralizingGasRemoved = TRUE;
 
+            gBattleScripting.abilityPopupOverwrite = gBattleMons[gBattlerTarget].ability;
             gBattleMons[gBattlerTarget].ability = gBattleStruct->overwrittenAbilities[gBattlerTarget] = ABILITY_SIMPLE;
             gBattlescriptCurrInstr = cmd->nextInstr;
         }
@@ -11542,10 +11546,11 @@ static void Cmd_setmiracleeye(void)
 bool8 UproarWakeUpCheck(u8 battler)
 {
     s32 i;
+    bool32 hasSoundproof = (B_UPROAR_IGNORE_SOUNDPROOF < GEN_5 && GetBattlerAbility(battler) == ABILITY_SOUNDPROOF);
 
     for (i = 0; i < gBattlersCount; i++)
     {
-        if (!(gBattleMons[i].status2 & STATUS2_UPROAR) || (GetBattlerAbility(battler) == ABILITY_SOUNDPROOF && B_UPROAR_IGNORE_SOUNDPROOF < GEN_5))
+        if (!(gBattleMons[i].status2 & STATUS2_UPROAR) || hasSoundproof)
             continue;
 
         gBattleScripting.battler = i;
@@ -14470,7 +14475,7 @@ static void Cmd_trycopyability(void)
     if (gBattleMons[battler].ability == defAbility
       || defAbility == ABILITY_NONE
       || gAbilitiesInfo[gBattleMons[battler].ability].cantBeSuppressed
-      || gAbilitiesInfo[gBattleMons[BATTLE_PARTNER(battler)].ability].cantBeSuppressed
+      || (IsBattlerAlive(BATTLE_PARTNER(battler)) && gAbilitiesInfo[gBattleMons[BATTLE_PARTNER(battler)].ability].cantBeSuppressed && gMovesInfo[gCurrentMove].effect == EFFECT_DOODLE)
       || gAbilitiesInfo[defAbility].cantBeCopied)
     {
         gBattlescriptCurrInstr = cmd->failInstr;
@@ -14666,9 +14671,11 @@ static void Cmd_tryswapabilities(void)
         }
         else
         {
-            u16 abilityAtk = gBattleMons[gBattlerAttacker].ability;
-            gBattleMons[gBattlerAttacker].ability = gBattleStruct->overwrittenAbilities[gBattlerAttacker] = gBattleMons[gBattlerTarget].ability;
-            gBattleMons[gBattlerTarget].ability = gBattleStruct->overwrittenAbilities[gBattlerTarget] = abilityAtk;
+            if (GetBattlerSide(gBattlerAttacker) != GetBattlerSide(gBattlerTarget))
+                gBattleScripting.abilityPopupOverwrite = gBattleMons[gBattlerAttacker].ability;
+            gLastUsedAbility = gBattleMons[gBattlerTarget].ability;
+            gBattleMons[gBattlerTarget].ability = gBattleStruct->overwrittenAbilities[gBattlerTarget] = gBattleMons[gBattlerAttacker].ability;
+            gBattleMons[gBattlerAttacker].ability = gBattleStruct->overwrittenAbilities[gBattlerAttacker] = gLastUsedAbility;
 
             gBattlescriptCurrInstr = cmd->nextInstr;
         }
@@ -15960,6 +15967,7 @@ static void Cmd_tryworryseed(void)
     }
     else
     {
+        gBattleScripting.abilityPopupOverwrite = gBattleMons[gBattlerTarget].ability;
         gBattleMons[gBattlerTarget].ability = gBattleStruct->overwrittenAbilities[gBattlerTarget] = ABILITY_INSOMNIA;
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
