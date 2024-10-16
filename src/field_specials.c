@@ -5746,7 +5746,7 @@ void GetObjectPosition(u16* xPointer, u16* yPointer, u32 localId, u32 useTemplat
 
     if (useTemplate)
     {
-        const struct ObjectEventTemplate *objTemplate = FindObjectEventTemplateByLocalId(localId, gSaveBlock1Ptr->objectEventTemplates, gMapHeader.events->objectEventCount);
+        struct ObjectEventTemplate *objTemplate = FindObjectEventTemplateByLocalId(localId, gSaveBlock1Ptr->objectEventTemplates, gMapHeader.events->objectEventCount);
         *xPointer = objTemplate->x;
         *yPointer = objTemplate->y;
         return;
