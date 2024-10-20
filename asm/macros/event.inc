@@ -2532,3 +2532,6 @@
 	.2byte \dest
 	.endm
 
+	.macro startfishing
+	callnative ScrCmd_startfishing
+	.endm

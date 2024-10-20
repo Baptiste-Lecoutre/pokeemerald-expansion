@@ -2721,3 +2721,16 @@ bool8 ScrCmd_checkfollower(struct ScriptContext *ctx)
     CheckPlayerHasFollower();
     return FALSE;
 }
+
+bool8 ScrCmd_startfishing(struct ScriptContext *ctx)
+{
+    u8 rod = OLD_ROD;
+
+    if (CheckBagHasItem(ITEM_GOOD_ROD, 1))
+        rod = GOOD_ROD;
+    if (CheckBagHasItem(ITEM_SUPER_ROD, 1))
+        rod = SUPER_ROD;
+
+    StartFishing(rod);
+    return FALSE;
+}
