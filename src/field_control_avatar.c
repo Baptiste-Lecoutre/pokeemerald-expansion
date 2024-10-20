@@ -605,8 +605,18 @@ static const u8 *GetInteractedMetatileScript(struct MapPosition *position, u8 me
 
 static const u8 *GetInteractedWaterScript(struct MapPosition *unused1, u8 metatileBehavior, u8 direction)
 {
-    if (FlagGet(FLAG_BADGE05_GET) == TRUE && PartyHasMonWithSurf() == TRUE && IsPlayerFacingSurfableFishableWater() == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_SURF))
-        return EventScript_UseSurf;
+    if (IsPlayerFacingSurfableFishableWater() == TRUE && !IsFishingActive())
+    {
+        bool32 canSurf = (FlagGet(FLAG_BADGE05_GET) == TRUE && PartyHasMonWithSurf() == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_SURF));
+        bool32 hasRod = (CheckBagHasItem(ITEM_OLD_ROD, 1) || CheckBagHasItem(ITEM_GOOD_ROD, 1) || CheckBagHasItem(ITEM_SUPER_ROD, 1));
+
+        if (canSurf && hasRod && !gSaveBlock2Ptr->optionsFastFieldMove)
+            return EventScript_UseSurfOrRod;
+        else if (canSurf)
+            return EventScript_UseSurf;
+        else if (hasRod)
+            return EventScript_UseRod;
+    }
 
     if (MetatileBehavior_IsWaterfall(metatileBehavior) == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_WATERFALL))
     {

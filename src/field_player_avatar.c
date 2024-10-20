@@ -9,6 +9,7 @@
 #include "field_screen_effect.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
+#include "item.h"
 #include "m4a.h"
 #include "menu.h"
 #include "metatile_behavior.h"
@@ -1730,7 +1731,7 @@ bool8 PartyHasMonWithSurf(void)
         {
             if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) == SPECIES_NONE)
                 break;
-            if (MonKnowsMove(&gPlayerParty[i], MOVE_SURF) || CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), MOVE_SURF))
+            if (MonKnowsMove(&gPlayerParty[i], MOVE_SURF) || (CanLearnTeachableMove(GetMonData(&gPlayerParty[i], MON_DATA_SPECIES_OR_EGG), MOVE_SURF) && CheckBagHasItem(ITEM_HM03, 1)))
                 return TRUE;
         }
     }
@@ -2177,6 +2178,11 @@ static bool32 (*const sFishingStateFuncs[])(struct Task *) =
     [FISHING_PUT_ROD_AWAY]          = Fishing_PutRodAway,
     [FISHING_END_NO_MON]            = Fishing_EndNoMon,
 };
+
+bool32 IsFishingActive(void)
+{
+    return FuncIsActiveTask(Task_Fishing);
+}
 
 void StartFishing(u8 rod)
 {
