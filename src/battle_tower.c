@@ -48,7 +48,7 @@ EWRAM_DATA const struct BattleFrontierTrainer *gFacilityTrainers = NULL;
 EWRAM_DATA const struct TrainerMon *gFacilityTrainerMons = NULL;
 
 // IWRAM common
-u16 gFrontierTempParty[MAX_FRONTIER_PARTY_SIZE];
+COMMON_DATA u16 gFrontierTempParty[MAX_FRONTIER_PARTY_SIZE] = {0};
 
 // This file's functions.
 static void InitTowerChallenge(void);
