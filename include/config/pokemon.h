@@ -64,6 +64,7 @@
 
 // Learnset helper toggles
 #define P_LEARNSET_HELPER_TEACHABLE FALSE        // If TRUE, teachable_learnsets.h will be populated by tools/learnset_helpers/teachable.py using the included JSON files based on available TMs and tutors.
+#define CONFIG_CAN_FORGET_HM_MOVES TRUE         // If TRUE, HMs can be forgotten like any other move.
 
 // Flag settings
 // To use the following features in scripting, replace the 0s with the flag ID you're assigning it to.
