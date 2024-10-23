@@ -447,7 +447,7 @@ void CB2_StartCreditsSequence(void)
     EnableInterrupts(INTR_FLAG_VBLANK);
     SetVBlankCallback(VBlankCB_Credits);
     
-    if (gSaveBlock2Ptr->optionsSound != 2)
+    if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
         m4aSongNumStart(MUS_CREDITS);
     SetMainCallback2(CB2_Credits);
     sUsedSpeedUp = FALSE;
@@ -685,7 +685,7 @@ static void Task_CreditsTheEnd6(u8 taskId)
         if (gTasks[taskId].tDelay == 7144)
             FadeOutBGM(8);
 
-        if (gTasks[taskId].tDelay == 6840 && gSaveBlock2Ptr->optionsSound != 2)
+        if (gTasks[taskId].tDelay == 6840 && gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
             m4aSongNumStart(MUS_END);
 
         gTasks[taskId].tDelay--;

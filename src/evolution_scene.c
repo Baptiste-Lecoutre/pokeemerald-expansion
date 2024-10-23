@@ -821,7 +821,7 @@ static void Task_EvolutionScene(u8 taskId)
         }
         break;
     case EVOSTATE_RESTORE_SCREEN: // stop music, return screen to pre-fade state
-        if (IsSEPlaying() || gSaveBlock2Ptr->optionsSound == 2)
+        if (IsSEPlaying() || gSaveBlock2Ptr->optionsSound == OPTIONS_SOUND_OFF)
         {
             m4aMPlayAllStop();
             memcpy(&gPlttBufferUnfaded[BG_PLTT_ID(2)], sEvoStructPtr->savedPalette, sizeof(sEvoStructPtr->savedPalette));
@@ -1281,7 +1281,7 @@ static void Task_TradeEvolutionScene(u8 taskId)
         }
         break;
     case T_EVOSTATE_EVO_MON_ANIM:
-        if (IsSEPlaying() || gSaveBlock2Ptr->optionsSound == 2)
+        if (IsSEPlaying() || gSaveBlock2Ptr->optionsSound == OPTIONS_SOUND_OFF)
         {
             m4aMPlayAllStop();
             // Restore bg, do mon anim/cry

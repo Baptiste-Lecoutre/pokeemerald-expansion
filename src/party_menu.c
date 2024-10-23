@@ -6093,7 +6093,7 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
         GetMonNickname(mon, gStringVar1);
         if (sFinalLevel > sInitialLevel)
         {
-            if (gSaveBlock2Ptr->optionsSound != 2)
+            if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
                 PlayFanfareByFanfareNum(FANFARE_LEVEL_UP);
             if (holdEffectParam == 0) // Rare Candy
             {

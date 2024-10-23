@@ -658,7 +658,7 @@ void CB2_InitTitleScreen(void)
                                     | DISPCNT_OBJ_ON
                                     | DISPCNT_WIN0_ON
                                     | DISPCNT_OBJWIN_ON);
-        if (gSaveBlock2Ptr->optionsSound != 2)
+        if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
             m4aSongNumStart(MUS_TITLE);
         gMain.state = 5;
         break;
@@ -814,7 +814,7 @@ static void Task_TitleScreenPhase3(u8 taskId)
             gBattle_BG1_X = 0;
         }
         UpdateLegendaryMarkingColor(gTasks[taskId].tCounter);
-        if (gSaveBlock2Ptr->optionsSound != 2 && (gMPlayInfo_BGM.status & 0xFFFF) == 0)
+        if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF && (gMPlayInfo_BGM.status & 0xFFFF) == 0)
         {
             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_WHITEALPHA);
             SetMainCallback2(CB2_GoToCopyrightScreen);

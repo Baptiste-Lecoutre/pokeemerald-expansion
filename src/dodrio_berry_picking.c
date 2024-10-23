@@ -1723,7 +1723,7 @@ static void HandleSound_Leader(void)
     else if (sGame->endSoundState == 1)
     {
         // Play game over sound
-        if (gSaveBlock2Ptr->optionsSound != 2)
+        if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
             PlayFanfareByFanfareNum(FANFARE_TOO_BAD);
         sGame->endSoundState = 2;
     }
@@ -1783,7 +1783,7 @@ static void HandleSound_Member(void)
     else if (sGame->endSoundState == 1)
     {
         // Play game over sound
-        if (gSaveBlock2Ptr->optionsSound != 2)
+        if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
             PlayFanfareByFanfareNum(FANFARE_TOO_BAD);
         sGame->endSoundState = 2;
     }
