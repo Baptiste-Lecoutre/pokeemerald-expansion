@@ -126,6 +126,7 @@ extern const struct SpriteTemplate gHeldItemTemplate;
 void EndDexNavSearch(u8 taskId);
 void Task_OpenDexNavFromStartMenu(u8 taskId);
 void Task_OpenDexNavFromPokenav(u8 taskId);
+void OpenDexNavFromPokedex(void);
 bool8 TryStartDexnavSearch(void);
 void ResetDexNavSearch(void);
 bool8 TryFindHiddenPokemon(void);
@@ -136,5 +137,6 @@ u32 PokeNavMenuDexNavCallback(void);
 //ewram
 extern u8 gCurrentDexNavChain;
 extern bool8 gDexnavBattle;
+extern EWRAM_DATA u16 gDexNavSelectedSpecies;
 
 #endif //GUARD_DEXNAV_H

@@ -8539,7 +8539,7 @@ static bool8 SetUpFieldMove_RockClimb(void)
 
 static void CursorCb_Pokedex(u8 taskId)
 {
-    gSpeciesToLoad = GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_SPECIES);
+    gPartyMenuSpeciesToLoad = GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_SPECIES);
 
     PlaySE(SE_SELECT);
     sPartyMenuInternal->exitCallback = CB2_OpenPokedexPlusHGSS;

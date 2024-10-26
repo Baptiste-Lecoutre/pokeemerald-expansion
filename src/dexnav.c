@@ -30,6 +30,7 @@
 #include "palette.h"
 #include "party_menu.h"
 #include "pokedex.h"
+#include "pokedex_plus_hgss.h"
 #include "pokemon.h"
 #include "pokemon_icon.h"
 #include "pokemon_summary_screen.h"
@@ -136,6 +137,7 @@ EWRAM_DATA static struct DexNavSearch *sDexNavSearchDataPtr = NULL;
 EWRAM_DATA static struct DexNavGUI *sDexNavUiDataPtr = NULL;
 EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
 EWRAM_DATA bool8 gDexnavBattle = FALSE;
+EWRAM_DATA u16 gDexNavSelectedSpecies = SPECIES_NONE;
 
 //// Function Declarations
 //GUI
@@ -143,6 +145,7 @@ static void Task_DexNavWaitFadeIn(u8 taskId);
 static void Task_DexNavMain(u8 taskId);
 static void PrintCurrentSpeciesInfo(void);
 static void PrintDexNavMessage(u8 messageId);
+static bool8 SpeciesInArray(u16 species, u8 section);
 // SEARCH
 static bool8 TryStartHiddenMonFieldEffect(u8 environment, u8 xSize, u8 ySize, bool8 smallScan);
 static void DexNavGenerateMoveset(u16 species, u8 searchLevel, u8 encounterLevel, u16* moveDst);
@@ -1723,6 +1726,36 @@ static void UpdateCursorPosition(void)
     PrintCurrentSpeciesInfo();
 }
 
+static void SetDexNavCursorToSelectedMon(void)
+{
+    u32 i;
+
+    if (SpeciesInArray(gDexNavSelectedSpecies, 0))
+    {
+        for (i = 0; i < LAND_WILD_COUNT; i++)
+        {
+            if (sDexNavUiDataPtr->landSpecies[i] == gDexNavSelectedSpecies)
+                break;
+        }
+        sDexNavUiDataPtr->cursorRow = (i < COL_LAND_COUNT) ? ROW_LAND_TOP : ROW_LAND_BOT;
+        sDexNavUiDataPtr->cursorCol = (i < COL_LAND_COUNT) ? i : i - COL_LAND_COUNT;
+        if (!TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING))
+            return;
+    }
+
+    if (SpeciesInArray(gDexNavSelectedSpecies, 1))
+    {
+        for (i = 0; i < WATER_WILD_COUNT; i++)
+        {
+            if (sDexNavUiDataPtr->waterSpecies[i] == gDexNavSelectedSpecies)
+                break;
+        }
+        sDexNavUiDataPtr->cursorRow = ROW_WATER;
+        sDexNavUiDataPtr->cursorCol = i;
+        
+    }
+}
+
 static void CreateSelectionCursor(void)
 {
     u8 spriteId;
@@ -1739,6 +1772,10 @@ static void CreateSelectionCursor(void)
     //gSprites[spriteId].data[1] = -1;
     
     sDexNavUiDataPtr->cursorSpriteId = spriteId;
+
+    if (gDexNavSelectedSpecies != SPECIES_NONE)
+        SetDexNavCursorToSelectedMon();
+
     UpdateCursorPosition();
     PrintDexNavMessage(MESSAGE_CHOOSE_MON);
 }
@@ -1997,6 +2034,8 @@ static void Task_DexNavFadeAndExit(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        if (gDexNavSelectedSpecies != SPECIES_NONE)
+            gDexNavSelectedSpecies = SPECIES_NONE;
         FreePokenavResources();
         SetMainCallback2(sDexNavUiDataPtr->savedCallback);
         DexNavGuiFreeResources();
@@ -2015,28 +2054,27 @@ static void DexNavFadeAndExit(void)
 static bool8 SpeciesInArray(u16 species, u8 section)
 {
     u32 i;
-    u16 dexNum = SpeciesToNationalPokedexNum(species);
     
     switch (section)
     {
     case 0: //land
         for (i = 0; i < LAND_WILD_COUNT; i++)
         {
-            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->landSpecies[i]) == dexNum)
+            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->landSpecies[i]) == species)
                 return TRUE;
         }
         break;
     case 1: //water
         for (i = 0; i < WATER_WILD_COUNT; i++)
         {
-            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->waterSpecies[i]) == dexNum)
+            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->waterSpecies[i]) == species)
                 return TRUE;
         }
         break;
     case 2: //hidden
         for (i = 0; i < HIDDEN_WILD_COUNT; i++)
         {
-            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->hiddenSpecies[i]) == dexNum)
+            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->hiddenSpecies[i]) == species)
                 return TRUE;
         }
         break;
@@ -2509,6 +2547,12 @@ u32 PokeNavMenuDexNavCallback(void)
     return TRUE;
 }
 
+void OpenDexNavFromPokedex(void)
+{
+    gSaveBlock2Ptr->startShortcut = 14; // MENU_ACTION_DEXNAV
+    CreateTask(Task_OpenDexNavFromPokenav, 0);
+}
+
 void Task_OpenDexNavFromPokenav(u8 taskId)
 {
     if (!gPaletteFade.active)
@@ -2639,7 +2683,7 @@ static void Task_DexNavMain(u8 taskId)
             UpdateCursorPosition();
             PrintDexNavMessage(MESSAGE_CHOOSE_MON);
         }
-        else if (JOY_NEW(R_BUTTON))
+        else if (JOY_NEW(SELECT_BUTTON))
         {
             // check selection is valid. Play sound if invalid
             species = DexNavGetSpecies();
@@ -2653,6 +2697,23 @@ static void Task_DexNavMain(u8 taskId)
                 // create value to store in a var
                 VarSet(VAR_DEXNAV_SPECIES, ((sDexNavUiDataPtr->environment << 14) | species));
                 PrintDexNavMessage(MESSAGE_REGISTERED);
+            }
+            else
+            {
+                PlaySE(SE_FAILURE);
+                PrintDexNavMessage(MESSAGE_NO_DATA);
+            }
+        }
+        else if (JOY_NEW(START_BUTTON))
+        {
+            species = DexNavGetSpecies();
+            if (species != SPECIES_NONE)
+            {
+                gDexNavSpeciesToLoad = species;
+                PlaySE(SE_SELECT);
+                BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
+                sDexNavUiDataPtr->savedCallback = CB2_OpenPokedexPlusHGSS;
+                task->func = Task_DexNavFadeAndExit;
             }
             else
             {

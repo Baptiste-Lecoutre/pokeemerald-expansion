@@ -6,6 +6,7 @@
 #include "data.h"
 #include "daycare.h"
 #include "decompress.h"
+#include "dexnav.h"
 #include "event_data.h"
 #include "gpu_regs.h"
 #include "graphics.h"
@@ -325,7 +326,8 @@ static EWRAM_DATA struct PokedexListItem *sPokedexListItem = NULL;
 #define MOVES_COUNT_TOTAL (EGG_MOVES_ARRAY_COUNT + MAX_LEVEL_UP_MOVES + NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES)
 EWRAM_DATA static u16 sStatsMoves[MOVES_COUNT_TOTAL] = {0};
 EWRAM_DATA static u16 sStatsMovesTMHM_ID[NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES] = {0};
-EWRAM_DATA u16 gSpeciesToLoad = SPECIES_NONE;
+EWRAM_DATA u16 gPartyMenuSpeciesToLoad = SPECIES_NONE;
+EWRAM_DATA u16 gDexNavSpeciesToLoad = SPECIES_NONE;
 
 struct SearchOptionText
 {
@@ -2089,8 +2091,10 @@ void CB2_OpenPokedexPlusHGSS(void)
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x80);
 
         // force load species from party menu
-        if (gSpeciesToLoad != SPECIES_NONE)
-            sPokedexView->selectedPokemon = SpeciesToDexListNum(gSpeciesToLoad);
+        if (gPartyMenuSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->selectedPokemon = SpeciesToDexListNum(gPartyMenuSpeciesToLoad);
+        else if (gDexNavSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->selectedPokemon = SpeciesToDexListNum(gDexNavSpeciesToLoad);
 
         break;
     }
@@ -2178,10 +2182,12 @@ static void Task_HandlePokedexInput(u8 taskId)
     SetGpuReg(REG_OFFSET_BG0VOFS, sPokedexView->menuY);
 
     // force load species from party menu
-    if (gSpeciesToLoad != SPECIES_NONE)
+    if (gPartyMenuSpeciesToLoad != SPECIES_NONE || gDexNavSpeciesToLoad != SPECIES_NONE)
     {
-        if (GetFormIdFromFormSpeciesId(gSpeciesToLoad) != 0)
-            sPokedexView->formSpecies = gSpeciesToLoad;
+        if (gPartyMenuSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gPartyMenuSpeciesToLoad) != 0)
+            sPokedexView->formSpecies = gPartyMenuSpeciesToLoad;
+        if (gDexNavSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gDexNavSpeciesToLoad) != 0)
+            sPokedexView->formSpecies = gDexNavSpeciesToLoad;
 
         TryDestroyStatBars();
         UpdateSelectedMonSpriteId();
@@ -2811,7 +2817,7 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
 
     // if we load in a particular form from the party menu, we need to load the sprite for it
     // but only for the middle mon
-    bool8 loadForm = gSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gSpeciesToLoad) != 0;
+    bool8 loadForm = (gPartyMenuSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gPartyMenuSpeciesToLoad) != 0) || (gDexNavSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gDexNavSpeciesToLoad) != 0);
 
     gPaletteFade.bufferTransferDisabled = TRUE;
 
@@ -2832,8 +2838,10 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
     dexNum = GetPokemonSpriteToDisplay(selectedMon);
     if (dexNum != 0xFFFF)
     {
-        if (loadForm)
-            sPokedexView->formSpecies = gSpeciesToLoad;
+        if (loadForm && gPartyMenuSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->formSpecies = gPartyMenuSpeciesToLoad;
+        else if (loadForm && gDexNavSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->formSpecies = gDexNavSpeciesToLoad;
 
         spriteId = CreatePokedexMonSprite(dexNum, SCROLLING_MON_X, 0x50);
         gSprites[spriteId].callback = SpriteCB_PokedexListMonSprite;
@@ -3978,11 +3986,19 @@ static void Task_ExitInfoScreen(u8 taskId)
     {
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         FreeInfoScreenWindowAndBgBuffers();
-        if (gSpeciesToLoad != SPECIES_NONE)
+        if (gPartyMenuSpeciesToLoad != SPECIES_NONE)
         {
             SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
-            gSpeciesToLoad = SPECIES_NONE;
+            gPartyMenuSpeciesToLoad = SPECIES_NONE;
             m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
+        }
+        if (gDexNavSpeciesToLoad != SPECIES_NONE)
+        {
+            //SetMainCallback2(CB2_DexNavFromPokedexCallback);
+            gDexNavSelectedSpecies = gDexNavSpeciesToLoad; // So that the current species is selected when opening dexnav
+            gDexNavSpeciesToLoad = SPECIES_NONE;
+            m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
+            OpenDexNavFromPokedex();
         }
         DestroyTask(taskId);
     }
