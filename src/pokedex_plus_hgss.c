@@ -4065,6 +4065,12 @@ static void Task_SwitchScreensFromAreaScreen(u8 taskId)
             else
                 gTasks[taskId].func = Task_LoadStatsScreen;
             break;
+        case 3:
+            //BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+            gDexNavSpeciesToLoad = NationalPokedexNumToSpeciesHGSS(sPokedexListItem->dexNum);
+            gTasks[taskId].func = Task_ExitInfoScreen;
+            PlaySE(SE_PC_OFF);
+            break;
         }
     }
 }
