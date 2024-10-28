@@ -2298,14 +2298,14 @@ s32 GetDrainedBigRootHp(u32 battler, s32 hp)
     return hp * -1;
 }
 
-#define MAGIC_GUARD_CHECK \
-if (ability == ABILITY_MAGIC_GUARD) \
-{\
-    RecordAbilityBattle(battler, ability);\
-    gBattleStruct->turnEffectsTracker++;\
-            break;\
-}
+static inline bool32 IsBattlerProtectedByMagicGuard(u32 battler, u32 ability)
+{
+    if (ability != ABILITY_MAGIC_GUARD)
+        return FALSE;
 
+    RecordAbilityBattle(battler, ability);
+    return TRUE;
+}
 
 u8 DoBattlerEndTurnEffects(void)
 {
@@ -2433,10 +2433,9 @@ u8 DoBattlerEndTurnEffects(void)
         case ENDTURN_LEECH_SEED:  // leech seed
             if ((gStatuses3[battler] & STATUS3_LEECHSEED)
              && IsBattlerAlive(gStatuses3[battler] & STATUS3_LEECHSEED_BATTLER)
-             && IsBattlerAlive(battler))
+             && IsBattlerAlive(battler)
+             && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
-                MAGIC_GUARD_CHECK;
-
                 gBattlerTarget = gStatuses3[battler] & STATUS3_LEECHSEED_BATTLER; // Notice gBattlerTarget is actually the HP receiver.
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / 8;
                 if (gBattleMoveDamage == 0)
@@ -2450,10 +2449,9 @@ u8 DoBattlerEndTurnEffects(void)
             break;
         case ENDTURN_POISON:  // poison
             if ((gBattleMons[battler].status1 & STATUS1_POISON)
-                && IsBattlerAlive(battler))
+             && IsBattlerAlive(battler)
+             && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
-                MAGIC_GUARD_CHECK;
-
                 if (ability == ABILITY_POISON_HEAL)
                 {
                     if (!BATTLER_MAX_HP(battler) && !(gStatuses3[battler] & STATUS3_HEAL_BLOCK))
@@ -2479,10 +2477,9 @@ u8 DoBattlerEndTurnEffects(void)
             break;
         case ENDTURN_BAD_POISON:  // toxic poison
             if ((gBattleMons[battler].status1 & STATUS1_TOXIC_POISON)
-                && IsBattlerAlive(battler))
+              && IsBattlerAlive(battler)
+              && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
-                MAGIC_GUARD_CHECK;
-
                 if (ability == ABILITY_POISON_HEAL)
                 {
                     if (!BATTLER_MAX_HP(battler) && !(gStatuses3[battler] & STATUS3_HEAL_BLOCK))
@@ -2511,9 +2508,9 @@ u8 DoBattlerEndTurnEffects(void)
             break;
         case ENDTURN_BURN:  // burn
             if ((gBattleMons[battler].status1 & STATUS1_BURN)
-                && IsBattlerAlive(battler))
+             && IsBattlerAlive(battler)
+             && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
-                MAGIC_GUARD_CHECK;
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / (B_BURN_DAMAGE >= GEN_7 ? 16 : 8);
                 if (ability == ABILITY_HEATPROOF)
                 {
@@ -2530,9 +2527,9 @@ u8 DoBattlerEndTurnEffects(void)
             break;
         case ENDTURN_FROSTBITE:  // burn
             if ((gBattleMons[battler].status1 & STATUS1_FROSTBITE)
-                && IsBattlerAlive(battler))
+             && IsBattlerAlive(battler)
+             && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
-                MAGIC_GUARD_CHECK;
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / (B_BURN_DAMAGE >= GEN_7 ? 16 : 8);
                 if (gBattleMoveDamage == 0)
                     gBattleMoveDamage = 1;
@@ -2543,9 +2540,9 @@ u8 DoBattlerEndTurnEffects(void)
             break;
         case ENDTURN_NIGHTMARES:  // spooky nightmares
             if ((gBattleMons[battler].status2 & STATUS2_NIGHTMARE)
-                && IsBattlerAlive(battler))
+             && IsBattlerAlive(battler)
+             && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
-                MAGIC_GUARD_CHECK;
                 // R/S does not perform this sleep check, which causes the nightmare effect to
                 // persist even after the affected Pokémon has been awakened by Shed Skin.
                 if (gBattleMons[battler].status1 & STATUS1_SLEEP)
@@ -2565,9 +2562,9 @@ u8 DoBattlerEndTurnEffects(void)
             break;
         case ENDTURN_CURSE:  // curse
             if ((gBattleMons[battler].status2 & STATUS2_CURSED)
-                && IsBattlerAlive(battler))
+             && IsBattlerAlive(battler)
+             && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
-                MAGIC_GUARD_CHECK;
                 gBattleMoveDamage = GetNonDynamaxMaxHP(battler) / 4;
                 if (gBattleMoveDamage == 0)
                     gBattleMoveDamage = 1;
@@ -2581,7 +2578,11 @@ u8 DoBattlerEndTurnEffects(void)
             {
                 if (--gDisableStructs[battler].wrapTurns != 0)  // damaged by wrap
                 {
-                    MAGIC_GUARD_CHECK;
+                    if (IsBattlerProtectedByMagicGuard(battler, ability))
+                    {
+                        gBattleStruct->turnEffectsTracker++;
+                        break;
+                    }
 
                     gBattleScripting.animArg1 = gBattleStruct->wrappedMove[battler];
                     gBattleScripting.animArg2 = gBattleStruct->wrappedMove[battler] >> 8;
@@ -2885,7 +2886,9 @@ u8 DoBattlerEndTurnEffects(void)
             gBattleStruct->turnEffectsTracker++;
             break;
         case ENDTURN_SALT_CURE:
-            if (gStatuses4[battler] & STATUS4_SALT_CURE && IsBattlerAlive(battler))
+            if (gStatuses4[battler] & STATUS4_SALT_CURE
+             && IsBattlerAlive(battler)
+             && !IsBattlerProtectedByMagicGuard(battler, ability))
             {
                 gBattlerTarget = battler;
                 if (IS_BATTLER_OF_TYPE(gBattlerTarget, TYPE_STEEL) || IS_BATTLER_OF_TYPE(gBattlerTarget, TYPE_WATER))
@@ -4470,7 +4473,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     RecordAbilityBattle(chosenTarget, gLastUsedAbility); // Record the opposing battler has this ability
                     gBattlerAbility = battler;
 
-                    PREPARE_MON_NICK_WITH_PREFIX_BUFFER(gBattleTextBuff1, chosenTarget, gBattlerPartyIndexes[chosenTarget])
+                    PREPARE_MON_NICK_WITH_PREFIX_LOWER_BUFFER(gBattleTextBuff1, chosenTarget, gBattlerPartyIndexes[chosenTarget])
                     PREPARE_ABILITY_BUFFER(gBattleTextBuff2, gLastUsedAbility)
                 }
             }
@@ -5133,7 +5136,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 break;
             case ABILITY_SHED_SKIN:
                 if ((gBattleMons[battler].status1 & STATUS1_ANY)
-                 && (B_ABILITY_TRIGGER_CHANCE >= GEN_4 ? RandomPercentage(RNG_SHED_SKIN, 30) : RandomChance(RNG_SHED_SKIN, 1, 3)))
+                 && (B_ABILITY_TRIGGER_CHANCE == GEN_4 ? RandomPercentage(RNG_SHED_SKIN, 30) : RandomChance(RNG_SHED_SKIN, 1, 3)))
                 {
                 ABILITY_HEAL_MON_STATUS:
                     if (gBattleMons[battler].status1 & (STATUS1_POISON | STATUS1_TOXIC_POISON))
@@ -5226,7 +5229,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                 gBattleScripting.battler = BATTLE_PARTNER(battler);
                 if (IsBattlerAlive(gBattleScripting.battler)
                     && gBattleMons[gBattleScripting.battler].status1 & STATUS1_ANY
-                    && (Random() % 100) < 30)
+                    && RandomPercentage(RNG_HEALER, 30))
                 {
                     BattleScriptPushCursorAndCallback(BattleScript_HealerActivates);
                     effect++;
