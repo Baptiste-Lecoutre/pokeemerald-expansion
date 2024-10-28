@@ -1778,7 +1778,20 @@ void CB2_QuitRecordedBattle(void)
         m4aMPlayStop(&gMPlayInfo_SE1);
         m4aMPlayStop(&gMPlayInfo_SE2);
         if (gTestRunnerEnabled)
+        {
+            // Clean up potentially-leaking tasks.
+            // I think these leak when the battle ends soon after a
+            // battler is fainted.
+            u8 taskId;
+            taskId = FindTaskIdByFunc(Task_PlayerController_RestoreBgmAfterCry);
+            if (taskId != TASK_NONE)
+                DestroyTask(taskId);
+            taskId = FindTaskIdByFunc(Task_DuckBGMForPokemonCry);
+            if (taskId != TASK_NONE)
+                DestroyTask(taskId);
+
             TestRunner_Battle_AfterLastTurn();
+        }
         FreeRestoreBattleData();
         FreeAllWindowBuffers();
         SetMainCallback2(gMain.savedCallback);
@@ -4321,20 +4334,25 @@ static void HandleTurnActionSelectionState(void)
         case STATE_TURN_START_RECORD: // Recorded battle related action on start of every turn.
             RecordedBattle_CopyBattlerMoves(battler);
             gBattleCommunication[battler] = STATE_BEFORE_ACTION_CHOSEN;
+            u32 isAiRisky = AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_RISKY; // Risky AI switches aggressively even mid battle
 
             // Do AI score computations here so we can use them in AI_TrySwitchOrUseItem
             if ((gBattleTypeFlags & BATTLE_TYPE_HAS_AI || IsWildMonSmart())
                     && (BattlerHasAi(battler) && !(gBattleTypeFlags & BATTLE_TYPE_PALACE)))
             {
                 AI_DATA->aiCalcInProgress = TRUE;
-                if (ShouldSwitch(battler, FALSE))
-                    AI_DATA->shouldSwitch |= (1u << battler);
-                if (AI_THINKING_STRUCT->aiFlags[battler] & AI_FLAG_RISKY) // Risky AI switches aggressively even mid battle
-                    AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, TRUE);
-                else
-                    AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, FALSE);
 
-                gBattleStruct->aiMoveOrAction[battler] = ComputeBattleAiScores(battler);
+                // Setup battler data
+                sBattler_AI = battler;
+                BattleAI_SetupAIData(0xF, sBattler_AI);
+
+                // Setup switching data
+                AI_DATA->mostSuitableMonId[battler] = GetMostSuitableMonToSwitchInto(battler, isAiRisky);
+                if (ShouldSwitch(battler))
+                    AI_DATA->shouldSwitch |= (1u << battler);
+
+                // Do scoring
+                gBattleStruct->aiMoveOrAction[battler] = BattleAI_ChooseMoveOrAction();
                 AI_DATA->aiCalcInProgress = FALSE;
             }
             // fallthrough

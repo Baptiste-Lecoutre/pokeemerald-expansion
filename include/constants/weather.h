@@ -18,6 +18,7 @@
 #define WEATHER_UNDERWATER_BUBBLES      14
 #define WEATHER_ABNORMAL                15  // The alternating weather during Groudon/Kyogre conflict
 #define WEATHER_LEAVES                  16  // Grassy Terrain
+#define WEATHER_BLIZZARD                17
 #define WEATHER_ROUTE119_CYCLE          20
 #define WEATHER_ROUTE123_CYCLE          21
 
@@ -36,6 +37,7 @@
 #define COORD_EVENT_WEATHER_SHADE               10
 #define COORD_EVENT_WEATHER_DROUGHT             11
 #define COORD_EVENT_WEATHER_LEAVES              12
+#define COORD_EVENT_WEATHER_BLIZZARD            13
 #define COORD_EVENT_WEATHER_ROUTE119_CYCLE      20
 #define COORD_EVENT_WEATHER_ROUTE123_CYCLE      21
 
