@@ -379,7 +379,10 @@ void Task_OpenBattleMenuFromStartMenu(u8 taskId)
     if (!gPaletteFade.active)
     {
         CleanupOverworldWindowsAndTilemaps();
-        UI_Battle_Menu_Init(CB2_ReturnToFieldWithOpenMenu);
+        if (CONFIG_START_MENU_FULL)
+            UI_Battle_Menu_Init(CB2_ReturnToFullScreenStartMenu);
+        else
+            UI_Battle_Menu_Init(CB2_ReturnToFieldWithOpenMenu);
         DestroyTask(taskId);
     }
 }
