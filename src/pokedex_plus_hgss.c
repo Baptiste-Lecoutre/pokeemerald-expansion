@@ -2096,6 +2096,8 @@ void CB2_OpenPokedexPlusHGSS(void)
             sPokedexView->selectedPokemon = SpeciesToDexListNum(gPartyMenuSpeciesToLoad);
         else if (gDexNavSpeciesToLoad != SPECIES_NONE)
             sPokedexView->selectedPokemon = SpeciesToDexListNum(gDexNavSpeciesToLoad);
+        else if (gPokedexSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->selectedPokemon = SpeciesToDexListNum(gPokedexSpeciesToLoad);
 
         break;
     }
@@ -2184,12 +2186,14 @@ static void Task_HandlePokedexInput(u8 taskId)
     SetGpuReg(REG_OFFSET_BG0VOFS, sPokedexView->menuY);
 
     // force load species from party menu
-    if (gPartyMenuSpeciesToLoad != SPECIES_NONE || gDexNavSpeciesToLoad != SPECIES_NONE)
+    if (gPartyMenuSpeciesToLoad != SPECIES_NONE || gDexNavSpeciesToLoad != SPECIES_NONE || gPokedexSpeciesToLoad != SPECIES_NONE)
     {
         if (gPartyMenuSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gPartyMenuSpeciesToLoad) != 0)
             sPokedexView->formSpecies = gPartyMenuSpeciesToLoad;
         if (gDexNavSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gDexNavSpeciesToLoad) != 0)
             sPokedexView->formSpecies = gDexNavSpeciesToLoad;
+        if (gPokedexSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gPokedexSpeciesToLoad) != 0)
+            sPokedexView->formSpecies = gPokedexSpeciesToLoad;
 
         TryDestroyStatBars();
         UpdateSelectedMonSpriteId();
@@ -2826,7 +2830,9 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
 
     // if we load in a particular form from the party menu, we need to load the sprite for it
     // but only for the middle mon
-    bool8 loadForm = (gPartyMenuSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gPartyMenuSpeciesToLoad) != 0) || (gDexNavSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gDexNavSpeciesToLoad) != 0);
+    bool8 loadForm = (gPartyMenuSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gPartyMenuSpeciesToLoad) != 0) 
+                  || (gDexNavSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gDexNavSpeciesToLoad) != 0)
+                  || (gPokedexSpeciesToLoad != SPECIES_NONE && GetFormIdFromFormSpeciesId(gPokedexSpeciesToLoad) != 0);
 
     gPaletteFade.bufferTransferDisabled = TRUE;
 
@@ -2851,6 +2857,8 @@ static void CreateMonSpritesAtPos(u16 selectedMon, u16 ignored)
             sPokedexView->formSpecies = gPartyMenuSpeciesToLoad;
         else if (loadForm && gDexNavSpeciesToLoad != SPECIES_NONE)
             sPokedexView->formSpecies = gDexNavSpeciesToLoad;
+        else if (loadForm && gPokedexSpeciesToLoad != SPECIES_NONE)
+            sPokedexView->formSpecies = gPokedexSpeciesToLoad;
 
         spriteId = CreatePokedexMonSprite(dexNum, SCROLLING_MON_X, 0x50);
         gSprites[spriteId].callback = SpriteCB_PokedexListMonSprite;
@@ -3906,6 +3914,8 @@ static void Task_LoadInfoScreen(u8 taskId)
         gTasks[taskId].tBgLoaded = TRUE;
         gTasks[taskId].tSkipCry = TRUE;
         gTasks[taskId].func = Task_HandleInfoScreenInput;
+        if (gPokedexSpeciesToLoad != SPECIES_NONE)
+            gPokedexSpeciesToLoad = SPECIES_NONE;
         gMain.state = 0;
         break;
     }
@@ -4001,11 +4011,8 @@ static void Task_ExitInfoScreen(u8 taskId)
             gPartyMenuSpeciesToLoad = SPECIES_NONE;
             m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
         }
-        if (gDexNavSpeciesToLoad != SPECIES_NONE)
+        else if (gDexNavSpeciesToLoad != SPECIES_NONE || gPokedexSpeciesToLoad != SPECIES_NONE)
         {
-            //SetMainCallback2(CB2_DexNavFromPokedexCallback);
-            gDexNavSelectedSpecies = gDexNavSpeciesToLoad; // So that the current species is selected when opening dexnav
-            gDexNavSpeciesToLoad = SPECIES_NONE;
             m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
             OpenDexNavFromPokedex();
         }
@@ -4076,7 +4083,7 @@ static void Task_SwitchScreensFromAreaScreen(u8 taskId)
             break;
         case 3:
             //BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-            gDexNavSpeciesToLoad = NationalPokedexNumToSpeciesHGSS(sPokedexListItem->dexNum);
+            gPokedexSpeciesToLoad = NationalPokedexNumToSpeciesHGSS(sPokedexListItem->dexNum);
             gTasks[taskId].func = Task_ExitInfoScreen;
             PlaySE(SE_PC_OFF);
             break;
