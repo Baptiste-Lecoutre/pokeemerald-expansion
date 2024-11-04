@@ -237,8 +237,12 @@ Debug_PokemonStorageSize::
 	.string "Free space: {STR_VAR_3}b.$"
 
 Debug_CheckROMSpace::
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_MEW
+	setvar VAR_TEMP_2, FALSE
+	showmonpic VAR_TEMP_TRANSFERRED_SPECIES, 10, 3, VAR_TEMP_2
 	callnative CheckROMSize
 	msgbox Debug_ROMSize, MSGBOX_DEFAULT
+	hidemonpic
 	release
 	end
 

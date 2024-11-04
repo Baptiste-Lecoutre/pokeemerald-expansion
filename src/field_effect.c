@@ -955,10 +955,10 @@ u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x,
         return spriteId;
 }
 
-u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_PicBox(u16 species, bool8 isShiny, s16 x, s16 y, u8 subpriority)
 {
     // Reuse logic; (otId ^ pid) >= SHINY_ODDS ensures non-shiny
-    return CreateMonSprite_FieldMove(species, 0, SHINY_ODDS, x, y, subpriority);
+    return CreateMonSprite_FieldMove(species, isShiny, SHINY_ODDS, x, y, subpriority);
 }
 
 void FreeResourcesAndDestroySprite(struct Sprite *sprite, u8 spriteId)
