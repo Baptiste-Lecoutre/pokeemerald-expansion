@@ -1322,7 +1322,14 @@ static void Cmd_attackcanceler(void)
             return;
         case DISOBEYS_HITS_SELF:
             gBattlerTarget = gBattlerAttacker;
-            gBattleMoveDamage = CalculateMoveDamage(MOVE_NONE, gBattlerAttacker, gBattlerAttacker, TYPE_MYSTERY, 40, FALSE, FALSE, TRUE);
+            struct DamageCalculationData damageCalcData;
+            damageCalcData.battlerAtk = damageCalcData.battlerDef = gBattlerAttacker;
+            damageCalcData.move = MOVE_NONE;
+            damageCalcData.moveType = TYPE_MYSTERY;
+            damageCalcData.isCrit = FALSE;
+            damageCalcData.randomFactor = FALSE;
+            damageCalcData.updateFlags = TRUE;
+            gBattleMoveDamage = CalculateMoveDamage(&damageCalcData, 40);
             gBattlescriptCurrInstr = BattleScript_IgnoresAndHitsItself;
             gHitMarker |= HITMARKER_UNABLE_TO_USE_MOVE;
             gHitMarker |= HITMARKER_OBEYS;
@@ -1367,19 +1374,18 @@ static void Cmd_attackcanceler(void)
         && !gBattleStruct->bouncedMoveIsUsed)
     {
         gBattleStruct->bouncedMoveIsUsed = TRUE;
-        gBattleCommunication[MULTISTRING_CHOOSER] = 0;
         // Edge case for bouncing a powder move against a grass type pokemon.
         SetAtkCancellerForCalledMove();
         if (BlocksPrankster(gCurrentMove, gBattlerTarget, gBattlerAttacker, TRUE))
         {
             // Opponent used a prankster'd magic coat -> reflected status move should fail against a dark-type attacker
             gBattlerTarget = gBattlerAttacker;
-            gBattlescriptCurrInstr = BattleScript_MagicCoatBouncePrankster;
+            gBattlescriptCurrInstr = BattleScript_MagicCoatPrankster;
         }
         else
         {
             BattleScriptPushCursor();
-            gBattlescriptCurrInstr = BattleScript_MagicCoatBounce;
+            gBattlescriptCurrInstr = BattleScript_MagicCoat;
         }
         return;
     }
@@ -1402,11 +1408,10 @@ static void Cmd_attackcanceler(void)
 
         if (gBattleStruct->bouncedMoveIsUsed)
         {
-            gBattleCommunication[MULTISTRING_CHOOSER] = 1;
             // Edge case for bouncing a powder move against a grass type pokemon.
             SetAtkCancellerForCalledMove();
             BattleScriptPushCursor();
-            gBattlescriptCurrInstr = BattleScript_MagicCoatBounce;
+            gBattlescriptCurrInstr = BattleScript_MagicBounce;
             gBattlerAbility = battler;
             return;
         }
@@ -2142,10 +2147,19 @@ static void Cmd_damagecalc(void)
 {
     CMD_ARGS();
 
-    u32 moveType = GetMoveType(gCurrentMove);
     if (gMovesInfo[gCurrentMove].effect == EFFECT_SHELL_SIDE_ARM)
         gBattleStruct->swapDamageCategory = (gBattleStruct->shellSideArmCategory[gBattlerAttacker][gBattlerTarget] != gMovesInfo[gCurrentMove].category);
-    gBattleMoveDamage = CalculateMoveDamage(gCurrentMove, gBattlerAttacker, gBattlerTarget, moveType, 0, gIsCriticalHit, TRUE, TRUE);
+
+    struct DamageCalculationData damageCalcData;
+    damageCalcData.battlerAtk = gBattlerAttacker;
+    damageCalcData.battlerDef = gBattlerTarget;
+    damageCalcData.move = gCurrentMove;
+    damageCalcData.moveType = GetMoveType(gCurrentMove);
+    damageCalcData.isCrit = gIsCriticalHit;
+    damageCalcData.randomFactor = TRUE;
+    damageCalcData.updateFlags = TRUE;
+
+    gBattleMoveDamage = CalculateMoveDamage(&damageCalcData, 0);
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
@@ -7967,7 +7981,7 @@ static u32 GetTrainerMoneyToGive(u16 trainerId)
         if (party == NULL)
             return 20;
         lastMonLevel = party[GetTrainerPartySizeFromId(trainerId) - 1].lvl;
-        trainerMoney = gTrainerClasses[GetTrainerClassFromId(trainerId)].money;
+        trainerMoney = gTrainerClasses[GetTrainerClassFromId(trainerId)].money ?: 5;
 
         if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
             moneyReward = 4 * lastMonLevel * gBattleStruct->moneyMultiplier * trainerMoney;
@@ -9216,7 +9230,7 @@ static void Cmd_various(void)
     struct Pokemon *mon;
     s32 i;
     u8 data[10];
-    u32 side, battler, bits;
+    u32 battler, bits;
 
     if (gBattleControllerExecFlags)
         return;
@@ -9528,18 +9542,6 @@ static void Cmd_various(void)
             gBattlescriptCurrInstr = result;
             return;
         }
-        break;
-    }
-    case VARIOUS_SET_MAGIC_COAT_TARGET:
-    {
-        VARIOUS_ARGS();
-        gBattleStruct->attackerBeforeBounce = battler;
-        gBattlerAttacker = gBattlerTarget;
-        side = BATTLE_OPPOSITE(GetBattlerSide(gBattlerAttacker));
-        if (IsAffectedByFollowMe(gBattlerAttacker, side, gCurrentMove))
-            gBattlerTarget = gSideTimers[side].followmeTarget;
-        else
-            gBattlerTarget = battler;
         break;
     }
     case VARIOUS_IS_RUNNING_IMPOSSIBLE:
@@ -10166,24 +10168,6 @@ static void Cmd_various(void)
         gBattleMoveDamage = gMovesInfo[gCurrentMove].argument;
         break;
     }
-    case VARIOUS_TRY_HIT_SWITCH_TARGET:
-    {
-        VARIOUS_ARGS(const u8 *failInstr);
-        if (IsBattlerAlive(gBattlerAttacker)
-         && IsBattlerAlive(gBattlerTarget)
-         && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
-         && TARGET_TURN_DAMAGED
-         && GetBattlerAbility(gBattlerTarget) != ABILITY_GUARD_DOG)
-        {
-            gBattleScripting.switchCase = B_SWITCH_HIT;
-            gBattlescriptCurrInstr = cmd->nextInstr;
-        }
-        else
-        {
-            gBattlescriptCurrInstr = cmd->failInstr;
-        }
-        return;
-    }
     case VARIOUS_TRY_AUTOTOMIZE:
     {
         VARIOUS_ARGS(const u8 *failInstr);
@@ -10641,12 +10625,6 @@ static void Cmd_various(void)
             gBattlescriptCurrInstr = cmd->nextInstr;   // can heal
         return;
     }
-    case VARIOUS_REMOVE_TERRAIN:
-    {
-        VARIOUS_ARGS();
-        RemoveAllTerrains();
-        break;
-    }
     case VARIOUS_JUMP_IF_UNDER_200:
     {
         VARIOUS_ARGS(const u8 *jumpInstr);
@@ -10964,17 +10942,6 @@ static void Cmd_various(void)
         }
         return;
     }
-    case VARIOUS_CAN_TAR_SHOT_WORK:
-    {
-        VARIOUS_ARGS(const u8 *failInstr);
-        // Tar Shot will fail if it's already been used on the target and its speed can't be lowered further
-        if (!gDisableStructs[battler].tarShot
-            && CompareStat(battler, STAT_SPEED, MAX_STAT_STAGE, CMP_LESS_THAN))
-            gBattlescriptCurrInstr = cmd->nextInstr;
-        else
-            gBattlescriptCurrInstr = cmd->failInstr;
-        return;
-    }
     case VARIOUS_CURE_CERTAIN_STATUSES:
     {
         VARIOUS_ARGS();
@@ -11065,12 +11032,6 @@ static void Cmd_various(void)
     {
         VARIOUS_ARGS();
         gBattleMons[battler].item = gLastUsedItem;
-        break;
-    }
-    case VARIOUS_SET_BEAK_BLAST:
-    {
-        VARIOUS_ARGS();
-        gProtectStructs[battler].beakBlastCharge = TRUE;
         break;
     }
     case VARIOUS_SWAP_SIDE_STATUSES:
@@ -15313,10 +15274,10 @@ static void Cmd_handleballthrow(void)
     else
     {
         u32 odds, i;
-        u8 catchRate;
+        u32 catchRate;
+        u32 ballId = ItemIdToBallId(gLastUsedItem);
 
-        gLastThrownBall = gLastUsedItem;
-        gBallToDisplay = gLastThrownBall;
+        gBallToDisplay = gLastThrownBall = gLastUsedItem;
         if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
             catchRate = gBattleStruct->safariCatchFactor * 1275 / 100;
         else
@@ -15324,39 +15285,39 @@ static void Cmd_handleballthrow(void)
 
         if (gSpeciesInfo[gBattleMons[gBattlerTarget].species].isUltraBeast)
         {
-            if (gLastUsedItem == ITEM_BEAST_BALL)
+            if (ballId == BALL_BEAST)
                 ballMultiplier = 500;
             else
                 ballMultiplier = 10;
         }
         else
         {
-            switch (gLastUsedItem)
+            switch (ballId)
             {
-            case ITEM_ULTRA_BALL:
+            case BALL_ULTRA:
                 ballMultiplier = 200;
                 break;
-            case ITEM_SPORT_BALL:
+            case BALL_SPORT:
                 if (B_SPORT_BALL_MODIFIER <= GEN_7)
                     ballMultiplier = 150;
                 break;
-            case ITEM_GREAT_BALL:
+            case BALL_GREAT:
                 ballMultiplier = 150;
                 break;
-            case ITEM_SAFARI_BALL:
+            case BALL_SAFARI:
                 if (B_SAFARI_BALL_MODIFIER <= GEN_7)
                     ballMultiplier = 150;
                 break;
-            case ITEM_NET_BALL:
+            case BALL_NET:
                 if (IS_BATTLER_OF_TYPE(gBattlerTarget, TYPE_WATER) || IS_BATTLER_OF_TYPE(gBattlerTarget, TYPE_BUG))
                     ballMultiplier = B_NET_BALL_MODIFIER >= GEN_7 ? 350 : 300;
                 break;
-            case ITEM_DIVE_BALL:
+            case BALL_DIVE:
                 if (GetCurrentMapType() == MAP_TYPE_UNDERWATER
                     || (B_DIVE_BALL_MODIFIER >= GEN_4 && (gIsFishingEncounter || gIsSurfingEncounter)))
                     ballMultiplier = 350;
                 break;
-            case ITEM_NEST_BALL:
+            case BALL_NEST:
                 if (B_NEST_BALL_MODIFIER >= GEN_6)
                 {
                     //((41 - Pokémon's level) ÷ 10)× if Pokémon's level is between 1 and 29, 1× otherwise.
@@ -15377,25 +15338,25 @@ static void Cmd_handleballthrow(void)
                         ballMultiplier = 100;
                 }
                 break;
-            case ITEM_REPEAT_BALL:
+            case BALL_REPEAT:
                 if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gBattlerTarget].species), FLAG_GET_CAUGHT))
                     ballMultiplier = (B_REPEAT_BALL_MODIFIER >= GEN_7 ? 350 : 300);
                 break;
-            case ITEM_TIMER_BALL:
+            case BALL_TIMER:
                 ballMultiplier = 100 + (gBattleResults.battleTurnCounter * (B_TIMER_BALL_MODIFIER >= GEN_5 ? 30 : 10));
                 if (ballMultiplier > 400)
                     ballMultiplier = 400;
                 break;
-            case ITEM_DUSK_BALL:
+            case BALL_DUSK:
                 i = GetTimeOfDay();
                 if (i == TIME_EVENING || i == TIME_NIGHT || gMapHeader.cave || gMapHeader.mapType == MAP_TYPE_UNDERGROUND)
                     ballMultiplier = (B_DUSK_BALL_MODIFIER >= GEN_7 ? 300 : 350);
                 break;
-            case ITEM_QUICK_BALL:
+            case BALL_QUICK:
                 if (gBattleResults.battleTurnCounter == 0)
                     ballMultiplier = (B_QUICK_BALL_MODIFIER >= GEN_5 ? 500 : 400);
                 break;
-            case ITEM_LEVEL_BALL:
+            case BALL_LEVEL:
                 if (gBattleMons[gBattlerAttacker].level >= 4 * gBattleMons[gBattlerTarget].level)
                     ballMultiplier = 800;
                 else if (gBattleMons[gBattlerAttacker].level > 2 * gBattleMons[gBattlerTarget].level)
@@ -15403,7 +15364,7 @@ static void Cmd_handleballthrow(void)
                 else if (gBattleMons[gBattlerAttacker].level > gBattleMons[gBattlerTarget].level)
                     ballMultiplier = 200;
                 break;
-            case ITEM_LURE_BALL:
+            case BALL_LURE:
                 if (gIsFishingEncounter)
                 {
                     if (B_LURE_BALL_MODIFIER >= GEN_8)
@@ -15414,7 +15375,7 @@ static void Cmd_handleballthrow(void)
                         ballMultiplier = 300;
                 }
                 break;
-            case ITEM_MOON_BALL:
+            case BALL_MOON:
             {
                 const struct Evolution *evolutions = GetSpeciesEvolutions(gBattleMons[gBattlerTarget].species);
                 if (evolutions == NULL)
@@ -15427,7 +15388,7 @@ static void Cmd_handleballthrow(void)
                 }
             }
             break;
-            case ITEM_LOVE_BALL:
+            case BALL_LOVE:
                 if (gBattleMons[gBattlerTarget].species == gBattleMons[gBattlerAttacker].species)
                 {
                     u8 gender1 = GetMonGender(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
@@ -15437,11 +15398,11 @@ static void Cmd_handleballthrow(void)
                         ballMultiplier = 800;
                 }
                 break;
-            case ITEM_FAST_BALL:
+            case BALL_FAST:
                 if (gSpeciesInfo[gBattleMons[gBattlerTarget].species].baseSpeed >= 100)
                     ballMultiplier = 400;
                 break;
-            case ITEM_HEAVY_BALL:
+            case BALL_HEAVY:
                 i = GetSpeciesWeight(gBattleMons[gBattlerTarget].species);
                 if (B_HEAVY_BALL_MODIFIER >= GEN_7)
                 {
@@ -15479,11 +15440,11 @@ static void Cmd_handleballthrow(void)
                         ballAddition = 40;
                 }
                 break;
-            case ITEM_DREAM_BALL:
+            case BALL_DREAM:
                 if (B_DREAM_BALL_MODIFIER >= GEN_8 && (gBattleMons[gBattlerTarget].status1 & STATUS1_SLEEP || GetBattlerAbility(gBattlerTarget) == ABILITY_COMATOSE))
                     ballMultiplier = 400;
                 break;
-            case ITEM_BEAST_BALL:
+            case BALL_BEAST:
                 ballMultiplier = 10;
                 break;
             }
@@ -15504,8 +15465,8 @@ static void Cmd_handleballthrow(void)
         if (gBattleMons[gBattlerTarget].status1 & (STATUS1_POISON | STATUS1_BURN | STATUS1_PARALYSIS | STATUS1_TOXIC_POISON | STATUS1_FROSTBITE))
             odds = (odds * 15) / 10;
 
-        if (gBattleResults.catchAttempts[gLastUsedItem - FIRST_BALL] < 255)
-            gBattleResults.catchAttempts[gLastUsedItem - FIRST_BALL]++;
+        if (gBattleResults.catchAttempts[ballId] < 255)
+            gBattleResults.catchAttempts[ballId]++;
 
         if (odds > 254) // mon caught
         {
@@ -15513,14 +15474,14 @@ static void Cmd_handleballthrow(void)
             MarkBattlerForControllerExec(gBattlerAttacker);
             TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
             gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
-            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
+            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &ballId);
 
             if (CalculatePlayerPartyCount() == PARTY_SIZE)
                 gBattleCommunication[MULTISTRING_CHOOSER] = 0;
             else
                 gBattleCommunication[MULTISTRING_CHOOSER] = 1;
 
-            if (gLastUsedItem == ITEM_HEAL_BALL)
+            if (gLastUsedItem == BALL_HEAL)
             {
                 MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
                 HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], STATUS1_ANY, gBattlerTarget);
@@ -15546,7 +15507,7 @@ static void Cmd_handleballthrow(void)
                 maxShakes = BALL_3_SHAKES_SUCCESS;
             }
 
-            if (gLastUsedItem == ITEM_MASTER_BALL)
+            if (ballId == BALL_MASTER)
             {
                 shakes = maxShakes;
             }
@@ -15567,14 +15528,14 @@ static void Cmd_handleballthrow(void)
 
                 TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
                 gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
-                SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
+                SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &ballId);
 
                 if (CalculatePlayerPartyCount() == PARTY_SIZE)
                     gBattleCommunication[MULTISTRING_CHOOSER] = 0;
                 else
                     gBattleCommunication[MULTISTRING_CHOOSER] = 1;
 
-                if (gLastUsedItem == ITEM_HEAL_BALL)
+                if (ballId == BALL_HEAL)
                 {
                     MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
                     HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], STATUS1_ANY, gBattlerTarget);
@@ -17453,6 +17414,17 @@ void BS_TryTarShot(void)
     }
 }
 
+void BS_CanTarShotWork(void)
+{
+    NATIVE_ARGS(const u8 *failInstr);
+    // Tar Shot will fail if it's already been used on the target and its speed can't be lowered further
+    if (!gDisableStructs[gBattlerTarget].tarShot
+        && CompareStat(gBattlerTarget, STAT_SPEED, MAX_STAT_STAGE, CMP_LESS_THAN))
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    else
+        gBattlescriptCurrInstr = cmd->failInstr;
+}
+
 void BS_JumpIfBlockedBySoundproof(void)
 {
     NATIVE_ARGS(u8 battler, const u8 *jumpInstr);
@@ -17468,6 +17440,41 @@ void BS_JumpIfBlockedBySoundproof(void)
     {
         gBattlescriptCurrInstr = cmd->nextInstr;
     }
+}
+
+void BS_TryHitSwitchTarget(void)
+{
+    NATIVE_ARGS(const u8 *failInstr);
+
+    if (IsBattlerAlive(gBattlerAttacker)
+     && IsBattlerAlive(gBattlerTarget)
+     && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
+     && TARGET_TURN_DAMAGED
+     && gSpecialStatuses[gBattlerAttacker].parentalBondState != PARENTAL_BOND_1ST_HIT
+     && GetBattlerAbility(gBattlerTarget) != ABILITY_GUARD_DOG)
+    {
+        gBattleScripting.switchCase = B_SWITCH_HIT;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    else
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
+    }
+}
+
+void BS_SetMagicCoatTarget(void)
+{
+    NATIVE_ARGS();
+    u32 side;
+    gBattleStruct->attackerBeforeBounce = gBattleScripting.battler = gBattlerAttacker;
+    gBattlerAttacker = gBattlerTarget;
+    side = BATTLE_OPPOSITE(GetBattlerSide(gBattlerAttacker));
+    if (IsAffectedByFollowMe(gBattlerAttacker, side, gCurrentMove))
+        gBattlerTarget = gSideTimers[side].followmeTarget;
+    else
+        gBattlerTarget = gBattleStruct->attackerBeforeBounce;
+
+    gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
 void BS_TeatimeInvul(void)
@@ -17667,5 +17674,19 @@ void BS_WaitFanfare(void)
     if (!IsFanfareTaskInactive())
         return;
 
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_SetBeakBlast(void)
+{
+    NATIVE_ARGS();
+    gProtectStructs[gBattlerAttacker].beakBlastCharge = TRUE;
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_RemoveTerrain(void)
+{
+    NATIVE_ARGS();
+    RemoveAllTerrains();
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
