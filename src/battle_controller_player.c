@@ -1906,16 +1906,16 @@ static void MoveSelectionDisplayMoveDescription(u32 battler)
     LoadMessageBoxAndBorderGfx();
     DrawStdWindowFrame(B_WIN_MOVE_DESCRIPTION, FALSE);
 
-    if (B_UPDATED_BATTLE_MOVE_INFO == TRUE) // in include/config/battle.h
+    /*if (B_UPDATED_BATTLE_MOVE_INFO == TRUE) // in include/config/battle.h
     {
         pwr = CalcMoveBasePowerAfterModifiers(move, battlerAtk, battlerDef, moveType, updateFlags, atkAbility, defAbility, holdEffectAtk, weather);  // shows real base power after modifiers
         acc = GetTotalAccuracy(battlerAtk, battlerDef, move, atkAbility, defAbility, holdEffectAtk, holdEffectDef);                               // shows real accuracy after modifiers
     }
     else
-    {
+    {*/
         pwr = gMovesInfo[move].power; // for base power without modifiers
         acc = gMovesInfo[move].accuracy; // for base accuracy without modifiers
-    }
+    //}
 
     if (pwr < 2)
         StringCopy(pwr_num, gText_BattleSwitchWhich5);
