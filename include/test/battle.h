@@ -682,6 +682,7 @@ struct BattleTestData
 
     struct RecordedBattleSave recordedBattle;
     u8 battleRecordTypes[MAX_BATTLERS_COUNT][BATTLER_RECORD_SIZE];
+    u8 battleRecordTurnNumbers[MAX_BATTLERS_COUNT][BATTLER_RECORD_SIZE];
     u8 battleRecordSourceLineOffsets[MAX_BATTLERS_COUNT][BATTLER_RECORD_SIZE];
     u16 recordIndexes[MAX_BATTLERS_COUNT];
     struct BattlerTurn battleRecordTurns[MAX_TURNS][MAX_BATTLERS_COUNT];
@@ -715,6 +716,7 @@ struct BattleTestRunnerState
     u16 observedRatio;
     u16 trialRatio;
     bool8 runRandomly:1;
+    bool8 didRunRandomly:1;
     bool8 runGiven:1;
     bool8 runWhen:1;
     bool8 runScene:1;
@@ -735,7 +737,7 @@ extern struct BattleTestRunnerState *const gBattleTestRunnerState;
 #define APPEND_COMMA_TRUE(a) , a, TRUE
 #define R_APPEND_TRUE(...) __VA_OPT__(FIRST(__VA_ARGS__), TRUE RECURSIVELY(R_FOR_EACH(APPEND_COMMA_TRUE, EXCEPT_1(__VA_ARGS__))))
 
-#define AI_TRAINER_NAME "{PKMN} TRAINER LEAF"
+#define AI_TRAINER_NAME "{PKMN} Trainer Leaf"
 
 /* Test */
 
