@@ -295,4 +295,8 @@
 #define B_ENEMY_MON_SHADOW_STYLE        GEN_3 // In Gen4+, all enemy Pokemon will have a shadow drawn beneath them.
                                               // Currently Gen4+ shadows don't properly work with Trainerslides
 
+// Dynamic level settings
+#define B_DYNAMIC_TRAINER_LEVELS    FALSE // If TRUE, the opposing trainer levels will scale according the median level of the player. Scaling is set such that the average level of the trainer is the same as the player's median level with an offset defined in gTrainerClasses and keeping the levels distribution of the trainer.
+#define B_DYNAMIC_WILD_LEVELS       FALSE // If TRUE, the wild mons will scale accordingly to the median level of the player.
+
 #endif // GUARD_CONFIG_BATTLE_H
