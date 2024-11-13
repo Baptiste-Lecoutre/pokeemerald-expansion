@@ -1640,7 +1640,7 @@ static void MulModifier(u16 *modifier, u16 val)
 u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType){
     bool32 updateFlags = FALSE;
     u16 modifier = UQ_4_12(1.0);
-    u16 movePower = CalcMoveBasePowerAfterModifiers(move, battlerAtk, battlerDef, moveType, updateFlags, GetBattlerAbility(battlerAtk), GetBattlerAbility(battlerDef), GetBattlerHoldEffect(battlerAtk, TRUE), GetWeather());
+    u16 movePower = gMovesInfo[move].power;//= CalcMoveBasePowerAfterModifiers(move, battlerAtk, battlerDef, moveType, updateFlags, GetBattlerAbility(battlerAtk), GetBattlerAbility(battlerDef), GetBattlerHoldEffect(battlerAtk, TRUE), GetWeather());
 	u8 numsleepmons = 0;
     u8 atkSide = GetBattlerSide(battlerAtk);
 
@@ -2784,6 +2784,7 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     u16 move = gBattleMons[battler].moves[moveIndex];
     u8 moveType = gMovesInfo[move].type;
     const s8 *natureMod;
+    struct DamageCalculationData damageCalcData;
     
     if(sMenuDataPtr->damageCalculation[battler][target][moveIndex].calculated)
         return;
@@ -2805,8 +2806,15 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     }
 
     //Max and Min Damage
-    sMenuDataPtr->damageCalculation[battler][target][moveIndex].minDamage = minDamage = CalculateMoveDamage(move, battler, target, moveType, FALSE, FALSE, MIN_DAMAGE_FACTOR, FALSE);
-    sMenuDataPtr->damageCalculation[battler][target][moveIndex].maxDamage = maxDamage = CalculateMoveDamage(move, battler, target, moveType, FALSE, FALSE, MAX_DAMAGE_FACTOR, FALSE);
+    damageCalcData.battlerAtk = battler;
+    damageCalcData.battlerDef = target;
+    damageCalcData.move = move;
+    damageCalcData.moveType = GetMoveType(move);
+    damageCalcData.isCrit = FALSE;
+    damageCalcData.randomFactor = FALSE;
+    damageCalcData.updateFlags = FALSE;
+    sMenuDataPtr->damageCalculation[battler][target][moveIndex].minDamage = minDamage = CalculateMoveDamage(&damageCalcData, 0);
+    sMenuDataPtr->damageCalculation[battler][target][moveIndex].maxDamage = maxDamage = CalculateMoveDamage(&damageCalcData, 0);
 
     // Min Damage Percentage
     percentage = (minDamage * MAX_PERCENT_2) / targetCurrentHp; 
@@ -2826,7 +2834,7 @@ static void CalculateDamage(u8 battler, u8 target, u8 moveIndex){
     sMenuDataPtr->damageCalculation[battler][target][moveIndex].hits2KO = (targetCurrentHp / sMenuDataPtr->damageCalculation[battler][target][moveIndex].maxDamage);
 
     for(i = 0; i < MIN_DAMAGE_FACTOR; i++){
-        tempdamage = CalculateMoveDamage(move, battler, target, moveType, FALSE, FALSE, MIN_DAMAGE_FACTOR - i, FALSE);
+        tempdamage = CalculateMoveDamage(&damageCalcData, 0);
         tempchance = (targetCurrentHp / tempdamage);
 
         if(tempchance == hits2KO){
@@ -3774,9 +3782,17 @@ static void PrintSpeedTab(void)
                     x2 = 4;
                     //Can KO - Todo: Check calculation
                     if(gMovesInfo[move].category != DAMAGE_CATEGORY_STATUS && gMovesInfo[move].power > 0){
+                        struct DamageCalculationData damageCalcData;
                         u8 moveType = gMovesInfo[move].type;
                         SetTypeBeforeUsingMove(move, battlertoCheck);
-                        moveDamage = CalculateMoveDamage(move, battlertoCheck, target, moveType, 0, FALSE, FALSE, FALSE);
+                        damageCalcData.battlerAtk = battlertoCheck;
+    damageCalcData.battlerDef = target;
+    damageCalcData.move = move;
+    damageCalcData.moveType = moveType;
+    damageCalcData.isCrit = FALSE;
+    damageCalcData.randomFactor = FALSE;
+    damageCalcData.updateFlags = FALSE;
+                        moveDamage = CalculateMoveDamage(&damageCalcData, 0);
                         if(targetCurrentHp <= moveDamage)
                             BlitBitmapToWindow(windowId, sCheck, (x * 8) + x2, (y * 8), 8, 8);
                     }

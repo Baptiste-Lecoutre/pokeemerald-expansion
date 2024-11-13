@@ -81,11 +81,11 @@ AI_DOUBLE_BATTLE_TEST("AI will not try to switch for the same pokemon for 2 spot
     } WHEN {
         TURN { EXPECT_SWITCH(opponentLeft, 3); };
     } SCENE {
-        MESSAGE("{PKMN} TRAINER LEAF withdrew Linoone!");
-        MESSAGE("{PKMN} TRAINER LEAF sent out Gengar!");
+        MESSAGE("{PKMN} Trainer Leaf withdrew Linoone!");
+        MESSAGE("{PKMN} Trainer Leaf sent out Gengar!");
         NONE_OF {
-            MESSAGE("{PKMN} TRAINER LEAF withdrew Zigzagoon!");
-            MESSAGE("{PKMN} TRAINER LEAF sent out Gengar!");
+            MESSAGE("{PKMN} Trainer Leaf withdrew Zigzagoon!");
+            MESSAGE("{PKMN} Trainer Leaf sent out Gengar!");
         }
     }
 }
@@ -464,6 +464,7 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if mon would 
         ASSUME(gSpeciesInfo[SPECIES_PELIPPER].types[1] == TYPE_FLYING);
         ASSUME(gMovesInfo[MOVE_THUNDERBOLT].type == TYPE_ELECTRIC);
         ASSUME(gMovesInfo[MOVE_EARTHQUAKE].type == TYPE_GROUND);
+
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_SMART_SWITCHING | AI_FLAG_SMART_MON_CHOICES);
         PLAYER(SPECIES_ELECTRODE) { Moves(MOVE_THUNDERBOLT, MOVE_THUNDER_WAVE, MOVE_THUNDER_SHOCK); }
         OPPONENT(SPECIES_PELIPPER) { Moves(MOVE_EARTHQUAKE); };
