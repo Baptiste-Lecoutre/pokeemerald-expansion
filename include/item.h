@@ -45,6 +45,7 @@ u8 *CopyItemName(u16 itemId, u8 *dst);
 u8 *CopyItemNameHandlePlural(u16 itemId, u8 *dst, u32 quantity);
 bool8 IsBagPocketNonEmpty(u8 pocket);
 bool8 CheckBagHasItem(u16 itemId, u16 count);
+u16 CheckBagItemQuantity(u16 itemId);
 bool8 HasAtLeastOneBerry(void);
 bool8 HasAtLeastOnePokeBall(void);
 bool8 CheckBagHasSpace(u16 itemId, u16 count);

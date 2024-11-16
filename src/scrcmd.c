@@ -542,6 +542,14 @@ bool8 ScrCmd_checkitemtype(struct ScriptContext *ctx)
     return FALSE;
 }
 
+bool8 ScrCmd_checkitemquantity(struct ScriptContext *ctx)
+{
+    u16 itemId = VarGet(ScriptReadHalfword(ctx));
+
+    gSpecialVar_0x8005 = CheckBagItemQuantity(itemId);
+    return FALSE;
+}
+
 bool8 ScrCmd_addpcitem(struct ScriptContext *ctx)
 {
     u16 itemId = VarGet(ScriptReadHalfword(ctx));
@@ -1410,6 +1418,22 @@ bool8 ScrCmd_yesnobox(struct ScriptContext *ctx)
     u8 top = ScriptReadByte(ctx);
 
     if (ScriptMenu_YesNo(left, top) == TRUE)
+    {
+        ScriptContext_Stop();
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+bool8 ScrCmd_howmanybox(struct ScriptContext *ctx)
+{
+    u8 UNUSED left = ScriptReadByte(ctx);
+    u8 UNUSED top = ScriptReadByte(ctx);
+
+    if (ScriptMenu_HowMany() == TRUE)
     {
         ScriptContext_Stop();
         return TRUE;

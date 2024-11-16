@@ -204,7 +204,9 @@ Debug_EventScript_Script_7::
 	end
 
 Debug_EventScript_Script_8::
-	setTeraType TYPE_STELLAR, 4
+@	setTeraType TYPE_STELLAR, 4
+	setvar VAR_0x8005, 294
+	msgbox DebugScript_Text_EmptyParty, MSGBOX_HOWMANY
 	release
 	end
 

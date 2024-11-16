@@ -2107,7 +2107,8 @@
 	MSGBOX_YESNO = 5
 	MSGBOX_AUTOCLOSE = 6
 	MSGBOX_GETPOINTS = 9
-	MSGBOX_POKENAV = 10
+	MSGBOX_HOWMANY = 10
+	MSGBOX_POKENAV = 11
 
 	YES = 1
 	NO  = 0
@@ -2540,4 +2541,18 @@
 
 	.macro startfishing
 	callnative ScrCmd_startfishing
+	.endm
+
+	@ Displays a "How many" multichoice box at the specified coordinates, and blocks script execution until the user makes a selection.
+	@ Their selection is stored in VAR_RESULT as NO (0) or value (X). Pressing B is equivalent to answering NO
+	.macro howmanybox x:req, y:req
+	.byte 0xec
+	.byte \x
+	.byte \y
+	.endm
+
+	@ Checks how many of the specified item player has in the bag, and writes the value to VAR_0x8005.
+	.macro checkitemquant itemId:req
+	callnative ScrCmd_checkitemquantity
+	.2byte \itemId
 	.endm
