@@ -39703,7 +39703,13 @@
       "MOVE_PSYCH_UP",
       "MOVE_SLEEP_TALK",
       "MOVE_SWAGGER",
-      "MOVE_SUBSTITUTE"
+      "MOVE_SUBSTITUTE",
+      "MOVE_ANCIENT_POWER",
+      "MOVE_ROCK_POLISH",
+      "MOVE_ROCK_TOMB",
+      "MOVE_EARTHQUAKE",
+      "MOVE_METEOR_BEAM",
+      "MOVE_POWER_GEM"
     ],
     "EggMoves": [
       "MOVE_AMNESIA",
