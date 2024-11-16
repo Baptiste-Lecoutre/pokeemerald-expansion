@@ -2125,6 +2125,12 @@ const u32 gItemIconPalette_FairyFeather[] = INCBIN_U32("graphics/items/icon_pale
 const u32 gItemIcon_EonFlute[] = INCBIN_U32("graphics/items/icons/eon_flute.4bpp.lz");
 const u32 gItemIconPalette_EonFlute[] = INCBIN_U32("graphics/items/icon_palettes/eon_flute.gbapal.lz");
 
+const u32 gItemIcon_SilverWing[] = INCBIN_U32("graphics/items/icons/silver_wing.4bpp.lz");
+const u32 gItemIconPalette_SilverWing[] = INCBIN_U32("graphics/items/icon_palettes/silver_wing.gbapal.lz");
+
+const u32 gItemIcon_RainbowWing[] = INCBIN_U32("graphics/items/icons/rainbow_wing.4bpp.lz");
+const u32 gItemIconPalette_RainbowWing[] = INCBIN_U32("graphics/items/icon_palettes/rainbow_wing.gbapal.lz");
+
 const u32 gItemIcon_Remedy[] = INCBIN_U32("graphics/items/icons/remedy.4bpp.lz");
 const u32 gItemIconPalette_Remedy[] = INCBIN_U32("graphics/items/icon_palettes/remedy.gbapal.lz");
 

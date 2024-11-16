@@ -7538,6 +7538,80 @@ const struct SpeciesInfo gSpeciesInfoGen2[] =
         .levelUpLearnset = sLugiaLevelUpLearnset,
         .teachableLearnset = sLugiaTeachableLearnset,
     },
+
+#if P_PRIMAL_REVERSIONS
+    [SPECIES_LUGIA_PRIMAL] =
+    {
+        .baseHP        = 106,
+        .baseAttack    = 90,
+        .baseDefense   = 130,
+        .baseSpeed     = 110,
+        .baseSpAttack  = 90,
+        .baseSpDefense = 154,
+        .types = MON_TYPES(TYPE_PSYCHIC, TYPE_FLYING),
+        .catchRate = 3,
+    #if P_UPDATED_EXP_YIELDS >= GEN_8
+        .expYield = 340,
+    #elif P_UPDATED_EXP_YIELDS >= GEN_5
+        .expYield = 306,
+    #else
+        .expYield = 220,
+    #endif
+        .evYield_SpDefense = 3,
+        .genderRatio = MON_GENDERLESS,
+        .eggCycles = 120,
+        .friendship = 0,
+        .growthRate = GROWTH_SLOW,
+        .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
+        .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_MULTISCALE },
+        .bodyColor = BODY_COLOR_WHITE,
+        .speciesName = _("Lugia"),
+        .cryId = CRY_LUGIA,
+        .natDexNum = NATIONAL_DEX_LUGIA,
+        .categoryName = _("Diving"),
+        .height = 69,
+        .weight = 3560,
+        .description = COMPOUND_STRING(
+            "Lugia is so powerful even a light\n"
+            "fluttering of its wings can blow apart\n"
+            "houses. As a result, it chooses to live out\n"
+            "of sight deep under the sea."),
+        .pokemonScale = 256,
+        .pokemonOffset = 0,
+        .trainerScale = 721,
+        .trainerOffset = 19,
+        .frontPic = gMonFrontPic_LugiaPrimal,
+        .frontPicSize = MON_COORDS_SIZE(64, 64),
+        .frontPicYOffset = 0,
+        .frontAnimFrames = sAnims_LugiaPrimal,
+        .frontAnimId = ANIM_GROW_IN_STAGES,
+        .frontAnimDelay = 20,
+        .enemyMonElevation = 6,
+        .backPic = gMonBackPic_LugiaPrimal,
+        .backPicSize = MON_COORDS_SIZE(64, 64),
+        .backPicYOffset = 1,
+        .backAnimId = BACK_ANIM_SHAKE_GLOW_BLUE,
+        .palette = gMonPalette_LugiaPrimal,
+        .shinyPalette = gMonShinyPalette_LugiaPrimal,
+        .iconSprite = gMonIcon_LugiaPrimal,
+        .iconPalIndex = 0,
+        SHADOW(2, 17, SHADOW_SIZE_L)
+        FOOTPRINT(Lugia)
+        OVERWORLD(
+            sPicTable_Lugia,
+            SIZE_64x64,
+            SHADOW_SIZE_M,
+            TRACKS_NONE,
+            gOverworldPalette_Lugia,
+            gShinyOverworldPalette_Lugia
+        )
+        .isLegendary = TRUE,
+        .isFrontierBanned = TRUE,
+        .perfectIVCount = LEGENDARY_PERFECT_IV_COUNT,
+        .levelUpLearnset = sLugiaLevelUpLearnset,
+        .teachableLearnset = sLugiaTeachableLearnset,
+    },
+#endif //P_PRIMAL_REVERSIONS
 #endif //P_FAMILY_LUGIA
 
 #if P_FAMILY_HO_OH
@@ -7613,6 +7687,81 @@ const struct SpeciesInfo gSpeciesInfoGen2[] =
         .levelUpLearnset = sHoOhLevelUpLearnset,
         .teachableLearnset = sHoOhTeachableLearnset,
     },
+
+#if P_PRIMAL_REVERSIONS
+    [SPECIES_HO_OH_PRIMAL] =
+    {
+        .baseHP        = 106,
+        .baseAttack    = 130,
+        .baseDefense   = 90,
+        .baseSpeed     = 90,
+        .baseSpAttack  = 110,
+        .baseSpDefense = 154,
+        .types = MON_TYPES(TYPE_FIRE, TYPE_FLYING),
+        .catchRate = 3,
+    #if P_UPDATED_EXP_YIELDS >= GEN_8
+        .expYield = 340,
+    #elif P_UPDATED_EXP_YIELDS >= GEN_5
+        .expYield = 306,
+    #else
+        .expYield = 220,
+    #endif
+        .evYield_SpDefense = 3,
+        .itemCommon = ITEM_SACRED_ASH,
+        .itemRare   = ITEM_SACRED_ASH,
+        .genderRatio = MON_GENDERLESS,
+        .eggCycles = 120,
+        .friendship = 0,
+        .growthRate = GROWTH_SLOW,
+        .eggGroups = MON_EGG_GROUPS(EGG_GROUP_NO_EGGS_DISCOVERED),
+        .abilities = { ABILITY_PRESSURE, ABILITY_NONE, ABILITY_REGENERATOR },
+        .bodyColor = BODY_COLOR_RED,
+        .speciesName = _("Ho-Oh"),
+        .cryId = CRY_HO_OH,
+        .natDexNum = NATIONAL_DEX_HO_OH,
+        .categoryName = _("Rainbow"),
+        .height = 48,
+        .weight = 2990,
+        .description = COMPOUND_STRING(
+            "Its feathers--which glow in seven colors\n"
+            "depending on the angle at which they are\n"
+            "struck by light--are thought to bring joy.\n"
+            "It is said to live at the foot of a rainbow."),
+        .pokemonScale = 256,
+        .pokemonOffset = 0,
+        .trainerScale = 610,
+        .trainerOffset = 17,
+        .frontPic = gMonFrontPic_HoOhPrimal,
+        .frontPicSize = MON_COORDS_SIZE(64, 64),
+        .frontPicYOffset = 0,
+        .frontAnimFrames = sAnims_HoOhPrimal,
+        .frontAnimId = ANIM_GROW_VIBRATE,
+        .enemyMonElevation = 6,
+        .backPic = gMonBackPic_HoOhPrimal,
+        .backPicSize = MON_COORDS_SIZE(64, 64),
+        .backPicYOffset = P_GBA_STYLE_SPECIES_GFX ? 1 : 2,
+        .backAnimId = BACK_ANIM_SHAKE_GLOW_RED,
+        .palette = gMonPalette_HoOhPrimal,
+        .shinyPalette = gMonShinyPalette_HoOhPrimal,
+        .iconSprite = gMonIcon_HoOhPrimal,
+        .iconPalIndex = 1,
+        SHADOW(1, 17, SHADOW_SIZE_L)
+        FOOTPRINT(HoOh)
+        OVERWORLD(
+            sPicTable_HoOh,
+            SIZE_64x64,
+            SHADOW_SIZE_M,
+            TRACKS_NONE,
+            gOverworldPalette_HoOh,
+            gShinyOverworldPalette_HoOh
+        )
+        .isLegendary = TRUE,
+        .isFrontierBanned = TRUE,
+        .perfectIVCount = LEGENDARY_PERFECT_IV_COUNT,
+        .levelUpLearnset = sHoOhLevelUpLearnset,
+        .teachableLearnset = sHoOhTeachableLearnset,
+    },
+#endif //P_PRIMAL_REVERSIONS
 #endif //P_FAMILY_HO_OH
 
 #if P_FAMILY_CELEBI

@@ -9400,6 +9400,14 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
     const u32 gShinyOverworldPalette_Lugia[] = INCBIN_U32("graphics/pokemon/lugia/overworld_shiny.gbapal.lz");
 #endif //OW_PKMN_OBJECTS_SHARE_PALETTES
 #endif //OW_POKEMON_OBJECT_EVENTS
+
+#if P_PRIMAL_REVERSIONS
+    const u32 gMonFrontPic_LugiaPrimal[] = INCBIN_U32("graphics/pokemon/lugia/primal/front.4bpp.lz");
+    const u32 gMonPalette_LugiaPrimal[] = INCBIN_U32("graphics/pokemon/lugia/primal/normal.gbapal.lz");
+    const u32 gMonBackPic_LugiaPrimal[] = INCBIN_U32("graphics/pokemon/lugia/primal/back.4bpp.lz");
+    const u32 gMonShinyPalette_LugiaPrimal[] = INCBIN_U32("graphics/pokemon/lugia/primal/shiny.gbapal.lz");
+    const u8 gMonIcon_LugiaPrimal[] = INCBIN_U8("graphics/pokemon/lugia/primal/icon.4bpp");
+#endif //P_PRIMAL_REVERSIONS
 #endif //P_FAMILY_LUGIA
 
 #if P_FAMILY_HO_OH
@@ -9429,6 +9437,14 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
     const u32 gShinyOverworldPalette_HoOh[] = INCBIN_U32("graphics/pokemon/ho_oh/overworld_shiny.gbapal.lz");
 #endif //OW_PKMN_OBJECTS_SHARE_PALETTES
 #endif //OW_POKEMON_OBJECT_EVENTS
+
+#if P_PRIMAL_REVERSIONS
+    const u32 gMonFrontPic_HoOhPrimal[] = INCBIN_U32("graphics/pokemon/ho_oh/primal/front.4bpp.lz");
+    const u32 gMonPalette_HoOhPrimal[] = INCBIN_U32("graphics/pokemon/ho_oh/primal/normal.gbapal.lz");
+    const u32 gMonBackPic_HoOhPrimal[] = INCBIN_U32("graphics/pokemon/ho_oh/primal/back.4bpp.lz");
+    const u32 gMonShinyPalette_HoOhPrimal[] = INCBIN_U32("graphics/pokemon/ho_oh/primal/shiny.gbapal.lz");
+    const u8 gMonIcon_HoOhPrimal[] = INCBIN_U8("graphics/pokemon/ho_oh/primal/icon.4bpp");
+#endif //P_PRIMAL_REVERSIONS
 #endif //P_FAMILY_HO_OH
 
 #if P_FAMILY_CELEBI
@@ -15369,11 +15385,13 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
 #endif //OW_PKMN_OBJECTS_SHARE_PALETTES
 #endif //OW_POKEMON_OBJECT_EVENTS
 
+#if P_PRIMAL_REVERSIONS
     const u32 gMonFrontPic_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/front.4bpp.lz");
     const u32 gMonPalette_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/normal.gbapal.lz");
     const u32 gMonBackPic_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/back.4bpp.lz");
     const u32 gMonShinyPalette_DialgaPrimal[] = INCBIN_U32("graphics/pokemon/dialga/primal/shiny.gbapal.lz");
     const u8 gMonIcon_DialgaPrimal[] = INCBIN_U8("graphics/pokemon/dialga/primal/icon.4bpp");
+#endif //P_PRIMAL_REVERSIONS
 #endif //P_FAMILY_DIALGA
 
 #if P_FAMILY_PALKIA
@@ -15406,11 +15424,13 @@ const u32 gObjectEventPic_Substitute[] = INCBIN_COMP("graphics/pokemon/question_
 #endif //OW_PKMN_OBJECTS_SHARE_PALETTES
 #endif //OW_POKEMON_OBJECT_EVENTS
 
+#if P_PRIMAL_REVERSIONS
     const u32 gMonFrontPic_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/front.4bpp.lz");
     const u32 gMonPalette_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/normal.gbapal.lz");
     const u32 gMonBackPic_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/back.4bpp.lz");
     const u32 gMonShinyPalette_PalkiaPrimal[] = INCBIN_U32("graphics/pokemon/palkia/primal/shiny.gbapal.lz");
     const u8 gMonIcon_PalkiaPrimal[] = INCBIN_U8("graphics/pokemon/palkia/primal/icon.4bpp");
+#endif //P_PRIMAL_REVERSIONS
 #endif //P_FAMILY_PALKIA
 
 #if P_FAMILY_HEATRAN

@@ -14239,4 +14239,38 @@ const struct Item gItemsInfo[] =
         .iconPic = gItemIcon_EonFlute,
         .iconPalette = gItemIconPalette_EonFlute,
     },
+
+    [ITEM_SILVER_WING] =
+    {
+        .name = _("Silver Wing"),
+        .price = 0,
+        .holdEffect = HOLD_EFFECT_PRIMAL_ORB,
+        .description = COMPOUND_STRING(
+            "This wing belongs\n"
+            "to Lugia. Might\n"
+            "help in battle."),
+        .pocket = POCKET_MEGA_STONES,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .flingPower = 100,
+        .iconPic = gItemIcon_SilverWing,
+        .iconPalette = gItemIconPalette_SilverWing,
+    },
+
+    [ITEM_RAINBOW_WING] =
+    {
+        .name = _("Rainbow Wing"),
+        .price = 0,
+        .holdEffect = HOLD_EFFECT_PRIMAL_ORB,
+        .description = COMPOUND_STRING(
+            "This wing belongs\n"
+            "to Ho-Oh. Might\n"
+            "help in battle."),
+        .pocket = POCKET_MEGA_STONES,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .flingPower = 100,
+        .iconPic = gItemIcon_RainbowWing,
+        .iconPalette = gItemIconPalette_RainbowWing,
+    },
 };
