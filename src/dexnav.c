@@ -138,6 +138,7 @@ EWRAM_DATA static struct DexNavGUI *sDexNavUiDataPtr = NULL;
 EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
 EWRAM_DATA bool8 gDexnavBattle = FALSE;
 EWRAM_DATA u16 gDexNavSelectedSpecies = SPECIES_NONE;
+EWRAM_DATA u16 gPokedexSpeciesToLoad = SPECIES_NONE;
 
 //// Function Declarations
 //GUI
@@ -2538,7 +2539,10 @@ void Task_OpenDexNavFromStartMenu(u8 taskId)
     if (!gPaletteFade.active)
     {
         CleanupOverworldWindowsAndTilemaps();
-        DexNavGuiInit(CB2_ReturnToFieldWithOpenMenu);
+        if (CONFIG_START_MENU_FULL)
+            DexNavGuiInit(CB2_ReturnToFullScreenStartMenu);
+        else
+            DexNavGuiInit(CB2_ReturnToFieldWithOpenMenu);
         DestroyTask(taskId);
     }
 }
@@ -2553,7 +2557,18 @@ u32 PokeNavMenuDexNavCallback(void)
 void OpenDexNavFromPokedex(void)
 {
     gSaveBlock2Ptr->startShortcut = 14; // MENU_ACTION_DEXNAV
-    CreateTask(Task_OpenDexNavFromPokenav, 0);
+    
+    if (gDexNavSpeciesToLoad != SPECIES_NONE) // return to dexnav after opening pokedex from here
+    {
+        gDexNavSelectedSpecies = gDexNavSpeciesToLoad; // So that the current species is selected when opening dexnav
+        gDexNavSpeciesToLoad = SPECIES_NONE;
+        CreateTask(Task_OpenDexNavFromPokenav, 0);
+    }
+    else if(gPokedexSpeciesToLoad != SPECIES_NONE)
+    {
+        gDexNavSelectedSpecies = gPokedexSpeciesToLoad; // So that the current species is selected when opening dexnav
+        CreateTask(Task_OpenDexNavFromPokedex, 0);
+    }
 }
 
 void Task_OpenDexNavFromPokenav(u8 taskId)
@@ -2562,6 +2577,16 @@ void Task_OpenDexNavFromPokenav(u8 taskId)
     {
         CleanupOverworldWindowsAndTilemaps();
         DexNavGuiInit(CB2_InitPokeNav);
+        DestroyTask(taskId);
+    }
+}
+
+void Task_OpenDexNavFromPokedex(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        DexNavGuiInit(CB2_OpenPokedexPlusHGSS);
         DestroyTask(taskId);
     }
 }

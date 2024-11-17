@@ -542,6 +542,14 @@ bool8 ScrCmd_checkitemtype(struct ScriptContext *ctx)
     return FALSE;
 }
 
+bool8 ScrCmd_checkitemquantity(struct ScriptContext *ctx)
+{
+    u16 itemId = VarGet(ScriptReadHalfword(ctx));
+
+    gSpecialVar_0x8005 = CheckBagItemQuantity(itemId);
+    return FALSE;
+}
+
 bool8 ScrCmd_addpcitem(struct ScriptContext *ctx)
 {
     u16 itemId = VarGet(ScriptReadHalfword(ctx));
@@ -1420,6 +1428,22 @@ bool8 ScrCmd_yesnobox(struct ScriptContext *ctx)
     }
 }
 
+bool8 ScrCmd_howmanybox(struct ScriptContext *ctx)
+{
+    u8 UNUSED left = ScriptReadByte(ctx);
+    u8 UNUSED top = ScriptReadByte(ctx);
+
+    if (ScriptMenu_HowMany() == TRUE)
+    {
+        ScriptContext_Stop();
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
 static void DynamicMultichoiceSortList(struct ListMenuItem *items, u32 count)
 {
     u32 i,j;
@@ -1613,8 +1637,9 @@ bool8 ScrCmd_showmonpic(struct ScriptContext *ctx)
     u16 species = VarGet(ScriptReadHalfword(ctx));
     u8 x = ScriptReadByte(ctx);
     u8 y = ScriptReadByte(ctx);
+    bool8 isShiny = VarGet(ScriptReadHalfword(ctx));
 
-    ScriptMenu_ShowPokemonPic(species, x, y);
+    ScriptMenu_ShowPokemonPic(species, isShiny, x, y);
     return FALSE;
 }
 

@@ -768,13 +768,15 @@ void ShowStartMenu(void)
         PlayerFreeze();
         StopPlayerAvatar();
     }
-    else{
+    else
+    {
         gShouldStartMenuIconsBePrinted = TRUE;
         CreateStartMenuTask(Task_ShowStartMenu);
         LockPlayerFieldControls();
         return;
     }
-    if (GetSafariZoneFlag() || InBattlePyramid() || InBattlePike() || InUnionRoom() || InMultiPartnerRoom())
+
+    if (!CONFIG_START_MENU_FULL || GetSafariZoneFlag() || InBattlePyramid() || InBattlePike() || InUnionRoom() || InMultiPartnerRoom())
     {
         gShouldStartMenuIconsBePrinted = TRUE;
         CreateStartMenuTask(Task_ShowStartMenu);
@@ -1188,6 +1190,14 @@ static bool8 SaveCallback(void)
     case SAVE_IN_PROGRESS:
         return FALSE;
     case SAVE_CANCELED: // Back to start menu
+        if (!CONFIG_START_MENU_FULL)
+        {
+            ClearDialogWindowAndFrameToTransparent(0, FALSE);
+            gShouldStartMenuIconsBePrinted = TRUE;
+            InitStartMenu();
+            gMenuCallback = HandleStartMenuInput;
+            return FALSE;
+        }
     case SAVE_SUCCESS:
     case SAVE_ERROR:    // Close start menu
         ClearDialogWindowAndFrameToTransparent(0, TRUE);

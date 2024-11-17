@@ -581,7 +581,10 @@ void Task_OpenTrainerRadarFromStartMenu(u8 taskId)
     if (!gPaletteFade.active)
     {
         CleanupOverworldWindowsAndTilemaps();
-        InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);
+        if (CONFIG_START_MENU_FULL)
+            InitTrainerRadar(CB2_ReturnToFullScreenStartMenu);
+        else
+            InitTrainerRadar(CB2_ReturnToFieldWithOpenMenu);
         DestroyTask(taskId);
     }
 }

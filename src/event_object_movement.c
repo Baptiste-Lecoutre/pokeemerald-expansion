@@ -9829,6 +9829,9 @@ u8 GetLedgeJumpDirection(s16 x, s16 y, u8 direction)
 
     u8 behavior;
     u8 index = direction;
+    s16 x2 = x;
+    s16 y2 = y;
+    u8 collision;
 
     if (index == DIR_NONE)
         return DIR_NONE;
@@ -9838,7 +9841,24 @@ u8 GetLedgeJumpDirection(s16 x, s16 y, u8 direction)
     index--;
     behavior = MapGridGetMetatileBehaviorAt(x, y);
 
-    if (ledgeBehaviorFuncs[index](behavior) == TRUE)
+    switch(direction)
+    {
+        case DIR_SOUTH:
+            y2 += 1;
+            break;
+        case DIR_NORTH:
+            y2 -= 1;
+            break;
+        case DIR_WEST:
+            x2 -= 1;
+            break;
+        case DIR_EAST:
+            x2 += 1;
+            break;
+    }
+    collision = GetCollisionAtCoords(&gObjectEvents[gPlayerAvatar.objectEventId], x2, y2, direction);
+
+    if (ledgeBehaviorFuncs[index](behavior) == TRUE && collision == COLLISION_NONE)
         return index + 1;
 
     return DIR_NONE;
