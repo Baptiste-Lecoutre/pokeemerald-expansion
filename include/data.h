@@ -97,9 +97,9 @@ struct Trainer
 struct TrainerClass
 {
     u8 name[13];
+    s8 levelOffset;
     u8 money;
     u16 ball;
-    s8 levelOffset;
 };
 
 struct TypeInfo

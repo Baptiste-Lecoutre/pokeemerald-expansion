@@ -1601,8 +1601,11 @@ static u8 GetEncounterLevelFromMapData(u16 species, u8 environment)
     if (max == 0)
         return MON_LEVEL_NONEXISTENT;
     
-    min = playerMedianLevel - 6;
-    max = playerMedianLevel - 3;
+    if (B_DYNAMIC_WILD_LEVELS)
+    {
+        min = playerMedianLevel - 6;
+        max = playerMedianLevel - 3;
+    }
 
     return RandRange(min, max);
 }

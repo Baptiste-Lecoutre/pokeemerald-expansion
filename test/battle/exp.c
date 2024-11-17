@@ -30,11 +30,11 @@ WILD_BATTLE_TEST("Higher leveled Pokemon give more exp", s32 exp)
 {
     u8 level = 0;
 
-    PARAMETRIZE { level = 5; }
-    PARAMETRIZE { level = 10; }
+    PARAMETRIZE { level = 3; }
+    PARAMETRIZE { level = 8; }
 
     GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Level(20); }
+        PLAYER(SPECIES_WOBBUFFET) { Level(14); }
         OPPONENT(SPECIES_CATERPIE) { Level(level); HP(1); }
     } WHEN {
         TURN { MOVE(player, MOVE_TACKLE); }

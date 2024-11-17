@@ -309,86 +309,77 @@ static const s8 sCenterToCornerVecXs[8] ={-32, -16, -16, -32, -32};
 
 #include "data/types_info.h"
 
-// extra args are money and ball
-#define TRAINER_CLASS(trainerClass, trainerName, lvlOffset, ...)    \
-    [trainerClass] =                                                \
-    {                                                               \
-        .name = _(trainerName),                                     \
-        .levelOffset = lvlOffset,                                   \
-        .money = DEFAULT(5, __VA_ARGS__),                           \
-        .ball = DEFAULT_2(ITEM_POKE_BALL, __VA_ARGS__),             \
-    }
-
+// [TRAINER_CLASS_XYZ] = { _("name"), <money=5>, <ball=BALL_POKE> }
 const struct TrainerClass gTrainerClasses[TRAINER_CLASS_COUNT] =
 {
-    TRAINER_CLASS(TRAINER_CLASS_PKMN_TRAINER_1, "{PKMN} Trainer", 0),
-    TRAINER_CLASS(TRAINER_CLASS_PKMN_TRAINER_2, "{PKMN} Trainer", 0),
-    TRAINER_CLASS(TRAINER_CLASS_HIKER, "Hiker", -2, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_TEAM_AQUA, "Team Aqua", -2),
-    TRAINER_CLASS(TRAINER_CLASS_PKMN_BREEDER, "{PKMN} Breeder", -1, 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? ITEM_HEAL_BALL : ITEM_FRIEND_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_COOLTRAINER, "Cooltrainer", 0, 12, ITEM_ULTRA_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_BIRD_KEEPER, "Bird Keeper", -2, 8, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_COLLECTOR, "Collector", -2, 15, ITEM_PREMIER_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_SWIMMER_M, "Swimmer♂", -2, 2, ITEM_DIVE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_TEAM_MAGMA, "Team Magma", -2),
-    TRAINER_CLASS(TRAINER_CLASS_EXPERT, "Expert", 0, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_AQUA_ADMIN, "Aqua Admin", 0, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_BLACK_BELT, "Black Belt", -1, 8, ITEM_ULTRA_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_AQUA_LEADER, "Aqua Leader", 1, 20, ITEM_MASTER_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_HEX_MANIAC, "Hex Maniac", -2, 6, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_AROMA_LADY, "Aroma Lady", -2, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_RUIN_MANIAC, "Ruin Maniac", -2, 15, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_INTERVIEWER, "Interviewer", -1, 12, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_TUBER_F, "Tuber", -2, 1, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_TUBER_M, "Tuber", -2, 1, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_LADY, "Lady", -2, 50, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_BEAUTY, "Beauty", -2, 20, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_RICH_BOY, "Rich Boy", -2, 50, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_POKEMANIAC, "Pokémaniac", -2, 15, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_GUITARIST, "Guitarist", -2, 8, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_KINDLER, "Kindler", -2, 8, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_CAMPER, "Camper", -2, 4, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_PICNICKER, "Picnicker", -2, 4, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_BUG_MANIAC, "Bug Maniac", -3, 15, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_PSYCHIC, "Psychic", -2, 6, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_GENTLEMAN, "Gentleman", -2, 20, ITEM_LUXURY_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_ELITE_FOUR, "Elite Four", 1, 25, ITEM_ULTRA_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_LEADER, "Leader", 1, 25, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_SCHOOL_KID, "School Kid", -3),
-    TRAINER_CLASS(TRAINER_CLASS_SR_AND_JR, "Sr. and Jr.", -3, 4, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_WINSTRATE, "Winstrate", 0, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_POKEFAN, "Pokéfan", -3, 20, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_YOUNGSTER, "Youngster", -3, 4, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_CHAMPION, "Champion", 2, 50, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_FISHERMAN, "Fisherman", -2, 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? ITEM_DIVE_BALL : ITEM_LURE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_TRIATHLETE, "Triathlete", -1, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_DRAGON_TAMER, "Dragon Tamer", 0, 12, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_NINJA_BOY, "Ninja Boy", -2, 3, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_BATTLE_GIRL, "Battle Girl", -1, 6, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_PARASOL_LADY, "Parasol Lady", -2, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_SWIMMER_F, "Swimmer♀", -2, 2, ITEM_DIVE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_TWINS, "Twins", -2, 3, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_SAILOR, "Sailor", -2, 8, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_COOLTRAINER_2, "Cooltrainer", 0, 5, ITEM_ULTRA_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_MAGMA_ADMIN, "Magma Admin", 0, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_RIVAL, "{PKMN} Trainer", 0, 15, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_BUG_CATCHER, "Bug Catcher", -3, 4, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_PKMN_RANGER, "{PKMN} Ranger", -1, 12, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_MAGMA_LEADER, "Magma Leader", 1, 20, ITEM_MASTER_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_LASS, "Lass", -1, 4, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_YOUNG_COUPLE, "Young Couple", -3, 8, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_OLD_COUPLE, "Old Couple", -2, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_SIS_AND_BRO, "Sis and Bro", -2, 3, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_SALON_MAIDEN, "Salon Maiden", 0),
-    TRAINER_CLASS(TRAINER_CLASS_DOME_ACE, "Dome Ace", 0),
-    TRAINER_CLASS(TRAINER_CLASS_PALACE_MAVEN, "Palace Maven", 0),
-    TRAINER_CLASS(TRAINER_CLASS_ARENA_TYCOON, "Arena Tycoon", 0),
-    TRAINER_CLASS(TRAINER_CLASS_FACTORY_HEAD, "Factory Head", 0),
-    TRAINER_CLASS(TRAINER_CLASS_PIKE_QUEEN, "Pike Queen", 0),
-    TRAINER_CLASS(TRAINER_CLASS_PYRAMID_KING, "Pyramid King", 0),
-    TRAINER_CLASS(TRAINER_CLASS_RS_PROTAG, "{PKMN} Trainer", 0),
-    TRAINER_CLASS(TRAINER_CLASS_TEAM_ROCKET, "Team Rocket", -2, 10, ITEM_POKE_BALL),
-    TRAINER_CLASS(TRAINER_CLASS_BOSS, "Boss", 1, 20, ITEM_MASTER_BALL),
+    [TRAINER_CLASS_PKMN_TRAINER_1] = { _("{PKMN} Trainer"), 0 },
+    [TRAINER_CLASS_PKMN_TRAINER_2] = { _("{PKMN} Trainer"), 0 },
+    [TRAINER_CLASS_HIKER] = { _("Hiker"), -2, 10 },
+    [TRAINER_CLASS_TEAM_AQUA] = { _("Team Aqua"), -2 },
+    [TRAINER_CLASS_PKMN_BREEDER] = { _("{PKMN} Breeder"), -1, 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? BALL_HEAL : BALL_FRIEND },
+    [TRAINER_CLASS_COOLTRAINER] = { _("Cooltrainer"), 0, 12, BALL_ULTRA },
+    [TRAINER_CLASS_BIRD_KEEPER] = { _("Bird Keeper"), -2, 8 },
+    [TRAINER_CLASS_COLLECTOR] = { _("Collector"), -2, 15, BALL_PREMIER },
+    [TRAINER_CLASS_SWIMMER_M] = { _("Swimmer♂"), -2, 2, BALL_DIVE },
+    [TRAINER_CLASS_TEAM_MAGMA] = { _("Team Magma"), -2 },
+    [TRAINER_CLASS_EXPERT] = { _("Expert"), 0, 10 },
+    [TRAINER_CLASS_AQUA_ADMIN] = { _("Aqua Admin"), 0, 10 },
+    [TRAINER_CLASS_BLACK_BELT] = { _("Black Belt"), -1, 8, BALL_ULTRA },
+    [TRAINER_CLASS_AQUA_LEADER] = { _("Aqua Leader"), 1, 20, BALL_MASTER },
+    [TRAINER_CLASS_HEX_MANIAC] = { _("Hex Maniac"), -2, 6 },
+    [TRAINER_CLASS_AROMA_LADY] = { _("Aroma Lady"), -2, 10 },
+    [TRAINER_CLASS_RUIN_MANIAC] = { _("Ruin Maniac"), -2, 15 },
+    [TRAINER_CLASS_INTERVIEWER] = { _("Interviewer"), -1, 12 },
+    [TRAINER_CLASS_TUBER_F] = { _("Tuber"), -2, 1 },
+    [TRAINER_CLASS_TUBER_M] = { _("Tuber"), -2, 1 },
+    [TRAINER_CLASS_LADY] = { _("Lady"), -2, 50 },
+    [TRAINER_CLASS_BEAUTY] = { _("Beauty"), -2, 20 },
+    [TRAINER_CLASS_RICH_BOY] = { _("Rich Boy"), -2, 50 },
+    [TRAINER_CLASS_POKEMANIAC] = { _("Pokémaniac"), -2, 15 },
+    [TRAINER_CLASS_GUITARIST] = { _("Guitarist"), -2, 8 },
+    [TRAINER_CLASS_KINDLER] = { _("Kindler"), -2, 8 },
+    [TRAINER_CLASS_CAMPER] = { _("Camper"), -2, 4 },
+    [TRAINER_CLASS_PICNICKER] = { _("Picnicker"), -2, 4 },
+    [TRAINER_CLASS_BUG_MANIAC] = { _("Bug Maniac"), -3, 15 },
+    [TRAINER_CLASS_PSYCHIC] = { _("Psychic"), -2, 6 },
+    [TRAINER_CLASS_GENTLEMAN] = { _("Gentleman"), -2, 20, BALL_LUXURY },
+    [TRAINER_CLASS_ELITE_FOUR] = { _("Elite Four"), 1, 25, BALL_ULTRA },
+    [TRAINER_CLASS_LEADER] = { _("Leader"), 1, 25 },
+    [TRAINER_CLASS_SCHOOL_KID] = { _("School Kid"), -3 },
+    [TRAINER_CLASS_SR_AND_JR] = { _("Sr. and Jr."), -3, 4 },
+    [TRAINER_CLASS_WINSTRATE] = { _("Winstrate"), 0, 10 },
+    [TRAINER_CLASS_POKEFAN] = { _("Pokéfan"), -3, 20 },
+    [TRAINER_CLASS_YOUNGSTER] = { _("Youngster"), -3, 4 },
+    [TRAINER_CLASS_CHAMPION] = { _("Champion"), 2, 50 },
+    [TRAINER_CLASS_FISHERMAN] = { _("Fisherman"), -2, 10, B_TRAINER_CLASS_POKE_BALLS >= GEN_8 ? BALL_DIVE : BALL_LURE },
+    [TRAINER_CLASS_TRIATHLETE] = { _("Triathlete"), -1, 10 },
+    [TRAINER_CLASS_DRAGON_TAMER] = { _("Dragon Tamer"), 0, 12 },
+    [TRAINER_CLASS_NINJA_BOY] = { _("Ninja Boy"), -2, 3 },
+    [TRAINER_CLASS_BATTLE_GIRL] = { _("Battle Girl"), -1, 6 },
+    [TRAINER_CLASS_PARASOL_LADY] = { _("Parasol Lady"), -2, 10 },
+    [TRAINER_CLASS_SWIMMER_F] = { _("Swimmer♀"), -2, 2, BALL_DIVE },
+    [TRAINER_CLASS_TWINS] = { _("Twins"), -2, 3 },
+    [TRAINER_CLASS_SAILOR] = { _("Sailor"), -2, 8 },
+    [TRAINER_CLASS_COOLTRAINER_2] = { _("Cooltrainer"), 0, 5, BALL_ULTRA },
+    [TRAINER_CLASS_MAGMA_ADMIN] = { _("Magma Admin"), 0, 10 },
+    [TRAINER_CLASS_RIVAL] = { _("{PKMN} Trainer"), 0, 15 },
+    [TRAINER_CLASS_BUG_CATCHER] = { _("Bug Catcher"), -3, 4 },
+    [TRAINER_CLASS_PKMN_RANGER] = { _("{PKMN} Ranger"), -1, 12 },
+    [TRAINER_CLASS_MAGMA_LEADER] = { _("Magma Leader"), 1, 20, BALL_MASTER },
+    [TRAINER_CLASS_LASS] = { _("Lass"), -1, 4 },
+    [TRAINER_CLASS_YOUNG_COUPLE] = { _("Young Couple"), -3, 8 },
+    [TRAINER_CLASS_OLD_COUPLE] = { _("Old Couple"), -2, 10 },
+    [TRAINER_CLASS_SIS_AND_BRO] = { _("Sis and Bro"), -2, 3 },
+    [TRAINER_CLASS_SALON_MAIDEN] = { _("Salon Maiden"), 0 },
+    [TRAINER_CLASS_DOME_ACE] = { _("Dome Ace"), 0 },
+    [TRAINER_CLASS_PALACE_MAVEN] = { _("Palace Maven"), 0 },
+    [TRAINER_CLASS_ARENA_TYCOON] = { _("Arena Tycoon"), 0 },
+    [TRAINER_CLASS_FACTORY_HEAD] = { _("Factory Head"), 0 },
+    [TRAINER_CLASS_PIKE_QUEEN] = { _("Pike Queen"), 0 },
+    [TRAINER_CLASS_PYRAMID_KING] = { _("Pyramid King"), 0 },
+    [TRAINER_CLASS_RS_PROTAG] = { _("{PKMN} Trainer"), 0 },
+    [TRAINER_CLASS_TEAM_ROCKET] = { _("Team Rocket"), -2, 10 },
+    [TRAINER_CLASS_BOSS] = { _("Boss"), 1, 20, BALL_MASTER },
 };
 
 static void (* const sTurnActionsFuncsTable[])(void) =
@@ -2053,15 +2044,22 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 fixedOtId = HIHALF(personalityValue) ^ LOHALF(personalityValue);
             }
 
-            averageOpponentLevel = 0;
-            for (j = 0; j < monsCount; j++)
-                averageOpponentLevel += partyData[j].lvl;
-            averageOpponentLevel /= monsCount;
-            monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClasses[trainer->trainerClass].levelOffset;
-            if (monLevel > MAX_LEVEL)
-                monLevel = MAX_LEVEL;
-            else if (monLevel < 2)
-                monLevel = 2;
+            if (B_DYNAMIC_TRAINER_LEVELS)
+            {
+                averageOpponentLevel = 0;
+                for (j = 0; j < monsCount; j++)
+                    averageOpponentLevel += partyData[j].lvl;
+                averageOpponentLevel /= monsCount;
+                monLevel = partyData[i].lvl - averageOpponentLevel + playerLevel + gTrainerClasses[trainer->trainerClass].levelOffset;
+                if (monLevel > MAX_LEVEL)
+                    monLevel = MAX_LEVEL;
+                else if (monLevel < 2)
+                    monLevel = 2;
+            }
+            else
+            {
+                monLevel = partyData[i].lvl;
+            }
             
             CreateMon(&party[i], partyData[i].species, monLevel, 0, TRUE, personalityValue, otIdType, fixedOtId);
             SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[i].heldItem);
