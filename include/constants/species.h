@@ -1642,8 +1642,11 @@
 #define SPECIES_PIKACHU_FLYING                          1525
 #define SPECIES_DIALGA_PRIMAL                           1526
 #define SPECIES_PALKIA_PRIMAL                           1527
+#define SPECIES_HO_OH_PRIMAL                            1528
+#define SPECIES_LUGIA_PRIMAL                            1529
+#define SPECIES_CASTFORM_SANDSTORM                      1530
 
-#define SPECIES_EGG (SPECIES_PALKIA_PRIMAL + 1)
+#define SPECIES_EGG (SPECIES_CASTFORM_SANDSTORM + 1)
 
 #define NUM_SPECIES SPECIES_EGG
 

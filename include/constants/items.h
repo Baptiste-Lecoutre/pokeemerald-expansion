@@ -1115,8 +1115,10 @@
 
 #define ITEM_POKE_VIAL 828
 #define ITEM_EON_FLUTE 829
+#define ITEM_SILVER_WING    830
+#define ITEM_RAINBOW_WING   831
 
-#define ITEMS_COUNT 830
+#define ITEMS_COUNT 832
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations

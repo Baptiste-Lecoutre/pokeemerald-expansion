@@ -723,6 +723,26 @@ static const u16 sTyranitarFormSpeciesIdTable[] = {
 };
 #endif //P_FAMILY_LARVITAR
 
+#if P_FAMILY_LUGIA
+static const u16 sLugiaFormSpeciesIdTable[] = {
+    SPECIES_LUGIA,
+#if P_PRIMAL_REVERSIONS
+    SPECIES_LUGIA_PRIMAL,
+#endif //P_PRIMAL_REVERSIONS
+    FORM_SPECIES_END,
+};
+#endif //P_FAMILY_LUGIA
+
+#if P_FAMILY_HO_OH
+static const u16 sHoOhFormSpeciesIdTable[] = {
+    SPECIES_HO_OH,
+#if P_PRIMAL_REVERSIONS
+    SPECIES_HO_OH_PRIMAL,
+#endif //P_PRIMAL_REVERSIONS
+    FORM_SPECIES_END,
+};
+#endif //P_FAMILY_HO_OH
+
 #if P_FAMILY_TREECKO
 static const u16 sSceptileFormSpeciesIdTable[] = {
     SPECIES_SCEPTILE,
@@ -877,6 +897,7 @@ static const u16 sCastformFormSpeciesIdTable[] = {
     SPECIES_CASTFORM_SUNNY,
     SPECIES_CASTFORM_RAINY,
     SPECIES_CASTFORM_SNOWY,
+    SPECIES_CASTFORM_SANDSTORM,
     FORM_SPECIES_END,
 };
 #endif //P_FAMILY_CASTFORM
@@ -1092,7 +1113,9 @@ static const u16 sRotomFormSpeciesIdTable[] = {
 static const u16 sDialgaFormSpeciesIdTable[] = {
     SPECIES_DIALGA,
     SPECIES_DIALGA_ORIGIN,
+#if P_PRIMAL_REVERSIONS
     SPECIES_DIALGA_PRIMAL,
+#endif //P_PRIMAL_REVERSIONS
     FORM_SPECIES_END,
 };
 #endif //P_FAMILY_DIALGA
@@ -1101,7 +1124,9 @@ static const u16 sDialgaFormSpeciesIdTable[] = {
 static const u16 sPalkiaFormSpeciesIdTable[] = {
     SPECIES_PALKIA,
     SPECIES_PALKIA_ORIGIN,
+#if P_PRIMAL_REVERSIONS
     SPECIES_PALKIA_PRIMAL,
+#endif //P_PRIMAL_REVERSIONS
     FORM_SPECIES_END,
 };
 #endif //P_FAMILY_PALKIA

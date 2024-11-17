@@ -28678,6 +28678,8 @@ gBattleAnimGeneral_PrimalReversion::
 	jumpargeq 0x0, ITEM_BLUE_ORB, General_PrimalReversion_Alpha
 	jumpargeq 0x0, ITEM_ADAMANT_ORB, General_PrimalReversion_Omega
 	jumpargeq 0x0, ITEM_LUSTROUS_ORB, General_PrimalReversion_Alpha
+	jumpargeq 0x0, ITEM_RAINBOW_WING, General_PrimalReversion_Omega
+	jumpargeq 0x0, ITEM_SILVER_WING, General_PrimalReversion_Alpha
 General_PrimalReversion_Alpha:
 	loadspritegfx ANIM_TAG_ALPHA_STONE
 	loadspritegfx ANIM_TAG_MEGA_PARTICLES

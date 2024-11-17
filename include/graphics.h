@@ -3406,6 +3406,12 @@ extern const u32 gItemIconPalette_PokeVial[];
 // eon flute
 extern const u32 gItemIcon_EonFlute[];
 extern const u32 gItemIconPalette_EonFlute[];
+// silver wing
+extern const u32 gItemIcon_SilverWing[];
+extern const u32 gItemIconPalette_SilverWing[];
+// rainbow wing
+extern const u32 gItemIcon_RainbowWing[];
+extern const u32 gItemIconPalette_RainbowWing[];
 
 extern const u32 gBattleTeamPreview_TileSet[];
 extern const u32 gBattleTeamPreview_TileMap[];
