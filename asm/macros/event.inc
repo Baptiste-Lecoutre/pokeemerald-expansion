@@ -2532,6 +2532,7 @@
 	.2byte \dest
 	.endm
 
+	@ Starts fishing with the best rod the player has.
 	.macro startfishing
 	callnative ScrCmd_startfishing
 	.endm
