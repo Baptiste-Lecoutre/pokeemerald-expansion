@@ -3080,7 +3080,7 @@ static void PrintTMHMMoveData(u16 itemId)
     else
     {
         LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
-        LoadCompressedPalette(gMoveTypes_Pal, 0x1C0, 0x60);
+        LoadCompressedPalette(gMoveTypes_Pal, OBJ_PLTT_ID(13), 3*PLTT_SIZE_4BPP);
 
         moveId = ItemIdToBattleMoveId(itemId);
 //        BlitMenuInfoIcon(WIN_TMHM_INFO, gMovesInfo[moveId].type + 1, 0, 0);
@@ -3143,10 +3143,10 @@ void LoadMonIconPalettesTinted(void)
     LoadMonIconPalettes();
 
     // load another one for blend in slot 15
-    LoadSpritePaletteInSlot(&gMonIconPaletteTable[0],15);
+    /*LoadSpritePaletteInSlot(&gMonIconPaletteTable[0],15);
     paletteOffset = 15 * 16 + 0x100;
     BlendPalette(paletteOffset, 16, 16, RGB(15, 15, 15));
-    CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
+    CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);*/
 }
 
 static void DrawPartyMonIcons(void)
