@@ -41,7 +41,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/items.h"
-#include "level_caps.h"
+#include "caps.h"
 
 enum
 {   // Corresponds to gHealthboxElementsGfxTable (and the tables after it) in graphics.c
@@ -3535,27 +3535,44 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
 
 #define MOVE_INFO_WIN_TAG 0x2722
 
+static const struct OamData sOamData_MoveDescTrigger =
+{
+    .y = 0,
+    .affineMode = 0,
+    .objMode = 0,
+    .mosaic = 0,
+    .bpp = 0,
+    .shape = SPRITE_SHAPE(8x16),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(8x16),
+    .tileNum = 0,
+    .priority = 0,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
 static const struct SpriteTemplate sSpriteTemplate_MoveInfoWindow =
 {
     .tileTag = MOVE_INFO_WIN_TAG,
     .paletteTag = ABILITY_POP_UP_TAG,
-    .oam = &sOamData_LastUsedBall,
+    .oam = &sOamData_MoveDescTrigger,
     .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCB_MoveInfoWindow
 };
 
-static const u8 sMoveInfoWindowGfx[] = INCBIN_U8("graphics/battle_interface/last_used_ball_l.4bpp");
+static const u8 sMoveInfoWindowGfx[] = INCBIN_U8("graphics/battle_interface/move_desc_trigger_l.4bpp");
 
 static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
 {
     sMoveInfoWindowGfx, sizeof(sMoveInfoWindowGfx), MOVE_INFO_WIN_TAG
 };
 
-#define MOVE_INFO_WIN_X 20
-#define MOVE_INFO_WIN_Y_0 143
-#define MOVE_INFO_WIN_Y_F (MOVE_INFO_WIN_Y_0 - 10)
+#define MOVE_INFO_WIN_X_0 -4
+#define MOVE_INFO_WIN_Y 137
+#define MOVE_INFO_WIN_X_F (MOVE_INFO_WIN_X_0 + 8)
 
 void TryLoadMoveInfoWindow(u32 battler)
 {
@@ -3565,12 +3582,13 @@ void TryLoadMoveInfoWindow(u32 battler)
     if (GetSpriteTileStartByTag(MOVE_INFO_WIN_TAG) == 0xFFFF)
         LoadSpriteSheet(&sSpriteSheet_MoveInfoWindow);
 
-    spriteId = CreateSpriteAtEnd(&sSpriteTemplate_MoveInfoWindow, MOVE_INFO_WIN_X, MOVE_INFO_WIN_Y_0, 0xFF);
+    spriteId = CreateSpriteAtEnd(&sSpriteTemplate_MoveInfoWindow, MOVE_INFO_WIN_X_0, MOVE_INFO_WIN_Y, 0xFF);
 
     if (spriteId != MAX_SPRITES)
 	{
 		struct Sprite* sprite = &gSprites[spriteId];
 		sprite->data[1] = battler;
+        //sprite->oam.priority = 0;
     }
 }
 
@@ -3579,7 +3597,7 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
     u8 activeBattler = sprite->data[1];
 
     // destroy window if condition
-    if (sprite->y > MOVE_INFO_WIN_Y_0)
+    if (sprite->x < MOVE_INFO_WIN_X_0)
     {
         FreeSpriteTilesByTag(MOVE_INFO_WIN_TAG);
         FreeSpritePaletteByTag(ABILITY_POP_UP_TAG);
@@ -3593,12 +3611,12 @@ static void SpriteCB_MoveInfoWindow(struct Sprite* sprite)
 	&&  gBattlerControllerFuncs[activeBattler] != HandleInputChooseMove)
     ||  gBattleStruct->descriptionSubmenu)
     {
-        sprite->y += 1;
+        sprite->x -= 1;
         return;
     }
 
-    if (sprite->y > MOVE_INFO_WIN_Y_F) 
-        sprite->y -= 1;
+    if (sprite->x < MOVE_INFO_WIN_X_F) 
+        sprite->x += 1;
 }
 
 // Enemy team preview
@@ -3799,7 +3817,7 @@ static void Task_DisplayInBattleTeamPreview(u8 taskId)
 									tileNum = 1;
 								else if (status & STATUS1_BURN)
 									tileNum = 2;
-								else if (status & STATUS1_FREEZE)
+								else if (status & (STATUS1_FREEZE | STATUS1_FROSTBITE))
 									tileNum = 3;
 								else if (status & STATUS1_PARALYSIS)
 									tileNum = 4;

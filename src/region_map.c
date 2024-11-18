@@ -223,7 +223,7 @@ static const u16 sTerraOrMarineCaveMapSecIds[ABNORMAL_WEATHER_LOCATIONS] =
     [ABNORMAL_WEATHER_ROUTE_129_EAST  - 1] = MAPSEC_ROUTE_129
 };
 
-#define MARINE_CAVE_COORD(location)(ABNORMAL_WEATHER_##location - MARINE_CAVE_LOCATIONS_START)
+#define MARINE_CAVE_COORD(location) (ABNORMAL_WEATHER_##location - MARINE_CAVE_LOCATIONS_START)
 
 static const struct UCoords16 sMarineCaveLocationCoords[MARINE_CAVE_LOCATIONS] =
 {
@@ -2040,14 +2040,14 @@ static void CB_HandleFlyMapInput(void)
         case MAP_INPUT_A_BUTTON:
             if (sFlyMap->regionMap.mapSecType == MAPSECTYPE_CITY_CANFLY || sFlyMap->regionMap.mapSecType == MAPSECTYPE_BATTLE_FRONTIER)
             {
-                if (gSaveBlock2Ptr->optionsSound != 2)
+                if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
                     m4aSongNumStart(SE_SELECT);
                 sFlyMap->choseFlyLocation = TRUE;
                 SetFlyMapCallback(CB_ExitFlyMap);
             }
             break;
         case MAP_INPUT_B_BUTTON:
-            if (gSaveBlock2Ptr->optionsSound != 2)
+            if (gSaveBlock2Ptr->optionsSound != OPTIONS_SOUND_OFF)
                 m4aSongNumStart(SE_SELECT);
             sFlyMap->choseFlyLocation = FALSE;
             SetFlyMapCallback(CB_ExitFlyMap);

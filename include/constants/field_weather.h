@@ -11,6 +11,8 @@
 #define NUM_SNOWFLAKE_SPRITES        16
 #define NUM_LEAVES_SPRITES           20
 #define NUM_SWIRL_LEAVES_SPRITES     5
+#define NUM_BLIZZARD_SPRITES         20 
+#define NUM_SWIRL_BLIZZARD_SPRITES   5
 
 // Controls how the weather should be changing the screen palettes.
 #define WEATHER_PAL_STATE_CHANGING_WEATHER   0

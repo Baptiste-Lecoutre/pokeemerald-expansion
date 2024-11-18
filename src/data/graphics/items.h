@@ -60,6 +60,9 @@ const u32 gBallIconPalette_Beast[] = INCBIN_U32("graphics/summary_screen/ball_ic
 
 // Poké Balls
 
+const u32 gItemIcon_StrangeBall[] = INCBIN_U32("graphics/items/icons/strange_ball.4bpp.lz");
+const u32 gItemIconPalette_StrangeBall[] = INCBIN_U32("graphics/items/icon_palettes/strange_ball.gbapal.lz");
+
 const u32 gItemIcon_PokeBall[] = INCBIN_U32("graphics/items/icons/poke_ball.4bpp.lz");
 const u32 gItemIconPalette_PokeBall[] = INCBIN_U32("graphics/items/icon_palettes/poke_ball.gbapal.lz");
 
@@ -2124,6 +2127,12 @@ const u32 gItemIconPalette_FairyFeather[] = INCBIN_U32("graphics/items/icon_pale
 
 const u32 gItemIcon_EonFlute[] = INCBIN_U32("graphics/items/icons/eon_flute.4bpp.lz");
 const u32 gItemIconPalette_EonFlute[] = INCBIN_U32("graphics/items/icon_palettes/eon_flute.gbapal.lz");
+
+const u32 gItemIcon_SilverWing[] = INCBIN_U32("graphics/items/icons/silver_wing.4bpp.lz");
+const u32 gItemIconPalette_SilverWing[] = INCBIN_U32("graphics/items/icon_palettes/silver_wing.gbapal.lz");
+
+const u32 gItemIcon_RainbowWing[] = INCBIN_U32("graphics/items/icons/rainbow_wing.4bpp.lz");
+const u32 gItemIconPalette_RainbowWing[] = INCBIN_U32("graphics/items/icon_palettes/rainbow_wing.gbapal.lz");
 
 const u32 gItemIcon_Remedy[] = INCBIN_U32("graphics/items/icons/remedy.4bpp.lz");
 const u32 gItemIconPalette_Remedy[] = INCBIN_U32("graphics/items/icon_palettes/remedy.gbapal.lz");

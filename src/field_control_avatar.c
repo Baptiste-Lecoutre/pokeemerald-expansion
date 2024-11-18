@@ -48,7 +48,7 @@ static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
 static EWRAM_DATA u8 sCurrentDirection = 0;
 static EWRAM_DATA u8 sPreviousDirection = 0;
 
-u8 gSelectedObjectEvent;
+COMMON_DATA u8 gSelectedObjectEvent = 0;
 
 static void GetPlayerPosition(struct MapPosition *);
 static void GetInFrontOfPlayerPosition(struct MapPosition *);
@@ -407,8 +407,39 @@ static const u8 *GetInteractedObjectEventScript(struct MapPosition *position, u8
 {
     u8 objectEventId;
     const u8 *script;
+    s16 currX = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.x;
+    s16 currY = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y;
+    u8 currBehavior = MapGridGetMetatileBehaviorAt(currX, currY);
 
-    objectEventId = GetObjectEventIdByPosition(position->x, position->y, position->elevation);
+    switch (direction)
+    {
+    case DIR_EAST:
+        if (MetatileBehavior_IsSidewaysStairsLeftSideAny(metatileBehavior))
+            // sideways stairs left-side to your right -> check northeast
+            objectEventId = GetObjectEventIdByPosition(currX + 1, currY - 1, position->elevation);
+        else if (MetatileBehavior_IsSidewaysStairsRightSideAny(currBehavior))
+            // on top of right-side stairs -> check southeast
+            objectEventId = GetObjectEventIdByPosition(currX + 1, currY + 1, position->elevation);
+        else
+            // check in front of player
+            objectEventId = GetObjectEventIdByPosition(position->x, position->y, position->elevation);
+        break;
+    case DIR_WEST:
+        if (MetatileBehavior_IsSidewaysStairsRightSideAny(metatileBehavior))
+            // facing sideways stairs right side -> check northwest
+            objectEventId = GetObjectEventIdByPosition(currX - 1, currY - 1, position->elevation);
+        else if (MetatileBehavior_IsSidewaysStairsLeftSideAny(currBehavior))
+            // on top of left-side stairs -> check southwest
+            objectEventId = GetObjectEventIdByPosition(currX - 1, currY + 1, position->elevation);
+        else
+            // check in front of player
+            objectEventId = GetObjectEventIdByPosition(position->x, position->y, position->elevation);
+        break;
+    default:
+        objectEventId = GetObjectEventIdByPosition(position->x, position->y, position->elevation);
+        break;
+    }
+
     if (objectEventId == OBJECT_EVENTS_COUNT || gObjectEvents[objectEventId].localId == OBJ_EVENT_ID_PLAYER)
     {
         if (MetatileBehavior_IsCounter(metatileBehavior) != TRUE)
@@ -574,8 +605,18 @@ static const u8 *GetInteractedMetatileScript(struct MapPosition *position, u8 me
 
 static const u8 *GetInteractedWaterScript(struct MapPosition *unused1, u8 metatileBehavior, u8 direction)
 {
-    if (FlagGet(FLAG_BADGE05_GET) == TRUE && PartyHasMonWithSurf() == TRUE && IsPlayerFacingSurfableFishableWater() == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_SURF))
-        return EventScript_UseSurf;
+    if (IsPlayerFacingSurfableFishableWater() == TRUE && !IsFishingActive())
+    {
+        bool32 canSurf = (FlagGet(FLAG_BADGE05_GET) == TRUE && PartyHasMonWithSurf() == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_SURF));
+        bool32 hasRod = (CheckBagHasItem(ITEM_OLD_ROD, 1) || CheckBagHasItem(ITEM_GOOD_ROD, 1) || CheckBagHasItem(ITEM_SUPER_ROD, 1));
+
+        if (canSurf && hasRod && !gSaveBlock2Ptr->optionsFastFieldMove)
+            return EventScript_UseSurfOrRod;
+        else if (canSurf)
+            return EventScript_UseSurf;
+        else if (hasRod)
+            return EventScript_UseRod;
+    }
 
     if (MetatileBehavior_IsWaterfall(metatileBehavior) == TRUE && CheckFollowerFlag(FOLLOWER_FLAG_CAN_WATERFALL))
     {
@@ -837,15 +878,37 @@ static bool8 CheckStandardWildEncounter(u16 metatileBehavior)
     return FALSE;
 }
 
+static void StorePlayerStateAndSetupWarp(struct MapPosition *position, s32 warpEventId)
+{
+    StoreInitialPlayerAvatarState();
+    SetupWarp(&gMapHeader, warpEventId, position);
+}
+
 static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8 direction)
 {
-    s8 warpEventId = GetWarpEventAtMapPosition(&gMapHeader, position);
+    s32 warpEventId = GetWarpEventAtMapPosition(&gMapHeader, position);
+    u32 delay;
 
-    if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE && warpEventId != WARP_ID_NONE)
+    if (warpEventId == WARP_ID_NONE)
+        return FALSE;
+
+    if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE)
     {
-        StoreInitialPlayerAvatarState();
-        SetupWarp(&gMapHeader, warpEventId, position);
+        StorePlayerStateAndSetupWarp(position, warpEventId);
         DoWarp();
+        return TRUE;
+    }
+    else if (IsDirectionalStairWarpMetatileBehavior(metatileBehavior, direction) == TRUE)
+    {
+        delay = 0;
+        if (gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_BIKE)
+        {
+            SetPlayerAvatarTransitionFlags(PLAYER_AVATAR_FLAG_ON_FOOT);
+            delay = 12;
+        }
+
+        StorePlayerStateAndSetupWarp(position, warpEventId);
+        DoStairWarp(metatileBehavior, delay);
         return TRUE;
     }
     return FALSE;

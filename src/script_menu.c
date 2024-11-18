@@ -5,6 +5,8 @@
 #include "field_specials.h"
 #include "item.h"
 #include "menu.h"
+#include "menu_helpers.h"
+#include "international_string_util.h"
 #include "palette.h"
 #include "script.h"
 #include "script_menu.h"
@@ -52,6 +54,7 @@ static void FreeListMenuItems(struct ListMenuItem *items, u32 count);
 static void Task_HandleScrollingMultichoiceInput(u8 taskId);
 static void Task_HandleMultichoiceInput(u8 taskId);
 static void Task_HandleYesNoInput(u8 taskId);
+static void Task_HandleHowManyInput(u8 taskId);
 static void Task_HandleMultichoiceGridInput(u8 taskId);
 static void DrawMultichoiceMenuDynamic(u8 left, u8 top, u8 argc, struct ListMenuItem *items, bool8 ignoreBPress, u32 initialRow, u8 maxBeforeScroll, u32 callbackSet);
 static void DrawMultichoiceMenu(u8 left, u8 top, u8 multichoiceId, bool8 ignoreBPress, u8 cursorPos);
@@ -597,6 +600,54 @@ bool8 ScriptMenu_YesNo(u8 left, u8 top)
     }
 }
 
+
+
+#define tQuantity   data[2]
+static void TaskHandler(u8 taskId)
+{
+    LockPlayerFieldControls();
+    s16 *data = gTasks[taskId].data;
+    tQuantity = 1;
+    if (gSpecialVar_0x8005 > 999)
+        gSpecialVar_0x8005 = 999;
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        // Quantity confirmed, perform action
+        gSpecialVar_Result = tQuantity;
+        PlaySE(SE_SELECT);
+        DestroyTask(taskId);
+        EraseYesNoWindow();
+        ScriptContext_Enable();
+    }
+    else if (JOY_NEW(B_BUTTON))
+    {
+        // Canceled action
+        gSpecialVar_Result = 0;
+        PlaySE(SE_SELECT);
+        DestroyTask(taskId);
+        EraseYesNoWindow();
+        ScriptContext_Enable();
+    }
+
+    gTasks[taskId].func = Task_HandleHowManyInput;
+}
+
+bool8 ScriptMenu_HowMany(void)
+{
+    if (FuncIsActiveTask(TaskHandler) == TRUE)
+    {
+        return FALSE;
+    }
+    else
+    {
+        gSpecialVar_Result = 0xFF;
+        DisplayHowManyMenu();
+        CreateTask(TaskHandler, 0x50);
+        return TRUE;
+    }
+}
+
 // Unused
 bool8 IsScriptActive(void)
 {
@@ -630,6 +681,39 @@ static void Task_HandleYesNoInput(u8 taskId)
 
     DestroyTask(taskId);
     ScriptContext_Enable();
+}
+
+static void Task_HandleHowManyInput(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    if (AdjustQuantityAccordingToDPadInput(&tQuantity, gSpecialVar_0x8005) == TRUE)
+    {
+        ConvertIntToDecimalStringN(gStringVar1, tQuantity, STR_CONV_MODE_LEADING_ZEROS, 3);
+        StringExpandPlaceholders(gStringVar4, gText_xVar1);
+        AddTextPrinterParameterized(sYesNoWindowId, FONT_NORMAL, gStringVar4, GetStringCenterAlignXOffset(FONT_NORMAL, gStringVar4, 48), 1, 0, NULL);
+    }
+    else
+    {
+        if (JOY_NEW(A_BUTTON))
+        {
+            // Quantity confirmed, perform action
+            gSpecialVar_Result = tQuantity;
+            PlaySE(SE_SELECT);
+            DestroyTask(taskId);
+            EraseYesNoWindow();
+            ScriptContext_Enable();
+        }
+        else if (JOY_NEW(B_BUTTON))
+        {
+            // Canceled action
+            gSpecialVar_Result = 0;
+            PlaySE(SE_SELECT);
+            DestroyTask(taskId);
+            EraseYesNoWindow();
+            ScriptContext_Enable();
+        }
+    }
 }
 
 bool8 ScriptMenu_MultichoiceGrid(u8 left, u8 top, u8 multichoiceId, bool8 ignoreBPress, u8 columnCount)
@@ -1052,7 +1136,7 @@ static void Task_PokemonPicWindow(u8 taskId)
     }
 }
 
-bool8 ScriptMenu_ShowPokemonPic(u16 species, u8 x, u8 y)
+bool8 ScriptMenu_ShowPokemonPic(u16 species, bool8 isShiny, u8 x, u8 y)
 {
     u8 taskId;
     u8 spriteId;
@@ -1063,7 +1147,7 @@ bool8 ScriptMenu_ShowPokemonPic(u16 species, u8 x, u8 y)
     }
     else
     {
-        spriteId = CreateMonSprite_PicBox(species, x * 8 + 40, y * 8 + 40, 0);
+        spriteId = CreateMonSprite_PicBox(species, isShiny, x * 8 + 40, y * 8 + 40, 0);
         taskId = CreateTask(Task_PokemonPicWindow, 0x50);
         gTasks[taskId].tWindowId = CreateWindowFromRect(x, y, 8, 8);
         gTasks[taskId].tState = 0;

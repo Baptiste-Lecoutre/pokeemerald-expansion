@@ -689,6 +689,11 @@ static void Task_HandlePokedexAreaScreenInput(u8 taskId)
             gTasks[taskId].data[1] = 2;
             PlaySE(SE_DEX_PAGE);
         }
+        else if (JOY_NEW(START_BUTTON) && FlagGet(FLAG_SYS_POKENAV_GET) && MapHasSpecies(&gWildMonHeaders[GetCurrentMapWildMonHeaderId()], sPokedexAreaScreen->species))
+        {
+            gTasks[taskId].data[1] = 3;
+            PlaySE(SE_SELECT);
+        }
         else
             return;
         break;

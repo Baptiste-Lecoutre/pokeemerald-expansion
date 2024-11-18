@@ -1672,7 +1672,7 @@ static u16 TryAlterRaidDropItem(u16 item)
         return Random() % (LAST_BERRY_INDEX - FIRST_BERRY_INDEX) + FIRST_BERRY_INDEX;
 
     if (item == ITEM_MASTER_BALL && gRaidData.rank < RAID_RANK_6) // random ball is master ball for low rank raids
-        return Random() % (LAST_BALL - FIRST_BALL + 1) + FIRST_BALL;
+        return Random() % (ITEM_CHERISH_BALL - ITEM_POKE_BALL + 1) + ITEM_POKE_BALL;
 
     if (item == ITEM_LONELY_MINT) // random mint
         return Random() % (ITEM_SERIOUS_MINT - ITEM_LONELY_MINT + 1) + ITEM_LONELY_MINT;

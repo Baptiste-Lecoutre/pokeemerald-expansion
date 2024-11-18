@@ -1,6 +1,7 @@
 #include "global.h"
 #include "item.h"
 #include "berry.h"
+#include "pokeball.h"
 #include "string_util.h"
 #include "text.h"
 #include "event_data.h"
@@ -168,6 +169,29 @@ bool8 CheckBagHasItem(u16 itemId, u16 count)
     return FALSE;
 }
 
+u16 CheckBagItemQuantity(u16 itemId)
+{
+    u8 i;
+    u8 pocket;
+    u16 count = 0;
+
+    if (ItemId_GetPocket(itemId) == 0)
+        return FALSE;
+    // if (InBattlePyramid() || FlagGet(FLAG_STORING_ITEMS_IN_PYRAMID_BAG) == TRUE)
+    //     return CheckPyramidBagHasItem(itemId, count);
+    pocket = ItemId_GetPocket(itemId) - 1;
+    // Check for item slots that contain the item
+    for (i = 0; i < gBagPockets[pocket].capacity; i++)
+    {
+        if (gBagPockets[pocket].itemSlots[i].itemId == itemId)
+        {
+            u16 quantity = GetBagItemQuantity(&gBagPockets[pocket].itemSlots[i].quantity);
+            count += quantity;
+        }
+    }
+    return count;
+}
+
 bool8 HasAtLeastOneBerry(void)
 {
     u16 i;
@@ -186,11 +210,11 @@ bool8 HasAtLeastOneBerry(void)
 
 bool8 HasAtLeastOnePokeBall(void)
 {
-    u16 i;
+    u16 ballId;
 
-    for (i = FIRST_BALL; i <= LAST_BALL; i++)
+    for (ballId = BALL_STRANGE; ballId < POKEBALL_COUNT; ballId++)
     {
-        if (CheckBagHasItem(i, 1) == TRUE)
+        if (CheckBagHasItem(ballId, 1) == TRUE)
             return TRUE;
     }
     return FALSE;
@@ -935,6 +959,11 @@ u8 ItemId_GetImportance(u16 itemId)
     return gItemsInfo[SanitizeItemId(itemId)].importance;
 }
 
+u8 ItemId_GetConsumability(u16 itemId)
+{
+    return !gItemsInfo[SanitizeItemId(itemId)].notConsumed;
+}
+
 u8 ItemId_GetPocket(u16 itemId)
 {
     return gItemsInfo[SanitizeItemId(itemId)].pocket;
@@ -982,7 +1011,7 @@ u8 ItemId_GetBattleUsage(u16 itemId)
         return gItemsInfo[item].battleUsage;
 }
 
-u8 ItemId_GetSecondaryId(u16 itemId)
+u32 ItemId_GetSecondaryId(u32 itemId)
 {
     return gItemsInfo[SanitizeItemId(itemId)].secondaryId;
 }

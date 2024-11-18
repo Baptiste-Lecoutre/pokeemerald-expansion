@@ -142,9 +142,9 @@ static bool8 CheckFeebas(void)
         if (y >= sRoute119WaterTileData[3 * 2 + 0] && y <= sRoute119WaterTileData[3 * 2 + 1])
             route119Section = 2;
 
-        // 50% chance of encountering Feebas (assuming this is a Feebas spot)
-        if (Random() % 100 > 49)
-            return FALSE;
+        // 100% chance of encountering Feebas (assuming this is a Feebas spot)
+        //if (Random() % 100 > 49)
+        //    return FALSE;
 
         FeebasSeedRng(gSaveBlock1Ptr->dewfordTrends[0].rand);
 
@@ -393,31 +393,33 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon, u8 wildMonIn
     u8 range;
     u8 rand;
     
-    // ensure that min and max are reasonable values
-    if (playerMedianLevel < 8)
+    if (B_DYNAMIC_WILD_LEVELS)
     {
-        min = 2;
-        max = 4;
+        // ensure that min and max are reasonable values
+        if (playerMedianLevel < 8)
+        {
+            min = 2;
+            max = 4;
+        }
+        else
+        {
+            min = playerMedianLevel - 6;
+            max = playerMedianLevel - 3;
+        }
+    }
+    else if (wildPokemon[wildMonIndex].maxLevel >= wildPokemon[wildMonIndex].minLevel) // Make sure minimum level is less than maximum level
+    {
+        min = wildPokemon[wildMonIndex].minLevel;
+        max = wildPokemon[wildMonIndex].maxLevel;
     }
     else
     {
-        min = playerMedianLevel - 6;
-        max = playerMedianLevel - 3;
+        min = wildPokemon[wildMonIndex].maxLevel;
+        max = wildPokemon[wildMonIndex].minLevel;
     }
 
     if (LURE_STEP_COUNT == 0)
     {
-        // Make sure minimum level is less than maximum level
-        /*if (wildPokemon[wildMonIndex].maxLevel >= wildPokemon[wildMonIndex].minLevel)
-        {
-            min = wildPokemon[wildMonIndex].minLevel;
-            max = wildPokemon[wildMonIndex].maxLevel;
-        }
-        else
-        {
-            min = wildPokemon[wildMonIndex].maxLevel;
-            max = wildPokemon[wildMonIndex].minLevel;
-        }*/
         range = max - min + 1;
         rand = Random() % range;
 
@@ -438,12 +440,13 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon, u8 wildMonIn
     }
     else
     {
-        // Looks for the max level of all slots that share the same species as the selected slot.
-        //max = GetMaxLevelOfSpeciesInWildTable(wildPokemon, wildPokemon[wildMonIndex].species, area);
-        //if (max > 0)
+        if (!B_DYNAMIC_WILD_LEVELS) // Looks for the max level of all slots that share the same species as the selected slot.
+            max = GetMaxLevelOfSpeciesInWildTable(wildPokemon, wildPokemon[wildMonIndex].species, area);
+        
+        if (max > 0)
             return max + 1;
-        //else // Failsafe
-        //    return wildPokemon[wildMonIndex].maxLevel + 1;
+        else // Failsafe
+            return wildPokemon[wildMonIndex].maxLevel + 1;
     }
 }
 
@@ -685,7 +688,7 @@ static bool8 WildEncounterCheck(u32 encounterRate, bool8 ignoreAbility)
             encounterRate *= 2;
         else if (ability == ABILITY_SAND_VEIL && gSaveBlock1Ptr->weather == WEATHER_SANDSTORM)
             encounterRate /= 2;
-        else if (ability == ABILITY_SNOW_CLOAK && gSaveBlock1Ptr->weather == WEATHER_SNOW)
+        else if (ability == ABILITY_SNOW_CLOAK && (gSaveBlock1Ptr->weather == WEATHER_SNOW || gSaveBlock1Ptr->weather == WEATHER_BLIZZARD))
             encounterRate /= 2;
         else if (ability == ABILITY_QUICK_FEET)
             encounterRate /= 2;

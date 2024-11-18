@@ -149,6 +149,7 @@ static const struct WeatherCallbacks sWeatherFuncs[] =
     [WEATHER_DOWNPOUR]           = {Downpour_InitVars,      Thunderstorm_Main,  Downpour_InitAll,      Thunderstorm_Finish},
     [WEATHER_UNDERWATER_BUBBLES] = {Bubbles_InitVars,       Bubbles_Main,       Bubbles_InitAll,       Bubbles_Finish},
     [WEATHER_LEAVES]             = {Leaves_InitVars,        Leaves_Main,        Leaves_InitAll,        Leaves_Finish},
+    [WEATHER_BLIZZARD]           = {Blizzard_InitVars,      Blizzard_Main,      Blizzard_InitAll,      Blizzard_Finish},
 };
 
 void (*const gWeatherPalStateFuncs[])(void) =
@@ -225,6 +226,8 @@ void StartWeather(void)
         gWeatherPtr->leavesSwirlSpritesCreated = 0;
         gWeatherPtr->bubblesSpritesCreated = 0;
         gWeatherPtr->lightenedFogSpritePalsCount = 0;
+        gWeatherPtr->blizzardSpritesCreated = 0;
+        gWeatherPtr->blizzardSwirlSpritesCreated = 0;
         Weather_SetBlendCoeffs(16, 0);
         gWeatherPtr->currWeather = 0;
         gWeatherPtr->palProcessingState = WEATHER_PAL_STATE_IDLE;
@@ -377,6 +380,7 @@ static void FadeInScreenWithWeather(void)
         }
         break;
     case WEATHER_SNOW:
+    case WEATHER_BLIZZARD:
     case WEATHER_VOLCANIC_ASH:
     case WEATHER_SANDSTORM:
     case WEATHER_FOG_DIAGONAL:
@@ -1050,6 +1054,9 @@ static void UNUSED SetFieldWeather(u8 weather)
         break;
     case COORD_EVENT_WEATHER_SHADE:
         SetWeather(WEATHER_SHADE);
+        break;
+    case COORD_EVENT_WEATHER_BLIZZARD:
+        SetWeather(WEATHER_BLIZZARD);
         break;
     }
 }

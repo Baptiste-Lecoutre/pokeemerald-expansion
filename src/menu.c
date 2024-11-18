@@ -6,6 +6,7 @@
 #include "event_data.h"
 #include "field_weather.h"
 #include "graphics.h"
+#include "international_string_util.h"
 #include "main.h"
 #include "map_name_popup.h"
 #include "menu.h"
@@ -68,7 +69,7 @@ static EWRAM_DATA u8 sSecondaryPopupWindowId = 0;
 static EWRAM_DATA struct Menu sMenu = {0};
 static EWRAM_DATA u16 sTileNum = 0;
 static EWRAM_DATA u8 sPaletteNum = 0;
-static EWRAM_DATA u8 sYesNoWindowId = 0;
+EWRAM_DATA u8 sYesNoWindowId = 0;
 static EWRAM_DATA u8 sHofPCTopBarWindowId = 0;
 static EWRAM_DATA bool8 sScheduledBgCopiesToVram[4] = {FALSE};
 static EWRAM_DATA u16 sTempTileDataBufferIdx = 0;
@@ -112,6 +113,17 @@ static const struct WindowTemplate sYesNo_WindowTemplates =
     .height = 4,
     .paletteNum = 15,
     .baseBlock = 0x125
+};
+
+static const struct WindowTemplate sHowMany_WindowTemplates =
+{
+    .bg = 0,
+    .tilemapLeft = 23,
+    .tilemapTop = 11,
+    .width = 5,
+    .height = 2,
+    .paletteNum = 15,
+    .baseBlock = 0x125,
 };
 
 static const u16 sHofPC_TopBar_Pal[] = INCBIN_U16("graphics/interface/hof_pc_topbar.gbapal");
@@ -591,6 +603,11 @@ void DisplayItemMessageOnField(u8 taskId, const u8 *string, TaskFunc callback)
 void DisplayYesNoMenuDefaultYes(void)
 {
     CreateYesNoMenu(&sYesNo_WindowTemplates, STD_WINDOW_BASE_TILE_NUM, STD_WINDOW_PALETTE_NUM, 0);
+}
+
+void DisplayHowManyMenu(void)
+{
+    CreateHowManyMenu(&sHowMany_WindowTemplates, STD_WINDOW_BASE_TILE_NUM, STD_WINDOW_PALETTE_NUM, 0);
 }
 
 void DisplayYesNoMenuWithDefault(u8 initialCursorPos)
@@ -1799,6 +1816,69 @@ void CreateYesNoMenu(const struct WindowTemplate *window, u16 baseTileNum, u8 pa
     AddTextPrinter(&printer, TEXT_SKIP_DRAW, NULL);
     InitMenuInUpperLeftCornerNormal(sYesNoWindowId, 2, initialCursorPos);
 }
+
+void CreateHowManyMenu(const struct WindowTemplate *window, u16 baseTileNum, u8 paletteNum, u8 initialCursorPos)
+{
+
+    sYesNoWindowId = AddWindow(window);
+    DrawStdFrameWithCustomTileAndPalette(sYesNoWindowId, TRUE, baseTileNum, paletteNum);
+
+    ConvertIntToDecimalStringN(gStringVar1, 1, STR_CONV_MODE_LEADING_ZEROS, 3);
+    StringExpandPlaceholders(gStringVar4, gText_xVar1);
+    AddTextPrinterParameterized(sYesNoWindowId, FONT_NORMAL, gStringVar4, GetStringCenterAlignXOffset(FONT_NORMAL, gStringVar4, 48), 1, 0, NULL);
+    // ItemStorage_PrintItemQuantity(ItemStorage_AddWindow(ITEMPC_WIN_QUANTITY), tQuantity, STR_CONV_MODE_LEADING_ZEROS, 8, 1, 3);
+    // gTasks[taskId].func = ItemStorage_HandleQuantityRolling;
+    // ConvertIntToDecimalStringN(gStringVar1, 1, STR_CONV_MODE_LEADING_ZEROS, 3);
+
+    // ConvertIntToDecimalStringN(gStringVar1, 1, STR_CONV_MODE_LEADING_ZEROS, 3);
+    // StringExpandPlaceholders(gStringVar4, gText_xVar1);
+
+    // printer.currentChar = gText_xVar1;
+    // printer.windowId = sYesNoWindowId;
+    // printer.fontId = FONT_NORMAL;
+    // printer.x = 8;
+    // printer.y = 1;
+    // printer.currentX = printer.x;
+    // printer.currentY = printer.y;
+    // printer.fgColor = GetFontAttribute(FONT_NORMAL, FONTATTR_COLOR_FOREGROUND);
+    // printer.bgColor = GetFontAttribute(FONT_NORMAL, FONTATTR_COLOR_BACKGROUND);
+    // printer.shadowColor = GetFontAttribute(FONT_NORMAL, FONTATTR_COLOR_SHADOW);
+    // printer.unk = GetFontAttribute(FONT_NORMAL, FONTATTR_UNKNOWN);
+    // printer.letterSpacing = 0;
+    // printer.lineSpacing = 0;
+
+    // AddTextPrinter(&printer, TEXT_SKIP_DRAW, NULL);
+    // InitMenuInUpperLeftCornerNormal(sYesNoWindowId, 2, initialCursorPos);
+}
+
+// static void Task_BuyHowManyDialogueInit(u8 taskId)
+// {
+//     s16 *data = gTasks[taskId].data;
+
+//     u16 quantityInBag = CountTotalItemQuantityInBag(tItemId);
+//     u16 maxQuantity;
+
+//     DrawStdFrameWithCustomTileAndPalette(WIN_QUANTITY_IN_BAG, FALSE, 1, 13);
+//     ConvertIntToDecimalStringN(gStringVar1, quantityInBag, STR_CONV_MODE_RIGHT_ALIGN, MAX_ITEM_DIGITS + 1);
+//     StringExpandPlaceholders(gStringVar4, gText_InBagVar1);
+//     BuyMenuPrint(WIN_QUANTITY_IN_BAG, gStringVar4, 0, 1, 0, COLORID_NORMAL);
+//     tItemCount = 1;
+//     DrawStdFrameWithCustomTileAndPalette(WIN_QUANTITY_PRICE, FALSE, 1, 13);
+//     BuyMenuPrintItemQuantityAndPrice(taskId);
+//     ScheduleBgCopyTilemapToVram(0);
+
+//     if (MARTBP)
+//         maxQuantity = gSaveBlock2Ptr->frontier.battlePoints / sShopData->totalCost;
+//     else
+//         maxQuantity = GetMoney(&gSaveBlock1Ptr->money) / sShopData->totalCost;
+
+//     if (maxQuantity > MAX_BAG_ITEM_CAPACITY)
+//         sShopData->maxQuantity = MAX_BAG_ITEM_CAPACITY;
+//     else
+//         sShopData->maxQuantity = maxQuantity;
+
+//     gTasks[taskId].func = Task_BuyHowManyDialogueHandleInput;
+// }
 
 void PrintMenuGridTable(u8 windowId, u8 optionWidth, u8 columns, u8 rows, const struct MenuAction *menuActions)
 {

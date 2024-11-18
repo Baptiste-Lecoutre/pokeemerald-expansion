@@ -2223,6 +2223,7 @@ static const u8 sWeatherNames[22][24] = {
     [WEATHER_UNDERWATER_BUBBLES] = _("UNDERWATER BUBBLES"),
     [WEATHER_ABNORMAL]           = _("ABNORMAL(NOT WORKING)"),
     [WEATHER_LEAVES]             = _("LEAVES"),
+    [WEATHER_BLIZZARD]           = _("BLIZZARD"),
     [WEATHER_ROUTE119_CYCLE]     = _("ROUTE119 CYCLE"),
     [WEATHER_ROUTE123_CYCLE]     = _("ROUTE123 CYCLE"),
 };
@@ -2286,7 +2287,7 @@ static void DebugAction_Util_Weather_SelectId(u8 taskId)
         StringCopy(gStringVar2, gText_DigitIndicator[gTasks[taskId].tDigit]);
         ConvertIntToDecimalStringN(gStringVar3, gTasks[taskId].tInput, STR_CONV_MODE_LEADING_ZEROS, 2);
 
-        if (gTasks[taskId].tInput <= WEATHER_LEAVES || gTasks[taskId].tInput >= 20)
+        if (gTasks[taskId].tInput <= WEATHER_BLIZZARD || gTasks[taskId].tInput >= 20)
             StringCopyPadded(gStringVar1, sWeatherNames[gTasks[taskId].tInput], CHAR_SPACE, 40);
         else
             StringCopyPadded(gStringVar1, sDebugText_WeatherNotDefined, CHAR_SPACE, 40);
@@ -2297,7 +2298,7 @@ static void DebugAction_Util_Weather_SelectId(u8 taskId)
 
     if (JOY_NEW(A_BUTTON))
     {
-        if (gTasks[taskId].tInput <= WEATHER_LEAVES || gTasks[taskId].tInput >= 20)
+        if (gTasks[taskId].tInput <= WEATHER_BLIZZARD || gTasks[taskId].tInput >= 20)
         {
             gTasks[taskId].data[5] = gTasks[taskId].tInput;
             SetWeather(gTasks[taskId].data[5]);
@@ -4355,12 +4356,12 @@ static void DebugAction_PCBag_Fill_PocketItems(u8 taskId)
 
 static void DebugAction_PCBag_Fill_PocketPokeBalls(u8 taskId)
 {
-    u16 itemId;
+    u16 ballId;
 
-    for (itemId = FIRST_BALL; itemId < LAST_BALL; itemId++)
+    for (ballId = BALL_STRANGE; ballId < POKEBALL_COUNT; ballId++)
     {
-        if (CheckBagHasSpace(itemId, MAX_BAG_ITEM_CAPACITY))
-            AddBagItem(itemId, MAX_BAG_ITEM_CAPACITY);
+        if (CheckBagHasSpace(ballId, MAX_BAG_ITEM_CAPACITY))
+            AddBagItem(ballId, MAX_BAG_ITEM_CAPACITY);
     }
 }
 

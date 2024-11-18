@@ -7,6 +7,8 @@ extern const u32 gMessageBox_Gfx[];
 extern const u16 gMessageBox_Pal[];
 
 // pokeballs
+extern const u32 gBallGfx_Strange[];
+extern const u32 gBallPal_Strange[];
 extern const u32 gBallGfx_Poke[];
 extern const u32 gBallPal_Poke[];
 extern const u32 gBallGfx_Great[];
@@ -360,6 +362,8 @@ extern const u32 gRaySceneChasesAway_Light_Gfx[];
 extern const u32 gRaySceneChasesAway_Ring_Gfx[];
 
 // Poké Balls
+extern const u32 gItemIcon_StrangeBall[];
+extern const u32 gItemIconPalette_StrangeBall[];
 extern const u32 gItemIcon_PokeBall[];
 extern const u32 gItemIconPalette_PokeBall[];
 extern const u32 gItemIcon_GreatBall[];
@@ -2891,6 +2895,8 @@ extern const u32 gBattleAnimSpritePal_IvyCudgelGrass[];
 extern const u32 gBattleAnimSpritePal_IvyCudgelFire[];
 extern const u32 gBattleAnimSpritePal_IvyCudgelRock[];
 extern const u32 gBattleAnimSpritePal_IvyCudgelWater[];
+extern const u32 gBattleAnimSpriteGfx_PinkVioletOrb[];
+extern const u32 gBattleAnimSpritePal_PinkVioletOrb[];
 
 extern const u32 gBattleAnimBgImage_Dark[];
 extern const u32 gBattleAnimBgImage_Ghost[];
@@ -3404,6 +3410,12 @@ extern const u32 gItemIconPalette_PokeVial[];
 // eon flute
 extern const u32 gItemIcon_EonFlute[];
 extern const u32 gItemIconPalette_EonFlute[];
+// silver wing
+extern const u32 gItemIcon_SilverWing[];
+extern const u32 gItemIconPalette_SilverWing[];
+// rainbow wing
+extern const u32 gItemIcon_RainbowWing[];
+extern const u32 gItemIconPalette_RainbowWing[];
 
 extern const u32 gBattleTeamPreview_TileSet[];
 extern const u32 gBattleTeamPreview_TileMap[];

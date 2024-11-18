@@ -204,7 +204,9 @@ Debug_EventScript_Script_7::
 	end
 
 Debug_EventScript_Script_8::
-	setTeraType TYPE_STELLAR, 4
+@	setTeraType TYPE_STELLAR, 4
+	setvar VAR_0x8005, 294
+	msgbox DebugScript_Text_EmptyParty, MSGBOX_HOWMANY
 	release
 	end
 
@@ -237,8 +239,12 @@ Debug_PokemonStorageSize::
 	.string "Free space: {STR_VAR_3}b.$"
 
 Debug_CheckROMSpace::
+	setvar VAR_TEMP_TRANSFERRED_SPECIES, SPECIES_MEW
+	setvar VAR_TEMP_2, FALSE
+	showmonpic VAR_TEMP_TRANSFERRED_SPECIES, 10, 3, VAR_TEMP_2
 	callnative CheckROMSize
 	msgbox Debug_ROMSize, MSGBOX_DEFAULT
+	hidemonpic
 	release
 	end
 

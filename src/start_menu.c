@@ -56,6 +56,7 @@
 #include "constants/moves.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "ui_startmenu_full.h"
 
 // Menu actions
 enum
@@ -91,7 +92,7 @@ enum
 };
 
 // IWRAM common
-bool8 (*gMenuCallback)(void);
+COMMON_DATA bool8 (*gMenuCallback)(void) = NULL;
 
 // EWRAM
 EWRAM_DATA static u8 sSafariBallsWindowId = 0;
@@ -767,8 +768,24 @@ void ShowStartMenu(void)
         PlayerFreeze();
         StopPlayerAvatar();
     }
-    gShouldStartMenuIconsBePrinted = TRUE;
-    CreateStartMenuTask(Task_ShowStartMenu);
+    else
+    {
+        gShouldStartMenuIconsBePrinted = TRUE;
+        CreateStartMenuTask(Task_ShowStartMenu);
+        LockPlayerFieldControls();
+        return;
+    }
+
+    if (!CONFIG_START_MENU_FULL || GetSafariZoneFlag() || InBattlePyramid() || InBattlePike() || InUnionRoom() || InMultiPartnerRoom())
+    {
+        gShouldStartMenuIconsBePrinted = TRUE;
+        CreateStartMenuTask(Task_ShowStartMenu);
+        LockPlayerFieldControls();
+        return;
+    }
+
+    FadeScreen(FADE_TO_BLACK, 0);
+    CreateTask(Task_OpenStartMenuFullScreen, 0);
     LockPlayerFieldControls();
 }
 
@@ -1118,6 +1135,54 @@ static bool8 SaveStartCallback(void)
     return FALSE;
 }
 
+static void Task_SaveFromStartMenuFull(u8 taskId);
+
+void SaveStartCallback_FullStartMenu(void)
+{
+    WarpFadeInScreen();
+    InitSave();
+    CreateTask( Task_SaveFromStartMenuFull, 0);
+    return;
+}
+
+static void Task_SaveFromStartMenuFull(u8 taskId)
+{
+    s16 *state = gTasks[taskId].data;
+
+    if (!gPaletteFade.active)
+    {
+        switch (*state)
+        {
+            case 0:
+                ShowSaveInfoWindow();
+                *state = 1;
+                break;
+            case 1:
+                ShowThrobber();
+                ShowSaveMessage(gText_SavingDontTurnOff, SaveDoSaveCallback);
+                *state = 2;
+                break;
+            case 2:
+                if (SaveCallback())
+                    *state = 3;
+                break;
+            case 3:
+                if (SaveCallback())
+                    *state = 4;
+                break;
+            case 4:
+                DestroyTask(taskId);
+                ClearDialogWindowAndFrameToTransparent(0, TRUE);
+                HideSaveMessageWindow();
+                ScriptUnfreezeObjectEvents();
+                UnlockPlayerFieldControls();
+                SoftResetInBattlePyramid();
+                break;
+        }
+    }
+}
+
+
 static bool8 SaveCallback(void)
 {
     switch (RunSaveCallback())
@@ -1125,11 +1190,14 @@ static bool8 SaveCallback(void)
     case SAVE_IN_PROGRESS:
         return FALSE;
     case SAVE_CANCELED: // Back to start menu
-        ClearDialogWindowAndFrameToTransparent(0, FALSE);
-        gShouldStartMenuIconsBePrinted = TRUE;
-        InitStartMenu();
-        gMenuCallback = HandleStartMenuInput;
-        return FALSE;
+        if (!CONFIG_START_MENU_FULL)
+        {
+            ClearDialogWindowAndFrameToTransparent(0, FALSE);
+            gShouldStartMenuIconsBePrinted = TRUE;
+            InitStartMenu();
+            gMenuCallback = HandleStartMenuInput;
+            return FALSE;
+        }
     case SAVE_SUCCESS:
     case SAVE_ERROR:    // Close start menu
         ClearDialogWindowAndFrameToTransparent(0, TRUE);
