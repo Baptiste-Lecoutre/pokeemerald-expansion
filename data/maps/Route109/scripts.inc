@@ -8,7 +8,7 @@ Route109_MapScripts::
 	.byte 0
 
 Route109_OnTransition::
-	call_if_defeated TRAINER_MISTY, Route109_EventScript_HideMisty
+	@call_if_defeated TRAINER_MISTY, Route109_EventScript_HideMisty
 	end
 
 Route109_EventScript_HideMisty::
@@ -19,40 +19,108 @@ Route109_EventScript_HideMisty::
 Route109_EventScript_Misty::
 	lock
 	faceplayer
+	goto_if_defeated TRAINER_MISTY, Route109_EventScript_WantFeebas
 	msgbox Route109_Text_ImMisty, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_MISTY, Route109_Text_ThatsIt
 	msgbox Route109_Text_AlrightNoHesitation, MSGBOX_DEFAULT
 	giveitem ITEM_TM03 @ water pulse
-	msgbox Route109_Text_MistyHuh, MSGBOX_DEFAULT
+	msgbox Route109_Text_MistyHuh, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, Route109_EventScript_IllWaitHere
+Route109_EventScript_GiveFeebas::
+	givemon SPECIES_FEEBAS, 5, ITEM_NONE
+	goto_if_eq VAR_RESULT, MON_GIVEN_TO_PARTY, Route109_EventScript_ReceiveFeebasParty
+	goto_if_eq VAR_RESULT, MON_GIVEN_TO_PC, Route109_EventScript_ReceiveFeebasPC
+	goto Common_EventScript_NoMoreRoomForPokemon
+Route109_EventScript_MistyLeaves::
+	msgbox Route109_Text_MistyLeave, MSGBOX_DEFAULT
 	closemessage
 	fadescreenswapbuffers FADE_TO_BLACK
 	removeobject LOCALID_MISTY
-	setflag FLAG_TEMP_7
+	setflag FLAG_RECEIVED_MISTY_FEEBAS
 	fadescreenswapbuffers FADE_FROM_BLACK
 	releaseall
 	end
 
+Route109_EventScript_IllWaitHere::
+	msgbox Route109_Text_IllWaitHere, MSGBOX_DEFAULT
+	releaseall
+	end
+
+Route109_EventScript_WantFeebas::
+	msgbox Route109_Text_WantFeebas, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, Route109_EventScript_IllWaitHere
+	goto_if_eq VAR_RESULT, YES, Route109_EventScript_GiveFeebas
+	releaseall
+	end
+
+Route109_EventScript_ReceiveFeebasParty::
+	call Route109_EventScript_ReceivedFeebasFanfare
+	msgbox gText_NicknameThisPokemon, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, Route109_EventScript_MistyLeaves
+	call Common_EventScript_GetGiftMonPartySlot
+	call Common_EventScript_NameReceivedPartyMon
+	goto Route109_EventScript_MistyLeaves
+	end
+
+Route109_EventScript_ReceiveFeebasPC::
+	call Route109_EventScript_ReceivedFeebasFanfare
+	msgbox gText_NicknameThisPokemon, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, Route109_EventScript_SendFeebasToPC
+	call Common_EventScript_NameReceivedBoxMon
+	goto Route109_EventScript_SendFeebasToPC
+	end
+
+Route109_EventScript_SendFeebasToPC::
+	call Common_EventScript_TransferredToPC
+	goto Route109_EventScript_MistyLeaves
+	end
+
+Route109_EventScript_ReceivedFeebasFanfare::
+	playfanfare MUS_OBTAIN_ITEM
+	message Route109_Text_PlayerReceivedFeebas
+	waitmessage
+	waitfanfare
+	bufferspeciesname STR_VAR_1, SPECIES_FEEBAS
+	return
+
+Route109_Text_PlayerReceivedFeebas:
+	.string "{PLAYER} did not receive Magikarp…\n"
+	.string "{PLAYER} received Feebas!$"
+
 Route109_Text_ImMisty:
 	.string "Hello cutie! I'm Misty, the water\n"
-	.string "goddess and gym leader of Kanto\p"
+	.string "goddess and a gym leader of Kanto.\p"
 	.string "And you, you look like my next\n"
 	.string "boyfriend.\p"
 	.string "But first, I need to test your battle\n"
 	.string "skills. Let's get nice and wet!$"
 
 Route109_Text_ThatsIt:
-	.string "That's it! I'm in love!$"
+	.string "That's it! I'm into you!$"
 
 Route109_Text_AlrightNoHesitation:
 	.string "Alright, no hesitation, I know\n"
-	.string "you are the one! You're the best\l"
-	.string "boyfriend I ever had!\p"
+	.string "you are the one!\p"
 	.string "Here, take this TM! This will be\n"
-	.string "your wedding gift!$"
+	.string "your first gift!$"
 
 Route109_Text_MistyHuh:
 	.string "Huh?\n"
 	.string "What do you mean it sucks?\p"
+	.string "Here then, take this sick Magikarp\n"
+	.string "I'm sure it will like you!$"
+
+Route109_Text_IllWaitHere:
+	.string "Oh, don't be like that.\n"
+	.string "I'm sure it will like you!\p"
+	.string "I'll wait for you here.$"
+
+Route109_Text_WantFeebas:
+	.string "You're back! Did you come to\n"
+	.string "get my sick magikarp?$"
+
+Route109_Text_MistyLeave:
+	.string "Again?! You don't like my gift?!\p"
 	.string "I can't stand you anymore!\n"
 	.string "I'm dumping you right now!\p"
 	.string "I'm going back to Kanto where\n"
