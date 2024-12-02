@@ -5838,3 +5838,82 @@ bool32 FollowerHasDevonScope(void)
 {
     return (VarGet(VAR_LAVARIDGE_TOWN_STATE) >= 2 && VarGet(VAR_LAVARIDGE_TOWN_STATE) <= 6);
 }
+
+void CanGroomSelectedMon(void)
+{
+    struct Pokemon *mon = &gPlayerParty[gSpecialVar_0x8004];
+    u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
+    u8 sheen = GetMonData(mon, MON_DATA_SHEEN);
+
+    if (friendship != 255)
+    {
+        if (sheen == 255)
+            gSpecialVar_Result = 2; // can groom and will only gain friendship
+        else
+            gSpecialVar_Result = 1; // can groom and will theoretically gain beauty (must be < sheen)
+    }
+    else if (sheen == 255)
+    {
+        gSpecialVar_Result = 0; //can not groom
+    }
+}
+
+#define MAX_VALUE 255
+void GroomSelectedMon(void)
+{
+    struct Pokemon *mon = &gPlayerParty[gSpecialVar_0x8004];
+    s32 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
+    s32 sheen = GetMonData(mon, MON_DATA_SHEEN);
+    s32 beauty = GetMonData(mon, MON_DATA_BEAUTY);
+    s32 increment;
+
+    if (Random()%10 == 0) // 10% to miss grooming because it is fun
+        gSpecialVar_Result = TRUE;
+    else
+        gSpecialVar_Result = FALSE;
+
+    if (gSpecialVar_Result)
+        increment = -10;
+    else
+        increment = 50;
+
+    if (friendship < MAX_VALUE) // modify friendship
+    {
+        if (friendship + increment > MAX_VALUE)
+            increment = MAX_VALUE - friendship;
+        else if (friendship + increment < 0)
+            increment = -friendship;
+
+        friendship += increment;
+        SetMonData(mon, MON_DATA_FRIENDSHIP, &friendship);
+    }
+
+    if (gSpecialVar_Result)
+        increment = -10;
+    else
+        increment = 50;
+
+    if (sheen < MAX_VALUE && beauty < MAX_VALUE) // can modify sheen and beauty, if only sheen can be increased, don't do this part.
+    {
+        if (sheen + increment > MAX_VALUE || beauty + increment > MAX_VALUE)
+            increment = min(MAX_VALUE - sheen, MAX_VALUE - beauty);
+        else if (sheen + increment < 0 || beauty + increment < 0)
+            increment = - min(sheen, beauty);
+
+        sheen += increment;
+        beauty += increment;
+        SetMonData(mon, MON_DATA_SHEEN, &sheen);
+        SetMonData(mon, MON_DATA_BEAUTY, &beauty);
+    }
+}
+
+void IsSelectedMonShiny(void)
+{
+    gSpecialVar_Result = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_IS_SHINY);
+}
+
+void MakeSelectedMonShiny(void)
+{
+    bool32 true = TRUE;
+    SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_IS_SHINY, &true);
+}

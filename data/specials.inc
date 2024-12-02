@@ -618,3 +618,7 @@ gSpecials::
 	def_special ChooseMonForBlender
 	def_special TryEvolveMilcery
 	def_special HealPlayerPartyPokeVial
+	def_special CanGroomSelectedMon
+	def_special GroomSelectedMon
+	def_special IsSelectedMonShiny
+	def_special MakeSelectedMonShiny

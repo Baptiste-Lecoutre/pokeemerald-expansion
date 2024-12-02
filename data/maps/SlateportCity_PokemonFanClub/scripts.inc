@@ -1,6 +1,9 @@
 SlateportCity_PokemonFanClub_MapScripts::
 	.byte 0
 
+.set GROOM_PRICE, 1000
+.set SHINY_PRICE, 50000
+
 SlateportCity_PokemonFanClub_EventScript_Chairman::
 	lock
 	faceplayer
@@ -213,6 +216,145 @@ SlateportCity_PokemonFanClub_EventScript_ReceivedSootheBell::
 	msgbox SlateportCity_PokemonFanClub_Text_TreatPokemonWithLove, MSGBOX_DEFAULT
 	release
 	end
+
+SlateportCity_PokemonFanClub_EventScript_GroomLady::
+	lock
+	faceplayer
+	showmoneybox 0, 0
+	msgbox SlateportCity_PokemonFanClub_Text_IGroomPokemon, MSGBOX_YESNO
+	goto_if_ne VAR_RESULT, YES, SlateportCity_PokemonFanClub_EventScript_DeclineGroom
+	checkmoney GROOM_PRICE, 0
+	goto_if_eq VAR_RESULT, FALSE, SlateportCity_PokemonFanClub_EventScript_NotEnoughMoney
+	hidemoneybox
+	msgbox SlateportCity_PokemonFanClub_Text_ChooseAPokemonToGroom, MSGBOX_DEFAULT
+    special ChoosePartyMon
+	waitstate
+	goto_if_eq VAR_0x8004, 0xFF, SlateportCity_PokemonFanClub_EventScript_NoMonSelected
+	goto_if_eq VAR_0x8004, PARTY_SIZE, SlateportCity_PokemonFanClub_EventScript_NoMonSelected
+	special IsSelectedMonEgg
+    goto_if_eq VAR_RESULT, TRUE, SlateportCity_PokemonFanClub_EventScript_SelectedMonIsEgg
+	special CanGroomSelectedMon
+	goto_if_eq VAR_RESULT, 0, SlateportCity_PokemonFanClub_EventScript_CannotGroom
+	goto_if_eq VAR_RESULT, 2, SlateportCity_PokemonFanClub_EventScript_GroomOnlyFriendship
+SlateportCity_PokemonFanClub_EventScript_ContinueGroom:
+	removemoney GROOM_PRICE, 0
+	special GroomSelectedMon
+	bufferpartymonnick STR_VAR_1, VAR_0x8004
+	goto_if_eq VAR_RESULT, TRUE, SlateportCity_PokemonFanClub_EventScript_GroomFailed
+	msgbox SlateportCity_PokemonFanClub_Text_GroomSucceeded, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_PokemonFanClub_EventScript_DeclineGroom:
+	hidemoneybox
+SlateportCity_PokemonFanClub_EventScript_NoMonSelected:
+	msgbox SlateportCity_PokemonFanClub_Text_WellThatsTooBad, MSGBOX_AUTOCLOSE
+	release
+	end
+
+SlateportCity_PokemonFanClub_EventScript_NotEnoughMoney:
+	hidemoneybox
+	msgbox SlatePortCity_PokemonFanClub_Text_YouDontHaveEnoughMoney, MSGBOX_AUTOCLOSE
+	release
+	end
+
+SlateportCity_PokemonFanClub_EventScript_SelectedMonIsEgg:
+	msgbox SlateportCity_PokemonFanClub_Text_GroomEgg, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_PokemonFanClub_EventScript_CannotGroom:
+	msgbox SlateportCity_PokemonFanClub_Text_CannotGroom, MSGBOX_DEFAULT
+	checkmoney SHINY_PRICE, 0
+	goto_if_eq VAR_RESULT, TRUE, SlateportCity_PokemonFanClub_EventScript_AskShiny
+SlateportCity_PokemonFanClub_EventScript_NoGroomEnd:
+	release
+	end
+
+SlateportCity_PokemonFanClub_EventScript_GroomOnlyFriendship:
+	msgbox SlateportCity_PokemonFanClub_Text_GroomOnlyFriendship, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, TRUE, SlateportCity_PokemonFanClub_EventScript_ContinueGroom
+	goto SlateportCity_PokemonFanClub_EventScript_NoMonSelected
+
+SlateportCity_PokemonFanClub_EventScript_GroomFailed:
+	msgbox SlateportCity_PokemonFanClub_Text_GroomFailed, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_PokemonFanClub_EventScript_AskShiny:
+	special IsSelectedMonShiny
+	goto_if_eq VAR_RESULT, YES, SlateportCity_PokemonFanClub_EventScript_NoGroomEnd
+	showmoneybox 0, 0
+	bufferpartymonnick STR_VAR_1, VAR_0x8004
+	msgbox SlateportCity_PokemonFanClub_Text_AskShiny, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, SlateportCity_PokemonFanClub_EventScript_DeclineGroom
+	hidemoneybox
+	special MakeSelectedMonShiny
+	removemoney SHINY_PRICE, 0
+	msgbox SlateportCity_PokemonFanClub_Text_GroomSucceeded, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_PokemonFanClub_Text_IGroomPokemon:
+	.string "Oh, my! Look at your Pokémon!\n"
+	.string "How about a bit of grooming?\p"
+	.string "I charge ¥1000 per session, the result\n"
+	.string "is garanteed, your Pokémon will love it!\p"
+	.string "So, how about a session right now?$"
+
+SlateportCity_PokemonFanClub_Text_WellThatsTooBad:
+	.string "Well, that's too bad.\n"
+	.string "Feel free to come back anytime!$"
+
+SlatePortCity_PokemonFanClub_Text_YouDontHaveEnoughMoney:
+	.string "You don't have enough money, you should\n"
+	.string "start saving some to offer a bit of\l"
+	.string "well-being to your Pokémon!$"
+
+SlateportCity_PokemonFanClub_Text_ChooseAPokemonToGroom:
+	.string "Choose a Pokémon to groom.$"
+
+SlateportCity_PokemonFanClub_Text_GroomEgg:
+	.string "What? An Egg?\n"
+	.string "How do you want me to groom an Egg?$"
+
+SlateportCity_PokemonFanClub_Text_CannotGroom:
+	.string "I can't groom this Pokémon,\n"
+	.string "look how glowing it is!$"
+
+SlateportCity_PokemonFanClub_Text_GroomOnlyFriendship:
+	.string "Hum… This Pokémon is already beautiful\n"
+	.string "as it is, I can't make it any prettier.\p"
+	.string "But it will definitely make it happier.\n"
+	.string "So, shall I begin?$"
+
+SlateportCity_PokemonFanClub_Text_GroomFailed:
+	.string "Alright, let's take care of your {STR_VAR_1}!\p"
+	.string "… {PAUSE 32}\n"
+	.string "… … … … … …\p"
+	.string "Here! There we go!\n"
+	.string "Oh! {PAUSE 32}It looks like I messed up!\p"
+	.string "Please come back soon, I promise\n"
+	.string "the result will be better!$"
+
+SlateportCity_PokemonFanClub_Text_GroomSucceeded:
+	.string "Alright, let's take care of your {STR_VAR_1}!\p"
+	.string "… {PAUSE 32}\n"
+	.string "… … … … … …\p"
+	.string "Here! There we go!\n"
+	.string "Oh! {PAUSE 32}It looks wonderful!\p"
+	.string "Please come back soon, I'm sure\n"
+	.string "you have other Pokémon waiting!$"
+
+SlateportCity_PokemonFanClub_Text_AskShiny:
+	.string "Oh, wait! Your {STR_VAR_1} seems to really\n"
+	.string "love you, I'm sure he will do anything\l"
+	.string "to please you!\p"
+	.string "I happen to know of a secret grooming\n"
+	.string "technique that makes a Pokémon\l"
+	.string "actually shine!\p"
+	.string "How about we have a go? For this one,\n"
+	.string "the cost is ¥50000.$"
 
 SlateportCity_PokemonFanClub_EventScript_Man::
 	msgbox SlateportCity_PokemonFanClub_Text_PokemonDontLikeFainting, MSGBOX_NPC
