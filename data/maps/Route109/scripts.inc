@@ -107,7 +107,7 @@ Route109_Text_AlrightNoHesitation:
 Route109_Text_MistyHuh:
 	.string "Huh?\n"
 	.string "What do you mean it sucks?\p"
-	.string "Here then, take this sick Magikarp\n"
+	.string "Here then, take this sick Magikarp.\n"
 	.string "I'm sure it will like you!$"
 
 Route109_Text_IllWaitHere:
@@ -116,8 +116,8 @@ Route109_Text_IllWaitHere:
 	.string "I'll wait for you here.$"
 
 Route109_Text_WantFeebas:
-	.string "You're back! Did you come to\n"
-	.string "get my sick magikarp?$"
+	.string "You're back! Did you come to get\n"
+	.string "my sick Magikarp?$"
 
 Route109_Text_MistyLeave:
 	.string "Again?! You don't like my gift?!\p"
