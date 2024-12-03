@@ -65,7 +65,9 @@ extern const u8 BattleScript_OverworldTerrain[];
 extern const u8 BattleScript_SideStatusWoreOff[];
 extern const u8 BattleScript_SafeguardProtected[];
 extern const u8 BattleScript_SafeguardEnds[];
-extern const u8 BattleScript_LeechSeedTurnDrain[];
+extern const u8 BattleScript_LeechSeedTurnDrainLiquidOoze[];
+extern const u8 BattleScript_LeechSeedTurnDrainHealBlock[];
+extern const u8 BattleScript_LeechSeedTurnDrainRecovery[];
 extern const u8 BattleScript_BideStoringEnergy[];
 extern const u8 BattleScript_BideAttack[];
 extern const u8 BattleScript_BideNoEnergyToAttack[];
@@ -518,6 +520,7 @@ extern const u8 BattleScript_Terastallization[];
 extern const u8 BattleScript_BoosterEnergyEnd2[];
 extern const u8 BattleScript_TeraShellDistortingTypeMatchups[];
 extern const u8 BattleScript_TeraFormChange[];
+extern const u8 BattleScript_SleepClausePreventsEnd[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];
@@ -562,6 +565,7 @@ extern const u8 BattleScript_ItemDropped[];
 // Battle move scripts
 extern const u8 BattleScript_EffectSleep[];
 extern const u8 BattleScript_EffectAbsorb[];
+extern const u8 BattleScript_EffectAbsorbLiquidOoze[];
 extern const u8 BattleScript_EffectExplosion[];
 extern const u8 BattleScript_EffectDreamEater[];
 extern const u8 BattleScript_EffectMirrorMove[];
@@ -622,6 +626,9 @@ extern const u8 BattleScript_EffectMimic[];
 extern const u8 BattleScript_EffectMetronome[];
 extern const u8 BattleScript_EffectLeechSeed[];
 extern const u8 BattleScript_EffectDoNothing[];
+extern const u8 BattleScript_EffectHoldHands[];
+extern const u8 BattleScript_EffectCelebrate[];
+extern const u8 BattleScript_EffectHappyHour[];
 extern const u8 BattleScript_EffectDisable[];
 extern const u8 BattleScript_EffectLevelDamage[];
 extern const u8 BattleScript_EffectPsywave[];

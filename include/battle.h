@@ -250,6 +250,7 @@ struct SpecialStatus
     u8 emergencyExited:1;
     u8 afterYou:1;
     u8 preventLifeOrbDamage:1; // So that Life Orb doesn't activate various effects.
+    u8 distortedTypeMatchups:1;
 };
 
 struct SideTimer
@@ -823,14 +824,16 @@ struct BattleStruct
     u8 shellSideArmCategory[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT];
     u8 speedTieBreaks; // MAX_BATTLERS_COUNT! values.
     u8 boosterEnergyActivates;
-    u8 distortedTypeMatchups;
     u8 categoryOverride; // for Z-Moves and Max Moves
     u8 commandingDondozo;
-    u16 commanderActive[NUM_BATTLE_SIDES];
+    u16 commanderActive[MAX_BATTLERS_COUNT];
     u32 stellarBoostFlags[NUM_BATTLE_SIDES]; // stored as a bitfield of flags for all types for each side
     u8 redCardActivates:1;
+    u8 padding:7;
     u8 usedEjectItem;
     u8 usedMicleBerry;
+    u8 monCausingSleepClause[NUM_BATTLE_SIDES]; // Stores which pokemon on a given side is causing Sleep Clause to be active as the mon's index in the party
+    u8 sleepClauseEffectExempt:4; // Stores whether effect should be exempt from triggering Sleep Clause (Effect Spore)
 };
 
 // The palaceFlags member of struct BattleStruct contains 1 flag per move to indicate which moves the AI should consider,
@@ -852,9 +855,29 @@ STATIC_ASSERT(sizeof(((struct BattleStruct *)0)->palaceFlags) * 8 >= MAX_BATTLER
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0) || (gBattleStruct->enduredDamage & (1u << gBattlerTarget)))
 #define BATTLER_TURN_DAMAGED(battlerId) ((gSpecialStatuses[battlerId].physicalDmg != 0 || gSpecialStatuses[battlerId].specialDmg != 0) || (gBattleStruct->enduredDamage & (1u << battler)))
 
-#define IS_BATTLER_OF_TYPE(battlerId, type)((GetBattlerType(battlerId, 0, FALSE) == type || GetBattlerType(battlerId, 1, FALSE) == type || (GetBattlerType(battlerId, 2, FALSE) != TYPE_MYSTERY && GetBattlerType(battlerId, 2, FALSE) == type)))
-#define IS_BATTLER_OF_BASE_TYPE(battlerId, type)((GetBattlerType(battlerId, 0, TRUE) == type || GetBattlerType(battlerId, 1, TRUE) == type || (GetBattlerType(battlerId, 2, TRUE) != TYPE_MYSTERY && GetBattlerType(battlerId, 2, TRUE) == type)))
-#define IS_BATTLER_TYPELESS(battlerId)(GetBattlerType(battlerId, 0, FALSE) == TYPE_MYSTERY && GetBattlerType(battlerId, 1, FALSE) == TYPE_MYSTERY && GetBattlerType(battlerId, 2, FALSE) == TYPE_MYSTERY)
+/* Checks if 'battlerId' is any of the types.
+ * Passing multiple types is more efficient than calling this multiple
+ * times with one type because it shares the 'GetBattlerTypes' result. */
+#define _IS_BATTLER_ANY_TYPE(battlerId, ignoreTera, ...) \
+    ({ \
+        u32 types[3]; \
+        GetBattlerTypes(battlerId, ignoreTera, types); \
+        RECURSIVELY(R_FOR_EACH(_IS_BATTLER_ANY_TYPE_HELPER, __VA_ARGS__)) FALSE; \
+    })
+
+#define _IS_BATTLER_ANY_TYPE_HELPER(type) (types[0] == type) || (types[1] == type) || (types[2] == type) ||
+
+#define IS_BATTLER_ANY_TYPE(battlerId, ...) _IS_BATTLER_ANY_TYPE(battlerId, FALSE, __VA_ARGS__)
+#define IS_BATTLER_OF_TYPE IS_BATTLER_ANY_TYPE
+#define IS_BATTLER_ANY_BASE_TYPE(battlerId, ...) _IS_BATTLER_ANY_TYPE(battlerId, TRUE, __VA_ARGS__)
+#define IS_BATTLER_OF_BASE_TYPE IS_BATTLER_ANY_BASE_TYPE
+
+#define IS_BATTLER_TYPELESS(battlerId) \
+    ({ \
+        u32 types[3]; \
+        GetBattlerTypes(battlerId, FALSE, types); \
+        types[0] == TYPE_MYSTERY && types[1] == TYPE_MYSTERY && types[2] == TYPE_MYSTERY; \
+    })
 
 #define SET_BATTLER_TYPE(battlerId, type)              \
 {                                                      \
