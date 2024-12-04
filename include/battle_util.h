@@ -119,6 +119,7 @@ enum
     CANCELLER_EXPLODING_DAMP,
     CANCELLER_MULTIHIT_MOVES,
     CANCELLER_Z_MOVES,
+    CANCELLER_MULTI_TARGET_MOVES,
     CANCELLER_END,
     CANCELLER_PSYCHIC_TERRAIN,
     CANCELLER_END2,
@@ -317,8 +318,9 @@ void RemoveBattlerType(u32 battler, u8 type);
 u32 GetMoveType(u32 move);
 void TryActivateSleepClause(u32 battler, u32 indexInParty);
 void TryDeactivateSleepClause(u32 battlerSide, u32 indexInParty);
-bool8 IsSleepClauseActiveForSide(u32 battlerSide);
+bool32 IsSleepClauseActiveForSide(u32 battlerSide);
 bool32 IsSleepClauseEnabled();
+void ClearDamageCalcResults(void);
 
 bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId);
 static inline u32 ApplyModifier(uq4_12_t modifier, u32 val)
