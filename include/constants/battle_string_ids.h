@@ -724,11 +724,12 @@
 #define STRINGID_ELECTRICCURRENTISRUNNING             722
 #define STRINGID_SEEMSWEIRD                           723
 #define STRINGID_WAGGLINGAFINGER                      724
-#define STRINGID_PKMNGAINEDEXPSHARE                   725
-#define STRINGID_PKMNDROPPEDITEM                      726
-#define STRINGID_BAGISFULL                            727
+#define STRINGID_BLOCKEDBYSLEEPCLAUSE                 725
+#define STRINGID_PKMNGAINEDEXPSHARE                   726
+#define STRINGID_PKMNDROPPEDITEM                      727
+#define STRINGID_BAGISFULL                            728
 
-#define BATTLESTRINGS_COUNT                           728
+#define BATTLESTRINGS_COUNT                           729
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
