@@ -6,7 +6,7 @@
 
 #include "data/battle_damage_numbers.h"
 
-static u8 GetDamageNumberPalette(void);
+static u8 GetDamageNumberPalette(u8 battler);
 
 #define sDelay data[0] // wait time until sprite appears
 #define sStayTimer data[1] // number of frames sprite stays onscreen
@@ -85,17 +85,17 @@ static void CreateDamageNumberSprite(u32 number, u32 numPrinted, u8 battler, u8 
 	gSprites[spriteId].invisible = TRUE;
 }
 
-static u8 GetDamageNumberPalette(void)
+static u8 GetDamageNumberPalette(u8 battler)
 {
-	if (gBattleMoveDamage < 0)
+	if (gBattleStruct->moveDamage[battler] < 0)
 	{
 		return 1; // healing - green
 	}
-	else if (DN_CONFIG_EFFECTIVENESS_PALETTE && gMoveResultFlags & MOVE_RESULT_SUPER_EFFECTIVE)
+	else if (DN_CONFIG_EFFECTIVENESS_PALETTE && gBattleStruct->moveResultFlags[battler] & MOVE_RESULT_SUPER_EFFECTIVE)
 	{
 		return 2; // super effective - orange	
 	}
-	else if (DN_CONFIG_EFFECTIVENESS_PALETTE && gMoveResultFlags & MOVE_RESULT_NOT_VERY_EFFECTIVE)
+	else if (DN_CONFIG_EFFECTIVENESS_PALETTE && gBattleStruct->moveResultFlags[battler] & MOVE_RESULT_NOT_VERY_EFFECTIVE)
 	{
 		return 3; // not very effective - gray	
 	}
@@ -113,9 +113,9 @@ void ShowDamageNumbers(u8 battler)
 	u32 numPrinted = 0; // used to avoid printing leading 0s
 	
 	LoadSpritePalette(&sDamageNumSpritePalette_Normal);
-	palette = GetDamageNumberPalette();
+	palette = GetDamageNumberPalette(battler);
 	
-	damage = (gBattleMoveDamage < 10000) ? gBattleMoveDamage : 9999; // damage is capped at 10,000 anyway so just assume 4 digits
+	damage = (gBattleStruct->moveDamage[battler] < 10000) ? gBattleStruct->moveDamage[battler] : 9999; // damage is capped at 10,000 anyway so just assume 4 digits
 	
 		DebugPrintf("%d", damage);
 	if (damage < 0)

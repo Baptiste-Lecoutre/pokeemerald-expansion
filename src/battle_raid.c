@@ -911,10 +911,11 @@ u16 GetTeraRaidShieldProtectedHP(void)
 bool32 UpdateRaidShield(void)
 {
     bool32 retVal = FALSE;
+    u32 battler = GetRaidBossBattler();
     if (gBattleStruct->raid.state & RAID_CREATE_SHIELD)
     {
         gBattleStruct->raid.state &= ~RAID_CREATE_SHIELD;
-        gBattlerTarget = GetRaidBossBattler();
+        gBattlerTarget = battler;
         gBattleStruct->raid.shieldsRemaining--;
 
         // Set up shield data.
@@ -935,10 +936,10 @@ bool32 UpdateRaidShield(void)
         gBattlescriptCurrInstr = BattleScript_RaidShieldAppeared;
         retVal = TRUE;
     }
-    if (gBattleStruct->raid.state & RAID_BREAK_SHIELD && gBattleMoveDamage > 0)
+    if (gBattleStruct->raid.state & RAID_BREAK_SHIELD && gBattleStruct->moveDamage[battler] > 0)
     {
         gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
-        gBattlerTarget = GetRaidBossBattler();
+        gBattlerTarget = battler;
         // Destroy an extra barrier with a Max Move.
         // TODO: Tera STAB moves will probably break 2 barriers, too.
         if (IsZMove(gLastUsedMove) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 2)
@@ -962,7 +963,7 @@ bool32 UpdateRaidShield(void)
             u32 i;
             u32 hpGain = gBattleMons[gBattlerTarget].maxHP - gBattleMons[gBattlerTarget].hp;
             hpGain = hpGain * (gBattleStruct->raid.shield + 1) / (GetShieldAmount() + 1);
-            gBattleMoveDamage = -hpGain;
+            gBattleStruct->moveDamage[gBattlerTarget] = -hpGain;
 
             /*if (gRaidData.rank > RAID_RANK_5)
             {

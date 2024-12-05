@@ -1575,7 +1575,6 @@ static void PrintMoveTab(void){
     u16 move3   = gBattleMons[sMenuDataPtr->battlerId].moves[2];
     u16 move4   = gBattleMons[sMenuDataPtr->battlerId].moves[3];
     u16 ability = gBattleMons[sMenuDataPtr->battlerId].ability;
-    u16 gBattleMoveDamage;
     u8 target = 1;
     u32 personality = gBattleMons[sMenuDataPtr->battlerId].personality;
     u8 gender = GetGenderFromSpeciesAndPersonality(gBattleMons[sMenuDataPtr->battlerId].species, gBattleMons[sMenuDataPtr->battlerId].personality);
@@ -1855,7 +1854,6 @@ static void PrintMoveInfo(u16 move, u8 x, u8 y, u8 moveIdx){
     u8 colorIdx = FONT_BLACK;
     u16 species = gBattleMons[sMenuDataPtr->battlerId].species;
     u16 ability = gBattleMons[sMenuDataPtr->battlerId].ability;
-    u16 gBattleMoveDamage;
     bool8 isEnemyMon = GetBattlerSide(sMenuDataPtr->battlerId) == B_SIDE_OPPONENT;
     u8 mode = sMenuDataPtr->moveModeId;
     u8 x2 = 0;
@@ -2193,7 +2191,6 @@ static void PrintStatusTab(void){
     u16 move3   = gBattleMons[sMenuDataPtr->battlerId].moves[2];
     u16 move4   = gBattleMons[sMenuDataPtr->battlerId].moves[3];
     u16 ability = gBattleMons[sMenuDataPtr->battlerId].ability;
-    u16 gBattleMoveDamage;
     u8 target = 1;
     u32 personality = gBattleMons[sMenuDataPtr->battlerId].personality;
     u8 gender = GetGenderFromSpeciesAndPersonality(gBattleMons[sMenuDataPtr->battlerId].species, gBattleMons[sMenuDataPtr->battlerId].personality);
@@ -2686,7 +2683,6 @@ static void PrintDamageCalulatorTab(void){
                                 gBattleMons[sMenuDataPtr->battlerId].moves[2], 
                                 gBattleMons[sMenuDataPtr->battlerId].moves[3]};
     u16 ability = gBattleMons[sMenuDataPtr->battlerId].ability;
-    u16 gBattleMoveDamage;
     u32 personality = gBattleMons[sMenuDataPtr->battlerId].personality;
     u8 gender = GetGenderFromSpeciesAndPersonality(gBattleMons[sMenuDataPtr->battlerId].species, gBattleMons[sMenuDataPtr->battlerId].personality);
     u8 statStage;

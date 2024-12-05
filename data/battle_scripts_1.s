@@ -10141,7 +10141,6 @@ BattleScript_MaxRaidIntro:
 	goto BattleScript_RaidIntroEnd
 
 BattleScript_MegaRaidIntro:
-	setbyte gIsCriticalHit, 0
 	handlemegaevo BS_ATTACKER, 0
 	handlemegaevo BS_ATTACKER, 1
 	playanimation BS_ATTACKER, B_ANIM_MEGA_EVOLUTION
@@ -10153,7 +10152,6 @@ BattleScript_MegaRaidIntro:
 	goto BattleScript_RaidIntroEnd
 
 BattleScript_PrimalRaidIntro:
-	setbyte gIsCriticalHit, 0
 	handleprimalreversion BS_ATTACKER, 0
 	handleprimalreversion BS_ATTACKER, 1
 	playanimation BS_ATTACKER, B_ANIM_PRIMAL_REVERSION
@@ -10206,7 +10204,7 @@ BattleScript_RaidBarrierBroken::
 BattleScript_MegaRaidHealBarrier::
 	playanimation BS_TARGET, B_ANIM_HELD_ITEM_EFFECT
 	waitanimation
-	healthbar_update BS_TARGET
+	healthbarupdate BS_TARGET
 	datahpupdate BS_TARGET
 	printstring STRINGID_BARRIERRESTOREDENERGY
 	waitmessage B_WAIT_TIME_LONG
@@ -10258,7 +10256,7 @@ BattleScript_RaidShockwaveMegaCalmedHealed::
 	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
 	waitanimation
 	doraidshockwave
-	healthbar_update BS_ATTACKER
+	healthbarupdate BS_ATTACKER
 	datahpupdate BS_ATTACKER
 	goto BattleScript_RaidShockwaveEnd
 
