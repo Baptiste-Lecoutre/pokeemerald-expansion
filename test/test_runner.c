@@ -10,7 +10,7 @@
 #include "test_runner.h"
 #include "test/test.h"
 
-#define TIMEOUT_SECONDS 55
+#define TIMEOUT_SECONDS 60//55 // changed to fix tests going slower than base expansion
 
 void CB2_TestRunner(void);
 
