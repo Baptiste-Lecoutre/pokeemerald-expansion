@@ -63,6 +63,8 @@ static u32 GetFlingPowerFromItemId(u32 itemId);
 static void SetRandomMultiHitCounter();
 static u32 GetBattlerItemHoldEffectParam(u32 battler, u32 item);
 static bool32 CanBeInfinitelyConfused(u32 battler);
+ARM_FUNC NOINLINE static uq4_12_t PercentToUQ4_12(u32 percent);
+ARM_FUNC NOINLINE static uq4_12_t PercentToUQ4_12_Floored(u32 percent);
 
 extern const u8 *const gBattlescriptsForRunningByItem[];
 extern const u8 *const gBattlescriptsForUsingItem[];
@@ -116,6 +118,9 @@ bool32 IsAffectedByFollowMe(u32 battlerAtk, u32 defSide, u32 move)
         || gMovesInfo[move].effect == EFFECT_SNIPE_SHOT
         || gMovesInfo[move].effect == EFFECT_SKY_DROP
         || ability == ABILITY_PROPELLER_TAIL || ability == ABILITY_STALWART)
+        return FALSE;
+
+    if (gMovesInfo[move].effect == EFFECT_PURSUIT && gBattleStruct->pursuitTarget)
         return FALSE;
 
     if (gSideTimers[defSide].followmePowder && !IsAffectedByPowder(battlerAtk, ability, GetBattlerHoldEffect(battlerAtk, TRUE)))
@@ -225,6 +230,7 @@ void HandleAction_UseMove(void)
     }
     else if (IsDoubleBattle()
            && gSideTimers[side].followmeTimer == 0
+           && !(gBattleStruct->pursuitTarget & (1u << *(gBattleStruct->moveTarget + gBattlerAttacker)))
            && (gMovesInfo[gCurrentMove].power != 0 || (moveTarget != MOVE_TARGET_USER && moveTarget != MOVE_TARGET_ALL_BATTLERS))
            && ((GetBattlerAbility(*(gBattleStruct->moveTarget + gBattlerAttacker)) != ABILITY_LIGHTNING_ROD && moveType == TYPE_ELECTRIC)
             || (GetBattlerAbility(*(gBattleStruct->moveTarget + gBattlerAttacker)) != ABILITY_STORM_DRAIN && moveType == TYPE_WATER)))
@@ -739,7 +745,7 @@ void HandleAction_ActionFinished(void)
         return;
     }
     
-    if (B_RECALC_TURN_AFTER_ACTIONS >= GEN_8 && !afterYouActive && !gBattleStruct->pledgeMove)
+    if (B_RECALC_TURN_AFTER_ACTIONS >= GEN_8 && !afterYouActive && !gBattleStruct->pledgeMove && !gBattleStruct->pursuitTarget)
     {
         // i starts at `gCurrentTurnActionNumber` because we don't want to recalculate turn order for mon that have already
         // taken action. It's been previously increased, which we want in order to not recalculate the turn of the mon that just finished its action
@@ -793,113 +799,18 @@ static const u8 sHoldEffectToType[][2] =
     {HOLD_EFFECT_FAIRY_POWER, TYPE_FAIRY},
 };
 
-// percent in UQ_4_12 format
-static const uq4_12_t sPercentToModifier[] =
-{
-    UQ_4_12(0.00), // 0
-    UQ_4_12(0.01), // 1
-    UQ_4_12(0.02), // 2
-    UQ_4_12(0.03), // 3
-    UQ_4_12(0.04), // 4
-    UQ_4_12(0.05), // 5
-    UQ_4_12(0.06), // 6
-    UQ_4_12(0.07), // 7
-    UQ_4_12(0.08), // 8
-    UQ_4_12(0.09), // 9
-    UQ_4_12(0.10), // 10
-    UQ_4_12(0.11), // 11
-    UQ_4_12(0.12), // 12
-    UQ_4_12(0.13), // 13
-    UQ_4_12(0.14), // 14
-    UQ_4_12(0.15), // 15
-    UQ_4_12(0.16), // 16
-    UQ_4_12(0.17), // 17
-    UQ_4_12(0.18), // 18
-    UQ_4_12(0.19), // 19
-    UQ_4_12(0.20), // 20
-    UQ_4_12(0.21), // 21
-    UQ_4_12(0.22), // 22
-    UQ_4_12(0.23), // 23
-    UQ_4_12(0.24), // 24
-    UQ_4_12(0.25), // 25
-    UQ_4_12(0.26), // 26
-    UQ_4_12(0.27), // 27
-    UQ_4_12(0.28), // 28
-    UQ_4_12(0.29), // 29
-    UQ_4_12(0.30), // 30
-    UQ_4_12(0.31), // 31
-    UQ_4_12(0.32), // 32
-    UQ_4_12(0.33), // 33
-    UQ_4_12(0.34), // 34
-    UQ_4_12(0.35), // 35
-    UQ_4_12(0.36), // 36
-    UQ_4_12(0.37), // 37
-    UQ_4_12(0.38), // 38
-    UQ_4_12(0.39), // 39
-    UQ_4_12(0.40), // 40
-    UQ_4_12(0.41), // 41
-    UQ_4_12(0.42), // 42
-    UQ_4_12(0.43), // 43
-    UQ_4_12(0.44), // 44
-    UQ_4_12(0.45), // 45
-    UQ_4_12(0.46), // 46
-    UQ_4_12(0.47), // 47
-    UQ_4_12(0.48), // 48
-    UQ_4_12(0.49), // 49
-    UQ_4_12(0.50), // 50
-    UQ_4_12(0.51), // 51
-    UQ_4_12(0.52), // 52
-    UQ_4_12(0.53), // 53
-    UQ_4_12(0.54), // 54
-    UQ_4_12(0.55), // 55
-    UQ_4_12(0.56), // 56
-    UQ_4_12(0.57), // 57
-    UQ_4_12(0.58), // 58
-    UQ_4_12(0.59), // 59
-    UQ_4_12(0.60), // 60
-    UQ_4_12(0.61), // 61
-    UQ_4_12(0.62), // 62
-    UQ_4_12(0.63), // 63
-    UQ_4_12(0.64), // 64
-    UQ_4_12(0.65), // 65
-    UQ_4_12(0.66), // 66
-    UQ_4_12(0.67), // 67
-    UQ_4_12(0.68), // 68
-    UQ_4_12(0.69), // 69
-    UQ_4_12(0.70), // 70
-    UQ_4_12(0.71), // 71
-    UQ_4_12(0.72), // 72
-    UQ_4_12(0.73), // 73
-    UQ_4_12(0.74), // 74
-    UQ_4_12(0.75), // 75
-    UQ_4_12(0.76), // 76
-    UQ_4_12(0.77), // 77
-    UQ_4_12(0.78), // 78
-    UQ_4_12(0.79), // 79
-    UQ_4_12(0.80), // 80
-    UQ_4_12(0.81), // 81
-    UQ_4_12(0.82), // 82
-    UQ_4_12(0.83), // 83
-    UQ_4_12(0.84), // 84
-    UQ_4_12(0.85), // 85
-    UQ_4_12(0.86), // 86
-    UQ_4_12(0.87), // 87
-    UQ_4_12(0.88), // 88
-    UQ_4_12(0.89), // 89
-    UQ_4_12(0.90), // 90
-    UQ_4_12(0.91), // 91
-    UQ_4_12(0.92), // 92
-    UQ_4_12(0.93), // 93
-    UQ_4_12(0.94), // 94
-    UQ_4_12(0.95), // 95
-    UQ_4_12(0.96), // 96
-    UQ_4_12(0.97), // 97
-    UQ_4_12(0.98), // 98
-    UQ_4_12(0.99), // 99
-    UQ_4_12(1.00), // 100
-};
-
 // code
+
+ARM_FUNC NOINLINE static uq4_12_t PercentToUQ4_12(u32 percent)
+{
+    return (4096 * percent + 50) / 100;
+}
+
+ARM_FUNC NOINLINE static uq4_12_t PercentToUQ4_12_Floored(u32 percent)
+{
+    return (4096 * percent) / 100;
+}
+
 u8 GetBattlerForBattleScript(u8 caseId)
 {
     u8 ret = 0;
@@ -4194,7 +4105,7 @@ static inline u8 GetBattlerSideFaintCounter(u32 battler)
 // Supreme Overlord adds a x0.1 damage boost for each fainted ally.
 static inline uq4_12_t GetSupremeOverlordModifier(u32 battler)
 {
-    return UQ_4_12(1.0) + (UQ_4_12(0.1) * gBattleStruct->supremeOverlordCounter[battler]);
+    return UQ_4_12(1.0) + (PercentToUQ4_12(gBattleStruct->supremeOverlordCounter[battler] * 10));
 }
 
 static inline bool32 HadMoreThanHalfHpNowDoesnt(u32 battler)
@@ -5934,7 +5845,7 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                  && IsBattlerAlive(gBattlerAttacker)
                  && !gProtectStructs[gBattlerAttacker].confusionSelfDmg
                  && TARGET_TURN_DAMAGED
-                 && CanBeSlept(gBattlerAttacker, ability, FALSE)
+                 && CanBeSlept(gBattlerAttacker, ability, NOT_BLOCKED_BY_SLEEP_CLAUSE)
                  && GetBattlerHoldEffect(gBattlerAttacker, TRUE) != HOLD_EFFECT_PROTECTIVE_PADS
                  && IsMoveMakingContact(move, gBattlerAttacker))
                 {
@@ -6795,7 +6706,7 @@ bool32 IsBattlerTerrainAffected(u32 battler, u32 terrainFlag)
     return IsBattlerGrounded(battler);
 }
 
-bool32 CanBeSlept(u32 battler, u32 ability, u32 isBlockedBySleepClause)
+bool32 CanBeSlept(u32 battler, u32 ability, enum SleepClauseBlock isBlockedBySleepClause)
 {
     if(IsSleepClauseActiveForSide(GetBattlerSide(battler)) && isBlockedBySleepClause)
         return FALSE;
@@ -6923,7 +6834,7 @@ bool32 HasEnoughHpToEatBerry(u32 battler, u32 hpFraction, u32 itemId)
     return FALSE;
 }
 
-static u8 HealConfuseBerry(u32 battler, u32 itemId, u32 flavorId, bool32 end2)
+static u32 HealConfuseBerry(u32 battler, u32 itemId, u32 flavorId, enum ItemEffect caseID)
 {
     if (HasEnoughHpToEatBerry(battler, (B_CONFUSE_BERRIES_HEAL >= GEN_7 ? 4 : 2), itemId)
      && (B_HEAL_BLOCKING < GEN_5 || !(gStatuses3[battler] & STATUS3_HEAL_BLOCK)))
@@ -6941,7 +6852,7 @@ static u8 HealConfuseBerry(u32 battler, u32 itemId, u32 flavorId, bool32 end2)
             gBattlerAbility = battler;
         }
         gBattleScripting.battler = battler;
-        if (end2)
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
         {
             if (GetFlavorRelationByPersonality(gBattleMons[battler].personality, flavorId) < 0)
                 BattleScriptExecute(BattleScript_BerryConfuseHealEnd2);
@@ -6962,7 +6873,7 @@ static u8 HealConfuseBerry(u32 battler, u32 itemId, u32 flavorId, bool32 end2)
     return 0;
 }
 
-static u8 StatRaiseBerry(u32 battler, u32 itemId, u32 statId, bool32 end2)
+static u32 StatRaiseBerry(u32 battler, u32 itemId, u32 statId, enum ItemEffect caseID)
 {
     if (CompareStat(battler, statId, MAX_STAT_STAGE, CMP_LESS_THAN) && HasEnoughHpToEatBerry(battler, GetBattlerItemHoldEffectParam(battler, itemId), itemId))
     {
@@ -6976,7 +6887,7 @@ static u8 StatRaiseBerry(u32 battler, u32 itemId, u32 statId, bool32 end2)
         gBattleScripting.animArg1 = STAT_ANIM_PLUS1 + statId;
         gBattleScripting.animArg2 = 0;
 
-        if (end2)
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
         {
             BattleScriptExecute(BattleScript_BerryStatRaiseEnd2);
         }
@@ -6987,10 +6898,10 @@ static u8 StatRaiseBerry(u32 battler, u32 itemId, u32 statId, bool32 end2)
         }
         return ITEM_STATS_CHANGE;
     }
-    return 0;
+    return ITEM_NO_EFFECT;
 }
 
-static u8 RandomStatRaiseBerry(u32 battler, u32 itemId, bool32 end2)
+static u32 RandomStatRaiseBerry(u32 battler, u32 itemId, enum ItemEffect caseID)
 {
     s32 i;
     u16 stringId;
@@ -7026,7 +6937,7 @@ static u8 RandomStatRaiseBerry(u32 battler, u32 itemId, bool32 end2)
 
         gBattleScripting.animArg1 = STAT_ANIM_PLUS2 + i + 1;
         gBattleScripting.animArg2 = 0;
-        if (end2)
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
         {
             BattleScriptExecute(BattleScript_BerryStatRaiseEnd2);
         }
@@ -7041,12 +6952,12 @@ static u8 RandomStatRaiseBerry(u32 battler, u32 itemId, bool32 end2)
     return 0;
 }
 
-static u8 TrySetMicleBerry(u32 battler, u32 itemId, bool32 end2)
+static u32 TrySetMicleBerry(u32 battler, u32 itemId, enum ItemEffect caseID)
 {
     if (HasEnoughHpToEatBerry(battler, 4, itemId))
     {
         gBattleStruct->usedMicleBerry |= 1u << battler;
-        if (end2)
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
         {
             BattleScriptExecute(BattleScript_MicleBerryActivateEnd2);
         }
@@ -7109,7 +7020,7 @@ static u8 DamagedStatBoostBerryEffect(u32 battler, u8 statId, u8 category)
     return 0;
 }
 
-u8 TryHandleSeed(u32 battler, u32 terrainFlag, u8 statId, u16 itemId, bool32 execute)
+u32 TryHandleSeed(u32 battler, u32 terrainFlag, u32 statId, u32 itemId, enum ItemEffect caseID)
 {
     if (gFieldStatuses & terrainFlag && CompareStat(battler, statId, MAX_STAT_STAGE, CMP_LESS_THAN))
     {
@@ -7119,7 +7030,7 @@ u8 TryHandleSeed(u32 battler, u32 terrainFlag, u8 statId, u16 itemId, bool32 exe
         SET_STATCHANGER(statId, 1, FALSE);
         gBattleScripting.animArg1 = STAT_ANIM_PLUS1 + statId;
         gBattleScripting.animArg2 = 0;
-        if (execute)
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
         {
             BattleScriptExecute(BattleScript_BerryStatRaiseEnd2);
         }
@@ -7133,7 +7044,7 @@ u8 TryHandleSeed(u32 battler, u32 terrainFlag, u8 statId, u16 itemId, bool32 exe
     return 0;
 }
 
-static u32 ItemRestorePp(u32 battler, u32 itemId, bool32 execute)
+static u32 ItemRestorePp(u32 battler, u32 itemId, enum ItemEffect caseID)
 {
     struct Pokemon *party = GetBattlerParty(battler);
     struct Pokemon *mon = &party[gBattlerPartyIndexes[battler]];
@@ -7161,7 +7072,7 @@ static u32 ItemRestorePp(u32 battler, u32 itemId, bool32 execute)
 
             PREPARE_MOVE_BUFFER(gBattleTextBuff1, move);
 
-            if (execute)
+            if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
             {
                 BattleScriptExecute(BattleScript_BerryPPHealEnd2);
             }
@@ -7180,7 +7091,7 @@ static u32 ItemRestorePp(u32 battler, u32 itemId, bool32 execute)
     return 0;
 }
 
-static u8 ItemHealHp(u32 battler, u32 itemId, bool32 end2, bool32 percentHeal)
+static u32 ItemHealHp(u32 battler, u32 itemId, enum ItemEffect caseID, bool32 percentHeal)
 {
     if (!(gBattleScripting.overrideBerryRequirements && gBattleMons[battler].hp == gBattleMons[battler].maxHP)
         && (B_HEAL_BLOCKING < GEN_5 || !(gStatuses3[battler] & STATUS3_HEAL_BLOCK))
@@ -7196,7 +7107,7 @@ static u8 ItemHealHp(u32 battler, u32 itemId, bool32 end2, bool32 percentHeal)
             gBattleStruct->moveDamage[battler] *= 2;
 
         gBattlerAbility = battler;    // in SWSH, berry juice shows ability pop up but has no effect. This is mimicked here
-        if (end2)
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
         {
             BattleScriptExecute(BattleScript_ItemHealHP_RemoveItemEnd2);
         }
@@ -7277,9 +7188,9 @@ static bool32 GetMentalHerbEffect(u32 battler)
     return ret;
 }
 
-static u8 TryConsumeMirrorHerb(u32 battler, bool32 execute)
+static u32 TryConsumeMirrorHerb(u32 battler, enum ItemEffect caseID)
 {
-    u8 effect = 0;
+    u32 effect = 0;
 
     if (gProtectStructs[battler].eatMirrorHerb)
     {
@@ -7288,7 +7199,7 @@ static u8 TryConsumeMirrorHerb(u32 battler, bool32 execute)
         gBattleScripting.battler = battler;
         gProtectStructs[battler].eatMirrorHerb = 0;
         ChooseStatBoostAnimation(battler);
-        if (execute)
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
         {
             BattleScriptExecute(BattleScript_MirrorHerbCopyStatChangeEnd2);
         }
@@ -7302,7 +7213,7 @@ static u8 TryConsumeMirrorHerb(u32 battler, bool32 execute)
     return effect;
 }
 
-static inline u32 TryBoosterEnergy(u32 battler)
+static inline u32 TryBoosterEnergy(u32 battler, enum ItemEffect caseID)
 {
     if (gBattleStruct->boosterEnergyActivates & (1u << battler) || gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return ITEM_NO_EFFECT;
@@ -7313,7 +7224,15 @@ static inline u32 TryBoosterEnergy(u32 battler)
         PREPARE_STAT_BUFFER(gBattleTextBuff1, GetHighestStatId(battler));
         gBattlerAbility = gBattleScripting.battler = battler;
         gBattleStruct->boosterEnergyActivates |= 1u << battler;
-        BattleScriptExecute(BattleScript_BoosterEnergyEnd2);
+        if (caseID == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseID == ITEMEFFECT_NORMAL)
+        {
+            BattleScriptExecute(BattleScript_BoosterEnergyEnd2);
+        }
+        else
+        {
+            BattleScriptPushCursor();
+            gBattlescriptCurrInstr = BattleScript_BoosterEnergyRet;
+        }
         return ITEM_EFFECT_OTHER;
     }
 
@@ -7348,59 +7267,59 @@ static u8 ItemEffectMoveEnd(u32 battler, u16 holdEffect)
     {
     case HOLD_EFFECT_MICLE_BERRY:
         if (B_HP_BERRIES >= GEN_4)
-            effect = TrySetMicleBerry(battler, gLastUsedItem, FALSE);
+            effect = TrySetMicleBerry(battler, gLastUsedItem, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_RESTORE_HP:
         if (B_HP_BERRIES >= GEN_4)
-            effect = ItemHealHp(battler, gLastUsedItem, FALSE, FALSE);
+            effect = ItemHealHp(battler, gLastUsedItem, ITEMEFFECT_NONE, FALSE);
         break;
     case HOLD_EFFECT_RESTORE_PCT_HP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = ItemHealHp(battler, gLastUsedItem, FALSE, TRUE);
+            effect = ItemHealHp(battler, gLastUsedItem, ITEMEFFECT_NONE, TRUE);
         break;
     case HOLD_EFFECT_RESTORE_PP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = ItemRestorePp(battler, gLastUsedItem, FALSE);
+            effect = ItemRestorePp(battler, gLastUsedItem, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_CONFUSE_SPICY:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SPICY, FALSE);
+            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SPICY, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_CONFUSE_DRY:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_DRY, FALSE);
+            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_DRY, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_CONFUSE_SWEET:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SWEET, FALSE);
+            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SWEET, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_CONFUSE_BITTER:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_BITTER, FALSE);
+            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_BITTER, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_CONFUSE_SOUR:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SOUR, FALSE);
+            effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SOUR, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_ATTACK_UP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_ATK, FALSE);
+            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_ATK, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_DEFENSE_UP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_DEF, FALSE);
+            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_DEF, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_SPEED_UP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPEED, FALSE);
+            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPEED, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_SP_ATTACK_UP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPATK, FALSE);
+            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPATK, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_SP_DEFENSE_UP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPDEF, FALSE);
+            effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPDEF, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_ENIGMA_BERRY: // consume and heal if hit by super effective move
         if (B_BERRIES_INSTANT >= GEN_4)
@@ -7416,7 +7335,7 @@ static u8 ItemEffectMoveEnd(u32 battler, u16 holdEffect)
         break;
     case HOLD_EFFECT_RANDOM_STAT_UP:
         if (B_BERRIES_INSTANT >= GEN_4)
-            effect = RandomStatRaiseBerry(battler, gLastUsedItem, FALSE);
+            effect = RandomStatRaiseBerry(battler, gLastUsedItem, ITEMEFFECT_NONE);
         break;
     case HOLD_EFFECT_CURE_PAR:
         if (gBattleMons[battler].status1 & STATUS1_PARALYSIS && !UnnerveOn(battler, gLastUsedItem))
@@ -7553,20 +7472,80 @@ static u8 ItemEffectMoveEnd(u32 battler, u16 holdEffect)
         effect = ITEM_STATS_CHANGE;
         break;
     case HOLD_EFFECT_MIRROR_HERB:
-        effect = TryConsumeMirrorHerb(battler, FALSE);
+        effect = TryConsumeMirrorHerb(battler, ITEMEFFECT_NONE);
         break;
     }
 
     return effect;
 }
 
-u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
+static inline bool32 TryCureStatus(u32 battler, enum ItemEffect caseId)
 {
-    int i = 0, moveType;
-    u8 effect = ITEM_NO_EFFECT;
-    u32 battlerHoldEffect = 0, atkHoldEffect;
-    u8 atkHoldEffectParam;
-    u16 atkItem;
+    u32 effect = ITEM_NO_EFFECT;
+    u32 string = 0;
+
+    if ((gBattleMons[battler].status1 & STATUS1_ANY || gBattleMons[battler].status2 & STATUS2_CONFUSION) && !UnnerveOn(battler, gLastUsedItem))
+    {
+        if (gBattleMons[battler].status1 & STATUS1_PSN_ANY)
+        {
+            StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
+            string++;
+        }
+        if (gBattleMons[battler].status1 & STATUS1_SLEEP)
+        {
+            gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
+            StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);
+            string++;
+            TryDeactivateSleepClause(GetBattlerSide(battler), gBattlerPartyIndexes[battler]);
+        }
+        if (gBattleMons[battler].status1 & STATUS1_PARALYSIS)
+        {
+            StringCopy(gBattleTextBuff1, gStatusConditionString_ParalysisJpn);
+            string++;
+        }
+        if (gBattleMons[battler].status1 & STATUS1_BURN)
+        {
+            StringCopy(gBattleTextBuff1, gStatusConditionString_BurnJpn);
+            string++;
+        }
+        if (gBattleMons[battler].status1 & STATUS1_FREEZE || gBattleMons[battler].status1 & STATUS1_FROSTBITE)
+        {
+            StringCopy(gBattleTextBuff1, gStatusConditionString_IceJpn);
+            string++;
+        }
+        if (gBattleMons[battler].status2 & STATUS2_CONFUSION)
+        {
+            StringCopy(gBattleTextBuff1, gStatusConditionString_ConfusionJpn);
+            string++;
+        }
+        if (string <= 1)
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_CURED_PROBLEM;
+        else
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_NORMALIZED_STATUS;
+        gBattleMons[battler].status1 = 0;
+        RemoveConfusionStatus(battler);
+        if (caseId == ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN || caseId == ITEMEFFECT_NORMAL)
+        {
+            BattleScriptExecute(BattleScript_BerryCureChosenStatusEnd2);
+        }
+        else
+        {
+            BattleScriptPushCursor();
+            gBattlescriptCurrInstr = BattleScript_BerryCureChosenStatusRet;
+        }
+        effect = ITEM_STATUS_CHANGE;
+    }
+
+    return effect;
+}
+
+u32 ItemBattleEffects(enum ItemEffect caseID, u32 battler, bool32 moveTurn)
+{
+    u32 moveType = 0;
+    u32 effect = ITEM_NO_EFFECT;
+    u32 battlerHoldEffect = 0, atkHoldEffect = 0;
+    u32 atkHoldEffectParam = 0;
+    u32 atkItem = 0;
 
     if (caseID != ITEMEFFECT_USE_LAST_ITEM)
     {
@@ -7580,7 +7559,10 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
 
     switch (caseID)
     {
+    case ITEMEFFECT_NONE:
+        break;
     case ITEMEFFECT_ON_SWITCH_IN:
+    case ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN:
         if (!gSpecialStatuses[battler].switchInItemDone)
         {
             switch (battlerHoldEffect)
@@ -7602,43 +7584,43 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 break;
             case HOLD_EFFECT_CONFUSE_SPICY:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SPICY, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SPICY, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_DRY:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_DRY, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_DRY, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_SWEET:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SWEET, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SWEET, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_BITTER:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_BITTER, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_BITTER, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_SOUR:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SOUR, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SOUR, caseID);
                 break;
             case HOLD_EFFECT_ATTACK_UP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_ATK, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_ATK, caseID);
                 break;
             case HOLD_EFFECT_DEFENSE_UP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_DEF, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_DEF, caseID);
                 break;
             case HOLD_EFFECT_SPEED_UP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPEED, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPEED, caseID);
                 break;
             case HOLD_EFFECT_SP_ATTACK_UP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPATK, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPATK, caseID);
                 break;
             case HOLD_EFFECT_SP_DEFENSE_UP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPDEF, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPDEF, caseID);
                 break;
             case HOLD_EFFECT_CRITICAL_UP:
                 if (B_BERRIES_INSTANT >= GEN_4
@@ -7653,7 +7635,7 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 break;
             case HOLD_EFFECT_RANDOM_STAT_UP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = RandomStatRaiseBerry(battler, gLastUsedItem, TRUE);
+                    effect = RandomStatRaiseBerry(battler, gLastUsedItem, caseID);
                 break;
             case HOLD_EFFECT_CURE_PAR:
                 if (B_BERRIES_INSTANT >= GEN_4
@@ -7716,60 +7698,16 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_STATUS:
-                if (B_BERRIES_INSTANT >= GEN_4
-                    && (gBattleMons[battler].status1 & STATUS1_ANY || gBattleMons[battler].status2 & STATUS2_CONFUSION)
-                    && !UnnerveOn(battler, gLastUsedItem))
-                {
-                    i = 0;
-                    if (gBattleMons[battler].status1 & STATUS1_PSN_ANY)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_SLEEP)
-                    {
-                        gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);
-                        i++;
-                        TryDeactivateSleepClause(GetBattlerSide(battler), gBattlerPartyIndexes[battler]);
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_PARALYSIS)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_ParalysisJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_BURN)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_BurnJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_FREEZE || gBattleMons[battler].status1 & STATUS1_FROSTBITE)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_IceJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status2 & STATUS2_CONFUSION)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_ConfusionJpn);
-                        i++;
-                    }
-                    if (i <= 1)
-                        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_CURED_PROBLEM;
-                    else
-                        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_NORMALIZED_STATUS;
-                    gBattleMons[battler].status1 = 0;
-                    RemoveConfusionStatus(battler);
-                    BattleScriptExecute(BattleScript_BerryCureChosenStatusEnd2);
-                    effect = ITEM_STATUS_CHANGE;
-                }
+                if (B_BERRIES_INSTANT >= GEN_4)
+                    effect = TryCureStatus(battler, caseID);
                 break;
             case HOLD_EFFECT_RESTORE_HP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = ItemHealHp(battler, gLastUsedItem, TRUE, FALSE);
+                    effect = ItemHealHp(battler, gLastUsedItem, caseID, FALSE);
                 break;
             case HOLD_EFFECT_RESTORE_PCT_HP:
                 if (B_BERRIES_INSTANT >= GEN_4)
-                    effect = ItemHealHp(battler, gLastUsedItem, TRUE, TRUE);
+                    effect = ItemHealHp(battler, gLastUsedItem, caseID, TRUE);
                 break;
             case HOLD_EFFECT_AIR_BALLOON:
                 effect = ITEM_EFFECT_OTHER;
@@ -7788,16 +7726,16 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 switch (GetBattlerHoldEffectParam(battler))
                 {
                 case HOLD_EFFECT_PARAM_ELECTRIC_TERRAIN:
-                    effect = TryHandleSeed(battler, STATUS_FIELD_ELECTRIC_TERRAIN, STAT_DEF, gLastUsedItem, TRUE);
+                    effect = TryHandleSeed(battler, STATUS_FIELD_ELECTRIC_TERRAIN, STAT_DEF, gLastUsedItem, caseID);
                     break;
                 case HOLD_EFFECT_PARAM_GRASSY_TERRAIN:
-                    effect = TryHandleSeed(battler, STATUS_FIELD_GRASSY_TERRAIN, STAT_DEF, gLastUsedItem, TRUE);
+                    effect = TryHandleSeed(battler, STATUS_FIELD_GRASSY_TERRAIN, STAT_DEF, gLastUsedItem, caseID);
                     break;
                 case HOLD_EFFECT_PARAM_MISTY_TERRAIN:
-                    effect = TryHandleSeed(battler, STATUS_FIELD_MISTY_TERRAIN, STAT_SPDEF, gLastUsedItem, TRUE);
+                    effect = TryHandleSeed(battler, STATUS_FIELD_MISTY_TERRAIN, STAT_SPDEF, gLastUsedItem, caseID);
                     break;
                 case HOLD_EFFECT_PARAM_PSYCHIC_TERRAIN:
-                    effect = TryHandleSeed(battler, STATUS_FIELD_PSYCHIC_TERRAIN, STAT_SPDEF, gLastUsedItem, TRUE);
+                    effect = TryHandleSeed(battler, STATUS_FIELD_PSYCHIC_TERRAIN, STAT_SPDEF, gLastUsedItem, caseID);
                     break;
                 }
                 break;
@@ -7837,10 +7775,10 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 effect = ITEM_STATS_CHANGE;
                 break;
             case HOLD_EFFECT_MIRROR_HERB:
-                effect = TryConsumeMirrorHerb(battler, TRUE);
+                effect = TryConsumeMirrorHerb(battler, caseID);
                 break;
             case HOLD_EFFECT_BOOSTER_ENERGY:
-                effect = TryBoosterEnergy(battler);
+                effect = TryBoosterEnergy(battler, caseID);
                 break;
             }
             if (effect != 0)
@@ -7864,15 +7802,15 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
             {
             case HOLD_EFFECT_RESTORE_HP:
                 if (!moveTurn)
-                    effect = ItemHealHp(battler, gLastUsedItem, TRUE, FALSE);
+                    effect = ItemHealHp(battler, gLastUsedItem, caseID, FALSE);
                 break;
             case HOLD_EFFECT_RESTORE_PCT_HP:
                 if (!moveTurn)
-                    effect = ItemHealHp(battler, gLastUsedItem, TRUE, TRUE);
+                    effect = ItemHealHp(battler, gLastUsedItem, caseID, TRUE);
                 break;
             case HOLD_EFFECT_RESTORE_PP:
                 if (!moveTurn)
-                    effect = ItemRestorePp(battler, gLastUsedItem, TRUE);
+                    effect = ItemRestorePp(battler, gLastUsedItem, caseID);
                 break;
             case HOLD_EFFECT_RESTORE_STATS:
                 effect = RestoreWhiteHerbStats(battler);
@@ -7914,43 +7852,43 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 break;
             case HOLD_EFFECT_CONFUSE_SPICY:
                 if (!moveTurn)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SPICY, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SPICY, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_DRY:
                 if (!moveTurn)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_DRY, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_DRY, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_SWEET:
                 if (!moveTurn)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SWEET, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SWEET, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_BITTER:
                 if (!moveTurn)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_BITTER, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_BITTER, caseID);
                 break;
             case HOLD_EFFECT_CONFUSE_SOUR:
                 if (!moveTurn)
-                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SOUR, TRUE);
+                    effect = HealConfuseBerry(battler, gLastUsedItem, FLAVOR_SOUR, caseID);
                 break;
             case HOLD_EFFECT_ATTACK_UP:
                 if (!moveTurn)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_ATK, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_ATK, caseID);
                 break;
             case HOLD_EFFECT_DEFENSE_UP:
                 if (!moveTurn)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_DEF, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_DEF, caseID);
                 break;
             case HOLD_EFFECT_SPEED_UP:
                 if (!moveTurn)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPEED, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPEED, caseID);
                 break;
             case HOLD_EFFECT_SP_ATTACK_UP:
                 if (!moveTurn)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPATK, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPATK, caseID);
                 break;
             case HOLD_EFFECT_SP_DEFENSE_UP:
                 if (!moveTurn)
-                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPDEF, TRUE);
+                    effect = StatRaiseBerry(battler, gLastUsedItem, STAT_SPDEF, caseID);
                 break;
             case HOLD_EFFECT_CRITICAL_UP:
                 if (!moveTurn && !(gBattleMons[battler].status2 & STATUS2_FOCUS_ENERGY_ANY)
@@ -7964,7 +7902,7 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 break;
             case HOLD_EFFECT_RANDOM_STAT_UP:
                 if (!moveTurn)
-                    effect = RandomStatRaiseBerry(battler, gLastUsedItem, TRUE);
+                    effect = RandomStatRaiseBerry(battler, gLastUsedItem, caseID);
                 break;
             case HOLD_EFFECT_CURE_PAR:
                 if (gBattleMons[battler].status1 & STATUS1_PARALYSIS && !UnnerveOn(battler, gLastUsedItem))
@@ -8023,50 +7961,7 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 }
                 break;
             case HOLD_EFFECT_CURE_STATUS:
-                if ((gBattleMons[battler].status1 & STATUS1_ANY || gBattleMons[battler].status2 & STATUS2_CONFUSION) && !UnnerveOn(battler, gLastUsedItem))
-                {
-                    i = 0;
-                    if (gBattleMons[battler].status1 & STATUS1_PSN_ANY)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_PoisonJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_SLEEP)
-                    {
-                        gBattleMons[battler].status2 &= ~STATUS2_NIGHTMARE;
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_SleepJpn);
-                        i++;
-                        TryDeactivateSleepClause(GetBattlerSide(battler), gBattlerPartyIndexes[battler]);
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_PARALYSIS)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_ParalysisJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_BURN)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_BurnJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status1 & STATUS1_FREEZE || gBattleMons[battler].status1 & STATUS1_FROSTBITE)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_IceJpn);
-                        i++;
-                    }
-                    if (gBattleMons[battler].status2 & STATUS2_CONFUSION)
-                    {
-                        StringCopy(gBattleTextBuff1, gStatusConditionString_ConfusionJpn);
-                        i++;
-                    }
-                    if (i <= 1)
-                        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_CURED_PROBLEM;
-                    else
-                        gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_NORMALIZED_STATUS;
-                    gBattleMons[battler].status1 = 0;
-                    RemoveConfusionStatus(battler);
-                    BattleScriptExecute(BattleScript_BerryCureChosenStatusEnd2);
-                    effect = ITEM_STATUS_CHANGE;
-                }
+                effect = TryCureStatus(battler, caseID);
                 break;
             case HOLD_EFFECT_MENTAL_HERB:
                 if (GetMentalHerbEffect(battler))
@@ -8079,7 +7974,7 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 break;
             case HOLD_EFFECT_MICLE_BERRY:
                 if (!moveTurn)
-                    effect = TrySetMicleBerry(battler, gLastUsedItem, TRUE);
+                    effect = TrySetMicleBerry(battler, gLastUsedItem, caseID);
                 break;
             case HOLD_EFFECT_BERSERK_GENE:
                 BufferStatChange(battler, STAT_ATK, STRINGID_STATROSE);
@@ -8097,10 +7992,10 @@ u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn)
                 effect = ITEM_STATS_CHANGE;
                 break;
             case HOLD_EFFECT_MIRROR_HERB:
-                effect = TryConsumeMirrorHerb(battler, TRUE);
+                effect = TryConsumeMirrorHerb(battler, caseID);
                 break;
             case HOLD_EFFECT_BOOSTER_ENERGY:
-                effect = TryBoosterEnergy(battler);
+                effect = TryBoosterEnergy(battler, caseID);
                 break;
             }
 
@@ -8678,7 +8573,7 @@ u8 GetAttackerObedienceForAction()
         obedienceLevel = levelReferenced - obedienceLevel;
 
         calc = ((rnd >> 16) & 255);
-        if (calc < obedienceLevel && CanBeSlept(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), FALSE))
+        if (calc < obedienceLevel && CanBeSlept(gBattlerAttacker, GetBattlerAbility(gBattlerAttacker), NOT_BLOCKED_BY_SLEEP_CLAUSE))
         {
             // try putting asleep
             int i;
@@ -9134,7 +9029,7 @@ static inline u32 CalcMoveBasePower(struct DamageCalculationData *damageCalcData
             basePower *= 2;
         break;
     case EFFECT_PURSUIT:
-        if (gActionsByTurnOrder[GetBattlerTurnOrderNum(battlerDef)] == B_ACTION_SWITCH)
+        if (gBattleStruct->pursuitTarget & (1u << battlerDef))
             basePower *= 2;
         break;
     case EFFECT_NATURAL_GIFT:
@@ -9382,7 +9277,7 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
     if (gProtectStructs[battlerAtk].helpingHand)
         modifier = uq4_12_multiply(modifier, UQ_4_12(1.5));
     if (gSpecialStatuses[battlerAtk].gemBoost)
-        modifier = uq4_12_multiply(modifier, UQ_4_12(1.0) + sPercentToModifier[gSpecialStatuses[battlerAtk].gemParam]);
+        modifier = uq4_12_multiply(modifier, uq4_12_add(UQ_4_12(1.0), PercentToUQ4_12(gSpecialStatuses[battlerAtk].gemParam)));
     if (gStatuses3[battlerAtk] & STATUS3_CHARGED_UP && moveType == TYPE_ELECTRIC)
         modifier = uq4_12_multiply(modifier, UQ_4_12(2.0));
     if (gStatuses3[battlerAtk] & STATUS3_ME_FIRST)
@@ -9571,18 +9466,18 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
     if (holdEffectParamAtk > 100)
         holdEffectParamAtk = 100;
 
-    holdEffectModifier = UQ_4_12(1.0) + sPercentToModifier[holdEffectParamAtk];
+    holdEffectModifier = uq4_12_add(UQ_4_12(1.0), PercentToUQ4_12(holdEffectParamAtk));
 
     // attacker's hold effect
     switch (holdEffectAtk)
     {
     case HOLD_EFFECT_MUSCLE_BAND:
         if (IS_MOVE_PHYSICAL(move))
-            modifier = uq4_12_multiply(modifier, holdEffectModifier);
+            modifier = uq4_12_multiply(modifier, uq4_12_add(UQ_4_12(1.0), PercentToUQ4_12_Floored(holdEffectParamAtk)));
         break;
     case HOLD_EFFECT_WISE_GLASSES:
         if (IS_MOVE_SPECIAL(move))
-            modifier = uq4_12_multiply(modifier, holdEffectModifier);
+            modifier = uq4_12_multiply(modifier, uq4_12_add(UQ_4_12(1.0), PercentToUQ4_12_Floored(holdEffectParamAtk)));
         break;
     case HOLD_EFFECT_LUSTROUS_ORB:
         if (GET_BASE_SPECIES_ID(gBattleMons[battlerAtk].species) == SPECIES_PALKIA && (moveType == TYPE_WATER || moveType == TYPE_DRAGON))
@@ -9848,11 +9743,11 @@ static inline u32 CalcAttackStat(struct DamageCalculationData *damageCalcData, u
         break;
     case ABILITY_ORICHALCUM_PULSE:
         if ((weather & B_WEATHER_SUN) && WEATHER_HAS_EFFECT && IS_MOVE_PHYSICAL(move))
-           modifier = uq4_12_multiply(modifier, UQ_4_12(1.33));
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.3333));
         break;
     case ABILITY_HADRON_ENGINE:
         if (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN && IS_MOVE_SPECIAL(move))
-           modifier = uq4_12_multiply(modifier, UQ_4_12(1.33));
+           modifier = uq4_12_multiply(modifier, UQ_4_12(1.3333));
         break;
     }
 
@@ -10314,19 +10209,23 @@ static inline uq4_12_t GetDefenderPartnerAbilitiesModifier(u32 battlerPartnerDef
 
 static inline uq4_12_t GetAttackerItemsModifier(u32 battlerAtk, uq4_12_t typeEffectivenessModifier, u32 holdEffectAtk)
 {
-    u32 percentBoost;
+    u32 metronomeTurns;
+    uq4_12_t metronomeBoostBase;
     switch (holdEffectAtk)
     {
     case HOLD_EFFECT_METRONOME:
-        percentBoost = min((gBattleStruct->sameMoveTurns[battlerAtk] * GetBattlerHoldEffectParam(battlerAtk)), 100);
-        return uq4_12_add(sPercentToModifier[percentBoost], UQ_4_12(1.0));
+        metronomeBoostBase = PercentToUQ4_12(GetBattlerHoldEffectParam(battlerAtk));
+        metronomeTurns = min(gBattleStruct->sameMoveTurns[battlerAtk], 5);
+        // according to bulbapedia this is the "correct" way to calculate the metronome boost
+        // due to the limited domain of damage numbers it will never really matter whether this is off by one
+        return uq4_12_add(UQ_4_12(1.0), metronomeBoostBase * metronomeTurns);
         break;
     case HOLD_EFFECT_EXPERT_BELT:
         if (typeEffectivenessModifier >= UQ_4_12(2.0))
             return UQ_4_12(1.2);
         break;
     case HOLD_EFFECT_LIFE_ORB:
-        return UQ_4_12(1.3);
+        return UQ_4_12_FLOORED(1.3);
         break;
     }
     return UQ_4_12(1.0);
@@ -12209,4 +12108,13 @@ void ClearDamageCalcResults(void)
     gBattleStruct->calculatedSpreadMoveAccuracy = FALSE;
     gBattleStruct->printedStrongWindsWeakenedAttack = FALSE;
     gBattleStruct->numSpreadTargets = 0;
+}
+
+bool32 DoesDestinyBondFail(u32 battler)
+{
+    if (B_DESTINY_BOND_FAIL >= GEN_7
+        && gMovesInfo[gLastResultingMoves[battler]].effect == EFFECT_DESTINY_BOND
+        && !(gBattleStruct->lastMoveFailed & (1u << battler)))
+        return TRUE;
+    return FALSE;
 }

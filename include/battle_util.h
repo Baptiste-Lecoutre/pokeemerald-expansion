@@ -65,16 +65,20 @@ enum {
 #define ABILITYEFFECT_WATER_SPORT                253 // Only used if B_SPORT_TURNS >= GEN_6
 
 // For the first argument of ItemBattleEffects, to deteremine which block of item effects to try
-#define ITEMEFFECT_ON_SWITCH_IN                 0
-#define ITEMEFFECT_NORMAL                       1
-#define ITEMEFFECT_DUMMY                        2 // Unused, empty
-#define ITEMEFFECT_MOVE_END                     3
-#define ITEMEFFECT_KINGSROCK                    4
-#define ITEMEFFECT_TARGET                       5
-#define ITEMEFFECT_ORBS                         6
-#define ITEMEFFECT_LIFEORB_SHELLBELL            7
-#define ITEMEFFECT_USE_LAST_ITEM                8 // move end effects for just the battler, not whole field
-#define ITEMEFFECT_STATS_CHANGED                9 // For White Herb and Eject Pack
+enum ItemEffect
+{
+    ITEMEFFECT_NONE,
+    ITEMEFFECT_ON_SWITCH_IN,
+    ITEMEFFECT_ON_SWITCH_IN_FIRST_TURN,
+    ITEMEFFECT_NORMAL,
+    ITEMEFFECT_MOVE_END,
+    ITEMEFFECT_KINGSROCK,
+    ITEMEFFECT_TARGET,
+    ITEMEFFECT_ORBS,
+    ITEMEFFECT_LIFEORB_SHELLBELL,
+    ITEMEFFECT_USE_LAST_ITEM, // move end effects for just the battler, not whole field
+    ITEMEFFECT_STATS_CHANGED, // For White Herb and Eject Pack
+};
 
 #define WEATHER_HAS_EFFECT ((!IsAbilityOnField(ABILITY_CLOUD_NINE) && !IsAbilityOnField(ABILITY_AIR_LOCK)))
 
@@ -149,6 +153,12 @@ struct DamageCalculationData
     u32 padding:2;
 };
 
+enum SleepClauseBlock
+{
+    NOT_BLOCKED_BY_SLEEP_CLAUSE,
+    BLOCKED_BY_SLEEP_CLAUSE,
+};
+
 void HandleAction_ThrowBall(void);
 bool32 IsAffectedByFollowMe(u32 battlerAtk, u32 defSide, u32 move);
 void HandleAction_UseMove(void);
@@ -210,7 +220,7 @@ bool32 IsBattlerProtected(u32 battlerAtk, u32 battlerDef, u32 move);
 bool32 CanBattlerEscape(u32 battler); // no ability check
 void BattleScriptExecute(const u8 *BS_ptr);
 void BattleScriptPushCursorAndCallback(const u8 *BS_ptr);
-u8 ItemBattleEffects(u8 caseID, u32 battler, bool32 moveTurn);
+u32 ItemBattleEffects(enum ItemEffect, u32 battler, bool32 moveTurn);
 void ClearVariousBattlerFlags(u32 battler);
 void HandleAction_RunBattleScript(void);
 u32 SetRandomTarget(u32 battler);
@@ -267,7 +277,7 @@ void TryRestoreHeldItems(void);
 bool32 CanStealItem(u32 battlerStealing, u32 battlerItem, u16 item);
 void TrySaveExchangedItem(u32 battler, u16 stolenItem);
 bool32 IsPartnerMonFromSameTrainer(u32 battler);
-u8 TryHandleSeed(u32 battler, u32 terrainFlag, u8 statId, u16 itemId, bool32 execute);
+u32 TryHandleSeed(u32 battler, u32 terrainFlag, u32 statId, u32 itemId, enum ItemEffect caseID);
 bool32 IsBattlerAffectedByHazards(u32 battler, bool32 toxicSpikes);
 void SortBattlersBySpeed(u8 *battlers, bool32 slowToFast);
 bool32 CompareStat(u32 battler, u8 statId, u8 cmpTo, u8 cmpKind);
@@ -293,7 +303,7 @@ bool32 MoveHasChargeTurnAdditionalEffect(u32 move);
 bool32 CanTargetPartner(u32 battlerAtk, u32 battlerDef);
 bool32 TargetFullyImmuneToCurrMove(u32 battlerAtk, u32 battlerDef);
 
-bool32 CanBeSlept(u32 battler, u32 ability, u32 isBlockedBySleepClause);
+bool32 CanBeSlept(u32 battler, u32 ability, enum SleepClauseBlock isBlockedBySleepClause);
 bool32 CanBePoisoned(u32 battlerAtk, u32 battlerDef, u32 defAbility);
 bool32 CanBeBurned(u32 battler, u32 ability);
 bool32 CanBeParalyzed(u32 battler, u32 ability);
@@ -324,6 +334,7 @@ void TryDeactivateSleepClause(u32 battlerSide, u32 indexInParty);
 bool32 IsSleepClauseActiveForSide(u32 battlerSide);
 bool32 IsSleepClauseEnabled();
 void ClearDamageCalcResults(void);
+u32 DoesDestinyBondFail(u32 battler);
 
 bool32 DoesSpeciesUseHoldItemToChangeForm(u16 species, u16 heldItemId);
 static inline u32 ApplyModifier(uq4_12_t modifier, u32 val)
