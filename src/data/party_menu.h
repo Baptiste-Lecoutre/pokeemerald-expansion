@@ -1069,7 +1069,7 @@ struct
     TaskFunc func;
 } static const sCursorOptions[MENU_FIELD_MOVES] =
 {
-    [MENU_SUMMARY] = {COMPOUND_STRING("Sumary"), CursorCb_Summary},
+    [MENU_SUMMARY] = {COMPOUND_STRING("Summary"), CursorCb_Summary},
     [MENU_SWITCH] = {COMPOUND_STRING("Switch"), CursorCb_Switch},
     [MENU_CANCEL1] = {gText_Cancel2, CursorCb_Cancel1},
     [MENU_ITEM] = {COMPOUND_STRING("Item"), CursorCb_Item},
