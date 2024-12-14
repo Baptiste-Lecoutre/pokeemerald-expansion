@@ -3697,7 +3697,7 @@ u8 AtkCanceller_UnableToUseMove(u32 moveType)
                     }
                 }
                 if (moveTarget == MOVE_TARGET_BOTH)
-                    gBattleStruct->numSpreadTargets = CountAliveMonsInBattle(BATTLE_ALIVE_SIDE, gBattlerAttacker);
+                    gBattleStruct->numSpreadTargets = CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_BATTLER_SIDE, gBattlerAttacker);
                 else
                     gBattleStruct->numSpreadTargets = CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_BATTLER, gBattlerAttacker);
 

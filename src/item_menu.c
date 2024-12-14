@@ -291,10 +291,10 @@ static const struct ListMenuTemplate sItemListMenu =
     .cursorKind = CURSOR_BLACK_ARROW
 };
 
-static const u8 sMenuText_Up[] = _("UP");//_("Up");
-static const u8 sMenuText_Right[] = _("RIGHT");//_("Right");
-static const u8 sMenuText_Down[] = _("DOWN");//_("Down");
-static const u8 sMenuText_Left[] = _("LEFT");//_("Left");
+static const u8 sMenuText_Up[] = _("Up");//_("Up");
+static const u8 sMenuText_Right[] = _("Right");//_("Right");
+static const u8 sMenuText_Down[] = _("Down");//_("Down");
+static const u8 sMenuText_Left[] = _("Left");//_("Left");
 
 static const struct MenuAction sItemMenuActions[] = {
     [ACTION_USE]               = {gMenuText_Use,                {ItemMenu_UseOutOfBattle}},
@@ -305,8 +305,8 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_BATTLE_USE]        = {gMenuText_Use,                {ItemMenu_UseInBattle}},
     [ACTION_CHECK]             = {COMPOUND_STRING("Check"),     {ItemMenu_UseOutOfBattle}},
     [ACTION_WALK]              = {COMPOUND_STRING("Walk"),      {ItemMenu_UseOutOfBattle}},
-    [ACTION_DESELECT]          = {COMPOUND_STRING("Check tag"), {ItemMenu_Register}},
-    [ACTION_CHECK_TAG]         = {COMPOUND_STRING("Deselect"),  {ItemMenu_CheckTag}},
+    [ACTION_DESELECT]          = {COMPOUND_STRING("Deselect"), {ItemMenu_Register}},
+    [ACTION_CHECK_TAG]         = {COMPOUND_STRING("Check tag"),  {ItemMenu_CheckTag}},
     [ACTION_CONFIRM]           = {gMenuText_Confirm,            {Task_FadeAndCloseBagMenu}},
     [ACTION_SHOW]              = {COMPOUND_STRING("Show"),      {ItemMenu_Show}},
     [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,              {ItemMenu_GiveFavorLady}},
