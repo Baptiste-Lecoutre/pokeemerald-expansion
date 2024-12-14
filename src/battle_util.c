@@ -2527,15 +2527,14 @@ u8 DoBattlerEndTurnEffects(void)
             gBattleStruct->turnEffectsTracker++;
             break;
         case ENDTURN_OCTOLOCK:
-        {
             if (gDisableStructs[battler].octolock)
             {
+                gBattlerAttacker = gDisableStructs[battler].battlerPreventingEscape;
                 gBattlerTarget = battler;
                 BattleScriptExecute(BattleScript_OctolockEndTurn);
                 effect++;
             }
             gBattleStruct->turnEffectsTracker++;
-        }
             break;
         case ENDTURN_UPROAR:  // uproar
             if (gBattleMons[battler].status2 & STATUS2_UPROAR)
@@ -3698,7 +3697,7 @@ u8 AtkCanceller_UnableToUseMove(u32 moveType)
                     }
                 }
                 if (moveTarget == MOVE_TARGET_BOTH)
-                    gBattleStruct->numSpreadTargets = CountAliveMonsInBattle(BATTLE_ALIVE_SIDE, gBattlerAttacker);
+                    gBattleStruct->numSpreadTargets = CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_BATTLER_SIDE, gBattlerAttacker);
                 else
                     gBattleStruct->numSpreadTargets = CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_BATTLER, gBattlerAttacker);
 
@@ -11222,7 +11221,7 @@ u8 GetBattleMoveCategory(u32 moveId)
 
     if (IS_MOVE_STATUS(moveId))
         return DAMAGE_CATEGORY_STATUS;
-    return gTypesInfo[GetMoveType(gCurrentMove)].damageCategory;
+    return gTypesInfo[GetMoveType(moveId)].damageCategory;
 }
 
 static bool32 TryRemoveScreens(u32 battler)
