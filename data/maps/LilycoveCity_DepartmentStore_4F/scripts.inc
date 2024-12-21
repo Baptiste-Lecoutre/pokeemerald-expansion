@@ -35,9 +35,7 @@ LilycoveCity_DepartmentStore_4F_Pokemart_TMs:
 	.2byte ITEM_TM20_SAFEGUARD
 	.2byte ITEM_TM33_REFLECT
 	.2byte ITEM_TM16_LIGHT_SCREEN
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 LilycoveCity_DepartmentStore_4F_EventScript_ClerkRight::
 	lock
@@ -61,9 +59,7 @@ LilycoveCity_DepartmentStore_4F_Pokemart_EvoStones:
 	.2byte ITEM_SHINY_STONE
 	.2byte ITEM_DUSK_STONE
 	.2byte ITEM_DAWN_STONE
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 LilycoveCity_DepartmentStore_4F_Text_AttackOrDefenseTM:
 	.string "Hmm…\p"
