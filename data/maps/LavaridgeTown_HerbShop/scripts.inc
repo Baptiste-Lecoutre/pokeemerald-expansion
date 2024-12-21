@@ -38,9 +38,7 @@ LavaridgeTown_HerbShop_Pokemart:
 	.2byte ITEM_JOLLY_MINT
 	.2byte ITEM_NAIVE_MINT
 	.2byte ITEM_SERIOUS_MINT
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 LavaridgeTown_HerbShop_EventScript_ExpertM::
 	msgbox LavaridgeTown_HerbShop_Text_HerbalMedicineWorksButMonWillDislike, MSGBOX_NPC
