@@ -804,6 +804,7 @@ static const u8 *const sActionStringTable[] =
     [PARTY_MSG_MOVE_ITEM_WHERE]        = gText_MoveItemWhere,
     [PARTY_MSG_WHICH_APPLIANCE]        = gText_WhichAppliance,
     [PARTY_MSG_CHOOSE_SECOND_FUSION]   = gText_NextFusionMon,
+    [PARTY_MSG_CANT_CHANGE_WEATHER]    = COMPOUND_STRING("The weather cannot be changed now!"),
 };
 
 static const u8 *const sDescriptionStringTable[] =
@@ -962,6 +963,10 @@ static const u16 sFieldMoves[FIELD_MOVES_COUNT + 1] =
     [FIELD_MOVE_SOFT_BOILED]  = MOVE_SOFT_BOILED,
     [FIELD_MOVE_SWEET_SCENT]  = MOVE_SWEET_SCENT,
     [FIELD_MOVE_ROCK_CLIMB]   = MOVE_ROCK_CLIMB,
+    [FIELD_MOVE_SUNNY_DAY]    = MOVE_SUNNY_DAY,
+    [FIELD_MOVE_RAIN_DANCE]   = MOVE_RAIN_DANCE,
+    [FIELD_MOVE_HAIL]         = MOVE_HAIL,
+    [FIELD_MOVE_SANDSTORM]    = MOVE_SANDSTORM,
     // NOTE: This value is used as the terminal value for the table. There's no reason to do this, as the size of the table is known.
     //       Whichever move shares this value (MOVE_SWORDS_DANCE by default) if present will be treated as the end of the array rather than a field move.
     [FIELD_MOVES_COUNT]       = FIELD_MOVES_COUNT
@@ -988,6 +993,10 @@ struct
     [FIELD_MOVE_SOFT_BOILED]  = {SetUpFieldMove_SoftBoiled,  PARTY_MSG_NOT_ENOUGH_HP},
     [FIELD_MOVE_SWEET_SCENT]  = {SetUpFieldMove_SweetScent,  PARTY_MSG_CANT_USE_HERE},
     [FIELD_MOVE_ROCK_CLIMB]   = {SetUpFieldMove_RockClimb,   PARTY_MSG_CANT_USE_HERE},
+    [FIELD_MOVE_SUNNY_DAY]    = {SetUpFieldMove_SunnyDay,    PARTY_MSG_CANT_CHANGE_WEATHER},
+    [FIELD_MOVE_RAIN_DANCE]   = {SetUpFieldMove_RainDance,   PARTY_MSG_CANT_CHANGE_WEATHER},
+    [FIELD_MOVE_HAIL]         = {SetUpFieldMove_Hail,        PARTY_MSG_CANT_CHANGE_WEATHER},
+    [FIELD_MOVE_SANDSTORM]    = {SetUpFieldMove_Sandstorm,   PARTY_MSG_CANT_CHANGE_WEATHER},
 };
 
 static const u8 *const sUnionRoomTradeMessages[] =

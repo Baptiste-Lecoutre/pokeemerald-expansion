@@ -539,6 +539,51 @@ Text_CantRockClimb:
     .string "The cliff is steep.\n"
     .string "A Pokémon may be able to climb it.$"
 
+EventScript_FldEffSunnyDay::
+    setweather WEATHER_DROUGHT
+    doweather
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_FldEffWeatherEnd
+	msgbox EventScript_Text_BecameSunny, MSGBOX_AUTOCLOSE
+    end
+
+EventScript_FldEffRainDance::
+	setweather WEATHER_RAIN_THUNDERSTORM
+	doweather
+	callnative IsFieldMoveFastToVarResult
+	goto_if_eq VAR_RESULT, TRUE, EventScript_FldEffWeatherEnd
+	msgbox EventScript_Text_RainStartedToFall, MSGBOX_AUTOCLOSE
+	end
+
+EventScript_FldEffHail::
+	setweather WEATHER_SNOW
+	doweather
+	goto_if_eq VAR_RESULT, TRUE, EventScript_FldEffWeatherEnd
+	goto_if_eq EventScript_FldEffWeatherEnd
+	msgbox EventScript_Text_ItsSnowwing, MSGBOX_AUTOCLOSE
+	end
+
+EventScript_FldEffSandstorm::
+	setweather WEATHER_SANDSTORM
+	doweather
+	goto_if_eq VAR_RESULT, TRUE, EventScript_FldEffWeatherEnd
+	goto_if_eq EventScript_FldEffWeatherEnd
+	msgbox EventScript_Text_ASandstormStarted, MSGBOX_AUTOCLOSE
+EventScript_FldEffWeatherEnd:
+	end
+
+EventScript_Text_BecameSunny::
+	.string "The weather became sunny!$"
+
+EventScript_Text_RainStartedToFall::
+	.string "Rain started to fall!$"
+
+EventScript_Text_ItsSnowwing::
+	.string "It's snowing!$"
+
+EventScript_Text_ASandstormStarted::
+	.string "A sandstorm started!$"
+
 
 EventScript_DisableAutoRun::
     msgbox AutoRunDisabled MSGBOX_SIGN

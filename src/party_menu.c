@@ -15,6 +15,7 @@
 #include "decompress.h"
 #include "easy_chat.h"
 #include "event_data.h"
+#include "event_scripts.h"
 #include "event_object_movement.h"
 #include "evolution_scene.h"
 #include "field_control_avatar.h"
@@ -149,6 +150,10 @@ enum {
     FIELD_MOVE_SOFT_BOILED,
     FIELD_MOVE_SWEET_SCENT,
     FIELD_MOVE_ROCK_CLIMB,
+    FIELD_MOVE_SUNNY_DAY,
+    FIELD_MOVE_RAIN_DANCE,
+    FIELD_MOVE_HAIL,
+    FIELD_MOVE_SANDSTORM,
     FIELD_MOVES_COUNT
 };
 
@@ -506,6 +511,10 @@ static bool8 SetUpFieldMove_Fly(void);
 static bool8 SetUpFieldMove_Waterfall(void);
 static bool8 SetUpFieldMove_Dive(void);
 static bool8 SetUpFieldMove_RockClimb(void);
+static bool8 SetUpFieldMove_SunnyDay(void);
+static bool8 SetUpFieldMove_RainDance(void);
+static bool8 SetUpFieldMove_Hail(void);
+static bool8 SetUpFieldMove_Sandstorm(void);
 void TryItemHoldFormChange(struct Pokemon *mon);
 static void ShowMoveSelectWindow(u8 slot);
 static void Task_HandleWhichMoveInput(u8 taskId);
@@ -8328,6 +8337,118 @@ static bool8 SetUpFieldMove_RockClimb(void)
     }
     
     return FALSE;
+}
+
+static bool8 FieldEffect_UseSunnyDay(void)
+{
+    PlaySE(SE_M_REFLECT);
+    ScriptContext_SetupScript(EventScript_FldEffSunnyDay);
+    return FALSE;
+}
+
+static bool8 FieldEffect_UseRainDance(void)
+{
+    PlaySE(SE_M_REFLECT);
+    ScriptContext_SetupScript(EventScript_FldEffRainDance);
+    return FALSE;
+}
+
+static bool8 FieldEffect_UseHail(void)
+{
+    PlaySE(SE_M_REFLECT);
+    ScriptContext_SetupScript(EventScript_FldEffHail);
+    return FALSE;
+}
+
+static bool8 FieldEffect_UseSandstorm(void)
+{
+    PlaySE(SE_M_REFLECT);
+    ScriptContext_SetupScript(EventScript_FldEffSandstorm);
+    return FALSE;
+}
+
+static void FieldCallback_SunnyDay(void)
+{
+    u8 taskId = CreateFieldMoveTask();
+    gFieldEffectArguments[0] = GetCursorSelectionMonId();
+    gTasks[taskId].data[8] = ((uintptr_t)FieldEffect_UseSunnyDay) >> 16;
+    gTasks[taskId].data[9] = ((uintptr_t)FieldEffect_UseSunnyDay);
+}
+
+static void FieldCallback_RainDance(void)
+{
+    u8 taskId = CreateFieldMoveTask();
+    gFieldEffectArguments[0] = GetCursorSelectionMonId();
+    gTasks[taskId].data[8] = ((uintptr_t)FieldEffect_UseRainDance) >> 16;
+    gTasks[taskId].data[9] = ((uintptr_t)FieldEffect_UseRainDance);
+}
+
+static void FieldCallback_Hail(void)
+{
+    u8 taskId = CreateFieldMoveTask();
+    gFieldEffectArguments[0] = GetCursorSelectionMonId();
+    gTasks[taskId].data[8] = ((uintptr_t)FieldEffect_UseHail) >> 16;
+    gTasks[taskId].data[9] = ((uintptr_t)FieldEffect_UseHail);
+}
+
+static void FieldCallback_Sandstorm(void)
+{
+    u8 taskId = CreateFieldMoveTask();
+    gFieldEffectArguments[0] = GetCursorSelectionMonId();
+    gTasks[taskId].data[8] = ((uintptr_t)FieldEffect_UseSandstorm) >> 16;
+    gTasks[taskId].data[9] = ((uintptr_t)FieldEffect_UseSandstorm);
+}
+
+static bool8 SetUpFieldMove_SunnyDay(void)
+{
+    if (IsMapTypeOutdoors(GetCurrentMapType()) != TRUE) // check map type
+        return FALSE;
+    
+    if (FALSE) //  check current weather
+        return FALSE;
+    
+    gFieldCallback2 = FieldCallback_PrepareFadeInFromMenu;
+    gPostMenuFieldCallback = FieldCallback_SunnyDay;
+    return TRUE;
+}
+
+static bool8 SetUpFieldMove_RainDance(void)
+{
+    if (IsMapTypeOutdoors(GetCurrentMapType()) != TRUE) // check map type
+        return FALSE;
+    
+    if (FALSE) //  check current weather
+        return FALSE;
+    
+    gFieldCallback2 = FieldCallback_PrepareFadeInFromMenu;
+    gPostMenuFieldCallback = FieldCallback_RainDance;
+    return TRUE;
+}
+
+static bool8 SetUpFieldMove_Hail(void)
+{
+    if (IsMapTypeOutdoors(GetCurrentMapType()) != TRUE) // check map type
+        return FALSE;
+    
+    if (FALSE) //  check current weather
+        return FALSE;
+    
+    gFieldCallback2 = FieldCallback_PrepareFadeInFromMenu;
+    gPostMenuFieldCallback = FieldCallback_Hail;
+    return TRUE;
+}
+
+static bool8 SetUpFieldMove_Sandstorm(void)
+{
+    if (IsMapTypeOutdoors(GetCurrentMapType()) != TRUE) // check map type
+        return FALSE;
+    
+    if (FALSE) //  check current weather
+        return FALSE;
+    
+    gFieldCallback2 = FieldCallback_PrepareFadeInFromMenu;
+    gPostMenuFieldCallback = FieldCallback_Sandstorm;
+    return TRUE;
 }
 
 static void CursorCb_Pokedex(u8 taskId)
