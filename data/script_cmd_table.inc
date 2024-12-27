@@ -231,6 +231,9 @@ gScriptCmdTable::
 	.4byte ScrCmd_dynmultipush                      @ 0xe4
 	.4byte ScrCmd_checkPartyHasSpecies      		@ 0xe5
 	.4byte ScrCmd_isChosenMonSpecies        		@ 0xe6
+	.4byte ScrCmd_enablequest               		@ 0xe7
+	.4byte ScrCmd_disablequest              		@ 0xe8
+	.4byte ScrCmd_checkquest                		@ 0xe9
 
 gScriptCmdTableEnd::
 	.4byte ScrCmd_nop

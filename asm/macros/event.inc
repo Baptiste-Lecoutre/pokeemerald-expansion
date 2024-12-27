@@ -2450,3 +2450,20 @@
 	.2byte \dest
 	.endm
 
+	@ Enables specified quest
+	.macro enablequest quest:req
+	.byte 0xe7
+	.2byte \quest
+	.endm
+
+	@ Disables specified quest
+	.macro disablequest quest:req
+	.byte 0xe8
+	.2byte \quest
+	.endm
+
+	@ Checks if specified quest is active
+	.macro checkquest quest:req
+	.byte 0xe9
+	.2byte \quest
+	.endm

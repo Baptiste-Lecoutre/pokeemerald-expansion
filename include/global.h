@@ -15,6 +15,7 @@
 #include "constants/berry.h"
 #include "constants/maps.h"
 #include "constants/pokemon.h"
+#include "constants/quests.h"
 #include "constants/easy_chat.h"
 #include "constants/trainer_hill.h"
 #include "constants/items.h"
@@ -124,6 +125,7 @@
 #define NUM_DEX_FLAG_BYTES ROUND_BITS_TO_BYTES(POKEMON_SLOTS_NUMBER)
 #define NUM_FLAG_BYTES ROUND_BITS_TO_BYTES(FLAGS_COUNT)
 #define NUM_TRENDY_SAYING_BYTES ROUND_BITS_TO_BYTES(NUM_TRENDY_SAYINGS)
+#define NUM_QUEST_BYTES ROUND_BITS_TO_BYTES(NUM_QUESTS)
 
 // This produces an error at compile-time if expr is zero.
 // It looks like file.c:line: size of array `id' is negative
@@ -211,6 +213,7 @@ struct SaveBlock3
 #if OW_SHOW_ITEM_DESCRIPTIONS == OW_ITEM_DESCRIPTIONS_FIRST_TIME
     u8 itemFlags[ITEM_FLAGS_COUNT];
 #endif
+    u8 quests[NUM_QUEST_BYTES];
 };
 
 extern struct SaveBlock3 *gSaveBlock3Ptr;

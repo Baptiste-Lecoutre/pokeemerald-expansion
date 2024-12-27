@@ -247,6 +247,7 @@ void NewGameInitData(void)
     gSaveBlock2Ptr->autoRun = TRUE;
     gSaveBlock2Ptr->costumeId = 5;
     ResetItemFlags();
+    memset(&gSaveBlock3Ptr->quests, 0, sizeof(gSaveBlock3Ptr->quests));
 }
 
 static void ResetMiniGamesRecords(void)

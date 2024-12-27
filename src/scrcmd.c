@@ -36,6 +36,7 @@
 #include "pokedex.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
+#include "quests.h"
 #include "random.h"
 #include "overworld.h"
 #include "rotating_tile_puzzle.h"
@@ -2647,5 +2648,26 @@ bool8 Scrcmd_getobjectfacingdirection(struct ScriptContext *ctx)
 
     *varPointer = gObjectEvents[GetObjectEventIdByLocalId(objectId)].facingDirection;
 
+    return FALSE;
+}
+
+bool8 ScrCmd_enablequest(struct ScriptContext *ctx)
+{
+    u16 id = ScriptReadHalfword(ctx);
+
+    EnableQuest(id);
+    ShowQuestPopup(id);
+    return FALSE;
+}
+
+bool8 ScrCmd_disablequest(struct ScriptContext *ctx)
+{
+    DisableQuest(ScriptReadHalfword(ctx));
+    return FALSE;
+}
+
+bool8 ScrCmd_checkquest(struct ScriptContext *ctx)
+{
+    ctx->comparisonResult = QuestGet(ScriptReadHalfword(ctx));
     return FALSE;
 }

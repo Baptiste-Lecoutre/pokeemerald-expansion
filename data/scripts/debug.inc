@@ -174,6 +174,7 @@ Debug_EventScript_Script_7::
 	end
 
 Debug_EventScript_Script_8::
+	enablequest QUEST_TEST
 	release
 	end
 
