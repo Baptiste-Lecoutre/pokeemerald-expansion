@@ -7,6 +7,7 @@
 #include "decompress.h"
 #include "dexnav.h"
 #include "event_data.h"
+#include "event_object_lock.h"
 #include "event_object_movement.h"
 #include "event_scripts.h"
 #include "field_effect.h"
@@ -84,6 +85,8 @@ enum MessageIds
     MESSAGE_CHOOSE_MON,
     MESSAGE_REGISTERED,
     MESSAGE_NO_DATA,
+    MESSAGE_DPAD_TO_REGISTER,
+    MESSAGE_UNREGISTERED,
 };
 
 struct DexNavSearch
@@ -139,6 +142,7 @@ EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
 EWRAM_DATA bool8 gDexnavBattle = FALSE;
 EWRAM_DATA u16 gDexNavSelectedSpecies = SPECIES_NONE;
 EWRAM_DATA u16 gPokedexSpeciesToLoad = SPECIES_NONE;
+static EWRAM_DATA u16 ALIGNED(4) sDexnavSpeciesWheelExtraPalette[16] = {0};
 
 //// Function Declarations
 //GUI
@@ -157,7 +161,7 @@ static u8 DexNavTryGenerateMonLevel(u16 species, u8 environment);
 static u8 GetEncounterLevelFromMapData(u16 species, u8 environment);
 static void CreateDexNavWildMon(u16 species, u8 potential, u8 level, u8 abilityNum, u16 item, u16* moves);
 static u8 GetPlayerDistance(s16 x, s16 y);
-static u8 DexNavPickTile(u8 environment, u8 xSize, u8 ySize, bool8 smallScan);
+static u8 DexNavPickTile(u8 environment, bool8 smallScan);
 static void DexNavProximityUpdate(void);
 static void DexNavDrawIcons(void);
 static void DexNavUpdateSearchWindow(u8 proximity, u8 searchLevel);
@@ -167,6 +171,12 @@ static void EndDexNavSearchSetupScript(const u8 *script, u8 taskId);
 // HIDDEN MONS
 static void DexNavDrawHiddenIcons(void);
 static void DrawHiddenSearchWindow(u8 width);
+
+static u32 CountRegisteredSpecies(void);
+static void Task_RegisteredSpeciesWheel(u8 taskId);
+static void Task_OneRegisteredSpecies(u8 taskId);
+static void Task_RegisterUsingDpad(u8 taskId);
+static u32 IsSpeciesRegistered(u16 species);
 
 //// Const Data
 // gui image data
@@ -614,8 +624,8 @@ static void RemoveDexNavWindowAndGfx(void)
 //////////////////////
 static u8 GetPlayerDistance(s16 x, s16 y)
 {
-    u16 deltaX = abs(x - (gSaveBlock1Ptr->pos.x + 7));
-    u16 deltaY = abs(y - (gSaveBlock1Ptr->pos.y + 7));
+    u16 deltaX = abs(x - (gSaveBlock1Ptr->pos.x + MAP_OFFSET));
+    u16 deltaY = abs(y - (gSaveBlock1Ptr->pos.y + MAP_OFFSET));
     return deltaX + deltaY;
 }
 
@@ -625,60 +635,56 @@ static void DexNavProximityUpdate(void)
 }
 
 //Pick a specific tile based on environment
-static bool8 DexNavPickTile(u8 environment, u8 areaX, u8 areaY, bool8 smallScan)
+static bool8 DexNavPickTile(u8 environment, bool8 smallScan)
 {
     // area of map to cover starting from camera position {-7, -7}
-    s16 topX = gSaveBlock1Ptr->pos.x - SCANSTART_X + (smallScan * 5);
-    s16 topY = gSaveBlock1Ptr->pos.y - SCANSTART_Y + (smallScan * 5);
-    s16 botX = topX + areaX;
-    s16 botY = topY + areaY;
-    u8 i;
-    bool8 nextIter;
-    u8 scale = 0;
-    u8 weight = 0;
+    u32 i, j, k;
+    bool32 nextIter;
+    u8 scale = 0, weight = 0, tileBehaviour, tileBuffer = 2;
     u8 currMapType = GetCurrentMapType();
-    u8 tileBehaviour;
-    u8 tileBuffer = 2;
-    
-    // loop through every tile in area and evaluate
-    while (topY < botY)
+    u8 scansize = smallScan ? SCANSIZE_SMALL : SCANSIZE_NORMAL;
+    s16 posX[2*scansize+1], posY[2*scansize+1];
+
+    for (i = 0; i < 2*scansize+1; i++)
     {
-        while (topX < botX)
+        posX[i] = gSaveBlock1Ptr->pos.x + MAP_OFFSET - (scansize + 1) + i;
+        posY[i] = gSaveBlock1Ptr->pos.y + MAP_OFFSET - (scansize + 1) + i;
+    }
+    Shuffle16(posX, NELEMS(posX));
+    Shuffle16(posY, NELEMS(posY));
+
+    for (i = 0; i < 2*scansize+1; i++)
+    {
+        for (j = 0; j < 2*scansize+1; j++)
         {
-            tileBehaviour = MapGridGetMetatileBehaviorAt(topX, topY);
-            
-            //gSpecialVar_0x8005 = tileBehaviour;
+            tileBehaviour = MapGridGetMetatileBehaviorAt(posX[i], posY[j]);
             
             //Check for objects
             nextIter = FALSE;
             if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_BIKE))
-                tileBuffer = SNEAKING_PROXIMITY + 3;
+                tileBuffer = SNEAKING_PROXIMITY + 1;//+3
             else if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH))
                 tileBuffer = SNEAKING_PROXIMITY + 1;
-            
-            if (GetPlayerDistance(topX, topY) <= tileBuffer)
+
+            if (GetPlayerDistance(posX[i], posY[j]) <= tileBuffer)
             {
                 // tile too close to player
-                topX++;
                 continue;
             }
-            
-            for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+
+            for (k = 0; k < OBJECT_EVENTS_COUNT; k++)
             {
-                if (gObjectEvents[i].currentCoords.x == topX && gObjectEvents[i].currentCoords.y == topY)
+                if (gObjectEvents[k].currentCoords.x == posX[i] && gObjectEvents[k].currentCoords.y == posY[j])
                 {
                     // cannot be on a tile where an object exists
                     nextIter = TRUE;
                     break;
                 }
             }
-            
+
             if (nextIter)
-            {
-                topX++;
                 continue;
-            }
-            
+
             switch (environment)
             {
             case ENCOUNTER_TYPE_LAND:
@@ -686,27 +692,27 @@ static bool8 DexNavPickTile(u8 environment, u8 areaX, u8 areaY, bool8 smallScan)
                 {
                     if (currMapType == MAP_TYPE_UNDERGROUND)
                     { // inside (cave)
-                        if (IsElevationMismatchAt(gObjectEvents[gPlayerAvatar.spriteId].currentElevation, topX, topY))
+                        if (IsElevationMismatchAt(gObjectEvents[gPlayerAvatar.spriteId].currentElevation, posX[i], posY[j]))
                             break; //occurs at same z coord
                         
-                        scale = 440 - (smallScan * 200) - (GetPlayerDistance(topX, topY) / 2)  - (2 * (topX + topY));
-                        weight = ((Random() % scale) < 1) && !MapGridGetCollisionAt(topX, topY);
+                        scale = 440 - (smallScan * 200) - (GetPlayerDistance(posX[i], posY[j]) / 2)  - (2 * (posX[i] + posY[j]));
+                        weight = ((Random() % scale) < 2) && !MapGridGetCollisionAt(posX[i], posY[j]); // <1
                     }
                     else
                     { // outdoors: grass
-                        scale = 100 - (GetPlayerDistance(topX, topY) * 2);
-                        weight = (Random() % scale <= 5) && !MapGridGetCollisionAt(topX, topY);
+                        scale = 100 - (GetPlayerDistance(posX[i], posY[j]) * 2);
+                        weight = (Random() % scale <= 10) && !MapGridGetCollisionAt(posX[i], posY[j]); // <=5
                     }
                 }
                 break;
             case ENCOUNTER_TYPE_WATER:
                 if (MetatileBehavior_IsSurfableWaterOrUnderwater(tileBehaviour))
                 {
-                    u8 scale = 320 - (smallScan * 200) - (GetPlayerDistance(topX, topY) / 2);
-                    if (IsElevationMismatchAt(gObjectEvents[gPlayerAvatar.spriteId].currentElevation, topX, topY))
+                    u8 scale = 320 - (smallScan * 200) - (GetPlayerDistance(posX[i], posY[j]) / 2);
+                    if (IsElevationMismatchAt(gObjectEvents[gPlayerAvatar.spriteId].currentElevation, posX[i], posY[j]))
                         break;
 
-                    weight = (Random() % scale <= 1) && !MapGridGetCollisionAt(topX, topY);
+                    weight = (Random() % scale <= 3) && !MapGridGetCollisionAt(posX[i], posY[j]); // <=1
                 }
                 break;
             default:
@@ -715,18 +721,12 @@ static bool8 DexNavPickTile(u8 environment, u8 areaX, u8 areaY, bool8 smallScan)
             
             if (weight > 0)
             {
-                sDexNavSearchDataPtr->tileX = topX;
-                sDexNavSearchDataPtr->tileY = topY;
+                sDexNavSearchDataPtr->tileX = posX[i];
+                sDexNavSearchDataPtr->tileY = posY[j];
                 return TRUE;
             }
-            
-            topX++;
         }
-        
-        topY++;
-        topX = gSaveBlock1Ptr->pos.x - SCANSTART_X + (smallScan * 5);
     }
-
     return FALSE;
 }
 
@@ -736,7 +736,7 @@ static bool8 TryStartHiddenMonFieldEffect(u8 environment, u8 xSize, u8 ySize, bo
     u8 currMapType = GetCurrentMapType();
     u8 fldEffId = 0;
     
-    if (DexNavPickTile(environment, xSize, ySize, smallScan))
+    if (DexNavPickTile(environment, smallScan))
     {
         u8 metatileBehaviour = MapGridGetMetatileBehaviorAt(sDexNavSearchDataPtr->tileX, sDexNavSearchDataPtr->tileY);
 
@@ -884,7 +884,7 @@ static void Task_InitDexNavSearch(u8 taskId)
         return;
     }
     
-    if (sDexNavSearchDataPtr->monLevel == MON_LEVEL_NONEXISTENT || !TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 12, 12, FALSE))
+    if (sDexNavSearchDataPtr->monLevel == MON_LEVEL_NONEXISTENT || !TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 8, 8, FALSE)) //1é, 12
     {
         Free(sDexNavSearchDataPtr);
         FreeMonIconPalettes();
@@ -927,8 +927,8 @@ static void DexNavUpdateDirectionArrow(void)
 {
     u16 tileX = sDexNavSearchDataPtr->tileX;
     u16 tileY = sDexNavSearchDataPtr->tileY;
-    u16 playerX = gSaveBlock1Ptr->pos.x + 7;
-    u16 playerY = gSaveBlock1Ptr->pos.y + 7;
+    u16 playerX = gSaveBlock1Ptr->pos.x + MAP_OFFSET;
+    u16 playerY = gSaveBlock1Ptr->pos.y + MAP_OFFSET;
     u16 deltaX = abs(tileX - playerX);
     u16 deltaY = abs(tileY - playerY);
     const u8 *str;
@@ -981,19 +981,40 @@ static void DexNavDrawIcons(void)
 /////////////////////
 bool8 TryStartDexnavSearch(void)
 {
-    u8 taskId;
-    u16 val = VarGet(VAR_DEXNAV_SPECIES);
+    u32 i;
+    ItemUseFunc func = NULL;
     
-    if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) || (val & MASK_SPECIES) == SPECIES_NONE)
+    if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) || !FlagGet(FLAG_SYS_POKENAV_GET) || TRUE)
         return FALSE;
     
     HideMapNamePopUpWindow();
-    ChangeBgY_ScreenOff(0, 0, 0);
-    taskId = CreateTask(Task_InitDexNavSearch, 0);
-    gTasks[taskId].tSpecies = val & MASK_SPECIES;
-    gTasks[taskId].tEnvironment = val >> 14;
-    PlaySE(SE_DEX_SEARCH);
-    return FALSE;   //we dont actually want to enable the script context
+    ChangeBgY_ScreenOff(0, 0, BG_COORD_SET);
+
+    if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_BIKE))
+    {
+        ScriptContext_SetupScript(EventScript_DexnavBike);
+        return TRUE;
+    }
+
+    i = CountRegisteredSpecies();
+
+    if (i > 1) // adaptation of the key item wheel
+        func = Task_RegisteredSpeciesWheel;
+    else if (i > 0) // regular dexnav search
+        func = Task_OneRegisteredSpecies;
+    
+    if (func)
+    {
+        LockPlayerFieldControls();
+        FreezeObjectEvents();
+        PlayerFreeze();
+        StopPlayerAvatar();
+        CreateTask(func, 8);
+        return TRUE;
+    }
+
+    ScriptContext_SetupScript(EventScript_RWithoutRegisteredSpecies); // no false return, executes a script anyway. The scripts says that up to 4 ites can be registered for quick use
+    return TRUE;
 }
 
 void EndDexNavSearch(u8 taskId)
@@ -1079,7 +1100,7 @@ static void Task_DexNavSearch(u8 taskId)
         return;
     }
     
-    if (sDexNavSearchDataPtr->proximity <= CREEPING_PROXIMITY && !gPlayerAvatar.creeping && task->tFrameCount > 60)
+    if (OW_DEXNAV_SEARCH_CREEPING_SNEAKING && sDexNavSearchDataPtr->proximity <= CREEPING_PROXIMITY && !gPlayerAvatar.creeping && task->tFrameCount > 60)
     { //should be creeping but player walks normally
         if (sDexNavSearchDataPtr->hiddenSearch && !task->tRevealed)
             EndDexNavSearch(taskId);
@@ -1088,7 +1109,7 @@ static void Task_DexNavSearch(u8 taskId)
         return;
     }
     
-    if (sDexNavSearchDataPtr->proximity <= SNEAKING_PROXIMITY && TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH | PLAYER_AVATAR_FLAG_BIKE)) 
+    if (OW_DEXNAV_SEARCH_CREEPING_SNEAKING && sDexNavSearchDataPtr->proximity <= SNEAKING_PROXIMITY && TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH | PLAYER_AVATAR_FLAG_BIKE)) 
     { // running/biking too close
         //always do event script, even if player hasn't revealed a hidden mon. It's assumed they would be creeping towards it
         EndDexNavSearchSetupScript(EventScript_MovedTooFast, taskId);
@@ -1145,7 +1166,7 @@ static void Task_DexNavSearch(u8 taskId)
     {
         FieldEffectStop(&gSprites[sDexNavSearchDataPtr->fldEffSpriteId], sDexNavSearchDataPtr->fldEffId);
         while (1) {
-            if (TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 10, 10, TRUE))
+            if (TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 6, 6, TRUE)) //10, 10
                 break;
         }
         
@@ -2273,6 +2294,7 @@ static void SetTypeIconPosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId)
 
 static const u8 gText_DexNav_ChooseMon[] = _("Choose a Pokémon.");
 static const u8 gText_DexNav_Registered[] = _("Registered!");
+static const u8 gText_DexNav_Unregistered[] = _("Unregistered!");
 
 static void PrintDexNavMessage(u8 messageId)
 {
@@ -2292,6 +2314,12 @@ static void PrintDexNavMessage(u8 messageId)
 		case MESSAGE_NO_DATA:
 			text = sText_DexNav_NoDataForSlot;
 			break;
+        case MESSAGE_DPAD_TO_REGISTER:
+            text = gText_PressAnyDpadKey;
+            break;
+        case MESSAGE_UNREGISTERED:
+            text = gText_DexNav_Unregistered;
+            break;
 		/*case MESSAGE_TOO_DARK:
 			text = gText_DexNav_TooDark;
 			break;*/
@@ -2473,7 +2501,7 @@ static bool8 DexNav_DoGfxSetup(void)
         gMain.state++;
         break;
     case 7:
-        PrintSearchableSpecies(VarGet(VAR_DEXNAV_SPECIES) & MASK_SPECIES);
+        PrintSearchableSpecies(gSaveBlock1Ptr->registeredDexnavSpecies[0]);
         DexNavLoadEncounterData();
         gMain.state++;
         break;
@@ -2717,14 +2745,19 @@ static void Task_DexNavMain(u8 taskId)
             species = DexNavGetSpecies();
             
             if (species != SPECIES_NONE)
-            {            
-                PrintSearchableSpecies(species);
-                //PlaySE(SE_DEX_SEARCH);
-                PlayCry_Script(species, 0);
-                
-                // create value to store in a var
-                VarSet(VAR_DEXNAV_SPECIES, ((sDexNavUiDataPtr->environment << 14) | species));
-                PrintDexNavMessage(MESSAGE_REGISTERED);
+            {
+                u32 index = IsSpeciesRegistered(species);
+                if (index == 0)
+                {
+                    PrintSearchableSpecies(species);
+                    PrintDexNavMessage(MESSAGE_DPAD_TO_REGISTER);
+                    task->func = Task_RegisterUsingDpad;
+                }
+                else
+                {
+                    gSaveBlock1Ptr->registeredDexnavSpecies[index-1] = SPECIES_NONE;
+                    PrintDexNavMessage(MESSAGE_UNREGISTERED);
+                }
             }
             else
             {
@@ -2870,7 +2903,7 @@ bool8 TryFindHiddenPokemon(void)
 
         // find tile for hidden mon and start effect if possible
         while (1) {
-            if (TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 8, 8, TRUE))
+            if (TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 6, 6, TRUE)) //8, 8
                 break;
             if (++attempts > 20)
                 return FALSE;   //cannot find suitable tile
@@ -2992,4 +3025,378 @@ void IncrementDexNavChain(void)
 {
     if (gSaveBlock1Ptr->dexNavChain < DEXNAV_CHAIN_MAX)
         gSaveBlock1Ptr->dexNavChain++;
+}
+
+
+// registered species wheel
+static const u32 sDexnavSpeciesBoxGfx[] = INCBIN_U32("graphics/bag/key_item_box.4bpp");
+static const u16 sDexnavSpeciesBoxPal[] = INCBIN_U16("graphics/bag/key_item_box.gbapal");
+// Immune to blending; doesn't conflict with tags in event_object_movement
+#define PAL_TAG_DEXNAV_SPECIES_WHEEL  0x900
+
+static const struct SpritePalette sSpritePalette_DexnavSpeciesBox = {
+    .data = sDexnavSpeciesBoxPal,
+    .tag = PAL_TAG_DEXNAV_SPECIES_WHEEL,
+};
+
+static const struct SpriteFrameImage sPicTable_DexnavSpeciesBox[] = {
+    obj_frame_tiles(sDexnavSpeciesBoxGfx),
+};
+
+const struct OamData sOam_DexnavSpeciesBox = {
+    .shape = SPRITE_SHAPE(32x32),
+    .size = SPRITE_SIZE(32x32),
+    .priority = 1,
+    .objMode = ST_OAM_OBJ_BLEND,
+    .affineMode = ST_OAM_AFFINE_DOUBLE,
+};
+
+const struct OamData sOam_DexnavSpeciesBoxWin = {
+    .shape = SPRITE_SHAPE(32x32),
+    .size = SPRITE_SIZE(32x32),
+    .priority = 1,
+    .objMode = ST_OAM_OBJ_WINDOW,
+    .affineMode = ST_OAM_AFFINE_OFF,
+};
+
+static const union AnimCmd sSpriteAnim_KeyItemBox[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sSpriteAnimTable_DexnavSpeciesBox[] =
+{
+    sSpriteAnim_KeyItemBox
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBox0[] =
+{
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBox1[] =
+{
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0xC0, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBox2[] =
+{
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x80, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBox3[] =
+{
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x40, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBoxGrow0[] =
+{
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0, 0),
+    AFFINEANIMCMD_FRAME(0xC0, 0xC0, 0, 0),
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x120, 0, 0),
+    AFFINEANIMCMD_FRAME(0x120, 0x120, 0, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x110, 0, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBoxGrow1[] =
+{
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0xC0, 0xC0, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x120, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0x120, 0x120, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x110, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0xC0, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0xC0, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBoxGrow2[] =
+{
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0xC0, 0xC0, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x120, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0x120, 0x120, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x110, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x80, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x80, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd sAffineAnim_DexnavSpeciesBoxGrow3[] =
+{
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0xC0, 0xC0, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x120, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0x120, 0x120, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0x110, 0x110, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x40, 0),
+    AFFINEANIMCMD_FRAME(0x100, 0x100, 0x40, 0),
+    AFFINEANIMCMD_END,
+};
+
+static const union AffineAnimCmd *const sAffineAnims_DexnavSpeciesBox[] =
+{
+    sAffineAnim_DexnavSpeciesBox0,
+    sAffineAnim_DexnavSpeciesBox1,
+    sAffineAnim_DexnavSpeciesBox2,
+    sAffineAnim_DexnavSpeciesBox3,
+    sAffineAnim_DexnavSpeciesBoxGrow0,
+    sAffineAnim_DexnavSpeciesBoxGrow1,
+    sAffineAnim_DexnavSpeciesBoxGrow2,
+    sAffineAnim_DexnavSpeciesBoxGrow3,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_DexnavSpeciesBox = {
+    .tileTag = PAL_TAG_DEXNAV_SPECIES_WHEEL,
+    .paletteTag = PAL_TAG_DEXNAV_SPECIES_WHEEL,
+    .oam = &sOam_DexnavSpeciesBox,
+    .anims = sSpriteAnimTable_DexnavSpeciesBox,
+    .images = sPicTable_DexnavSpeciesBox,
+    .affineAnims = sAffineAnims_DexnavSpeciesBox,
+    .callback = SpriteCallbackDummy,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_DexnavSpeciesBoxWin = {
+    .tileTag = PAL_TAG_DEXNAV_SPECIES_WHEEL,
+    .paletteTag = PAL_TAG_DEXNAV_SPECIES_WHEEL,
+    .oam = &sOam_DexnavSpeciesBoxWin,
+    .anims = sSpriteAnimTable_DexnavSpeciesBox,
+    .images = sPicTable_DexnavSpeciesBox,
+    .affineAnims = sAffineAnims_DexnavSpeciesBox,
+    .callback = SpriteCallbackDummy,
+};
+
+static const u8 sDexnavSpeciesBoxXPos[MAX_DEXNAV_REGISTERED_SPECIES] = {(DISPLAY_WIDTH / 2), (DISPLAY_WIDTH / 2) + 32, (DISPLAY_WIDTH / 2), (DISPLAY_WIDTH / 2) - 32};
+static const u8 sDexnavSpeciesBoxYPos[MAX_DEXNAV_REGISTERED_SPECIES] = {(DISPLAY_HEIGHT / 2) - 32, (DISPLAY_HEIGHT / 2), (DISPLAY_HEIGHT / 2) + 32, (DISPLAY_HEIGHT / 2)};
+
+
+static u32 CountRegisteredSpecies(void)
+{
+    u32 i;
+    u32 count = 0;
+    for (i = 0; i < ARRAY_COUNT(gSaveBlock1Ptr->registeredDexnavSpecies); i++)
+        if (gSaveBlock1Ptr->registeredDexnavSpecies[i] != SPECIES_NONE)
+            count++;
+    return count;
+}
+
+static u32 IsSpeciesRegistered(u16 species)
+{
+    u32 i;
+    for (i = 0; i < MAX_DEXNAV_REGISTERED_SPECIES; i++)
+    {
+        if (species == gSaveBlock1Ptr->registeredDexnavSpecies[i])
+            return i+1;
+    }
+    return FALSE;
+}
+
+// Returns [1-4] based on dpad, or 0 otherwise
+static u32 DpadInputToRegisteredSpeciesIndex(bool32 check) {
+    u32 i = 0;
+    if (JOY_NEW(DPAD_UP))
+        i = 1;
+    else if (JOY_NEW(DPAD_RIGHT))
+        i = 2;
+    else if (JOY_NEW(DPAD_DOWN))
+        i = 3;
+    else if (JOY_NEW(DPAD_LEFT))
+        i = 4;
+    // If `check`, verify that slot actually has an item registered
+    if (i && check && gSaveBlock1Ptr->registeredDexnavSpecies[i-1] == SPECIES_NONE)
+        i = 0;
+    return i;
+}
+
+static void HBlankCB_DexnavSpeciesWheel(void) {
+    u32 vCount = REG_VCOUNT;
+    if (vCount >= DISPLAY_HEIGHT) {
+        sDexnavSpeciesWheelExtraPalette[0] = 0;
+        return;
+    }
+    // Copy icon 3
+    if (vCount >= 64 && sDexnavSpeciesWheelExtraPalette[0] == 0) {
+        CpuFastCopy(sDexnavSpeciesWheelExtraPalette, (u32*)(BG_PLTT + PLTT_ID(13)*2), PLTT_SIZE_4BPP);
+        sDexnavSpeciesWheelExtraPalette[0] = 0x8000;
+    }
+}
+
+#define tState data[0]
+// MAX_DEXNAV_REGISTERED_SPECIES box sprites
+#define tBoxSprite (data + 1)
+#define tBoxWinSprite (data + 1 + MAX_DEXNAV_REGISTERED_SPECIES)
+// MAX_DEXNAV_REGISTERED_SPECIES icon windows
+#define tIconWindow (data + 1 + 2*MAX_DEXNAV_REGISTERED_SPECIES)
+
+// Free dexnav species wheel gfx using sprites & windows from task data
+static void FreeDexnavSpeciesWheelGfx(s16 *data) {
+    u32 i;
+    struct Sprite *sprite;
+    FreeSpriteTilesByTag(PAL_TAG_DEXNAV_SPECIES_WHEEL);
+    FreeSpritePaletteByTag(PAL_TAG_DEXNAV_SPECIES_WHEEL);
+    // free box sprites
+    for (i = 0; i < 2 * MAX_DEXNAV_REGISTERED_SPECIES; i++) {
+        if (tBoxSprite[i] >= MAX_SPRITES)
+            continue;
+        sprite = &gSprites[tBoxSprite[i]];
+        FreeSpriteOamMatrix(sprite);
+        DestroySprite(sprite);
+    }
+    // free species windows
+    for (i = 0; i < MAX_DEXNAV_REGISTERED_SPECIES; i++) {
+        if (tIconWindow[i] == WINDOW_NONE)
+            continue;
+        FillWindowPixelBuffer(tIconWindow[i], 0);
+        CopyWindowToVram(tIconWindow[i], COPYWIN_GFX);
+        RemoveWindow(tIconWindow[i]);
+    }
+    SetHBlankCallback(NULL);
+}
+
+static void Task_RegisteredSpeciesWheel(u8 taskId) {
+    u32 i, j;
+    u16 species;
+    s16 *data = gTasks[taskId].data;
+    switch (tState)
+    {
+    case 0:
+    {
+        LoadSpritePalette(&sSpritePalette_DexnavSpeciesBox);
+        LoadSpriteSheetByTemplate(&sSpriteTemplate_DexnavSpeciesBox, 0, 0);
+
+        for (i = 0; i < MAX_DEXNAV_REGISTERED_SPECIES; i++) {
+            // Create box sprite
+            tBoxSprite[i] = j = CreateSprite(&sSpriteTemplate_DexnavSpeciesBox, sDexnavSpeciesBoxXPos[i], sDexnavSpeciesBoxYPos[i], 0);
+            if (j < MAX_SPRITES)
+                StartSpriteAffineAnim(&gSprites[j], i);
+            tBoxWinSprite[i] = MAX_SPRITES;
+
+            // For each registered species, create a window and blit its icon to it
+            species = gSaveBlock1Ptr->registeredDexnavSpecies[i];
+            tIconWindow[i] = WINDOW_NONE;
+            if (species == SPECIES_NONE/* || !CheckBagHasItem(gSaveBlock1Ptr->registeredItemList[i], 1)*/)
+                continue;
+            tIconWindow[i] = j = AddWindowParameterized(0, sDexnavSpeciesBoxXPos[i] / 8 - 2, sDexnavSpeciesBoxYPos[i] / 8 - 2, 4, 4, i == 3 ? 13 : 13 + i, 16*(i+9));
+            if (j == WINDOW_NONE)
+                continue;
+            PutWindowTilemap(j);
+            DrawMonIconAtPos(j, species, 0xFFFFFFFF, 0, 0, i == 3 ? sDexnavSpeciesWheelExtraPalette : NULL);
+            CopyWindowToVram(j, COPYWIN_FULL);
+        }
+
+        SetHBlankCallback(HBlankCB_DexnavSpeciesWheel);
+        EnableInterrupts(INTR_FLAG_VBLANK | INTR_FLAG_HBLANK);
+        PlaySE(SE_WIN_OPEN);
+        // in dark caves, we need to spawn OBJWIN sprites to show the boxes
+        tState = (gSaveBlock1Ptr->flashLevel > 1) ? 4 : 1;
+        break;
+    }
+    case 1: // process input
+    {
+        if (JOY_NEW(B_BUTTON)) {
+            PlaySE(SE_SELECT);
+            tState = 3; // destroy and unfreeze
+            break;
+        }
+        i = DpadInputToRegisteredSpeciesIndex(TRUE);
+        if (i == 0 || data[i] == MAX_SPRITES)
+            break;
+        // search species if it was registered
+        data[14] = gSaveBlock1Ptr->registeredDexnavSpecies[i - 1];
+        PlaySE(SE_SELECT);
+        StartSpriteAffineAnim(&gSprites[data[i]], i + 4 - 1);
+        data[15] = data[i];
+        tState = 2; // wait for anim
+        break;
+    }
+    case 2:
+        if (!gSprites[data[15]].affineAnimEnded)
+            break;
+        species = data[14];
+        FreeDexnavSpeciesWheelGfx(data);
+        ScriptUnfreezeObjectEvents();
+        UnlockPlayerFieldControls();
+        DestroyTask(taskId);
+
+        PlaySE(SE_DEX_SEARCH);
+        i = CreateTask(Task_InitDexNavSearch, 0);
+        gTasks[i].data[2] = species;
+        gTasks[i].data[3] = TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING) ? ENCOUNTER_TYPE_WATER : ENCOUNTER_TYPE_LAND;
+        break;
+    case 3:
+        FreeDexnavSpeciesWheelGfx(data);
+        ScriptUnfreezeObjectEvents();
+        UnlockPlayerFieldControls();
+        DestroyTask(taskId);
+        break;
+    case 4:
+        // Enable sprites to be shown inside WINOBJ
+        SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_OBJWIN_ON);
+        SetGpuRegBits(REG_OFFSET_WINOUT, WINOUT_WINOBJ_OBJ);
+        // Create box sprites, but in OBJWIN mode
+        for (i = 0; i < MAX_DEXNAV_REGISTERED_SPECIES; i++)
+            tBoxWinSprite[i] = CreateSprite(&sSpriteTemplate_DexnavSpeciesBoxWin, sDexnavSpeciesBoxXPos[i], sDexnavSpeciesBoxYPos[i], 0);
+        tState = 1;
+        break;
+    }
+}
+#undef tState
+#undef tBoxSprite
+#undef tIconWindow
+
+static void Task_RegisterUsingDpad(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    u32 i = 0;
+    if (JOY_NEW(B_BUTTON)) {
+        PlaySE(SE_SELECT);
+        task->func = Task_DexNavMain;
+        return;
+    }
+    i = DpadInputToRegisteredSpeciesIndex(FALSE);
+    if (i == 0)
+        return;
+    PlaySE(SE_SELECT);
+    // register and refresh menu
+    gSaveBlock1Ptr->registeredDexnavSpecies[i - 1] = DexNavGetSpecies();
+    //PlayCry_Script(gSaveBlock1Ptr->registeredDexnavSpecies[i - 1], 0);
+    PrintDexNavMessage(MESSAGE_REGISTERED);
+    task->func = Task_DexNavMain;
+}
+
+static void Task_OneRegisteredSpecies(u8 taskId)
+{
+    u32 i;
+    u16 species = SPECIES_NONE;
+
+    for (i = 0; i < MAX_DEXNAV_REGISTERED_SPECIES; i++)
+    {
+        if ((species = gSaveBlock1Ptr->registeredDexnavSpecies[i]) != SPECIES_NONE)
+            break;
+    }
+
+    ScriptUnfreezeObjectEvents();
+    UnlockPlayerFieldControls();
+    DestroyTask(taskId);
+
+    PlaySE(SE_DEX_SEARCH);
+    i = CreateTask(Task_InitDexNavSearch, 0);
+    gTasks[i].data[2] = species;
+    gTasks[i].data[3] = TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING) ? ENCOUNTER_TYPE_WATER : ENCOUNTER_TYPE_LAND;
 }

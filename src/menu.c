@@ -2330,14 +2330,22 @@ static void UNUSED UnusedBlitBitmapRect(const struct Bitmap *src, struct Bitmap 
     }
 }
 
-static void UNUSED LoadMonIconPalAtOffset(u8 palOffset, u16 speciesId)
+void LoadMonIconPalAtOffset(u8 palOffset, u16 speciesId)
 {
     LoadPalette(GetValidMonIconPalettePtr(speciesId), palOffset, PLTT_SIZE_4BPP);
 }
 
-static void UNUSED DrawMonIconAtPos(u8 windowId, u16 speciesId, u32 personality, u16 x, u16 y)
+void DrawMonIconAtPos(u8 windowId, u16 speciesId, u32 personality, u16 x, u16 y, void * paletteDest)
 {
     BlitBitmapToWindow(windowId, GetMonIconPtr(speciesId, personality), x, y, 32, 32);
+
+    // if palOffset is nonzero, copies the uncompressed palette directly into it
+    // otherwise, loads the compressed palette into the windowId's BG palette ID
+    if (paletteDest) {
+        CpuFastCopy(GetValidMonIconPalettePtr(speciesId), paletteDest, PLTT_SIZE_4BPP);
+    } else {
+        LoadPalette(GetValidMonIconPalettePtr(speciesId), BG_PLTT_ID(gWindows[windowId].window.paletteNum), PLTT_SIZE_4BPP);
+    }
 }
 
 void ListMenuLoadStdPalAt(u8 palOffset, u8 palId)

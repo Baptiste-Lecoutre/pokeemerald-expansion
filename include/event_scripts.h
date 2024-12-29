@@ -657,6 +657,8 @@ extern const u8 EventScript_PokemonGotAway[];
 extern const u8 EventScript_LostSignal[];
 extern const u8 EventScript_TooDark[];
 extern const u8 EventScript_MovedTooFast[];
+extern const u8 EventScript_RWithoutRegisteredSpecies[];
+extern const u8 EventScript_DexnavBike[];
 
 
 extern const u8 Common_Movement_FollowerSafeStart[];

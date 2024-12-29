@@ -1195,6 +1195,7 @@ struct SaveBlock1
     /*0x3???*/ struct WaldaPhrase waldaPhrase;
     // sizeof: 0x3???
                 u16 registeredItemList[MAX_REGISTERED_ITEMS];
+                u16 registeredDexnavSpecies[MAX_DEXNAV_REGISTERED_SPECIES];
                 u8 dexNavChain;
                 u8 raidAreaFlags[5]; // are raid battle done for the day? -> only routes for now
 };

@@ -2454,7 +2454,7 @@ bool8 UseRegisteredKeyItemOnField(void)
         gTasks[taskId].tUsingRegisteredKeyItem = TRUE;
         return TRUE;
     }
-    ScriptContext_SetupScript(EventScript_SelectWithoutRegisteredItem);
+    ScriptContext_SetupScript(EventScript_SelectWithoutRegisteredItem); // no false return, executes a script anyway. The scripts says that up to 4 ites can be registered for quick use
     return TRUE;
 }
 

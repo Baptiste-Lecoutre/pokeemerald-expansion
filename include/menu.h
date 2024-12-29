@@ -141,4 +141,6 @@ u8 GetSecondaryPopUpWindowId(void);
 void RemoveSecondaryPopUpWindow(void);
 void HBlankCB_DoublePopupWindow(void);
 
+void LoadMonIconPalAtOffset(u8 palOffset, u16 speciesId);
+void DrawMonIconAtPos(u8 windowId, u16 speciesId, u32 personality, u16 x, u16 y, void * paletteDest);
 #endif // GUARD_MENU_H

@@ -45,3 +45,16 @@ EventScript_TooDark::
     end
 sText_TooDark:
     .string "It's too dark to search\nfor a Pokémon!$"
+
+EventScript_RWithoutRegisteredSpecies::
+	msgbox sText_RWithoutRegisteredSpecies, MSGBOX_SIGN
+	end
+sText_RWithoutRegisteredSpecies::
+	.string "Up to four species can be registered\n"
+	.string "in the DexNav for easy search.$"
+
+EventScript_DexnavBike::
+    msgbox sText_DexnavBike, MSGBOX_SIGN
+    end
+sText_DexnavBike::
+    .string "You must dismount your bike to search\nfor a Pokémon!$"

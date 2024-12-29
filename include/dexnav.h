@@ -2,7 +2,7 @@
 #define GUARD_DEXNAV_H
 
 #define DEXNAV_TIMEOUT                  15  //15 seconds is the time out. Max of 1092 seconds allowed
-#define SNEAKING_PROXIMITY              4   //Tile amount
+#define SNEAKING_PROXIMITY              3 //4  //Tile amount
 #define CREEPING_PROXIMITY              2
 #define MAX_PROXIMITY                   20
 
@@ -88,10 +88,10 @@
 #define COL_HIDDEN_MAX          (COL_HIDDEN_COUNT - 1)
 
 // SEARCH INFO
-#define SCANSTART_X             0
-#define SCANSTART_Y             0
-#define SCANSIZE_X              12
-#define SCANSIZE_Y              12
+#define SCANSTART_X             4 //0
+#define SCANSTART_Y             4 //0
+#define SCANSIZE_NORMAL              4 //12 // normal
+#define SCANSIZE_SMALL              3 //12 // small
 
 #define SPECIES_INFO_Y          4
 #define TYPE_ICONS_Y            (SPECIES_INFO_Y + 24)

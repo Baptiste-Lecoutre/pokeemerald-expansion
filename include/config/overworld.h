@@ -115,4 +115,8 @@
 // Day-Night
 #define OW_DNS_TINT_UNDERGROUND    FALSE // When set to TRUE, MAP_TYPE_UNDERGROUND maps will be tinted like night.
 
+// Dexnav config
+#define OW_DEXNAV_SEARCH_NO_ENCOUNTERS  TRUE // When set to TRUE, standard wild encountered are disabled during a dexnav search
+#define OW_DEXNAV_SEARCH_CREEPING_SNEAKING  FALSE   // When set to TRUE, the player must slowly approach the dexnav encounter with holding A during movements
+
 #endif // GUARD_CONFIG_OVERWORLD_H
