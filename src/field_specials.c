@@ -5708,7 +5708,10 @@ void SetFollowerPokemonOption(void)
     gSaveBlock2Ptr->optionsShowFollowerPokemon = VarGet(VAR_RESULT);
 
     if (!gSaveBlock2Ptr->optionsShowFollowerPokemon)
+    {
         RemoveFollowingPokemon();
+        gSaveBlock3Ptr->followerIndex = OW_FOLLOWER_NOT_SET;
+    }
 }
 
 u16 GetSpeciesForRandomEgg(void)
