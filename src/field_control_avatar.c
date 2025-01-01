@@ -20,6 +20,7 @@
 #include "fldeff_misc.h"
 #include "global.fieldmap.h"
 #include "item_menu.h"
+#include "item_use.h"
 #include "link.h"
 #include "match_call.h"
 #include "metatile_behavior.h"
@@ -37,6 +38,7 @@
 #include "follow_me.h"
 #include "constants/event_bg.h"
 #include "constants/event_objects.h"
+#include "constants/field_effects.h"
 #include "constants/field_poison.h"
 #include "constants/map_types.h"
 #include "constants/metatile_behaviors.h"
@@ -47,6 +49,8 @@ static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
 static EWRAM_DATA u8 sCurrentDirection = 0;
 static EWRAM_DATA u8 sPreviousDirection = 0;
+EWRAM_DATA u8 sFollowerItemFinderStepCounter = 0;
+static EWRAM_DATA u8 sFollowerItemFinderOnCooldown = 0;
 
 COMMON_DATA u8 gSelectedObjectEvent = 0;
 
@@ -719,6 +723,13 @@ static bool8 TryStartStepCountScript(u16 metatileBehavior)
     UpdateFarawayIslandStepCounter();
     UpdateFollowerStepCounter();
 
+    if (sFollowerItemFinderOnCooldown == TRUE)
+    {
+        sFollowerItemFinderStepCounter--;
+        if (sFollowerItemFinderStepCounter == 0)
+            sFollowerItemFinderOnCooldown = FALSE;
+    }
+
     if (!(gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_FORCED_MOVE) && !MetatileBehavior_IsForcedMovementTile(metatileBehavior))
     {
     #if OW_POISON_DAMAGE < GEN_5
@@ -728,6 +739,44 @@ static bool8 TryStartStepCountScript(u16 metatileBehavior)
             return TRUE;
         }
     #endif
+        if (IsFollowerVisible() && GetFollowerObject() != NULL && sFollowerItemFinderOnCooldown == FALSE)
+        {
+            const struct MapEvents *events = gMapHeader.events;
+            struct ObjectEvent *follower = GetFollowerObject();
+            int itemX, itemY;
+            s16 playerX, playerY, i, distanceX, distanceY;
+            PlayerGetDestCoords(&playerX, &playerY);
+            for (i = 0; i < events->bgEventCount; i++)
+            {
+                // Check if there are any hidden items on the current map that haven't been picked up
+                if (events->bgEvents[i].kind == BG_EVENT_HIDDEN_ITEM && !FlagGet(events->bgEvents[i].bgUnion.hiddenItem.hiddenItemId + FLAG_HIDDEN_ITEMS_START))
+                {
+                    itemX = (u16)events->bgEvents[i].x + MAP_OFFSET;
+                    distanceX = itemX - playerX;
+                    itemY = (u16)events->bgEvents[i].y + MAP_OFFSET;
+                    distanceY = itemY - playerY;
+                    // Player can see 7 metatiles on either side horizontally
+                    // and 5 metatiles on either side vertically
+                    if (distanceX >= -3 && distanceX <= 3 && distanceY >= -2 && distanceY <= 2)
+                    {
+                        sFollowerItemFinderOnCooldown = TRUE;
+                        sFollowerItemFinderStepCounter = 30;
+                        if (FlagGet(FLAG_FOLLOWER_FINDER_INTRO))
+                        {
+                            // ObjectEventSetHeldMovement(follower, MOVEMENT_ACTION_EMOTE_EXCLAMATION_MARK);
+                            PlaySE(SE_PIN);
+                            ObjectEventGetLocalIdAndMap(follower, &gFieldEffectArguments[0], &gFieldEffectArguments[1], &gFieldEffectArguments[2]);
+                            FieldEffectStart(FLDEFF_EXCLAMATION_MARK_ICON);
+                        }
+                        else
+                        {
+                            ScriptContext_SetupScript(FollowerSpottedAnItemNearby);
+                            return TRUE;
+                        }
+                    }
+                }
+            }
+        }
         if (ShouldEggHatch())
         {
             IncrementGameStat(GAME_STAT_HATCHED_EGGS);
