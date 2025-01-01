@@ -30,6 +30,9 @@
 #define TIME_OF_DAY_DAY 2
 #define TIME_OF_DAY_MAX TIME_OF_DAY_DAY
 
+#define OW_FOLLOWER_NOT_SET            0xFE
+#define OW_FOLLOWER_RECALLED           0xFF
+
 struct InitialPlayerAvatarState
 {
     u8 transitionFlags;
