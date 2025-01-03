@@ -53,7 +53,7 @@ static void SpriteCB_QuestIcons(struct Sprite *sprite);
 
 static const u32 gPopUpWindowBorderTop_Tiles[] = INCBIN_U32("graphics/map_popup/bw/bw_primary.4bpp");
 static const u32 gPopUpWindowBorderBottom_Tiles[] = INCBIN_U32("graphics/map_popup/bw/bw_secondary.4bpp");
-//static const u16 gPopUpWindowBorder_Palette[] = INCBIN_U16("graphics/map_popup/bw/black.gbapal");
+static const u16 gPopUpWindowBorder_Palette[] = INCBIN_U16("graphics/map_popup/bw/black.gbapal");
 static const u32 gQuestPopUpIconTiles[] = INCBIN_U32("graphics/interface/quest_popup_icons.4bpp");
 static const u16 gQuestPopUpIconPalette[] = INCBIN_U16("graphics/interface/quest_popup_icons.gbapal");
 
