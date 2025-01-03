@@ -3099,36 +3099,38 @@ static void PrintTMHMMoveData(u16 itemId)
 		    gBagMenu->typeIconSpriteId = CreateSpriteAtEnd(&gSpriteTemplate_MoveTypes, 72, 109, 0);
 
 		    sprite = &gSprites[gBagMenu->typeIconSpriteId];
-		    StartSpriteAnim(sprite, gMovesInfo[moveId].type);
-		    sprite->oam.paletteNum = gTypesInfo[gMovesInfo[moveId].type].palette;
+		    StartSpriteAnim(sprite, GetMoveType(moveId));
+		    sprite->oam.paletteNum = gTypesInfo[GetMoveType(moveId)].palette;
         }
 
         // Print TMHM power
-        if (gMovesInfo[moveId].power <= 1)
+        u32 power = GetMovePower(moveId);
+        if (power <= 1)
         {
             text = gText_ThreeDashes;
         }
         else
         {
-            ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[moveId].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            ConvertIntToDecimalStringN(gStringVar1, power, STR_CONV_MODE_RIGHT_ALIGN, 3);
             text = gStringVar1;
         }
         BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, text, 7, 12, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
 
+        u32 accuracy = GetMoveAccuracy(moveId);
         // Print TMHM accuracy
-        if (gMovesInfo[moveId].accuracy == 0)
+        if (accuracy == 0)
         {
             text = gText_ThreeDashes;
         }
         else
         {
-            ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[moveId].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            ConvertIntToDecimalStringN(gStringVar1, accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
             text = gStringVar1;
         }
         BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, text, 7, 24, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO);
 
         // Print TMHM pp
-        ConvertIntToDecimalStringN(gStringVar1, gMovesInfo[moveId].pp, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        ConvertIntToDecimalStringN(gStringVar1, GetMovePP(moveId), STR_CONV_MODE_RIGHT_ALIGN, 3);
         BagMenu_Print(WIN_TMHM_INFO, FONT_NORMAL, gStringVar1, 7, 36, 0, 0, TEXT_SKIP_DRAW, COLORID_TMHM_INFO); //35
 
         CopyWindowToVram(WIN_TMHM_INFO, COPYWIN_GFX);

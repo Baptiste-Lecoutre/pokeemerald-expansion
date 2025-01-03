@@ -1649,7 +1649,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
     // attacker's abilities
     //Reckless
     if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_RECKLESS)){
-        if (IS_MOVE_RECOIL(move))
+        if (IsBattleMoveRecoil(move))
             MulModifier(&modifier, UQ_4_12(1.2));
     }
 
@@ -1728,11 +1728,11 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
         MulModifier(&modifier, UQ_4_12(1.2));
 
 	// Gorilla Tactics
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_GORILLA_TACTICS) && IS_MOVE_PHYSICAL(move))
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_GORILLA_TACTICS) && GetMoveCategory(move) == DAMAGE_CATEGORY_PHYSICAL)
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	// Long Reach
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_LONG_REACH) && IS_MOVE_PHYSICAL(move) && !(gMovesInfo[move].makesContact))
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_LONG_REACH) && GetMoveCategory(move) == DAMAGE_CATEGORY_PHYSICAL && !(gMovesInfo[move].makesContact))
         MulModifier(&modifier, UQ_4_12(1.2));
 	
 	// Tough Claws & Big Pecks
@@ -1755,15 +1755,15 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
 	// Huge Power & Pure Power
 	if((BATTLER_HAS_ABILITY(battlerAtk, ABILITY_HUGE_POWER)  ||
         BATTLER_HAS_ABILITY(battlerAtk, ABILITY_PURE_POWER)) && 
-        IS_MOVE_PHYSICAL(move))
+        GetMoveCategory(move) == DAMAGE_CATEGORY_PHYSICAL)
            MulModifier(&modifier, UQ_4_12(2.0));
 	
 	//Toxic Boost
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_TOXIC_BOOST) && (gBattleMons[battlerAtk].status1 & STATUS1_PSN_ANY) && IS_MOVE_PHYSICAL(move))
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_TOXIC_BOOST) && (gBattleMons[battlerAtk].status1 & STATUS1_PSN_ANY) && GetMoveCategory(move) == DAMAGE_CATEGORY_PHYSICAL)
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	//Flare Boost
-	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_FLARE_BOOST) && (gBattleMons[battlerAtk].status1 & STATUS1_BURN) && IS_MOVE_SPECIAL(move))
+	if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_FLARE_BOOST) && (gBattleMons[battlerAtk].status1 & STATUS1_BURN) && GetMoveCategory(move) == DAMAGE_CATEGORY_SPECIAL)
         MulModifier(&modifier, UQ_4_12(1.5));
 	
 	// Mega Launcher
@@ -1797,7 +1797,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
     {
 		// Battery
 		if(BATTLER_HAS_ABILITY(BATTLE_PARTNER(battlerAtk), ABILITY_BATTERY)){
-			if (IS_MOVE_SPECIAL(move))
+			if (GetMoveCategory(move) == DAMAGE_CATEGORY_SPECIAL)
                 MulModifier(&modifier, UQ_4_12(1.3));
 		}
 		

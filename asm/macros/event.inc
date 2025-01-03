@@ -2564,3 +2564,21 @@
 	callnative ScrCmd_checkitemquantity
 	.2byte \itemId
 	.endm
+
+	@ Enables specified quest
+	.macro enablequest quest:req
+	.byte 0xed
+	.2byte \quest
+	.endm
+
+	@ Disables specified quest
+	.macro disablequest quest:req
+	.byte 0xee
+	.2byte \quest
+	.endm
+
+	@ Checks if specified quest is active
+	.macro checkquest quest:req
+	.byte 0xef
+	.2byte \quest
+	.endm

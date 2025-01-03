@@ -251,6 +251,7 @@ void NewGameInitData(void)
     ResetItemFlags();
 
     gSaveBlock3Ptr->followerIndex = OW_FOLLOWER_NOT_SET;
+    memset(&gSaveBlock3Ptr->quests, 0, sizeof(gSaveBlock3Ptr->quests));
 }
 
 static void ResetMiniGamesRecords(void)

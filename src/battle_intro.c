@@ -8,6 +8,7 @@
 #include "main.h"
 #include "scanline_effect.h"
 #include "task.h"
+#include "test_runner.h"
 #include "trig.h"
 #include "constants/battle_partner.h"
 #include "constants/trainers.h"
@@ -201,6 +202,8 @@ static void BattleIntroNoSlide(u8 taskId)
 static void BattleIntroSlide1(u8 taskId)
 {
     int i;
+    if (B_FAST_INTRO_NO_SLIDE || gTestRunnerHeadless)
+        return BattleIntroNoSlide(taskId);
 
     gBattle_BG1_X += 6;
     switch (gTasks[taskId].tState)
@@ -286,6 +289,8 @@ static void BattleIntroSlide1(u8 taskId)
 static void BattleIntroSlide2(u8 taskId)
 {
     int i;
+    if (B_FAST_INTRO_NO_SLIDE || gTestRunnerHeadless)
+        return BattleIntroNoSlide(taskId);
 
     switch (gTasks[taskId].tTerrain)
     {
@@ -398,6 +403,8 @@ static void BattleIntroSlide2(u8 taskId)
 static void BattleIntroSlide3(u8 taskId)
 {
     int i;
+    if (B_FAST_INTRO_NO_SLIDE || gTestRunnerHeadless)
+        return BattleIntroNoSlide(taskId);
 
     gBattle_BG1_X += 8;
     switch (gTasks[taskId].tState)

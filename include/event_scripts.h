@@ -673,4 +673,9 @@ extern const u8 Common_EventScript_ShowPokemartSign[];
 extern const u8 EventScript_UseSurfOrRod[];
 extern const u8 EventScript_UseRod[];
 
+extern const u8 EventScript_FldEffSunnyDay[];
+extern const u8 EventScript_FldEffRainDance[];
+extern const u8 EventScript_FldEffHail[];
+extern const u8 EventScript_FldEffSandstorm[];
+
 #endif // GUARD_EVENT_SCRIPTS_H
