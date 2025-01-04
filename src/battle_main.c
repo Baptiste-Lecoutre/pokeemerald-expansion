@@ -3018,16 +3018,19 @@ static void BattleMainCB1(void)
 
 static bool8 IsMajorBattle(void)
 {
-    if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_LEADER
-        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_LEADER
-        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_ELITE_FOUR
-        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_ELITE_FOUR
-        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_CHAMPION
-        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_CHAMPION
-        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_MAGMA_LEADER
-        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_MAGMA_LEADER
-        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_AQUA_LEADER
-        || gTrainers[gTrainerBattleOpponent_B].trainerClass == TRAINER_CLASS_AQUA_LEADER)
+    u8 trainerClassA = GetTrainerClassFromId(gTrainerBattleOpponent_A);
+    u8 trainerClassB = GetTrainerClassFromId(gTrainerBattleOpponent_B);
+
+    if (trainerClassA == TRAINER_CLASS_LEADER
+        || trainerClassB == TRAINER_CLASS_LEADER
+        || trainerClassA == TRAINER_CLASS_ELITE_FOUR
+        || trainerClassB == TRAINER_CLASS_ELITE_FOUR
+        || trainerClassA == TRAINER_CLASS_CHAMPION
+        || trainerClassB == TRAINER_CLASS_CHAMPION
+        || trainerClassA == TRAINER_CLASS_MAGMA_LEADER
+        || trainerClassB == TRAINER_CLASS_MAGMA_LEADER
+        || trainerClassA == TRAINER_CLASS_AQUA_LEADER
+        || trainerClassB == TRAINER_CLASS_AQUA_LEADER)
         return TRUE;
     return FALSE;
 }
