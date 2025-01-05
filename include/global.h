@@ -213,9 +213,13 @@ struct SaveBlock3
 #if OW_SHOW_ITEM_DESCRIPTIONS == OW_ITEM_DESCRIPTIONS_FIRST_TIME
     u8 itemFlags[ITEM_FLAGS_COUNT];
 #endif
+#if USE_DEXNAV_SEARCH_LEVELS == TRUE
+    u8 dexNavSearchLevels[NUM_SPECIES];
+#endif
+    u8 dexNavChain;
     u8 followerIndex;
     u8 quests[NUM_QUEST_BYTES];
-};
+}; /* max size 1624 bytes */
 
 extern struct SaveBlock3 *gSaveBlock3Ptr;
 
@@ -1200,7 +1204,6 @@ struct SaveBlock1
     // sizeof: 0x3???
                 u16 registeredItemList[MAX_REGISTERED_ITEMS];
                 u16 registeredDexnavSpecies[MAX_DEXNAV_REGISTERED_SPECIES];
-                u8 dexNavChain;
                 u8 raidAreaFlags[5]; // are raid battle done for the day? -> only routes for now
 };
 

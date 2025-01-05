@@ -12,6 +12,7 @@
 #include "field_weather.h"
 #include "fieldmap.h"
 #include "fldeff.h"
+#include "follow_me.h"
 #include "gpu_regs.h"
 #include "main.h"
 #include "mirage_tower.h"
@@ -30,11 +31,10 @@
 #include "trainer_pokemon_sprites.h"
 #include "trig.h"
 #include "util.h"
-#include "follow_me.h"
-#include "constants/field_effects.h"
-#include "constants/flags.h"
 #include "constants/event_objects.h"
 #include "constants/event_object_movement.h"
+#include "constants/field_effects.h"
+#include "constants/flags.h"
 #include "constants/metatile_behaviors.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
@@ -43,6 +43,7 @@
 #define subsprite_table(ptr) {.subsprites = ptr, .subspriteCount = (sizeof ptr) / (sizeof(struct Subsprite))}
 
 EWRAM_DATA s32 gFieldEffectArguments[8] = {0};
+EWRAM_DATA bool8 gSkipShowMonAnim = FALSE;
 
 // Static type declarations
 
@@ -3504,7 +3505,8 @@ static void FlyOutFieldEffect_ShowMon(struct Task *task)
     {
         task->tState++;
         gFieldEffectArguments[0] = task->tMonId;
-        FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
+        if (!gSkipShowMonAnim)
+            FieldEffectStart(FLDEFF_FIELD_MOVE_SHOW_MON_INIT);
     }
 }
 
@@ -3753,6 +3755,7 @@ static void StartFlyBirdReturnToBall(u8 spriteId)
 u8 FldEff_FlyIn(void)
 {
     CreateTask(Task_FlyIn, 254);
+    gSkipShowMonAnim = FALSE; // Clears this variable so flying via the party menu keeps the show mon animation
     return 0;
 }
 

@@ -981,8 +981,8 @@ u8 GetTrainerBattleTransition(void)
         || trainerClass == TRAINER_CLASS_AQUA_ADMIN)
         return B_TRANSITION_AQUA;
     
-    if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_TEAM_ROCKET
-        || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_BOSS)
+    if (GetTrainerClassFromId(gTrainerBattleOpponent_A) == TRAINER_CLASS_TEAM_ROCKET
+        || GetTrainerClassFromId(gTrainerBattleOpponent_A) == TRAINER_CLASS_BOSS)
         return B_TRANSITION_ROCKET;
 
     if (IsTrainerDoubleBattle(trainerId))

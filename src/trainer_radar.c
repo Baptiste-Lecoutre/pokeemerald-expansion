@@ -871,19 +871,19 @@ static void TrainerRadarBuildRouteListMenuTemplate(void)
                 if (IsTrainerReadyForRematch())
                 {
                     if (CountBattledRematchTeams(trainerId) == REMATCHES_COUNT)
-                        StringCopy(sItemNames[i], gTrainers[trainerId].trainerName);
+                        StringCopy(sItemNames[i], GetTrainerNameFromId(trainerId));
                     else
                     {
                         StringCopy(sItemNames[i], sText_ColorRed);
-                        StringAppend(sItemNames[i], gTrainers[trainerId].trainerName);
+                        StringAppend(sItemNames[i], GetTrainerNameFromId(trainerId));
                     }
                     StringAppend(sItemNames[i], sText_Rematch);
                 }
                 else
-                    StringCopy(sItemNames[i], gTrainers[trainerId].trainerName);
+                    StringCopy(sItemNames[i], GetTrainerNameFromId(trainerId));
             }
             else
-                StringCopy(sItemNames[i], gTrainers[trainerId].trainerName);
+                StringCopy(sItemNames[i], GetTrainerNameFromId(trainerId));
         }
         else
         {
@@ -891,11 +891,11 @@ static void TrainerRadarBuildRouteListMenuTemplate(void)
 
             if (!FlagGet(FLAG_SYS_GAME_CLEAR))
                 StringAppend(sItemNames[i], sText_HiddenTrainer);
-            else if (gTrainers[trainerId].trainerClass == TRAINER_CLASS_RIVAL || gTrainers[trainerId].trainerClass == TRAINER_CLASS_LEADER
-                || gTrainers[trainerId].trainerClass == TRAINER_CLASS_ELITE_FOUR || gTrainers[trainerId].trainerClass == TRAINER_CLASS_CHAMPION)
+            else if (GetTrainerClassFromId(trainerId) == TRAINER_CLASS_RIVAL || GetTrainerClassFromId(trainerId) == TRAINER_CLASS_LEADER
+                || GetTrainerClassFromId(trainerId) == TRAINER_CLASS_ELITE_FOUR || GetTrainerClassFromId(trainerId) == TRAINER_CLASS_CHAMPION)
                 StringAppend(sItemNames[i], sText_HiddenTrainer);
             else
-                StringAppend(sItemNames[i], gTrainers[trainerId].trainerName);
+                StringAppend(sItemNames[i], GetTrainerNameFromId(trainerId));
         }
         
         sListMenuItems[i].name = sItemNames[i];
@@ -1002,7 +1002,7 @@ static void PrintTrainerPic(void)
 
     if (trainerId != TRAINER_NONE)
     {
-        sTrainerRadarPtr->trainerFrontPicSpriteId = CreateTrainerPicSprite(gTrainers[trainerId].trainerPic, TRUE, x, y, 15, TAG_NONE);
+        sTrainerRadarPtr->trainerFrontPicSpriteId = CreateTrainerPicSprite(GetTrainerPicFromId(trainerId), TRUE, x, y, 15, TAG_NONE);
         // slot 15 to avoid conflict with mon icon palettes
 
         if (!HasTrainerBeenFought(trainerId))
@@ -1059,6 +1059,7 @@ static void PrintTrainerParty(void)
     if (trainerId != TRAINER_NONE)
     {
         s32 rematchTableId = TrainerIdToRematchTableId(gRematchTable, trainerId);
+        const struct TrainerMon *party = GetTrainerPartyFromId(trainerId);
         if (rematchTableId != -1)
         {
             gTrainerBattleOpponent_A = trainerId;
@@ -1067,12 +1068,12 @@ static void PrintTrainerParty(void)
         }
 
         LoadMonIconPalettes();
-        for (i = 0; i < gTrainers[trainerId].partySize; i++)
+        for (i = 0; i < GetTrainerPartySizeFromId(trainerId); i++)
         {
             icon_x = 188 + (i%2) * 35;
             icon_y = 43 + (i/2) * 35;
 
-            species = HasTrainerBeenFought(trainerId) ? gTrainers[trainerId].party[i].species : SPECIES_NONE;
+            species = HasTrainerBeenFought(trainerId) ? party[i].species : SPECIES_NONE;
             sTrainerRadarPtr->trainerPartySpriteIds[i] = CreateMonIcon(species, SpriteCallbackDummy, icon_x, icon_y, 1, 0xFFFFFFFF);
         }
     }

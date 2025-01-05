@@ -422,9 +422,12 @@ static void AddStartMenuAction(u8 action)
 }
 
 static void BuildNormalStartMenu(void)
-{    
+{ 
     if (FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE)
         AddStartMenuAction(MENU_ACTION_POKEDEX);
+    
+//    if (FLAG_SYS_DEXNAV_GET != 0 && FlagGet(FLAG_SYS_DEXNAV_GET))
+//        AddStartMenuAction(MENU_ACTION_DEXNAV);
     
     if (FlagGet(FLAG_SYS_POKEMON_GET) == TRUE)
         AddStartMenuAction(MENU_ACTION_POKEMON);

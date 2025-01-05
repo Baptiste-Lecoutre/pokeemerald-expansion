@@ -25,8 +25,8 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_JumpSmallSplash           @ FLDEFF_JUMP_SMALL_SPLASH
 	.4byte gFieldEffectScript_LongGrass                 @ FLDEFF_LONG_GRASS
 	.4byte gFieldEffectScript_JumpLongGrass             @ FLDEFF_JUMP_LONG_GRASS
-	.4byte gFieldEffectScript_ShakingGrass               @ FLDEFF_SHAKING_GRASS
-	.4byte gFieldEffectScript_ShakingGrass2              @ FLDEFF_SHAKING_LONG_GRASS
+	.4byte gFieldEffectScript_ShakingGrass              @ FLDEFF_SHAKING_GRASS
+	.4byte gFieldEffectScript_ShakingGrass2             @ FLDEFF_SHAKING_LONG_GRASS
 	.4byte gFieldEffectScript_UnusedSand                @ FLDEFF_SAND_HOLE
 	.4byte gFieldEffectScript_WaterSurfacing            @ FLDEFF_WATER_SURFACING
 	.4byte gFieldEffectScript_BerryTreeGrowthSparkle    @ FLDEFF_BERRY_TREE_GROWTH_SPARKLE
@@ -79,10 +79,10 @@ gFieldEffectScriptPointers::
 	.4byte gFieldEffectScript_TracksSlither             @ FLDEFF_TRACKS_SLITHER
 	.4byte gFieldEffectScript_TracksBug                 @ FLDEFF_TRACKS_BUG
 	.4byte gFieldEffectScript_TracksSpot                @ FLDEFF_TRACKS_SPOT
+	.4byte gFieldEffectScript_CaveDust                  @ FLDEFF_CAVE_DUST
 	.4byte gFieldEffectScript_UseRockClimb              @ FLDEFF_USE_ROCK_CLIMB
 	.4byte gFieldEffectScript_RockClimbDust             @ FLDEFF_ROCK_CLIMB_DUST
-	.4byte gFieldEffectScript_CaveDust                  @ FLDEFF_CAVE_DUST
-
+    
 gFieldEffectScript_ExclamationMarkIcon1::
 	field_eff_callnative FldEff_ExclamationMarkIcon
 	field_eff_end
@@ -353,19 +353,6 @@ gFieldEffectScript_DestroyDeoxysRock::
 gFieldEffectScript_MoveDeoxysRock::
 	field_eff_callnative FldEff_MoveDeoxysRock
 	field_eff_end
-    
-@ NEW
-gFieldEffectScript_CaveDust::
-    field_eff_loadfadedpal_callnative gSpritePalette_CaveDust FldEff_CaveDust
-    field_eff_end
-
-gFieldEffectScript_UseRockClimb:: @ 82DBC3F
-	field_eff_callnative FldEff_UseRockClimb
-	field_eff_end
-
-gFieldEffectScript_RockClimbDust:: @ 82DBB28
-	field_eff_loadfadedpal_callnative gSpritePalette_BigDust, FldEff_RockClimbDust
-	field_eff_end
 
 gFldEffScript_UseVsSeeker::
 	field_eff_callnative FldEff_UseVsSeeker
@@ -389,4 +376,16 @@ gFieldEffectScript_TracksSpot::
 
 gFieldEffectScript_TracksSlither::
 	field_eff_loadfadedpal_callnative gSpritePalette_GeneralFieldEffect0, FldEff_TracksSlither
+	field_eff_end
+
+gFieldEffectScript_CaveDust::
+	field_eff_loadfadedpal_callnative gSpritePalette_CaveDust FldEff_CaveDust
+	field_eff_end
+
+gFieldEffectScript_UseRockClimb::
+	field_eff_callnative FldEff_UseRockClimb
+	field_eff_end
+
+gFieldEffectScript_RockClimbDust::
+	field_eff_loadfadedpal_callnative gSpritePalette_BigDust, FldEff_RockClimbDust
 	field_eff_end
