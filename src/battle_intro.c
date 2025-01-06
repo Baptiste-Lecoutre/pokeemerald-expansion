@@ -116,7 +116,7 @@ void HandleIntroSlide(u8 terrain)
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
     {
-        taskId = CreateTask((gSaveBlock2Ptr->optionsBattleScene) ? BattleIntroNoSlide : BattleIntroSlide3, 0);
+        taskId = CreateTask(/*(gSaveBlock2Ptr->optionsBattleScene) ? BattleIntroNoSlide :*/ BattleIntroSlide3, 0);
     }
     else if (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL) == SPECIES_KYOGRE)
     {
@@ -125,7 +125,7 @@ void HandleIntroSlide(u8 terrain)
     }
     else
     {
-        taskId = CreateTask((gSaveBlock2Ptr->optionsBattleScene) ? BattleIntroNoSlide : sBattleIntroSlideFuncs[terrain], 0);
+        taskId = CreateTask(/*(gSaveBlock2Ptr->optionsBattleScene) ? BattleIntroNoSlide :*/ sBattleIntroSlideFuncs[terrain], 0);
     }
 
     gTasks[taskId].tState = 0;
@@ -202,7 +202,7 @@ static void BattleIntroNoSlide(u8 taskId)
 static void BattleIntroSlide1(u8 taskId)
 {
     int i;
-    if (B_FAST_INTRO_NO_SLIDE || gTestRunnerHeadless)
+    if (B_FAST_INTRO_NO_SLIDE || /*gSaveBlock2Ptr->optionsBattleScene ||*/ gTestRunnerHeadless)
         return BattleIntroNoSlide(taskId);
 
     gBattle_BG1_X += 6;
@@ -289,7 +289,7 @@ static void BattleIntroSlide1(u8 taskId)
 static void BattleIntroSlide2(u8 taskId)
 {
     int i;
-    if (B_FAST_INTRO_NO_SLIDE || gTestRunnerHeadless)
+    if (B_FAST_INTRO_NO_SLIDE || /*gSaveBlock2Ptr->optionsBattleScene ||*/ gTestRunnerHeadless)
         return BattleIntroNoSlide(taskId);
 
     switch (gTasks[taskId].tTerrain)
@@ -403,7 +403,7 @@ static void BattleIntroSlide2(u8 taskId)
 static void BattleIntroSlide3(u8 taskId)
 {
     int i;
-    if (B_FAST_INTRO_NO_SLIDE || gTestRunnerHeadless)
+    if (B_FAST_INTRO_NO_SLIDE || /*gSaveBlock2Ptr->optionsBattleScene ||*/ gTestRunnerHeadless)
         return BattleIntroNoSlide(taskId);
 
     gBattle_BG1_X += 8;

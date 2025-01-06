@@ -583,7 +583,7 @@ static void ShowPartnerTeams(void)
 
 			for (j = 0; j < MAX_TEAM_SIZE; ++j)
 			{
-				if (j < gBattlePartners[sRaidBattleIntro->partners[i].id].partySize)
+				if (j < gBattlePartners[GetCurrentDifficultyLevel()][sRaidBattleIntro->partners[i].id].partySize)
 				{
 					u16 species = sRaidBattleIntro->partners[i].team[j];
 					if (species != SPECIES_NONE)
@@ -747,8 +747,8 @@ static bool32 GetRaidBattleData(void)
 				partner->graphicsId = raidPartners->partnerData[partnerTrainerIndex[i]].graphicsId;
 
 			for (j = 0; j < MAX_TEAM_SIZE; j++)
-				if (j < gBattlePartners[partner->id].partySize)
-					partner->team[j] = gBattlePartners[partner->id].party[j].species;
+				if (j < gBattlePartners[GetCurrentDifficultyLevel()][partner->id].partySize)
+					partner->team[j] = gBattlePartners[GetCurrentDifficultyLevel()][partner->id].party[j].species;
 		}
 
 		return TRUE;

@@ -491,7 +491,7 @@ static void CB2_InitBattleInternal(void)
     {
         gBattle_WIN0V = WIN_RANGE(DISPLAY_HEIGHT / 2, DISPLAY_HEIGHT / 2 + 1);
 
-        if (B_FAST_INTRO_NO_SLIDE == FALSE && gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X && !gTestRunnerHeadless)
+        if (B_FAST_INTRO_NO_SLIDE == FALSE && /*gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X &&*/ !gTestRunnerHeadless)
         {
             ScanlineEffect_Clear();
 
@@ -539,7 +539,7 @@ static void CB2_InitBattleInternal(void)
     LoadBattleTextboxAndBackground();
     ResetSpriteData();
     ResetTasks();
-    if (B_FAST_INTRO_NO_SLIDE == FALSE && gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X && !gTestRunnerHeadless)
+    if (B_FAST_INTRO_NO_SLIDE == FALSE && /*gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X &&*/ !gTestRunnerHeadless)
         DrawBattleEntryBackground();
     FreeAllSpritePalettes();
     gReservedSpritePaletteCount = MAX_BATTLERS_COUNT;
@@ -2743,7 +2743,7 @@ void SpriteCB_WildMon(struct Sprite *sprite)
 {
     sprite->callback = SpriteCB_MoveWildMonToRight;
     StartSpriteAnimIfDifferent(sprite, 0);
-    if (B_FAST_INTRO_NO_SLIDE == FALSE && gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X && !gTestRunnerHeadless)
+    if (B_FAST_INTRO_NO_SLIDE == FALSE && /*gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X &&*/ !gTestRunnerHeadless)
     {
         if (WILD_DOUBLE_BATTLE)
             BeginNormalPaletteFade((0x10000 << sprite->sBattler) | (0x10000 << BATTLE_PARTNER(sprite->sBattler)), 0, 10, 10, RGB(8, 8, 8));
@@ -2756,22 +2756,13 @@ static void SpriteCB_MoveWildMonToRight(struct Sprite *sprite)
 {
     if ((gIntroSlideFlags & 1) == 0)
     {
-        if (B_FAST_INTRO_NO_SLIDE == FALSE && gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X && !gTestRunnerHeadless)
+        if (B_FAST_INTRO_NO_SLIDE == FALSE && /*gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X &&*/ !gTestRunnerHeadless)
             sprite->x2 += 2;
         else
             sprite->x2 = 0;
 
         if (sprite->x2 == 0)
         {
-            sprite->x2 += 2;
-            if (sprite->x2 == 0)
-            {
-                sprite->callback = SpriteCB_WildMonShowHealthbox;
-            }
-        }
-        else
-        {
-            sprite->x2 = 0;
             sprite->callback = SpriteCB_WildMonShowHealthbox;
         }
     }
@@ -2781,22 +2772,13 @@ void SpriteCB_MoveWildMonToLeft(struct Sprite *sprite)
 {
     if ((gIntroSlideFlags & 1) == 0)
     {
-        if (B_FAST_INTRO_NO_SLIDE == FALSE && gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X && !gTestRunnerHeadless)
+        if (B_FAST_INTRO_NO_SLIDE == FALSE && /*gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X &&*/ !gTestRunnerHeadless)
             sprite->x2 -= 2;
         else
             sprite->x2 = 0;
 
         if (sprite->x2 == 0)
         {
-            sprite->x2 -= 2;
-            if (sprite->x2 == 0)
-            {
-                sprite->callback = SpriteCB_WildMonShowHealthbox;
-            }
-        }
-        else
-        {
-            sprite->x2 = 0;
             sprite->callback = SpriteCB_WildMonShowHealthbox;
         }
     }
@@ -2810,7 +2792,7 @@ static void SpriteCB_WildMonShowHealthbox(struct Sprite *sprite)
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[sprite->sBattler]);
         sprite->callback = SpriteCB_WildMonAnimate;
         StartSpriteAnimIfDifferent(sprite, 0);
-        if (B_FAST_INTRO_NO_SLIDE == FALSE && gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X && !gTestRunnerHeadless)
+        if (B_FAST_INTRO_NO_SLIDE == FALSE && /*gSaveBlock2Ptr->optionsBattleScene == OPTIONS_BATTLE_SCENE_1X &&*/ !gTestRunnerHeadless)
         {
             if (WILD_DOUBLE_BATTLE)
                 BeginNormalPaletteFade((0x10000 << sprite->sBattler) | (0x10000 << BATTLE_PARTNER(sprite->sBattler)), 0, 10, 0, RGB(8, 8, 8));
