@@ -4103,7 +4103,7 @@ bool32 TryChangeBattleWeather(u32 battler, u32 battleWeatherId, bool32 viaAbilit
         gBattleWeather = sBattleWeatherInfo[battleWeatherId].flag;
         if (gBattleWeather & B_WEATHER_PRIMAL_ANY)
             gWishFutureKnock.weatherDuration = 0;
-        if (rock != 0 && GetBattlerHoldEffect(battler, TRUE) == rock)
+        else if (rock != 0 && GetBattlerHoldEffect(battler, TRUE) == rock)
             gWishFutureKnock.weatherDuration = 8;
         else
             gWishFutureKnock.weatherDuration = 5;
@@ -12320,4 +12320,21 @@ bool32 IsMoveEffectBlockedByTarget(u32 ability)
     }
 
     return FALSE;
+}
+
+u32 NumAffectedSpreadMoveTargets(void)
+{
+    u32 targetCount = 1;
+
+    if (!IsDoubleSpreadMove())
+        return targetCount;
+
+    targetCount = 0;
+    for (u32 battler = 0; battler < gBattlersCount; battler++)
+    {
+        if (MoveResultHasEffect(battler))
+            targetCount++;
+    }
+
+    return targetCount;
 }
