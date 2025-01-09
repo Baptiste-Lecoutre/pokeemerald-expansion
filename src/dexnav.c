@@ -3376,7 +3376,8 @@ bool8 TryFindHiddenPokemon(void)
             || FlagGet(FLAG_SYS_DEXNAV_SEARCH)
             || GetFlashLevel() > 0)
     {
-        (*stepPtr) = 0;
+        if (stepPtr != NULL)
+            (*stepPtr) = 0;
         return FALSE;
     }
     
