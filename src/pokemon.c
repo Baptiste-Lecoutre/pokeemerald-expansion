@@ -7465,6 +7465,13 @@ u32 CheckDynamicMoveType(struct Pokemon *mon, u32 move, u32 battler)
     return GetMoveType(move);
 }
 
+uq4_12_t GetDynamaxLevelHPMultiplier(u32 dynamaxLevel, bool32 inverseMultiplier)
+{
+    if (inverseMultiplier)
+        return UQ_4_12(1.0/(1.5 + 0.05 * dynamaxLevel));
+    return UQ_4_12(1.5 + 0.05 * dynamaxLevel);
+}
+
 bool32 IsMilceryAndCanEvolve(struct Pokemon *mon) {
     u16 species = GetMonData(mon, MON_DATA_SPECIES, 0);
     u16 heldItem = GetMonData(mon, MON_DATA_HELD_ITEM, 0);

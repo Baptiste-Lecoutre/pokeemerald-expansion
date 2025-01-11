@@ -82,9 +82,10 @@
 #define PARTY_MSG_ALREADY_HOLDING_ONE       26
 #define PARTY_MSG_WHICH_APPLIANCE           27
 #define PARTY_MSG_CHOOSE_SECOND_FUSION      28
-#define PARTY_MSG_DO_WHAT_WITH_FOLLOWER     29
-#define PARTY_MSG_MOVE_ITEM_WHERE           30
-#define PARTY_MSG_CANT_CHANGE_WEATHER       31
+#define PARTY_MSG_NO_POKEMON                29
+#define PARTY_MSG_DO_WHAT_WITH_FOLLOWER     30
+#define PARTY_MSG_MOVE_ITEM_WHERE           31
+#define PARTY_MSG_CANT_CHANGE_WEATHER       32
 #define PARTY_MSG_NONE                      127
 
 // IDs for DisplayPartyPokemonDescriptionText, to display a message in the party pokemon's box

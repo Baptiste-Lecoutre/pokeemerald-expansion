@@ -592,6 +592,9 @@ static void InitPartyMenu(u8 menuType, u8 layout, u8 partyAction, bool8 keepCurs
         else if (gPartyMenu.slotId > PARTY_SIZE - 1 || GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_SPECIES) == SPECIES_NONE)
             gPartyMenu.slotId = 0;
 
+        if (gPlayerPartyCount == 0)
+            gPartyMenu.slotId = PARTY_SIZE + 1; // Cancel
+
         gTextFlags.autoScroll = 0;
         CalculatePlayerPartyCount();
         SetMainCallback2(CB2_InitPartyMenu);
@@ -1034,7 +1037,7 @@ static void RenderPartyMenuBox(u8 slot)
         PutWindowTilemap(sPartyMenuBoxes[slot].windowId);
         ScheduleBgCopyTilemapToVram(2);
     }
-    else
+    else if (gPlayerPartyCount != 0)
     {
         if (GetMonData(&gPlayerParty[slot], MON_DATA_SPECIES) == SPECIES_NONE)
         {
@@ -1760,7 +1763,7 @@ static u16 PartyMenuButtonHandler(s8 *slotPtr)
         return A_BUTTON; // Select is allowed to act as the A Button while CursorCb_Switch is active.
     }
 
-    if (movementDir)
+    if (movementDir && gPlayerPartyCount != 0)
     {
         UpdateCurrentPartySelection(slotPtr, movementDir);
         return 0;
@@ -2905,6 +2908,9 @@ void DisplayPartyMenuStdMessage(u32 stringId)
             }
             else
                 stringId = PARTY_MSG_CHOOSE_MON_2;
+
+            if (gPlayerPartyCount == 0)
+                stringId = PARTY_MSG_NO_POKEMON;
         }
         DrawStdFrameWithCustomTileAndPalette(*windowPtr, FALSE, 0x29E, 13); //0x4F
         StringExpandPlaceholders(gStringVar4, sActionStringTable[stringId]);
