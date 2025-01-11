@@ -989,7 +989,7 @@ bool8 TryStartDexNavSearch(void)
     u32 i;
     ItemUseFunc func = NULL;
     
-    if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) || !FlagGet(FLAG_SYS_POKENAV_GET) || TRUE)
+    if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) || !FlagGet(FLAG_SYS_POKENAV_GET) || DEBUG_OVERWORLD_MENU)
         return FALSE;
     
     HideMapNamePopUpWindow();
