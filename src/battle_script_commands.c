@@ -11622,7 +11622,7 @@ static void Cmd_various(void)
             gBattleStruct->raid.state |= RAID_CATCHING_BOSS;
             gSpecialVar_ItemId = ITEM_NONE;
             battler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-            RecalcBattlerStats(battler, &gEnemyParty[0]);
+            RecalcBattlerStats(battler, &gEnemyParty[0], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
             BtlController_EmitChooseItem(battler, BUFFER_A, gBattleStruct->battlerPartyOrders[battler]);
             MarkBattlerForControllerExec(battler);
         }
@@ -11650,7 +11650,7 @@ static void Cmd_various(void)
 
             MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
             HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], STATUS1_ANY, gBattlerTarget);
-            RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
+            RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
             gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
             SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp);
             SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HELD_ITEM, &bossHeldItem);

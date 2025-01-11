@@ -575,7 +575,7 @@ void InitRaidBattleData(void)
     }
 
     // Update HP Multiplier.
-    RecalcBattlerStats(raidBossBattler, &gEnemyParty[0]);
+    RecalcBattlerStats(raidBossBattler, &gEnemyParty[0], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
 }
 
 // return the raid boss battlerId
