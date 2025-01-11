@@ -40,7 +40,7 @@ void InitRaidBattleData(void);
 u32 GetRaidBossBattler(void);
 bool32 IsRaidBoss(u32 battlerId);
 u8 GetRaidBattleTransition(void);
-void ApplyRaidHPMultiplier(u32 battlerId, struct Pokemon* mon);
+void ApplyRaidHPMultiplier(struct Pokemon* mon);
 bool32 ShouldRaidKickPlayer(void);
 bool32 ShouldMoveDynamaxEnergy(void);
 bool32 HandleTeraOrbCharge(void);

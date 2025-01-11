@@ -605,7 +605,7 @@ u8 GetRaidBattleTransition(void)
 // Applies the HP multiplier for Raid Bosses.
 // Ideally, I should have used UQ_4_12 all the way, but the possible values are to low for tera multipliers (limited to 16).
 // Hence the redundancy in the code below
-void ApplyRaidHPMultiplier(u32 battlerId, struct Pokemon* mon)
+void ApplyRaidHPMultiplier(struct Pokemon* mon)
 {
     u16 mult, hp, maxHP;
 
@@ -623,7 +623,7 @@ void ApplyRaidHPMultiplier(u32 battlerId, struct Pokemon* mon)
     }
     else if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
     {
-        mult = 3;//sGen9RaidHPMultipliers[gRaidData.rank];
+        mult = sGen9RaidHPMultipliers[gRaidData.rank];
         hp = GetMonData(mon, MON_DATA_HP) * mult;
         maxHP = GetMonData(mon, MON_DATA_MAX_HP) * mult;
         SetMonData(mon, MON_DATA_HP, &hp);
