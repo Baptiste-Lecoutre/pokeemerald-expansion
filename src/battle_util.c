@@ -5952,27 +5952,18 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
              && !IsBattlerAlive(gBattlerTarget)
              && IsBattlerAlive(gBattlerAttacker))
             {
-                //special Future Sight handling
-                if (gMovesInfo[gWishFutureKnock.futureSightMove[battler]].effect == EFFECT_FUTURE_SIGHT)
+                // Prevent Innards Out effect if Future Sight user is currently not on field
+                if (GetMoveEffect(gCurrentMove) == EFFECT_FUTURE_SIGHT)
                 {
-                    //no Innards Out effect if Future Sight user is currently not on field
-                    if (gWishFutureKnock.futureSightPartyIndex[gBattlerTarget] == gBattlerPartyIndexes[gBattlerAttacker]
-                     || gWishFutureKnock.futureSightPartyIndex[gBattlerTarget] == BATTLE_PARTNER(gBattlerPartyIndexes[gBattlerAttacker]))
-                    {
-                        gBattleStruct->moveDamage[gBattlerAttacker] = gWishFutureKnock.futureSightDmg;
-                        gWishFutureKnock.futureSightDmg = 0;
-                        BattleScriptPushCursor();
-                        gBattlescriptCurrInstr = BattleScript_AftermathDmg;
-                        effect++;
-                    }
+                    if (gWishFutureKnock.futureSightPartyIndex[gBattlerTarget] != gBattlerPartyIndexes[gBattlerAttacker]
+                     && gWishFutureKnock.futureSightPartyIndex[gBattlerTarget] != BATTLE_PARTNER(gBattlerPartyIndexes[gBattlerAttacker]))
+                        break;
                 }
-                else
-                {
-                    gBattleStruct->moveDamage[gBattlerAttacker] = gBattleStruct->moveDamage[gBattlerTarget];
-                    BattleScriptPushCursor();
-                    gBattlescriptCurrInstr = BattleScript_AftermathDmg;
-                    effect++;
-                }
+
+                gBattleStruct->moveDamage[gBattlerAttacker] = gBattleStruct->moveDamage[gBattlerTarget];
+                BattleScriptPushCursor();
+                gBattlescriptCurrInstr = BattleScript_AftermathDmg;
+                effect++;
             }
             break;
         case ABILITY_EFFECT_SPORE:
@@ -9731,7 +9722,10 @@ static inline u32 CalcMoveBasePowerAfterModifiers(struct DamageCalculationData *
         && (moveType == GetBattlerTeraType(battlerAtk)
         || (GetBattlerTeraType(battlerAtk) == TYPE_STELLAR && IsTypeStellarBoosted(battlerAtk, moveType)))
         && uq4_12_multiply_by_int_half_down(modifier, basePower) < 60
+        && GetMovePower(move) > 1
         && GetMoveStrikeCount(move) < 2
+        && moveEffect != EFFECT_POWER_BASED_ON_USER_HP
+        && moveEffect != EFFECT_POWER_BASED_ON_TARGET_HP
         && moveEffect != EFFECT_MULTI_HIT
         && GetMovePriority(move) == 0)
     {
