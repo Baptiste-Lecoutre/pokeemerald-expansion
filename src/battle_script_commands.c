@@ -1335,7 +1335,7 @@ static void Cmd_attackcanceler(void)
 
     // Raid shields prevent status moves.
     if (IsRaidBoss(gBattlerTarget)
-        && gBattlerAttacker != GetRaidBossBattler()
+        && gBattlerAttacker != gBattlerTarget
         && gBattleStruct->raid.shield > 0
         && GetMoveCategory(gCurrentMove) == DAMAGE_CATEGORY_STATUS)
     {
@@ -11665,45 +11665,6 @@ static void Cmd_various(void)
         UpdateOamPriorityInAllHealthboxes(1, TRUE);
         break;
     }
-    case VARIOUS_DO_RAID_SHOCKWAVE:
-    {
-        VARIOUS_ARGS();
-        
-        if (TRUE || gBattleCommunication[MULTIUSE_STATE] == 0)
-        {
-            for (i = 0; i < gBattlersCount; i++)
-            {
-                if (i == GetRaidBossBattler())
-                    continue;
-                if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
-                {
-                    if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
-                        gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
-                    gStatuses3[i] |= STATUS3_GASTRO_ACID;
-                }
-                TryResetBattlerStatChanges(i);
-            }
-        }
-        /*switch (gBattleCommunication[MULTIUSE_STATE])
-        {
-        default:
-        case 0:
-            for (i = 0; i < gBattlersCount; i++)
-            {
-                if (GetBattlerPosition(i) == B_POSITION_OPPONENT_LEFT)
-                    continue;
-                if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
-                {
-                    if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
-                        gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
-                    gStatuses3[i] |= STATUS3_GASTRO_ACID;
-                }
-                TryResetBattlerStatChanges(i);
-            }
-            break;
-        } // end of switch shockwave type*/
-        break;
-    }
     } // End of switch (cmd->id)
 
     gBattlescriptCurrInstr = cmd->nextInstr;
@@ -18346,7 +18307,7 @@ void BS_DoRaidShockwave(void)
     default:
         for (i = 0; i < gBattlersCount; i++)
         {
-            if (i == GetRaidBossBattler())
+            if (IsRaidBoss(i))
                 continue;
             if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
             {

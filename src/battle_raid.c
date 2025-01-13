@@ -585,9 +585,10 @@ u32 GetRaidBossBattler(void)
 }
 
 // Returns whether the target is a Raid Boss. Includes battle type flag check.
-bool32 IsRaidBoss(u32 battlerId)
+bool32 IsRaidBoss(u32 battler)
 {
-    return (gBattleTypeFlags & BATTLE_TYPE_RAID) && battlerId == GetRaidBossBattler();
+//    return (gBattleStruct->raid.isBattlerRaidBoss & (1u << battler));
+    return (gBattleTypeFlags & BATTLE_TYPE_RAID) && battler == GetRaidBossBattler();
 }
 
 // Returns the battle transition ID for the Raid battle.
@@ -724,7 +725,7 @@ bool32 HandleTeraOrbCharge(void)
 
 bool8 DoesRaidPreventMove(u16 move)
 {
-    switch(move) // data from Bulbapedia
+    switch(move)
     {
         case MOVE_BUG_BITE:
         case MOVE_COVET:
@@ -733,6 +734,12 @@ bool8 DoesRaidPreventMove(u16 move)
         case MOVE_PERISH_SONG:
         case MOVE_PLUCK:
         case MOVE_SELF_DESTRUCT:
+        case MOVE_EXPLOSION:
+        case MOVE_MEMENTO:
+        case MOVE_HEALING_WISH:
+        case MOVE_LUNAR_DANCE:
+        case MOVE_FINAL_GAMBIT:
+        case MOVE_MISTY_EXPLOSION:
         case MOVE_SUPER_FANG:
         case MOVE_THIEF:
         case MOVE_TRICK:

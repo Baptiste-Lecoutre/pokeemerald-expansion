@@ -588,14 +588,16 @@ struct RaidBattleData
     u8 state;             // stores the progress of the raid, intro and catching included
     u16 shieldedHP;           // stores either num. of shields (GEN_8) or amount of HP protected (GEN_9)
     u8 nextShield;        // stores the HP fraction threshold (0 to 100) that the next shield should occur
-    u8 shieldsRemaining;  // stores the remaining num. of shields
-    u8 shield:3;
+    u8 shieldsRemaining;  // stores the remaining num. of unused shields
+    u8 shield:3;            // stores the amount of shields in-use 
     u8 energy:2;            // stores Dynamax Energy position or Tera Orb charge
     bool8 usedShockwave:1;// stores whether the raid boss has used its shockwave during the turn
     bool8 movedTwice:1;   // stores whether the raid boss has moves twice during the turn
     bool8 statIncreased:1;// stores whether the raid boss stats have increased after fainting a mon
-    u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for Gen 8-style shields
+    u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for shield sprites
     u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
+//    u8 isBattlerRaidBoss:4; // bitfield that stores if battler is a raid boss
+//    u8 padding:4;
 };
 
 struct LostItem

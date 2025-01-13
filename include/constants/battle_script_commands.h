@@ -220,7 +220,6 @@ enum CmdVarious
     VARIOUS_JUMP_IF_NO_BALLS,
     VARIOUS_CATCH_RAID_BOSS,
     VARIOUS_HIDE_HEALTHBOXES,
-    VARIOUS_DO_RAID_SHOCKWAVE,
 };
 
 // Cmd_manipulatedamage
