@@ -3371,11 +3371,11 @@ static void BattleStartClearSetData(void)
         gBattleStruct->monCausingSleepClause[B_SIDE_OPPONENT] = PARTY_SIZE;
     }
 
-    /*if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
     {
         gBattleStruct->raid.isBattlerRaidBoss = 0;
         gBattleStruct->raid.isBattlerRaidBoss |= (1u << GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
-    }*/
+    }
 }
 
 void SwitchInClearSetData(u32 battler)

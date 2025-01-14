@@ -583,6 +583,21 @@ struct BattleGimmickData
     bool8 activated[MAX_BATTLERS_COUNT][GIMMICKS_COUNT]; // stores whether a trainer has used gimmick
 };
 
+struct RaidBossData
+{
+    u8 isBattlerRaidBoss:1;
+    u8 usedShockwave:1;
+    u8 numberOfMovesPerTurn:2;
+    u8 statIncreased:1;
+    u8 shield:3;
+    u8 shieldsRemaining;
+    u8 nextShield;
+    u8 shieldState;
+    u16 shieldedHP;
+    u8 barrierSpriteIds[MAX_BARRIER_COUNT];
+    u8 align;
+};
+
 struct RaidBattleData
 {
     u8 state;             // stores the progress of the raid, intro and catching included
@@ -596,8 +611,8 @@ struct RaidBattleData
     bool8 statIncreased:1;// stores whether the raid boss stats have increased after fainting a mon
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for shield sprites
     u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
-//    u8 isBattlerRaidBoss:4; // bitfield that stores if battler is a raid boss
-//    u8 padding:4;
+    u8 isBattlerRaidBoss:4; // bitfield that stores if battler is a raid boss
+    u8 padding:4;
 };
 
 struct LostItem
