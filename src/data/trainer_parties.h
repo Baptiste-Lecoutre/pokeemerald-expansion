@@ -3863,7 +3863,7 @@ static const struct TrainerMon sParty_Garret[] = {
     {
     .iv = TRAINER_PARTY_IVS(12, 12, 12, 12, 12, 12),
     .lvl = 75,
-    .species = SPECIES_FURFROU_KABUKI_TRIM,
+    .species = SPECIES_FURFROU_KABUKI,
     .heldItem = ITEM_NUGGET
     },
     {

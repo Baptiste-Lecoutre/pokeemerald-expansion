@@ -47,39 +47,39 @@ Furfrou_Trim_Multichoice::
     end
 
 Furfrou_HeartTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_HEART_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_HEART
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_StarTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_STAR_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_STAR
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_DiamondTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_DIAMOND_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_DIAMOND
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_DebutanteTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_DEBUTANTE_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_DEBUTANTE
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_MatronTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_MATRON_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_MATRON
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_DandyTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_DANDY_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_DANDY
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_LaReineTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_LA_REINE_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_LA_REINE
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_KabukiTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_KABUKI_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_KABUKI
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_PharaohTrim::
-    setvar VAR_0x8005, SPECIES_FURFROU_PHARAOH_TRIM
+    setvar VAR_0x8005, SPECIES_FURFROU_PHARAOH
     goto Furfrou_Trim_CheckMoney
 
 Furfrou_BackToNatural::
