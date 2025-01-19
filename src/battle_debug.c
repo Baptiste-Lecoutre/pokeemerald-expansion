@@ -108,6 +108,7 @@ enum
     LIST_ITEM_STATUS3,
     LIST_ITEM_STATUS4,
     LIST_ITEM_SIDE_STATUS,
+    LIST_ITEM_RAID,
     LIST_ITEM_AI,
     LIST_ITEM_AI_MOVES_PTS,
     LIST_ITEM_AI_INFO,
@@ -215,6 +216,12 @@ enum
 
 enum
 {
+    LIST_RAID_BOSS,
+    LIST_RAID_ENERGY,
+};
+
+enum
+{
     LIST_AI_CHECK_BAD_MOVE,
     LIST_AI_TRY_TO_FAINT,
     LIST_AI_CHECK_VIABILITY,
@@ -287,6 +294,7 @@ static const u8 sText_Status2[] = _("Status2");
 static const u8 sText_Status3[] = _("Status3");
 static const u8 sText_Status4[] = _("Status4");
 static const u8 sText_SideStatus[] = _("Side Status");
+static const u8 sText_Raid[] = _("Raid");
 static const u8 sText_AI[] = _("AI");
 static const u8 sText_AIMovePts[] = _("AI Pts/Dmg");
 static const u8 sText_AiKnowledge[] = _("AI Info");
@@ -380,6 +388,8 @@ static const u8 sText_DamageNonTypes[] = _("Damage Non-Types");
 static const u8 sText_Rainbow[] = _("Rainbow");
 static const u8 sText_SeaOfFire[] = _("Sea of Fire");
 static const u8 sText_Swamp[] = _("Swamp");
+static const u8 sText_RaidBoss[] = _("Boss");
+static const u8 sText_RaidEnergy[] = _("Energy");
 static const u8 sText_CheckBadMove[] = _("Check Bad Move");
 static const u8 sText_TryToFaint[] = _("Try to Faint");
 static const u8 sText_CheckViability[] = _("Check Viability");
@@ -517,6 +527,7 @@ static const struct ListMenuItem sMainListItems[] =
     {sText_Status3, LIST_ITEM_STATUS3},
     {sText_Status4, LIST_ITEM_STATUS4},
     {sText_SideStatus, LIST_ITEM_SIDE_STATUS},
+    {sText_Raid, LIST_ITEM_RAID},
     {sText_AI, LIST_ITEM_AI},
     {sText_AIMovePts, LIST_ITEM_AI_MOVES_PTS},
     {sText_AiKnowledge, LIST_ITEM_AI_INFO},
@@ -619,6 +630,12 @@ static const struct ListMenuItem sSideStatusListItems[] =
     {sText_Rainbow, LIST_SIDE_RAINBOW},
     {sText_SeaOfFire, LIST_SIDE_SEA_OF_FIRE},
     {sText_Swamp, LIST_SIDE_SWAMP},
+};
+
+static const struct ListMenuItem sRaidListItems[] =
+{
+    {sText_RaidBoss, LIST_RAID_BOSS},
+    {sText_RaidEnergy, LIST_RAID_ENERGY},
 };
 
 static const struct ListMenuItem sAIListItems[] =
@@ -1581,6 +1598,10 @@ static void CreateSecondaryListMenu(struct BattleDebugMenu *data)
         listTemplate.items = sSideStatusListItems;
         itemsCount = ARRAY_COUNT(sSideStatusListItems);
         break;
+    case LIST_ITEM_RAID:
+        listTemplate.items = sRaidListItems;
+        itemsCount = ARRAY_COUNT(sRaidListItems);
+        break;
     case LIST_ITEM_AI_MOVES_PTS:
     case LIST_ITEM_AI_INFO:
         return;
@@ -2188,6 +2209,26 @@ static void SetUpModifyArrows(struct BattleDebugMenu *data)
         data->modifyArrows.modifiedValPtr = &gSideStatuses[GetBattlerSide(data->battlerId)];
         data->modifyArrows.typeOfVal = VAR_SIDE_STATUS;
         data->modifyArrows.currValue = *GetSideStatusValue(data, FALSE, FALSE);
+        break;
+    case LIST_ITEM_RAID:
+        if (data->currentSecondaryListItemId == LIST_RAID_BOSS)
+        {
+            data->modifyArrows.minValue = 0;
+            data->modifyArrows.maxValue = 1;
+            data->modifyArrows.maxDigits = 1;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.nextShield;
+            data->modifyArrows.typeOfVal = VAL_U8;
+            data->modifyArrows.currValue = gBattleStruct->raid.nextShield;
+        }
+        else if (data->currentSecondaryListItemId == LIST_RAID_ENERGY)
+        {
+            data->modifyArrows.minValue = 0;
+            data->modifyArrows.maxValue = 2000;
+            data->modifyArrows.maxDigits = 4;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.shieldedHP;
+            data->modifyArrows.typeOfVal = VAL_U16;
+            data->modifyArrows.currValue = gBattleStruct->raid.shieldedHP;
+        }
         break;
     }
 
