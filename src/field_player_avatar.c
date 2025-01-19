@@ -1036,7 +1036,7 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
     gPlayerAvatar.creeping = FALSE;
     if (gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_SURFING)
     {
-        if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) && (heldKeys & A_BUTTON))
+        if (FlagGet(DN_FLAG_SEARCHING) && (heldKeys & A_BUTTON))
         {
             gPlayerAvatar.creeping = TRUE;
             PlayerWalkSlow(direction);
@@ -1065,7 +1065,7 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
         }
         return;
     }
-    else if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) && (heldKeys & A_BUTTON))
+    else if (FlagGet(DN_FLAG_SEARCHING) && (heldKeys & A_BUTTON))
     {
         gPlayerAvatar.creeping = TRUE;
         PlayerWalkSlow(direction);
