@@ -6390,7 +6390,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .frontPic = gMonFrontPic_DialgaPrimal,
         .frontPicSize = MON_COORDS_SIZE(64, 64),
         .frontPicYOffset = 0,
-        .frontAnimFrames = sAnims_DialgaPrimal,
+        .frontAnimFrames = sAnims_SingleFramePlaceHolder,
         //.frontAnimId = ANIM_H_SHAKE,
         .backPic = gMonBackPic_DialgaPrimal,
         .backPicSize = MON_COORDS_SIZE(64, 64),
@@ -6402,10 +6402,11 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .iconPalIndex = 0,
         FOOTPRINT(Dialga)
         OVERWORLD(
-            sPicTable_Dialga,
+            gObjectEventPic_Dialga,
             SIZE_64x64,
             SHADOW_SIZE_M,
             TRACKS_FOOT,
+            sAnimTable_Following,
             gOverworldPalette_Dialga,
             gShinyOverworldPalette_Dialga
         )
@@ -6603,7 +6604,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .frontPic = gMonFrontPic_PalkiaPrimal,
         .frontPicSize = MON_COORDS_SIZE(64, 64),
         .frontPicYOffset = 0,
-        .frontAnimFrames = sAnims_PalkiaPrimal,
+        .frontAnimFrames = sAnims_SingleFramePlaceHolder,
         //.frontAnimId = ANIM_V_SHAKE,
         .backPic = gMonBackPic_PalkiaPrimal,
         .backPicSize = MON_COORDS_SIZE(64, 64),
@@ -6615,10 +6616,11 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .iconPalIndex = 2,
         FOOTPRINT(Palkia)
         OVERWORLD(
-            sPicTable_Palkia,
+            gObjectEventPic_Palkia,
             SIZE_64x64,
             SHADOW_SIZE_M,
             TRACKS_FOOT,
+            sAnimTable_Following,
             gOverworldPalette_Palkia,
             gShinyOverworldPalette_Palkia
         )
