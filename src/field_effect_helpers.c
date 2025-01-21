@@ -114,15 +114,16 @@ static void LoadObjectReflectionPalette(struct ObjectEvent *objectEvent, struct 
 // Apply a blue tint effect to a palette
 static void ApplyPondFilter(u8 paletteNum, u16 *dest)
 {
-    u32 i, r, g, b;
-    // CpuCopy16(gPlttBufferUnfaded + 0x100 + paletteNum * 16, dest, 32);
+    u32 i;
+    s32 r, g, b;
     u16 *src = gPlttBufferUnfaded + OBJ_PLTT_ID(paletteNum);
     *dest++ = *src++; // copy transparency
     for (i = 0; i < 16 - 1; i++)
     {
-        r = GET_R(src[i]);
-        g = GET_G(src[i]);
-        b = GET_B(src[i]);
+        u32 color = *src++;
+        r = (color << 27) >> 27;
+        g = (color << 22) >> 27;
+        b = (color << 17) >> 27;
         b += 10;
         if (b > 31)
             b = 31;
@@ -133,13 +134,16 @@ static void ApplyPondFilter(u8 paletteNum, u16 *dest)
 // Apply a ice tint effect to a palette
 static void ApplyIceFilter(u8 paletteNum, u16 *dest)
 {
-    u32 i, r, g, b;
-    // CpuCopy16(gPlttBufferUnfaded + 0x100 + paletteNum * 16, dest, 32);
+    u32 i;
+    s32 r, g, b;
     u16 *src = gPlttBufferUnfaded + OBJ_PLTT_ID(paletteNum);
     *dest++ = *src++; // copy transparency
     for (i = 0; i < 16 - 1; i++)
     {
-        r = GET_R(src[i]);
+        u32 color = *src++;
+        r = (color << 27) >> 27;
+        g = (color << 22) >> 27;
+        b = (color << 17) >> 27;
         r -= 5;
         if (r < 0)
             r = 0;
@@ -334,7 +338,7 @@ u32 FldEff_Shadow(void)
     const struct ObjectEventGraphicsInfo *graphicsInfo;
     u8 spriteId;
     s32 i;
-    for (i = 0; i < MAX_SPRITES; i++)
+    for (i = MAX_SPRITES - 1; i > -1; i--) // Search backwards, because of CreateSpriteAtEnd
     {
         // Return early if a shadow sprite already exists
         if (gSprites[i].data[0] == gFieldEffectArguments[0] && gSprites[i].callback == UpdateShadowFieldEffect)
@@ -344,8 +348,8 @@ u32 FldEff_Shadow(void)
     graphicsInfo = GetObjectEventGraphicsInfo(gObjectEvents[objectEventId].graphicsId);
     if (graphicsInfo->shadowSize == SHADOW_SIZE_NONE) // don't create a shadow at all
         return 0;
-    LoadSpriteSheetByTemplate(gFieldEffectObjectTemplatePointers[sShadowEffectTemplateIds[graphicsInfo->shadowSize]], 0, 0);
-    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[sShadowEffectTemplateIds[graphicsInfo->shadowSize]], 0, 0, 0x94 + 1); // higher = farther back; shadows should be behind object events
+    LoadSpriteSheetByTemplate(gFieldEffectObjectTemplatePointers[sShadowEffectTemplateIds[graphicsInfo->shadowSize]], 0, 0); // the last argument is not present in DNS PR
+    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[sShadowEffectTemplateIds[graphicsInfo->shadowSize]], 0, 0, OW_OBJECT_SUBPRIORITY + 1);
     if (spriteId != MAX_SPRITES)
     {
         // SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 12));

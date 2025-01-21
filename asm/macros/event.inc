@@ -1831,11 +1831,11 @@
 
 	@ Equivalent to fadescreen but copies gPlttBufferUnfaded to gDecompressionBuffer on the fade out
 	@ and the reverse on the fade in, in effect saving gPlttBufferUnfaded to restore it.
-  @ If nowait set, does not wait for the fade to complete
+	@ If nowait set, does not wait for the fade to complete
 	.macro fadescreenswapbuffers mode:req, nowait=0
 	.byte SCR_OP_FADESCREENSWAPBUFFERS
 	.byte \mode
-  .byte \nowait
+	.byte \nowait
 	.endm
 
 	@ Buffers the specified trainer's class name to the given string var.

@@ -944,11 +944,9 @@ u8 AddNewGameBirchObject(s16 x, s16 y, u8 subpriority)
     return CreateSprite(&sSpriteTemplate_NewGameBirch, x, y, subpriority);
 }
 
-u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_PicBox(u16 species, bool8 isShiny, s16 x, s16 y, u8 subpriority)
 {
-    // force load unique tag here to avoid collision with follower pokemon
-    u32 paletteSlot = AllocSpritePalette(FLDEFF_PAL_TAG_FIELD_MOVE_MON);
-    u16 spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, x, y, paletteSlot, species);
+    s32 spriteId = CreateMonPicSprite(species, isShiny, 0x8000, TRUE, x, y, 0, species);
     PreservePaletteInWeather(IndexOfSpritePaletteTag(species) + 0x10);
     if (spriteId == 0xFFFF)
         return MAX_SPRITES;
@@ -956,10 +954,14 @@ u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x,
         return spriteId;
 }
 
-u8 CreateMonSprite_PicBox(u16 species, bool8 isShiny, s16 x, s16 y, u8 subpriority)
+u8 CreateMonSprite_FieldMove(u16 species, bool8 isShiny, u32 personality, s16 x, s16 y, u8 subpriority)
 {
-    // Reuse logic; (otId ^ pid) >= SHINY_ODDS ensures non-shiny
-    return CreateMonSprite_FieldMove(species, isShiny, SHINY_ODDS, x, y, subpriority);
+    u16 spriteId = CreateMonPicSprite(species, isShiny, personality, TRUE, x, y, 0, species);
+    PreservePaletteInWeather(gSprites[spriteId].oam.paletteNum + 0x10);
+    if (spriteId == 0xFFFF)
+        return MAX_SPRITES;
+    else
+        return spriteId;
 }
 
 void FreeResourcesAndDestroySprite(struct Sprite *sprite, u8 spriteId)
@@ -3572,7 +3574,7 @@ static void FlyOutFieldEffect_FlyOffWithBird(struct Task *task)
         struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
         ObjectEventClearHeldMovementIfActive(objectEvent);
         objectEvent->inanimate = FALSE;
-        objectEvent->noShadow = TRUE; // TODO: Make shadow smaller instead of disappearing completely ?
+        objectEvent->noShadow = TRUE;
         SetFlyBirdPlayerSpriteId(task->tBirdSpriteId, objectEvent->spriteId);
         CameraObjectFreeze();
         task->tState++;

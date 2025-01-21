@@ -3,6 +3,7 @@
 #include "constants/weather.h"
 #include "constants/rgb.h"
 #include "util.h"
+#include "decompress.h"
 #include "event_object_movement.h"
 #include "field_weather.h"
 #include "fieldmap.h"
@@ -326,7 +327,7 @@ static void Task_WeatherMain(u8 taskId)
 
 static void None_Init(void)
 {
-    Weather_SetBlendCoeffs(8, 12); // Indoor shadows
+    Weather_SetBlendCoeffs(8, BASE_SHADOW_INTENSITY); // Indoor shadows
     gWeatherPtr->noShadows = FALSE;
     gWeatherPtr->targetColorMapIndex = 0;
     gWeatherPtr->colorMapStepDelay = 0;
@@ -473,16 +474,16 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
         u32 palettes = PALETTES_ALL;
         numPalettes += startPalIndex;
         palettes = (palettes >> startPalIndex) << startPalIndex;
-        palettes = (palettes << (32-numPalettes)) >> (32-numPalettes);
+        palettes = (palettes << (32 - numPalettes)) >> (32 - numPalettes);
         numPalettes -= startPalIndex;
         colorMapIndex--;
         palOffset = PLTT_ID(startPalIndex);
         UpdateAltBgPalettes(palettes & PALETTES_BG);
         // Thunder gamma-shift looks bad on night-blended palettes, so ignore time blending in some situations
-        if (!(colorMapIndex > 3) && (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)))
-          UpdatePalettesWithTime(palettes);
+        if (colorMapIndex <= 3 && (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)))
+            UpdatePalettesWithTime(palettes);
         else
-          CpuFastCopy(gPlttBufferUnfaded + palOffset, gPlttBufferFaded + palOffset, PLTT_SIZE_4BPP * numPalettes);
+            CpuFastCopy(gPlttBufferUnfaded + palOffset, gPlttBufferFaded + palOffset, PLTT_SIZE_4BPP * numPalettes);
         numPalettes += startPalIndex;
         curPalIndex = startPalIndex;
 
@@ -549,11 +550,15 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
     }
     else
     {
-        if (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)) { // Time-blend
+        if (MapHasNaturalLight(gMapHeader.mapType) || (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND))
+        {
+            // Time-blend
             u32 palettes = ((1 << numPalettes) - 1) << startPalIndex;
             UpdateAltBgPalettes(palettes & PALETTES_BG);
             UpdatePalettesWithTime(palettes);
-        } else { // copy
+        }
+        else
+        {
             CpuFastCopy(&gPlttBufferUnfaded[PLTT_ID(startPalIndex)], &gPlttBufferFaded[PLTT_ID(startPalIndex)], numPalettes * PLTT_SIZE_4BPP);
         }
     }
@@ -683,7 +688,8 @@ static void ApplyFogBlend(u8 blendCoeff, u32 blendColor)
     BlendPalettesFine(PALETTES_MAP, gPlttBufferFaded, gPlttBufferFaded, blendCoeff, blendColor);
 
     // Do fog blending on marked sprite palettes
-    for (curPalIndex = 16; curPalIndex < 32; curPalIndex++) {
+    for (curPalIndex = 16; curPalIndex < 32; curPalIndex++)
+    {
         if (LightenSpritePaletteInFog(curPalIndex))
             BlendPalettesFine(1, gPlttBufferFaded + PLTT_ID(curPalIndex), gPlttBufferFaded + PLTT_ID(curPalIndex), fogCoeff, RGB(28, 31, 28));
     }
@@ -702,7 +708,7 @@ static void MarkFogSpritePalToLighten(u8 paletteIndex)
 
 static bool8 LightenSpritePaletteInFog(u8 paletteIndex)
 {
-    u16 i=0;
+    u32 i;
 
     if (paletteIndex >= 16 && IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(paletteIndex - 16)))
         return FALSE;
@@ -796,23 +802,28 @@ void FadeScreen(u8 mode, s8 delay)
         gWeatherPtr->fadeDestColor = fadeColor;
         UpdateTimeOfDay();
         if (useWeatherPal)
-          gWeatherPtr->fadeScreenCounter = 0; // Triggers gamma-shift-based fade-in
-        else {
-          if (MapHasNaturalLight(gMapHeader.mapType)) {
+        {
+            gWeatherPtr->fadeScreenCounter = 0; // Triggers gamma-shift-based fade-in
+        }
+        else if (MapHasNaturalLight(gMapHeader.mapType))
+        {
             UpdateAltBgPalettes(PALETTES_BG);
             BeginTimeOfDayPaletteFade(PALETTES_ALL, delay, 16, 0,
-              (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time0],
-              (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.time1],
-              currentTimeBlend.weight, fadeColor);
-          } else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND) {
+                                      (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.initialTimeOfDay],
+                                      (struct BlendSettings *)&gTimeOfDayBlend[currentTimeBlend.finalTimeOfDay],
+                                      currentTimeBlend.weight, fadeColor);
+        }
+        else if (OW_DNS_TINT_UNDERGROUND && gMapHeader.mapType == MAP_TYPE_UNDERGROUND)
+        {
             UpdateAltBgPalettes(PALETTES_BG);
             BeginTimeOfDayPaletteFade(PALETTES_ALL, delay, 16, 0,
-              (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
-              (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
-              256, fadeColor);
-          } else {
+                                      (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+                                      (struct BlendSettings *)&gTimeOfDayBlend[TIME_OF_DAY_NIGHT],
+                                      256, fadeColor);
+        }
+        else
+        {
             BeginNormalPaletteFade(PALETTES_ALL, delay, 16, 0, fadeColor);
-          }
         }
 
         gWeatherPtr->palProcessingState = WEATHER_PAL_STATE_SCREEN_FADING_IN;
@@ -832,6 +843,7 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
 {
     u16 paletteIndex = 16 + spritePaletteIndex;
     u16 i;
+
     switch (gWeatherPtr->palProcessingState)
     {
     case WEATHER_PAL_STATE_SCREEN_FADING_IN:
@@ -852,13 +864,18 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
     // WEATHER_PAL_STATE_CHANGING_WEATHER
     // WEATHER_PAL_STATE_CHANGING_IDLE
     default:
-        if (gWeatherPtr->currWeather != WEATHER_FOG_HORIZONTAL) {
+        if (gWeatherPtr->currWeather != WEATHER_FOG_HORIZONTAL)
+        {
             if (gWeatherPtr->colorMapIndex)
                 ApplyColorMap(paletteIndex, 1, gWeatherPtr->colorMapIndex);
             else
                 UpdateSpritePaletteWithTime(spritePaletteIndex);
-        } else { // In horizontal fog, only specific palettes should be fog-blended
-            if (allowFog) {
+        }
+        else
+        {
+            // In horizontal fog, only specific palettes should be fog-blended
+            if (allowFog)
+            {
                 i = min((gTimeOfDay + 1) * 4, 12); // fog coeff, highest in day and lowest at night
                 paletteIndex = PLTT_ID(paletteIndex);
                 // First blend with time
@@ -866,7 +883,10 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
                 UpdateSpritePaletteWithTime(spritePaletteIndex);
                 // Then blend faded->faded with fog coeff
                 BlendPalettesFine(1, gPlttBufferFaded + paletteIndex, gPlttBufferFaded + paletteIndex, i, RGB(28, 31, 28));
-            } else { // Otherwise, just time-blend the palette
+            }
+            else
+            {
+                // Otherwise, just time-blend the palette
                 UpdateSpritePaletteWithTime(spritePaletteIndex);
             }
         }
@@ -878,17 +898,13 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
     if (gPaletteFade.y == 16)
         CpuFastCopy(
             gPlttBufferUnfaded + OBJ_PLTT_ID(spritePaletteIndex),
-            gPlttBufferFaded + 2*OBJ_PLTT_ID(spritePaletteIndex),
+            gDecompressionBuffer + 2 * OBJ_PLTT_ID(spritePaletteIndex),
             PLTT_SIZE_4BPP
         );
 }
 
-void ApplyWeatherColorMapToPal(u8 paletteIndex) // now unused / obselete
+void ApplyWeatherColorMapToPals(u8 startPalIndex, u8 numPalettes)
 {
-    ApplyColorMap(paletteIndex, 1, gWeatherPtr->colorMapIndex);
-}
-
-void ApplyWeatherColorMapToPals(u8 startPalIndex, u8 numPalettes) {
     ApplyColorMap(startPalIndex, numPalettes, gWeatherPtr->colorMapIndex);
 }
 
@@ -902,9 +918,9 @@ static bool8 UNUSED IsFirstFrameOfWeatherFadeIn(void)
 
 void LoadCustomWeatherSpritePalette(const u16 *palette)
 {
-    if (gWeatherPtr->weatherPicSpritePalIndex > 16) // haven't allocated palette yet
-        if ((gWeatherPtr->weatherPicSpritePalIndex = AllocSpritePalette(PALTAG_WEATHER_2)) > 16)
-            return;
+    if (gWeatherPtr->weatherPicSpritePalIndex > 16 // haven't allocated palette yet
+    && (gWeatherPtr->weatherPicSpritePalIndex = AllocSpritePalette(PALTAG_WEATHER_2)) > 16)
+        return;
     LoadPalette(palette, OBJ_PLTT_ID(gWeatherPtr->weatherPicSpritePalIndex), PLTT_SIZE_4BPP);
     UpdateSpritePaletteWithWeather(gWeatherPtr->weatherPicSpritePalIndex, TRUE);
 }
