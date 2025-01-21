@@ -1667,7 +1667,7 @@ u32 calculateTotalMoveDamage(u16 move, u8 battlerAtk, u8 battlerDef, u8 moveType
     //Sand Force
     if(BATTLER_HAS_ABILITY(battlerAtk, ABILITY_SAND_FORCE)){
         if ((moveType == TYPE_STEEL || moveType == TYPE_ROCK || moveType == TYPE_GROUND)
-            && gBattleWeather & B_WEATHER_SANDSTORM && WEATHER_HAS_EFFECT)
+            && gBattleWeather & B_WEATHER_SANDSTORM && HasWeatherEffect())
            MulModifier(&modifier, UQ_4_12(1.3));
     }
 
