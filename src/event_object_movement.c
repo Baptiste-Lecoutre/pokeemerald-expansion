@@ -2787,26 +2787,14 @@ void UpdateLightSprite(struct Sprite *sprite)
         Weather_SetBlendCoeffs(7, BASE_SHADOW_INTENSITY); // TODO: Restore original blend coeffs at dawn
         return;
     }
-    else
-    {
-        if (gTimeOfDay == TIME_OF_DAY_NIGHT)
-        {
-            Weather_SetBlendCoeffs(12, 12);
-            sprite->invisible = FALSE;
-        }
-        else
-        {
-            sprite->invisible = TRUE;
-        }
-    }
 
-    /*if (gTimeOfDay != TIME_NIGHT)
+    if (gTimeOfDay != TIME_NIGHT)
     {
         sprite->invisible = TRUE;
         return;
     }
 
-    switch (sprite->sLightType)
+    /*switch (sprite->sLightType)
     {
     default:
     case LIGHT_TYPE_BALL:
