@@ -587,8 +587,7 @@ u32 GetRaidBossBattler(void)
 // Returns whether the target is a Raid Boss. Includes battle type flag check.
 bool32 IsRaidBoss(u32 battler)
 {
-    return (gBattleStruct->raid.isBattlerRaidBoss & (1u << battler));
-//    return (gBattleTypeFlags & BATTLE_TYPE_RAID) && battler == GetRaidBossBattler();
+    return (gBattleStruct->raid.boss[battler].isBattlerRaidBoss);
 }
 
 // Returns the battle transition ID for the Raid battle.

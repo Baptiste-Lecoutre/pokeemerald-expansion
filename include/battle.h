@@ -614,8 +614,7 @@ struct RaidBattleData
     bool8 statIncreased:1;// stores whether the raid boss stats have increased after fainting a mon
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for shield sprites
     u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
-    u8 isBattlerRaidBoss:4; // bitfield that stores if battler is a raid boss
-    u8 padding:4;
+    struct RaidBossData boss[MAX_BATTLERS_COUNT];
 };
 
 struct LostItem

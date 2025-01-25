@@ -3373,8 +3373,7 @@ static void BattleStartClearSetData(void)
 
     if (gBattleTypeFlags & BATTLE_TYPE_RAID)
     {
-        gBattleStruct->raid.isBattlerRaidBoss = 0;
-        gBattleStruct->raid.isBattlerRaidBoss |= (1u << GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT));
+        gBattleStruct->raid.boss[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].isBattlerRaidBoss = TRUE;
     }
 }
 
