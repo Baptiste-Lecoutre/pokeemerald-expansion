@@ -2153,3 +2153,11 @@ bool8 IsAStartMenuIconAtPosition(u8 position)
 #undef spritePaletteTagId
 #undef isSpriteAnIcon
 #undef callbackConditions
+
+void Script_ForceSaveGame(struct ScriptContext *ctx)
+{
+    SaveGame();
+    ShowSaveInfoWindow();
+    gMenuCallback = SaveCallback;
+    sSaveDialogCallback = SaveSavingMessageCallback;
+}

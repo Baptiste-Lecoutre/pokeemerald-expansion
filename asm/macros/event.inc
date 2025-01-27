@@ -1829,9 +1829,10 @@
 	.4byte \text
 	.endm
 
-	@ Equivalent to fadescreen but copies gPlttBufferUnfaded to gDecompressionBuffer on the fade out
-	@ and the reverse on the fade in, in effect saving gPlttBufferUnfaded to restore it.
-	@ If nowait set, does not wait for the fade to complete
+	@ Equivalent to fadescreen but uses a hardware fade and darken/lighten blend modes,
+	@ to avoid modifying palettes at all.
+	@ Useful for fade-out/fade-in without leaving the overworld or entering a new scene.
+	@ If nowait set, doesn't wait for the fade to complete
 	.macro fadescreenswapbuffers mode:req, nowait=0
 	.byte SCR_OP_FADESCREENSWAPBUFFERS
 	.byte \mode
@@ -2580,6 +2581,11 @@
 	callnative Script_SetDifficulty, requests_effects=1
 	.byte \difficulty
 	.endm
+    
+	.macro forcesave
+	callnative Script_ForceSaveGame
+	waitstate
+	.endm
 
 	@ Starts fishing with the best rod the player has.
 	.macro startfishing
@@ -2677,4 +2683,12 @@
 	.macro cant_see_if_ne, a:req, b:req
 	compare \a, \b
 	cant_see_if 5
+	.endm
+
+		@ hide any follower pokemon if present,
+	@ putting them into their pokeball;
+	@ by default waits for their movement to finish
+	.macro hidefollower wait=1
+	callnative ScrFunc_hidefollower
+	.2byte \wait
 	.endm

@@ -2,6 +2,8 @@
 #include "palette.h"
 #include "util.h"
 #include "decompress.h"
+#include "malloc.h"
+#include "menu.h"
 #include "gpu_regs.h"
 #include "task.h"
 #include "constants/rgb.h"
@@ -43,9 +45,9 @@ static const u8 sRoundedDownGrayscaleMap[] = {
 
 void LoadCompressedPalette(const u32 *src, u32 offset, u32 size)
 {
-    LZDecompressWram(src, gDecompressionBuffer);
-    CpuCopy16(gDecompressionBuffer, &gPlttBufferUnfaded[offset], size);
-    CpuCopy16(gDecompressionBuffer, &gPlttBufferFaded[offset], size);
+    void *buffer = malloc_and_decompress(src, NULL);
+    LoadPalette(buffer, offset, size);
+    Free(buffer);
 }
 
 void LoadPalette(const void *src, u32 offset, u32 size)
@@ -721,7 +723,8 @@ static u32 UpdateHardwarePaletteFade(void)
     {
         if (gPaletteFade.shouldResetBlendRegisters)
         {
-            gPaletteFade_blendCnt = 0;
+            // clear TGT1
+            gPaletteFade_blendCnt &= ~0xFF;
             gPaletteFade.y = 0;
         }
         gPaletteFade.shouldResetBlendRegisters = FALSE;
@@ -732,10 +735,44 @@ static u32 UpdateHardwarePaletteFade(void)
     return gPaletteFade.active ? PALETTE_FADE_STATUS_ACTIVE : PALETTE_FADE_STATUS_DONE;
 }
 
+// Only called for hardware fades
 static void UpdateBlendRegisters(void)
 {
     SetGpuReg(REG_OFFSET_BLDCNT, (u16)gPaletteFade_blendCnt);
     SetGpuReg(REG_OFFSET_BLDY, gPaletteFade.y);
+    // If fade-out, also adjust BLDALPHA and DISPCNT
+    if (!gPaletteFade.yDec /*&& gPaletteFade.mode == HARDWARE_FADE*/)
+    {
+        u16 bldAlpha = GetGpuReg(REG_OFFSET_BLDALPHA);
+        u8 tgt1 = BLDALPHA_TGT1(bldAlpha);
+        u8 tgt2 = BLDALPHA_TGT2(bldAlpha);
+        u8 bldFade;
+
+        switch (gPaletteFade_blendCnt & BLDCNT_EFFECT_EFF_MASK)
+        {
+        // FADE_TO_BLACK
+        case BLDCNT_EFFECT_DARKEN:
+            bldFade = BLDALPHA_TGT1(max(0, 16 - gPaletteFade.y));
+            SetGpuReg(
+                REG_OFFSET_BLDALPHA,
+                BLDALPHA_BLEND(min(tgt1, bldFade), min(tgt2, bldFade))
+            );
+            break;
+        // FADE_TO_WHITE
+        case BLDCNT_EFFECT_LIGHTEN:
+            SetGpuReg(
+                REG_OFFSET_BLDALPHA,
+                BLDALPHA_BLEND(min(++tgt1, 31), min(++tgt2, 31))
+            );
+            // cause display to show white when finished
+            // (otherwise blend-mode sprites will still be visible)
+            if (gPaletteFade.hardwareFadeFinishing && gPaletteFade.y >= 16)
+                SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_FORCED_BLANK);
+            break;
+        }
+    } else
+        ClearGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_FORCED_BLANK);
+
     if (gPaletteFade.hardwareFadeFinishing)
     {
         gPaletteFade.hardwareFadeFinishing = FALSE;

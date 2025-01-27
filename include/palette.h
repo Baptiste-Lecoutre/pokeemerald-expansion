@@ -46,6 +46,14 @@ struct BlendSettings
     u32 unused:2;
 };
 
+struct TimeBlendSettings
+{
+    struct BlendSettings startBlend;
+    struct BlendSettings endBlend;
+    u16 weight;
+    u16 altWeight;
+};
+
 struct PaletteFadeControl
 {
     u32 multipurpose1; // This field needs to exist or errors will occur

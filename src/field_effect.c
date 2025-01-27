@@ -15,6 +15,7 @@
 #include "follow_me.h"
 #include "gpu_regs.h"
 #include "main.h"
+#include "malloc.h"
 #include "mirage_tower.h"
 #include "menu.h"
 #include "metatile_behavior.h"
@@ -813,9 +814,11 @@ void FieldEffectScript_LoadTiles(u8 **script)
 void FieldEffectScript_LoadFadedPalette(u8 **script)
 {
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
-    LoadSpritePalette(palette);
-    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag), TRUE);
+    u32 paletteSlot = LoadSpritePalette(palette);
     (*script) += 4;
+    SetPaletteColorMapType(paletteSlot + 16, T1_READ_8(*script));
+    UpdateSpritePaletteWithWeather(paletteSlot, TRUE);
+    (*script)++;
 }
 
 void FieldEffectScript_LoadPalette(u8 **script)
@@ -871,6 +874,7 @@ void FieldEffectFreePaletteIfUnused(u8 paletteNum)
         for (i = 0; i < MAX_SPRITES; i++)
             if (gSprites[i].inUse && gSprites[i].oam.paletteNum == paletteNum)
                 return;
+        ResetPaletteColorMapType(paletteNum + 16);
         FreeSpritePaletteByTag(tag);
     }
 }
@@ -920,8 +924,20 @@ bool8 FieldEffectActiveListContains(u8 id)
 u8 CreateTrainerSprite(u8 trainerSpriteID, s16 x, s16 y, u8 subpriority, u8 *buffer)
 {
     struct SpriteTemplate spriteTemplate;
+    bool32 alloced = FALSE;
+
+    // Allocate memory for buffer
+    if (buffer == NULL)
+    {
+        buffer = Alloc(TRAINER_PIC_SIZE + PLTT_SIZEOF(16));
+        alloced = TRUE;
+    }
+
     LoadCompressedSpritePaletteOverrideBuffer(&gTrainerSprites[trainerSpriteID].palette, buffer);
     LoadCompressedSpriteSheetOverrideBuffer(&gTrainerSprites[trainerSpriteID].frontPic, buffer);
+    if (alloced)
+        Free(buffer);
+
     spriteTemplate.tileTag = gTrainerSprites[trainerSpriteID].frontPic.tag;
     spriteTemplate.paletteTag = gTrainerSprites[trainerSpriteID].palette.tag;
     spriteTemplate.oam = &sOam_64x64;
@@ -4485,7 +4501,7 @@ bool8 IsRockClimbActive(void)
 u8 FldEff_CaveDust(void)
 {
     u8 spriteId;
-    
+
     SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
     spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_CAVE_DUST], gFieldEffectArguments[0], gFieldEffectArguments[1], 0xFF);
     if (spriteId != MAX_SPRITES)
@@ -4493,7 +4509,7 @@ u8 FldEff_CaveDust(void)
         gSprites[spriteId].coordOffsetEnabled = TRUE;
         gSprites[spriteId].data[0] = 22;
     }
-    
+
     return spriteId;
 }
 
