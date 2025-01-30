@@ -629,3 +629,5 @@ gSpecials::
 	def_special GroomSelectedMon
 	def_special IsSelectedMonShiny
 	def_special MakeSelectedMonShiny
+	def_special EnterCode
+	def_special GetCodeFeedback
