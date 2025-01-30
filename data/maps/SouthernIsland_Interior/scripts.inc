@@ -200,8 +200,8 @@ SouthernIsland_Interior_EventScript_GiveLatiStones::
 	giveitem ITEM_LATIOSITE
 	waitmessage
 	giveitem ITEM_LATIASITE
-	waitmessage
-	giveitem ITEM_EON_FLUTE
+@	waitmessage
+@	giveitem ITEM_EON_FLUTE
 	closemessage
 	setflag FLAG_RECEIVED_LATI_STONES
 	releaseall

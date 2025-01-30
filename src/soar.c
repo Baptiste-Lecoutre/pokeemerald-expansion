@@ -11,6 +11,7 @@
 #include "item_menu.h"
 #include "load_save.h"
 #include "main.h"
+#include "malloc.h"
 #include "menu.h"
 #include "overworld.h"
 #include "palette.h"
@@ -288,6 +289,7 @@ static void CB2_LoadSoarGraphics(void)
 	unsigned int i;
 	u8 *src;
 	u8 *dest;
+	void *buffer;
 
 	switch (gMain.state)
 	{
@@ -303,8 +305,10 @@ static void CB2_LoadSoarGraphics(void)
 		LZ77UnCompVram(sRegionMapBg_GfxLZ, (void *)(VRAM + BG2_IMAGE_OFFSET));
 
 		// Load tilemap
-		LZ77UnCompVram(sRegionMapBg_TilemapLZ, gDecompressionBuffer);
-		src = gDecompressionBuffer;
+//		LZ77UnCompVram(sRegionMapBg_TilemapLZ, gDecompressionBuffer);
+//		src = gDecompressionBuffer;
+		buffer = malloc_and_decompress(sRegionMapBg_TilemapLZ, NULL);
+		src = buffer;
 		dest = (void *)(VRAM + BG2_TILEMAP_OFFSET);
 		// Copy each row to VRAM
 		for (i = 0; i < 64; i++)
@@ -313,6 +317,7 @@ static void CB2_LoadSoarGraphics(void)
 			src += 64;
 			dest += 128;
 		}
+		Free(buffer);
 
 		// load palette
 		LoadPalette(sRegionMapBg_Pal, 0x70, 64);
