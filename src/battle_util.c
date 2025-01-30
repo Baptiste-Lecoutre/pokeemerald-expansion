@@ -837,7 +837,7 @@ void HandleAction_ActionFinished(void)
         u8 chosenMoveTarget;
 
         if (IsWildMonSmart())
-            chosenMoveId = BattleAI_ChooseMoveOrAction();
+            chosenMoveId = BattleAI_ChooseMoveOrAction(gBattlerAttacker);
         else
             chosenMoveId = Random() % MAX_MON_MOVES;
         
