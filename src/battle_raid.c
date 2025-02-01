@@ -1,5 +1,6 @@
 #include "global.h"
 #include "battle.h"
+#include "battle_ai_main.h"
 #include "battle_anim.h"
 #include "battle_interface.h"
 #include "battle_raid.h"
@@ -592,7 +593,7 @@ bool32 IsRaidBoss(u32 battler)
 }
 
 // Returns the battle transition ID for the Raid battle.
-u8 GetRaidBattleTransition(void)
+u32 GetRaidBattleTransition(void)
 {
     if (gRaidData.raidType == RAID_TYPE_TERA)
         return B_TRANSITION_TERA_RAID;
@@ -723,7 +724,7 @@ bool32 HandleTeraOrbCharge(void)
     return FALSE;
 }
 
-bool8 DoesRaidPreventMove(u16 move)
+bool32 DoesRaidPreventMove(u16 move)
 {
     switch(move)
     {
@@ -761,7 +762,7 @@ void ClearTurnRaidValues(void)
 }
 
 //////////////////////////////////////////////////////////// RAID REPEATED MOVES FUNCTIONS //////////////////////////////////////////////////////
-u8 GetRaidRepeatedAttackChance(void)
+u32 GetRaidRepeatedAttackChance(void)
 {
 	u8 numStars = gRaidData.rank;
     switch (numStars)
@@ -775,6 +776,45 @@ u8 GetRaidRepeatedAttackChance(void)
 		default:
 			return 70; //70 % of the time after KO or Status Move
 	}
+}
+
+bool32 TryRaidBossAdditionalMove(u32 battler)
+{
+    u16 chosenMoveId;
+    u8 chosenMoveTarget;
+
+    if (!IsRaidBoss(battler) || !IsBattlerAlive(battler))
+        return FALSE;
+    
+    if (gBattleStruct->raid.boss[battler].movedTwice || gBattleMons[battler].status2 & STATUS2_RECHARGE)
+        return FALSE;
+
+// need to adapt this whole section to any boss. Might also need to optimize the whole move selection stuff.
+    if ((IsBattlerAlive(BATTLE_OPPOSITE(battler)) && gChosenActionByBattler[BATTLE_OPPOSITE(battler)] == B_ACTION_USE_ITEM)
+     || (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(battler))) && gChosenActionByBattler[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))] == B_ACTION_USE_ITEM)
+     || (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA && (Random() % 100 <= GetRaidRepeatedAttackChance()))
+     || (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX && (GetMoveCategory(gLastLandedMoves[battler]) == DAMAGE_CATEGORY_STATUS || IsMaxMove(gLastLandedMoves[battler])) && (Random() % 100 <= GetRaidRepeatedAttackChance())))
+    {
+        if (IsWildMonSmart())
+            chosenMoveId = BattleAI_ChooseMoveOrAction();
+        else
+            chosenMoveId = Random() % MAX_MON_MOVES;
+
+        chosenMoveTarget = GetMoveTarget(gBattleMons[battler].moves[chosenMoveId]);
+        if (gMovesInfo[gBattleMons[battler].moves[chosenMoveId]].target == MOVE_TARGET_BOTH) // override to fix bug
+            chosenMoveTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT); // à adapter pour n'importe quel boss.
+
+        *(gBattleStruct->chosenMovePositions + battler) = chosenMoveId;
+        gChosenMoveByBattler[battler] = gBattleMons[battler].moves[*(gBattleStruct->chosenMovePositions + battler)];
+        *(gBattleStruct->moveTarget + battler) = chosenMoveTarget;
+        gHitMarker &= ~HITMARKER_NO_ATTACKSTRING; // bug fix, could have issues
+        gCurrentActionFuncId = B_ACTION_USE_MOVE;
+        gBattleStruct->raid.boss[battler].movedTwice = TRUE;
+        gCurrentTurnActionNumber--;
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 //////////////////////////////////////////////////////////// RAID SHOCKWAVE FUNCTIONS //////////////////////////////////////////////////////
@@ -953,7 +993,7 @@ void BS_DoRaidShockwave(void)
 }
 
 //////////////////////////////////////////////////////////// RAID KO STAT INCREASE FUNCTIONS //////////////////////////////////////////////////////
-u8 GetRaidBossKOStatIncrease(u8 battlerId)
+u32 GetRaidBossKOStatIncrease(u8 battlerId)
 {
     u8 level = gBattleMons[battlerId].level;
 

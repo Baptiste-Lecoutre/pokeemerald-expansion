@@ -5504,10 +5504,6 @@ static void TurnValuesCleanUp(bool8 var0)
 
     gBattleStruct->pledgeMove = FALSE; // combined pledge move may not have been used due to a canceller
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
-    {
-        gBattleStruct->raid.movedTwice = FALSE;
-    }
     ClearTurnRaidValues();
     ClearPursuitValues();
     ClearDamageCalcResults();

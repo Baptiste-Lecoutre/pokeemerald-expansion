@@ -611,7 +611,7 @@ struct RaidBattleData
     u8 shield:3;            // stores the amount of shields in-use 
     u8 energy:2;            // stores Dynamax Energy position or Tera Orb charge
     bool8 unused2:1;// stores whether the raid boss has used its shockwave during the turn
-    bool8 movedTwice:1;   // stores whether the raid boss has moves twice during the turn
+    bool8 unused3:1;   // stores whether the raid boss has moves twice during the turn
     bool8 unused:1;// stores whether the raid boss stats have increased after fainting a mon
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for shield sprites
     u8 timerSpriteIds[2]; // used to display the timer for max & tera raids

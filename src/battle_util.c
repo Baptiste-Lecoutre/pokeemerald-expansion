@@ -821,36 +821,9 @@ void HandleAction_ActionFinished(void)
     gBattleScripting.multihitMoveEffect = 0;
     gBattleResources->battleScriptsStack->size = 0;
 
-    if (IsRaidBoss(gBattlerAttacker) && IsBattlerAlive(gBattlerAttacker)
-        && !gBattleStruct->raid.movedTwice
-        && !(gBattleMons[gBattlerAttacker].status2 & STATUS2_RECHARGE)
-        && ((gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX && (GetMoveCategory(gLastLandedMoves[gBattlerAttacker]) == DAMAGE_CATEGORY_STATUS || IsMaxMove(gLastLandedMoves[gBattlerAttacker])) && (Random() % 100 <= GetRaidRepeatedAttackChance()))
-            || (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA && (Random() % 100 <= GetRaidRepeatedAttackChance()))
-            || (IsBattlerAlive(BATTLE_OPPOSITE(gBattlerAttacker)) && gChosenActionByBattler[BATTLE_OPPOSITE(gBattlerAttacker)] == B_ACTION_USE_ITEM)
-            || (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))) && gChosenActionByBattler[BATTLE_PARTNER(BATTLE_OPPOSITE(gBattlerAttacker))] == B_ACTION_USE_ITEM)))
-    {
-        u16 chosenMoveId;
-        u8 chosenMoveTarget;
-
-        if (IsWildMonSmart())
-            chosenMoveId = BattleAI_ChooseMoveOrAction();
-        else
-            chosenMoveId = Random() % MAX_MON_MOVES;
-        
-        chosenMoveTarget = GetMoveTarget(gBattleMons[gBattlerAttacker].moves[chosenMoveId]);
-        if (gMovesInfo[gBattleMons[gBattlerAttacker].moves[chosenMoveId]].target == MOVE_TARGET_BOTH) // override to fix bug
-            chosenMoveTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-
-        *(gBattleStruct->chosenMovePositions + gBattlerAttacker) = chosenMoveId;
-        gChosenMoveByBattler[gBattlerAttacker] = gBattleMons[gBattlerAttacker].moves[*(gBattleStruct->chosenMovePositions + gBattlerAttacker)];
-        *(gBattleStruct->moveTarget + gBattlerAttacker) = chosenMoveTarget;
-        gHitMarker &= ~HITMARKER_NO_ATTACKSTRING; // bug fix, could have issues
-        gCurrentActionFuncId = B_ACTION_USE_MOVE;
-        gBattleStruct->raid.movedTwice = TRUE;
-        gCurrentTurnActionNumber--;
+    if (TryRaidBossAdditionalMove(gBattlerAttacker))
         return;
-    }
-    
+
     if (B_RECALC_TURN_AFTER_ACTIONS >= GEN_8 && !afterYouActive && !gBattleStruct->pledgeMove && !IsPursuitTargetSet())
     {
         // i starts at `gCurrentTurnActionNumber` because we don't want to recalculate turn order for mon that have already
