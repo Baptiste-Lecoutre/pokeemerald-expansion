@@ -20,6 +20,7 @@
 #include "script.h"
 #include "sound.h"
 #include "sprite.h"
+#include "constants/abilities.h"
 #include "constants/battle_raid.h"
 #include "constants/battle_string_ids.h"
 #include "constants/daycare.h"
@@ -523,8 +524,8 @@ bool32 InitCustomRaidData(void)
 
     if (item != ITEM_NONE)
         SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, &item);
-    if (teraType != TYPE_NONE)
 
+    if (teraType != TYPE_NONE)
         SetMonData(&gEnemyParty[0], MON_DATA_TERA_TYPE, &teraType);
 
     if (gSpeciesInfo[species].isGigantamax)
@@ -747,6 +748,19 @@ bool8 DoesRaidPreventMove(u16 move)
     return FALSE;
 }
 
+void ClearTurnRaidValues(void)
+{
+    u32 battler;
+
+    for (battler = 0; battler < MAX_BATTLERS_COUNT; battler++)
+    {
+        gBattleStruct->raid.boss[battler].movedTwice = FALSE;
+        gBattleStruct->raid.boss[battler].statIncreased = FALSE;
+        gBattleStruct->raid.boss[battler].usedShockwave = FALSE;
+    }
+}
+
+//////////////////////////////////////////////////////////// RAID REPEATED MOVES FUNCTIONS //////////////////////////////////////////////////////
 u8 GetRaidRepeatedAttackChance(void)
 {
 	u8 numStars = gRaidData.rank;
@@ -763,7 +777,8 @@ u8 GetRaidRepeatedAttackChance(void)
 	}
 }
 
-u8 GetRaidShockwaveChance(void) // to be adjusted
+//////////////////////////////////////////////////////////// RAID SHOCKWAVE FUNCTIONS //////////////////////////////////////////////////////
+u32 GetRaidShockwaveChance(void) // to be adjusted
 {
     if (gDisableStructs[GetRaidBossBattler()].isFirstTurn)
 		return 0; //Don't use first attack with this
@@ -800,6 +815,144 @@ u32 GetRaidShockwaveNum(void)
     return 0;
 }
 
+bool32 TryRaidShockwave(void)
+{
+    u32 battler;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
+        return FALSE;
+
+    for (battler = 0; battler < MAX_BATTLERS_COUNT; battler++)
+    {
+        if (!IsRaidBoss(battler))
+            continue;
+        
+        if (gBattleStruct->raid.boss[battler].usedShockwave)
+            continue;
+
+        if (Random() % 100 < GetRaidShockwaveChance())
+        {
+            u32 raidShockwaveNum = GetRaidShockwaveNum();
+            gBattlerAttacker = battler;
+            gBattleStruct->raid.boss[battler].usedShockwave = TRUE;
+
+            switch (gRaidTypes[gRaidData.raidType].shockwave)
+            {
+            default:
+            case RAID_SHOCKWAVE_NONE:
+                continue;
+            case RAID_SHOCKWAVE_MAX:
+                if (raidShockwaveNum == 1)
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED; // Use the same number for both multistring chooser and multiuse state
+                }
+                else
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
+                }
+                BattleScriptExecute(BattleScript_RaidShockwave);
+                return TRUE;
+            case RAID_SHOCKWAVE_TERA:
+                if (raidShockwaveNum == 0)
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
+                }
+                else if (raidShockwaveNum == 2 && gBattleStruct->raid.energy && !HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
+                {
+                    gBattleStruct->raid.energy--;
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
+                }
+                else
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF;
+                }
+                BattleScriptExecute(BattleScript_RaidShockwave);
+                return TRUE;
+            case RAID_SHOCKWAVE_MEGA:
+                if (raidShockwaveNum == 1)
+                {
+                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
+                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
+                    BattleScriptExecute(BattleScript_RaidShockwave);
+                    return TRUE;
+                }
+                else
+                {
+                    gBattleStruct->gimmick.activated[battler][GIMMICK_Z_MOVE] = FALSE; // maybe I should restore mega as the active gimmick at the end of the turn
+                    gBattleStruct->gimmick.usableGimmick[battler] = GIMMICK_Z_MOVE;
+                    gBattleStruct->gimmick.toActivate |= 1u << battler;
+                    continue;
+                }
+            } // end of switch
+        }
+    }
+    return FALSE;
+}
+
+void BS_DoRaidShockwave(void)
+{
+    NATIVE_ARGS();
+    u32 i;
+
+    switch (gBattleCommunication[MULTIUSE_STATE])
+    {
+    case B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS: // use the string constants for both multistring chooser and multiuse state
+    default:
+        for (i = 0; i < gBattlersCount; i++)
+        {
+            if (IsRaidBoss(i))
+                continue;
+            if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
+            {
+                if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
+                    gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
+                gStatuses3[i] |= STATUS3_GASTRO_ACID;
+            }
+            TryResetBattlerStatChanges(i);
+        }
+        break;
+    case B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED:
+        gBattleMons[gBattlerAttacker].status2 |= STATUS2_FOCUS_ENERGY;
+        if (gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC] < MAX_STAT_STAGE)
+            gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC]++;
+        break;
+    case B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS:
+        for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
+        {
+            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] > DEFAULT_STAT_STAGE)
+                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] = DEFAULT_STAT_STAGE;
+            
+            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] > DEFAULT_STAT_STAGE)
+                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] = DEFAULT_STAT_STAGE;
+        }
+        break; // + still gotta deal with abilities
+    case B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF:
+        for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
+        {
+            if (gBattleMons[gBattlerAttacker].statStages[i] < DEFAULT_STAT_STAGE)
+                gBattleMons[gBattlerAttacker].statStages[i] = DEFAULT_STAT_STAGE;
+        }
+        break; // + still gotta deal with statuses (prlz, slp, psn, confu, frz...)
+    case B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED:
+        gBattleStruct->moveDamage[gBattlerAttacker] = -gBattleMons[gBattlerAttacker].maxHP / 4;
+
+        for (i = STAT_ATK; i < NUM_STATS; i++)
+        {
+            if (gBattleMons[gBattlerAttacker].statStages[i] > MIN_STAT_STAGE)
+                --gBattleMons[gBattlerAttacker].statStages[i];
+        }
+        break;
+    }
+
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+//////////////////////////////////////////////////////////// RAID KO STAT INCREASE FUNCTIONS //////////////////////////////////////////////////////
 u8 GetRaidBossKOStatIncrease(u8 battlerId)
 {
     u8 level = gBattleMons[battlerId].level;
@@ -817,6 +970,52 @@ u8 GetRaidBossKOStatIncrease(u8 battlerId)
     }
 }
 
+bool32 ApplyRaidBossStatIncrease(u32 faintedBattler, const u8 *nextInstr)
+{
+    u32 battler;
+    u8 statId, increase;
+
+    for (battler = 0; battler < MAX_BATTLERS_COUNT; battler++)
+    {
+        if (!IsBattlerAlive(battler) || !IsRaidBoss(battler)) // only consider alive boss
+            continue;
+        
+        if (GetBattlerSide(battler) == GetBattlerSide(faintedBattler)) // only consider opposing boss
+            continue;
+        
+        if (gCurrentMove != MOVE_STRUGGLE) // don't make a boss move twice when someone is struggling
+            gBattleStruct->raid.boss[battler].movedTwice = FALSE;
+        
+        if (gBattleStruct->raid.boss[battler].statIncreased) // if stat already increased, ignore
+            continue;
+
+        increase = GetRaidBossKOStatIncrease(battler);
+
+        if (increase)
+        {
+            if (Random() & 1)
+                statId = STAT_ATK;
+            else
+                statId = STAT_SPATK;
+
+            if (!CompareStat(battler, statId, MAX_STAT_STAGE, CMP_LESS_THAN))
+                statId = (statId == STAT_ATK) ? STAT_SPATK : STAT_ATK;
+                    
+            gBattlerAttacker = battler;
+            SET_STATCHANGER(statId, increase, GetBattlerAbility(battler) == ABILITY_CONTRARY);
+            PREPARE_STAT_BUFFER(gBattleTextBuff1, statId);
+
+            gBattleStruct->raid.boss[battler].statIncreased = TRUE;
+            BattleScriptPush(nextInstr);
+            gBattlescriptCurrInstr = BattleScript_RaidBossRaiseStat;
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+//////////////////////////////////////////////////////////// RAID SHIELD FUNCTIONS //////////////////////////////////////////////////////
 // Returns the number of shields to produce, or the amount of HP to protect.
 static u16 GetShieldAmount(void)
 {

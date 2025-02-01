@@ -3682,6 +3682,11 @@ const u8* FaintClearSetData(u32 battler)
 
     // Clear Dynamax data
     UndoDynamax(battler);
+    
+    for (i = 0; i < MAX_BATTLERS_COUNT; i++)
+    {
+        gBattleStruct->raid.boss[i].statIncreased = FALSE;
+    }
 
     return result;
 }
@@ -5502,10 +5507,8 @@ static void TurnValuesCleanUp(bool8 var0)
     if (gBattleTypeFlags & BATTLE_TYPE_RAID)
     {
         gBattleStruct->raid.movedTwice = FALSE;
-        gBattleStruct->raid.statIncreased = FALSE;
-        gBattleStruct->raid.usedShockwave = FALSE;
     }
-
+    ClearTurnRaidValues();
     ClearPursuitValues();
     ClearDamageCalcResults();
 }
@@ -5539,66 +5542,8 @@ static bool32 TryActivateGimmick(u32 battler)
 
 static bool32 TryDoGimmicksBeforeMoves(void)
 {
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID && !gBattleStruct->raid.usedShockwave && Random() % 100 < GetRaidShockwaveChance())
-    {
-        u32 raidShockwaveNum = GetRaidShockwaveNum();
-        gBattlerAttacker = GetRaidBossBattler();
-        gBattleStruct->raid.usedShockwave = TRUE;
-
-        switch (gRaidTypes[gRaidData.raidType].shockwave)
-        {
-            default:
-            case RAID_SHOCKWAVE_NONE:
-                break;
-            case RAID_SHOCKWAVE_MAX:
-                if (raidShockwaveNum == 1)
-                {
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED;
-                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED; // Use the same number for both multistring chooser and multiuse state
-                }
-                else
-                {
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
-                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS;
-                }
-                BattleScriptExecute(BattleScript_RaidShockwave);
-                return TRUE;
-            case RAID_SHOCKWAVE_TERA:
-                if (raidShockwaveNum == 0)
-                {
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
-                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS;
-                }
-                else if (raidShockwaveNum == 2 && gBattleStruct->raid.energy && !HasTrainerUsedGimmick(GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), GIMMICK_TERA))
-                {
-                    gBattleStruct->raid.energy--;
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
-                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_STOLE_CHARGE;
-                }
-                else
-                {
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF;
-                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF;
-                }
-                BattleScriptExecute(BattleScript_RaidShockwave);
-                return TRUE;
-            case RAID_SHOCKWAVE_MEGA:
-                if (raidShockwaveNum == 1)
-                {
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
-                    gBattleCommunication[MULTIUSE_STATE] = B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED;
-                    BattleScriptExecute(BattleScript_RaidShockwave);
-                    return TRUE;
-                }
-                else
-                {
-                    gBattleStruct->gimmick.activated[gBattlerAttacker][GIMMICK_Z_MOVE] = FALSE; // maybe I should restore mega as the active gimmick at the end of the turn
-                    gBattleStruct->gimmick.usableGimmick[gBattlerAttacker] = GIMMICK_Z_MOVE;
-                    gBattleStruct->gimmick.toActivate |= 1u << gBattlerAttacker;
-                    break;
-                }
-        } // end of switch
-    }
+    if (TryRaidShockwave())
+        return TRUE;
 
     if (!(gHitMarker & HITMARKER_RUN) && gBattleStruct->gimmick.toActivate)
     {

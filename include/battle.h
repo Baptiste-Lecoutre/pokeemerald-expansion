@@ -590,9 +590,10 @@ struct RaidBossData
 {
     u8 isBattlerRaidBoss:1;
     u8 usedShockwave:1;
-    u8 numberOfMovesPerTurn:2;
+    u8 movedTwice:1; // should replace this with numberOfMovesPerTurn:2;
     u8 statIncreased:1;
     u8 shield:3;
+    u8 padding:1;
     u8 shieldsRemaining;
     u8 nextShield;
     u8 shieldState;
@@ -609,9 +610,9 @@ struct RaidBattleData
     u8 shieldsRemaining;  // stores the remaining num. of unused shields
     u8 shield:3;            // stores the amount of shields in-use 
     u8 energy:2;            // stores Dynamax Energy position or Tera Orb charge
-    bool8 usedShockwave:1;// stores whether the raid boss has used its shockwave during the turn
+    bool8 unused2:1;// stores whether the raid boss has used its shockwave during the turn
     bool8 movedTwice:1;   // stores whether the raid boss has moves twice during the turn
-    bool8 statIncreased:1;// stores whether the raid boss stats have increased after fainting a mon
+    bool8 unused:1;// stores whether the raid boss stats have increased after fainting a mon
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for shield sprites
     u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
     struct RaidBossData boss[MAX_BATTLERS_COUNT];

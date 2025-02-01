@@ -4675,39 +4675,8 @@ static void Cmd_cleareffectsonfaint(void)
             MarkBattlerForControllerExec(battler);
         }
 
-        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerSide(battler) == B_SIDE_PLAYER && IsBattlerAlive(GetRaidBossBattler()))
-        {
-            if (gCurrentMove != MOVE_STRUGGLE) // don't apply repeated attack probability twice
-                gBattleStruct->raid.movedTwice = FALSE;
-
-            if (!gBattleStruct->raid.statIncreased) // always increase stats on kill
-            {
-                u8 statId, increase;
-                if (!IsRaidBoss(gBattlerAttacker))
-                    gBattlerAttacker = GetRaidBossBattler();
-                increase = GetRaidBossKOStatIncrease(gBattlerAttacker);
-
-                if (increase)
-                {
-                    if (Random() & 1)
-                        statId = STAT_ATK;
-                    else
-                        statId = STAT_SPATK;
-
-                    if (!CompareStat(gBattlerAttacker, statId, MAX_STAT_STAGE, CMP_LESS_THAN))
-                        statId = (statId == STAT_ATK) ? STAT_SPATK : STAT_ATK;
-                    
-                    SET_STATCHANGER(statId, increase, GetBattlerAbility(gBattlerAttacker) == ABILITY_CONTRARY);
-                    PREPARE_STAT_BUFFER(gBattleTextBuff1, statId);
-
-                    gBattleStruct->raid.statIncreased = TRUE;
-                    BattleScriptPush(cmd->nextInstr);
-                    gBattlescriptCurrInstr = BattleScript_RaidBossRaiseStat;
-                    return;
-                }
-            }
-        }
-        gBattleStruct->raid.statIncreased = FALSE;
+        if (ApplyRaidBossStatIncrease(battler, cmd->nextInstr))
+            return;
 
         clearDataResult = FaintClearSetData(battler); // Effects like attractions, trapping, etc.
 
@@ -18292,64 +18261,6 @@ void BS_TryRevivalBlessing(void)
         BtlController_EmitChoosePokemon(gBattlerAttacker, BUFFER_A, PARTY_ACTION_CHOOSE_FAINTED_MON, PARTY_SIZE, ABILITY_NONE, gBattleStruct->battlerPartyOrders[gBattlerAttacker]);
         MarkBattlerForControllerExec(gBattlerAttacker);
     }
-}
-
-void BS_DoRaidShockwave(void)
-{
-    NATIVE_ARGS();
-    u32 i;
-
-    switch (gBattleCommunication[MULTIUSE_STATE])
-    {
-    case B_MSG_SHOCKWAVE_MAX_NULLIFIED_OTHERS: // use the string constants for both multistring chooser and multiuse state
-    default:
-        for (i = 0; i < gBattlersCount; i++)
-        {
-            if (IsRaidBoss(i))
-                continue;
-            if (!gAbilitiesInfo[gBattleMons[i].ability].cantBeSuppressed)
-            {
-                if (gBattleMons[i].ability == ABILITY_NEUTRALIZING_GAS)
-                    gSpecialStatuses[i].neutralizingGasRemoved = TRUE;
-                gStatuses3[i] |= STATUS3_GASTRO_ACID;
-            }
-            TryResetBattlerStatChanges(i);
-        }
-        break;
-    case B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED:
-        gBattleMons[gBattlerAttacker].status2 |= STATUS2_FOCUS_ENERGY;
-        if (gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC] < MAX_STAT_STAGE)
-            gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC]++;
-        break;
-    case B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS:
-        for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
-        {
-            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] > DEFAULT_STAT_STAGE)
-                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] = DEFAULT_STAT_STAGE;
-            
-            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] > DEFAULT_STAT_STAGE)
-                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] = DEFAULT_STAT_STAGE;
-        }
-        break; // + still gotta deal with abilities
-    case B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF:
-        for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
-        {
-            if (gBattleMons[gBattlerAttacker].statStages[i] < DEFAULT_STAT_STAGE)
-                gBattleMons[gBattlerAttacker].statStages[i] = DEFAULT_STAT_STAGE;
-        }
-        break;
-    case B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED:
-        gBattleStruct->moveDamage[gBattlerAttacker] = -gBattleMons[gBattlerAttacker].maxHP / 4;
-
-        for (i = STAT_ATK; i < NUM_STATS; i++)
-        {
-            if (gBattleMons[gBattlerAttacker].statStages[i] > MIN_STAT_STAGE)
-                --gBattleMons[gBattlerAttacker].statStages[i];
-        }
-        break;
-    }
-
-    gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
 void BS_TryChooseMonToSendToPC(void)
