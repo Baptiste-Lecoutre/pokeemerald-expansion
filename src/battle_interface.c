@@ -745,12 +745,12 @@ u8 CreateBattlerHealthboxSprites(u8 battlerId)
 
     CreateIndicatorSprite(battlerId);
 
-    if (IsRaidBoss(battlerId) && gBattleStruct->raid.shield > 0)
+    if (IsRaidBoss(battlerId) && gBattleStruct->raid.boss[battlerId].shield > 0)
     {
-        gBattleStruct->raid.state |= RAID_RESHOW_SHIELD;
+        gBattleStruct->raid.boss[battlerId].shieldState |= RAID_RESHOW_SHIELD;
         UpdateRaidShield();
     }
-    if (IsRaidBoss(battlerId) && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+    if (IsRaidBoss(battlerId) && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)) // à modifier
         CreateRaidTimerSprites();
 
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;

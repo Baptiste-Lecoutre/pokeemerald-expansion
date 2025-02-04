@@ -1664,13 +1664,7 @@ static void OpenPartyMenuToChooseMon(u32 battler)
     {
         u8 caseId;
 
-        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
-        {
-            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
-            UpdateRaidShield();
-        }
-        if ((gBattleTypeFlags & BATTLE_TYPE_RAID))
-            DestroyRaidTimerSprites();
+        HideRaidAdditionalSprites();
 
         gBattlerControllerFuncs[battler] = WaitForMonSelection;
         caseId = gTasks[gBattleControllerData[battler]].data[0];
@@ -1702,13 +1696,7 @@ static void OpenBagAndChooseItem(u32 battler)
     {
         gBattlerControllerFuncs[battler] = CompleteWhenChoseItem;
 
-        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
-        {
-            gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
-            UpdateRaidShield();
-        }
-        if ((gBattleTypeFlags & BATTLE_TYPE_RAID))
-            DestroyRaidTimerSprites();
+        HideRaidAdditionalSprites();
 
         ReshowBattleScreenDummy();
         FreeAllWindowBuffers();
@@ -2558,13 +2546,7 @@ static void PlayerHandleBattleDebug(u32 battler)
 {
     BeginNormalPaletteFade(-1, 0, 0, 0x10, 0);
 
-    if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && gBattleStruct->raid.shield > 0)
-    {
-        gBattleStruct->raid.state |= RAID_HIDE_SHIELD;
-        UpdateRaidShield();
-    }
-    if ((gBattleTypeFlags & BATTLE_TYPE_RAID))
-            DestroyRaidTimerSprites();
+    HideRaidAdditionalSprites();
 
     SetMainCallback2(CB2_BattleDebugMenu);
     gBattlerControllerFuncs[battler] = Controller_WaitForDebug;

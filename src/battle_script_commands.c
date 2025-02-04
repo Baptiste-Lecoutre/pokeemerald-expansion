@@ -1336,7 +1336,7 @@ static void Cmd_attackcanceler(void)
     // Raid shields prevent status moves.
     if (IsRaidBoss(gBattlerTarget)
         && gBattlerAttacker != gBattlerTarget
-        && gBattleStruct->raid.shield > 0
+        && gBattleStruct->raid.boss[gBattlerTarget].shield > 0
         && GetMoveCategory(gCurrentMove) == DAMAGE_CATEGORY_STATUS)
     {
         gHitMarker |= HITMARKER_UNABLE_TO_USE_MOVE;
@@ -2281,45 +2281,45 @@ static void Cmd_adjustdamage(void)
             break;
         case RAID_SHIELD_MAX:
             // If an attack will trigger a Max Raid Boss's shield, it will not go past that threshold.
-            if (gBattleStruct->moveDamage[gBattlerTarget] > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
+            if (gBattleStruct->moveDamage[gBattlerTarget] > GetShieldDamageRequired(gBattlerTarget))
             {
-                gBattleStruct->moveDamage[gBattlerTarget] = GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP);
-                gBattleStruct->raid.state |= RAID_CREATE_SHIELD;
+                gBattleStruct->moveDamage[gBattlerTarget] = GetShieldDamageRequired(gBattlerTarget);
+                gBattleStruct->raid.boss[gBattlerTarget].shieldState |= RAID_CREATE_SHIELD;
             }
             // Max Raid shields apply a damage reduction that can fully negate damage.
-            if (!IsRaidBoss(gBattlerAttacker) && gBattleStruct->raid.shield > 0 && gBattleStruct->moveDamage[gBattlerTarget])
+            if (!IsRaidBoss(gBattlerAttacker) && gBattleStruct->raid.boss[gBattlerTarget].shield > 0 && gBattleStruct->moveDamage[gBattlerTarget])
             {
                 gBattleStruct->moveDamage[gBattlerTarget] = UQ_4_12_TO_INT((gBattleStruct->moveDamage[gBattlerTarget] * GetShieldDamageReduction()) + UQ_4_12_ROUND);
-                gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+                gBattleStruct->raid.boss[gBattlerTarget].shieldState |= RAID_BREAK_SHIELD;
             }
             break;
         case RAID_SHIELD_MEGA:
             // Mega Raid shields prevent being KO'd 
-            if (gBattleStruct->raid.shield > 0 && gBattleStruct->moveDamage[gBattlerTarget] >= gBattleMons[gBattlerTarget].hp)
+            if (gBattleStruct->raid.boss[gBattlerTarget].shield > 0 && gBattleStruct->moveDamage[gBattlerTarget] >= gBattleMons[gBattlerTarget].hp)
             {
                 gBattleStruct->moveDamage[gBattlerTarget] = gBattleMons[gBattlerTarget].hp - 1;
-                gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+                gBattleStruct->raid.boss[gBattlerTarget].shieldState |= RAID_BREAK_SHIELD;
             }
             break;
         case RAID_SHIELD_TERA:
             // If an attack will trigger a Tera Raid Boss's shield, allow to go beyond.
-            if (gBattleStruct->raid.shield == 0 && gBattleStruct->moveDamage[gBattlerTarget] > GetShieldDamageRequired(gBattleMons[gBattlerTarget].hp, gBattleMons[gBattlerTarget].maxHP))
+            if (gBattleStruct->raid.boss[gBattlerTarget].shield == 0 && gBattleStruct->moveDamage[gBattlerTarget] > GetShieldDamageRequired(gBattlerTarget))
             {
-                gBattleStruct->raid.state |= RAID_CREATE_SHIELD;
+                gBattleStruct->raid.boss[gBattlerTarget].shieldState |= RAID_CREATE_SHIELD;
             }
             // Tera Raid shields apply a damage reduction that can fully negate damage.
-            if (gBattleStruct->moveDamage[gBattlerTarget] && gBattleStruct->raid.shield > 0)
+            if (gBattleStruct->moveDamage[gBattlerTarget] && gBattleStruct->raid.boss[gBattlerTarget].shield > 0)
             {
                 gBattleStruct->moveDamage[gBattlerTarget] = UQ_4_12_TO_INT((gBattleStruct->moveDamage[gBattlerTarget] * GetShieldDamageReduction()) + UQ_4_12_ROUND);
-                if (gBattleStruct->raid.shieldedHP < gBattleStruct->moveDamage[gBattlerTarget])
+                if (gBattleStruct->raid.boss[gBattlerTarget].shieldedHP < gBattleStruct->moveDamage[gBattlerTarget])
                 {
-                    gBattleStruct->raid.shieldedHP = 0;
-                    gBattleStruct->raid.state |= RAID_BREAK_SHIELD;
+                    gBattleStruct->raid.boss[gBattlerTarget].shieldedHP = 0;
+                    gBattleStruct->raid.boss[gBattlerTarget].shieldState |= RAID_BREAK_SHIELD;
                 }
                 else
                 {
-                    gBattleStruct->raid.shieldedHP -= gBattleStruct->moveDamage[gBattlerTarget];
-                    gBattleStruct->raid.state |= RAID_UPDATE_SHIELD;
+                    gBattleStruct->raid.boss[gBattlerTarget].shieldedHP -= gBattleStruct->moveDamage[gBattlerTarget];
+                    gBattleStruct->raid.boss[gBattlerTarget].shieldState |= RAID_UPDATE_SHIELD;
                 }
             }
             break;
@@ -3299,7 +3299,7 @@ void SetMoveEffect(bool32 primary, bool32 certain)
         INCREMENT_RESET_RETURN
     
     // Raid shields prevent secondary move effects.
-    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.shield > 0 && affectsUser != MOVE_EFFECT_AFFECTS_USER)
+    if (IsRaidBoss(gBattlerTarget) && gBattleStruct->raid.boss[gBattlerTarget].shield > 0 && affectsUser != MOVE_EFFECT_AFFECTS_USER)
         INCREMENT_RESET_RETURN
 
     if (gBattleScripting.moveEffect <= PRIMARY_STATUS_MOVE_EFFECT) // status change

@@ -46,15 +46,20 @@ bool32 ShouldMoveDynamaxEnergy(void);
 bool32 HandleTeraOrbCharge(void);
 bool32 DoesRaidPreventMove(u16 move);
 void ClearTurnRaidValues(void);
+
 u32 GetRaidRepeatedAttackChance(void);
 bool32 TryRaidBossAdditionalMove(u32 battler);
+
 u32 GetRaidShockwaveChance(void);
 u32 GetRaidShockwaveNum(void);
 bool32 TryRaidShockwave(void);
+
 u32 GetRaidBossKOStatIncrease(u8 battlerId);
 bool32 ApplyRaidBossStatIncrease(u32 faintedBattler, const u8 *nextInstr);
+
 bool32 UpdateRaidShield(void);
-u16 GetShieldDamageRequired(u16 hp, u16 maxHP);
+void HideRaidAdditionalSprites(void);
+u16 GetShieldDamageRequired(u32 battler);
 u16 GetShieldDamageReduction(void);
 void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible);
 void CreateRaidTimerSprites(void);

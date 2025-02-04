@@ -64,29 +64,6 @@ const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
     },
 };
 
-// Rank-based HP Multipliers
-static const u16 sGen8RaidHPMultipliers[] = {
-    [NO_RAID]     = UQ_4_12(1.0),
-    [RAID_RANK_1] = UQ_4_12(1.4),
-    [RAID_RANK_2] = UQ_4_12(1.6),
-    [RAID_RANK_3] = UQ_4_12(1.9),
-    [RAID_RANK_4] = UQ_4_12(2.5),
-    [RAID_RANK_5] = UQ_4_12(3.0),
-    [RAID_RANK_6] = UQ_4_12(3.0),
-    [RAID_RANK_7] = UQ_4_12(3.0),
-};
-
-static const u16 sGen9RaidHPMultipliers[] = { // should bave been UQ_4_12() as well, but it's limited to 16...
-    [NO_RAID]     = 1,
-    [RAID_RANK_1] = 5,
-    [RAID_RANK_2] = 5,
-    [RAID_RANK_3] = 8,
-    [RAID_RANK_4] = 12,
-    [RAID_RANK_5] = 20,
-    [RAID_RANK_6] = 25,
-    [RAID_RANK_7] = 30,
-};
-
 const u8 gRaidBattleStarsByBadges[][2] =
 {
 	[0] = {NO_RAID,         NO_RAID},
@@ -111,14 +88,6 @@ const u8 gRaidBattleLevelRanges[MAX_RAID_RANK + 1][2] =
 	[RAID_RANK_5] = {60, 65},
 	[RAID_RANK_6] = {75, 90},
     [RAID_RANK_7] = {90, 100},
-};
-
-const u8 gRaidShockwaveChance[NUM_RAID_SHOCKWAVE][MAX_RAID_RANK + 1] = 
-{
-    [RAID_SHOCKWAVE_NONE] = {0, 0, 0, 0, 0, 0, 0, 0},
-    [RAID_SHOCKWAVE_MAX] = {0, 0, 0, 10, 15, 20, 25, 30},
-    [RAID_SHOCKWAVE_TERA] = {0, 0, 0, 10, 15, 20, 25, 30},
-    [RAID_SHOCKWAVE_MEGA] = {0, 0, 0, 5, 10, 15, 20, 25},
 };
 
 // The percent of maxHPs the tera shield protects
@@ -361,11 +330,11 @@ EWRAM_DATA struct RaidData gRaidData = {0};
 
 // forward declarations
 static u8 GetRaidShieldThresholdTotalNumber(void);
-static u16 GetNextShieldThreshold(void);
-static u16 GetShieldAmount(void);
-static u32 CreateRaidBarrierSprite(u8 index);
-static void CreateAllRaidBarrierSprites(void);
-static void DestroyRaidBarrierSprite(u8 index);
+static u16 GetNextShieldThreshold(u32 battler);
+static u16 GetShieldAmount(u32 battler);
+static u32 CreateRaidBarrierSprite(u32 battler, u32 index);
+static void CreateAllRaidBarrierSprites(u32 battler);
+static void DestroyRaidBarrierSprite(u32 battler, u32 index);
 u32 GetRaidRandomNumber(void);
 
 // Sets the data for the Raid being loaded from the map information.
@@ -546,9 +515,9 @@ void InitRaidBattleData(void)
     u32 i;
     u32 raidBossBattler = GetRaidBossBattler();
 
-    gBattleStruct->raid.shieldsRemaining = GetRaidShieldThresholdTotalNumber();
-    gBattleStruct->raid.nextShield = GetNextShieldThreshold();
-    gBattleStruct->raid.shield = 0;
+    gBattleStruct->raid.boss[raidBossBattler].shieldsRemaining = GetRaidShieldThresholdTotalNumber();
+    gBattleStruct->raid.boss[raidBossBattler].nextShield = GetNextShieldThreshold(raidBossBattler);
+    gBattleStruct->raid.boss[raidBossBattler].shield = 0;
     gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
 	
     if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
@@ -558,7 +527,7 @@ void InitRaidBattleData(void)
 
     // Zeroes sprite IDs for Gen 8-style shield.
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
-        gBattleStruct->raid.barrierSpriteIds[i] = MAX_SPRITES;
+        gBattleStruct->raid.boss[raidBossBattler].barrierSpriteIds[i] = MAX_SPRITES;
     
     for (i = 0; i < 2; i++)
         gBattleStruct->raid.timerSpriteIds[i] = MAX_SPRITES;
@@ -568,8 +537,8 @@ void InitRaidBattleData(void)
     // Mega Raids start off with a shield at the beginning.
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
-        gBattleStruct->raid.shield = GetShieldAmount();
-        CreateAllRaidBarrierSprites();
+        gBattleStruct->raid.boss[raidBossBattler].shield = GetShieldAmount(raidBossBattler);
+        CreateAllRaidBarrierSprites(raidBossBattler);
         RaidBarrier_SetVisibilities(gHealthboxSpriteIds[raidBossBattler], TRUE);
 
         if (gBattleMons[raidBossBattler].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
@@ -603,6 +572,29 @@ u32 GetRaidBattleTransition(void)
     else
         return B_TRANSITION_MAX_RAID;
 }
+
+// Rank-based HP Multipliers
+static const u16 sGen8RaidHPMultipliers[] = {
+    [NO_RAID]     = UQ_4_12(1.0),
+    [RAID_RANK_1] = UQ_4_12(1.4),
+    [RAID_RANK_2] = UQ_4_12(1.6),
+    [RAID_RANK_3] = UQ_4_12(1.9),
+    [RAID_RANK_4] = UQ_4_12(2.5),
+    [RAID_RANK_5] = UQ_4_12(3.0),
+    [RAID_RANK_6] = UQ_4_12(3.0),
+    [RAID_RANK_7] = UQ_4_12(3.0),
+};
+
+static const u16 sGen9RaidHPMultipliers[] = { // should bave been UQ_4_12() as well, but it's limited to 16...
+    [NO_RAID]     = 1,
+    [RAID_RANK_1] = 5,
+    [RAID_RANK_2] = 5,
+    [RAID_RANK_3] = 8,
+    [RAID_RANK_4] = 12,
+    [RAID_RANK_5] = 20,
+    [RAID_RANK_6] = 25,
+    [RAID_RANK_7] = 30,
+};
 
 // Applies the HP multiplier for Raid Bosses.
 // Ideally, I should have used UQ_4_12 all the way, but the possible values are to low for tera multipliers (limited to 16).
@@ -818,6 +810,14 @@ bool32 TryRaidBossAdditionalMove(u32 battler)
 }
 
 //////////////////////////////////////////////////////////// RAID SHOCKWAVE FUNCTIONS //////////////////////////////////////////////////////
+static const u8 gRaidShockwaveChance[NUM_RAID_SHOCKWAVE][MAX_RAID_RANK + 1] = 
+{
+    [RAID_SHOCKWAVE_NONE] = {0, 0, 0, 0, 0, 0, 0, 0},
+    [RAID_SHOCKWAVE_MAX] = {0, 0, 0, 10, 15, 20, 25, 30},
+    [RAID_SHOCKWAVE_TERA] = {0, 0, 0, 10, 15, 20, 25, 30},
+    [RAID_SHOCKWAVE_MEGA] = {0, 0, 0, 5, 10, 15, 20, 25},
+};
+
 u32 GetRaidShockwaveChance(void) // to be adjusted
 {
     if (gDisableStructs[GetRaidBossBattler()].isFirstTurn)
@@ -1057,9 +1057,9 @@ bool32 ApplyRaidBossStatIncrease(u32 faintedBattler, const u8 *nextInstr)
 
 //////////////////////////////////////////////////////////// RAID SHIELD FUNCTIONS //////////////////////////////////////////////////////
 // Returns the number of shields to produce, or the amount of HP to protect.
-static u16 GetShieldAmount(void)
+static u16 GetShieldAmount(u32 battler)
 {
-    u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES);
+    u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES); // à adapter
     u8 hp = gSpeciesInfo[species].baseHP;
     u8 def = gSpeciesInfo[species].baseDefense;
     u8 spDef = gSpeciesInfo[species].baseSpDefense;
@@ -1132,10 +1132,10 @@ static u8 GetRaidShieldThresholdTotalNumber(void)
 }
 
 // returns the next shield threshold in health percents
-static u16 GetNextShieldThreshold(void)
+static u16 GetNextShieldThreshold(u32 battler)
 {
     u8 total = GetRaidShieldThresholdTotalNumber();
-    u8 remaining = gBattleStruct->raid.shieldsRemaining;
+    u8 remaining = gBattleStruct->raid.boss[battler].shieldsRemaining;
 
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
     {
@@ -1156,138 +1156,116 @@ u16 GetTeraRaidShieldProtectedHP(void)
 bool32 UpdateRaidShield(void)
 {
     bool32 retVal = FALSE;
-    u32 battler = GetRaidBossBattler();
-    if (gBattleStruct->raid.state & RAID_CREATE_SHIELD)
+    u32 battler;// = GetRaidBossBattler();
+    for (battler = 0; battler < MAX_BATTLERS_COUNT; battler++)
     {
-        gBattleStruct->raid.state &= ~RAID_CREATE_SHIELD;
+        if (!IsRaidBoss(battler) || !IsBattlerAlive(battler))
+            continue;
+
+    if (gBattleStruct->raid.boss[battler].shieldState & RAID_CREATE_SHIELD)
+    {
+        gBattleStruct->raid.boss[battler].shieldState &= ~RAID_CREATE_SHIELD;
         gBattlerTarget = battler;
-        gBattleStruct->raid.shieldsRemaining--;
+        gBattleStruct->raid.boss[battler].shieldsRemaining--;
 
         // Set up shield data.
-        gBattleStruct->raid.shield = GetShieldAmount();
-        gBattleStruct->raid.nextShield = GetNextShieldThreshold();
+        gBattleStruct->raid.boss[battler].shield = GetShieldAmount(battler);
+        gBattleStruct->raid.boss[battler].nextShield = GetNextShieldThreshold(battler);
     
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
-            gBattleStruct->raid.shieldedHP = GetTeraRaidShieldProtectedHP();//20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
+            gBattleStruct->raid.boss[battler].shieldedHP = GetTeraRaidShieldProtectedHP();//20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
 
-        /*if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)*/
         if (gRaidTypes[gRaidData.raidType].shield != RAID_SHIELD_NONE)
-            CreateAllRaidBarrierSprites();
+            CreateAllRaidBarrierSprites(battler);
         
         // Play animation and message.
         BattleScriptPushCursor();
         gBattlescriptCurrInstr = BattleScript_RaidShieldAppeared;
         retVal = TRUE;
     }
-    if (gBattleStruct->raid.state & RAID_BREAK_SHIELD && gBattleStruct->moveDamage[battler] > 0)
+
+    if (gBattleStruct->raid.boss[battler].shieldState & RAID_BREAK_SHIELD && gBattleStruct->moveDamage[battler] > 0)
     {
-        gBattleStruct->raid.state &= ~RAID_BREAK_SHIELD;
+        gBattleStruct->raid.boss[battler].shieldState &= ~RAID_BREAK_SHIELD;
         gBattlerTarget = battler;
         // Destroy an extra barrier with a Max Move.
         // TODO: Tera STAB moves will probably break 2 barriers, too.
-        if (IsZMove(gLastUsedMove) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 2)
+        if (IsZMove(gLastUsedMove) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.boss[battler].shield > 2)
         {
-            gBattleStruct->raid.shield--;
-            DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
+            gBattleStruct->raid.boss[battler].shield--;
+            DestroyRaidBarrierSprite(battler, gBattleStruct->raid.boss[battler].shield);
         }
-        if ((IsMaxMove(gLastUsedMove) || IsZMove(gLastUsedMove)) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.shield > 1)
+        if ((IsMaxMove(gLastUsedMove) || IsZMove(gLastUsedMove)) && gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX && gBattleStruct->raid.boss[battler].shield > 1)
         {
-            gBattleStruct->raid.shield--;
-            DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
+            gBattleStruct->raid.boss[battler].shield--;
+            DestroyRaidBarrierSprite(battler, gBattleStruct->raid.boss[battler].shield);
         }
-        if (gBattleStruct->raid.shield > 0)
+        if (gBattleStruct->raid.boss[battler].shield > 0)
         {
-            gBattleStruct->raid.shield--;
-            DestroyRaidBarrierSprite(gBattleStruct->raid.shield);
+            gBattleStruct->raid.boss[battler].shield--;
+            DestroyRaidBarrierSprite(battler, gBattleStruct->raid.boss[battler].shield);
         }
 
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
         {
             u32 i;
-            u32 hpGain = gBattleMons[gBattlerTarget].maxHP - gBattleMons[gBattlerTarget].hp;
-            hpGain = hpGain * (gBattleStruct->raid.shield + 1) / (GetShieldAmount() + 1);
-            gBattleStruct->moveDamage[gBattlerTarget] = -hpGain;
+            u32 hpGain = gBattleMons[battler].maxHP - gBattleMons[battler].hp;
+            hpGain = hpGain * (gBattleStruct->raid.boss[battler].shield + 1) / (GetShieldAmount(battler) + 1);
+            gBattleStruct->moveDamage[battler] = -hpGain;
 
-            /*if (gRaidData.rank > RAID_RANK_5)
-            {
-                for (i = STAT_ATK; i < NUM_STATS; i++)
-                {
-                    if (gBattleMons[gBattlerTarget].statStages[i] < MAX_STAT_STAGE)
-                        ++gBattleMons[gBattlerTarget].statStages[i];
-                }
-            }
-            else if (gRaidData.rank > RAID_RANK_3)
-            {
-                if (gBattleMons[gBattlerTarget].statStages[STAT_DEF] < MAX_STAT_STAGE)
-                    ++gBattleMons[gBattlerTarget].statStages[STAT_DEF];
-                if (gBattleMons[gBattlerTarget].statStages[STAT_SPDEF] < MAX_STAT_STAGE)
-                    ++gBattleMons[gBattlerTarget].statStages[STAT_SPDEF];
-            }*/
-            // Proposal instead of the previous cases
             for (i = 0; i < gRaidData.rank / 2; i++)
             {
                 u32 statIdx = Random() % (NUM_STATS - STAT_ATK) + STAT_ATK;
-                if (gBattleMons[gBattlerTarget].statStages[statIdx] < MAX_STAT_STAGE)
-                    ++gBattleMons[gBattlerTarget].statStages[statIdx];
+                if (gBattleMons[battler].statStages[statIdx] < MAX_STAT_STAGE)
+                    ++gBattleMons[battler].statStages[statIdx];
             }
             gBattleCommunication[MULTIUSE_STATE] = RAID_SHIELD_MEGA;
         }
 
         if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA) // breaking tera shield incapacitate the raid boss for the next turn
         {
-            gBattleMons[gBattlerTarget].status2 |= STATUS2_RECHARGE;
-            gDisableStructs[gBattlerTarget].rechargeTimer = 2;
+            gBattleMons[battler].status2 |= STATUS2_RECHARGE;
+            gDisableStructs[battler].rechargeTimer = 2;
             gBattleCommunication[MULTIUSE_STATE] = RAID_SHIELD_TERA;
         }
 
         BattleScriptPushCursor();
-        if (gBattleStruct->raid.shield == 0)
+        if (gBattleStruct->raid.boss[battler].shield == 0)
             gBattlescriptCurrInstr = BattleScript_RaidShieldDisappeared;
         else
             gBattlescriptCurrInstr = BattleScript_RaidBarrierBroken;
         retVal = TRUE;
     }
-    if (gBattleStruct->raid.state & RAID_HIDE_SHIELD && gBattleStruct->raid.shield > 0)
+
+    if (gBattleStruct->raid.boss[battler].shieldState & RAID_HIDE_SHIELD && gBattleStruct->raid.boss[battler].shield > 0)
     {
         u32 i;
-        gBattleStruct->raid.state &= ~RAID_HIDE_SHIELD;
-        for (i = 0; i < gBattleStruct->raid.shield; i++)
-            DestroyRaidBarrierSprite(i);
-        retVal = TRUE;
-    }
-    if (gBattleStruct->raid.state & RAID_RESHOW_SHIELD)
-    {
-        gBattleStruct->raid.state &= ~RAID_RESHOW_SHIELD;
-        /*if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)*/
-        if (gRaidTypes[gRaidData.raidType].shield != RAID_SHIELD_NONE)
-            CreateAllRaidBarrierSprites();
+        gBattleStruct->raid.boss[battler].shieldState &= ~RAID_HIDE_SHIELD;
+        for (i = 0; i < gBattleStruct->raid.boss[battler].shield; i++)
+            DestroyRaidBarrierSprite(battler, i);
         retVal = TRUE;
     }
 
-    /*if (gBattleStruct->raid.state & RAID_UPDATE_SHIELD)
+    if (gBattleStruct->raid.boss[battler].shieldState & RAID_RESHOW_SHIELD)
     {
-        u32 i;
-        gBattleStruct->raid.state &= ~RAID_UPDATE_SHIELD;
-        for (i = 0; i < gBattleStruct->raid.shield; i++)
-            DestroyRaidBarrierSprite(i);
-        if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MAX
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA
-            || gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
-            CreateAllRaidBarrierSprites();
+        gBattleStruct->raid.boss[battler].shieldState &= ~RAID_RESHOW_SHIELD;
+        if (gRaidTypes[gRaidData.raidType].shield != RAID_SHIELD_NONE)
+            CreateAllRaidBarrierSprites(battler);
         retVal = TRUE;
-    }*/
+    }
+
+    }
+
     return retVal;
 }
 
 // Returns the amount of damage required to make a Raid Boss produce a shield.
-u16 GetShieldDamageRequired(u16 hp, u16 maxHP)
+u16 GetShieldDamageRequired(u32 battler)
 {
-    u16 threshold = (gBattleStruct->raid.nextShield * maxHP) / 100;
-    if (gBattleStruct->raid.nextShield != 0 && hp > threshold)
+    u16 hp = gBattleMons[battler].hp;
+    u16 maxHP = gBattleMons[battler].maxHP;
+    u16 threshold = (gBattleStruct->raid.boss[battler].nextShield * maxHP) / 100;
+    if (gBattleStruct->raid.boss[battler].nextShield != 0 && hp > threshold)
         return hp - threshold;
     else
         return 0xFFFF; // don't make a shield
@@ -1497,10 +1475,10 @@ static inline void WritePixel(u8 *dst, u32 x, u32 y, u32 value)
         dst[PIXEL_COORDS_TO_OFFSET(x, y)] |= (value);
     }
 }
-static void FillTeraBarrierBar(u8 *dst)
+static void FillTeraBarrierBar(u32 battler, u8 *dst)
 {
     u32 i;
-    for (i = 1; i < 31 * gBattleStruct->raid.shieldedHP / GetTeraRaidShieldProtectedHP(); i++)
+    for (i = 1; i < 31 * gBattleStruct->raid.boss[battler].shieldedHP / GetTeraRaidShieldProtectedHP(); i++)
     {
         WritePixel(dst, i, 9, (i == 1 || i == 30 ) ? 15 : 11);
         WritePixel(dst, i, 10, (i == 1 || i == 30 ) ? 15 : 11);
@@ -1508,14 +1486,13 @@ static void FillTeraBarrierBar(u8 *dst)
     }
 }
 
-static u32 CreateRaidBarrierSprite(u8 index)
+static u32 CreateRaidBarrierSprite(u32 battler, u32 index)
 {
     u32 spriteId;
-    u32 raidBossBattler = GetRaidBossBattler();
     s16 x, y;
-    u16 species = gBattleMons[raidBossBattler].species;
+    u16 species = gBattleMons[battler].species;
 
-    GetBattlerHealthboxCoords(raidBossBattler, &x, &y);
+    GetBattlerHealthboxCoords(battler, &x, &y);
 
     if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_MEGA)
     {
@@ -1541,7 +1518,7 @@ static u32 CreateRaidBarrierSprite(u8 index)
         struct SpriteSheet sheet = {gfx, 16*32, TAG_RAID_BARRIER_TILE};
         
         memcpy(gfx, sTeraRaidBarrierGfx, sizeof(sTeraRaidBarrierGfx));
-        FillTeraBarrierBar(gfx);
+        FillTeraBarrierBar(battler, gfx);
         x += sTeraBarrierPosition[0] - (index * 31);
         y += sTeraBarrierPosition[1];
 
@@ -1561,18 +1538,18 @@ static u32 CreateRaidBarrierSprite(u8 index)
         spriteId = CreateSprite(&sSpriteTemplate_MaxRaidBarrier, x, y, 0);
     }
 
-    gSprites[spriteId].tBattler = raidBossBattler;
+    gSprites[spriteId].tBattler = battler;
     return spriteId;
 }
 
 // Draws all Raid barriers onto the Raid Boss's healthbox.
-static void CreateAllRaidBarrierSprites(void)
+static void CreateAllRaidBarrierSprites(u32 battler)
 {
     u8 i;
-    for (i = 0; i < gBattleStruct->raid.shield; i++)
+    for (i = 0; i < gBattleStruct->raid.boss[battler].shield; i++)
     {
-        if (gBattleStruct->raid.barrierSpriteIds[i] == MAX_SPRITES)
-            gBattleStruct->raid.barrierSpriteIds[i] = CreateRaidBarrierSprite(i);
+        if (gBattleStruct->raid.boss[battler].barrierSpriteIds[i] == MAX_SPRITES)
+            gBattleStruct->raid.boss[battler].barrierSpriteIds[i] = CreateRaidBarrierSprite(battler, i);
         
         /*if (gRaidTypes[gRaidData.raidType].shield == RAID_SHIELD_TERA)
             break;*/
@@ -1580,12 +1557,12 @@ static void CreateAllRaidBarrierSprites(void)
 }
 
 // Destroys one Raid barrier sprite.
-static void DestroyRaidBarrierSprite(u8 index)
+static void DestroyRaidBarrierSprite(u32 battler, u32 index)
 {
-    if (gBattleStruct->raid.barrierSpriteIds[index] != MAX_SPRITES)
+    if (gBattleStruct->raid.boss[battler].barrierSpriteIds[index] != MAX_SPRITES)
     {
-        DestroySprite(&gSprites[gBattleStruct->raid.barrierSpriteIds[index]]);
-        gBattleStruct->raid.barrierSpriteIds[index] = MAX_SPRITES;
+        DestroySprite(&gSprites[gBattleStruct->raid.boss[battler].barrierSpriteIds[index]]);
+        gBattleStruct->raid.boss[battler].barrierSpriteIds[index] = MAX_SPRITES;
     }
 
     if (index == 0)
@@ -1596,14 +1573,34 @@ static void DestroyRaidBarrierSprite(u8 index)
     }
 }
 
+#define hMain_Battler               data[6] // from battle_interface.c
 void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible)
 {
     u32 i;
-    for (i = 0; i < gBattleStruct->raid.shield; i++)
+    u32 battler = gSprites[healthboxId].hMain_Battler;
+
+    for (i = 0; i < gBattleStruct->raid.boss[battler].shield; i++)
     {
-        if (gBattleStruct->raid.barrierSpriteIds[i] != MAX_SPRITES)
-            gSprites[gBattleStruct->raid.barrierSpriteIds[i]].invisible = invisible;
+        if (gBattleStruct->raid.boss[battler].barrierSpriteIds[i] != MAX_SPRITES)
+            gSprites[gBattleStruct->raid.boss[battler].barrierSpriteIds[i]].invisible = invisible;
     }
+}
+
+void HideRaidAdditionalSprites(void)
+{
+    u32 i;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
+        return;
+
+    for (i = 0; i < MAX_BATTLERS_COUNT; i++)
+    {
+        if (IsRaidBoss(i) && gBattleStruct->raid.boss[i].shield > 0) // nécessaire de checker le nombre de shield?
+            gBattleStruct->raid.boss[i].shieldState |= RAID_HIDE_SHIELD;
+    }
+
+    UpdateRaidShield();
+    DestroyRaidTimerSprites();
 }
 
 // Raid visual timer part

@@ -2216,18 +2216,18 @@ static void SetUpModifyArrows(struct BattleDebugMenu *data)
             data->modifyArrows.minValue = 0;
             data->modifyArrows.maxValue = 1;
             data->modifyArrows.maxDigits = 1;
-            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.nextShield;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].nextShield;
             data->modifyArrows.typeOfVal = VAL_U8;
-            data->modifyArrows.currValue = gBattleStruct->raid.nextShield;
+            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].nextShield;
         }
         else if (data->currentSecondaryListItemId == LIST_RAID_ENERGY)
         {
             data->modifyArrows.minValue = 0;
             data->modifyArrows.maxValue = 2000;
             data->modifyArrows.maxDigits = 4;
-            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.shieldedHP;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].shieldedHP;
             data->modifyArrows.typeOfVal = VAL_U16;
-            data->modifyArrows.currValue = gBattleStruct->raid.shieldedHP;
+            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].shieldedHP;
         }
         break;
     }

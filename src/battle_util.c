@@ -2264,7 +2264,7 @@ u8 DoBattlerEndTurnEffects(void)
             {
                 gBattleScripting.battler = battler;
                 gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / 16;
-                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.shield && gBattleStruct->moveDamage[battler] > gBattleMons[battler].hp)
+                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.boss[battler].shield && gBattleStruct->moveDamage[battler] > gBattleMons[battler].hp)
                     gBattleStruct->moveDamage[battler] = gBattleMons[battler].hp - 1;
                 if (gBattleStruct->moveDamage[battler] == 0)
                     gBattleStruct->moveDamage[battler] = 1;
@@ -2293,7 +2293,7 @@ u8 DoBattlerEndTurnEffects(void)
             {
                 gBattleScripting.battler = battler;
                 gBattleStruct->moveDamage[battler] = GetNonDynamaxMaxHP(battler) / 16;
-                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.shield && gBattleStruct->moveDamage[battler] > gBattleMons[battler].hp)
+                if (gBattleTypeFlags & BATTLE_TYPE_RAID && IsRaidBoss(battler) && gBattleStruct->raid.boss[battler].shield && gBattleStruct->moveDamage[battler] > gBattleMons[battler].hp)
                     gBattleStruct->moveDamage[battler] = gBattleMons[battler].hp - 1;
                 if (gBattleStruct->moveDamage[battler] == 0)
                     gBattleStruct->moveDamage[battler] = 1;
@@ -2539,7 +2539,7 @@ u8 DoBattlerEndTurnEffects(void)
 
                     if (gBattleTypeFlags & BATTLE_TYPE_RAID
                         && IsRaidBoss(battler)
-                        && gBattleStruct->raid.shield > 0
+                        && gBattleStruct->raid.boss[battler].shield > 0
                         && gBattleStruct->moveDamage[battler] >= gBattleMons[battler].hp)
                         gBattleStruct->moveDamage[battler] = gBattleMons[battler].hp - 1;
                 }
