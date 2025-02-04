@@ -1296,6 +1296,79 @@ u16 GetShieldDamageReduction(void)
     return UQ_4_12(1);
 }
 
+static void AdjustMaxRaidBossDamage(u32 attacker, u32 target)
+{
+    // If an attack will trigger a Max Raid Boss's shield, it will not go past that threshold.
+    if (gBattleStruct->moveDamage[target] > GetShieldDamageRequired(target))
+    {
+        gBattleStruct->moveDamage[target] = GetShieldDamageRequired(target);
+        gBattleStruct->raid.boss[target].shieldState |= RAID_CREATE_SHIELD;
+    }
+    // Max Raid shields apply a damage reduction that can fully negate damage.
+    if (!IsRaidBoss(attacker) && gBattleStruct->raid.boss[target].shield > 0 && gBattleStruct->moveDamage[target])
+    {
+        gBattleStruct->moveDamage[target] = UQ_4_12_TO_INT((gBattleStruct->moveDamage[target] * GetShieldDamageReduction()) + UQ_4_12_ROUND);
+        gBattleStruct->raid.boss[target].shieldState |= RAID_BREAK_SHIELD;
+    }
+}
+
+static void AdjustMegaRaidBossDamage(u32 target)
+{
+    // Mega Raid shields prevent being KO'd 
+    if (gBattleStruct->raid.boss[target].shield > 0 && gBattleStruct->moveDamage[target] >= gBattleMons[target].hp)
+    {
+        gBattleStruct->moveDamage[target] = gBattleMons[target].hp - 1;
+        gBattleStruct->raid.boss[target].shieldState |= RAID_BREAK_SHIELD;
+    }
+}
+
+static void AdjustTeraRaidBossDamage(u32 target)
+{
+    // If an attack will trigger a Tera Raid Boss's shield, allow to go beyond.
+    if (gBattleStruct->raid.boss[target].shield == 0 && gBattleStruct->moveDamage[target] > GetShieldDamageRequired(target))
+    {
+        gBattleStruct->raid.boss[target].shieldState |= RAID_CREATE_SHIELD;
+    }
+
+    // Tera Raid shields apply a damage reduction that can fully negate damage.
+    if (gBattleStruct->moveDamage[target] && gBattleStruct->raid.boss[target].shield > 0)
+    {
+        gBattleStruct->moveDamage[target] = UQ_4_12_TO_INT((gBattleStruct->moveDamage[target] * GetShieldDamageReduction()) + UQ_4_12_ROUND);
+        if (gBattleStruct->raid.boss[target].shieldedHP < gBattleStruct->moveDamage[target])
+        {
+            gBattleStruct->raid.boss[target].shieldedHP = 0;
+            gBattleStruct->raid.boss[target].shieldState |= RAID_BREAK_SHIELD;
+        }
+        else
+        {
+            gBattleStruct->raid.boss[target].shieldedHP -= gBattleStruct->moveDamage[target];
+            gBattleStruct->raid.boss[target].shieldState |= RAID_UPDATE_SHIELD;
+        }
+    }
+}
+
+void AdjustRaidBossDamage(u32 attacker, u32 target)
+{
+    if (!IsRaidBoss(target) || !IsBattlerAlive(target))
+        return;
+
+    switch (gRaidTypes[gRaidData.raidType].shieldType)
+    {
+    default:
+    case RAID_SHIELD_NONE:
+        break;
+    case RAID_SHIELD_MAX:
+        AdjustMaxRaidBossDamage(attacker, target);
+        break;
+    case RAID_SHIELD_MEGA:
+        AdjustMegaRaidBossDamage(target);
+        break;
+    case RAID_SHIELD_TERA:
+        AdjustTeraRaidBossDamage(target);
+        break;
+    }
+}
+
 // SHIELD SPRITE DATA:
 static const u16 sMaxRaidBarrierGfx[] = INCBIN_U16("graphics/battle_interface/raid_barrier.4bpp");
 static const u16 sMaxRaidBarrierPal[] = INCBIN_U16("graphics/battle_interface/misc_indicator.gbapal");

@@ -604,16 +604,8 @@ struct RaidBossData
 
 struct RaidBattleData
 {
-    u8 state;             // stores the progress of the raid, intro and catching included
-    u16 unused8;
-    u8 unused7;        // stores the HP fraction threshold (0 to 100) that the next shield should occur
-    u8 unused6;  // stores the remaining num. of unused shields
-    u8 unused5:3;
-    u8 energy:2;            // stores Dynamax Energy position or Tera Orb charge
-    bool8 unused2:1;
-    bool8 unused3:1;
-    bool8 unused:1;
-    u8 unused4[MAX_BARRIER_COUNT];
+    u8 state; // stores the progress of the raid, intro and catching included
+    u8 energy; // stores Dynamax Energy position or Tera Orb charge
     u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
     struct RaidBossData boss[MAX_BATTLERS_COUNT];
 };

@@ -61,7 +61,9 @@ bool32 UpdateRaidShield(void);
 void HideRaidAdditionalSprites(void);
 u16 GetShieldDamageRequired(u32 battler);
 u16 GetShieldDamageReduction(void);
+void AdjustRaidBossDamage(u32 attacker, u32 target);
 void RaidBarrier_SetVisibilities(u32 healthboxId, bool32 invisible);
+
 void CreateRaidTimerSprites(void);
 void DestroyRaidTimerSprites(void);
 void RaidTimer_SetVisibilities(u32 healthboxId, bool32 invisible);

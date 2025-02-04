@@ -173,7 +173,7 @@ Debug_EventScript_Script_4::
 
 Debug_EventScript_Script_5::
 	lockall
-	preparefixedraid RAID_TYPE_TERA, RAID_RANK_5, SPECIES_SALAMENCE, 50, ITEM_SALAMENCITE, TYPE_ELECTRIC
+	preparefixedraid RAID_TYPE_MAX, RAID_RANK_5, SPECIES_SALAMENCE, 50, ITEM_SALAMENCITE, TYPE_ELECTRIC
 	special InitRaidIntro
 	waitstate
 	goto_if_ne VAR_RESULT, FALSE, Debug_DoFixedRaid
