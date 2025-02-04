@@ -2274,7 +2274,7 @@ static void Cmd_adjustdamage(void)
 
     if (IsRaidBoss(gBattlerTarget))
     {
-        switch (gRaidTypes[gRaidData.raidType].shield)
+        switch (gRaidTypes[gRaidData.raidType].shieldType)
         {
         default:
         case RAID_SHIELD_NONE:

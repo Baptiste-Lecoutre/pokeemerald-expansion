@@ -4,7 +4,7 @@
 #include "constants/battle_raid.h"
 
 struct RaidType {
-    u16 shield:4;
+    u16 shieldType:4;
     u16 shockwave:4;
     u16 rules:4;
     u16 gimmick:4;
