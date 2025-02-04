@@ -143,6 +143,9 @@ enum ScriptDebugMenu
     DEBUG_UTIL_MENU_ITEM_SCRIPT_6,
     DEBUG_UTIL_MENU_ITEM_SCRIPT_7,
     DEBUG_UTIL_MENU_ITEM_SCRIPT_8,
+    DEBUG_UTIL_MENU_ITEM_SCRIPT_9,
+    DEBUG_UTIL_MENU_ITEM_SCRIPT_10,
+    DEBUG_UTIL_MENU_ITEM_SCRIPT_11,
 };
 
 enum FlagsVarsDebugMenu
@@ -341,6 +344,9 @@ static void DebugAction_Util_Script_5(u8 taskId);
 static void DebugAction_Util_Script_6(u8 taskId);
 static void DebugAction_Util_Script_7(u8 taskId);
 static void DebugAction_Util_Script_8(u8 taskId);
+static void DebugAction_Util_Script_9(u8 taskId);
+static void DebugAction_Util_Script_10(u8 taskId);
+static void DebugAction_Util_Script_11(u8 taskId);
 
 static void DebugAction_OpenUtilitiesMenu(u8 taskId);
 static void DebugAction_OpenPCBagMenu(u8 taskId);
@@ -477,6 +483,9 @@ extern const u8 Debug_EventScript_Script_5[];
 extern const u8 Debug_EventScript_Script_6[];
 extern const u8 Debug_EventScript_Script_7[];
 extern const u8 Debug_EventScript_Script_8[];
+extern const u8 Debug_EventScript_Script_9[];
+extern const u8 Debug_EventScript_Script_10[];
+extern const u8 Debug_EventScript_Script_11[];
 extern const u8 DebugScript_DaycareMonsNotCompatible[];
 extern const u8 DebugScript_OneDaycareMons[];
 extern const u8 DebugScript_ZeroDaycareMons[];
@@ -527,6 +536,9 @@ static const u8 sDebugText_Util_Script_5[] = _("Script 5");
 static const u8 sDebugText_Util_Script_6[] = _("Script 6");
 static const u8 sDebugText_Util_Script_7[] = _("Script 7");
 static const u8 sDebugText_Util_Script_8[] = _("Script 8");
+static const u8 sDebugText_Util_Script_9[] = _("Script 9");
+static const u8 sDebugText_Util_Script_10[] = _("Script 10");
+static const u8 sDebugText_Util_Script_11[] = _("Script 11");
 // Util Menu
 static const u8 sDebugText_Util_FlyToMap[] =                 _("Fly to map…{CLEAR_TO 110}{RIGHT_ARROW}");
 static const u8 sDebugText_Util_WarpToMap[] =                _("Warp to map warp…{CLEAR_TO 110}{RIGHT_ARROW}");
@@ -787,6 +799,9 @@ static const struct ListMenuItem sDebugMenu_Items_Scripts[] =
     [DEBUG_UTIL_MENU_ITEM_SCRIPT_6] = {sDebugText_Util_Script_6, DEBUG_UTIL_MENU_ITEM_SCRIPT_6},
     [DEBUG_UTIL_MENU_ITEM_SCRIPT_7] = {sDebugText_Util_Script_7, DEBUG_UTIL_MENU_ITEM_SCRIPT_7},
     [DEBUG_UTIL_MENU_ITEM_SCRIPT_8] = {sDebugText_Util_Script_8, DEBUG_UTIL_MENU_ITEM_SCRIPT_8},
+    [DEBUG_UTIL_MENU_ITEM_SCRIPT_9] = {sDebugText_Util_Script_9, DEBUG_UTIL_MENU_ITEM_SCRIPT_9},
+    [DEBUG_UTIL_MENU_ITEM_SCRIPT_10] = {sDebugText_Util_Script_10, DEBUG_UTIL_MENU_ITEM_SCRIPT_10},
+    [DEBUG_UTIL_MENU_ITEM_SCRIPT_11] = {sDebugText_Util_Script_11, DEBUG_UTIL_MENU_ITEM_SCRIPT_11},
 };
 
 static const struct ListMenuItem sDebugMenu_Items_FlagsVars[] =
@@ -960,6 +975,9 @@ static void (*const sDebugMenu_Actions_Scripts[])(u8) =
     [DEBUG_UTIL_MENU_ITEM_SCRIPT_6] = DebugAction_Util_Script_6,
     [DEBUG_UTIL_MENU_ITEM_SCRIPT_7] = DebugAction_Util_Script_7,
     [DEBUG_UTIL_MENU_ITEM_SCRIPT_8] = DebugAction_Util_Script_8,
+    [DEBUG_UTIL_MENU_ITEM_SCRIPT_9] = DebugAction_Util_Script_9,
+    [DEBUG_UTIL_MENU_ITEM_SCRIPT_10] = DebugAction_Util_Script_10,
+    [DEBUG_UTIL_MENU_ITEM_SCRIPT_11] = DebugAction_Util_Script_11,
 };
 
 static void (*const sDebugMenu_Actions_Flags[])(u8) =
@@ -2403,6 +2421,21 @@ static void DebugAction_Util_Script_7(u8 taskId)
 static void DebugAction_Util_Script_8(u8 taskId)
 {
     Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_Script_8);
+}
+
+static void DebugAction_Util_Script_9(u8 taskId)
+{
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_Script_9);
+}
+
+static void DebugAction_Util_Script_10(u8 taskId)
+{
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_Script_10);
+}
+
+static void DebugAction_Util_Script_11(u8 taskId)
+{
+    Debug_DestroyMenu_Full_Script(taskId, Debug_EventScript_Script_11);
 }
 
 // *******************************

@@ -210,6 +210,18 @@ Debug_EventScript_Script_8::
 	release
 	end
 
+Debug_EventScript_Script_9::
+	release
+	end
+
+Debug_EventScript_Script_10::
+	release
+	end
+
+Debug_EventScript_Script_11::
+	release
+	end
+
 Debug_CheckSaveBlock::
 	callnative CheckSaveBlock1Size
 	msgbox Debug_SaveBlock1Size, MSGBOX_DEFAULT
