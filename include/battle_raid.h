@@ -36,7 +36,7 @@ extern const struct RaidPartner gRaidPartners[];
 // Functions
 bool32 InitRaidData(void);
 bool32 InitCustomRaidData(void);
-void InitRaidBattleData(void);
+void InitRaidBattleData(u32 battler);
 u32 GetRaidBossBattler(void);
 bool32 IsRaidBoss(u32 battlerId);
 u32 GetRaidBattleTransition(void);

@@ -4112,8 +4112,8 @@ static void TryDoEventsBeforeFirstTurn(void)
         // Raid Intro
         if (gBattleTypeFlags & BATTLE_TYPE_RAID && !(gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
         {
-            InitRaidBattleData();
             gBattlerAttacker = GetRaidBossBattler();
+            InitRaidBattleData(gBattlerAttacker);
             gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData.raidType].gimmick;
             gBattleCommunication[1] = gRaidTypes[gRaidData.raidType].rules;
             BattleScriptExecute(BattleScript_RaidIntro);

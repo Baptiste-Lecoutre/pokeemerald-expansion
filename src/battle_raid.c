@@ -510,14 +510,13 @@ bool32 InitCustomRaidData(void)
 }
 
 // Sets up the RaidBattleData struct in gBattleStruct, run during battle intro setup after battle transition.
-void InitRaidBattleData(void)
+void InitRaidBattleData(u32 battler)
 {
     u32 i;
-    u32 raidBossBattler = GetRaidBossBattler();
 
-    gBattleStruct->raid.boss[raidBossBattler].shieldsRemaining = GetRaidShieldThresholdTotalNumber();
-    gBattleStruct->raid.boss[raidBossBattler].nextShield = GetNextShieldThreshold(raidBossBattler);
-    gBattleStruct->raid.boss[raidBossBattler].shield = 0;
+    gBattleStruct->raid.boss[battler].shieldsRemaining = GetRaidShieldThresholdTotalNumber();
+    gBattleStruct->raid.boss[battler].nextShield = GetNextShieldThreshold(battler);
+    gBattleStruct->raid.boss[battler].shield = 0;
     gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
 	
     if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
@@ -527,7 +526,7 @@ void InitRaidBattleData(void)
 
     // Zeroes sprite IDs for Gen 8-style shield.
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
-        gBattleStruct->raid.boss[raidBossBattler].barrierSpriteIds[i] = MAX_SPRITES;
+        gBattleStruct->raid.boss[battler].barrierSpriteIds[i] = MAX_SPRITES;
     
     for (i = 0; i < 2; i++)
         gBattleStruct->raid.timerSpriteIds[i] = MAX_SPRITES;
@@ -537,16 +536,16 @@ void InitRaidBattleData(void)
     // Mega Raids start off with a shield at the beginning.
     if (gRaidTypes[gRaidData.raidType].shieldType == RAID_SHIELD_MEGA)
     {
-        gBattleStruct->raid.boss[raidBossBattler].shield = GetShieldAmount(raidBossBattler);
-        CreateAllRaidBarrierSprites(raidBossBattler);
-        RaidBarrier_SetVisibilities(gHealthboxSpriteIds[raidBossBattler], TRUE);
+        gBattleStruct->raid.boss[battler].shield = GetShieldAmount(battler);
+        CreateAllRaidBarrierSprites(battler);
+        RaidBarrier_SetVisibilities(gHealthboxSpriteIds[battler], TRUE);
 
-        if (gBattleMons[raidBossBattler].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
-            gBattleMons[raidBossBattler].moves[3] = MOVE_DRAGON_ASCENT;
+        if (gBattleMons[battler].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
+            gBattleMons[battler].moves[3] = MOVE_DRAGON_ASCENT;
     }
 
     // Update HP Multiplier.
-    RecalcBattlerStats(raidBossBattler, &gEnemyParty[0], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
+    RecalcBattlerStats(battler, &gEnemyParty[0], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
 }
 
 // return the raid boss battlerId
