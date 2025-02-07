@@ -8844,13 +8844,13 @@ bool32 IsBattlerProtected(u32 battlerAtk, u32 battlerDef, u32 move)
     bool32 isProtected = FALSE;
 
     if ((IsZMove(move) || IsMaxMove(move))
-        && (!gProtectStructs[battlerDef].maxGuarded || GetMoveMaxEffect(move) == MAX_EFFECT_BYPASS_PROTECT))
+        && (!gProtectStructs[battlerDef].maxGuarded || MoveIgnoresProtect(move)))
         isProtected = FALSE; // Z-Moves and Max Moves bypass protection (except Max Guard).
     else if (gProtectStructs[battlerDef].maxGuarded && IsMoveBlockedByMaxGuard(move))
         isProtected = TRUE;
     else if (!gProtectStructs[battlerDef].maxGuarded // Max Guard cannot be bypassed by Unseen Fist
-          && IsMoveMakingContact(move, gBattlerAttacker)
-          && GetBattlerAbility(gBattlerAttacker) == ABILITY_UNSEEN_FIST)
+          && IsMoveMakingContact(move, battlerAtk)
+          && GetBattlerAbility(battlerAtk) == ABILITY_UNSEEN_FIST)
         isProtected = FALSE;
     else if (gSideStatuses[GetBattlerSide(battlerDef)] & SIDE_STATUS_CRAFTY_SHIELD && IsBattleMoveStatus(move) && GetMoveEffect(move) != EFFECT_COACHING)
         isProtected = TRUE;
