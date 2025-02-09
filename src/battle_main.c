@@ -3371,10 +3371,7 @@ static void BattleStartClearSetData(void)
         gBattleStruct->monCausingSleepClause[B_SIDE_OPPONENT] = PARTY_SIZE;
     }
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
-    {
-        gBattleStruct->raid.boss[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)].isBattlerRaidBoss = TRUE;
-    }
+    SetRaidBossBattlers();
 }
 
 void SwitchInClearSetData(u32 battler)
@@ -5981,6 +5978,9 @@ static void HandleEndTurn_FinishBattle(void)
             gBattleMons[i].species = SPECIES_NONE;
         }
         FlagClear(B_FLAG_DYNAMAX_BATTLE);
+
+        gRaidBossBattler = 0;
+
         gBattleMainFunc = FreeResetData_ReturnToOvOrDoEvolutions;
         gCB2_AfterEvolution = BattleMainCB2;
     }

@@ -588,18 +588,17 @@ struct BattleGimmickData
 
 struct RaidBossData
 {
-    u8 isBattlerRaidBoss:1;
-    u8 usedShockwave:1; // stores whether the raid boss has used its shockwave during the turn
-    u8 movedTwice:1; // stores whether the raid boss has moves twice during the turn // should replace this with numberOfMovesPerTurn:2;
-    u8 statIncreased:1; // stores whether the raid boss stats have increased after fainting a mon
-    u8 shield:3; // stores the amount of shields in-use
-    u8 padding:1;
+    u8 isBattlerRaidBoss;
+    u8 usedShockwave; // stores whether the raid boss has used its shockwave during the turn
+    u8 movedTwice; // stores whether the raid boss has moves twice during the turn // should replace this with numberOfMovesPerTurn:2;
+    u8 statIncreased; // stores whether the raid boss stats have increased after fainting a mon
+    u8 shield; // stores the amount of shields in-use
     u8 shieldsRemaining; // stores the remaining num. of unused shields
     u8 nextShield; // stores the HP fraction threshold (0 to 100) that the next shield should occur
     u8 shieldState;
     u16 shieldedHP; // stores either num. of shields (GEN_8) or amount of HP protected (GEN_9)
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for shield sprites
-    u8 align;
+//    u8 align;
 };
 
 struct RaidBattleData

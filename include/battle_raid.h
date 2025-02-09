@@ -32,13 +32,17 @@ struct RaidPartner
 extern const struct RaidType gRaidTypes[NUM_RAID_TYPES];
 extern struct RaidData gRaidData;
 extern const struct RaidPartner gRaidPartners[];
+extern u8 gRaidBossBattler; // bitfield for raid boss POSITIONS, used to link the battlers raid boss fields to the setup scripts at the begining of the battle
 
 // Functions
 bool32 InitRaidData(void);
 bool32 InitCustomRaidData(void);
 void InitRaidBattleData(u32 battler);
+
+void SetRaidBossBattlers(void);
 u32 GetRaidBossBattler(void);
 bool32 IsRaidBoss(u32 battlerId);
+
 u32 GetRaidBattleTransition(void);
 void ApplyRaidHPMultiplier(struct Pokemon* mon);
 bool32 ShouldRaidKickPlayer(void);
@@ -50,8 +54,6 @@ void ClearTurnRaidValues(void);
 u32 GetRaidRepeatedAttackChance(void);
 bool32 TryRaidBossAdditionalMove(u32 battler);
 
-u32 GetRaidShockwaveChance(void);
-u32 GetRaidShockwaveNum(void);
 bool32 TryRaidShockwave(void);
 
 u32 GetRaidBossKOStatIncrease(u8 battlerId);

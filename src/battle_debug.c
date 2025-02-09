@@ -218,6 +218,7 @@ enum
 {
     LIST_RAID_BOSS,
     LIST_RAID_ENERGY,
+    LIST_RAID_SHIELDS,
 };
 
 enum
@@ -390,6 +391,7 @@ static const u8 sText_SeaOfFire[] = _("Sea of Fire");
 static const u8 sText_Swamp[] = _("Swamp");
 static const u8 sText_RaidBoss[] = _("Boss");
 static const u8 sText_RaidEnergy[] = _("Energy");
+static const u8 sText_RaidShields[] = _("Shields");
 static const u8 sText_CheckBadMove[] = _("Check Bad Move");
 static const u8 sText_TryToFaint[] = _("Try to Faint");
 static const u8 sText_CheckViability[] = _("Check Viability");
@@ -636,6 +638,7 @@ static const struct ListMenuItem sRaidListItems[] =
 {
     {sText_RaidBoss, LIST_RAID_BOSS},
     {sText_RaidEnergy, LIST_RAID_ENERGY},
+    {sText_RaidShields, LIST_RAID_SHIELDS},
 };
 
 static const struct ListMenuItem sAIListItems[] =
@@ -2216,18 +2219,27 @@ static void SetUpModifyArrows(struct BattleDebugMenu *data)
             data->modifyArrows.minValue = 0;
             data->modifyArrows.maxValue = 1;
             data->modifyArrows.maxDigits = 1;
-            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].nextShield;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].isBattlerRaidBoss;
             data->modifyArrows.typeOfVal = VAL_U8;
-            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].nextShield;
+            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].isBattlerRaidBoss;
         }
         else if (data->currentSecondaryListItemId == LIST_RAID_ENERGY)
         {
             data->modifyArrows.minValue = 0;
-            data->modifyArrows.maxValue = 2000;
-            data->modifyArrows.maxDigits = 4;
-            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].shieldedHP;
-            data->modifyArrows.typeOfVal = VAL_U16;
-            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].shieldedHP;
+            data->modifyArrows.maxValue = 4;
+            data->modifyArrows.maxDigits = 1;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.energy;
+            data->modifyArrows.typeOfVal = VAL_U8;
+            data->modifyArrows.currValue = gBattleStruct->raid.energy;
+        }
+        else if (data->currentSecondaryListItemId == LIST_RAID_SHIELDS)
+        {
+            data->modifyArrows.minValue = 0;
+            data->modifyArrows.maxValue = MAX_BARRIER_COUNT;
+            data->modifyArrows.maxDigits = 1;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].shield;
+            data->modifyArrows.typeOfVal = VAL_U8;
+            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].shield;
         }
         break;
     }

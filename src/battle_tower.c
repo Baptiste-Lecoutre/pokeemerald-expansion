@@ -2122,6 +2122,9 @@ void DoSpecialTrainerBattle(void)
         gBattleTypeFlags = BATTLE_TYPE_RAID | BATTLE_TYPE_DOUBLE;
         gTrainerBattleOpponent_B = 0xFFFF;
 
+        gRaidBossBattler = 0;
+        gRaidBossBattler |= 1u << B_POSITION_OPPONENT_LEFT; // this is supposed to be set by scripting specials, and the previous line has to be removed
+
         if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(HAUNTED_MANSION_1F)
              && (u16)(gSaveBlock1Ptr->location.mapNum - MAP_NUM(HAUNTED_MANSION_1F)) <= 2)
         {

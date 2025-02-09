@@ -30,6 +30,8 @@
 #include "constants/moves.h"
 #include "constants/songs.h"
 
+EWRAM_DATA u8 gRaidBossBattler = 0;
+
 // Settings for each Raid Type.
 const struct RaidType gRaidTypes[NUM_RAID_TYPES] = {
     [RAID_TYPE_NONE] = {
@@ -548,6 +550,20 @@ void InitRaidBattleData(u32 battler)
     RecalcBattlerStats(battler, &gEnemyParty[0], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
 }
 
+void SetRaidBossBattlers(void)
+{
+    u32 position;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
+        return;
+
+    for (position = 0; position < MAX_BATTLERS_COUNT; position++)
+    {
+        if (gRaidBossBattler & 1u << position)
+            gBattleStruct->raid.boss[GetBattlerAtPosition(position)].isBattlerRaidBoss = TRUE;
+    }
+}
+
 // return the raid boss battlerId
 u32 GetRaidBossBattler(void)
 {
@@ -817,15 +833,15 @@ static const u8 gRaidShockwaveChance[NUM_RAID_SHOCKWAVE][MAX_RAID_RANK + 1] =
     [RAID_SHOCKWAVE_MEGA] = {0, 0, 0, 5, 10, 15, 20, 25},
 };
 
-u32 GetRaidShockwaveChance(void) // to be adjusted
+static u32 GetRaidShockwaveChance(u32 battler) // to be adjusted
 {
-    if (gDisableStructs[GetRaidBossBattler()].isFirstTurn)
+    if (gDisableStructs[battler].isFirstTurn)
 		return 0; //Don't use first attack with this
 
     return gRaidShockwaveChance[gRaidTypes[gRaidData.raidType].shockwave][gRaidData.rank];
 }
 
-u32 GetRaidShockwaveNum(void)
+static u32 GetRaidShockwaveNum(void)
 {
     u32 randomNum = Random() % 100;
     switch (gRaidTypes[gRaidData.raidType].shockwave)
@@ -869,7 +885,7 @@ bool32 TryRaidShockwave(void)
         if (gBattleStruct->raid.boss[battler].usedShockwave)
             continue;
 
-        if (Random() % 100 < GetRaidShockwaveChance())
+        if (Random() % 100 < GetRaidShockwaveChance(battler))
         {
             u32 raidShockwaveNum = GetRaidShockwaveNum();
             gBattlerAttacker = battler;
@@ -937,6 +953,7 @@ void BS_DoRaidShockwave(void)
 {
     NATIVE_ARGS();
     u32 i;
+    u32 battler = gBattlerAttacker;
 
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
@@ -956,34 +973,34 @@ void BS_DoRaidShockwave(void)
         }
         break;
     case B_MSG_SHOCKWAVE_MAX_BOSS_FOCUSED:
-        gBattleMons[gBattlerAttacker].status2 |= STATUS2_FOCUS_ENERGY;
-        if (gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC] < MAX_STAT_STAGE)
-            gBattleMons[GetRaidBossBattler()].statStages[STAT_ACC]++;
+        gBattleMons[battler].status2 |= STATUS2_FOCUS_ENERGY;
+        if (gBattleMons[battler].statStages[STAT_ACC] < MAX_STAT_STAGE)
+            gBattleMons[battler].statStages[STAT_ACC]++;
         break;
     case B_MSG_SHOCKWAVE_TERA_NULLIFIED_OTHERS:
         for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
         {
-            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] > DEFAULT_STAT_STAGE)
-                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)].statStages[i] = DEFAULT_STAT_STAGE;
+            if (IsBattlerAlive(BATTLE_OPPOSITE(battler)) &&gBattleMons[BATTLE_OPPOSITE(battler)].statStages[i] > DEFAULT_STAT_STAGE)
+                gBattleMons[BATTLE_OPPOSITE(battler)].statStages[i] = DEFAULT_STAT_STAGE;
             
-            if (gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] > DEFAULT_STAT_STAGE)
-                gBattleMons[GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)].statStages[i] = DEFAULT_STAT_STAGE;
+            if (IsBattlerAlive(BATTLE_PARTNER(BATTLE_OPPOSITE(battler))) && gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].statStages[i] > DEFAULT_STAT_STAGE)
+                gBattleMons[BATTLE_PARTNER(BATTLE_OPPOSITE(battler))].statStages[i] = DEFAULT_STAT_STAGE;
         }
         break; // + still gotta deal with abilities
     case B_MSG_SHOCKWAVE_TERA_NULLIFIED_SELF:
         for (i = STAT_ATK; i < NUM_BATTLE_STATS; i++)
         {
-            if (gBattleMons[gBattlerAttacker].statStages[i] < DEFAULT_STAT_STAGE)
-                gBattleMons[gBattlerAttacker].statStages[i] = DEFAULT_STAT_STAGE;
+            if (gBattleMons[battler].statStages[i] < DEFAULT_STAT_STAGE)
+                gBattleMons[battler].statStages[i] = DEFAULT_STAT_STAGE;
         }
         break; // + still gotta deal with statuses (prlz, slp, psn, confu, frz...)
     case B_MSG_SHOCKWAVE_MEGA_CALMED_HEALED:
-        gBattleStruct->moveDamage[gBattlerAttacker] = -gBattleMons[gBattlerAttacker].maxHP / 4;
+        gBattleStruct->moveDamage[battler] = -gBattleMons[battler].maxHP / 4;
 
         for (i = STAT_ATK; i < NUM_STATS; i++)
         {
-            if (gBattleMons[gBattlerAttacker].statStages[i] > MIN_STAT_STAGE)
-                --gBattleMons[gBattlerAttacker].statStages[i];
+            if (gBattleMons[battler].statStages[i] > MIN_STAT_STAGE)
+                --gBattleMons[battler].statStages[i];
         }
         break;
     }
@@ -1146,16 +1163,16 @@ static u16 GetNextShieldThreshold(u32 battler)
         return (remaining * 100) / (total + 1);
 }
 
-u16 GetTeraRaidShieldProtectedHP(void)
+static u16 GetTeraRaidShieldProtectedHP(u32 battler)
 {
-    return (gTeraRaidHPShieldProtected[gRaidData.rank] + Random()%5)* gBattleMons[GetRaidBossBattler()].maxHP / 100;
+    return (gTeraRaidHPShieldProtected[gRaidData.rank] + Random()%5)* gBattleMons[battler].maxHP / 100;
 }
 
 // Updates the state of the Raid shield (set up, clearing, or breaking individual barriers).
 bool32 UpdateRaidShield(void)
 {
     bool32 retVal = FALSE;
-    u32 battler;// = GetRaidBossBattler();
+    u32 battler;
     for (battler = 0; battler < MAX_BATTLERS_COUNT; battler++)
     {
         if (!IsRaidBoss(battler) || !IsBattlerAlive(battler))
@@ -1172,7 +1189,7 @@ bool32 UpdateRaidShield(void)
         gBattleStruct->raid.boss[battler].nextShield = GetNextShieldThreshold(battler);
     
         if (gRaidTypes[gRaidData.raidType].shieldType == RAID_SHIELD_TERA)
-            gBattleStruct->raid.boss[battler].shieldedHP = GetTeraRaidShieldProtectedHP();//20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
+            gBattleStruct->raid.boss[battler].shieldedHP = GetTeraRaidShieldProtectedHP(battler);//20 * gBattleMons[gBattlerTarget].maxHP / 100; // valeur en HP
 
         if (gRaidTypes[gRaidData.raidType].shieldType != RAID_SHIELD_NONE)
             CreateAllRaidBarrierSprites(battler);
@@ -1458,10 +1475,14 @@ static const s8 sMaxBarrierPosition[2] = {43, 9};
 static const s8 sMegaBarrierPosition[2] = {37, 9};
 static const s8 sTeraBarrierPosition[2] = {30, 9};
 
+#define tBattler    data[0]
+#define tHide       data[1]
+#define hOther_IndicatorSpriteId data[6]
+
 // Sync up barrier sprites with healthbox.
 static void SpriteCb_RaidBarrier(struct Sprite *sprite)
 {
-    u8 healthboxSpriteId = gBattleSpritesDataPtr->battleBars[GetRaidBossBattler()].healthboxSpriteId;
+    u8 healthboxSpriteId = gBattleSpritesDataPtr->battleBars[sprite->tBattler].healthboxSpriteId;
     sprite->y2 = gSprites[healthboxSpriteId].y2;
 }
 
@@ -1509,10 +1530,6 @@ static const struct SpriteTemplate sSpriteTemplate_TeraRaidBarrier =
     .callback = SpriteCb_RaidBarrier,
 };
 
-#define tBattler    data[0]
-#define tHide       data[1]
-#define hOther_IndicatorSpriteId data[6]
-
 // Bars code adapted from HGSS dex. See explanations below
 // The first 4 corresponds to 32/8 (X size)
 // There is no explicit dependance on the Y size
@@ -1550,7 +1567,7 @@ static inline void WritePixel(u8 *dst, u32 x, u32 y, u32 value)
 static void FillTeraBarrierBar(u32 battler, u8 *dst)
 {
     u32 i;
-    for (i = 1; i < 31 * gBattleStruct->raid.boss[battler].shieldedHP / GetTeraRaidShieldProtectedHP(); i++)
+    for (i = 1; i < 31 * gBattleStruct->raid.boss[battler].shieldedHP / GetTeraRaidShieldProtectedHP(battler); i++)
     {
         WritePixel(dst, i, 9, (i == 1 || i == 30 ) ? 15 : 11);
         WritePixel(dst, i, 10, (i == 1 || i == 30 ) ? 15 : 11);
@@ -1715,7 +1732,7 @@ static const struct SpriteTemplate sSpriteTemplate_RaidTimerLeft =
     .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = SpriteCb_RaidBarrier,
+    .callback = SpriteCb_RaidBarrier, // à changer à cause d'un bounce effect de la healthbox du battler 0.
 };
 
 static const struct SpriteTemplate sSpriteTemplate_RaidTimerRight =
@@ -1726,7 +1743,7 @@ static const struct SpriteTemplate sSpriteTemplate_RaidTimerRight =
     .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = SpriteCb_RaidBarrier,
+    .callback = SpriteCb_RaidBarrier, // idem
 };
 
 static const struct SpritePalette sSpritePalette_RaidTimer = 
