@@ -1757,11 +1757,6 @@
 	.4byte \failInstr
 	.endm
 
-	.macro trychoosemontosendtopc successInstr:req
-	callnative BS_TryChooseMonToSendToPC
-	.4byte \successInstr
-	.endm
-
 	.macro setmagiccoattarget
 	callnative BS_SetMagicCoatTarget
 	.endm
