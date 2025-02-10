@@ -8254,8 +8254,8 @@ u32 ItemBattleEffects(enum ItemCaseId caseID, u32 battler, bool32 moveTurn)
                 && gBattlerAttacker != gBattlerTarget
                 && !IsBattlerAtMaxHp(gBattlerAttacker)
                 && IsBattlerAlive(gBattlerAttacker)
-                && gMovesInfo[gCurrentMove].effect != EFFECT_FUTURE_SIGHT
-                && gMovesInfo[gCurrentMove].effect != EFFECT_PAIN_SPLIT
+                && GetMoveEffect(gCurrentMove) != EFFECT_FUTURE_SIGHT
+                && GetMoveEffect(gCurrentMove) != EFFECT_PAIN_SPLIT
                 && (B_HEAL_BLOCKING < GEN_5 || !(gStatuses3[battler] & STATUS3_HEAL_BLOCK)))
             {
                 gLastUsedItem = atkItem;
@@ -8917,18 +8917,6 @@ static bool32 IsBattlerGroundedInverseCheck(u32 battler, bool32 considerInverse)
 bool32 IsBattlerGrounded(u32 battler)
 {
     return IsBattlerGroundedInverseCheck(battler, FALSE);
-}
-
-bool32 IsBattlerAlive(u32 battler)
-{
-    if (gBattleMons[battler].hp == 0)
-        return FALSE;
-    else if (battler >= gBattlersCount)
-        return FALSE;
-    else if (gAbsentBattlerFlags & (1u << battler))
-        return FALSE;
-    else
-        return TRUE;
 }
 
 u32 GetMoveSlot(u16 *moves, u32 move)
