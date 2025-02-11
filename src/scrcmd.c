@@ -57,6 +57,7 @@
 #include "window.h"
 #include "list_menu.h"
 #include "malloc.h"
+#include "ui_stat_editor.h"
 #include "constants/event_objects.h"
 
 typedef u16 (*SpecialFunc)(void);
@@ -3324,4 +3325,14 @@ void Script_EndTrainerCanSeeIf(struct ScriptContext *ctx)
     u8 condition = ScriptReadByte(ctx);
     if (ctx->breakOnTrainerBattle && sScriptConditionTable[condition][ctx->comparisonResult] == 1)
         StopScript(ctx);
+}
+
+bool8 Scrcmd_startmenustateditor(struct ScriptContext *ctx)
+{
+    u16 partyIndex = VarGet(ScriptReadHalfword(ctx));
+    if (partyIndex >= PARTY_SIZE)
+        return FALSE;
+
+    StatEditor_Init(CB2_ReturnToField, partyIndex);
+    return TRUE;
 }

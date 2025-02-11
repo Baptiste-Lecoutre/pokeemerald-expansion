@@ -1134,6 +1134,7 @@ struct
     [MENU_FIELD_MOVES + FIELD_MOVE_ROCK_CLIMB] = {GetMoveName(MOVE_ROCK_CLIMB), CursorCb_FieldMove},
     #endif*/
     [MENU_POKEDEX] = {gText_Pokedex, CursorCb_Pokedex},
+    [MENU_STAT_EDIT] = {COMPOUND_STRING("Stat editor"), CursorCb_StatEdit},
 };
 
 static const u8 sPartyMenuAction_SummarySwitchCancel[] = {MENU_SUMMARY, MENU_SWITCH, MENU_CANCEL1};

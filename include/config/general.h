@@ -76,7 +76,7 @@
 #define NUM_FRAMES_AUTO_SCROLL_DELAY 49
 
 // Custom UI
-#define CONFIG_START_MENU_FULL     TRUE
+#define CONFIG_START_MENU_FULL     FALSE
 
 // Measurement system constants to be used for UNITS
 #define UNITS_IMPERIAL               0       // Inches, feet, pounds

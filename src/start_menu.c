@@ -57,6 +57,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "ui_startmenu_full.h"
+#include "ui_stat_editor.h"
 
 // Menu actions
 enum
@@ -79,7 +80,8 @@ enum
     MENU_ACTION_PC, // 15
     MENU_ACTION_TOWN_MAP,
     MENU_ACTION_MATCH_CALL, // 17
-    MENU_ACTION_TRAINER_RADAR // 18
+    MENU_ACTION_TRAINER_RADAR, // 18
+    MENU_ACTION_STAT_EDITOR, // 19
 };
 
 // Save status
@@ -127,6 +129,7 @@ static bool8 FieldCB_ReturnToFieldStartMenu(void);
 static bool8 StartMenuTownMapCallback(void);
 static bool8 StartMenuMatchCallCallback(void);
 static bool8 StartMenuTrainerRadarCallback(void);
+static bool8 StartMenuStatEditorCallback(void);
 
 // Menu callbacks
 static bool8 SaveStartCallback(void);
@@ -275,6 +278,7 @@ static const u8 sText_TownMap[] = _("Town Map");
 static const u8 sText_MatchCall[] = _("Match Call");
 static const u8 sText_TrainerRadar[] = _("Trainer Database");
 static const u8 sText_AccessPC[] = _("Access your PC.");
+static const u8 sText_StatEditor[] = _("Stat Editor");
 
 static const struct MenuAction sStartMenuItems[] =
 {
@@ -297,6 +301,7 @@ static const struct MenuAction sStartMenuItems[] =
     [MENU_ACTION_TOWN_MAP]        = {sText_TownMap,     {.u8_void = StartMenuTownMapCallback}},
     [MENU_ACTION_MATCH_CALL]      = {sText_MatchCall,   {.u8_void = StartMenuMatchCallCallback}},
     [MENU_ACTION_TRAINER_RADAR]   = {sText_TrainerRadar,{.u8_void = StartMenuTrainerRadarCallback}},
+    [MENU_ACTION_STAT_EDITOR]     = {sText_StatEditor,  {.u8_void = StartMenuStatEditorCallback}},
 };
 
 static const struct BgTemplate sBgTemplates_LinkBattleSave[] =
@@ -1958,6 +1963,14 @@ static bool8 StartMenuTrainerRadarCallback(void)
     RemoveExtraStartMenuWindows();
     CleanupOverworldWindowsAndTilemaps();
     CreateTask(Task_OpenTrainerRadarFromStartMenu, 0);
+    return TRUE;
+}
+
+static bool8 StartMenuStatEditorCallback(void)
+{
+    RemoveExtraStartMenuWindows();
+    CleanupOverworldWindowsAndTilemaps();
+    CreateTask(Task_OpenStatEditorFromStartMenu, 0);
     return TRUE;
 }
 

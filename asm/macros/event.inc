@@ -2675,3 +2675,9 @@
 	compare \a, \b
 	cant_see_if 5
 	.endm
+
+	@ Opens the UI Stat editor to modify the EVs/IVs of the Pokemon at partyIndex.
+	.macro startmenustateditor partyIndex:req
+	callnative Scrcmd_startmenustateditor
+	.2byte \partyIndex
+	.endm
