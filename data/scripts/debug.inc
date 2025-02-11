@@ -219,6 +219,7 @@ Debug_EventScript_Script_10::
 	end
 
 Debug_EventScript_Script_11::
+	special StartVoltorbFlip
 	release
 	end
 

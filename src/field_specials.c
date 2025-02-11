@@ -51,6 +51,7 @@
 #include "text.h"
 #include "tilesets.h"
 #include "tv.h"
+#include "voltorb_flip.h"
 #include "wallclock.h"
 #include "window.h"
 #include "constants/battle_frontier.h"
@@ -5930,4 +5931,11 @@ void MakeSelectedMonShiny(void)
 {
     bool32 true = TRUE;
     SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_IS_SHINY, &true);
+}
+
+void StartVoltorbFlip(void)
+{
+    gMain.savedCallback = CB2_ReturnToField;
+    SetMainCallback2(CB2_ShowVoltorbFlip);
+    LockPlayerFieldControls();
 }
