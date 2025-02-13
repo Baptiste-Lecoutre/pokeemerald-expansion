@@ -2532,6 +2532,12 @@
 	.2byte \dest
 	.endm
 
+	@ Hides any follower Pokémon if present, putting them into their Poké Ball; by default waits for their movement to finish.
+	.macro hidefollower wait=1
+	callnative ScrFunc_hidefollower
+	.2byte \wait
+	.endm
+
 	.macro increasedifficulty
 	callnative Script_IncreaseDifficulty, requests_effects=1
 	.endm
@@ -2650,12 +2656,4 @@
 	.macro cant_see_if_ne, a:req, b:req
 	compare \a, \b
 	cant_see_if 5
-	.endm
-
-		@ hide any follower pokemon if present,
-	@ putting them into their pokeball;
-	@ by default waits for their movement to finish
-	.macro hidefollower wait=1
-	callnative ScrFunc_hidefollower
-	.2byte \wait
 	.endm
