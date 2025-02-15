@@ -35,18 +35,13 @@ TerraCave_End_EventScript_Groudon::
 	delay 40
 	waitmoncry
 	setvar VAR_LAST_TALKED, LOCALID_GROUDON
-@	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
-@	setwildbattle SPECIES_GROUDON, VAR_RESULT
 	specialvar VAR_RESULT, IsPokeballPocketEmpty
 	goto_if_eq VAR_RESULT, FALSE, TerraCave_End_EventScript_Groudon_PrepareRaid
 	additem ITEM_POKE_BALL
 TerraCave_End_EventScript_Groudon_PrepareRaid:
-	preparefixedraid RAID_TYPE_PRIMAL, 7, SPECIES_GROUDON, 70, ITEM_RED_ORB
-	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
-	special InitStoryRaid
+	preparestoryraid RAID_TYPE_PRIMAL, RAID_RANK_7, B_POSITION_OPPONENT_LEFT
+	createmon side=1, slot=0, species=SPECIES_GROUDON, level=70, item=ITEM_RED_ORB
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-@	special BattleSetup_StartLegendaryBattle
-@	waitstate
 	doraidbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	setvar VAR_TEMP_1, 0

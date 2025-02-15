@@ -48,9 +48,8 @@ SkyPillar_Top_EventScript_Rayquaza::
 	goto_if_eq VAR_RESULT, FALSE, SkyPillar_Top_EventScript_RayquazaPrepareRaid
 	additem ITEM_POKE_BALL
 SkyPillar_Top_EventScript_RayquazaPrepareRaid:
-	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_7, SPECIES_RAYQUAZA, 70, ITEM_NONE
-	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
-	special InitStoryRaid
+	preparestoryraid RAID_TYPE_MEGA, RAID_RANK_7, B_POSITION_OPPONENT_LEFT
+	createmon side=1, slot=0, species=SPECIES_RAYQUAZA, level=70, move1=MOVE_EARTHQUAKE, move2=MOVE_DRAGON_ASCENT, move3=MOVE_DRAGON_CLAW, move4=MOVE_EXTREME_SPEED
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry

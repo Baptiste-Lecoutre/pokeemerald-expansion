@@ -37,9 +37,8 @@ HauntedMansion_3F_EventScript_LittleGirl::
 	closemessage
 	specialvar VAR_RESULT, IsPokeballPocketEmpty
 	call_if_eq VAR_RESULT, TRUE, HauntedMansion_3F_EventScript_GiveFreePokeball
-	preparefixedraid RAID_TYPE_MEGA, RAID_RANK_4, SPECIES_GENGAR, 40, ITEM_GENGARITE
-	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
-	special InitStoryRaid
+	preparestoryraid RAID_TYPE_MEGA, RAID_RANK_4, B_POSITION_OPPONENT_LEFT
+	createmon side=1, slot=0, species=SPECIES_GENGAR, level=40, item=ITEM_GENGARITE
 	doraidbattle
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_LOST, HauntedMansion_3F_EventScript_LostGengarBattle

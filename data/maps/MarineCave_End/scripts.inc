@@ -35,18 +35,13 @@ MarineCave_End_EventScript_Kyogre::
 	delay 40
 	waitmoncry
 	setvar VAR_LAST_TALKED, LOCALID_KYOGRE
-@	specialvar VAR_RESULT, GetHighestLevelInPlayerParty
-@	setwildbattle SPECIES_KYOGRE, VAR_RESULT
 	specialvar VAR_RESULT, IsPokeballPocketEmpty
 	goto_if_eq VAR_RESULT, FALSE, MarineCave_End_EventScript_Kyogre_PrepareRaid
 	additem ITEM_POKE_BALL
 MarineCave_End_EventScript_Kyogre_PrepareRaid:
-	preparefixedraid RAID_TYPE_PRIMAL, 7, SPECIES_KYOGRE, 70, ITEM_BLUE_ORB
-	specialvar VAR_0x8007, GetHighestLevelInPlayerParty
-	special InitStoryRaid
+	preparestoryraid RAID_TYPE_PRIMAL, RAID_RANK_7, B_POSITION_OPPONENT_LEFT
+	createmon side=1, slot=0, species=SPECIES_KYOGRE, level=70, item=ITEM_BLUE_ORB
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
-@	special BattleSetup_StartLegendaryBattle
-@	waitstate
 	doraidbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	setvar VAR_TEMP_1, 0
