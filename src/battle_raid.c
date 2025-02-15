@@ -483,7 +483,7 @@ bool32 InitRaidData(void)
 // Sets the data for the Raid being loaded from set variables.
 bool32 InitCustomRaidData(void)
 {
-    u16 item = gSpecialVar_0x8008, species = gSpecialVar_0x8003;
+    /*u16 item = gSpecialVar_0x8008, species = gSpecialVar_0x8003;
     u8 level = gSpecialVar_0x8007, teraType = gSpecialVar_0x8009;
     gRaidData.raidType = gSpecialVar_0x8001;
     gRaidData.rank = gSpecialVar_0x8002;
@@ -506,7 +506,13 @@ bool32 InitCustomRaidData(void)
         u8 dynamaxLevel = gRaidData.rank + 3;
         SetMonData(&gEnemyParty[0], MON_DATA_GIGANTAMAX_FACTOR, &boolTrue);
         SetMonData(&gEnemyParty[0], MON_DATA_DYNAMAX_LEVEL, &dynamaxLevel);
-    }
+    }*/
+
+    // Free previous enemy party in case
+    ZeroEnemyPartyMons();
+    gRaidData.raidType = gSpecialVar_0x8001;
+    gRaidData.rank = gSpecialVar_0x8002;
+    gRaidBossBattler = gSpecialVar_0x8003;
 
     return TRUE;
 }

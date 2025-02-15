@@ -2295,6 +2295,14 @@
 	setvar VAR_0x8008, \item
 	setvar VAR_0x8009, \teraType
 	.endm
+
+	.macro preparestoryraid type:req, rank:req, position:req
+	setflag FLAG_SYS_SPECIAL_RAID_BATTLE
+	setvar VAR_0x8001, \type
+	setvar VAR_0x8002, \rank
+	setvar VAR_0x8003, \position
+	special InitStoryRaid
+	.endm
 	
 	.macro ai_vs_ai_battle trainer1:req, trainer2:req
 	setflag B_FLAG_AI_VS_AI_BATTLE

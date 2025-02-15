@@ -215,7 +215,15 @@ Debug_EventScript_Script_9::
 	end
 
 Debug_EventScript_Script_10::
-	release
+	lockall
+@	preparefixedraid RAID_TYPE_MAX, RAID_RANK_5, SPECIES_SALAMENCE, 50, ITEM_SALAMENCITE, TYPE_ELECTRIC
+@	createmon side=1, slot=0, species=SPECIES_SALAMENCE, level=50, item=ITEM_SALAMENCITE, teraType=TYPE_ELECTRIC
+	preparestoryraid RAID_TYPE_MAX, RAID_RANK_5, B_POSITION_OPPONENT_LEFT@ | B_POSITION_OPPONENT_RIGHT
+@	special InitStoryRaid
+createmon side=1, slot=0, species=SPECIES_SALAMENCE, level=50, item=ITEM_SALAMENCITE, teraType=TYPE_ELECTRIC
+createmon side=1, slot=1, species=SPECIES_MAGIKARP, level=10, item=ITEM_GYARADOSITE
+	doraidbattle
+	releaseall
 	end
 
 Debug_EventScript_Script_11::

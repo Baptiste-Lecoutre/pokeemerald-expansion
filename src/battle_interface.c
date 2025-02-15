@@ -656,7 +656,7 @@ u32 WhichBattleCoords(u32 battlerId) // 0 - singles, 1 - doubles
     // gEnemyParty count is calculated at the start of battle.
     if (GetBattlerPosition(battlerId) == B_POSITION_OPPONENT_LEFT
         && ((!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && gEnemyPartyCount == 1)
-        || (BATTLE_TWO_VS_ONE_OPPONENT) || IsRaidBoss(battlerId))
+        || (BATTLE_TWO_VS_ONE_OPPONENT) || (IsRaidBoss(battlerId) && gEnemyPartyCount == 1))
         && !WILD_DOUBLE_BATTLE)
         return 0;
     
