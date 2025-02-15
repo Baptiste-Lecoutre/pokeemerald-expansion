@@ -241,8 +241,8 @@ void CreateBattlerSprite(u32 battler)
             if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0
                 && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
                 return;
-            if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
-                return;
+            /*if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+                return;*/
             if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
                 return;
 
@@ -310,8 +310,8 @@ static void CreateHealthboxSprite(u32 battler)
             healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
 
         gHealthboxSpriteIds[battler] = healthboxSpriteId;
-        if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
-            return;
+        /*if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
+            return;*/
 
         InitBattlerHealthboxCoords(battler);
         SetHealthboxSpriteVisible(healthboxSpriteId);
