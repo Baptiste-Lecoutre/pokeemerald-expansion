@@ -375,8 +375,12 @@ bool32 InitRaidData(void)
     // determine raid species
     do
     {
-        species = ((randomNum + species) % SPECIES_VENUSAUR_MEGA) + 1;
-    } while (species == SPECIES_NONE || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical || gSpeciesInfo[species].isUltraBeast);
+        species = ((randomNum + species) % (NUM_SPECIES-1)) + 1; //-1 to avoid species_egg, +1 to avoid species_none
+    } while (species == SPECIES_NONE || species == SPECIES_EGG
+            || gSpeciesInfo[species].isLegendary || gSpeciesInfo[species].isMythical
+            || gSpeciesInfo[species].isMegaEvolution || gSpeciesInfo[species].isPrimalReversion
+            || gSpeciesInfo[species].isUltraBeast || gSpeciesInfo[species].isUltraBurst
+            || gSpeciesInfo[species].isGigantamax || gSpeciesInfo[species].isTeraForm);
 
     // should check here for legendaries & mythicals. Maybe choose a random form as well
     /*preEvoSpecies = GetPreEvolution(species);
