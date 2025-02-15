@@ -521,29 +521,38 @@ bool32 InitCustomRaidData(void)
     return TRUE;
 }
 
-// Sets up the RaidBattleData struct in gBattleStruct, run during battle intro setup after battle transition.
-void InitRaidBattleData(u32 battler)
+#define PARSE_FLAG(n, default_) (flags & (1 << (n))) ? VarGet(ScriptReadByte(ctx)) : (default_)
+void InitStoryRaidData(struct ScriptContext *ctx)
+{
+    u8 type = ScriptReadByte(ctx);
+    u8 rank = ScriptReadByte(ctx);
+    u8 flags = ScriptReadByte(ctx);
+
+    u8 position0 = PARSE_FLAG(0, B_POSITION_OPPONENT_LEFT);
+    u8 position1 = PARSE_FLAG(1, position0);
+    u8 position2 = PARSE_FLAG(2, position0);
+    u8 position3 = PARSE_FLAG(3, position0);
+
+    gRaidData.raidType = type;
+    gRaidData.rank = rank;
+    gRaidBossBattler = (1u << position0) | (1u << position1) | (1u << position2) | (1u << position3);
+
+    ZeroEnemyPartyMons();
+}
+#undef PARSE_FLAG
+
+static void InitRaidBossData(u32 battler)
 {
     u32 i;
 
     gBattleStruct->raid.boss[battler].shieldsRemaining = GetRaidShieldThresholdTotalNumber();
     gBattleStruct->raid.boss[battler].nextShield = GetNextShieldThreshold(battler);
     gBattleStruct->raid.boss[battler].shield = 0;
-    gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
-	
-    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
-        gBattleStruct->raid.energy = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-    else if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
-        gBattleStruct->raid.energy = 0;
+    gBattleStruct->raid.boss[battler].shieldState |= RAID_INTRO_COMPLETE;
 
-    // Zeroes sprite IDs for Gen 8-style shield.
+    // Zeroes sprite IDs for shields.
     for (i = 0; i < MAX_BARRIER_COUNT; i++)
         gBattleStruct->raid.boss[battler].barrierSpriteIds[i] = MAX_SPRITES;
-    
-    for (i = 0; i < 2; i++)
-        gBattleStruct->raid.timerSpriteIds[i] = MAX_SPRITES;
-    gBattleStruct->battleTimer = 0;
-    CreateRaidTimerSprites();
 
     // Mega Raids start off with a shield at the beginning.
     if (gRaidTypes[gRaidData.raidType].shieldType == RAID_SHIELD_MEGA)
@@ -551,13 +560,47 @@ void InitRaidBattleData(u32 battler)
         gBattleStruct->raid.boss[battler].shield = GetShieldAmount(battler);
         CreateAllRaidBarrierSprites(battler);
         RaidBarrier_SetVisibilities(gHealthboxSpriteIds[battler], TRUE);
-
-        if (gBattleMons[battler].species == SPECIES_RAYQUAZA) // handle the rayquaza wish mega evo special case
-            gBattleMons[battler].moves[3] = MOVE_DRAGON_ASCENT;
     }
 
     // Update HP Multiplier.
-    RecalcBattlerStats(battler, &gEnemyParty[0], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
+    RecalcBattlerStats(battler, &GetBattlerParty(battler)[gBattlerPartyIndexes[battler]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
+
+    gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData.raidType].gimmick;
+    gBattleCommunication[1] = gRaidTypes[gRaidData.raidType].rules;
+    gBattlerAttacker = battler;
+}
+
+// Sets up the RaidBattleData struct in gBattleStruct, run during battle intro setup after battle transition.
+bool32 InitRaidBattleData(void)
+{
+    u32 i;
+
+    if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
+        return FALSE;
+
+    for (i = 0; i < MAX_BATTLERS_COUNT; i++)
+    {
+        if (!IsRaidBoss(i) || !IsBattlerAlive(i))
+            continue;
+        
+        if (gBattleStruct->raid.boss[i].shieldState & RAID_INTRO_COMPLETE)
+            continue;
+
+        InitRaidBossData(i);
+        return TRUE;
+    }
+
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
+        gBattleStruct->raid.energy = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT); // à modifier si le joueur est boss
+    else if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
+        gBattleStruct->raid.energy = 0;
+
+    for (i = 0; i < 2; i++)
+        gBattleStruct->raid.timerSpriteIds[i] = MAX_SPRITES;
+    gBattleStruct->battleTimer = 0;
+    CreateRaidTimerSprites();
+
+    return FALSE;
 }
 
 void SetRaidBossBattlers(void)
@@ -1459,7 +1502,7 @@ static const struct OamData sOamData_MaxRaidBarrier =
     .matrixNum = 0,
     .size = SPRITE_SIZE(16x16),
     .tileNum = 0,
-    .priority = 1,
+    .priority = 2,
     .paletteNum = 0,
     .affineParam = 0,
 };
@@ -1476,7 +1519,7 @@ static const struct OamData sOamData_MegaRaidBarrier =
     .matrixNum = 0,
     .size = SPRITE_SIZE(32x16),
     .tileNum = 0,
-    .priority = 1,
+    .priority = 2,
     .paletteNum = 0,
     .affineParam = 0,
 };

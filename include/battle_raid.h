@@ -37,7 +37,7 @@ extern u8 gRaidBossBattler; // bitfield for raid boss POSITIONS, used to link th
 // Functions
 bool32 InitRaidData(void);
 bool32 InitCustomRaidData(void);
-void InitRaidBattleData(u32 battler);
+bool32 InitRaidBattleData(void);
 
 void SetRaidBossBattlers(void);
 u32 GetRaidBossBattler(void);

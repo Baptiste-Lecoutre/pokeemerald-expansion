@@ -4107,13 +4107,9 @@ static void TryDoEventsBeforeFirstTurn(void)
         break;
     case FIRST_TURN_EVENTS_RAID_INTRO:
         // Raid Intro
-        if (gBattleTypeFlags & BATTLE_TYPE_RAID && !(gBattleStruct->raid.state & RAID_INTRO_COMPLETE))
+        if (InitRaidBattleData())
         {
-            gBattlerAttacker = GetRaidBossBattler();
-            InitRaidBattleData(gBattlerAttacker);
-            gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData.raidType].gimmick;
-            gBattleCommunication[1] = gRaidTypes[gRaidData.raidType].rules;
-            BattleScriptExecute(BattleScript_RaidIntro);
+            BattleScriptExecute(BattleScript_RaidIntro); // besoin de gérer le raid storm qui se joue pour chaque boss
             return;
         }
         gBattleStruct->eventsBeforeFirstTurnState++;

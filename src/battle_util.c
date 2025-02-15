@@ -11078,7 +11078,7 @@ bool32 IsBattlerMegaEvolved(u32 battler)
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
     return (gSpeciesInfo[gBattleMons[battler].species].isMegaEvolution
-        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_MEGA && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)));
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_MEGA && (gBattleStruct->raid.boss[battler].shieldState & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerPrimalReverted(u32 battler)
@@ -11087,7 +11087,7 @@ bool32 IsBattlerPrimalReverted(u32 battler)
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
     return (gSpeciesInfo[gBattleMons[battler].species].isPrimalReversion
-        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_PRIMAL && (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)));
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_PRIMAL && (gBattleStruct->raid.boss[battler].shieldState & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerUltraBursted(u32 battler)

@@ -2303,6 +2303,35 @@
 	setvar VAR_0x8003, \position
 	special InitStoryRaid
 	.endm
+
+	.macro preparestoryraidtest type:req, rank:req, position1:req, position2, position3, position4
+	.set temp_position, 0
+	.set temp_position, temp_position | (1 << \position1);
+	.ifnb \position2; .set temp_position, temp_position | (1 << \position2); .endif
+	.ifnb \position3; .set temp_position, temp_position | (1 << \position3); .endif
+	.ifnb \position4; .set temp_position, temp_position | (1 << \position4); .endif
+	setflag FLAG_SYS_SPECIAL_RAID_BATTLE
+	setvar VAR_0x8001, \type
+	setvar VAR_0x8002, \rank
+	setorcopyvar VAR_0x8003, temp_position
+	special InitStoryRaid
+	.endm
+
+	.macro preparestoryraidtest2 type:req, rank:req, position0, position1, position2, position3
+	callnative InitStoryRaidData, requests_effects=1
+	.byte \type
+	.byte \rank
+	.set position_flags, 0
+	.ifnb \position0; .set position_flags, position_flags | (1 << 0); .endif
+	.ifnb \position1; .set position_flags, position_flags | (1 << 1); .endif
+	.ifnb \position2; .set position_flags, position_flags | (1 << 2); .endif
+	.ifnb \position3; .set position_flags, position_flags | (1 << 3); .endif
+	.byte position_flags
+	.ifnb \position0; .byte \position0; .endif
+	.ifnb \position1; .byte \position1; .endif
+	.ifnb \position2; .byte \position2; .endif
+	.ifnb \position3; .byte \position3; .endif
+	.endm
 	
 	.macro ai_vs_ai_battle trainer1:req, trainer2:req
 	setflag B_FLAG_AI_VS_AI_BATTLE
