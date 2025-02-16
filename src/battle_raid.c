@@ -588,6 +588,7 @@ bool32 InitRaidBattleData(void)
             continue;
 
         InitRaidBossData(i);
+        UpdateHealthboxAttribute(gHealthboxSpriteIds[i], &GetBattlerParty(i)[gBattlerPartyIndexes[i]], HEALTHBOX_ALL);
         return TRUE;
     }
 
@@ -1687,6 +1688,9 @@ static u32 CreateRaidBarrierSprite(u32 battler, u32 index)
         x += sMaxBarrierPosition[0] - (index * 10);
         y += sMaxBarrierPosition[1];
 
+        if (IsBattlerAlive(BATTLE_PARTNER(battler)))
+            y -= 3;
+
    	    LoadSpritePalette(&sSpritePalette_MaxRaidBarrier);
    	    LoadSpriteSheet(&sSpriteSheet_MaxRaidBarrier);
         spriteId = CreateSprite(&sSpriteTemplate_MaxRaidBarrier, x, y, 0);
@@ -1876,6 +1880,13 @@ static void FillRaidTimerBar(u8 *dst, u32 index)
 void CreateRaidTimerSprites(void)
 {
     s16 x, y;
+    u32 battler;
+
+    for (battler = 0; battler < MAX_BATTLERS_COUNT; battler++)
+    {
+        if (IsRaidBoss(battler) && IsBattlerAlive(battler))
+            break;
+    }
 
     if (gBattleStruct->raid.timerSpriteIds[0] == MAX_SPRITES)
     {
@@ -1886,7 +1897,7 @@ void CreateRaidTimerSprites(void)
         // modify gfx
         FillRaidTimerBar(gfxLeft, 0);
 
-        GetBattlerHealthboxCoords(GetRaidBossBattler(), &x, &y);
+        GetBattlerHealthboxCoords(battler, &x, &y);
         x += sRaidTimerPosition[0][0];
         y += sRaidTimerPosition[0][1];
 
@@ -1894,6 +1905,7 @@ void CreateRaidTimerSprites(void)
         LoadSpriteSheet(&sheetLeft);
         Free(gfxLeft);
         gBattleStruct->raid.timerSpriteIds[0]=CreateSprite(&sSpriteTemplate_RaidTimerLeft, x, y, 0);
+        gSprites[gBattleStruct->raid.timerSpriteIds[0]].tBattler = battler;
     }
 
     if (gBattleStruct->raid.timerSpriteIds[1] == MAX_SPRITES)
@@ -1905,13 +1917,14 @@ void CreateRaidTimerSprites(void)
         // modify gfx
         FillRaidTimerBar(gfxRight, 1);
 
-        GetBattlerHealthboxCoords(GetRaidBossBattler(), &x, &y);
+        GetBattlerHealthboxCoords(battler, &x, &y);
         x += sRaidTimerPosition[1][0];
         y += sRaidTimerPosition[1][1];
 
         LoadSpriteSheet(&sheetRight);
         Free(gfxRight);
         gBattleStruct->raid.timerSpriteIds[1]=CreateSprite(&sSpriteTemplate_RaidTimerRight, x, y, 0);
+        gSprites[gBattleStruct->raid.timerSpriteIds[1]].tBattler = battler;
     }
 }
 
