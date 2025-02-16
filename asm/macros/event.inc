@@ -2284,27 +2284,9 @@
 	special TrySpecialOverworldEvo
 	.endm
 
-	@ Sets up a Raid Battle with fixed data.
-	@ This is designed for testing, but can be used to create event raids too!
-	.macro preparefixedraid type:req, rank:req, species:req, level:req, item=ITEM_NONE, teraType = TYPE_NONE
-	setflag FLAG_SYS_SPECIAL_RAID_BATTLE
-	setvar VAR_0x8001, \type
-	setvar VAR_0x8002, \rank
-	setvar VAR_0x8003, \species
-	setvar VAR_0x8007, \level
-	setvar VAR_0x8008, \item
-	setvar VAR_0x8009, \teraType
-	.endm
-
-	.macro preparestoryraid type:req, rank:req, position:req
-	setflag FLAG_SYS_SPECIAL_RAID_BATTLE
-	setvar VAR_0x8001, \type
-	setvar VAR_0x8002, \rank
-	setvar VAR_0x8003, \position
-	special InitStoryRaid
-	.endm
-
-	.macro preparestoryraidtest type:req, rank:req, position1:req, position2, position3, position4
+	@ Sets up a Raid Battle with fixed data. It does not create the raid boss mon.
+	@ This is supposed to be used with the raid intro screen to clear the flag. createmon must be used after.
+	.macro preparestoryraidintro type:req, rank:req, position1=B_POSITION_OPPONENT_LEFT, position2, position3, position4
 	.set temp_position, 0
 	.set temp_position, temp_position | (1 << \position1);
 	.ifnb \position2; .set temp_position, temp_position | (1 << \position2); .endif
@@ -2317,8 +2299,10 @@
 	special InitStoryRaid
 	.endm
 
-	.macro preparestoryraidtest2 type:req, rank:req, position0, position1, position2, position3
-	callnative InitStoryRaidData, requests_effects=1
+	@ Sets up a Raid Battle with fixed data. Is does not create the raid boss mon.
+	@ It does not require to use the raid intro screen afterwards. createmon and doraidbattle must be used after.
+	.macro preparestoryraid type:req, rank:req, position0, position1, position2, position3
+	callnative Scrcmd_InitStoryRaidData, requests_effects=1
 	.byte \type
 	.byte \rank
 	.set position_flags, 0

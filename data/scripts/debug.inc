@@ -213,10 +213,10 @@ Debug_EventScript_Script_9::
 
 Debug_EventScript_Script_10::
 	lockall
-@	preparestoryraid RAID_TYPE_MAX, RAID_RANK_5, 1u<<B_POSITION_OPPONENT_LEFT | 1u<<B_POSITION_OPPONENT_RIGHT
-	preparestoryraidtest2 RAID_TYPE_MAX, RAID_RANK_5@, B_POSITION_OPPONENT_RIGHT@, B_POSITION_OPPONENT_RIGHT
+@	preparestoryraidintro RAID_TYPE_MAX, RAID_RANK_5, B_POSITION_OPPONENT_LEFT, B_POSITION_OPPONENT_RIGHT
+	preparestoryraid RAID_TYPE_MAX, RAID_RANK_5, B_POSITION_OPPONENT_LEFT, B_POSITION_OPPONENT_RIGHT
 	createmon side=1, slot=0, species=SPECIES_SALAMENCE, level=50, item=ITEM_SALAMENCITE, teraType=TYPE_ELECTRIC
-@	createmon side=1, slot=1, species=SPECIES_MAGIKARP, level=10, item=ITEM_GYARADOSITE
+	createmon side=1, slot=1, species=SPECIES_MAGIKARP, level=10, item=ITEM_GYARADOSITE
 	doraidbattle
 	releaseall
 	end

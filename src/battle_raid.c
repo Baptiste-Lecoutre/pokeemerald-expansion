@@ -522,7 +522,7 @@ bool32 InitCustomRaidData(void)
 }
 
 #define PARSE_FLAG(n, default_) (flags & (1 << (n))) ? VarGet(ScriptReadByte(ctx)) : (default_)
-void InitStoryRaidData(struct ScriptContext *ctx)
+void Scrcmd_InitStoryRaidData(struct ScriptContext *ctx)
 {
     u8 type = ScriptReadByte(ctx);
     u8 rank = ScriptReadByte(ctx);
