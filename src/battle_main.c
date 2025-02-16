@@ -4108,10 +4108,7 @@ static void TryDoEventsBeforeFirstTurn(void)
     case FIRST_TURN_EVENTS_RAID_INTRO:
         // Raid Intro
         if (InitRaidBattleData())
-        {
-            BattleScriptExecute(BattleScript_RaidIntro); // besoin de gérer le raid storm qui se joue pour chaque boss
             return;
-        }
         gBattleStruct->eventsBeforeFirstTurnState++;
         break;
     case FIRST_TURN_EVENTS_OVERWORLD_WEATHER:

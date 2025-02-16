@@ -568,6 +568,7 @@ static void InitRaidBossData(u32 battler)
     gBattleCommunication[MULTIUSE_STATE] = gRaidTypes[gRaidData.raidType].gimmick;
     gBattleCommunication[1] = gRaidTypes[gRaidData.raidType].rules;
     gBattlerAttacker = battler;
+    BattleScriptExecute(BattleScript_RaidIntro);
 }
 
 // Sets up the RaidBattleData struct in gBattleStruct, run during battle intro setup after battle transition.
@@ -590,6 +591,9 @@ bool32 InitRaidBattleData(void)
         return TRUE;
     }
 
+    if (gBattleStruct->raid.state & RAID_INTRO_COMPLETE)
+        return FALSE;
+
     if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX)
         gBattleStruct->raid.energy = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT); // à modifier si le joueur est boss
     else if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_TERA)
@@ -599,6 +603,14 @@ bool32 InitRaidBattleData(void)
         gBattleStruct->raid.timerSpriteIds[i] = MAX_SPRITES;
     gBattleStruct->battleTimer = 0;
     CreateRaidTimerSprites();
+
+    gBattleStruct->raid.state |= RAID_INTRO_COMPLETE;
+
+    if (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX || gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MEGA)
+    {
+        BattleScriptExecute(BattleScript_MaxRaidStormBrews);
+        return TRUE;
+    }
 
     return FALSE;
 }

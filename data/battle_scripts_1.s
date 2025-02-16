@@ -10039,8 +10039,8 @@ BattleScript_RaidIntro::
 	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_GIMMICK_DYNAMAX, BattleScript_MaxRaidIntro
 	jumpifbyte CMP_EQUAL, gBattleCommunication, RAID_GIMMICK_TERA, BattleScript_RaidIntroEnd
 BattleScript_RaidIntroEnd:
-	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_RULES_MAX, BattleScript_MaxRaidStormBrews
-	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_RULES_MEGA, BattleScript_MaxRaidStormBrews
+@	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_RULES_MAX, BattleScript_MaxRaidStormBrews
+@	jumpifbyte CMP_EQUAL, gBattleCommunication + 1, RAID_RULES_MEGA, BattleScript_MaxRaidStormBrews
 	end2
 
 BattleScript_MaxRaidIntro:
