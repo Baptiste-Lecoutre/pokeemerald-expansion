@@ -84,7 +84,7 @@
 #include "constants/event_object_movement.h"
 #include "ui_startmenu_full.h"
 
-//STATIC_ASSERT((B_FLAG_FOLLOWERS_DISABLED == 0 && !OW_FOLLOWERS_ENABLED), FollowersFlagAssignedWithoutEnablingThem);
+//STATIC_ASSERT((B_FLAG_FOLLOWERS_DISABLED == 0 || OW_FOLLOWERS_ENABLED), FollowersFlagAssignedWithoutEnablingThem);
 
 struct CableClubPlayer
 {
