@@ -9373,7 +9373,7 @@ const struct SpeciesInfo gSpeciesInfoGen3[] =
         SHADOW(0, 8, SHADOW_SIZE_S)
         FOOTPRINT(Castform)
         OVERWORLD(
-            gObjectEventPic_CastformNormal,
+            sPicTable_CastformNormal,
             SIZE_32x32,
             SHADOW_SIZE_M,
             TRACKS_NONE,

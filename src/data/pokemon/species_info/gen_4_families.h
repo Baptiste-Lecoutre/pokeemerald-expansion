@@ -6446,7 +6446,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .iconPalIndex = 0,
         FOOTPRINT(Dialga)
         OVERWORLD(
-            gObjectEventPic_Dialga,
+            sPicTable_Dialga,
             SIZE_64x64,
             SHADOW_SIZE_M,
             TRACKS_FOOT,
@@ -6660,7 +6660,7 @@ const struct SpeciesInfo gSpeciesInfoGen4[] =
         .iconPalIndex = 2,
         FOOTPRINT(Palkia)
         OVERWORLD(
-            gObjectEventPic_Palkia,
+            sPicTable_Palkia,
             SIZE_64x64,
             SHADOW_SIZE_M,
             TRACKS_FOOT,

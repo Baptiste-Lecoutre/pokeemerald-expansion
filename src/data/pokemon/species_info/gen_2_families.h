@@ -8320,7 +8320,7 @@ const struct SpeciesInfo gSpeciesInfoGen2[] =
         SHADOW(2, 17, SHADOW_SIZE_L)
         FOOTPRINT(Lugia)
         OVERWORLD(
-            gObjectEventPic_Lugia,
+            sPicTable_Lugia,
             SIZE_64x64,
             SHADOW_SIZE_M,
             TRACKS_NONE,
@@ -8475,7 +8475,7 @@ const struct SpeciesInfo gSpeciesInfoGen2[] =
         SHADOW(1, 17, SHADOW_SIZE_L)
         FOOTPRINT(HoOh)
         OVERWORLD(
-            gObjectEventPic_HoOh,
+            sPicTable_HoOh,
             SIZE_64x64,
             SHADOW_SIZE_M,
             TRACKS_NONE,
