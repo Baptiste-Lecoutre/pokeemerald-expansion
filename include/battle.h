@@ -872,6 +872,7 @@ struct BattleStruct
     u8 padding3:1;
     struct MessageStatus slideMessageStatus;
     u8 trainerSlideSpriteIds[MAX_BATTLERS_COUNT];
+    u8 embodyAspectBoost[NUM_BATTLE_SIDES];
     u32 battleTimer; // frame counter to measure battle time length
 };
 
