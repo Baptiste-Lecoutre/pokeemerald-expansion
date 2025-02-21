@@ -1895,19 +1895,6 @@ static u32 LoadDynamicFollowerPaletteFromGraphicsId(u16 graphicsId, struct Sprit
     return paletteNum;
 }
 
-// Like LoadObjectEventPalette, but overwrites the palette tag that is loaded
-static u8 LoadObjectEventPaletteWithTag(u16 paletteTag, u16 overTag)
-{
-    u32 i = FindObjectEventPaletteIndexByTag(paletteTag);
-    struct SpritePalette spritePalette;
-    if (i == 0xFF)
-        return i;
-    spritePalette = sObjectEventSpritePalettes[i];
-    if (overTag != TAG_NONE)
-        spritePalette.tag = overTag; // overwrite palette tag
-    return LoadSpritePaletteIfTagExists(&spritePalette);
-}
-
 // Used to create a sprite using a graphicsId associated with object events.
 u8 CreateObjectGraphicsSpriteWithTag(u16 graphicsId, void (*callback)(struct Sprite *), s16 x, s16 y, u8 subpriority, u16 paletteTag)
 {
@@ -1938,13 +1925,13 @@ u8 CreateObjectGraphicsSpriteWithTag(u16 graphicsId, void (*callback)(struct Spr
     }
     else if (spriteTemplate->paletteTag != TAG_NONE)
     {
-        if (paletteTag == TAG_NONE)
+        //if (paletteTag == TAG_NONE)
             LoadObjectEventPalette(spriteTemplate->paletteTag);
-        else
+        /*else
         {
             LoadObjectEventPaletteWithTag(spriteTemplate->paletteTag, paletteTag);
             spriteTemplate->paletteTag = paletteTag;
-        }
+        }*/
     }
 
     spriteId = CreateSprite(spriteTemplate, x, y, subpriority);
@@ -2163,7 +2150,7 @@ static u32 LoadDynamicFollowerPalette(u32 species, bool32 shiny, bool32 female)
     || (!shiny && gSpeciesInfo[species].overworldShinyPalette))
     {
         struct SpritePalette spritePalette;
-        u16 palTag = species + OBJ_EVENT_MON + (shiny ? OBJ_EVENT_MON_SHINY : 0);
+        u16 palTag = species + (shiny ? OBJ_EVENT_MON_SHINY : 0);
     #if P_GENDER_DIFFERENCES
         if (female && gSpeciesInfo[species].overworldShinyPaletteFemale != NULL)
             palTag += OBJ_EVENT_MON_FEMALE;

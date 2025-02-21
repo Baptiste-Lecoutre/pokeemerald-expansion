@@ -3288,6 +3288,13 @@ bool8 ScrFunc_hidefollower(struct ScriptContext *ctx)
     return TRUE;
 }
 
+void Script_EndTrainerCanSeeIf(struct ScriptContext *ctx)
+{
+    u8 condition = ScriptReadByte(ctx);
+    if (ctx->breakOnTrainerBattle && sScriptConditionTable[condition][ctx->comparisonResult] == 1)
+        StopScript(ctx);
+}
+
 // follow me script commands
 #include "follow_me.h"
 bool8 ScrCmd_setfollower(struct ScriptContext *ctx)
@@ -3356,11 +3363,4 @@ bool8 ScrCmd_checkquest(struct ScriptContext *ctx)
 {
     ctx->comparisonResult = QuestGet(ScriptReadHalfword(ctx));
     return FALSE;
-}
-
-void Script_EndTrainerCanSeeIf(struct ScriptContext *ctx)
-{
-    u8 condition = ScriptReadByte(ctx);
-    if (ctx->breakOnTrainerBattle && sScriptConditionTable[condition][ctx->comparisonResult] == 1)
-        StopScript(ctx);
 }
