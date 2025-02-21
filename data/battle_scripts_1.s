@@ -10172,11 +10172,10 @@ BattleScript_RaidShockwaveMegaCalmedHealed::
 
 BattleScript_RaidVictory::
 	hidehealthboxes
-	setbyte gBattlerTarget, 1
 	playanimation BS_TARGET, B_ANIM_RAID_BOSS_EXPLOSION
 	waitanimation
-	setbyte sGIVEEXP_STATE, 0
-	getexp BS_TARGET
+@	setbyte sGIVEEXP_STATE, 0 @ no exp in raid battles
+@	getexp BS_TARGET
 	jumpifnoballs BattleScript_FaintRaidBoss
 	printstring STRINGID_CATCHRAIDMON
 	setbyte gBattleCommunication, 0

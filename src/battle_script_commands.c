@@ -4537,8 +4537,8 @@ static void Cmd_tryfaintmon(void)
             // Check to start Raid end sequence.
             if (IsRaidBoss(battler))
             {
-                u8 hp = 1;
-                SetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP, &hp);
+            //    u8 hp = 1;
+            //    SetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP, &hp);
                 gBattlescriptCurrInstr = BattleScript_RaidVictory;
                 return;
             }
@@ -11535,7 +11535,7 @@ static void Cmd_various(void)
             gBattleStruct->raid.state |= RAID_CATCHING_BOSS;
             gSpecialVar_ItemId = ITEM_NONE;
             battler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-            RecalcBattlerStats(battler, &gEnemyParty[0], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
+            RecalcBattlerStats(battler, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
             BtlController_EmitChooseItem(battler, BUFFER_A, gBattleStruct->battlerPartyOrders[battler]);
             MarkBattlerForControllerExec(battler);
         }
@@ -11547,7 +11547,7 @@ static void Cmd_various(void)
             gBattleSpritesDataPtr->animationData->isCriticalCapture = 0;
             gBattleSpritesDataPtr->animationData->criticalCaptureSuccess = 0;
             gBattlerAttacker = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-            gBattlerTarget = GetRaidBossBattler();
+//            gBattlerTarget = GetRaidBossBattler(); // gbattlertarget should already be set to the correct battler for the explosion animation 
 
             BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_3_SHAKES_SUCCESS);
             MarkBattlerForControllerExec(gBattlerAttacker);
@@ -11564,8 +11564,8 @@ static void Cmd_various(void)
             MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
             HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], STATUS1_ANY, gBattlerTarget);
             RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
-            gBattleMons[gBattlerTarget].hp = gBattleMons[gBattlerTarget].maxHP;
-            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp);
+//            gBattleMons[gBattlerTarget].hp = 1;//gBattleMons[gBattlerTarget].maxHP;
+//            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp); // is i have to set the caught boss hp, it shoul dbe when transferred to the party?
             SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HELD_ITEM, &bossHeldItem);
         }
         else // no item selected
@@ -15735,7 +15735,9 @@ static void Cmd_removelightscreenreflect(void)
 
 u8 GetCatchingBattler(void)
 {
-    if (IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
+    if (gBattleTypeFlags & BATTLE_TYPE_RAID)
+        return gBattlerTarget;
+    else if (IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
         return GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
     else
         return GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
