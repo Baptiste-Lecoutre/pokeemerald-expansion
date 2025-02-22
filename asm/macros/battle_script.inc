@@ -2515,20 +2515,20 @@
 	.endm
 
 	.macro givedroppeditems
-	various BS_FAINTED, VARIOUS_GIVE_DROPPED_ITEMS
+	callnative BS_GiveDroppedItems
 	.endm
 
-	.macro jumpifnoballs, ptr:req
-	various 0, VARIOUS_JUMP_IF_NO_BALLS
-	.4byte \ptr
+	.macro jumpifnoballs, jumpInstr:req
+	callnative BS_JumpIfNoBalls
+	.4byte \jumpInstr
 	.endm
 
 	.macro catchraidboss
-	various 0, VARIOUS_CATCH_RAID_BOSS
+	callnative BS_CatchRaidBoss
 	.endm
 
 	.macro hidehealthboxes
-	various 0, VARIOUS_HIDE_HEALTHBOXES
+	callnative BS_HideHealthboxes
 	.endm
 
 	.macro doraidshockwave

@@ -11491,95 +11491,6 @@ static void Cmd_various(void)
         gBattleMons[battler].item = gLastUsedItem;
         break;
     }
-    case VARIOUS_GIVE_DROPPED_ITEMS:
-    {
-        VARIOUS_ARGS();
-        u8 battlers[] = {GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), 
-                         GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)};
-        for (i = 0; i < 1 + IsDoubleBattle(); i++)
-        {
-            gLastUsedItem = gBattleResources->battleHistory->heldItems[battlers[i]];
-            gBattleResources->battleHistory->heldItems[battlers[i]] = ITEM_NONE;
-            if (gLastUsedItem && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_WALLY_TUTORIAL))
-                && !(gLastUsedItem >= ITEM_RED_ORB && gLastUsedItem <= ITEM_DIANCITE)
-                && !(gLastUsedItem >= ITEM_NORMALIUM_Z && gLastUsedItem <= ITEM_ULTRANECROZIUM_Z))
-            {
-                if(AddBagItem(gLastUsedItem, 1))
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ITEM_DROPPED;
-                else
-                    gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_BAG_IS_FULL;
-                if (IsDoubleBattle())
-                    BattleScriptPushCursor();
-                else
-                    BattleScriptPush(gBattlescriptCurrInstr + 3);
-                gBattlescriptCurrInstr = BattleScript_ItemDropped;
-                return;
-            }
-        }
-        break;
-    }
-    case VARIOUS_JUMP_IF_NO_BALLS:
-    {
-        VARIOUS_ARGS(const u8 *jumpInstr);
-        if (IsBagPocketNonEmpty(POCKET_POKE_BALLS))
-            gBattlescriptCurrInstr = cmd->nextInstr;
-        else
-            gBattlescriptCurrInstr = cmd->jumpInstr;
-        return;
-    }
-    case VARIOUS_CATCH_RAID_BOSS:
-    {
-        VARIOUS_ARGS();
-        if (!(gBattleStruct->raid.state & RAID_CATCHING_BOSS)) // open bag if end sequence just began
-        {
-            gBattleStruct->raid.state |= RAID_CATCHING_BOSS;
-            gSpecialVar_ItemId = ITEM_NONE;
-            battler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-            RecalcBattlerStats(battler, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
-            BtlController_EmitChooseItem(battler, BUFFER_A, gBattleStruct->battlerPartyOrders[battler]);
-            MarkBattlerForControllerExec(battler);
-        }
-        else if (gSpecialVar_ItemId != ITEM_NONE) // do catch sequence if ball selected
-        {
-            u16 bossHeldItem = ITEM_NONE;
-            gBattleStruct->throwingPokeBall = TRUE;
-            gLastUsedItem = gSpecialVar_ItemId; // selected ball
-            gBattleSpritesDataPtr->animationData->isCriticalCapture = 0;
-            gBattleSpritesDataPtr->animationData->criticalCaptureSuccess = 0;
-            gBattlerAttacker = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-//            gBattlerTarget = GetRaidBossBattler(); // gbattlertarget should already be set to the correct battler for the explosion animation 
-
-            BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_3_SHAKES_SUCCESS);
-            MarkBattlerForControllerExec(gBattlerAttacker);
-            TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
-            // UndoFormChange(gBattlerPartyIndexes[gBattlerTarget], GET_BATTLER_SIDE(gBattlerTarget), FALSE);
-            gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
-            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
-
-            if (CalculatePlayerPartyCount() == PARTY_SIZE)
-                gBattleCommunication[MULTISTRING_CHOOSER] = 0;
-            else
-                gBattleCommunication[MULTISTRING_CHOOSER] = 1;
-
-            MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
-            HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], STATUS1_ANY, gBattlerTarget);
-            RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
-//            gBattleMons[gBattlerTarget].hp = 1;//gBattleMons[gBattlerTarget].maxHP;
-//            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp); // is i have to set the caught boss hp, it shoul dbe when transferred to the party?
-            SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HELD_ITEM, &bossHeldItem);
-        }
-        else // no item selected
-        {
-            gBattlescriptCurrInstr = BattleScript_FaintRaidBoss;
-        }
-        return;
-    }
-    case VARIOUS_HIDE_HEALTHBOXES:
-    {
-        VARIOUS_ARGS();
-        UpdateOamPriorityInAllHealthboxes(1, TRUE);
-        break;
-    }
     } // End of switch (cmd->id)
 
     gBattlescriptCurrInstr = cmd->nextInstr;
@@ -18434,5 +18345,34 @@ void BS_SwapStats(void)
         break;
     }
     PREPARE_STAT_BUFFER(gBattleTextBuff1, stat);
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_GiveDroppedItems(void)
+{
+    NATIVE_ARGS();
+    u32 i;
+    u8 battlers[] = {GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), 
+                     GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)};
+    for (i = 0; i < 1 + IsDoubleBattle(); i++)
+    {
+        gLastUsedItem = gBattleResources->battleHistory->heldItems[battlers[i]];
+        gBattleResources->battleHistory->heldItems[battlers[i]] = ITEM_NONE;
+        if (gLastUsedItem && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_WALLY_TUTORIAL))
+            && !(gLastUsedItem >= ITEM_RED_ORB && gLastUsedItem <= ITEM_DIANCITE)
+            && !(gLastUsedItem >= ITEM_NORMALIUM_Z && gLastUsedItem <= ITEM_ULTRANECROZIUM_Z))
+        {
+            if(AddBagItem(gLastUsedItem, 1))
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ITEM_DROPPED;
+            else
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_BAG_IS_FULL;
+            if (IsDoubleBattle())
+                BattleScriptPushCursor();
+            else
+                BattleScriptPush(gBattlescriptCurrInstr + 3);
+            gBattlescriptCurrInstr = BattleScript_ItemDropped;
+            return;
+        }
+    }
     gBattlescriptCurrInstr = cmd->nextInstr;
 }

@@ -12,6 +12,7 @@
 #include "daycare.h"
 #include "event_data.h"
 #include "item.h"
+#include "item_menu.h"
 #include "malloc.h"
 #include "overworld.h"
 #include "party_menu.h"
@@ -2262,4 +2263,72 @@ u16 OverrideRaidPartnerTrainerId(u16 trainerId)
     }
 
     return trainerId;
+}
+
+void BS_JumpIfNoBalls(void)
+{
+    NATIVE_ARGS(const u8 *jumpInstr);
+    if (IsBagPocketNonEmpty(POCKET_POKE_BALLS))
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    else
+        gBattlescriptCurrInstr = cmd->jumpInstr;
+}
+
+void BS_HideHealthboxes(void)
+{
+    NATIVE_ARGS();
+    UpdateOamPriorityInAllHealthboxes(1, TRUE);
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_CatchRaidBoss(void)
+{
+    NATIVE_ARGS();
+
+    if (!(gBattleStruct->raid.state & RAID_CATCHING_BOSS)) // open bag if end sequence just began
+    {
+        u32 battler;
+        gBattleStruct->raid.state |= RAID_CATCHING_BOSS;
+        gSpecialVar_ItemId = ITEM_NONE;
+        battler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
+        RecalcBattlerStats(battler, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
+        BtlController_EmitChooseItem(battler, BUFFER_A, gBattleStruct->battlerPartyOrders[battler]);
+        MarkBattlerForControllerExec(battler);
+    }
+    else if (gSpecialVar_ItemId != ITEM_NONE) // do catch sequence if ball selected
+    {
+        u16 bossHeldItem = ITEM_NONE;
+        gBattleStruct->throwingPokeBall = TRUE;
+        gLastUsedItem = gSpecialVar_ItemId; // selected ball
+        gBattleSpritesDataPtr->animationData->isCriticalCapture = 0;
+        gBattleSpritesDataPtr->animationData->criticalCaptureSuccess = 0;
+        gBattlerAttacker = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
+//        gBattlerTarget = GetRaidBossBattler(); // gbattlertarget should already be set to the correct battler for the explosion animation 
+
+        BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_3_SHAKES_SUCCESS);
+        MarkBattlerForControllerExec(gBattlerAttacker);
+        TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
+        // UndoFormChange(gBattlerPartyIndexes[gBattlerTarget], GET_BATTLER_SIDE(gBattlerTarget), FALSE);
+        gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
+        SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
+
+        if (CalculatePlayerPartyCount() == PARTY_SIZE)
+            gBattleCommunication[MULTISTRING_CHOOSER] = 0;
+        else
+            gBattleCommunication[MULTISTRING_CHOOSER] = 1;
+
+        MonRestorePP(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]]);
+        HealStatusConditions(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], STATUS1_ANY, gBattlerTarget);
+        RecalcBattlerStats(gBattlerTarget, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
+//        gBattleMons[gBattlerTarget].hp = 1;//gBattleMons[gBattlerTarget].maxHP;
+//        SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp); // is i have to set the caught boss hp, it shoul dbe when transferred to the party?
+        SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HELD_ITEM, &bossHeldItem);
+    }
+    else // no item selected
+    {
+        gBattlescriptCurrInstr = BattleScript_FaintRaidBoss;
+    }
+    return;
+
+    // gBattlescriptCurrInstr = cmd->nextInstr; // not reached, not present in the various. This might be why weir stuff happens when i try to continue the battle afterwards.
 }
