@@ -4535,13 +4535,9 @@ static void Cmd_tryfaintmon(void)
          && !IsBattlerAlive(battler))
         {
             // Check to start Raid end sequence.
-            if (IsRaidBoss(battler))
-            {
-            //    u8 hp = 1;
-            //    SetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP, &hp);
-                gBattlescriptCurrInstr = BattleScript_RaidVictory;
+            if (TryFaintRaidBoss(battler))
                 return;
-            }
+
             // Otherwise proceed as usual.
             gHitMarker |= HITMARKER_FAINTED(battler);
             BattleScriptPush(cmd->nextInstr);

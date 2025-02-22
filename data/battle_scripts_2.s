@@ -190,10 +190,11 @@ BattleScript_TryPrintCaughtMonInfo:
 	trysetcaughtmondexflags BattleScript_TryNicknameCaughtMon
 	printstring STRINGID_PKMNDATAADDEDTODEX
 	waitstate
-	jumpifbattletype BATTLE_TYPE_RAID, BattleScript_TryNicknameCaughtMon @ skip dex screen in raid battle for multiple catches
+	jumpifbattletype BATTLE_TYPE_RAID, BattleScript_GiveCaughtMonEnd @BattleScript_TryNicknameCaughtMon @ skip dex screen in raid battle for multiple catches
 	setbyte gBattleCommunication, 0
 	displaydexinfo
 BattleScript_TryNicknameCaughtMon::
+	jumpifbattletype BATTLE_TYPE_RAID, BattleScript_GiveCaughtMonEnd @ dont nickname raid boss, see 3 lines above
 	printstring STRINGID_GIVENICKNAMECAPTURED
 	waitstate
 	setbyte gBattleCommunication, 0

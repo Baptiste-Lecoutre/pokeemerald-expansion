@@ -2281,6 +2281,19 @@ void BS_HideHealthboxes(void)
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
 
+u32 TryFaintRaidBoss(u32 battler)
+{
+    if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
+        return FALSE;
+
+    if (!IsRaidBoss(battler))
+        return FALSE;
+//    u8 hp = 1;
+//    SetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP, &hp);
+    gBattlescriptCurrInstr = BattleScript_RaidVictory;
+    return TRUE;
+}
+
 void BS_CatchRaidBoss(void)
 {
     NATIVE_ARGS();
@@ -2308,8 +2321,7 @@ void BS_CatchRaidBoss(void)
         BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_3_SHAKES_SUCCESS);
         MarkBattlerForControllerExec(gBattlerAttacker);
         TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
-        // UndoFormChange(gBattlerPartyIndexes[gBattlerTarget], GET_BATTLER_SIDE(gBattlerTarget), FALSE);
-        gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
+        gBattlescriptCurrInstr = BattleScript_SuccessBallThrow; // maybe another battle script dedicated to raid boss?
         SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
 
         if (CalculatePlayerPartyCount() == PARTY_SIZE)

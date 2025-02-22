@@ -82,4 +82,6 @@ u8 GetRaidEggMoveChance(void);
 void DetermineRaidPartners(u8* partnerTrainerIndex, u8 maxPartners);
 u16 OverrideRaidPartnerTrainerId(u16 trainerId);
 
+u32 TryFaintRaidBoss(u32 battler);
+
 #endif

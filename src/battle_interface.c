@@ -3421,10 +3421,7 @@ void TryLoadTypeIcons(u8 activeBattler)
         u8 position;
         LoadSpritePalette(&sTypeIconPalTemplate);
 
-        /*if (gBattleTypeFlags & BATTLE_TYPE_RAID)
-            battleType = 2;*/
-        
-		for (position = 0; position < gBattlersCount; ++position)
+        for (position = 0; position < gBattlersCount; ++position)
 		{
             u8 typeNum, monNumTypes = 2;
 			u8 type1, type2;
@@ -3491,10 +3488,7 @@ static void SpriteCB_TypeIcon(struct Sprite* sprite)
     s16 originalY;
 	struct Sprite* healthbox = &gSprites[gHealthboxSpriteIds[GetBattlerAtPosition(position)]];
 
-    /*if (gBattleTypeFlags & BATTLE_TYPE_RAID)
-            battleType = 2;*/
-
-	if (sprite->data[2] == ICON_MOVE_X + 2 - 2 * sprite->data[4])
+    if (sprite->data[2] == ICON_MOVE_X + 2 - 2 * sprite->data[4])
 	{
 		FreeSpritePaletteByTag(TYPE_ICON_TAG);
 		DestroySprite(sprite);
