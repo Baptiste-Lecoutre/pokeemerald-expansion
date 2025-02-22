@@ -36,13 +36,15 @@
 #define NUM_RAID_SHOCKWAVE  4
 
 // Raid Battle States
-#define RAID_INTRO_COMPLETE     (1 << 1)
-#define RAID_CREATE_SHIELD      (1 << 2)
-#define RAID_BREAK_SHIELD       (1 << 3)
-#define RAID_CATCHING_BOSS      (1 << 4)
+#define RAID_INTRO_COMPLETE     (1 << 0)
+#define RAID_CATCHING_BOSS      (1 << 1)
+// possibly a RAID_CAUGHT_BOSS
+#define RAID_CREATE_SHIELD      (1 << 3)
+#define RAID_BREAK_SHIELD       (1 << 4)
 #define RAID_RESHOW_SHIELD     (1 << 5)
 #define RAID_HIDE_SHIELD       (1 << 6)
 #define RAID_UPDATE_SHIELD     (RAID_RESHOW_SHIELD | RAID_HIDE_SHIELD) // update sprites by destroying and creating them
+// one last bit available before turning the states to u16.
 
 // Raid Storm Turn Thresholds
 #define RAID_STORM_TURNS_LEVEL_1    3    // number of turns
