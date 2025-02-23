@@ -4535,7 +4535,7 @@ static void Cmd_tryfaintmon(void)
          && !IsBattlerAlive(battler))
         {
             // Check to start Raid end sequence.
-            if (TryFaintRaidBoss(battler))
+            if (TryFaintRaidBoss(battler)) // might have to do something because NeutralizingGas can change the value of gBattlerTarget
                 return;
 
             // Otherwise proceed as usual.

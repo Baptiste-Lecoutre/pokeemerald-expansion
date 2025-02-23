@@ -2523,12 +2523,13 @@
 	.4byte \jumpInstr
 	.endm
 
-	.macro catchraidboss
-	callnative BS_CatchRaidBoss
+	.macro jumpifraidfinished, jumpInstr:req
+	callnative BS_JumpIfRaidFinished
+	.4byte \jumpInstr
 	.endm
 
-	.macro hidehealthboxes
-	callnative BS_HideHealthboxes
+	.macro catchraidboss
+	callnative BS_CatchRaidBoss
 	.endm
 
 	.macro doraidshockwave

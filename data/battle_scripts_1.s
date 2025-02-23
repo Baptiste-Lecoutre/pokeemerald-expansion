@@ -10171,7 +10171,7 @@ BattleScript_RaidShockwaveMegaCalmedHealed::
 
 
 BattleScript_RaidVictory::
-	hidehealthboxes
+@	hidehealthboxes @ did not do anything. Keeping an undefined macro in case I want to do something about it later
 	playanimation BS_TARGET, B_ANIM_RAID_BOSS_EXPLOSION
 	waitanimation
 @	setbyte sGIVEEXP_STATE, 0 @ no exp in raid battles
@@ -10181,13 +10181,16 @@ BattleScript_RaidVictory::
 	setbyte gBattleCommunication, 0
 	yesnobox
 	jumpifbyte CMP_NOT_EQUAL, gBattleCommunication + 1, 0, BattleScript_FaintRaidBoss
-	catchraidboss
+	catchraidboss @ I should verify if the raid boss is on the opponent side to enable catching
 	end2
 
 BattleScript_FaintRaidBoss::
 	pause B_WAIT_TIME_LONG
 	dofaintanimation BS_TARGET
 	printstring STRINGID_RAIDPKMNDISAPPEARED
+	jumpifraidfinished BattleScript_FaintRaidBossEndBattle
+	finishaction
+BattleScript_FaintRaidBossEndBattle::
 	setbyte gBattleOutcome, B_OUTCOME_WON
 	finishturn
 

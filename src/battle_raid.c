@@ -2274,11 +2274,19 @@ void BS_JumpIfNoBalls(void)
         gBattlescriptCurrInstr = cmd->jumpInstr;
 }
 
-void BS_HideHealthboxes(void)
+void BS_JumpIfRaidFinished(void)
 {
-    NATIVE_ARGS();
-    UpdateOamPriorityInAllHealthboxes(1, TRUE);
-    gBattlescriptCurrInstr = cmd->nextInstr;
+    NATIVE_ARGS(const u8 *jumpInstr);
+    if ((IsBattlerAlive(gBattlerTarget) && IsRaidBoss(gBattlerTarget)) // is that necessary?
+     || (IsBattlerAlive(BATTLE_PARTNER(gBattlerTarget)) && IsRaidBoss(BATTLE_PARTNER(gBattlerTarget)))) // need to account for more cases. Can I just loop over all the battlers?
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    else
+        gBattlescriptCurrInstr = cmd->jumpInstr;
+
+    // I need to work a bit more on the different raid cases I want.
+    // What I think the scenarii would be:
+    // - Player has a raid boss. Goal is to obliterate opponents regardless of what we have against.
+    // - Player has no raid boss. Raid boss are on the opponent side. Need to obliterate raid boss, or all the enemies regardless if boss or not.
 }
 
 u32 TryFaintRaidBoss(u32 battler)
