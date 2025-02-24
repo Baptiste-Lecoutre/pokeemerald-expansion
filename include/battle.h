@@ -595,7 +595,7 @@ struct RaidBossData
     u8 shield; // stores the amount of shields in-use
     u8 shieldsRemaining; // stores the remaining num. of unused shields
     u8 nextShield; // stores the HP fraction threshold (0 to 100) that the next shield should occur
-    u8 shieldState;
+    u8 bossState;
     u16 shieldedHP; // stores either num. of shields (GEN_8) or amount of HP protected (GEN_9)
     u8 barrierSpriteIds[MAX_BARRIER_COUNT]; // used for shield sprites
 //    u8 align;
@@ -603,7 +603,7 @@ struct RaidBossData
 
 struct RaidBattleData
 {
-    u8 state; // stores the progress of the raid, intro and catching included
+    u8 raidState; // stores the progress of the raid, intro and catching included
     u8 energy; // stores Dynamax Energy position or Tera Orb charge
     u8 timerSpriteIds[2]; // used to display the timer for max & tera raids
     struct RaidBossData boss[MAX_BATTLERS_COUNT];

@@ -3107,7 +3107,7 @@ bool32 HandleFaintedMonActions(void)
                 if (gBattleMons[gBattleStruct->faintedActionsBattlerId].hp == 0
                  && !(gAbsentBattlerFlags & (1u << gBattleStruct->faintedActionsBattlerId)))
                 {
-                    BattleScriptExecute(BattleScript_HandleFaintedMon);
+                    BattleScriptExecute(BattleScript_HandleFaintedMon); // this is responsible for opening the party menu after catching one raid boss
                     gBattleStruct->faintedActionsState = 5;
                     return TRUE;
                 }
@@ -11078,7 +11078,7 @@ bool32 IsBattlerMegaEvolved(u32 battler)
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
     return (gSpeciesInfo[gBattleMons[battler].species].isMegaEvolution
-        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_MEGA && (gBattleStruct->raid.boss[battler].shieldState & RAID_INTRO_COMPLETE)));
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_MEGA && (gBattleStruct->raid.boss[battler].bossState & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerPrimalReverted(u32 battler)
@@ -11087,7 +11087,7 @@ bool32 IsBattlerPrimalReverted(u32 battler)
     if (gBattleMons[battler].status2 & STATUS2_TRANSFORMED)
         return FALSE;
     return (gSpeciesInfo[gBattleMons[battler].species].isPrimalReversion
-        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_PRIMAL && (gBattleStruct->raid.boss[battler].shieldState & RAID_INTRO_COMPLETE)));
+        || (IsRaidBoss(battler) && gRaidTypes[gRaidData.raidType].gimmick == RAID_GIMMICK_PRIMAL && (gBattleStruct->raid.boss[battler].bossState & RAID_INTRO_COMPLETE)));
 }
 
 bool32 IsBattlerUltraBursted(u32 battler)
@@ -11878,7 +11878,7 @@ void RecalcBattlerStats(u32 battler, struct Pokemon *mon, bool32 isDynamaxing)
     u32 hp = GetMonData(mon, MON_DATA_HP);
     u32 oldMaxHp = GetMonData(mon, MON_DATA_MAX_HP);
     CalculateMonStats(mon);
-    if (IsRaidBoss(battler) && !(gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+    if (IsRaidBoss(battler) && !(gBattleStruct->raid.raidState & RAID_CATCHING_BOSS))
         ApplyRaidHPMultiplier(mon);
     else if (GetActiveGimmick(battler) == GIMMICK_DYNAMAX && gChosenActionByBattler[battler] != B_ACTION_SWITCH)
     { // previously only ApplyDynamaxHPMultiplier(battler, mon);

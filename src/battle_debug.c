@@ -2240,9 +2240,9 @@ static void SetUpModifyArrows(struct BattleDebugMenu *data)
             data->modifyArrows.minValue = 0;
             data->modifyArrows.maxValue = 255;
             data->modifyArrows.maxDigits = 3;
-            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].shieldState;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.boss[data->battlerId].bossState;
             data->modifyArrows.typeOfVal = VAL_U8;
-            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].shieldState;
+            data->modifyArrows.currValue = gBattleStruct->raid.boss[data->battlerId].bossState;
         }
         else if (data->currentSecondaryListItemId == LIST_RAID_SHIELDS)
         {

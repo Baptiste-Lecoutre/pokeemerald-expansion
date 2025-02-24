@@ -1700,7 +1700,7 @@ static void OpenBagAndChooseItem(u32 battler)
 
         ReshowBattleScreenDummy();
         FreeAllWindowBuffers();
-        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.state & RAID_CATCHING_BOSS))
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.raidState & RAID_CATCHING_BOSS))
             CB2_ChooseBall();
         else
             CB2_BagMenuFromBattle();
