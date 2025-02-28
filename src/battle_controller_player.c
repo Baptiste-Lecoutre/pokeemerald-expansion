@@ -569,8 +569,6 @@ void HandleInputChooseTarget(u32 battler)
                 case B_POSITION_PLAYER_RIGHT:
                     if (battler != gMultiUsePlayerCursor)
                         i++;
-                    else if (moveTarget & MOVE_TARGET_USER_OR_SELECTED)
-                        i++;
                     break;
                 case B_POSITION_OPPONENT_LEFT:
                 case B_POSITION_OPPONENT_RIGHT:
@@ -581,7 +579,8 @@ void HandleInputChooseTarget(u32 battler)
                 MoveSelectionDisplayMoveTypeDoubles(battler, GetBattlerPosition(gMultiUsePlayerCursor));
 
                 if (gAbsentBattlerFlags & (1u << gMultiUsePlayerCursor)
-                 || !CanTargetBattler(battler, gMultiUsePlayerCursor, move))
+                 || !CanTargetBattler(battler, gMultiUsePlayerCursor, move)
+                 || (moveTarget & MOVE_TARGET_OPPONENT && GetBattlerSide(gMultiUsePlayerCursor) == B_SIDE_PLAYER))
                     i = 0;
             } while (i == 0);
         }
@@ -621,8 +620,6 @@ void HandleInputChooseTarget(u32 battler)
                 case B_POSITION_PLAYER_RIGHT:
                     if (battler != gMultiUsePlayerCursor)
                         i++;
-                    else if (moveTarget & MOVE_TARGET_USER_OR_SELECTED)
-                        i++;
                     break;
                 case B_POSITION_OPPONENT_LEFT:
                 case B_POSITION_OPPONENT_RIGHT:
@@ -633,7 +630,8 @@ void HandleInputChooseTarget(u32 battler)
                 MoveSelectionDisplayMoveTypeDoubles(battler, GetBattlerPosition(gMultiUsePlayerCursor));
 
                 if (gAbsentBattlerFlags & (1u << gMultiUsePlayerCursor)
-                 || !CanTargetBattler(battler, gMultiUsePlayerCursor, move))
+                 || !CanTargetBattler(battler, gMultiUsePlayerCursor, move)
+                 || (moveTarget & MOVE_TARGET_OPPONENT && GetBattlerSide(gMultiUsePlayerCursor) == B_SIDE_PLAYER))
                     i = 0;
             } while (i == 0);
         }
@@ -747,6 +745,7 @@ void HandleInputChooseMove(u32 battler)
 
     if (JOY_NEW(A_BUTTON) && !gBattleStruct->descriptionSubmenu)
     {
+        TryToHideMoveInfoWindow();
         PlaySE(SE_SELECT);
 
         moveTarget = GetBattlerMoveTargetType(battler, moveInfo->moves[gMoveSelectionCursor[battler]]);
@@ -765,14 +764,9 @@ void HandleInputChooseMove(u32 battler)
         if (moveTarget & MOVE_TARGET_USER)
             gMultiUsePlayerCursor = battler;
         else
-            gMultiUsePlayerCursor = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerSide(battler)));
+            gMultiUsePlayerCursor = GetOpposingSideBattler(battler);
 
-        if (!gBattleResources->bufferA[battler][1]) // not a double battle
-        {
-            if (moveTarget & MOVE_TARGET_USER_OR_SELECTED && !gBattleResources->bufferA[battler][2])
-                canSelectTarget = 1;
-        }
-        else // double battle
+        if (gBattleResources->bufferA[battler][1]) // a double battle
         {
             if (!(moveTarget & (MOVE_TARGET_RANDOM | MOVE_TARGET_BOTH | MOVE_TARGET_DEPENDS | MOVE_TARGET_FOES_AND_ALLY | MOVE_TARGET_OPPONENTS_FIELD | MOVE_TARGET_USER | MOVE_TARGET_ALLY)))
                 canSelectTarget = 1; // either selected or user
@@ -783,7 +777,7 @@ void HandleInputChooseMove(u32 battler)
             {
                 canSelectTarget = 0;
             }
-            else if (!(moveTarget & (MOVE_TARGET_USER | MOVE_TARGET_USER_OR_SELECTED)) && CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_BATTLER, battler) <= 1)
+            else if (!(moveTarget & MOVE_TARGET_USER) && CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_BATTLER, battler) <= 1)
             {
                 gMultiUsePlayerCursor = GetDefaultMoveTarget(battler);
                 canSelectTarget = 0;
@@ -826,7 +820,7 @@ void HandleInputChooseMove(u32 battler)
         case 1:
             gBattlerControllerFuncs[battler] = HandleInputChooseTarget;
 
-            if (moveTarget & (MOVE_TARGET_USER | MOVE_TARGET_USER_OR_SELECTED))
+            if (moveTarget & MOVE_TARGET_USER)
                 gMultiUsePlayerCursor = battler;
             else if (gAbsentBattlerFlags & (1u << GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
                 gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
@@ -857,6 +851,7 @@ void HandleInputChooseMove(u32 battler)
             BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, 0xFFFF);
             HideGimmickTriggerSprite();
             PlayerBufferExecCompleted(battler);
+            TryToHideMoveInfoWindow();
         }
     }
     else if (JOY_NEW(DPAD_LEFT) && !gBattleStruct->zmove.viewing)
@@ -921,7 +916,7 @@ void HandleInputChooseMove(u32 battler)
             TryChangeZTrigger(battler, gMoveSelectionCursor[battler]);
         }
     }
-    else if (JOY_NEW(SELECT_BUTTON) && !gBattleStruct->zmove.viewing && !gBattleStruct->descriptionSubmenu)
+    else if (B_MOVE_REARRANGEMENT_IN_BATTLE < GEN_4 && JOY_NEW(SELECT_BUTTON) && !gBattleStruct->zmove.viewing && !gBattleStruct->descriptionSubmenu)
     {
         if (gNumberOfMovesToChoose > 1 && !(gBattleTypeFlags & BATTLE_TYPE_LINK))
         {
@@ -957,7 +952,7 @@ void HandleInputChooseMove(u32 battler)
             TryLoadMoveInfoWindow(battler);
         }
     }
-    else if (JOY_NEW(B_MOVE_DESCRIPTION_BUTTON) && B_MOVE_DESCRIPTION_BUTTON != B_LAST_USED_BALL_BUTTON)
+    else if (JOY_NEW(B_MOVE_DESCRIPTION_BUTTON))
     {
         gBattleStruct->descriptionSubmenu = TRUE;
         MoveSelectionDisplayMoveDescription(battler);
@@ -1819,7 +1814,7 @@ static u8 ShowTypeEffectiveness(struct ChooseMoveStruct *moveInfo, u32 battler, 
 static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
 {
     u8 *txtPtr, *end;
-    u32 speciesId;
+    u32 speciesId = gBattleMons[battler].species;
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
     txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfaceType);
     u32 move = moveInfo->moves[gMoveSelectionCursor[battler]];
@@ -1833,7 +1828,6 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     }
     else if (effect == EFFECT_IVY_CUDGEL)
     {
-        speciesId = gBattleMons[battler].species;
 
         if (speciesId == SPECIES_OGERPON_WELLSPRING || speciesId == SPECIES_OGERPON_WELLSPRING_TERA
             || speciesId == SPECIES_OGERPON_HEARTHFLAME || speciesId == SPECIES_OGERPON_HEARTHFLAME_TERA
@@ -1847,8 +1841,8 @@ static void MoveSelectionDisplayMoveTypeDoubles(u32 battler, u8 targetId)
     }
     else if (effect == EFFECT_TERA_STARSTORM)
     {
-        if (gBattleMons[battler].species == SPECIES_TERAPAGOS_STELLAR
-        || (IsGimmickSelected(battler, GIMMICK_TERA) && gBattleMons[battler].species == SPECIES_TERAPAGOS_TERASTAL))
+        if (speciesId == SPECIES_TERAPAGOS_STELLAR
+        || (IsGimmickSelected(battler, GIMMICK_TERA) && speciesId == SPECIES_TERAPAGOS_TERASTAL))
             type = TYPE_STELLAR;
     }
     else if (P_SHOW_DYNAMIC_TYPES) // Non-vanilla changes to battle UI showing dynamic types
@@ -2208,7 +2202,7 @@ static void PlayerHandleChooseAction(u32 battler)
     if (B_SHOW_PARTNER_TARGET && gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && IsBattlerAlive(B_POSITION_PLAYER_RIGHT))
     {
         StringCopy(gStringVar1, COMPOUND_STRING("Partner will use:\n"));
-        u32 move = gBattleMons[B_POSITION_PLAYER_RIGHT].moves[*(gBattleStruct->chosenMovePositions + B_POSITION_PLAYER_RIGHT)];
+        u32 move = gBattleMons[B_POSITION_PLAYER_RIGHT].moves[gBattleStruct->chosenMovePositions[B_POSITION_PLAYER_RIGHT]];
         StringAppend(gStringVar1, GetMoveName(move));
         u32 moveTarget = GetBattlerMoveTargetType(B_POSITION_PLAYER_RIGHT, move);
         if (moveTarget == MOVE_TARGET_SELECTED)
@@ -2272,7 +2266,7 @@ void HandleChooseMoveAfterDma3(u32 battler)
 
 static void PlayerChooseMoveInBattlePalace(u32 battler)
 {
-    if (--*(gBattleStruct->arenaMindPoints + battler) == 0)
+    if (--gBattleStruct->arenaMindPoints[battler] == 0)
     {
         gBattlePalaceMoveSelectionRngValue = gRngValue;
         BtlController_EmitTwoReturnValues(battler, BUFFER_B, 10, ChooseMoveAndTargetInBattlePalace(battler));
@@ -2284,7 +2278,7 @@ void PlayerHandleChooseMove(u32 battler)
 {
     if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
     {
-        *(gBattleStruct->arenaMindPoints + battler) = 8;
+        gBattleStruct->arenaMindPoints[battler] = 8;
         gBattlerControllerFuncs[battler] = PlayerChooseMoveInBattlePalace;
     }
     else
@@ -2293,6 +2287,7 @@ void PlayerHandleChooseMove(u32 battler)
 
         InitMoveSelectionsVarsAndStrings(battler);
         gBattleStruct->gimmick.playerSelect = FALSE;
+//        TryToAddMoveInfoWindow();
 
         AssignUsableZMoves(battler, moveInfo->moves);
         gBattleStruct->zmove.viable = (gBattleStruct->zmove.possibleZMoves[battler] & (1u << gMoveSelectionCursor[battler])) != 0;
@@ -2340,7 +2335,8 @@ static void PlayerHandleChoosePokemon(u32 battler)
         gBattlePartyCurrentOrder[i] = gBattleResources->bufferA[battler][4 + i];
 
     if (gBattleTypeFlags & BATTLE_TYPE_ARENA && (gBattleResources->bufferA[battler][1] & 0xF) != PARTY_ACTION_CANT_SWITCH
-        && (gBattleResources->bufferA[battler][1] & 0xF) != PARTY_ACTION_CHOOSE_FAINTED_MON)
+        && (gBattleResources->bufferA[battler][1] & 0xF) != PARTY_ACTION_CHOOSE_FAINTED_MON
+        && (gBattleResources->bufferA[battler][1] & 0xF) != PARTY_ACTION_SEND_MON_TO_BOX)
     {
         BtlController_EmitChosenMonReturnValue(battler, BUFFER_B, gBattlerPartyIndexes[battler] + 1, gBattlePartyCurrentOrder);
         PlayerBufferExecCompleted(battler);

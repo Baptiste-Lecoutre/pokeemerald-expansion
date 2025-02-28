@@ -50,6 +50,7 @@ enum MapPopUp_Themes_BW
 
 // static functions
 static void Task_MapNamePopUpWindow(u8 taskId);
+static void UpdateSecondaryPopUpWindow(u8 secondaryPopUpWindowId);
 static void ShowMapNamePopUpWindow(void);
 static void LoadMapNamePopUpWindowBg(void);
 
@@ -472,6 +473,7 @@ static void Task_MapNamePopUpWindow(u8 taskId)
         break;
     case STATE_WAIT:
         // Wait while the window is fully onscreen.
+        UpdateSecondaryPopUpWindow(GetSecondaryPopUpWindowId());
         if (++task->tOnscreenTimer > 120)
         {
             task->tOnscreenTimer = 0;
@@ -548,6 +550,20 @@ void HideMapNamePopUpWindow(void)
     }
 }
 
+static void UpdateSecondaryPopUpWindow(u8 secondaryPopUpWindowId)
+{
+    u8 mapDisplayHeader[24];
+    u8 *withoutPrefixPtr = &(mapDisplayHeader[0]);
+
+    if (OW_POPUP_BW_TIME_MODE != OW_POPUP_BW_TIME_NONE)
+    {
+        RtcCalcLocalTime();
+        FormatDecimalTimeWithoutSeconds(withoutPrefixPtr, gLocalTime.hours, gLocalTime.minutes, OW_POPUP_BW_TIME_MODE == OW_POPUP_BW_TIME_24_HR);
+        AddTextPrinterParameterized(secondaryPopUpWindowId, FONT_SMALL, mapDisplayHeader, GetStringRightAlignXOffset(FONT_SMALL, mapDisplayHeader, DISPLAY_WIDTH) - 5, 8, TEXT_SKIP_DRAW, NULL);
+    }
+    CopyWindowToVram(secondaryPopUpWindowId, COPYWIN_FULL);
+}
+
 static void ShowMapNamePopUpWindow(void)
 {
     u8 mapDisplayHeader[24];
@@ -599,15 +615,15 @@ static void ShowMapNamePopUpWindow(void)
     {
         AddTextPrinterParameterized(mapNamePopUpWindowId, FONT_SHORT, mapDisplayHeader, sRegionMapSectionId_To_PopUpThemeIdMapping_BW[gMapHeader.regionMapSectionId] == MAPPOPUP_THEME_BW_DEFAULT ? 8 : 40, 2, TEXT_SKIP_DRAW, NULL);
         
-        if (OW_POPUP_BW_TIME_MODE != OW_POPUP_BW_TIME_NONE)
+        /*if (OW_POPUP_BW_TIME_MODE != OW_POPUP_BW_TIME_NONE) // dummied when merging DNS PR
         {
             RtcCalcLocalTime();
             FormatDecimalTimeWithoutSeconds(withoutPrefixPtr, gLocalTime.hours, gLocalTime.minutes, OW_POPUP_BW_TIME_MODE == OW_POPUP_BW_TIME_24_HR);
             AddTextPrinterParameterized(secondaryPopUpWindowId, FONT_SMALL, mapDisplayHeader, GetStringRightAlignXOffset(FONT_SMALL, mapDisplayHeader, DISPLAY_WIDTH) - 5, 8, TEXT_SKIP_DRAW, NULL);
-        }
+        }*/
 
         CopyWindowToVram(mapNamePopUpWindowId, COPYWIN_FULL);
-        CopyWindowToVram(secondaryPopUpWindowId, COPYWIN_FULL);
+        UpdateSecondaryPopUpWindow(secondaryPopUpWindowId);
     }
     else
     {

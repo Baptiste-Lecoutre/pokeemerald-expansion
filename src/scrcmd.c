@@ -24,6 +24,7 @@
 #include "field_tasks.h"
 #include "field_weather.h"
 #include "fieldmap.h"
+#include "gpu_regs.h"
 #include "item.h"
 #include "lilycove_lady.h"
 #include "main.h"
@@ -811,7 +812,8 @@ static bool8 IsPaletteNotActive(void)
 }
 
 // pauses script until palette fade inactive
-bool8 ScrFunc_WaitPaletteNotActive(struct ScriptContext *ctx) {
+bool8 ScrFunc_WaitPaletteNotActive(struct ScriptContext *ctx)
+{
     SetupNativeScript(ctx, IsPaletteNotActive);
     return TRUE;
 }
@@ -848,18 +850,18 @@ bool8 ScrCmd_fadescreenswapbuffers(struct ScriptContext *ctx)
 
     switch (mode)
     {
-    case FADE_TO_BLACK:
-    case FADE_TO_WHITE:
-    default:
-        CpuCopy32(gPlttBufferUnfaded, gDecompressionBuffer, PLTT_SIZE);
-        FadeScreen(mode, 0);
-        break;
     case FADE_FROM_BLACK:
     case FADE_FROM_WHITE:
-        CpuCopy32(gDecompressionBuffer, gPlttBufferUnfaded, PLTT_SIZE);
-        FadeScreen(mode, 0);
+        // Restore last weather blend before fading in,
+        // since BLDALPHA was modified by fade-out
+        SetGpuReg(
+            REG_OFFSET_BLDALPHA,
+            BLDALPHA_BLEND(gWeatherPtr->currBlendEVA, gWeatherPtr->currBlendEVB)
+        );
         break;
     }
+
+    FadeScreenHardware(mode, 0);
 
     if (nowait)
         return FALSE;
@@ -1269,6 +1271,21 @@ bool8 ScrCmd_fadeinbgm(struct ScriptContext *ctx)
     return FALSE;
 }
 
+struct ObjectEvent *ScriptHideFollower(void)
+{
+    struct ObjectEvent *obj = GetFollowerObject();
+
+    if (obj == NULL || obj->invisible)
+        return NULL;
+
+    ClearObjectEventMovement(obj, &gSprites[obj->spriteId]);
+    gSprites[obj->spriteId].animCmdIndex = 0; // Reset start frame of animation
+    // Note: ScriptMovement_ returns TRUE on error
+    if (ScriptMovement_StartObjectMovementScript(obj->localId, obj->mapGroup, obj->mapNum, EnterPokeballMovement))
+        return NULL;
+    return obj;
+}
+
 bool8 ScrCmd_applymovement(struct ScriptContext *ctx)
 {
     u16 localId = VarGet(ScriptReadHalfword(ctx));
@@ -1278,7 +1295,8 @@ bool8 ScrCmd_applymovement(struct ScriptContext *ctx)
     Script_RequestEffects(SCREFF_V1 | SCREFF_HARDWARE);
 
     // When applying script movements to follower, it may have frozen animation that must be cleared
-    if (localId == OBJ_EVENT_ID_FOLLOWER && (objEvent = GetFollowerObject()) && objEvent->frozen)
+    if ((localId == OBJ_EVENT_ID_FOLLOWER && (objEvent = GetFollowerObject()) && objEvent->frozen) 
+            || ((objEvent = &gObjectEvents[GetObjectEventIdByLocalId(localId)]) && IS_OW_MON_OBJ(objEvent)))
     {
         ClearObjectEventMovement(objEvent, &gSprites[objEvent->spriteId]);
         gSprites[objEvent->spriteId].animCmdIndex = 0; // Reset start frame of animation
@@ -1287,17 +1305,11 @@ bool8 ScrCmd_applymovement(struct ScriptContext *ctx)
     gObjectEvents[GetObjectEventIdByLocalId(localId)].directionOverwrite = DIR_NONE;
     ScriptMovement_StartObjectMovementScript(localId, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, movementScript);
     sMovingNpcId = localId;
-    objEvent = GetFollowerObject();
-    // Force follower into pokeball
     if (localId != OBJ_EVENT_ID_FOLLOWER
-        && !FlagGet(FLAG_SAFE_FOLLOWER_MOVEMENT)
-        && (movementScript < Common_Movement_FollowerSafeStart || movementScript > Common_Movement_FollowerSafeEnd)
-        && (objEvent = GetFollowerObject())
-        && !objEvent->invisible)
+     && !FlagGet(FLAG_SAFE_FOLLOWER_MOVEMENT)
+     && (movementScript < Common_Movement_FollowerSafeStart || movementScript > Common_Movement_FollowerSafeEnd))
     {
-        ClearObjectEventMovement(objEvent, &gSprites[objEvent->spriteId]);
-        gSprites[objEvent->spriteId].animCmdIndex = 0; // Reset start frame of animation
-        ScriptMovement_StartObjectMovementScript(OBJ_EVENT_ID_FOLLOWER, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, EnterPokeballMovement);
+        ScriptHideFollower();
     }
     return FALSE;
 }
@@ -1559,8 +1571,11 @@ bool8 ScrCmd_lockall(struct ScriptContext *ctx)
     }
     else
     {
+        struct ObjectEvent *followerObj = GetFollowerObject();
         FreezeObjects_WaitForPlayer();
         SetupNativeScript(ctx, IsFreezePlayerFinished);
+        if (FlagGet(FLAG_SAFE_FOLLOWER_MOVEMENT) && followerObj) // Unfreeze follower object (conditionally)
+            UnfreezeObjectEvent(followerObj);
         return TRUE;
     }
 }
@@ -2076,7 +2091,7 @@ bool8 ScrCmd_vmessage(struct ScriptContext *ctx)
 bool8 ScrCmd_bufferspeciesname(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
-    u16 species = VarGet(ScriptReadHalfword(ctx)) & OBJ_EVENT_GFX_SPECIES_MASK; // ignore possible shiny / form bits
+    u16 species = VarGet(ScriptReadHalfword(ctx)) & OBJ_EVENT_MON_SPECIES_MASK; // ignore possible shiny / form bits
 
     Script_RequestEffects(SCREFF_V1);
 
@@ -2459,7 +2474,8 @@ bool8 ScrCmd_updatecoinsbox(struct ScriptContext *ctx)
 bool8 ScrCmd_trainerbattle(struct ScriptContext *ctx)
 {
     Script_RequestEffects(SCREFF_V1 | SCREFF_TRAINERBATTLE);
-
+    
+    TrainerBattleLoadArgs(ctx->scriptPtr);
     ctx->scriptPtr = BattleSetup_ConfigureTrainerBattle(ctx->scriptPtr);
     return FALSE;
 }
@@ -3250,6 +3266,35 @@ bool8 Scrcmd_getobjectfacingdirection(struct ScriptContext *ctx)
     return FALSE;
 }
 
+bool8 ScrFunc_hidefollower(struct ScriptContext *ctx)
+{
+    bool16 wait = VarGet(ScriptReadHalfword(ctx));
+    struct ObjectEvent *obj;
+
+    if ((obj = ScriptHideFollower()) != NULL && wait)
+    {
+        sMovingNpcId = obj->localId;
+        sMovingNpcMapGroup = obj->mapGroup;
+        sMovingNpcMapNum = obj->mapNum;
+        SetupNativeScript(ctx, WaitForMovementFinish);
+    }
+
+    // Just in case, prevent `applymovement`
+    // from hiding the follower again
+    if (obj)
+        FlagSet(FLAG_SAFE_FOLLOWER_MOVEMENT);
+
+    // execute next script command with no delay
+    return TRUE;
+}
+
+void Script_EndTrainerCanSeeIf(struct ScriptContext *ctx)
+{
+    u8 condition = ScriptReadByte(ctx);
+    if (ctx->breakOnTrainerBattle && sScriptConditionTable[condition][ctx->comparisonResult] == 1)
+        StopScript(ctx);
+}
+
 // follow me script commands
 #include "follow_me.h"
 bool8 ScrCmd_setfollower(struct ScriptContext *ctx)
@@ -3318,13 +3363,6 @@ bool8 ScrCmd_checkquest(struct ScriptContext *ctx)
 {
     ctx->comparisonResult = QuestGet(ScriptReadHalfword(ctx));
     return FALSE;
-}
-
-void Script_EndTrainerCanSeeIf(struct ScriptContext *ctx)
-{
-    u8 condition = ScriptReadByte(ctx);
-    if (ctx->breakOnTrainerBattle && sScriptConditionTable[condition][ctx->comparisonResult] == 1)
-        StopScript(ctx);
 }
 
 bool8 Scrcmd_startmenustateditor(struct ScriptContext *ctx)

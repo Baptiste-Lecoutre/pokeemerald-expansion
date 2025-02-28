@@ -19,8 +19,10 @@
 #include "battle_raid.h"
 #include "battle_terastal.h"
 #include "battle_gimmick.h"
+#include "generational_changes.h"
 #include "move.h"
 #include "random.h" // for rng_value_t
+#include "trainer_slide.h"
 
 // Helper for accessing command arguments and advancing gBattlescriptCurrInstr.
 //
@@ -70,6 +72,7 @@
 
 #define BATTLE_BUFFER_LINK_SIZE 0x1000
 
+// Cleared each time a mon leaves the field, either by switching out or fainting
 struct DisableStruct
 {
     u32 transformedMonPersonality;
@@ -128,7 +131,7 @@ struct DisableStruct
     u16 overwrittenAbility;   // abilities overwritten during battle (keep separate from battle history in case of switching)
     u8 boosterEnergyActivates:1;
     u8 roostActive:1;
-    u8 unbrudenActive:1;
+    u8 unburdenActive:1;
     u8 startEmergencyExit:1;
     u8 neutralizingGas:1;
     u8 iceFaceActivationPrevention:1; // fixes hit escape move edge case
@@ -238,49 +241,49 @@ struct SpecialStatus
 
 struct SideTimer
 {
-    u8 reflectTimer;
+    u16 reflectTimer;
     u8 reflectBattlerId;
-    u8 lightscreenTimer;
+    u16 lightscreenTimer;
     u8 lightscreenBattlerId;
-    u8 mistTimer;
+    u16 mistTimer;
     u8 mistBattlerId;
-    u8 safeguardTimer;
+    u16 safeguardTimer;
     u8 safeguardBattlerId;
-    u8 spikesAmount;
-    u8 toxicSpikesAmount;
-    u8 stealthRockAmount;
-    u8 stickyWebAmount;
+    u16 spikesAmount; // debug menu complains. might be better to solve there instead if possible
+    u16 toxicSpikesAmount;
+    u16 stealthRockAmount;
+    u16 stickyWebAmount;
     u8 stickyWebBattlerId;
     u8 stickyWebBattlerSide; // Used for Court Change
-    u8 auroraVeilTimer;
+    u16 auroraVeilTimer;
     u8 auroraVeilBattlerId;
-    u8 tailwindTimer;
+    u16 tailwindTimer;
     u8 tailwindBattlerId;
-    u8 luckyChantTimer;
+    u16 luckyChantTimer;
     u8 luckyChantBattlerId;
-    u8 steelsurgeAmount;
+    u16 steelsurgeAmount;
     // Timers below this point are not swapped by Court Change
-    u8 followmeTimer;
+    u16 followmeTimer;
     u8 followmeTarget:3;
     u8 followmePowder:1; // Rage powder, does not affect grass type pokemon.
-    u8 retaliateTimer;
-    u8 damageNonTypesTimer;
+    u16 retaliateTimer;
+    u16 damageNonTypesTimer;
     u8 damageNonTypesType;
-    u8 rainbowTimer;
-    u8 seaOfFireTimer;
-    u8 swampTimer;
+    u16 rainbowTimer;
+    u16 seaOfFireTimer;
+    u16 swampTimer;
 };
 
 struct FieldTimer
 {
-    u8 mudSportTimer;
-    u8 waterSportTimer;
-    u8 wonderRoomTimer;
-    u8 magicRoomTimer;
-    u8 trickRoomTimer;
-    u8 terrainTimer;
-    u8 gravityTimer;
-    u8 fairyLockTimer;
+    u16 mudSportTimer;
+    u16 waterSportTimer;
+    u16 wonderRoomTimer;
+    u16 magicRoomTimer;
+    u16 trickRoomTimer;
+    u16 terrainTimer;
+    u16 gravityTimer;
+    u16 fairyLockTimer;
 };
 
 struct WishFutureKnock
@@ -289,7 +292,7 @@ struct WishFutureKnock
     u8 futureSightBattlerIndex[MAX_BATTLERS_COUNT];
     u8 futureSightPartyIndex[MAX_BATTLERS_COUNT];
     u16 futureSightMove[MAX_BATTLERS_COUNT];
-    u8 wishCounter[MAX_BATTLERS_COUNT];
+    u16 wishCounter[MAX_BATTLERS_COUNT];
     u8 wishPartyId[MAX_BATTLERS_COUNT];
     u8 weatherDuration;
     u8 knockedOffMons[NUM_BATTLE_SIDES]; // Each battler is represented by a bit.
@@ -350,13 +353,13 @@ struct AiLogicData
     u16 partnerMove;
     u16 speedStats[MAX_BATTLERS_COUNT]; // Speed stats for all battles, calculated only once, same way as damages
     struct SimulatedDamage simulatedDmg[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
-    u8 effectiveness[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
+    uq4_12_t effectiveness[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
     u8 moveAccuracy[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT][MAX_MON_MOVES]; // attacker, target, moveIndex
     u8 moveLimitations[MAX_BATTLERS_COUNT];
     u8 monToSwitchInId[MAX_BATTLERS_COUNT]; // ID of the mon to switch in.
     u8 mostSuitableMonId[MAX_BATTLERS_COUNT]; // Stores result of GetMostSuitableMonToSwitchInto, which decides which generic mon the AI would switch into if they decide to switch. This can be overruled by specific mons found in ShouldSwitch; the final resulting mon is stored in AI_monToSwitchIntoId.
     struct SwitchinCandidate switchinCandidate; // Struct used for deciding which mon to switch to in battle_ai_switch_items.c
-    u8 weatherHasEffect:1; // The same as WEATHER_HAS_EFFECT. Stored here, so it's called only once.
+    u8 weatherHasEffect:1; // The same as HasWeatherEffect(). Stored here, so it's called only once.
     u8 ejectButtonSwitch:1; // Tracks whether current switch out was from Eject Button
     u8 ejectPackSwitch:1; // Tracks whether current switch out was from Eject Pack
     u8 predictingSwitch:1; // Determines whether AI will use predictions this turn or not
@@ -708,7 +711,6 @@ struct BattleStruct
     u8 safariCatchFactor;
     u8 linkBattleVsSpriteId_V; // The letter "V"
     u8 linkBattleVsSpriteId_S; // The letter "S"
-    u8 formToChangeInto;
     u8 chosenMovePositions[MAX_BATTLERS_COUNT];
     u8 stateIdAfterSelScript[MAX_BATTLERS_COUNT];
     u8 prevSelectedPartySlot;
@@ -807,6 +809,7 @@ struct BattleStruct
     u8 ballSwapped:1; // Used for the last used ball feature
     u8 throwingPokeBall:1;
     u8 ballSpriteIds[2];    // item gfx, window gfx
+    u8 moveInfoSpriteId; // move info, window gfx
     u8 appearedInBattle; // Bitfield to track which Pokemon appeared in battle. Used for Burmy's form change
     u8 skyDropTargets[MAX_BATTLERS_COUNT]; // For Sky Drop, to account for if multiple Pokemon use Sky Drop in a double battle.
     // When using a move which hits multiple opponents which is then bounced by a target, we need to make sure, the move hits both opponents, the one with bounce, and the one without.
@@ -819,16 +822,6 @@ struct BattleStruct
     u8 bonusCritStages[MAX_BATTLERS_COUNT]; // G-Max Chi Strike boosts crit stages of allies.
     u8 itemPartyIndex[MAX_BATTLERS_COUNT];
     u8 itemMoveIndex[MAX_BATTLERS_COUNT];
-    u8 trainerSlideFirstCriticalHitMsgState:2;
-    u8 trainerSlideFirstSuperEffectiveHitMsgState:2;
-    u8 trainerSlideFirstSTABMoveMsgState:2;
-    u8 trainerSlidePlayerMonUnaffectedMsgState:2;
-    u8 trainerSlideHalfHpMsgDone:1;
-    u8 trainerSlideMegaEvolutionMsgDone:1;
-    u8 trainerSlideZMoveMsgDone:1;
-    u8 trainerSlideBeforeFirstTurnMsgDone:1;
-    u8 trainerSlideDynamaxMsgDone:1;
-    u8 trainerSlideLowHpMsgDone:1;
     u8 pledgeMove:1;
     u8 isSkyBattle:1;
     u32 aiDelayTimer; // Counts number of frames AI takes to choose an action.
@@ -840,8 +833,6 @@ struct BattleStruct
     u8 dauntlessShieldBoost[NUM_BATTLE_SIDES];
     u8 supersweetSyrup[NUM_BATTLE_SIDES];
     u8 supremeOverlordCounter[MAX_BATTLERS_COUNT];
-    u8 quickClawRandom[MAX_BATTLERS_COUNT];
-    u8 quickDrawRandom[MAX_BATTLERS_COUNT];
     u8 shellSideArmCategory[MAX_BATTLERS_COUNT][MAX_BATTLERS_COUNT];
     u8 speedTieBreaks; // MAX_BATTLERS_COUNT! values.
     u8 categoryOverride; // for Z-Moves and Max Moves
@@ -851,9 +842,9 @@ struct BattleStruct
     u8 additionalEffectsCounter:4; // A counter for the additionalEffects applied by the current move in Cmd_setadditionaleffects
     u8 redCardActivates:1;
     u8 padding2:2; // padding in the middle so pursuit fields are together
-    u8 pursuitSwitchByMove:1;
     u8 pursuitStoredSwitch; // Stored id for the Pursuit target's switch
     s32 battlerExpReward;
+    u16 prevTurnSpecies[MAX_BATTLERS_COUNT]; // Stores species the AI has in play at start of turn
     u8 revealedEnemyMons;
 
     // Simultaneous hp reduction for spread moves
@@ -867,8 +858,13 @@ struct BattleStruct
     u8 calculatedSpreadMoveAccuracy:1;
     u8 printedStrongWindsWeakenedAttack:1;
     u8 numSpreadTargets:2;
+    u8 bypassMoldBreakerChecks:1; // for ABILITYEFFECT_IMMUNITY
     u8 hasBattleInputStarted:1; // speed up battle
-    u8 padding3:1;
+    u8 usedEjectItem;
+    u8 usedMicleBerry;
+    struct MessageStatus slideMessageStatus;
+    u8 trainerSlideSpriteIds[MAX_BATTLERS_COUNT];
+    u8 embodyAspectBoost[NUM_BATTLE_SIDES];
     u32 battleTimer; // frame counter to measure battle time length
 };
 
@@ -1204,6 +1200,7 @@ extern u16 gBattleMovePower;
 extern u16 gMoveToLearn;
 extern u32 gFieldStatuses;
 extern struct FieldTimer gFieldTimers;
+extern u16 gBattleTurnCounter;
 extern u8 gBattlerAbility;
 extern struct QueuedStatBoost gQueuedStatBoosts[MAX_BATTLERS_COUNT];
 
@@ -1227,6 +1224,18 @@ extern const u16 gLevelCapAreaFlags[NUM_SOFT_CAPS];
 extern const u16 gLevelCapFlags[NUM_SOFT_CAPS];
 extern const u16 gLevelCaps[NUM_SOFT_CAPS];
 
+static inline bool32 IsBattlerAlive(u32 battler)
+{
+    if (gBattleMons[battler].hp == 0)
+        return FALSE;
+    else if (battler >= gBattlersCount)
+        return FALSE;
+    else if (gAbsentBattlerFlags & (1u << battler))
+        return FALSE;
+    else
+        return TRUE;
+}
+
 static inline bool32 IsBattlerTurnDamaged(u32 battler)
 {
     return gSpecialStatuses[battler].physicalDmg != 0
@@ -1244,9 +1253,40 @@ static inline u32 GetBattlerPosition(u32 battler)
     return gBattlerPositions[battler];
 }
 
+static inline u32 GetBattlerAtPosition(u32 position)
+{
+    u32 battler;
+    for (battler = 0; battler < gBattlersCount; battler++)
+    {
+        if (GetBattlerPosition(battler) == position)
+            break;
+    }
+    return battler;
+}
+
+static inline u32 GetPartnerBattler(u32 battler)
+{
+    return GetBattlerAtPosition(BATTLE_PARTNER(GetBattlerPosition(battler)));
+}
+
+static inline u32 GetOppositeBattler(u32 battler)
+{
+    return GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(battler)));
+}
+
 static inline u32 GetBattlerSide(u32 battler)
 {
     return GetBattlerPosition(battler) & BIT_SIDE;
+}
+
+static inline bool32 IsBattlerAlly(u32 battlerAtk, u32 battlerDef)
+{
+    return (GetBattlerSide(battlerAtk) == GetBattlerSide(battlerDef));
+}
+
+static inline u32 GetOpposingSideBattler(u32 battler)
+{
+    return GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerSide(battler)));
 }
 
 static inline struct Pokemon* GetPartyBattlerData(u32 battler)
@@ -1287,11 +1327,6 @@ static inline bool32 IsBattlerInvalidForSpreadMove(u32 battlerAtk, u32 battlerDe
     return battlerDef == battlerAtk
         || !IsBattlerAlive(battlerDef)
         || (battlerDef == BATTLE_PARTNER(battlerAtk) && (moveTarget == MOVE_TARGET_BOTH));
-}
-
-static inline bool32 MoveResultHasEffect(u32 battler)
-{
-    return !(gBattleStruct->moveResultFlags[battler] & MOVE_RESULT_NO_EFFECT);
 }
 
 #endif // GUARD_BATTLE_H

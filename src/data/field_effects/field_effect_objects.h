@@ -107,7 +107,7 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowLarge = {
 };
 
 const struct SpriteTemplate gFieldEffectObjectTemplate_ShadowExtraLarge = {
-    .tileTag = TAG_NONE, //FLDEFF_TILE_TAG_SHADOW_EXTRA_LARGE,
+    .tileTag = FLDEFF_TILE_TAG_SHADOW_EXTRA_LARGE,
     .paletteTag = TAG_WEATHER_START,
     .oam = &gObjectEventBaseOam_64x32,
     .anims = sAnimTable_Shadow,

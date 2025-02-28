@@ -3,6 +3,7 @@
 #include "event_scripts.h"
 #include "follower_helper.h"
 #include "overworld.h"
+#include "rtc.h"
 #include "constants/battle.h"
 #include "constants/followers.h"
 #include "constants/metatile_behaviors.h"
@@ -359,17 +360,23 @@ const struct FollowerMsgInfoExtended gFollowerConditionalMessages[COND_MSG_COUNT
     },
     [COND_MSG_DAY] =
     {
-    .text = (u8*)sDayTexts,
-    .textSpread = 1,
-    .emotion = FOLLOWER_EMOTION_MUSIC,
-    .conditions = {MATCH_TIME_OF_DAY(TIME_OF_DAY_DAY)},
+        .text = (u8*)sDayTexts,
+        .textSpread = 1,
+        .emotion = FOLLOWER_EMOTION_MUSIC,
+        .conditions =
+        {
+            MATCH_TIME_OF_DAY(TIME_DAY),
+        },
     },
     [COND_MSG_NIGHT] =
     {
-    .text = (u8*)sNightTexts,
-    .textSpread = 1,
-    .emotion = FOLLOWER_EMOTION_MUSIC,
-    .conditions = {MATCH_TIME_OF_DAY(TIME_OF_DAY_NIGHT)},
+        .text = (u8*)sNightTexts,
+        .textSpread = 1,
+        .emotion = FOLLOWER_EMOTION_MUSIC,
+        .conditions =
+        {
+            MATCH_TIME_OF_DAY(TIME_NIGHT),
+        },
     },
 };
 

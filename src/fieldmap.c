@@ -888,7 +888,7 @@ static void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u1
         {
             // LoadPalette(&black, destOffset, 2);
             if (skipFaded)
-                CpuFastCopy(tileset->palettes, &gPlttBufferUnfaded[destOffset], size);
+                CpuFastCopy(tileset->palettes, &gPlttBufferUnfaded[destOffset], size); // always word-aligned
             else
                 LoadPaletteFast(tileset->palettes, destOffset, size);
             gPlttBufferFaded[destOffset] = gPlttBufferUnfaded[destOffset] = RGB_BLACK; // why does it have to be black?
@@ -898,10 +898,10 @@ static void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u1
         }
         else if (tileset->isSecondary == TRUE)
         {
-            // (void*) is to silence 'source potentially unaligned' error
-            // All 'gTilesetPalettes_' arrays should have ALIGNED(4) in them
+            // All 'gTilesetPalettes_' arrays should have ALIGNED(4) in them,
+            // but we use SmartCopy here just in case they don't
             if (skipFaded)
-                CpuFastCopy((void*)tileset->palettes[NUM_PALS_IN_PRIMARY], &gPlttBufferUnfaded[destOffset], size);
+                CpuCopy16(tileset->palettes[NUM_PALS_IN_PRIMARY], &gPlttBufferUnfaded[destOffset], size);
             else
                 LoadPaletteFast(tileset->palettes[NUM_PALS_IN_PRIMARY], destOffset, size);
             low = NUM_PALS_IN_PRIMARY;
@@ -913,16 +913,20 @@ static void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u1
             ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
         }
         // convert legacy light palette system to current
-        if (tileset->lightPalettes) {
+        if (tileset->lightPalettes)
+        {
             u32 i, j, color;
-            for (i = low; i < high; i++) {
-                if (tileset->lightPalettes & (1 << (i - low))) { // Mark light colors
-                    for (j = 1, color = gPlttBufferUnfaded[PLTT_ID(i)]; j < 16 && color; j++, color >>= 1) {
+            for (i = low; i < high; i++)
+            {
+                if (tileset->lightPalettes & (1 << (i - low))) // Mark light colors
+                {
+                    for (j = 1, color = gPlttBufferUnfaded[PLTT_ID(i)]; j < 16 && color; j++, color >>= 1)
+                    {
                         if (color & 1)
                             gPlttBufferFaded[PLTT_ID(i)+j] = gPlttBufferUnfaded[PLTT_ID(i)+j] |= RGB_ALPHA;
                     }
                     if (tileset->customLightColor & (1 << (i - low))) // Copy old custom light color to index 0
-                        gPlttBufferFaded[PLTT_ID(i)] = gPlttBufferUnfaded[PLTT_ID(i)] = gPlttBufferUnfaded[PLTT_ID(i)+15] | RGB_ALPHA;
+                        gPlttBufferFaded[PLTT_ID(i)] = gPlttBufferUnfaded[PLTT_ID(i)] = gPlttBufferUnfaded[PLTT_ID(i) + 15] | RGB_ALPHA;
                 }
             }
         }

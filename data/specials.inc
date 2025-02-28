@@ -630,3 +630,5 @@ gSpecials::
 	def_special IsSelectedMonShiny
 	def_special MakeSelectedMonShiny
 	def_special StartVoltorbFlip
+	def_special EnterCode
+	def_special GetCodeFeedback

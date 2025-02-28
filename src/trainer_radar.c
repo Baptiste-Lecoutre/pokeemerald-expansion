@@ -867,7 +867,7 @@ static void TrainerRadarBuildRouteListMenuTemplate(void)
             rematchTableId = TrainerIdToRematchTableId(gRematchTable, trainerId);
             if (rematchTableId != -1)
             {
-                gTrainerBattleOpponent_A = trainerId;
+                TRAINER_BATTLE_PARAM.opponentA = trainerId;
                 if (IsTrainerReadyForRematch())
                 {
                     if (CountBattledRematchTeams(trainerId) == REMATCHES_COUNT)
@@ -1062,7 +1062,7 @@ static void PrintTrainerParty(void)
         const struct TrainerMon *party = GetTrainerPartyFromId(trainerId);
         if (rematchTableId != -1)
         {
-            gTrainerBattleOpponent_A = trainerId;
+            TRAINER_BATTLE_PARAM.opponentA = trainerId;
             if (IsTrainerReadyForRematch())
                 trainerId = GetRematchTrainerIdFromTable(gRematchTable, trainerId);
         }

@@ -64,20 +64,6 @@ struct Pokenav_Menu
     u32 (*callback)(struct Pokenav_Menu *);
 };
 
-struct Pokenav_MainMenu
-{
-    void (*loopTask)(u32);
-    u32 (*isLoopTaskActiveFunc)(void);
-    u32 unused;
-    u32 currentTaskId;
-    u32 helpBarWindowId;
-    u32 palettes;
-    struct Sprite *spinningPokenav;
-    struct Sprite *leftHeaderSprites[2];
-    struct Sprite *submenuLeftHeaderSprites[2];
-    u8 tilemapBuffer[BG_SCREEN_SIZE];
-};
-
 // Return values of LoopedTask functions.
 #define LT_INC_AND_PAUSE 0
 #define LT_INC_AND_CONTINUE 1

@@ -730,7 +730,7 @@ bool8 StandardWildEncounter(u16 curMetatileBehavior, u16 prevMetatileBehavior)
 
     if (sWildEncountersDisabled == TRUE)
         return FALSE;
-    if (OW_DEXNAV_SEARCH_NO_ENCOUNTERS && FlagGet(FLAG_SYS_DEXNAV_SEARCH))
+    if (OW_DEXNAV_SEARCH_NO_ENCOUNTERS && FlagGet(DN_FLAG_SEARCHING))
         return FALSE;
 
     headerId = GetCurrentMapWildMonHeaderId();

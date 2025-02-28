@@ -240,35 +240,35 @@
 #define OBJ_EVENT_GFX_LINK_RS_MAY                236
 #define OBJ_EVENT_GFX_LUGIA                      237
 #define OBJ_EVENT_GFX_HOOH                       238
-#define OBJ_EVENT_GFX_GOLD_ITEM_BALL             239
-#define OBJ_EVENT_GFX_MEGA_STONE                 240
-#define OBJ_EVENT_GFX_BROCK                      241
-#define OBJ_EVENT_GFX_MISTY                      242
-#define OBJ_EVENT_GFX_LT_SURGE                   243
-#define OBJ_EVENT_GFX_ERIKA                      244
-#define OBJ_EVENT_GFX_KOGA                       245
-#define OBJ_EVENT_GFX_SABRINA                    246
-#define OBJ_EVENT_GFX_BLAINE                     247
-#define OBJ_EVENT_GFX_ROCKET_M                   248
-#define OBJ_EVENT_GFX_ROCKET_F                   249
-#define OBJ_EVENT_GFX_GIOVANNI                   250
-#define OBJ_EVENT_GFX_CYNTHIA                    251
-#define OBJ_EVENT_GFX_ZAPDOS                     252
-#define OBJ_EVENT_GFX_ARTICUNO                   253
-#define OBJ_EVENT_GFX_MOLTRES                    254
-#define OBJ_EVENT_GFX_REGIGIGAS                  255
-#define OBJ_EVENT_GFX_BLUE                       256
-#define OBJ_EVENT_GFX_SNORLAX_SLEEPING           257
-#define OBJ_EVENT_GFX_REGIDRAGO                  258
-#define OBJ_EVENT_GFX_REGIELEKI                  259
-#define OBJ_EVENT_GFX_RAID_DEN                   260
-#define OBJ_EVENT_GFX_SPHEAL                     261
+#define OBJ_EVENT_GFX_POKE_BALL                  239
+#define OBJ_EVENT_GFX_OW_MON                     240
+#define OBJ_EVENT_GFX_LIGHT_SPRITE               241
 
-#define OBJ_EVENT_GFX_POKE_BALL                  262//OBJ_EVENT_GFX_ITEM_BALL // replaces ITEM_BALL
-#define OBJ_EVENT_GFX_OW_MON                     263
-#define OBJ_EVENT_GFX_LIGHT_SPRITE               OBJ_EVENT_GFX_QUINTY_PLUMP
+#define OBJ_EVENT_GFX_GOLD_ITEM_BALL             242
+#define OBJ_EVENT_GFX_MEGA_STONE                 243
+#define OBJ_EVENT_GFX_BROCK                      244
+#define OBJ_EVENT_GFX_MISTY                      245
+#define OBJ_EVENT_GFX_LT_SURGE                   246
+#define OBJ_EVENT_GFX_ERIKA                      247
+#define OBJ_EVENT_GFX_KOGA                       248
+#define OBJ_EVENT_GFX_SABRINA                    249
+#define OBJ_EVENT_GFX_BLAINE                     250
+#define OBJ_EVENT_GFX_ROCKET_M                   251
+#define OBJ_EVENT_GFX_ROCKET_F                   252
+#define OBJ_EVENT_GFX_GIOVANNI                   253
+#define OBJ_EVENT_GFX_CYNTHIA                    254
+#define OBJ_EVENT_GFX_ZAPDOS                     255
+#define OBJ_EVENT_GFX_ARTICUNO                   256
+#define OBJ_EVENT_GFX_MOLTRES                    257
+#define OBJ_EVENT_GFX_REGIGIGAS                  258
+#define OBJ_EVENT_GFX_BLUE                       259
+#define OBJ_EVENT_GFX_SNORLAX_SLEEPING           260
+#define OBJ_EVENT_GFX_REGIDRAGO                  261
+#define OBJ_EVENT_GFX_REGIELEKI                  262
+#define OBJ_EVENT_GFX_RAID_DEN                   263
+#define OBJ_EVENT_GFX_SPHEAL                     264
 
-#define	COSTUME_GFX									OBJ_EVENT_GFX_OW_MON 
+#define	COSTUME_GFX									OBJ_EVENT_GFX_SPHEAL
 //Costumes
 #define OBJ_EVENT_GFX_RED_NORMAL     				COSTUME_GFX + 1
 #define OBJ_EVENT_GFX_RED_FIELD_MOVE     			COSTUME_GFX + 2
@@ -434,16 +434,10 @@
 #define OBJ_EVENT_GFX_MAY_YELLOW_WATERING      	    COSTUME_GFX + 146
 #define OBJ_EVENT_GFX_MAY_YELLOW_DECORATING     	COSTUME_GFX + 147
 
-// NOTE: By default, the max value for NUM_OBJ_EVENT_GFX is 239.
-//
-// Object event graphics ids are 1 byte in size (max value of 255), and the dynamic
-// graphics ids that start after NUM_OBJ_EVENT_GFX reach this limit. No graphics id
-// uses the value 239 itself, so removing the "+ 1" in OBJ_EVENT_GFX_VARS would
-// allow increasing NUM_OBJ_EVENT_GFX to 240. There are also a handful of unused
-// object graphics that can be removed. If more graphics are needed, anything that
-// stores graphics ids will need to be increased in size. See wiki entry below:
-// https://github.com/pret/pokeemerald/wiki/Feature-Branches#overworld-expansion
-#define NUM_OBJ_EVENT_GFX                        OBJ_EVENT_GFX_MAY_YELLOW_DECORATING + 1 //259
+// NOTE: The maximum amount of object events has been expanded from 255 to 65535.
+// Since dynamic graphics ids still require at least 16 free values, the actual limit
+// is 65519, but even considering follower Pokémon, this should be more than enough :)
+#define NUM_OBJ_EVENT_GFX                        OBJ_EVENT_GFX_MAY_YELLOW_DECORATING + 1
 
 
 // These are dynamic object gfx ids.
@@ -467,19 +461,24 @@
 #define OBJ_EVENT_GFX_VAR_E  (OBJ_EVENT_GFX_VARS + 0xE)
 #define OBJ_EVENT_GFX_VAR_F  (OBJ_EVENT_GFX_VARS + 0xF)
 
-#define OBJ_EVENT_GFX_MON_BASE  0x200 // 512
-#define OBJ_EVENT_GFX_SPECIES_BITS 12 // This will need to be updated when NUM_SPECIES is > ~3.5k
-#define OBJ_EVENT_GFX_SPECIES_MASK ((1 << OBJ_EVENT_GFX_SPECIES_BITS) - 1)
+// Don't use (1u << 15) to avoid conflict with BLEND_IMMUNE_FLAG.
+#define OBJ_EVENT_MON               (1u << 14)
+#define OBJ_EVENT_MON_SHINY         (1u << 13)
+#define OBJ_EVENT_MON_FEMALE        (1u << 12)
+#define OBJ_EVENT_MON_SPECIES_MASK  (~(7u << 12))
 
 // Used to call a specific species' follower graphics. Useful for static encounters.
-#define OBJ_EVENT_GFX_SPECIES(name)       (SPECIES_##name + OBJ_EVENT_GFX_MON_BASE)
-#define OBJ_EVENT_GFX_SPECIES_SHINY(name) (SPECIES_##name + OBJ_EVENT_GFX_MON_BASE + SPECIES_SHINY_TAG)
+#define OBJ_EVENT_GFX_SPECIES(name)                 (SPECIES_##name + OBJ_EVENT_MON)
+#define OBJ_EVENT_GFX_SPECIES_SHINY(name)           (SPECIES_##name + OBJ_EVENT_MON + OBJ_EVENT_MON_SHINY)
+#define OBJ_EVENT_GFX_SPECIES_FEMALE(name)          (SPECIES_##name + OBJ_EVENT_MON + OBJ_EVENT_MON_FEMALE)
+#define OBJ_EVENT_GFX_SPECIES_SHINY_FEMALE(name)    (SPECIES_##name + OBJ_EVENT_MON + OBJ_EVENT_MON_SHINY + OBJ_EVENT_MON_FEMALE)
 
-#define OW_SPECIES(x) (((x)->graphicsId & OBJ_EVENT_GFX_SPECIES_MASK) - OBJ_EVENT_GFX_MON_BASE)
-#define OW_FORM(x) ((x)->graphicsId >> OBJ_EVENT_GFX_SPECIES_BITS)
+#define OW_SPECIES(x) ((x)->graphicsId & OBJ_EVENT_MON_SPECIES_MASK)
+#define OW_SHINY(x) ((x)->graphicsId & OBJ_EVENT_MON_SHINY)
+#define OW_FEMALE(x) ((x)->graphicsId & OBJ_EVENT_MON_FEMALE)
 
 // Whether Object Event is an OW pokemon
-#define IS_OW_MON_OBJ(obj) ((obj)->graphicsId >= OBJ_EVENT_GFX_MON_BASE)
+#define IS_OW_MON_OBJ(obj) ((obj)->graphicsId & OBJ_EVENT_MON)
 
 #define SHADOW_SIZE_S       0
 #define SHADOW_SIZE_M       1
@@ -497,6 +496,10 @@
 #define TRACKS_SLITHER    3
 #define TRACKS_SPOT       4
 #define TRACKS_BUG        5
+
+#define LIGHT_TYPE_BALL             0
+#define LIGHT_TYPE_PKMN_CENTER_SIGN 1
+#define LIGHT_TYPE_POKE_MART_SIGN   2
 
 #define FIRST_DECORATION_SPRITE_GFX OBJ_EVENT_GFX_PICHU_DOLL
 

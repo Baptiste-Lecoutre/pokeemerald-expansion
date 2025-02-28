@@ -4672,6 +4672,25 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Follower = {
     .affineAnims = gDummySpriteAffineAnimTable,
 };
 
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_BallLight = {
+    .tileTag = TAG_NONE, 
+    .paletteTag = OBJ_EVENT_PAL_TAG_LIGHT, 
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_LIGHT_2, 
+    .size = 512, 
+    .width = 32, 
+    .height = 32, 
+    .paletteSlot = PALSLOT_NPC_1, 
+    .shadowSize = SHADOW_SIZE_NONE, 
+    .inanimate = TRUE, 
+    .compressed = FALSE, 
+    .tracks = TRACKS_NONE, 
+    .oam = &gObjectEventBaseOam_32x32,
+    .subspriteTables = sOamTables_32x32, 
+    .anims = sAnimTable_Inanimate, 
+    .images = gFieldEffectObjectPicTable_BallLight, 
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_GoldItemBall = {TAG_NONE, OBJ_EVENT_PAL_TAG_NPC_2, OBJ_EVENT_PAL_TAG_NONE, 128, 16, 16, 3, SHADOW_SIZE_S, TRUE, FALSE, TRACKS_NONE, &gObjectEventBaseOam_16x16, sOamTables_16x16, sAnimTable_Inanimate, sPicTable_GoldItemBall, gDummySpriteAffineAnimTable};
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MegaStone = {TAG_NONE, OBJ_EVENT_PAL_TAG_NPC_3, OBJ_EVENT_PAL_TAG_NONE, 128, 16, 16, 4, SHADOW_SIZE_S, FALSE, FALSE, TRACKS_NONE, &gObjectEventBaseOam_16x16, sOamTables_16x16, sAnimTable_Standard, sPicTable_MegaStone, gDummySpriteAffineAnimTable};
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Brock = {TAG_NONE, OBJ_EVENT_PAL_TAG_NPC_7, OBJ_EVENT_PAL_TAG_NONE, 256, 16, 32, 4, SHADOW_SIZE_M, FALSE, FALSE, TRACKS_FOOT, &gObjectEventBaseOam_16x32, sOamTables_16x32, sAnimTable_Standard, sPicTable_Brock, gDummySpriteAffineAnimTable};
@@ -5717,5 +5736,3 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_MayYellowDecoratin
     .images = sPicTable_MayDecorating,
     .affineAnims = gDummySpriteAffineAnimTable,
 };
-
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_BallLight = {TAG_NONE, OBJ_EVENT_PAL_TAG_LIGHT, OBJ_EVENT_PAL_TAG_LIGHT_2, 512, 32, 32, 2, SHADOW_SIZE_NONE, TRUE, FALSE, TRACKS_NONE, &gObjectEventBaseOam_32x32, sOamTables_32x32, sAnimTable_Inanimate, gFieldEffectObjectPicTable_BallLight, gDummySpriteAffineAnimTable};

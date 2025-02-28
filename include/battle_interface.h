@@ -142,5 +142,7 @@ void ChangeBattlerSpritesInvisibilities(bool8 invisible);
 void DisplayInBattleTeamPreview(void);
 void HideInBattleTeamPreview(void);
 void CategoryIcons_LoadSpritesGfx(void);
+void TryToAddMoveInfoWindow(void);
+void TryToHideMoveInfoWindow(void);
 
 #endif // GUARD_BATTLE_INTERFACE_H

@@ -55,9 +55,38 @@
                                                   // 16x32, 32x32, 64x64 etc are fine
 #define OW_MON_WANDER_WALK             TRUE       // If true, OW pokemon with MOVEMENT_TYPE_WANDER will walk-in-place in between steps.
 // Follower Pokémon
-#define OW_FOLLOWERS_ENABLED           TRUE       // Enables follower Pokémon, HGSS style. Requires OW_POKEMON_OBJECT_EVENTS. Note that additional scripting may be required for them to be fully supported!
-#define OW_FOLLOWERS_BOBBING           TRUE       // If true, follower pokemon will bob up and down during their idle & walking animations
-#define OW_FOLLOWERS_POKEBALLS         TRUE       // Followers will emerge from the pokeball they are stored in, instead of a normal pokeball
+#define OW_FOLLOWERS_ENABLED           TRUE      // Enables follower Pokémon, HGSS style. Requires OW_POKEMON_OBJECT_EVENTS. Note that additional scripting may be required for them to be fully supported!
+#define OW_FOLLOWERS_BOBBING           TRUE       // If TRUE, follower Pokémon will bob up and down during their idle & walking animations
+#define OW_FOLLOWERS_POKEBALLS         TRUE       // If TRUE, follower Pokémon will emerge from the Poké Ball they are stored in, instead of a normal Poké Ball
+#define OW_FOLLOWERS_WEATHER_FORMS     TRUE      // If TRUE, Castform and Cherrim gain FORM_CHANGE_OVERWORLD_WEATHER, which will make them transform in the overworld based on the weather.
+#define OW_FOLLOWERS_COPY_WILD_PKMN    TRUE      // If TRUE, follower Pokémon that know Transform or have Illusion/Imposter will copy wild Pokémon at random.
+#define OW_BATTLE_ONLY_FORMS           TRUE       // If TRUE, loads overworld sprites for battle-only forms like Mega Evos. Requires OW_POKEMON_OBJECT_EVENTS.
+#define B_FLAG_FOLLOWERS_DISABLED      0          // Enables / Disables followers by using a flag. Helpful to disable followers for a period of time.
+
+
+#define OW_FOLLOWERS_SCRIPT_MOVEMENT   TRUE       // TRUE: Script collisions hide follower, FLAG_SAFE_FOLLOWER_MOVEMENT on by default
+                                                  // FALSE: Script collisions unhandled, FLAG_SAFE_FOLLOWER_MOVEMENT off by default
+
+// If set, the only pokemon allowed to follow you
+// will be those matching species, met location,
+// and/or met level;
+// These accept vars, too: VAR_TEMP_1, etc
+#define OW_MON_ALLOWED_SPECIES (0)
+#define OW_MON_ALLOWED_MET_LVL (0)
+#define OW_MON_ALLOWED_MET_LOC (0)
+// Examples:
+// Yellow Pikachu:
+// #define OW_MON_ALLOWED_SPECIES (SPECIES_PIKACHU)
+// #define OW_MON_ALLOWED_MET_LVL (0)
+// #define OW_MON_ALLOWED_MET_LOC (MAPSEC_PALLET_TOWN)
+// Hoenn Starter:
+// #define OW_MON_ALLOWED_SPECIES (0)
+// #define OW_MON_ALLOWED_MET_LVL (5)
+// #define OW_MON_ALLOWED_MET_LOC (MAPSEC_ROUTE_101)
+// Species set in VAR_XXXX:
+// #define OW_MON_ALLOWED_SPECIES (VAR_XXXX)
+// #define OW_MON_ALLOWED_MET_LVL (0)
+// #define OW_MON_ALLOWED_MET_LOC (0)
 
 // Out-of-battle Ability effects
 #define OW_SYNCHRONIZE_NATURE       GEN_LATEST // In Gen8+, if a Pokémon with Synchronize leads the party, wild Pokémon will always have their same Nature as opposed to the 50% chance in previous games. Gift Pokémon excluded.
@@ -73,10 +102,14 @@
 // These generational defines only make a distinction for OW_ALTERED_TIME_RATIO
 #define GEN_8_PLA                       GEN_LATEST + 2
 
-//Time
+// Time
 #define OW_TIMES_OF_DAY                 GEN_LATEST // Different generations have the times of day change at different times.
 #define OW_USE_FAKE_RTC                 FALSE      // When TRUE, seconds on the in-game clock will only advance once every 60 playTimeVBlanks (every 60 frames).
 #define OW_ALTERED_TIME_RATIO           GEN_LATEST // In GEN_8_PLA, the time in game moves forward 60 seconds for every second in the RTC. In GEN_9, it is 20 seconds. This has no effect if OW_USE_FAKE_RTC is FALSE.
+
+// Lighting
+#define OW_SHADOW_INTENSITY             4          // Ranges from 0 to 16, where 0 is fully transparent and 16 is black.
+#define OW_OBJECT_SUBPRIORITY           148        // The higher the value, the farther back compared to other sprites. Shadows should be behind object events.
 
 // Overworld flags
 // To use the following features in scripting, replace the 0s with the flag ID you're assigning it to.
@@ -118,5 +151,8 @@
 // Dexnav config
 #define OW_DEXNAV_SEARCH_NO_ENCOUNTERS  TRUE // When set to TRUE, standard wild encountered are disabled during a dexnav search
 #define OW_DEXNAV_SEARCH_CREEPING_SNEAKING  FALSE   // When set to TRUE, the player must slowly approach the dexnav encounter with holding A during movements
+
+// Berry Blender
+#define BERRY_BLENDER_THROW_ALL_BERRIES_AT_ONCE TRUE        // This is a small little addition, that basically speeds up the animation where all players' berries are thrown into the blender. Self-explanatory I hope!
 
 #endif // GUARD_CONFIG_OVERWORLD_H

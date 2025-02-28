@@ -1387,7 +1387,7 @@
 #define FLAG_IS_CHAMPION                            (SYSTEM_FLAGS + 0x1F) // Seems to be related to linking.
 #define FLAG_NURSE_UNION_ROOM_REMINDER              (SYSTEM_FLAGS + 0x20)
 
-#define FLAG_SYS_DEXNAV_SEARCH                      (SYSTEM_FLAGS + 0x21)
+#define DN_FLAG_SEARCHING                      (SYSTEM_FLAGS + 0x21)
 #define FLAG_SHINY_CREATION                         (SYSTEM_FLAGS + 0x22) // force creation of a shiny mon
 #define FLAG_HIDDEN_ABILITY_CREATION                (SYSTEM_FLAGS + 0x23) // force creation of a mon with its hidden ability
 #define FLAG_SYS_REGIELEKI_PUZZLE_COMPLETED                           (SYSTEM_FLAGS + 0x24) // braille puzzle regieleki
@@ -1402,7 +1402,7 @@
 #define FLAG_SYS_SAFARI_MODE                        (SYSTEM_FLAGS + 0x2C)
 #define FLAG_SYS_CRUISE_MODE                        (SYSTEM_FLAGS + 0x2D)
 
-#define FLAG_SYS_DETECTOR_MODE                      (SYSTEM_FLAGS + 0x2E) // allow player to find hidden mons
+#define DN_FLAG_DETECTOR_MODE                      (SYSTEM_FLAGS + 0x2E) // allow player to find hidden mons
 #define FLAG_SYS_REGIDRAGO_PUZZLE_COMPLETED         (SYSTEM_FLAGS + 0x2F) 
 
 #define FLAG_SYS_TV_HOME                            (SYSTEM_FLAGS + 0x30)
@@ -1648,6 +1648,7 @@
 #define FLAG_SPECIAL_FLAG_UNUSED_0x4003         (SPECIAL_FLAGS_START + 0x3) // Unused Flag
 #define FLAG_STORING_ITEMS_IN_PYRAMID_BAG       (SPECIAL_FLAGS_START + 0x4)
 #define FLAG_SAFE_FOLLOWER_MOVEMENT             (SPECIAL_FLAGS_START + 0x5) // When set, applymovement does not put the follower inside a pokeball
+                                                                            // Also, scripted movements on the player will move follower(s), too
 // FLAG_SPECIAL_FLAG_0x4005 - 0x407F also exist and are unused
 #define SPECIAL_FLAGS_END                       (SPECIAL_FLAGS_START + 0x7F)
 #define NUM_SPECIAL_FLAGS                       (SPECIAL_FLAGS_END - SPECIAL_FLAGS_START + 1)
@@ -1658,5 +1659,17 @@
 #define FLAG_TEMP_REGICE_PUZZLE_FAILED          FLAG_TEMP_3
 #define FLAG_TEMP_HIDE_FOLLOWER                 FLAG_TEMP_E
 #define FLAG_TEMP_HIDE_MIRAGE_ISLAND_BERRY_TREE FLAG_TEMP_11
+
+#if TESTING
+#define TESTING_FLAGS_START                     0x5000
+#define TESTING_FLAG_SLEEP_CLAUSE               (TESTING_FLAGS_START + 0x0)
+#define TESTING_FLAG_UNUSED_1                   (TESTING_FLAGS_START + 0x1)
+#define TESTING_FLAG_UNUSED_2                   (TESTING_FLAGS_START + 0x2)
+#define TESTING_FLAG_UNUSED_3                   (TESTING_FLAGS_START + 0x3)
+#define TESTING_FLAG_UNUSED_4                   (TESTING_FLAGS_START + 0x4)
+#define TESTING_FLAG_UNUSED_5                   (TESTING_FLAGS_START + 0x5)
+#define TESTING_FLAG_UNUSED_6                   (TESTING_FLAGS_START + 0x6)
+#define TESTING_FLAG_UNUSED_7                   (TESTING_FLAGS_START + 0x7)
+#endif // TESTING
 
 #endif // GUARD_CONSTANTS_FLAGS_H
