@@ -16360,6 +16360,7 @@ static void Cmd_givecaughtmon(void)
 
         gSelectedMonPartyId = PARTY_SIZE;
         gBattleCommunication[MULTIUSE_STATE] = 0;
+        HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
 
         if (gBattleCommunication[MULTISTRING_CHOOSER] == B_MSG_NO_MESSSAGE_SKIP)
             gBattlescriptCurrInstr = cmd->passInstr;
@@ -16588,6 +16589,7 @@ static void Cmd_trygivecaughtmonnick(void)
         break;
     case 4:
         gBattleCommunication[MULTIUSE_STATE] = 0;
+        HandleBattleWindow(YESNOBOX_X_Y, WINDOW_CLEAR);
         gBattlescriptCurrInstr = cmd->nextInstr;
         break;
     }

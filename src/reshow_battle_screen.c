@@ -324,11 +324,11 @@ void CreateBattlerSprite(u32 battler)
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
             if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0
-                && !(gBattleStruct->raid.raidState & RAID_CATCHING_BOSS))
+                && !(gBattleStruct->raid.boss[battler].bossState & RAID_CATCHING_BOSS))
                 return;
-            /*if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
-                return;*/
-            if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
+            // Don't create opponent sprite if it has been caught, except for non defeated raid boss
+            if (gBattleScripting.monCaught
+                && !(gBattleTypeFlags & BATTLE_TYPE_RAID && !(gBattleStruct->raid.boss[battler].bossState & RAID_BOSS_DEFEATED)))
                 return;
 
             SetMultiuseSpriteTemplateToPokemon(GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES), GetBattlerPosition(battler));
@@ -395,8 +395,6 @@ static void CreateHealthboxSprite(u32 battler)
             healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
 
         gHealthboxSpriteIds[battler] = healthboxSpriteId;
-        /*if (gBattleTypeFlags & BATTLE_TYPE_RAID && GetBattlerPosition(battler) == B_POSITION_OPPONENT_RIGHT)
-            return;*/
 
         InitBattlerHealthboxCoords(battler);
         SetHealthboxSpriteVisible(healthboxSpriteId);
@@ -424,7 +422,7 @@ static void CreateHealthboxSprite(u32 battler)
                 SetHealthboxSpriteInvisible(healthboxSpriteId);
         }
         // Hide healthboxes when catching a Raid boss.
-        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.raidState & RAID_CATCHING_BOSS))
+        if ((gBattleTypeFlags & BATTLE_TYPE_RAID) && (gBattleStruct->raid.boss[battler].bossState & RAID_BOSS_DEFEATED || gBattleStruct->raid.raidState & RAID_CATCHING_BOSS))
         {
             SetHealthboxSpriteInvisible(healthboxSpriteId);
         }

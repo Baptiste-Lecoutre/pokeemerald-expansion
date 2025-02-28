@@ -11875,7 +11875,7 @@ void RecalcBattlerStats(u32 battler, struct Pokemon *mon, bool32 isDynamaxing)
     u32 hp = GetMonData(mon, MON_DATA_HP);
     u32 oldMaxHp = GetMonData(mon, MON_DATA_MAX_HP);
     CalculateMonStats(mon);
-    if (IsRaidBoss(battler) && !(gBattleStruct->raid.raidState & RAID_CATCHING_BOSS))
+    if (IsRaidBoss(battler) && !(gBattleStruct->raid.boss[battler].bossState & RAID_BOSS_DEFEATED))
         ApplyRaidHPMultiplier(mon);
     else if (GetActiveGimmick(battler) == GIMMICK_DYNAMAX && gChosenActionByBattler[battler] != B_ACTION_SWITCH)
     { // previously only ApplyDynamaxHPMultiplier(battler, mon);

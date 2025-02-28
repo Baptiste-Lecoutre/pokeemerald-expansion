@@ -2277,7 +2277,7 @@ void BS_JumpIfNoBalls(void)
 void BS_JumpIfRaidBoss(void)
 {
     NATIVE_ARGS(u8 battler, const u8 *jumpInstr);
-    if (IsRaidBoss(/*gBattlerTarget*/GetBattlerForBattleScript(cmd->battler)))
+    if (IsRaidBoss(GetBattlerForBattleScript(cmd->battler)))
         gBattlescriptCurrInstr = cmd->jumpInstr;
     else
         gBattlescriptCurrInstr = cmd->nextInstr;
@@ -2317,6 +2317,18 @@ u32 TryFaintRaidBoss(u32 battler)
         BattleScriptPush(gBattlescriptCurrInstr);
         gBattlescriptCurrInstr = BattleScript_RaidVictory;
         return TRUE;
+    }
+
+    if (gBattleStruct->raid.raidState & RAID_CATCHING_BOSS)
+    {
+        u32 i;
+        gBattleStruct->raid.raidState &= ~RAID_CATCHING_BOSS;
+        for (i = 0; i < MAX_BATTLERS_COUNT; i++)
+        {
+            gBattleStruct->raid.boss[i].bossState &= ~RAID_CATCHING_BOSS;
+            if (IsBattlerAlive(i))
+                SetHealthboxSpriteVisible(gHealthboxSpriteIds[i]);
+        }// no return necessary
     }
 // should also check catching sequence to cleanup states and restore correct visuals
     return FALSE;
