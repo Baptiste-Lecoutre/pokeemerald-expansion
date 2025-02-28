@@ -870,7 +870,7 @@ bool32 TryRaidBossAdditionalMove(u32 battler)
      || (gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX && (GetMoveCategory(gLastLandedMoves[battler]) == DAMAGE_CATEGORY_STATUS || IsMaxMove(gLastLandedMoves[battler])) && (Random() % 100 <= GetRaidRepeatedAttackChance())))
     {
         if (IsWildMonSmart())
-            chosenMoveId = BattleAI_ChooseMoveOrAction();
+            chosenMoveId = BattleAI_ChooseMoveOrAction(battler);
         else
             chosenMoveId = Random() % MAX_MON_MOVES;
 
