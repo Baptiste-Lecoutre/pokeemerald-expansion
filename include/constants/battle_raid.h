@@ -38,7 +38,7 @@
 // Raid Battle States
 #define RAID_INTRO_COMPLETE     (1 << 0)
 #define RAID_CATCHING_BOSS      (1 << 1)
-// possibly a RAID_CAUGHT_BOSS
+#define RAID_BOSS_DEFEATED      (1 << 2)
 #define RAID_CREATE_SHIELD      (1 << 3)
 #define RAID_BREAK_SHIELD       (1 << 4)
 #define RAID_RESHOW_SHIELD     (1 << 5)

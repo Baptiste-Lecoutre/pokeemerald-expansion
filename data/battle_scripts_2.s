@@ -205,6 +205,8 @@ BattleScript_TryNicknameCaughtMon::
 	goto BattleScript_SuccessBallThrowEnd
 BattleScript_GiveCaughtMonEnd::
 	givecaughtmon BattleScript_SuccessBallThrowEnd
+@	jumpifraidfinished BattleScript_SuccessBallThrowEnd
+@	finishaction
 BattleScript_SuccessBallThrowEnd::
 	setbyte gBattleOutcome, B_OUTCOME_CAUGHT
 	finishturn
