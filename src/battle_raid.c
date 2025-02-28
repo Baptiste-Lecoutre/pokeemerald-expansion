@@ -2274,6 +2274,15 @@ void BS_JumpIfNoBalls(void)
         gBattlescriptCurrInstr = cmd->jumpInstr;
 }
 
+void BS_JumpIfRaidBoss(void)
+{
+    NATIVE_ARGS(u8 battler, const u8 *jumpInstr);
+    if (IsRaidBoss(/*gBattlerTarget*/GetBattlerForBattleScript(cmd->battler)))
+        gBattlescriptCurrInstr = cmd->jumpInstr;
+    else
+        gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
 void BS_JumpIfRaidFinished(void)
 {
     NATIVE_ARGS(const u8 *jumpInstr);
@@ -2289,6 +2298,9 @@ void BS_JumpIfRaidFinished(void)
     // - Player has no raid boss. Raid boss are on the opponent side. Need to obliterate raid boss, or all the enemies regardless if boss or not.
 }
 
+// this function is called twice in raid battles
+// First when the battler hp reaches 0
+// Then after the catch sequence, wether it happened or not
 u32 TryFaintRaidBoss(u32 battler)
 {
     if (!(gBattleTypeFlags & BATTLE_TYPE_RAID))
@@ -2296,10 +2308,18 @@ u32 TryFaintRaidBoss(u32 battler)
 
     if (!IsRaidBoss(battler))
         return FALSE;
-//    u8 hp = 1;
-//    SetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP, &hp);
-    gBattlescriptCurrInstr = BattleScript_RaidVictory;
-    return TRUE;
+
+    if (!(gBattleStruct->raid.boss[battler].bossState & RAID_BOSS_DEFEATED))
+    {
+        gBattleStruct->raid.boss[battler].bossState |= RAID_BOSS_DEFEATED;
+//        u8 hp = 1;
+//        SetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP, &hp);
+        BattleScriptPush(gBattlescriptCurrInstr);
+        gBattlescriptCurrInstr = BattleScript_RaidVictory;
+        return TRUE;
+    }
+// should also check catching sequence to cleanup states and restore correct visuals
+    return FALSE;
 }
 
 void BS_CatchRaidBoss(void)
@@ -2308,13 +2328,13 @@ void BS_CatchRaidBoss(void)
 
     if (!(gBattleStruct->raid.raidState & RAID_CATCHING_BOSS)) // open bag if end sequence just began
     {
-        u32 battler;
+        u32 battler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
         gBattleStruct->raid.raidState |= RAID_CATCHING_BOSS;
+        gBattleStruct->raid.boss[gBattlerTarget].bossState |= RAID_CATCHING_BOSS;
         gSpecialVar_ItemId = ITEM_NONE;
-        battler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-        RecalcBattlerStats(battler, &gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], gRaidTypes[gRaidData.raidType].rules == RAID_RULES_MAX);
         BtlController_EmitChooseItem(battler, BUFFER_A, gBattleStruct->battlerPartyOrders[battler]);
         MarkBattlerForControllerExec(battler);
+        return;
     }
     else if (gSpecialVar_ItemId != ITEM_NONE) // do catch sequence if ball selected
     {
@@ -2329,7 +2349,7 @@ void BS_CatchRaidBoss(void)
         BtlController_EmitBallThrowAnim(gBattlerAttacker, BUFFER_A, BALL_3_SHAKES_SUCCESS);
         MarkBattlerForControllerExec(gBattlerAttacker);
         TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
-        gBattlescriptCurrInstr = BattleScript_SuccessBallThrow; // maybe another battle script dedicated to raid boss?
+        gBattlescriptCurrInstr = BattleScript_SuccessBallThrowRaid; // maybe another battle script dedicated to raid boss?
         SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
 
         if (CalculatePlayerPartyCount() == PARTY_SIZE)
@@ -2343,10 +2363,15 @@ void BS_CatchRaidBoss(void)
 //        gBattleMons[gBattlerTarget].hp = 1;//gBattleMons[gBattlerTarget].maxHP;
 //        SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HP, &gBattleMons[gBattlerTarget].hp); // is i have to set the caught boss hp, it shoul dbe when transferred to the party?
         SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_HELD_ITEM, &bossHeldItem);
+        return;
     }
     else // no item selected
     {
-        gBattlescriptCurrInstr = BattleScript_FaintRaidBoss;
+        // need to cleanup states and restore sprites
+
+        //gBattlescriptCurrInstr = BattleScript_FaintRaidBoss;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+        return;
     }
     return;
 

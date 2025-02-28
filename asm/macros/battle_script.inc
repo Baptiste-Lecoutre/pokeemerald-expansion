@@ -2549,6 +2549,12 @@
 	.4byte \jumpInstr
 	.endm
 
+	.macro jumpifraidboss, battler:req, jumpInstr:req
+	callnative BS_JumpIfRaidBoss
+	.byte \battler
+	.4byte \jumpInstr
+	.endm
+
 	.macro jumpifraidfinished, jumpInstr:req
 	callnative BS_JumpIfRaidFinished
 	.4byte \jumpInstr

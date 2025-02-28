@@ -5441,6 +5441,7 @@ BattleScript_FaintAttacker::
 	return
 
 BattleScript_FaintTarget::
+	jumpifraidboss BS_TARGET, BattleScript_FaintRaidBoss
 	tryillusionoff BS_TARGET
 	tryactivategulpmissile
 	tryupdateleaderscresttracker
@@ -10257,21 +10258,71 @@ BattleScript_RaidShockwaveMegaCalmedHealed::
 	goto BattleScript_RaidShockwaveEnd
 
 
-BattleScript_RaidVictory::
+BattleScript_RaidVictoryOld::
 @	hidehealthboxes @ did not do anything. Keeping an undefined macro in case I want to do something about it later
 	playanimation BS_TARGET, B_ANIM_RAID_BOSS_EXPLOSION
 	waitanimation
 @	setbyte sGIVEEXP_STATE, 0 @ no exp in raid battles
 @	getexp BS_TARGET
-	jumpifnoballs BattleScript_FaintRaidBoss
+	jumpifnoballs BattleScript_FaintRaidBossOld
 	printstring STRINGID_CATCHRAIDMON
 	setbyte gBattleCommunication, 0
 	yesnobox
-	jumpifbyte CMP_NOT_EQUAL, gBattleCommunication + 1, 0, BattleScript_FaintRaidBoss
+	jumpifbyte CMP_NOT_EQUAL, gBattleCommunication + 1, 0, BattleScript_FaintRaidBossOld
 	catchraidboss @ I should verify if the raid boss is on the opponent side to enable catching
 	end2
 
+BattleScript_RaidVictory::
+	playanimation BS_TARGET, B_ANIM_RAID_BOSS_EXPLOSION
+	waitanimation
+	jumpifnoballs BattleScript_RaidVictoryReturn
+	printstring STRINGID_CATCHRAIDMON
+	setbyte gBattleCommunication, 0
+	yesnobox
+	jumpifbyte CMP_NOT_EQUAL, gBattleCommunication + 1, 0, BattleScript_RaidVictoryReturn
+	catchraidboss @ I should verify if the raid boss is on the opponent side to enable catching
+	return
+BattleScript_RaidVictoryReturn:
+	return
+
+@ copy of BattleScript_FaintTarget, but change string for raid boss
 BattleScript_FaintRaidBoss::
+	tryillusionoff BS_TARGET
+	tryactivategulpmissile
+	tryupdateleaderscresttracker
+	pause B_WAIT_TIME_LONG
+	dofaintanimation BS_TARGET
+	printstring STRINGID_RAIDPKMNDISAPPEARED
+	savebattleritem BS_TARGET
+	cleareffectsonfaint BS_TARGET
+	tryactivatefellstinger BS_ATTACKER
+	tryactivatesoulheart
+	tryactivatereceiver BS_TARGET
+	tryactivatemoxie BS_ATTACKER        @ and chilling neigh, as one ice rider
+	tryactivatebeastboost BS_ATTACKER
+	tryactivategrimneigh BS_ATTACKER    @ and as one shadow rider
+	tryactivatebattlebond BS_ATTACKER
+	trytrainerslidefirstdownmsg BS_TARGET
+	return
+
+BattleScript_SuccessBallThrowRaid::
+	setbyte sMON_CAUGHT, TRUE
+	incrementgamestat GAME_STAT_POKEMON_CAPTURES
+	printstring STRINGID_GOTCHAPKMNCAUGHTPLAYER
+	trysetcaughtmondexflags BattleScript_GiveCaughtRaidMonEnd
+	printstring STRINGID_PKMNDATAADDEDTODEX
+	waitstate
+BattleScript_GiveCaughtRaidMonEnd::
+	setbyte gBattleCommunication, 0
+	givecaughtmon BattleScript_SuccessBallThrowEndRaid
+@	jumpifraidfinished BattleScript_SuccessBallThrowEndRaid
+@	finishaction
+BattleScript_SuccessBallThrowEndRaid::
+	return
+	@setbyte gBattleOutcome, B_OUTCOME_CAUGHT
+	@finishturn
+
+BattleScript_FaintRaidBossOld::
 	pause B_WAIT_TIME_LONG
 	dofaintanimation BS_TARGET
 	printstring STRINGID_RAIDPKMNDISAPPEARED
