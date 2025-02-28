@@ -218,6 +218,7 @@ enum
 {
     LIST_RAID_BOSS,
     LIST_RAID_ENERGY,
+    LIST_RAID_RAID_STATE,
     LIST_RAID_BOSS_STATE,
     LIST_RAID_SHIELDS,
 };
@@ -392,6 +393,7 @@ static const u8 sText_SeaOfFire[] = _("Sea of Fire");
 static const u8 sText_Swamp[] = _("Swamp");
 static const u8 sText_RaidBoss[] = _("Boss");
 static const u8 sText_RaidEnergy[] = _("Energy");
+static const u8 sText_RaidRaidState[] = _("Raid State");
 static const u8 sText_RaidBossState[] = _("Boss State");
 static const u8 sText_RaidShields[] = _("Shields");
 static const u8 sText_CheckBadMove[] = _("Check Bad Move");
@@ -640,6 +642,7 @@ static const struct ListMenuItem sRaidListItems[] =
 {
     {sText_RaidBoss, LIST_RAID_BOSS},
     {sText_RaidEnergy, LIST_RAID_ENERGY},
+    {sText_RaidRaidState, LIST_RAID_RAID_STATE},
     {sText_RaidBossState, LIST_RAID_BOSS_STATE},
     {sText_RaidShields, LIST_RAID_SHIELDS},
 };
@@ -2234,6 +2237,15 @@ static void SetUpModifyArrows(struct BattleDebugMenu *data)
             data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.energy;
             data->modifyArrows.typeOfVal = VAL_U8;
             data->modifyArrows.currValue = gBattleStruct->raid.energy;
+        }
+        else if (data->currentSecondaryListItemId == LIST_RAID_RAID_STATE)
+        {
+            data->modifyArrows.minValue = 0;
+            data->modifyArrows.maxValue = 255;
+            data->modifyArrows.maxDigits = 3;
+            data->modifyArrows.modifiedValPtr = &gBattleStruct->raid.raidState;
+            data->modifyArrows.typeOfVal = VAL_U8;
+            data->modifyArrows.currValue = gBattleStruct->raid.raidState;
         }
         else if (data->currentSecondaryListItemId == LIST_RAID_BOSS_STATE)
         {
