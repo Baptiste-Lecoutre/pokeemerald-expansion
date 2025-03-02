@@ -2325,7 +2325,11 @@ u32 TryFaintRaidBoss(u32 battler)
         gBattleStruct->raid.raidState &= ~RAID_CATCHING_BOSS;
         for (i = 0; i < MAX_BATTLERS_COUNT; i++)
         {
-            gBattleStruct->raid.boss[i].bossState &= ~RAID_CATCHING_BOSS;
+            if (gBattleStruct->raid.boss[i].bossState & RAID_CATCHING_BOSS)
+            {
+                gBattleStruct->raid.boss[i].bossState &= ~RAID_CATCHING_BOSS;
+                gBattleStruct->raid.boss[i].bossState |= RAID_BOSS_CAUGHT;
+            }
             if (IsBattlerAlive(i))
                 SetHealthboxSpriteVisible(gHealthboxSpriteIds[i]);
         }// no return necessary
